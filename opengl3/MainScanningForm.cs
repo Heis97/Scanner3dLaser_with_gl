@@ -5198,6 +5198,8 @@ namespace opengl3
                 var tvec = toVertex3f(tvecs[i]);
                 var mx = assemblMatrix(rotateMatrix, tvec);
                 var invMx = mx.Inverse;
+                //wfwfe;
+               // ergergergerg
                 //Console.WriteLine("INV-----------");
                // print(invMx);
                // Console.WriteLine("FRAME-------------");
