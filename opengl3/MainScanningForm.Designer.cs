@@ -115,6 +115,7 @@ namespace opengl3
             this.nameA2 = new System.Windows.Forms.TextBox();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_addBufRob = new System.Windows.Forms.Button();
             this.but_robMod = new System.Windows.Forms.Button();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
             this.lab_kor = new System.Windows.Forms.Label();
@@ -127,8 +128,19 @@ namespace opengl3
             this.label4 = new System.Windows.Forms.Label();
             this.debugBox = new System.Windows.Forms.RichTextBox();
             this.tabDebug = new System.Windows.Forms.TabPage();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.imageBox_cameraDist = new Emgu.CV.UI.ImageBox();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_addBufRob = new System.Windows.Forms.Button();
+            this.label28 = new System.Windows.Forms.Label();
+            this.textBox_K1 = new System.Windows.Forms.TextBox();
+            this.textBox_K2 = new System.Windows.Forms.TextBox();
+            this.label29 = new System.Windows.Forms.Label();
+            this.textBox_K3 = new System.Windows.Forms.TextBox();
+            this.label30 = new System.Windows.Forms.Label();
+            this.textBox_P1 = new System.Windows.Forms.TextBox();
+            this.label31 = new System.Windows.Forms.Label();
+            this.textBox_P2 = new System.Windows.Forms.TextBox();
+            this.label32 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -149,6 +161,8 @@ namespace opengl3
             this.tabMain.SuspendLayout();
             this.tabOpenGl.SuspendLayout();
             this.tabDebug.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -925,6 +939,7 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabMain);
             this.windowsTabs.Controls.Add(this.tabOpenGl);
             this.windowsTabs.Controls.Add(this.tabDebug);
+            this.windowsTabs.Controls.Add(this.tabPage1);
             this.windowsTabs.Location = new System.Drawing.Point(12, 3);
             this.windowsTabs.Name = "windowsTabs";
             this.windowsTabs.SelectedIndex = 0;
@@ -1009,6 +1024,17 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // but_addBufRob
+            // 
+            this.but_addBufRob.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_addBufRob.Location = new System.Drawing.Point(1481, 80);
+            this.but_addBufRob.Name = "but_addBufRob";
+            this.but_addBufRob.Size = new System.Drawing.Size(106, 33);
+            this.but_addBufRob.TabIndex = 93;
+            this.but_addBufRob.Text = "add buf robot";
+            this.but_addBufRob.UseVisualStyleBackColor = true;
+            this.but_addBufRob.Click += new System.EventHandler(this.but_addBufRob_Click);
             // 
             // but_robMod
             // 
@@ -1152,20 +1178,118 @@ namespace opengl3
             this.tabDebug.Text = "Отладка";
             this.tabDebug.UseVisualStyleBackColor = true;
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.textBox_P2);
+            this.tabPage1.Controls.Add(this.label32);
+            this.tabPage1.Controls.Add(this.textBox_P1);
+            this.tabPage1.Controls.Add(this.label31);
+            this.tabPage1.Controls.Add(this.textBox_K3);
+            this.tabPage1.Controls.Add(this.label30);
+            this.tabPage1.Controls.Add(this.textBox_K2);
+            this.tabPage1.Controls.Add(this.label29);
+            this.tabPage1.Controls.Add(this.textBox_K1);
+            this.tabPage1.Controls.Add(this.label28);
+            this.tabPage1.Controls.Add(this.imageBox_cameraDist);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1882, 1003);
+            this.tabPage1.TabIndex = 4;
+            this.tabPage1.Text = "Камера";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // imageBox_cameraDist
+            // 
+            this.imageBox_cameraDist.Location = new System.Drawing.Point(6, 6);
+            this.imageBox_cameraDist.Name = "imageBox_cameraDist";
+            this.imageBox_cameraDist.Size = new System.Drawing.Size(640, 480);
+            this.imageBox_cameraDist.TabIndex = 2;
+            this.imageBox_cameraDist.TabStop = false;
+            // 
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // but_addBufRob
+            // label28
             // 
-            this.but_addBufRob.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_addBufRob.Location = new System.Drawing.Point(1481, 80);
-            this.but_addBufRob.Name = "but_addBufRob";
-            this.but_addBufRob.Size = new System.Drawing.Size(106, 33);
-            this.but_addBufRob.TabIndex = 93;
-            this.but_addBufRob.Text = "add buf robot";
-            this.but_addBufRob.UseVisualStyleBackColor = true;
-            this.but_addBufRob.Click += new System.EventHandler(this.but_addBufRob_Click);
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(652, 16);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(20, 13);
+            this.label28.TabIndex = 3;
+            this.label28.Text = "K1";
+            // 
+            // textBox_K1
+            // 
+            this.textBox_K1.Location = new System.Drawing.Point(678, 13);
+            this.textBox_K1.Name = "textBox_K1";
+            this.textBox_K1.Size = new System.Drawing.Size(100, 20);
+            this.textBox_K1.TabIndex = 4;
+            // 
+            // textBox_K2
+            // 
+            this.textBox_K2.Location = new System.Drawing.Point(678, 39);
+            this.textBox_K2.Name = "textBox_K2";
+            this.textBox_K2.Size = new System.Drawing.Size(100, 20);
+            this.textBox_K2.TabIndex = 6;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(652, 42);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(20, 13);
+            this.label29.TabIndex = 5;
+            this.label29.Text = "K2";
+            // 
+            // textBox_K3
+            // 
+            this.textBox_K3.Location = new System.Drawing.Point(678, 65);
+            this.textBox_K3.Name = "textBox_K3";
+            this.textBox_K3.Size = new System.Drawing.Size(100, 20);
+            this.textBox_K3.TabIndex = 8;
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(652, 68);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(20, 13);
+            this.label30.TabIndex = 7;
+            this.label30.Text = "K3";
+            // 
+            // textBox_P1
+            // 
+            this.textBox_P1.Location = new System.Drawing.Point(678, 91);
+            this.textBox_P1.Name = "textBox_P1";
+            this.textBox_P1.Size = new System.Drawing.Size(100, 20);
+            this.textBox_P1.TabIndex = 10;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(652, 94);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(20, 13);
+            this.label31.TabIndex = 9;
+            this.label31.Text = "P1";
+            // 
+            // textBox_P2
+            // 
+            this.textBox_P2.Location = new System.Drawing.Point(678, 117);
+            this.textBox_P2.Name = "textBox_P2";
+            this.textBox_P2.Size = new System.Drawing.Size(100, 20);
+            this.textBox_P2.TabIndex = 12;
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(652, 120);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(20, 13);
+            this.label32.TabIndex = 11;
+            this.label32.Text = "P2";
             // 
             // MainScanningForm
             // 
@@ -1199,6 +1323,9 @@ namespace opengl3
             this.tabOpenGl.ResumeLayout(false);
             this.tabOpenGl.PerformLayout();
             this.tabDebug.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -1305,6 +1432,18 @@ namespace opengl3
         private System.Windows.Forms.Label lab_kor;
         private System.Windows.Forms.Button but_robMod;
         private System.Windows.Forms.Button but_addBufRob;
+        private System.Windows.Forms.TabPage tabPage1;
+        private Emgu.CV.UI.ImageBox imageBox_cameraDist;
+        private System.Windows.Forms.TextBox textBox_P2;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.TextBox textBox_P1;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.TextBox textBox_K3;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.TextBox textBox_K2;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.TextBox textBox_K1;
+        private System.Windows.Forms.Label label28;
     }
 }
 

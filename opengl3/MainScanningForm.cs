@@ -5170,7 +5170,7 @@ namespace opengl3
             computeDistortionMaps(ref mapx,ref mapy, cameraMatrix, cameraDistortionCoeffs, frames[0].im.Size);
             Console.WriteLine("||||||||||||");
             Console.WriteLine(mapx.Depth);
-            //print(mapx);
+           // print(mapx);
 
             // cameraDistortionCoeffs[0, 0] = 0.5;
             for (int i=0; i<5; i++)
@@ -5182,6 +5182,7 @@ namespace opengl3
             var und_pic = new Mat();
             CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
             imageBox1.Image = und_pic;
+            //imageBox1.Image = mapx;
             //print(mapx);
             Console.WriteLine("err = " + err);
 
@@ -5198,26 +5199,30 @@ namespace opengl3
                 var tvec = toVertex3f(tvecs[i]);
                 var mx = assemblMatrix(rotateMatrix, tvec);
                 var invMx = mx.Inverse;
-                //wfwfe;
-               // ergergergerg
+
                 //Console.WriteLine("INV-----------");
                // print(invMx);
                // Console.WriteLine("FRAME-------------");
                 //print(frames[i]);
             }
+            
         }
        
 
 
         PointF calcDistorcPix(int xd, int yd, double xc, double yc, Matrix<double> distCoefs)
         {
-            var K1 = -Math.Pow(0.1, 10)*distCoefs[0, 0];
-            var K2 = -Math.Pow(0.1, 10) * distCoefs[1, 0];
+            distCoefs[0, 0] = 0.1;
+            distCoefs[1, 0] = 0.1;
+            distCoefs[4, 0] = 0.1;
+
+            var K1 = Math.Pow(0.1, 6) * distCoefs[0, 0];
+            var K2 = Math.Pow(0.1, 20) * distCoefs[1, 0];
             var P1 = distCoefs[2, 0];
             var P2 = distCoefs[3, 0];
             var K3 = Math.Pow(0.1, 20) * distCoefs[4, 0];
-            xc = 330;
-            yc = 250;
+            xc = 320;
+            yc = 240;
             var delt = new PointF((float)((double)xd-xc), (float)((double)yd - yc));
             var r = (double)delt.norm;
             var r2 = Math.Pow(r, 2);
@@ -5233,10 +5238,40 @@ namespace opengl3
             
             return new PointF(xu, yu);
         }
+
+        PointF calcDistorcPix_BC(int xd, int yd, double xc, double yc, Matrix<double> distCoefs)
+        {
+            //distCoefs[0, 0] = 0.1;
+            //distCoefs[1, 0] = 0.1;
+            //distCoefs[4, 0] = 0.1;
+
+            var K1 = Math.Pow(0.1, 6) * distCoefs[0, 0];
+            var K2 = Math.Pow(0.1, 20) * distCoefs[1, 0];
+            var P1 = distCoefs[2, 0];
+            var P2 = distCoefs[3, 0];
+            var K3 = Math.Pow(0.1, 20) * distCoefs[4, 0];
+            xc = 320;
+            yc = 240;
+            var delt = new PointF((float)((double)xd - xc), (float)((double)yd - yc));
+            var r = (double)delt.norm;
+            var r2 = Math.Pow(r, 2);
+            var r4 = Math.Pow(r, 4);
+            var r6 = Math.Pow(r, 6);
+
+            var delx = xd - xc;
+            var dely = yd - yc;
+
+
+            var xu = xc + delx/(1+K1 * r2 + K2 * r4 + K3 * r6);// + P1 * (r2 + 2 * Math.Pow(delx, 2)) + 2 * P2 * delx * dely;
+            var yu = yc + dely/(1+K1 * r2 + K2 * r4 + K3 * r6);// + 2 * P1 * delx * dely +   P2 * (r2 + 2 * Math.Pow(delx, 2));
+
+
+            return new PointF(xu, yu);
+        }
         void computeDistortionMaps(ref Mat _mapx, ref Mat _mapy, Matrix<double> cameraMatr, Matrix<double> distCoefs, Size size)
         {
 
-            Matrix<float> mapx = new Matrix<float>(size.Height,size.Width);
+            Matrix<float> mapx = new Matrix<float>(size.Height, size.Width);
             Matrix<float> mapy = new Matrix<float>(size.Height, size.Width);
             double xc = cameraMatr[0, 2];
             double yc = cameraMatr[1, 2];
@@ -5247,9 +5282,9 @@ namespace opengl3
             {
                 for (int j = 0; j < size.Width; j++)
                 {
-                    var p = calcDistorcPix(i, j, xc, yc, distCoefs);
-                    mapx[i, j] = p.Y;
-                    mapy[i, j] = p.X;
+                    var p = calcDistorcPix_BC(j, i, xc, yc, distCoefs);
+                    mapx[i, j] = p.X;
+                    mapy[i, j] = p.Y;
                     //Console.WriteLine(i + " " + j);
                 }
             }
