@@ -30,7 +30,6 @@ namespace opengl3
         TCPclient con1;
         private const float PI = 3.14159265358979f;
         // private Size cameraSize = new Size(1280, 960);
-
         private Size cameraSize = new Size(640, 480);
         private GraphicGL GL1 = new GraphicGL();
         private VideoCapture myCapture1 = null;
@@ -41,35 +40,15 @@ namespace opengl3
         private float[] color_buffer_data = { 0.0f };
         volatile List<int> camera_ind = new List<int>();
         List<float[]> im = new List<float[]>();
-        private List<Point> Points;
         public List<Mat> Ims;
         public List<Point> ints;
-        private Point3d_GL p1;
-        private Point3d_GL p2;
-        private Point3d_GL p3;
-        private Point3d_GL U;
-        private Point3d_GL V;
         private Point3d_GL offset_model;
-        private Point3d_GL Norm;
         int fr_ind = 0;
-        private Point3d_GL pos_zero = new Point3d_GL(585.35, -193.84, 148.50);
-        private Point3d_GL Norm1;
-        private Point[] ps2;
         private List<Frame> frames;
 
         int res_min = 256 * 1;
-        string im_path = " 565.63 -37.75 263.34 5 .png";
-        string calib_path = @"find patterns\test_2";//
-                                                    // string calib_path = @"kuka_f\";//
-        string scan_path = @"images\scan\";
-        string video_path_calib = @"video\calib";
-        string video_path_scan = @"video\scanning\";
-
-        string image_path_scan = @"cam1\mouse_scan_1906_2";
-        string image_path_laser_calib = @"cam1\laser_cal_1906_1\test";
-        string image_path_pos_calib = @"cam1\pos_cal_1906_1";
         volatile Mat[] mat_global = new Mat[3];
-        double rotate_angle = 0.4;
+        Mat matr = new Mat();
         int flag1 = 1;
         int flag2 = 1;
         int im_i = 100000;
@@ -81,17 +60,15 @@ namespace opengl3
         double minArea = 1;
         double maxArea = 10;
         string name_scan = "test_1008_1";
-        string openGl_folder= @"ref_model\test5";
-        Point3d_GL p1_cal = new Point3d_GL(394.73, 73.87, 100.01);//(655.35, -73.21, 80.40);
-        Point3d_GL p2_cal = new Point3d_GL(394.73, 73.87, 119.01);
-        Point3d_GL p1_las_cal = new Point3d_GL(394.73, 73.87, 78.59);//(655.35, -73.21, 80.40);
-        Point3d_GL p2_las_cal = new Point3d_GL(394.73, 73.87,177.44);
+        string openGl_folder= @"ref_model\test6";
         Point3d_GL p1_scan = new Point3d_GL(548.0, -60.0, 225.0);//(655.35, -73.21, 80.40);
         Point3d_GL p2_scan = new Point3d_GL(548.0, 60.0, 225.0);
         Frame calib_frame;
         List<Flat_4P> laserFlat;
         RobotModel RobotModel_1;
-        #endregion
+        
+        Matrix<double> cameraDistortionCoeffs = new Matrix<double>(5, 1);
+        Matrix<double> cameraMatrix = new Matrix<double>(3, 3);
         int k = 1;
         bool writ = false;
         int bin_pos = 40;
@@ -137,101 +114,33 @@ namespace opengl3
         int[,] flatInds = new int[1, 1];
         int[] flatLasInds = new int[ 1];
         int colr = 1;
+        #endregion
         public MainScanningForm()
         {
-            
-
-            float[] cube_small = new float[cube_buf.Length];
-            int ind_d = 0;
-            foreach (var p in cube_buf)
-            {
-                cube_small[ind_d] = p / 10;
-            }
-            //cube_buf = cube_small;
             mat_global[0] = new Mat();
             mat_global[1] = new Mat();
             mat_global[2] = new Mat();
             InitializeComponent();
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
-            imageBox1.FunctionalMode = ImageBox.FunctionalModeOption.Everything;
             red_c = 252;
-            //addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(30, 0, 0), new Point3d_GL(0, 30, 0), new Point3d_GL(0, 0, 30));
-
-            // GL1.printDebug(debugBox);
-            // addGLMesh(cube_buf, PrimitiveType.Triangles, 60.0f, 0, 0, 0.5f, 0.5f, 0.5f, 5.0f);
-            /* double side = 17.1428;
-             double fov = 57.4;
-             var frames_pos = loadImages(@"cam2\pos_cal_1906_1", fov,side);
-             var fr = from f in frames_pos
-                      orderby f.pos_rob.z
-                      select f;
-             frames_pos = fr.ToList();
-            imageBox2.Image =  lineErr(frames_pos, 51.4, 17.1428);*/
-            //var frames_pos = loadImages(@"cam1\pos_cal_1906_2", 53, 30);
-            //fov3dMap(frames_pos, 53, 30, 80, 0.5, 5,5);
-            //double side = 30;
-            /*int n = 10;
-
-            for (int i=0; i<frames_pos.Count-n; i++)
-            {
-                var frs = frames_pos.GetRange(i, n);
-
-                var retFov = findOneVarDec(45, 60, frs , side, calcPixForCam);
-                Console.WriteLine(retFov);
-            }*/
-            //var retFov = findOneVarDec(45, 60, frames_pos, side, calcPixForCam);
-            //Console.WriteLine(retFov);
-
-            // var frames_scan = loadImages_simple(@"cam1\mouse_scan_1906_2");
-
-
-            //loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30, SolveType.Complex, 0.1f, 0.1f, 0.8f);
-           // loadScan(@"cam2\pos_cal_Z_2609_2\test", @"cam2\las_cal_2609_3", @"cam2\table_scanl_2609_3", @"cam2\pos_basis_2609_2", 52.5, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
-
-            //loadScan(@"cam1\pos_cal_mid_Z_1\test", @"cam1\las_cal_mid_1", @"cam1\scanl_mid_1\test", @"cam1\pos_basis_mid", 55.1, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
-
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
 
-            //loadImages_stereo(@"orient_cal_1108_1", 53, 30, 30, true);
-            //loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", 54, 68);
-            //loadImages_test(@"cam1\scan_table_2609_2\test");
-
-            /*var frs = loadImages_calib(@"fov_pic/test_3");
-            var fov_points = map_fov_3d(frs);
-            paint3dpointsRGB(fov_points);*/
-
-            //generateImage_BOARD(7, 8);
-            //generateImage(7, 0.5);
-
-            var frames = loadImages_simple(@"cam2\chess_cal_1108_1");
-
-            calibrateCam(frames.ToArray(),new Size(7,6));
+            frames = loadImages_simple(@"tutor\cam2");
+            //EmguCVUndistortFisheye(@"ref_model\test4\distort", new Size(7, 6));
+            //calibrateFishEyeCam(frames.ToArray(), new Size(7, 6));
+            calibrateCam(frames.ToArray(), new Size(7, 6));
+            cameraDistortionCoeffs[0, 0] = -0.1 * Math.Pow(10, -6);
+            cameraDistortionCoeffs[1, 0] = 0;
+            cameraDistortionCoeffs[2, 0] = 0;
+            cameraDistortionCoeffs[3, 0] = 0;
+            cameraDistortionCoeffs[4, 0] = 0;
+            //distortFolder(@"ref_model\test4");
 
 
-            //generateImage3D(7, 0.5f, 30.0f);
-            //generateImage3D_BOARD(8, 7,10);
+            generateImage3D_BOARD(8, 7,10);
 
-            // calcFov(frs);
-            // testCalib();
-            //_______________________________________________
-            //loadImages(@"cam1\pos_basis_big\test", 53, 30,40);
-
-
-
-            //loadImages(@"ref_model\test5", 53,30);
-
-            //loadImages_stereo(@"pos_cal_Z_2609_2", 53, 30, 40, true);
-            // loadImages_stereo(@"pos_cal_1108_Y_1", 53, 30, 40, true);
-            //loadImages_stereo(@"pos_cal_1108_X_1", 53, 30, 30, true);
-            //
-            //loadImages_basis(@"cam1\pos_cal_basis_1108",53, 30, 30);
-            // loadImages_stereo(@"pos_cal_2707_1", 53, 30);
-
-            //loadImages(@"cam1\pos_cal_mid_Z_1\test", 53, 30, 30,15, true);
-
-            //calcRob();
             GL1.buffersGl.sortObj();
             GL1.printDebug(debugBox);
         }
@@ -329,6 +238,17 @@ namespace opengl3
         void saveImage(ImageBox box, string folder, string name)
         {
             var mat1 = (Mat)box.Image;
+            if (mat1 != null)
+            {
+                Directory.CreateDirectory(folder);
+                var im1 = mat1.ToImage<Bgr, byte>();
+                Console.WriteLine(folder + "\\" + name);
+                im1.Save(folder + "\\" + name);
+            }
+        }
+
+        void saveImage(Mat mat1, string folder, string name)
+        {
             if (mat1 != null)
             {
                 Directory.CreateDirectory(folder);
@@ -700,12 +620,12 @@ namespace opengl3
                 offset_model.x = 0;
                 offset_model.y = 0;
                 offset_model.z = 0;
-                addGLMesh(model, PrimitiveType.Triangles, (float)-offset_model.x, (float)-offset_model.y, (float)-offset_model.z, r, g, b);
+                GL1.addGLMesh(model, PrimitiveType.Triangles, (float)-offset_model.x, (float)-offset_model.y, (float)-offset_model.z, r, g, b);
             }
         }
         void loadScan(string path_pos_calib, string path_laser_calib, string path_scan, string path_basis, double FoV, double Side, SolveType type = SolveType.Simple, float r = 0.1f, float g = 0.1f, float b = 0.1f)
         {
-            var frames_pos = loadImages(path_pos_calib, FoV, Side, bin_pos);
+            var frames_pos = loadImages(path_pos_calib, FoV, Side, bin_pos,15,true);
             var frames_las = loadImages_simple(path_laser_calib);
             var frames_scan = loadImages_simple(path_scan);
             var zero_frame = findZeroFrame(frames_las);
@@ -716,21 +636,21 @@ namespace opengl3
                      select f;
             frames_scan = fr.ToList();
 
-            laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, (int)red_c, type,robToCam,DirectionType.Down);
+            //laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, (int)red_c, type,robToCam,DirectionType.Down);
 
             
-            var model = paintScanningModel_pts(laserFlat, frames_scan, frames_pos[0], zero_frame, type, robToCam, DirectionType.Down);
-            addPointMesh(model, r, g, b);
+           // var model = paintScanningModel_pts(laserFlat, frames_scan, frames_pos[0], zero_frame, type, robToCam, DirectionType.Down);
+            //addPointMesh(model, r, g, b);
             //Console.WriteLine("loading done");
             //Console.WriteLine("x = " + offset_model.x + "y = " + offset_model.y + "z = " + offset_model.z);
             //addGLMesh(model, PrimitiveType.Points, 0, 0, 0, r, g, b);
 
-            /*laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, (int)red_c, type, robToCam, DirectionType.Up);
+            laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, (int)red_c, type, robToCam, DirectionType.Down);
 
-            model = paintScanningModel(laserFlat, frames_scan, frames_pos[0], zero_frame, type, robToCam, DirectionType.Up);
+            var model = paintScanningModel(laserFlat, frames_scan, frames_pos[0], zero_frame, type, robToCam, DirectionType.Down);
             Console.WriteLine("loading done");
             Console.WriteLine("x = " + offset_model.x + "y = " + offset_model.y + "z = " + offset_model.z);
-            addGLMesh(model, PrimitiveType.Triangles, 0, 0, 0, 1, 0, 0);*/
+            GL1.addGLMesh(model, PrimitiveType.Triangles, 0, 0, 0, 1, 0, 0);
         }
         Point3d_GL[] paintScanningModel_pts(List<Flat_4P> laserFlat, List<Frame> videoframes, Frame calib_frame, Frame zero_frame, SolveType type, double[,] matr = null, DirectionType directionType = DirectionType.Down)
         {
@@ -1216,14 +1136,14 @@ namespace opengl3
                         var ps = flat.P;
                         ret_m.Add(ret);
                         //addLineMesh(new Point3d_GL[] { ret, zeroPos }, 0.1f, 0.8f, 0.8f);
-                        addLineMesh(new Point3d_GL[] { ret - moveToReal, zeroPos }, 0.8f, 0.1f, 0.8f);
+                        GL1.addLineMesh(new Point3d_GL[] { ret - moveToReal, zeroPos }, 0.8f, 0.1f, 0.8f);
                         //addLineMesh(new Point3d_GL[] { ps[0], ps[1], ps[1], ps[3], ps[3], ps[2], ps[2], ps[0] }, 0.8f, 0.1f, 0.1f);
                         //Console.WriteLine(ids);                        
                     }
                     ids++;
                 }
                 //addPointMesh(ret_m.ToArray(), 0.1f, 0.8f, 0.1f);
-                addPointMesh(new Point3d_GL[] { new Point3d_GL(0,0,0), moveToReal}, 0.8f, 0.8f, 0.1f);
+                GL1.addPointMesh(new Point3d_GL[] { new Point3d_GL(0,0,0), moveToReal}, 0.8f, 0.8f, 0.1f);
                 if (ret!=null)
                 {
                     return ret - moveToReal;
@@ -1607,7 +1527,7 @@ namespace opengl3
 
                 if (visible)
                 {
-                    addFrame_Cam(cam, frame_len);
+                    GL1.addFrame_Cam(cam, frame_len);
                 }
                 f.camera = cam;
                 return f;
@@ -1881,31 +1801,93 @@ namespace opengl3
         }
         #endregion                 
 
+
         #region events
+
+        Button addButton(TransRotZoom trz,string name,int ind, Size sizeControl, Point locatControl, Size offset)
+        {
+            var recGL = new Rectangle(trz.rect.X, sizeControl.Height - trz.rect.Y - trz.rect.Height, trz.rect.Width, sizeControl.Height - trz.rect.Y);
+            var but1 = new Button();
+            but1.Location = new Point(recGL.X + locatControl.X+offset.Width, recGL.Y + locatControl.Y + offset.Height);
+            but1.Size = new Size(20, 20);
+            but1.AccessibleName = ind.ToString();
+            but1.Text = name;
+            return but1;
+        }
+
+        void addButForMonitor(GraphicGL graphicGL,Size sizeControl,Point locatControl)
+        {
+            int ind = 0;
+            foreach(var trz in graphicGL.transRotZooms)
+            {
+                var but1 = addButton(trz, "P", ind, sizeControl, locatControl, new Size(0, 0));
+                but1.Click += opGl_but_changePers;
+                var but2 = addButton(trz, "V", ind, sizeControl, locatControl, new Size(23, 0));
+                but2.Click += opGl_but_changeVisib;
+                var but3 = addButton(trz, "S", ind, sizeControl, locatControl, new Size(46, 0));
+                but3.Click += opGl_but_savePic;
+                tabOpenGl.Controls.Add(but1);
+                tabOpenGl.Controls.Add(but2);
+                tabOpenGl.Controls.Add(but3);
+                ind++;
+            }
+            glControl1.SendToBack();
+        }
+        void opGl_but_changePers(object sender, EventArgs e)
+        {
+            int i = Convert.ToInt32(((Button)sender).AccessibleName);
+            GL1.changeViewType(i);
+        }
+
+        void opGl_but_changeVisib(object sender, EventArgs e)
+        {
+            int i = Convert.ToInt32(((Button)sender).AccessibleName);
+            GL1.changeVisible(i);
+        }
+        void opGl_but_savePic(object sender, EventArgs e)
+        {
+            int i = Convert.ToInt32(((Button)sender).AccessibleName);
+            GL1.SaveToBitmap(openGl_folder, i);
+        }
         private void glControl1_ContextCreated(object sender, GlControlEventArgs e)
         {
-            GL1.glControl1_ContextCreated(sender, e);
-            GL1.add_Label(lab_kor);
+            var send = (Control)sender;
+            GL1.glControl_ContextCreated(sender, e);
+
+            GL1.addMonitor(new Rectangle(0, 0, 150, 150), 0, new Vertex3d(0, 0, 0), new Vertex3d(50, 0, 0), 1);
+            GL1.addMonitor(new Rectangle(150, 150, send.Width-150, send.Height-150),1);
+            GL1.addMonitor(new Rectangle(150, 0, 150, 150), 2);
+            GL1.addMonitor(new Rectangle(300, 0, 150, 150), 3);
+            addButForMonitor(GL1,send.Size,send.Location);
+
+            GL1.add_Label(lab_kor,lab_curCor);
+            GL1.add_TextBox(debugBox);
+
         }
+        
 
         private void glControl1_MouseMove(object sender, MouseEventArgs e)
         {
-            GL1.glControl1_MouseMove(sender, e);
+            GL1.glControl_MouseMove(sender, e);
+            
         }
-
         private void glControl1_MouseDown(object sender, MouseEventArgs e)
         {
-            GL1.glControl1_MouseDown(sender, e);
+            GL1.glControl_MouseDown(sender, e);
         }
-
         private void glControl1_Render(object sender, GlControlEventArgs e)
         {
-            GL1.glControl1_Render(sender, e);
+            
+            GL1.glControl_Render(sender, e);
+            GL1.printDebug(debugBox);
+
+
         }
         private void Form1_mousewheel(object sender, MouseEventArgs e)
         {
             GL1.Form1_mousewheel(sender, e);
         }
+
 
         #endregion
         #region buttons
@@ -2172,6 +2154,10 @@ namespace opengl3
                 findLaserArea(fr.im, imageBox1, (int)red_c);
                 //findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Up);
             }
+            else
+            {
+
+            }
             imageBox2.Image = fr.im;
         }
 
@@ -2255,10 +2241,7 @@ namespace opengl3
         }
         private void butFinPointFs_Click(object sender, EventArgs e)
         {
-            var size = glControl2.Size;
-
-            GL1.SaveToBitmap(0, 0, size.Width, size.Height, openGl_folder);
-            flag2 = 0;
+            GL1.SaveToBitmap(openGl_folder,Convert.ToInt32(textBox_monitor_id.Text));
         }
         private void butStart_Click(object sender, EventArgs e)
         {
@@ -2354,15 +2337,15 @@ namespace opengl3
         private void but_ProjV_Click(object sender, EventArgs e)
         {
             var but = (Button)sender;
-            if (GL1.typeProj == 0)
+            if (GL1.typeProj == viewType.Ortho)
             {
                 but.Text = "Проецирование(текущая: перспектива)";
-                GL1.typeProj = 1;
+                GL1.typeProj = viewType.Perspective;
             }
             else
             {
                 but.Text = "Проецирование(текущая: ортоганальная)";
-                GL1.typeProj = 0;
+                GL1.typeProj = viewType.Ortho;
             }
         }
 
@@ -2380,7 +2363,75 @@ namespace opengl3
         {
             GL1.planeZX();
         }
+        private void but_robMod_Click(object sender, EventArgs e)
+        {
+            RobotModel_1 = new RobotModel(new robFrame(600, 100, 150, 0.3, 0.1, 1.4), 8888);
+            Thread.Sleep(1430);
+            RobotModel_1.move(new robFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 30);
+            RobotModel_1.move(new robFrame(590, 110, 150, 0.3, 0.1, 1.4), 30, 30);
+            Thread.Sleep(500);
 
+            RobotModel_1.move(new robFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 30);
+            //con1 = new TCPclient();
+            // con1.Connection(8888, "127.0.0.1");
+            // Thread.Sleep(400);
+            // var mes = con1.reseav();
+            //Console.WriteLine(mes);
+        }
+
+        private void but_addBufRob_Click(object sender, EventArgs e)
+        {
+            RobotModel_1.sendMes(box_scanFolder.Text);
+        }
+
+        private void but_comDist_Click(object sender, EventArgs e)
+        {
+            int K1deg = Convert.ToInt32(textBox_K1deg.Text);
+            int K2deg = Convert.ToInt32(textBox_K2deg.Text);
+            int K3deg = Convert.ToInt32(textBox_K3deg.Text);
+            int P1deg = Convert.ToInt32(textBox_P1deg.Text);
+            int P2deg = Convert.ToInt32(textBox_P2deg.Text);
+            double K1 = Convert.ToDouble(textBox_K1.Text);
+            double K2 = Convert.ToDouble(textBox_K2.Text);
+            double K3 = Convert.ToDouble(textBox_K3.Text);
+            double P1 = Convert.ToDouble(textBox_P1.Text);
+            double P2 = Convert.ToDouble(textBox_P2.Text);
+            cameraDistortionCoeffs[0, 0] = K1 * Math.Pow(10, K1deg);
+            cameraDistortionCoeffs[1, 0] = K2 * Math.Pow(10, K2deg);
+            cameraDistortionCoeffs[2, 0] = P1 * Math.Pow(10, P1deg);
+            cameraDistortionCoeffs[3, 0] = P2 * Math.Pow(10, P2deg);
+            cameraDistortionCoeffs[4, 0] = K3 * Math.Pow(10, K3deg);
+            Console.WriteLine(frames.Count);
+            imageBox_cameraDist.Image = remapDistIm(frames[0].im, cameraMatrix, cameraDistortionCoeffs);
+
+            //imageBox_cameraDist.Image =  ;
+        }
+
+        private void imageBox_cameraDist_MouseMove(object sender, MouseEventArgs e)
+        {
+            label_corPic.Text = e.X + " " + e.Y;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int K1deg = Convert.ToInt32(textBox_K1deg.Text);
+            int K2deg = Convert.ToInt32(textBox_K2deg.Text);
+            int K3deg = Convert.ToInt32(textBox_K3deg.Text);
+            int P1deg = Convert.ToInt32(textBox_P1deg.Text);
+            int P2deg = Convert.ToInt32(textBox_P2deg.Text);
+            double K1 = Convert.ToDouble(textBox_K1.Text);
+            double K2 = Convert.ToDouble(textBox_K2.Text);
+            double K3 = Convert.ToDouble(textBox_K3.Text);
+            double P1 = Convert.ToDouble(textBox_P1.Text);
+            double P2 = Convert.ToDouble(textBox_P2.Text);
+            cameraDistortionCoeffs[0, 0] = K1 * Math.Pow(10, K1deg);
+            cameraDistortionCoeffs[1, 0] = K2 * Math.Pow(10, K2deg);
+            cameraDistortionCoeffs[2, 0] = P1 * Math.Pow(10, P1deg);
+            cameraDistortionCoeffs[3, 0] = P2 * Math.Pow(10, P2deg);
+            cameraDistortionCoeffs[4, 0] = K3 * Math.Pow(10, K3deg);
+            Console.WriteLine(frames.Count);
+            imageBox_cameraDist.Image = remapUnDistIm(frames[0].im, cameraMatrix, cameraDistortionCoeffs);
+        }
         #endregion
 
         #region CalcMark
@@ -4884,47 +4935,9 @@ namespace opengl3
             {
                 normal_buffer_data[i] = 0.1f;
             }
-            GL1.save_buff_gl(vertex_buffer_data, color_buffer_data, normal_buffer_data);
+            GL1.add_buff_gl(vertex_buffer_data, color_buffer_data, normal_buffer_data,PrimitiveType.Points);
         }
-        public void send_buffer_stl(string path)
-        {
-            var model1 = new STLmodel();
-            var coord = model1.parsingStl_GL4(path);
-            normal_buffer_data = new float[coord.Length];
-            color_buffer_data = new float[coord.Length];
-            vertex_buffer_data = coord;
-            for (int i = 0; i < normal_buffer_data.Length - 9; i += 9)
-            {
-                p1 = new Point3d_GL(vertex_buffer_data[i], vertex_buffer_data[i + 1], vertex_buffer_data[i + 2]);
-                p2 = new Point3d_GL(vertex_buffer_data[i + 3], vertex_buffer_data[i + 4], vertex_buffer_data[i + 5]);
-                p3 = new Point3d_GL(vertex_buffer_data[i + 6], vertex_buffer_data[i + 7], vertex_buffer_data[i + 8]);
-                U = p1 - p2;
-                V = p1 - p3;
-                Norm = new Point3d_GL(
-                    U.y * V.z - U.z * V.y,
-                    U.z * V.x - U.x * V.z,
-                    U.x * V.y - U.y * V.x);
-                Norm1 = Norm.normalize();
-                normal_buffer_data[i] = (float)Norm1.x;
-                normal_buffer_data[i + 1] = (float)Norm1.y;
-                normal_buffer_data[i + 2] = (float)Norm1.z;
-
-                normal_buffer_data[i + 3] = (float)Norm1.x;
-                normal_buffer_data[i + 4] = (float)Norm1.y;
-                normal_buffer_data[i + 5] = (float)Norm1.z;
-
-                normal_buffer_data[i + 6] = (float)Norm1.x;
-                normal_buffer_data[i + 7] = (float)Norm1.y;
-                normal_buffer_data[i + 8] = (float)Norm1.z;
-            }
-
-            for (int i = 0; i < color_buffer_data.Length; i++)
-            {
-                color_buffer_data[i] = 0.5f;
-            }
-            GL1.save_buff_gl(vertex_buffer_data, color_buffer_data, normal_buffer_data);
-
-        }
+        
 
         public void send_buffer_img(Image<Gray, Byte> im2, PrimitiveType type)
         {
@@ -4975,40 +4988,7 @@ namespace opengl3
                     vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x + 1, 0] - z_mult_cam / 2; i++;
                 }
             }
-
-
-            for (i = 0; i < normal_buffer_data.Length; i += 9)
-            {
-                p1 = new Point3d_GL(vertex_buffer_data[i], vertex_buffer_data[i + 1], vertex_buffer_data[i + 2]);
-                p2 = new Point3d_GL(vertex_buffer_data[i + 3], vertex_buffer_data[i + 4], vertex_buffer_data[i + 5]);
-                p3 = new Point3d_GL(vertex_buffer_data[i + 6], vertex_buffer_data[i + 7], vertex_buffer_data[i + 8]);
-                U = p1 - p2;
-                V = p1 - p3;
-                Norm = new Point3d_GL(
-                    U.y * V.z - U.z * V.y,
-                    U.z * V.x - U.x * V.z,
-                    U.x * V.y - U.y * V.x);
-                Norm1 = Norm.normalize();
-                normal_buffer_data[i] = (float)Norm1.x;
-                normal_buffer_data[i + 1] = (float)Norm1.y;
-                normal_buffer_data[i + 2] = (float)Norm1.z;
-
-                normal_buffer_data[i + 3] = (float)Norm1.x;
-                normal_buffer_data[i + 4] = (float)Norm1.y;
-                normal_buffer_data[i + 5] = (float)Norm1.z;
-
-                normal_buffer_data[i + 6] = (float)Norm1.x;
-                normal_buffer_data[i + 7] = (float)Norm1.y;
-                normal_buffer_data[i + 8] = (float)Norm1.z;
-            }
-
-            for (i = 0; i < color_buffer_data.Length; i++)
-            {
-                color_buffer_data[i] = 0.1f;
-            }
-            translateMesh(vertex_buffer_data, 0, 0, 20);
-            //normal_buffer_data = color_buffer_data;
-            GL1.add_buff_gl(vertex_buffer_data, color_buffer_data, normal_buffer_data, type);
+            GL1.addMesh(vertex_buffer_data, type);
         }
 
         public Camera calcPos(PointF[] points, Size size, double fov, double side)
@@ -5156,39 +5136,54 @@ namespace opengl3
                 }
             }
             
-            Matrix<double> cameraDistortionCoeffs = new Matrix<double>(5, 1);
-            Matrix<double> cameraMatrix = new Matrix<double>(3, 3);
+            
             Matrix<double> rotateMatrix = new Matrix<double>(3, 3);
-            Console.WriteLine(objps.Count);
+            Console.WriteLine(objps);
             Console.WriteLine(corners.Count);
+            
             var err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, cameraMatrix, cameraDistortionCoeffs, CalibType.Default, new MCvTermCriteria(100, 0.0001), out rvecs, out tvecs);
+           foreach(var tv in tvecs)
+            {
+                print(tv);
+            }
+            
+            print("_____________TVECS ^^^^^^");
             var newRoI = new Rectangle();
 
-            var matr = CvInvoke.GetOptimalNewCameraMatrix(cameraMatrix, cameraDistortionCoeffs, frames[0].im.Size, 1, frames[0].im.Size, ref newRoI);
+            matr = CvInvoke.GetOptimalNewCameraMatrix(cameraMatrix, cameraDistortionCoeffs, frames[0].im.Size, 1, frames[0].im.Size, ref newRoI);
             var mapx = new Mat();
             var mapy = new Mat();
+            Console.WriteLine("cameraDistortionCoeffs:");
+             print(cameraDistortionCoeffs);
+            Console.WriteLine("cameraMatrix:");
+            print(cameraMatrix);
+            /*cameraDistortionCoeffs[0, 0] = -0.5 * Math.Pow(10, 0);
+            cameraDistortionCoeffs[1, 0] = 0;
+            cameraDistortionCoeffs[2, 0] = 0;
+            cameraDistortionCoeffs[3, 0] = 0;
+            cameraDistortionCoeffs[4, 0] = 0;*/
             computeDistortionMaps(ref mapx,ref mapy, cameraMatrix, cameraDistortionCoeffs, frames[0].im.Size);
             Console.WriteLine("||||||||||||");
             Console.WriteLine(mapx.Depth);
-           // print(mapx);
+            print("matr:");
+            print(matr);
+           // Console.WriteLine("MAPX_________________");
+           //print(mapx);
+           // cameraDistortionCoeffs[0, 0] = 0.5;
 
-            // cameraDistortionCoeffs[0, 0] = 0.5;
-            for (int i=0; i<5; i++)
-            {
-                cameraDistortionCoeffs[i, 0] *= -1;
-            }
-           // CvInvoke.InitUndistortRectifyMap(cameraMatrix, cameraDistortionCoeffs, null, matr, frames[0].im.Size, DepthType.Cv32F, mapx, mapy);
+            CvInvoke.InitUndistortRectifyMap(cameraMatrix, cameraDistortionCoeffs, null, matr, frames[0].im.Size, DepthType.Cv32F, mapx, mapy);
 
             var und_pic = new Mat();
             CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
             imageBox1.Image = und_pic;
             //imageBox1.Image = mapx;
+            //Console.WriteLine("MAPX_________________");
             //print(mapx);
             Console.WriteLine("err = " + err);
 
-            print(cameraMatrix);
-            Console.WriteLine("distor:----------------");
-            print(cameraDistortionCoeffs);
+            //print(cameraMatrix);
+           // Console.WriteLine("distor:----------------");
+           // print(cameraDistortionCoeffs);
             
 
 
@@ -5207,22 +5202,447 @@ namespace opengl3
             }
             
         }
-       
+        void calibrateFishEyeCam(Frame[] frames, Size size)
+        {
+            var objps = new VectorOfVectorOfPoint3D32F();
+            // var corners = new List<System.Drawing.PointF[]>();
 
+            var corners = new VectorOfVectorOfPointF();
+
+            var obp = new VectorOfPoint3D32F();
+            List<MCvPoint3D32f> listObp = new List<MCvPoint3D32f>();
+
+            for (int j = 0; j < size.Height; j++)
+            {
+                for (int i = 0; i < size.Width; i++)
+                {
+                    listObp.Add(new MCvPoint3D32f((float)i, (float)j, 0.0f));
+                   // obp.Push(new MCvPoint3D32f[] { new MCvPoint3D32f((float)i, (float)j, 0.0f) });
+                    //Console.WriteLine(i + " " + j);
+                   
+                }
+            }
+            obp.Push(listObp.ToArray());
+            double[,,] imcorndata = new double[84, 10, 1];
+            var indf = 0;
+            
+            foreach (var frame in frames)
+            {
+                
+                var corn = new VectorOfPointF();
+                imageBox2.Image = frame.im;
+                var gray = frame.im.ToImage<Gray, byte>();
+                var ret = CvInvoke.FindChessboardCorners(gray, size, corn);
+                if (ret == true)
+                {
+                    
+                    CvInvoke.CornerSubPix(gray, corn, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(100, 0.0001));
+                    draw_tour(new Point((int)corn[0].X, (int)corn[0].Y), 3, 0, frame.im, 255, 0, 0);
+                    //CvInvoke.Imshow(frame.name, frame.im);
+                    //CvInvoke.WaitKey(500);
+                    var corn2 = toPointF(corn);
+                    int ind1 = 0;
+                    for (int i = 0; i< corn2.Length;i++)
+                    {
+                        // matcorners.Data[indf, i, 0] = corn2[i].X;
+                        //matcorners.Data[indf, i, 1] = corn2[i].Y;
+
+                        imcorndata[ind1, indf, 0] = corn2[i].X; ind1++;
+                        imcorndata[ind1, indf, 0] = corn2[i].Y; ind1++;
+                        print(i);
+
+                    }
+                   
+                    objps.Push(obp);
+                    corners.Push(corn);
+                    indf++;
+                }
+                else
+                {
+                    Console.WriteLine("NOT:");
+                    Console.WriteLine(frame.name);
+                }
+            }
+            
+            var matcorners1 = new Image<Gray, double>(imcorndata);
+            var m1 = matcorners1.Mat.Reshape(2,10);
+            
+            var matobjp = new Image<Bgr, double>(42, 10);
+
+            int ind = 0;
+            for (int j = 0; j < size.Height; j++)
+            {
+                for (int i = 0; i < size.Width; i++)
+                {
+                    for (int k = 0; k < corners.Size; k++)
+                    {
+                        matobjp.Data[k,ind, 0] = i;
+                        matobjp.Data[k,ind, 1] = j;
+                    }
+
+                    //Console.WriteLine(i + " " + j);
+                    ind++;
+                }
+            }
+            var m2 = matobjp.Mat;
+            print(corners.Size);
+           
+            cameraDistortionCoeffs = new Matrix<double>(4,1);
+            var m3 = m2.Reshape(3, 42);
+            var m4 = m1.Reshape(2, 42);
+
+            var K = new Mat();
+            var D = new Mat();
+            var tvec = new Mat();
+            var rvec = new Mat();
+            Fisheye.Calibrate(objps, corners, frames[0].im.Size, cameraMatrix, cameraDistortionCoeffs, rvec, tvec, Fisheye.CalibrationFlag.Default , new MCvTermCriteria(30, 0.1));
+            //Fisheye.Calibrate(m2, m1, frames[0].im.Size, cameraMatrix, cameraDistortionCoeffs, rvecs, tvecs, Fisheye.CalibrationFlag.Default, new MCvTermCriteria(30, 0.001));
+            print(tvec);
+            print("_____________TVECS ^^^^^^");
+            var matrP = new Matrix<double>(3, 3);
+            var matrR = new Matrix<double>(3, 3);
+            Fisheye.EstimateNewCameraMatrixForUndistorRectify (cameraMatrix, cameraDistortionCoeffs, frames[0].im.Size, matrR ,matrP);
+            var mapx = new Mat();
+            var mapy = new Mat();
+            Console.WriteLine("cameraDistortionCoeffs:");
+            print(cameraDistortionCoeffs);
+            Console.WriteLine("cameraMatrix:");
+            print(cameraMatrix);
+            /*cameraDistortionCoeffs[0, 0] = -0.5 * Math.Pow(10, 0);
+            cameraDistortionCoeffs[1, 0] = 0;
+            cameraDistortionCoeffs[2, 0] = 0;
+            cameraDistortionCoeffs[3, 0] = 0;
+            cameraDistortionCoeffs[4, 0] = 0;*/
+          //  computeDistortionMaps(ref mapx, ref mapy, cameraMatrix, cameraDistortionCoeffs, frames[0].im.Size);
+            Console.WriteLine("||||||||||||");
+            Console.WriteLine(mapx.Depth);
+            print("matr:");
+
+            print(matrP);
+            // Console.WriteLine("MAPX_________________");
+            //print(mapx);
+            // cameraDistortionCoeffs[0, 0] = 0.5;
+            Fisheye.InitUndistorRectifyMap(cameraMatrix, cameraDistortionCoeffs, matrR, matrP, frames[0].im.Size, DepthType.Cv32F, mapx, mapy);
+            
+            var und_pic = new Mat();
+            CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
+            imageBox3.Image = und_pic;
+            //imageBox1.Image = mapx;
+            //Console.WriteLine("MAPX_________________");
+            //print(mapx);
+            //Console.WriteLine("err = " + err);
+
+            //print(cameraMatrix);
+            // Console.WriteLine("distor:----------------");
+            // print(cameraDistortionCoeffs);
+
+
+
+
+         /*   for (int i = 0; i < corners.Count; i++)
+            {
+                CvInvoke.Rodrigues(rvecs[i], rotateMatrix);
+                var tvec = toVertex3f(tvecs[i]);
+                var mx = assemblMatrix(rotateMatrix, tvec);
+                var invMx = mx.Inverse;*/
+
+                //Console.WriteLine("INV-----------");
+                // print(invMx);
+                // Console.WriteLine("FRAME-------------");
+                //print(frames[i]);
+
+          //  }
+
+        }
+        private void EmguCVUndistortFisheye(string path, Size patternSize)
+        {
+            string[] fileNames = Directory.GetFiles(path, "*.png");
+          
+            VectorOfVectorOfPoint3D32F objPoints = new VectorOfVectorOfPoint3D32F();
+            VectorOfVectorOfPointF imagePoints = new VectorOfVectorOfPointF();
+            foreach (string file in fileNames)
+            {
+                Mat img = CvInvoke.Imread(file, ImreadModes.Grayscale);
+                CvInvoke.Imshow("input", img);
+                VectorOfPointF corners = new VectorOfPointF(patternSize.Width * patternSize.Height);
+                bool find = CvInvoke.FindChessboardCorners(img, patternSize, corners);
+                if (find)
+                {
+                    MCvPoint3D32f[] points = new MCvPoint3D32f[patternSize.Width * patternSize.Height];
+                    int loopIndex = 0;
+                    for (int i = 0; i < patternSize.Height; i++)
+                    {
+                        for (int j = 0; j < patternSize.Width; j++)
+                            points[loopIndex++] = new MCvPoint3D32f(j, i, 0);
+                    }
+                    objPoints.Push(new VectorOfPoint3D32F(points));
+                    imagePoints.Push(corners);
+                }
+            }
+            Size imageSize = new Size(1280, 1024);
+            Mat K = new Mat();
+            Mat D = new Mat();
+            Mat rotation = new Mat();
+            Mat translation = new Mat();
+            print("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _");
+            print(objPoints);
+            print("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _");
+            print(imagePoints);
+            print("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _");
+            Fisheye.Calibrate(
+                objPoints,
+                imagePoints,
+                imageSize,
+                K,
+                D,
+                rotation,
+                translation,
+                Fisheye.CalibrationFlag.CheckCond,
+                new MCvTermCriteria(30, 0.1)
+            );
+            print("K:");
+            print(K);
+            print("D:");
+            print(D);
+            
+            print("calib done");
+            foreach (string file in fileNames)
+            {
+                Mat img = CvInvoke.Imread(file, ImreadModes.Grayscale);
+                Mat output = img.Clone();
+                Fisheye.UndistorImage(img, output, K, D);
+                CvInvoke.Imshow("output", output);
+            }
+        }
+        Mat remapDistIm(Mat mat, Matrix<double> matrixCamera, Matrix<double> matrixDistCoef)
+        {
+            var mapx = new Mat();
+            var mapy = new Mat();
+
+            var roi = computeDistortionMaps(ref mapx, ref mapy, matrixCamera , matrixDistCoef , mat.Size);
+            remap(mapx, mapy, mat);
+            var und_pic = new Mat();
+            CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
+            Console.WriteLine("ROI: "+roi.X + " " + roi.Y + " " + roi.Width + " " + roi.Height + " ");
+            CvInvoke.Rectangle(und_pic, roi, new MCvScalar(255, 0, 0), 2);
+            return und_pic;
+        }
+        Mat remapUnDistIm(Mat mat, Matrix<double> matrixCamera, Matrix<double> matrixDistCoef)
+        {
+            var mapx = new Mat();
+            var mapy = new Mat();
+
+            CvInvoke.InitUndistortRectifyMap(cameraMatrix, cameraDistortionCoeffs, null, matr, mat.Size, DepthType.Cv32F, mapx, mapy);
+
+            var und_pic = new Mat();
+            CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
+
+            return und_pic;
+        }
+        float findMaxX(float[,] map)
+        {
+            float max = float.MinValue;
+            int lastInd = map.GetLength(1) - 1;
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                if (map[i, lastInd] > max)
+                {
+                    max = map[i, lastInd];
+                }
+            }
+            return max;
+        }
+        float findMaxY(float[,] map)
+        {
+            float max = float.MinValue;
+            int lastInd = map.GetLength(0) - 1;
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                if (map[lastInd, i] > max)
+                {
+                    max = map[i, lastInd];
+                }
+            }
+            return max;
+        }
+        Size findRemapSize(float[,] mapx, float[,] mapy)
+        {
+            var x = findMaxX(mapx);
+            var y = findMaxY(mapy);
+            return new Size((int)x, (int)y);
+        }
+        void compRemap(float[,] mapx, float[,] mapy, Mat mat)
+        {
+            var size = findRemapSize(mapx, mapy);
+            var im = mat.ToImage<Bgr, byte>();
+            var data = new float[size.Width, size.Height, 3];
+            var size_p = im.Size;
+            for (int i = 0; i < size_p.Width; i++)
+            {
+                for (int j = 0; j < size_p.Height; j++)
+                {
+                    var x = mapx[i, j];
+                    var y = mapy[i, j];
+                    var w = 0f;
+                    var h = 0f;
+                    if (i == 0)
+                    {
+                        w = mapx[i, j] - mapx[i + 1, j];
+                    }
+                    else
+                    {
+                        w = mapx[i, j] - mapx[i - 1, j];
+                    }
+                    if (j == 0)
+                    {
+                        h = mapx[i, j] - mapy[i, j + 1];
+                    }
+                    else
+                    {
+                        h = mapx[i, j] - mapy[i, j - 1];
+                    }
+                    var sq1 = new Square(x, y, w, h);
+
+                    var ix = (int)Math.Round(x, 0);
+                    var iy = (int)Math.Round(y, 0);
+                    var ps = new Square[9];
+                    int ind = 0;
+                    for (int _i = ix - 1; _i <= ix + 1; _i++)
+                    {
+                        for (int _j = iy - 1; _j <= iy + 1; _j++)
+                        {
+                            var sq2 = new Square(_i, _j, 1, 1);
+                            ps[ind] = sq2;
+                            var intens = compCrossArea(sq1, sq2);
+                            data[_j, _i, 0] += intens * im.Data[j, i, 0];
+                            data[_j, _i, 1] += intens * im.Data[j, i, 1];
+                            data[_j, _i, 2] += intens * im.Data[j, i, 2];
+                            ind++;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        float compCrossArea(Square s1, Square s2)
+        {
+            var dx = compDelt(s1.w, s2.w, Math.Abs(s1.x - s2.x));
+            var dy = compDelt(s1.h, s2.h, Math.Abs(s1.y - s2.y));
+            return dx * dy;
+        }
+        float compDelt(float w1, float w2, float dx)
+        {
+            float dw = 0;
+            if(w2<w1)
+            {
+                var lam = w1;
+                w1 = w2;
+                w2 = lam;
+            }
+            if(dx <(w1+w2)/2)//условие пересечения
+            {
+                if(dx>w2/2)
+                {
+                    if ((w1 / 2 + dx) <= w2 / 2)
+                    {
+                        dw = w1;
+                        return dw;
+                    }
+                    else
+                    {
+                        dw = (w1 + w2) / 2 - dx;
+                        return dw;
+                    }
+                }
+                else
+                {
+                    if(w1<=w2/2)
+                    {
+                        dw = (w1 + w2) / 2 - dx;
+                        return dw;
+                    }
+                    else 
+                    {
+                        if((w1/2+dx)>=w2/2)
+                        {
+                            dw = w2 / 2 + (w1 / 2 - dx);
+                            return dw;
+                        }
+                        else
+                        {
+                            dw = w1;
+                            return dw;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return dw;
+            }
+        }
+        Mat remap (Mat _mapx, Mat _mapy, Mat im)
+        {
+            var reim = new Mat();
+            var fmapx = (float[,])_mapx.GetData();
+            print(fmapx);
+            print("________________________________");
+            var mapx = compUnsignedMap((float[,])_mapx.GetData(),1);
+            var mapy = compUnsignedMap((float[,])_mapy.GetData(),0);
+            print(mapx);
+            print("________________________________");
+            //print(mapy);
+            return reim;
+        }
+
+        float[,] compUnsignedMap(float[,] map,int ind)
+        {
+            float min = float.MaxValue;
+            float[,] rmap = new float[map.GetLength(0), map.GetLength(1)];
+            if (ind==0)
+            {
+                for (int i = 0; i < map.GetLength(0); i++)
+                {
+                    if (min > map[i, 0])
+                    {
+                        min = map[i, 0];
+                    }
+                }
+            }
+            else if (ind == 1)
+            {
+                for (int i = 0; i < map.GetLength(1); i++)
+                {
+                    if (min > map[0, i])
+                    {
+                        min = map[0, i];
+                    }
+                }
+            }
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                     rmap[i, j] = map[i, j]-min;
+                    
+                }
+            }
+            return rmap;
+        }
+
+        
 
         PointF calcDistorcPix(int xd, int yd, double xc, double yc, Matrix<double> distCoefs)
         {
-            distCoefs[0, 0] = 0.1;
-            distCoefs[1, 0] = 0.1;
-            distCoefs[4, 0] = 0.1;
 
-            var K1 = Math.Pow(0.1, 6) * distCoefs[0, 0];
-            var K2 = Math.Pow(0.1, 20) * distCoefs[1, 0];
+
+            var K1 =  distCoefs[0, 0];
+            var K2 =  distCoefs[1, 0];
             var P1 = distCoefs[2, 0];
             var P2 = distCoefs[3, 0];
-            var K3 = Math.Pow(0.1, 20) * distCoefs[4, 0];
-            xc = 320;
-            yc = 240;
+            var K3 =  distCoefs[4, 0];
+
             var delt = new PointF((float)((double)xd-xc), (float)((double)yd - yc));
             var r = (double)delt.norm;
             var r2 = Math.Pow(r, 2);
@@ -5232,26 +5652,20 @@ namespace opengl3
             var delx = xd - xc;
             var dely = yd - yc;
             
-            var xu = xd + delx * (K1 * r2 + K2 * r4 + K3 * r6);// + P1 * (r2 + 2 * Math.Pow(delx, 2)) + 2 * P2 * delx * dely;
-            var yu = yd + dely * (K1 * r2 + K2 * r4 + K3 * r6);// + 2 * P1 * delx * dely +   P2 * (r2 + 2 * Math.Pow(delx, 2));
+            var xu = xd + delx * (K1 * r2 + K2 * r4 + K3 * r6)+ P1 * (r2 + 2 * Math.Pow(delx, 2)) + 2 * P2 * delx * dely;
+            var yu = yd + dely * (K1 * r2 + K2 * r4 + K3 * r6) + 2 * P1 * delx * dely +   P2 * (r2 + 2 * Math.Pow(delx, 2));
 
             
             return new PointF(xu, yu);
         }
-
         PointF calcDistorcPix_BC(int xd, int yd, double xc, double yc, Matrix<double> distCoefs)
         {
-            //distCoefs[0, 0] = 0.1;
-            //distCoefs[1, 0] = 0.1;
-            //distCoefs[4, 0] = 0.1;
 
-            var K1 = Math.Pow(0.1, 6) * distCoefs[0, 0];
-            var K2 = Math.Pow(0.1, 20) * distCoefs[1, 0];
+            var K1 = distCoefs[0, 0];
+            var K2 =  distCoefs[1, 0];
             var P1 = distCoefs[2, 0];
             var P2 = distCoefs[3, 0];
-            var K3 = Math.Pow(0.1, 20) * distCoefs[4, 0];
-            xc = 320;
-            yc = 240;
+            var K3 = distCoefs[4, 0];
             var delt = new PointF((float)((double)xd - xc), (float)((double)yd - yc));
             var r = (double)delt.norm;
             var r2 = Math.Pow(r, 2);
@@ -5262,19 +5676,43 @@ namespace opengl3
             var dely = yd - yc;
 
 
-            var xu = xc + delx/(1+K1 * r2 + K2 * r4 + K3 * r6);// + P1 * (r2 + 2 * Math.Pow(delx, 2)) + 2 * P2 * delx * dely;
-            var yu = yc + dely/(1+K1 * r2 + K2 * r4 + K3 * r6);// + 2 * P1 * delx * dely +   P2 * (r2 + 2 * Math.Pow(delx, 2));
+            var xu = xc + delx/(1+K1 * r2 + K2 * r4 + K3 * r6);
+            var yu = yc + dely/(1+K1 * r2 + K2 * r4 + K3 * r6);
 
+           // var xu = xc + delx *(1 + K1 * r2 + K2 * r4 + K3 * r6);
+           // var yu = yc + dely * (1 + K1 * r2 + K2 * r4 + K3 * r6);
 
             return new PointF(xu, yu);
         }
-        void computeDistortionMaps(ref Mat _mapx, ref Mat _mapy, Matrix<double> cameraMatr, Matrix<double> distCoefs, Size size)
+
+        Rectangle newRoi(Size size, double xc, double yc, Matrix<double> distCoefs, Func<int,int,double,double,Matrix<double>,PointF> calcDistPix)
+        {
+            var p1 = calcDistPix(0, 0, xc, yc, distCoefs);
+            var p2 = calcDistPix(size.Width, 0, xc, yc, distCoefs);
+            var p3 = calcDistPix(size.Width, size.Height, xc, yc, distCoefs);
+            var p4 = calcDistPix(0, size.Height, xc, yc, distCoefs);
+            print(p1 + " " + p2 + " " + p3 + " " + p4 + " ");
+            return RoiFrom4Points(p1, p2, p3, p4);
+        }
+        Rectangle RoiFrom4Points(PointF p1, PointF p2, PointF p3, PointF p4)
+        {
+            int x=0, y=0, xW=1, yH=1;
+            if (p1.X >= p4.X) { x = (int)p1.X; } else { x = (int)p4.X; }
+            if (p1.Y >= p2.Y) { x = (int)p1.Y; } else { x = (int)p2.Y; }
+
+            if (p3.X >= p2.X) { x = (int)p2.X; } else { x = (int)p3.X; }
+            if (p3.Y >= p4.Y) { x = (int)p4.Y; } else { x = (int)p3.Y; }
+            return new Rectangle(x, y, (xW - x), (yH - y));
+        }
+        Rectangle computeDistortionMaps(ref Mat _mapx, ref Mat _mapy, Matrix<double> cameraMatr, Matrix<double> distCoefs, Size size)
         {
 
             Matrix<float> mapx = new Matrix<float>(size.Height, size.Width);
             Matrix<float> mapy = new Matrix<float>(size.Height, size.Width);
             double xc = cameraMatr[0, 2];
             double yc = cameraMatr[1, 2];
+            xc = size.Width/2;
+            yc = size.Height/2;
             Console.WriteLine("---xcyc-- " + xc + " " + yc);
             print(cameraMatr);
             //print(mapx);
@@ -5282,6 +5720,7 @@ namespace opengl3
             {
                 for (int j = 0; j < size.Width; j++)
                 {
+
                     var p = calcDistorcPix_BC(j, i, xc, yc, distCoefs);
                     mapx[i, j] = p.X;
                     mapy[i, j] = p.Y;
@@ -5291,11 +5730,83 @@ namespace opengl3
 
             _mapx = mapx.Mat;
             _mapy = mapy.Mat;
+            return newRoi(size, xc, yc, distCoefs, calcDistorcPix_BC);
 
+        }
+        void distortFolder(string path)
+        {
+            var frms = loadImages_simple(path);
+            var distPath = Path.Combine(path, "distort");
+            List<Mat> matsDist = new List<Mat>();
+            int boardx = 2;
+            int boardy = 2;
+            foreach (var fr in frms)
+            {
+                var matD = remapDistIm(fr.im, cameraMatrix, cameraDistortionCoeffs);
+
+                var matR = new Mat(matD, new Rectangle(boardx, boardy, matD.Width - boardx * 2, matD.Height - boardy * 2));
+                saveImage(matR, distPath, fr.name);
+            }
         }
         #endregion
 
         #region print
+        void print(Image<Gray, float> matr)
+        {
+            var flarr = matr.Data;
+            var ch = matr.NumberOfChannels;
+            for (int i = 0; i < matr.Rows; i++)
+            {
+                for (int j = 0; j < matr.Cols; j++)
+                {
+                    for (int k = 0; k < ch; k++)
+                    {
+                        Console.Write(Math.Round(flarr[i, j, k], 3) + " ");
+                    }
+                }
+                Console.WriteLine(" ");
+            }
+        }
+        void print(Image<Bgr,float> matr)
+        {
+            var flarr = matr.Data;
+            var ch = 3;
+            for (int i = 0; i < matr.Rows; i++)
+            {
+                for (int j = 0; j < matr.Cols; j++)
+                {
+                    for (int k = 0; k < ch; k++)
+                    {
+                        Console.Write(Math.Round(flarr[i, j, k], 3) + " ");
+                    }
+                }
+                Console.WriteLine(" ");
+            }
+        }
+        void print(VectorOfVectorOfPoint3D32F matr)
+        {
+            for (int i = 0; i < matr.Size; i++)
+            {
+                for (int y = 0; y < matr[i].Size; y++)
+                {
+                    Console.Write(matr[i][y].X + " "+ matr[i][y].Y+" "+ matr[i][y].Z+"; ");
+                }
+                Console.WriteLine("; ");
+            }
+            Console.WriteLine(" ");
+        }
+        void print(VectorOfVectorOfPointF matr)
+        {
+            for (int i = 0; i < matr.Size; i++)
+            {
+                for (int y = 0; y < matr[i].Size; y++)
+                {
+                    Console.Write(matr[i][y].X + " " + matr[i][y].Y + "; ");
+                }
+                Console.WriteLine("; ");
+            }
+            Console.WriteLine(" ");
+        }
         void print(double[] matr)
         {
             for (int i = 0; i < matr.Length; i++)
@@ -5325,6 +5836,31 @@ namespace opengl3
                 for (int j = 0; j < matr.GetRow(0).Length; j++)
                 {
                     Console.Write(matr[i, j] + " ");
+                }
+                Console.WriteLine(" ");
+            }
+        }
+        void print(float[,,] matr)
+        {
+            for (int i = 0; i < matr.GetLength(0); i++)
+            {
+                for (int j = 0; j < matr.GetLength(1); j++)
+                {
+                    for (int k = 0; k < matr.GetLength(2); k++)
+                    {
+                        Console.Write(matr[i, j, k] + " ");
+                    }
+                }
+                Console.WriteLine(" ");
+            }
+        }
+        void print(float[,] matr)
+        {
+            for (int i = 0; i < matr.GetLength(0); i++)
+            {
+                for (int j = 0; j < matr.GetLength(1); j++)
+                {
+                    Console.Write(matr[i, j] + " "); 
                 }
                 Console.WriteLine(" ");
             }
@@ -5384,6 +5920,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
+        /*
         void print(Mat mat)
         {
             Console.WriteLine("cols x rows: " + mat.Cols + " x " + mat.Rows);
@@ -5419,6 +5956,83 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
+        */
+        void print(Mat mat)
+        {
+            Console.WriteLine("cols x rows: " + mat.Cols + " x " + mat.Rows);
+            var arr = mat.GetData();
+            var ch = mat.NumberOfChannels;
+            if(ch>1)
+            {
+                if (mat.Depth == DepthType.Cv64F)
+                {
+                    var flarr = (double[,,])arr;
+                    for (int i = 0; i < mat.Rows; i++)
+                    {
+                        for (int j = 0; j < mat.Cols; j++)
+                        {
+                            for (int k = 0; k < ch; k++)
+                            {
+                                Console.Write(Math.Round(flarr[i, j, k], 3) + " ");
+                            }
+                            Console.Write(" | ");
+                        }
+                        Console.WriteLine(" ");
+                    }
+                }
+                else if (mat.Depth == DepthType.Cv32F)
+                {
+                    var flarr = (float[,,])arr;
+                    for (int i = 0; i < mat.Rows; i++)
+                    {
+                        for (int j = 0; j < mat.Cols; j++)
+                        {
+                            for (int k = 0; k < ch; k++)
+                            {
+                                Console.Write(Math.Round(flarr[i, j, k], 3) + " ");
+                            }
+                            Console.Write(" | ");
+                        }
+                        Console.WriteLine(" ");
+                    }
+                }
+            }
+            else
+            {
+                if (mat.Depth == DepthType.Cv64F)
+                {
+                    var flarr = (double[,])arr;
+                    for (int i = 0; i < mat.Rows; i++)
+                    {
+                        for (int j = 0; j < mat.Cols; j++)
+                        {
+
+                                Console.Write(Math.Round(flarr[i, j], 3) + " ");
+                            
+                        }
+                        Console.WriteLine(" ");
+                    }
+                }
+                else if (mat.Depth == DepthType.Cv32F)
+                {
+                    var flarr = (float[,])arr;
+                    for (int i = 0; i < mat.Rows; i++)
+                    {
+                        for (int j = 0; j < mat.Cols; j++)
+                        {
+                                Console.Write(Math.Round(flarr[i, j], 3) + " ");
+                          
+                            Console.Write(" | ");
+                        }
+                        Console.WriteLine(" ");
+                    }
+                }
+            }
+            
+
+
+            
+        }
         void print(Vertex3f v)
         {
             Console.WriteLine(v.x + " " + v.y + " " + v.z);
@@ -5443,7 +6057,7 @@ namespace opengl3
             //addPointMesh(inp_points[0], 1.0f,0.0f, 0.0f);
             //addPointMesh(inp_points[1], 0.0f,1.0f, 0.0f);
             //addPointMesh(inp_points[2], 0.0f, 0.0f, 1.0f);
-            addPointMesh(inp_points[3], 0.9f);
+            GL1.addPointMesh(inp_points[3], 0.9f);
         }
         double[] calc_preFov(List<Frame> fr)
         {
@@ -5985,7 +6599,7 @@ namespace opengl3
                 dbs.Add(lineSolv_doub(frs, start_fov, side, dim, delta));
             }
             var im = mapSolv3D(dbs);
-            addGLMesh(meshFromImage(im), PrimitiveType.Triangles);
+            GL1.addGLMesh(meshFromImage(im), PrimitiveType.Triangles);
         }
         private Image<Gray, Byte> mapSolv3D(List<double[]> frames)
         {
@@ -6204,7 +6818,7 @@ namespace opengl3
             {
                 for (float y = -side / 4; y >= -im_side; y -= side)
                 {
-                    addGLMesh(square_buf, PrimitiveType.Triangles, (float)x, (float)y);
+                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, (float)x, (float)y);
                 }
             }
 
@@ -6231,7 +6845,7 @@ namespace opengl3
             {
                 for (float y = 0; y < h; y += side)
                 {
-                    addGLMesh(square_buf, PrimitiveType.Triangles, x+offx, y+offy);
+                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, x+offx, y+offy);
                 }
             }
 
@@ -6239,7 +6853,7 @@ namespace opengl3
             {
                 for (float y = sidef; y < h; y += side)
                 {
-                    addGLMesh(square_buf, PrimitiveType.Triangles, x + offx, y + offy);
+                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, x + offx, y + offy);
                 }
             }
 
@@ -6301,127 +6915,7 @@ namespace opengl3
             float[] vert = new float[inp.Length];
             return null;
         }
-        void addFrame(Point3d_GL pos, Point3d_GL x, Point3d_GL y, Point3d_GL z)
-        {
-            addLineMesh(new Point3d_GL[]{ pos,x},1.0f,0,0); 
-            addLineMesh(new Point3d_GL[] { pos, y },0, 1.0f, 0);
-            addLineMesh(new Point3d_GL[] { pos, z }, 0, 0, 1.0f);
-        }
-        void addFrame_Cam(Camera cam,int frame_len=15)
-        {
-
-            addFrame(cam.pos, cam.pos + cam.oX * frame_len, cam.pos + cam.oY * frame_len, cam.pos + cam.oZ * frame_len * 1.3);
-        }
-        void addGLMesh(float[] _mesh, PrimitiveType primitiveType, float x = 0, float y = 0, float z = 0,float r = 0.1f, float g = 0.1f, float b = 0.1f, float scale = 1f)
-        {
-           // addMesh(cube_buf, PrimitiveType.Points);
-            if (x == 0 && y == 0 && z == 0)
-            {
-                addMesh(_mesh, primitiveType,r,g,b);
-            }
-            else
-            {
-                addMesh(translateMesh(scaleMesh(_mesh, scale), x, y, z), primitiveType, r, g, b);
-            }
-
-        }
-        float[] translateMesh(float[] _mesh, float x, float y, float z)
-        {
-            var mesh = new float[_mesh.Length];
-            for (int i = 0; i < mesh.Length; i += 3)
-            {
-                mesh[i] = _mesh[i] + x;
-                mesh[i + 1] = _mesh[i + 1] + y;
-                mesh[i + 2] = _mesh[i + 2] + z;
-            }
-            return mesh;
-        }
-        float[] scaleMesh(float[] _mesh, float k, float kx = 1.0f, float ky = 1.0f, float kz = 1.0f)
-        {
-            var mesh = new float[_mesh.Length];
-            for (int i = 0; i < mesh.Length; i += 3)
-            {
-                mesh[i] = _mesh[i] * k * kx;
-                mesh[i + 1] = _mesh[i + 1] * k * ky;
-                mesh[i + 2] = _mesh[i + 2] * k * kz;
-            }
-            return mesh;
-        }
-        void addPointMesh(Point3d_GL[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
-        {
-            var mesh = new List<float>();
-            foreach (var p in points)
-            {
-                mesh.Add((float)p.x);
-                mesh.Add((float)p.y);
-                mesh.Add((float)p.z);
-            }
-            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, r, g, b);
-        }
-
-        void addLineMesh(Point3d_GL[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
-        {
-            var mesh = new List<float>();
-            foreach (var p in points)
-            {
-                mesh.Add((float)p.x);
-                mesh.Add((float)p.y);
-                mesh.Add((float)p.z);
-            }
-            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b);
-        }
-        void addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
-        {
-            var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
-            var color_buffer_data = new float[gl_vertex_buffer_data.Length];
-            for (int i = 0; i < color_buffer_data.Length; i += 3)
-            {
-                color_buffer_data[i] = r;
-                color_buffer_data[i + 1] = g;
-                color_buffer_data[i + 2] = b;
-
-                normal_buffer_data[i] = 0.1f;
-                normal_buffer_data[i + 1] = 0.1f;
-                normal_buffer_data[i + 2] = 0.1f;
-            }
-            GL1.add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
-        }
-        void addMesh(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
-        {
-            var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
-            for (int i = 0; i < normal_buffer_data.Length; i += 9)
-            {
-                p1 = new Point3d_GL(gl_vertex_buffer_data[i], gl_vertex_buffer_data[i + 1], gl_vertex_buffer_data[i + 2]);
-                p2 = new Point3d_GL(gl_vertex_buffer_data[i + 3], gl_vertex_buffer_data[i + 4], gl_vertex_buffer_data[i + 5]);
-                p3 = new Point3d_GL(gl_vertex_buffer_data[i + 6], gl_vertex_buffer_data[i + 7], gl_vertex_buffer_data[i + 8]);
-                U = p1 - p2;
-                V = p1 - p3;
-                Norm = new Point3d_GL(
-                    U.y * V.z - U.z * V.y,
-                    U.z * V.x - U.x * V.z,
-                    U.x * V.y - U.y * V.x);
-                Norm1 = Norm.normalize();
-                normal_buffer_data[i] = (float)Norm1.x;
-                normal_buffer_data[i + 1] = (float)Norm1.y;
-                normal_buffer_data[i + 2] = (float)Norm1.z;
-
-                normal_buffer_data[i + 3] = (float)Norm1.x;
-                normal_buffer_data[i + 4] = (float)Norm1.y;
-                normal_buffer_data[i + 5] = (float)Norm1.z;
-
-                normal_buffer_data[i + 6] = (float)Norm1.x;
-                normal_buffer_data[i + 7] = (float)Norm1.y;
-                normal_buffer_data[i + 8] = (float)Norm1.z;
-            }
-            var color_buffer_data = new float[gl_vertex_buffer_data.Length];
-            for (int i = 0; i < color_buffer_data.Length; i+=3)
-            {
-                color_buffer_data[i] = r;
-                color_buffer_data[i+1] = g;
-                color_buffer_data[i+2] = b;
-            }
-            GL1.add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data,  primitiveType);
-        }
+        
         #endregion
 
         #region video
@@ -6853,7 +7347,7 @@ namespace opengl3
                 Ims.Add(im1);
                 if (Ims.Count > 3)
                 {
-                    ps2 = finPointFs(Ims, imageBox3);
+                    var ps2 = finPointFs(Ims, imageBox3);
                     flag2 = 1;
                 }
             }
@@ -6887,29 +7381,19 @@ namespace opengl3
             return points;
         }
 
+
+
         #endregion
 
-        private void but_robMod_Click(object sender, EventArgs e)
-        {
-            RobotModel_1 = new RobotModel(new robFrame(600, 100, 150, 0.3, 0.1, 1.4), 8888);
-            Thread.Sleep(1430);
-            RobotModel_1.move(new robFrame(620, 120, 150, 0.3, 0.1, 1.4),30,30);
-            RobotModel_1.move(new robFrame(590, 110, 150, 0.3, 0.1, 1.4), 30, 30);
-            Thread.Sleep(500);
+        
 
-            RobotModel_1.move(new robFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 30);
-            //con1 = new TCPclient();
-            // con1.Connection(8888, "127.0.0.1");
-            // Thread.Sleep(400);
-            // var mes = con1.reseav();
-            //Console.WriteLine(mes);
-        }
-
-        private void but_addBufRob_Click(object sender, EventArgs e)
+        private void but_swapMonit_Click(object sender, EventArgs e)
         {
-            RobotModel_1.sendMes(box_scanFolder.Text);
+            GL1.swapTRZ(0, 1);
         }
     }
+
+
     public class robFrame
     {
         public double x;
@@ -7144,7 +7628,7 @@ namespace opengl3
         }
         public override string ToString()
         {
-            return X.ToString() + " " + Y.ToString();
+            return X.ToString() + " " + Y.ToString()+";";
         }
 
     }
@@ -7159,10 +7643,105 @@ namespace opengl3
         }
     }
 
+    public struct Square
+    {
+        public float x;
+        public float y;
+        public float w;
+        public float h;
+        public Square(float _x, float _y, float _w, float _h)
+        {
+            x = _x;
+            y = _y;
+            w = _w;
+            h = _h;
+        }
+    }
 
 }
 
+/*addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(30, 0, 0), new Point3d_GL(0, 30, 0), new Point3d_GL(0, 0, 30));
 
+ GL1.printDebug(debugBox);
+ addGLMesh(cube_buf, PrimitiveType.Triangles, 60.0f, 0, 0, 0.5f, 0.5f, 0.5f, 5.0f);
+double side = 17.1428;
+ double fov = 57.4;
+ var frames_pos = loadImages(@"cam2\pos_cal_1906_1", fov,side);
+ var fr = from f in frames_pos
+          orderby f.pos_rob.z
+          select f;
+ frames_pos = fr.ToList();
+imageBox2.Image =  lineErr(frames_pos, 51.4, 17.1428);
+var frames_pos = loadImages(@"cam1\pos_cal_1906_2", 53, 30);
+fov3dMap(frames_pos, 53, 30, 80, 0.5, 5,5);
+double side = 30;
+int n = 10;
+
+for (int i=0; i<frames_pos.Count-n; i++)
+{
+    var frs = frames_pos.GetRange(i, n);
+
+    var retFov = findOneVarDec(45, 60, frs , side, calcPixForCam);
+    Console.WriteLine(retFov);
+}
+var retFov = findOneVarDec(45, 60, frames_pos, side, calcPixForCam);
+Console.WriteLine(retFov);
+
+ var frames_scan = loadImages_simple(@"cam1\mouse_scan_1906_2");
+
+
+loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30, SolveType.Complex, 0.1f, 0.1f, 0.8f);
+ loadScan(@"cam2\pos_cal_Z_2609_2\test", @"cam2\las_cal_2609_3", @"cam2\table_scanl_2609_3", @"cam2\pos_basis_2609_2", 52.5, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
+
+loadScan(@"cam1\pos_cal_mid_Z_1\test", @"cam1\las_cal_mid_1", @"cam1\scanl_mid_1\test", @"cam1\pos_basis_mid", 55.1, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
+
+loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
+
+
+loadImages_stereo(@"orient_cal_1108_1", 53, 30, 30, true);
+loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", 54, 68);
+loadImages_test(@"cam1\scan_table_2609_2\test");
+
+var frs = loadImages_calib(@"fov_pic/test_3");
+var fov_points = map_fov_3d(frs);
+paint3dpointsRGB(fov_points);
+
+generateImage_BOARD(7, 8);
+generateImage(7, 0.5);
+
+frames = loadImages_simple(@"tutor\cam2");
+EmguCVUndistortFisheye(@"ref_model\test4\distort", new Size(7, 6));
+ calibrateFishEyeCam(frames.ToArray(), new Size(7, 6));
+ calibrateCam(frames.ToArray(),new Size(7,6));
+cameraDistortionCoeffs[0, 0] = -0.1*Math.Pow(10,-6);
+ cameraDistortionCoeffs[1, 0] = 0;
+  cameraDistortionCoeffs[2, 0] = 0;
+  cameraDistortionCoeffs[3, 0] = 0;
+cameraDistortionCoeffs[4, 0] =0;
+ distortFolder(@"ref_model\test4");
+
+generateImage3D(7, 0.5f, 30.0f);
+generateImage3D_BOARD(8, 7, 10);
+
+ calcFov(frs);
+ testCalib();
+
+loadImages(@"cam1\pos_basis_big\test", 53, 30,40);
+
+
+
+loadImages(@"ref_model\test5", 53,30);
+
+loadImages_stereo(@"pos_cal_Z_2609_2", 53, 30, 40, true);
+ loadImages_stereo(@"pos_cal_1108_Y_1", 53, 30, 40, true);
+loadImages_stereo(@"pos_cal_1108_X_1", 53, 30, 30, true);
+
+loadImages_basis(@"cam1\pos_cal_basis_1108",53, 30, 30);
+ loadImages_stereo(@"pos_cal_2707_1", 53, 30);
+
+ loadImages(@"cam1\pos_cal_mid_Z_1\test", 53, 30, 30,15, true);
+
+calcRob();*/
 
 /*err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixAspectRatio, new MCvTermCriteria(30), out rvecs, out tvecs);
             Console.WriteLine("FixAspectRatio = " + err);

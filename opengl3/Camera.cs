@@ -700,7 +700,7 @@ namespace opengl3
             var z2 = P2.z;
             var A2 = F.A;
             var B2 = F.B;
-            var C2 = F.C;
+            var C2 = F.C; 
             //var A2 = P1.x;
             //var B2 = P1.y;
             //var C2 = P1.z;
