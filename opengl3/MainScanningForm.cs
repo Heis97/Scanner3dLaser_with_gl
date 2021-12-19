@@ -125,12 +125,16 @@ namespace opengl3
             maxArea = 15 * k * k * 250;
             red_c = 252;
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
-
+           
+           // Console.WriteLine(f);
 
             frames = loadImages_simple(@"tutor\cam2");
+
             //EmguCVUndistortFisheye(@"ref_model\test4\distort", new Size(7, 6));
             //calibrateFishEyeCam(frames.ToArray(), new Size(7, 6));
+
             calibrateCam(frames.ToArray(), new Size(7, 6));
+
             cameraDistortionCoeffs[0, 0] = -0.1 * Math.Pow(10, -6);
             cameraDistortionCoeffs[1, 0] = 0;
             cameraDistortionCoeffs[2, 0] = 0;
@@ -138,6 +142,9 @@ namespace opengl3
             cameraDistortionCoeffs[4, 0] = 0;
             //distortFolder(@"ref_model\test4");
 
+            var sq1 = new Square(0.5f, 0.5f, 1, 1);
+            var sq2 = new Square(0, 0, 1, 1);
+            Console.WriteLine("aresq " + compCrossArea(sq1, sq2));
 
             generateImage3D_BOARD(8, 7,10);
 
@@ -5093,6 +5100,213 @@ namespace opengl3
         #endregion
 
         #region openCVcalib
+
+        Mat generateImage(Size size)
+        {
+            var data = new byte[size.Height, size.Width,1];
+            int w = data.GetLength(1);
+            int h = data.GetLength(0);
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    data[j, i, 0] = 0;
+                    if (i>100 && i<200)
+                    {
+                        if (j > 100 && j < 200)
+                        {
+                            data[j, i, 0] = 250;
+                        }
+                    }
+                    
+                    if(i%10==0)
+                    {
+                        data[j, i, 0] = 250;
+                    }
+
+                    if (j % 10 == 0)
+                    {
+                        data[j, i, 0] = 250;
+                    }
+
+
+                }
+            }
+            return (new Image<Gray, byte>(data)).Mat;
+        }
+        float[,] generateMap(Size size)
+        {
+            var data = new float[size.Height, size.Width];
+            int w = data.GetLength(1);
+            int h = data.GetLength(0);
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    if(i>190)
+                    {
+                        data[j, i] = i*1.5f;
+                    }
+                    else
+                    {
+                        data[j, i] = i;
+                    }
+                    
+                    //data[j, i] = i+100;
+                }
+            }
+            return data;
+        }
+
+        float[,] generateMapY(Size size)
+        {
+            var data = new float[size.Height, size.Width];
+            int w = data.GetLength(1);
+            int h = data.GetLength(0);
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {                   
+                    data[j, i] = j;
+                }
+            }
+            return data;
+        }
+        Image<Gray, byte> mapToIm(float[,] map, PlanType planType, Mat mapy = null)
+        {
+            var dataMap = map;
+            var dataMapy = new float[1, 1];
+            if (mapy != null)
+            {
+                dataMapy = (float[,])mapy.GetData();
+            }
+            int w = dataMap.GetLength(1);
+            int h = dataMap.GetLength(0);
+            float max = dataMap.Max();
+            float min = dataMap.Min();
+            var dataIm = new float[h, w, 1];
+            switch (planType)
+            {
+                case PlanType.X:
+                    for (int i = 0; i < w; i++)
+                    {
+                        for (int j = 0; j < h; j++)
+                        {
+                            var val = dataMap[j, i] - i;
+                            dataIm[j, i, 0] = val;
+                        }
+                    }
+                    break;
+
+                case PlanType.Y:
+                    for (int i = 0; i < w; i++)
+                    {
+                        for (int j = 0; j < h; j++)
+                        {
+                            var val = dataMap[j, i] - j;
+                            dataIm[j, i, 0] = val;
+                        }
+                    }
+                    break;
+                case PlanType.XY:
+                    for (int i = 0; i < w; i++)
+                    {
+                        for (int j = 0; j < h; j++)
+                        {
+                            var val = Math.Sqrt(Math.Pow(dataMap[j, i] - i, 2) + Math.Pow(dataMapy[j, i] - j, 2));
+                            dataIm[j, i, 0] = (float)val;
+                        }
+                    }
+                    break;
+            }
+            return new Image<Gray, byte>(normalyse(dataIm));
+        }
+
+        Image<Gray,byte> mapToIm(Mat map, PlanType planType,Mat mapy = null)
+        {
+            return mapToIm((float[,])map.GetData(), planType, mapy);
+        }
+
+
+        Mat mapToMat(float[,] map)
+        {
+            int w = map.GetLength(1);
+            int h = map.GetLength(0);
+            var im = new Image<Gray, float>(w, h);
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    im.Data[j, i,0] = map[j,i];
+                }
+            }
+            return im.Mat;
+        }
+        byte[,,] normalyse(float[,,] mat)
+        {
+            int w = mat.GetLength(0);
+            int h = mat.GetLength(1);
+            int d = mat.GetLength(2);
+            var koef = normalyseKoef(mat,0,255);
+            var K = koef[0];
+            var offs = koef[1];
+           
+            var data = new byte[w, h, d];
+
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    for (int k = 0; k < d; k++)
+                    {
+                        var val = mat[i, j, k];
+                        data[i, j, k] = (byte)((val - offs) * K);
+                    }
+                }
+            }
+            return data;
+        }
+
+        float[] normalyseKoef(float[,,] mat, float minN, float maxN)//{ k, offset}
+        {
+            float max = float.MinValue;
+            float min = float.MaxValue;
+            int w = mat.GetLength(0);
+            int h = mat.GetLength(1);
+            int d = mat.GetLength(2);
+
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    for (int k = 0; k < d; k++)
+                    {
+                        var val = mat[i, j, k];
+                        if(val>max)
+                        {
+                            max = val;
+                        }
+                        if(val<min)
+                        {
+                            min = val;
+                        }
+                    }
+                }
+            }
+            var delt = max - min;
+            var deltN = maxN - minN;
+            float K = 1;
+            Console.WriteLine("delt " + delt);
+            if (delt>0)
+            {
+                K = deltN / delt;
+            }
+            var offset = min * k;
+
+
+            return new float[] { K, min };
+        }
+
         void calibrateCam(Frame[] frames, Size size)
         {
 
@@ -5424,13 +5638,81 @@ namespace opengl3
             var mapy = new Mat();
 
             var roi = computeDistortionMaps(ref mapx, ref mapy, matrixCamera , matrixDistCoef , mat.Size);
-            return remap(mapx, mapy, mat);
+
             var und_pic = new Mat();
-           
+            var mapx_test = mapToMat(generateMap(mat.Size));
+            var mapy_test = mapToMat(generateMapY(mat.Size));
+
+            var mapx_test_inv = mapToMat(inverseMap(generateMap(mat.Size) , PlanType.X));
+            var mapy_test_inv = mapToMat(inverseMap(generateMapY(mat.Size), PlanType.Y));
+
+            var mat_test = generateImage(mat.Size);
+            // CvInvoke.Remap(mat_test, und_pic, mapx_test, mapy_test, Inter.Linear);
+
             CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
+            //return und_pic;
+            imageBox_debug_cam_2.Image = und_pic;
+            //return (mapToIm(generateMap(mat.Size), PlanType.X)).Mat;
+            //return (mapToIm(mapx, PlanType.XY,mapy)).Mat;
+
+            //return remap(mapx, mapy, mat);
+            //var mat_inv = remap(mapx_test, mapy_test, mat_test);
+            //return remap(mapx_test_inv, mapy_test_inv, mat);
+            return  Minus(invRemap(mapx, mapy, mat),und_pic);
+            und_pic  = remap(mapx, mapy, mat);
+           //CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
             Console.WriteLine("ROI: "+roi.X + " " + roi.Y + " " + roi.Width + " " + roi.Height + " ");
             CvInvoke.Rectangle(und_pic, roi, new MCvScalar(255, 0, 0), 2);
             return und_pic;
+        }
+
+        Mat Minus(Mat mat1, Mat mat2)
+        {
+            var data1 = (byte[,,])mat1.GetData();
+            var w1 = data1.GetLength(0);
+            var h1 = data1.GetLength(1);
+            var data2 = (byte[,,])mat2.GetData();
+            var w2 = data2.GetLength(0);
+            var h2 = data2.GetLength(1);
+            var w = Math.Min(w1, w2);
+            var h = Math.Min(h1, h2);
+            var data = new byte[w, h,1];
+            for (int i=0; i< w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    var val = data1[i, j,0] - data2[i, j,0] + 127;
+                    if(val>255)
+                    {
+                        val = 255;
+                    }
+                    if (val<0)
+                    {
+                        val = 0;
+                    }
+                    data[i, j,0] =  (byte)val;
+                }
+            }
+            return new Image<Gray,byte>(data).Mat;
+        }
+
+        Mat invRemap(float[,] mapx, float[,] mapy, Mat mat)
+        {
+            return remap(
+                mapToMat(inverseMap(mapx, PlanType.X)),
+                 mapToMat(inverseMap(mapy, PlanType.Y)),
+                 mat);
+        }
+        Mat invRemap(Mat mapx, Mat mapy, Mat mat)
+        {
+            return invRemap(
+                  mapToFloat(mapx),
+                  mapToFloat(mapy),
+                  mat);
+        }
+        float[,] mapToFloat(Mat map)
+        {
+            return (float[,])map.GetData();
         }
         Mat remapUnDistIm(Mat mat, Matrix<double> matrixCamera, Matrix<double> matrixDistCoef)
         {
@@ -5444,45 +5726,61 @@ namespace opengl3
 
             return und_pic;
         }
-        float findMaxX(float[,] map)
-        {
-            float max = float.MinValue;
-            int lastInd = map.GetLength(1) - 1;
-            for (int i = 0; i < map.GetLength(0); i++)
-            {
-                if (map[i, lastInd] > max)
-                {
-                    max = map[i, lastInd];
-                }
-            }
-            return max;
-        }
-        float findMaxY(float[,] map)
-        {
-            float max = float.MinValue;
-            int lastInd = map.GetLength(0) - 1;
-            for (int i = 0; i < map.GetLength(0); i++)
-            {
-                if (map[lastInd, i] > max)
-                {
-                    max = map[lastInd,i];
-                }
-            }
-            return max;
-        }
         Size findRemapSize(float[,] mapx, float[,] mapy)
         {
-            var x = findMaxX(mapx);
-            var y = findMaxY(mapy);
+            var x = mapx.Max();// findMaxX(mapx);
+            var y = mapy.Max();// findMaxY(mapy);
             Console.WriteLine("FLOAT SIZE: " + x + " " + y);
-            return new Size((int)x, (int)y);
+            var ix = (int)Math.Round(x, 0) + 4;
+            var iy = (int)Math.Round(y, 0) + 4;
+            return new Size(ix, iy);
         }
+
+
+        float[,] inverseMap(float[,] map,PlanType planType)
+        {
+            int w = map.GetLength(1);
+            int h = map.GetLength(0);
+            var inv_map = new float[h, w];
+
+            switch (planType)
+            {
+                case PlanType.X:
+                    var deltE = w;
+                    var deltI = (map.Max() - map.Min());
+                    var k = deltI / deltE;
+                    for (int i = 0; i < w; i++)
+                    {
+                        for (int j = 0; j < h; j++)
+                        {
+                            var del = (map[j, i]- i)/k ;
+                            inv_map[j, i] = i - del;
+                        }
+                    }
+                    break;
+                case PlanType.Y:
+                    deltE = h;
+                    deltI = (map.Max() - map.Min());
+                    k = deltI / deltE;
+                    for (int i = 0; i < w; i++)
+                    {
+                        for (int j = 0; j < h; j++)
+                        {
+                            var del = (map[j, i]  - j)/k;
+                            inv_map[j, i] = j - del;
+                        }
+                    }
+                    break;
+            }
+            return inv_map;
+        }
+
         float[,,] compRemap(float[,] mapx, float[,] mapy, Mat mat)
         {
             var size = findRemapSize(mapx, mapy);
             var im = mat.ToImage<Bgr, byte>();
             Console.WriteLine("NEW SIZE: " + size.Width + " " + size.Height);
-            var data = new float[size.Height+200, size.Width+200, 3];
+            var data = new float[size.Height, size.Width, 3];
             Console.WriteLine(data.GetLength(0) + " " + data.GetLength(1) + 
                 " " + mapx.GetLength(0) + " " + mapx.GetLength(1) + 
                 " " + im.Data.GetLength(0) + " " + im.Data.GetLength(1) + " ");
@@ -5497,22 +5795,22 @@ namespace opengl3
                     var h = 0f;
                     if (j == 0)
                     {
-                        h = Math.Abs(mapx[j, i] - mapx[j + 1, i]);
+                        h = Math.Abs(mapy[j, i] - mapy[j + 1, i]);
                     }
                     else
                     {
-                        h = Math.Abs(mapx[j, i] - mapx[j - 1, i]);
+                        h = Math.Abs(mapy[j, i] - mapy[j - 1, i]);
                     }
                     if (i == 0)
                     {
-                        w = Math.Abs(mapy[j, i] - mapy[j, i + 1]);
+                        w = Math.Abs(mapx[j, i] - mapx[j, i + 1]);
                     }
                     else
                     {
-                        w = Math.Abs(mapy[j, i] - mapy[j, i - 1]);
+                        w = Math.Abs(mapx[j, i] - mapx[j, i - 1]);
                     }
-                    var sq1 = new Square(x, y, w, h);
-
+                    var sq1 = new Square(x, y, w,  h);
+                    //Console.WriteLine("wh " + w + " " + h);
                     var ix = (int)Math.Round(x, 0);
                     var iy = (int)Math.Round(y, 0);
                     
@@ -5521,13 +5819,12 @@ namespace opengl3
                         for (int _j = iy - 1; _j <= iy + 1; _j++)
                         {
                             var sq2 = new Square(_i, _j, 1, 1);
-                            var intens = compCrossArea(sq1, sq2);
-                            if (intens>0.01)
-                            {                               
-                                data[_j, _i, 0] += intens * im.Data[j, i, 0];
-                                data[_j, _i, 1] += intens * im.Data[j, i, 1];
-                                data[_j, _i, 2] += intens * im.Data[j, i, 2];
-                            }
+                            var intens = compCrossArea(sq1, sq2) ;
+                            //Console.WriteLine(" _i " + _i+ " _j " + _j + " i " + i + " j " + j);
+                            data[_j, _i, 0] += intens * im.Data[j, i, 0];
+                            data[_j, _i, 1] += intens * im.Data[j, i, 1];
+                            data[_j, _i, 2] += intens * im.Data[j, i, 2];
+                            
                         }
                     }
 
@@ -5540,7 +5837,7 @@ namespace opengl3
         {
             var dx = compDelt(s1.w, s2.w, Math.Abs(s1.x - s2.x));
             var dy = compDelt(s1.h, s2.h, Math.Abs(s1.y - s2.y));
-            return dx * dy;
+            return Math.Abs(dx * dy);
         }
         float compDelt(float w1, float w2, float dx)
         {
@@ -5607,6 +5904,7 @@ namespace opengl3
                         {
                             byte_arr[i, j, k] = 255;
                         }
+
                         else
                         {
                             byte_arr[i, j, k] = (byte)Math.Round(arr[i, j, k], 0);
@@ -5617,28 +5915,78 @@ namespace opengl3
             }
             return byte_arr;
         }
+
+        byte[,,] toByteGray(float[,,] arr)
+        {
+            var byte_arr = new byte[arr.GetLength(0), arr.GetLength(1), 1];
+            for (int i = 0; i < arr.GetLength(0); i++)
+            {
+                for (int j = 0; j < arr.GetLength(1); j++)
+                {
+
+                        if (arr[i, j, 0] > 255)
+                        {
+                            byte_arr[i, j, 0] = 255;
+                        }
+
+                        else
+                        {
+                            byte_arr[i, j, 0] = (byte)Math.Round(arr[i, j, 0], 0);
+                        }
+
+                }
+            }
+            return byte_arr;
+        }
         Mat remap (Mat _mapx, Mat _mapy, Mat mat)
         {
-           
+          
             var fmapx = (float[,])_mapx.GetData();
            // print(fmapx);
            // print("________________________________");
-            var mapx = compUnsignedMap((float[,])_mapx.GetData(),1);
-            var mapy = compUnsignedMap((float[,])_mapy.GetData(),0);
+            var mapx = compUnsignedMap((float[,])_mapx.GetData(), PlanType.X);
+            var mapy = compUnsignedMap((float[,])_mapy.GetData(), PlanType.Y);
+            print("________________________________");
+            print(mapy);
+            print("________________________________");
             var data = compRemap(mapx, mapy, mat);
-            var im = new Image<Bgr, byte>(toByte(data));
+            
+            var color = 0;
+            try
+            {
+                color = mat.GetData().GetLength(2);
+                Console.WriteLine("color" + color);
+            }
+            catch
+            {
+                color = 1;
+               print ("color " + color);
+            }
+               
+            if ( color == 1)
+            {
+                var im = new Image<Gray, byte>(toByteGray(data));
+
+                return im.Mat;
+            }
+            else if (color == 3)
+            {
+                var im = new Image<Bgr, byte>(toByte(data));
+                return im.Mat;
+            }
+
 
             //print(mapx);
             // print("________________________________");
             //print(mapy);
-            return im.Mat;
+            return null;
         }
 
-        float[,] compUnsignedMap(float[,] map,int ind)
+        float[,] compUnsignedMap(float[,] map, PlanType planType)
         {
             float min = float.MaxValue;
             float[,] rmap = new float[map.GetLength(0), map.GetLength(1)];
-            if (ind==0)
+            if (planType == PlanType.X)
             {
                 for (int i = 0; i < map.GetLength(0); i++)
                 {
@@ -5648,7 +5996,7 @@ namespace opengl3
                     }
                 }
             }
-            else if (ind == 1)
+            else if (planType == PlanType.Y)
             {
                 for (int i = 0; i < map.GetLength(1); i++)
                 {
@@ -5658,7 +6006,7 @@ namespace opengl3
                     }
                 }
             }
-            min--;
+            min -= 20;
             for (int i = 0; i < map.GetLength(0); i++)
             {
                 for (int j = 0; j < map.GetLength(1); j++)

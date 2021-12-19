@@ -133,6 +133,7 @@ namespace opengl3
             this.glControl1 = new OpenGL.GlControl();
             this.tabDebug = new System.Windows.Forms.TabPage();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.imageBox_debug_cam_2 = new Emgu.CV.UI.ImageBox();
             this.label_corPic = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox_P2deg = new System.Windows.Forms.TextBox();
@@ -152,6 +153,7 @@ namespace opengl3
             this.textBox_K1 = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
             this.imageBox_cameraDist = new Emgu.CV.UI.ImageBox();
+            this.imageBox_debug_cam3 = new Emgu.CV.UI.ImageBox();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -173,7 +175,9 @@ namespace opengl3
             this.tabOpenGl.SuspendLayout();
             this.tabDebug.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam_2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam3)).BeginInit();
             this.SuspendLayout();
             // 
             // videoCapt
@@ -1231,6 +1235,8 @@ namespace opengl3
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.imageBox_debug_cam3);
+            this.tabPage1.Controls.Add(this.imageBox_debug_cam_2);
             this.tabPage1.Controls.Add(this.label_corPic);
             this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.textBox_P2deg);
@@ -1257,6 +1263,14 @@ namespace opengl3
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "Камера";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // imageBox_debug_cam_2
+            // 
+            this.imageBox_debug_cam_2.Location = new System.Drawing.Point(6, 492);
+            this.imageBox_debug_cam_2.Name = "imageBox_debug_cam_2";
+            this.imageBox_debug_cam_2.Size = new System.Drawing.Size(640, 480);
+            this.imageBox_debug_cam_2.TabIndex = 21;
+            this.imageBox_debug_cam_2.TabStop = false;
             // 
             // label_corPic
             // 
@@ -1421,6 +1435,14 @@ namespace opengl3
             this.imageBox_cameraDist.TabStop = false;
             this.imageBox_cameraDist.MouseMove += new System.Windows.Forms.MouseEventHandler(this.imageBox_cameraDist_MouseMove);
             // 
+            // imageBox_debug_cam3
+            // 
+            this.imageBox_debug_cam3.Location = new System.Drawing.Point(655, 492);
+            this.imageBox_debug_cam3.Name = "imageBox_debug_cam3";
+            this.imageBox_debug_cam3.Size = new System.Drawing.Size(640, 480);
+            this.imageBox_debug_cam3.TabIndex = 22;
+            this.imageBox_debug_cam3.TabStop = false;
+            // 
             // MainScanningForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1455,7 +1477,9 @@ namespace opengl3
             this.tabDebug.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam_2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1584,6 +1608,8 @@ namespace opengl3
         private System.Windows.Forms.Button but_swapMonit;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.TextBox textBox_monitor_id;
+        private Emgu.CV.UI.ImageBox imageBox_debug_cam_2;
+        private Emgu.CV.UI.ImageBox imageBox_debug_cam3;
     }
 }
 

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace opengl3
 {
-    public enum PlanType { X, Y }
+    public enum PlanType { X, Y, XY }
     public enum DirectionType { Up , Down }
     public enum SolveType { Simple, Complex }
     public enum FrameType { Pos, Las, Test }
