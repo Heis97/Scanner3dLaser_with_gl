@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.Util;
 
 namespace opengl3
 {
@@ -184,6 +187,32 @@ namespace opengl3
             viewType_ = viewType.Perspective;
             visible = false;
         }
+
+        public TransRotZoom getInfo(TransRotZoom[] transRotZooms)
+        {
+            switch (type)
+            {
+                case TRZtype.Master:
+                    return this;
+                    
+                case TRZtype.Slave:
+                    var trz_m = transRotZooms[id_m];
+                    var trz_info = new TransRotZoom();
+                    trz_info.zoom = trz_m.zoom;
+                    trz_info.off_x = trz_m.off_x + consttransf.off_x;
+                    trz_info.off_y = trz_m.off_y +consttransf.off_y;
+                    trz_info.off_z = trz_m.off_z + consttransf.off_z;
+                    trz_info.xRot = trz_m.xRot + consttransf.xRot;
+                    trz_info.yRot = trz_m.yRot + consttransf.yRot;
+                    trz_info.zRot = trz_m.zRot + consttransf.zRot;
+                    trz_info.viewType_ = trz_m.viewType_;
+                    trz_info.rect = rect;
+                    
+                    return trz_info;
+                default:
+                    return null;
+            }
+        }
         public TransRotZoom(TransRotZoom _trz)
         {
             zoom = _trz.zoom;
@@ -196,6 +225,10 @@ namespace opengl3
             rect = _trz.rect;
             id = _trz.id;
             type = _trz.type;
+        }
+        public TransRotZoom()
+        {
+
         }
         public void setxRot(double value)
         {
@@ -238,7 +271,7 @@ namespace opengl3
         int LightPowerID;
         int MaterialDiffuseID;
         int MaterialAmbientID;
-        
+        int currentMonitor = 1;
         int MaterialSpecularID;
         float LightPower = 500000.0f;
         Label Label_cor;
@@ -301,6 +334,7 @@ namespace opengl3
             {
                 addCamView(trz.id);
             }
+
         }
         void renderGlobj(openGlobj opgl_obj)
         {
@@ -418,43 +452,67 @@ namespace opengl3
             Gl.Uniform1f(LightPowerID, 1, LightPower);
             
         }
-
+        
 
         #region util
         public void SaveToBitmap(string folder,int id)
+        {
+            var bitmap = matFromMonitor(id);
+            var invVm = Vs[id].Inverse;
+            var trz_in = transRotZooms[selectTRZ_id(id)];
+            var trz = trz_in.getInfo(transRotZooms.ToArray());
+            /* Vertex3f ver0 = new Vertex3f(invVm.Column0.x, invVm.Column0.y, invVm.Column0.z);
+             Vertex3f ver1 = new Vertex3f(invVm.Column1.x, invVm.Column1.y, invVm.Column1.z);
+             Vertex3f ver2 = new Vertex3f(invVm.Column2.x, invVm.Column2.y, invVm.Column2.z);
+             Vertex3f ver3 = new Vertex3f(invVm.Column3.x, invVm.Column3.y, invVm.Column3.z);
+             var path_gl = Path.Combine(folder, "monitor_" + id.ToString());
+             Directory.CreateDirectory(path_gl);
+             bitmap.Save(path_gl + "/" + ver0.x + " " + ver0.y + " " + ver0.z + " "
+                 + ver1.x + " " + ver1.y + " " + ver1.z + " "
+                 + ver2.x + " " + ver2.y + " " + ver2.z + " "
+                 + ver3.x + " " + ver3.y + " " + ver3.z + " " + ".png");*/
+
+
+            var path_gl = Path.Combine(folder, "monitor_" + id.ToString());
+            Directory.CreateDirectory(path_gl);
+            bitmap.Save(path_gl + "/" + trz.xRot + " " + trz.yRot + " " + trz.zRot + " "
+                + trz.off_x + " " + trz.off_y + " " + trz.off_z + " "
+                + trz.zoom + " " + trz.viewType_ + " " + ".png");
+        }
+
+        public Bitmap bitmapFromMonitor(int id)
         {
             var recTRZ = (transRotZooms[selectTRZ_id(id)]).rect;
             var lockMode = System.Drawing.Imaging.ImageLockMode.WriteOnly;
             var format = System.Drawing.Imaging.PixelFormat.Format32bppRgb;
             var bitmap = new Bitmap(recTRZ.Width, recTRZ.Height, format);
-            
+
             var bitmapRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
             System.Drawing.Imaging.BitmapData bmpData = bitmap.LockBits(bitmapRectangle, lockMode, format);
             Gl.ReadPixels(recTRZ.X, recTRZ.Y, recTRZ.Width, recTRZ.Height, PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
             bitmap.UnlockBits(bmpData);
             bitmap.RotateFlip(RotateFlipType.Rotate180FlipX);
+           
+            return bitmap;
 
-            // Vm.Row3.ToString()
-            //Vertex3f ver1 = new Vertex3f(Vm.Column3.x, Vm.Column3.y, Vm.Column3.z);
-            var invVm = Vs[id].Inverse;
-            Vertex3f ver0 = new Vertex3f(invVm.Column0.x, invVm.Column0.y, invVm.Column0.z);
-            Vertex3f ver1 = new Vertex3f(invVm.Column1.x, invVm.Column1.y, invVm.Column1.z);
-            Vertex3f ver2 = new Vertex3f(invVm.Column2.x, invVm.Column2.y, invVm.Column2.z);
-            Vertex3f ver3 = new Vertex3f(invVm.Column3.x, invVm.Column3.y, invVm.Column3.z);
-            Directory.CreateDirectory(folder);
-            bitmap.Save(folder + "/" + ver0.x + " " + ver0.y + " " + ver0.z + " "
-                + ver1.x + " " + ver1.y + " " + ver1.z + " "
-                + ver2.x + " " + ver2.y + " " + ver2.z + " "
-                + ver3.x + " " + ver3.y + " " + ver3.z + " " + ".png");
-            bitmap.Save("tesr.png");
         }
 
+        public Mat matFromMonitor(int id)
+        {
+            var recTRZ = (transRotZooms[selectTRZ_id(id)]).rect;
+            var data = new Mat(recTRZ.Width, recTRZ.Height, Emgu.CV.CvEnum.DepthType.Cv8U, 3);       
+            Gl.ReadPixels(recTRZ.X, recTRZ.Y, recTRZ.Width, recTRZ.Height, PixelFormat.Bgr, PixelType.UnsignedByte, data.DataPointer);
+            //CvInvoke.Rotate(data, data, Emgu.CV.CvEnum.RotateFlags.Rotate180);
+            return data;
+        }
+        
         PointF toGLcord(PointF pf, Size sizeView)
         {
             var x = (sizeView.Width / 2) * pf.X + sizeView.Width / 2;
             var y = -((sizeView.Width / 2) * pf.Y) + sizeView.Height / 2;
             return new PointF(x, y);
         }
+
         public void swapTRZ(int ind1, int ind2)
         {
             var lamb1 = transRotZooms[ind1].rect;
@@ -479,8 +537,9 @@ namespace opengl3
             }
             return ind;
         }
-        Matrix4x4f[] compMVPmatrix(TransRotZoom trz)
+        Matrix4x4f[] compMVPmatrix(TransRotZoom trz_in)
         {
+            var trz = trz_in.getInfo(transRotZooms.ToArray());
             var zoom = trz.zoom;
             var off_x = trz.off_x;
             var off_y = trz.off_y;
@@ -488,17 +547,6 @@ namespace opengl3
             var xRot = trz.xRot;
             var yRot = trz.yRot;
             var zRot = trz.zRot;
-            if (trz.type == TransRotZoom.TRZtype.Slave)
-            {
-                var trz_m = transRotZooms[selectTRZ_id(trz.id_m)];
-                zoom = trz_m.zoom;
-                off_x = trz_m.off_x + trz.consttransf.off_x;
-                off_y = trz_m.off_y + trz.consttransf.off_y;
-                off_z = trz_m.off_z + trz.consttransf.off_z;
-                xRot = trz_m.xRot + trz.consttransf.xRot;
-                yRot = trz_m.yRot + trz.consttransf.yRot;
-                zRot = trz_m.zRot + trz.consttransf.zRot;
-            }
             if (trz.viewType_ == viewType.Perspective)
             {
                 Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.1f, 3000.0f);
@@ -978,12 +1026,23 @@ namespace opengl3
                     var dy = e.Y - lastPos.Y;
                     double dyx = lastPos.Y - w / 2;
                     double dxy = lastPos.X - h / 2;
-                    double dz = (dy * dxy + dx * dyx) / (Math.Sqrt(dy * dy + dx * dx) * Math.Sqrt(dxy * dxy + dyx * dyx));
+                    var delim = (Math.Sqrt(dy * dy + dx * dx) * Math.Sqrt(dxy * dxy + dyx * dyx));
+                    double dz = 0;
+                    if (delim != 0)
+                    {
+                        dz = (dy * dxy + dx * dyx) / delim;
+
+                    }
+                    else
+                    {
+                        dz = 0;
+                    }
                     if (e.Button == MouseButtons.Left)
                     {
                         trz.xRot += dy;
                         trz.yRot -= dx;
                         trz.zRot += dz;
+                        
                     }
                     else if (e.Button == MouseButtons.Right)
                     {
@@ -1104,40 +1163,40 @@ namespace opengl3
         }
         public void orientXscroll(int value)
         {
-            var trz = transRotZooms[0];
+            var trz = transRotZooms[currentMonitor];
             trz.setxRot(value);
-            transRotZooms[0] = trz;
+            transRotZooms[currentMonitor] = trz;
         }
         public void orientYscroll(int value)
         {
-            var trz = transRotZooms[0];
+            var trz = transRotZooms[currentMonitor];
             trz.setyRot(value);
-            transRotZooms[0] = trz;
+            transRotZooms[currentMonitor] = trz;
         }
         public void orientZscroll(int value)
         {
-            var trz = transRotZooms[0];
+            var trz = transRotZooms[currentMonitor];
             trz.setzRot(value);
-            transRotZooms[0] = trz;
+            transRotZooms[currentMonitor] = trz;
         }
 
         public void planeXY()
         {
-            var trz = transRotZooms[0];
+            var trz = transRotZooms[currentMonitor];
             trz.setRot(0, 0, 0);
-            transRotZooms[0] = trz;
+            transRotZooms[currentMonitor] = trz;
         }
         public void planeYZ()
         {
-            var trz = transRotZooms[0];
+            var trz = transRotZooms[currentMonitor];
             trz.setRot(0, 90, 0);
-            transRotZooms[0] = trz;
+            transRotZooms[currentMonitor] = trz;
         }
         public void planeZX()
         {
-            var trz = transRotZooms[0];
+            var trz = transRotZooms[currentMonitor];
             trz.setRot(90, 0, 0);
-            transRotZooms[0] = trz;
+            transRotZooms[currentMonitor] = trz;
         }
         public void changeViewType(int ind)
         {

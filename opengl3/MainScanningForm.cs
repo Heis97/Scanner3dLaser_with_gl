@@ -60,7 +60,7 @@ namespace opengl3
         double minArea = 1;
         double maxArea = 10;
         string name_scan = "test_1008_1";
-        string openGl_folder= @"ref_model\test6";
+        string openGl_folder= @"virtual_stereo/test1";
         Point3d_GL p1_scan = new Point3d_GL(548.0, -60.0, 225.0);//(655.35, -73.21, 80.40);
         Point3d_GL p2_scan = new Point3d_GL(548.0, 60.0, 225.0);
         Frame calib_frame;
@@ -69,6 +69,11 @@ namespace opengl3
         
         Matrix<double> cameraDistortionCoeffs = new Matrix<double>(5, 1);
         Matrix<double> cameraMatrix = new Matrix<double>(3, 3);
+
+        Matrix<double> cameraDistortionCoeffs1 = new Matrix<double>(5, 1);
+        Matrix<double> cameraMatrix1 = new Matrix<double>(3, 3);
+        Matrix<double> cameraDistortionCoeffs2 = new Matrix<double>(5, 1);
+        Matrix<double> cameraMatrix2 = new Matrix<double>(3, 3);
         int k = 1;
         bool writ = false;
         int bin_pos = 40;
@@ -127,21 +132,22 @@ namespace opengl3
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
            
            // Console.WriteLine(f);
-
-            frames = loadImages_simple(@"tutor\cam2");
+           
+            var frames1 = loadImages_test(@"virtual_stereo\test1\monitor_0\distort");
+            var frames2 = loadImages_test(@"virtual_stereo\test1\monitor_1\distort");
 
             //EmguCVUndistortFisheye(@"ref_model\test4\distort", new Size(7, 6));
             //calibrateFishEyeCam(frames.ToArray(), new Size(7, 6));
 
-            calibrateCam(frames.ToArray(), new Size(7, 6));
-
-            cameraDistortionCoeffs[0, 0] = -0.1 * Math.Pow(10, -6);
+            calibrateCam(frames1.ToArray(), new Size(7, 6));
+            //calibrateCamStereo(frames1.ToArray(), frames2.ToArray(), new Size(7, 6));
+            cameraDistortionCoeffs[0, 0] = 0.1 * Math.Pow(10, -5);
             cameraDistortionCoeffs[1, 0] = 0;
             cameraDistortionCoeffs[2, 0] = 0;
             cameraDistortionCoeffs[3, 0] = 0;
             cameraDistortionCoeffs[4, 0] = 0;
-            //distortFolder(@"ref_model\test4");
-
+            //distortFolder(@"virtual_stereo\test1\monitor_0");
+           // distortFolder(@"virtual_stereo\test1\monitor_1");
             var sq1 = new Square(0.5f, 0.5f, 1, 1);
             var sq2 = new Square(0, 0, 1, 1);
             Console.WriteLine("aresq " + compCrossArea(sq1, sq2));
@@ -1860,18 +1866,35 @@ namespace opengl3
         {
             var send = (Control)sender;
             GL1.glControl_ContextCreated(sender, e);
-
-            GL1.addMonitor(new Rectangle(0, 0, 150, 150), 0, new Vertex3d(0, 0, 0), new Vertex3d(50, 0, 0), 1);
-            GL1.addMonitor(new Rectangle(150, 150, send.Width-150, send.Height-150),1);
-            GL1.addMonitor(new Rectangle(150, 0, 150, 150), 2);
-            GL1.addMonitor(new Rectangle(300, 0, 150, 150), 3);
+            var w = send.Width;
+            var h = send.Height;
+            GL1.addMonitor(new Rectangle(0, 0,(int) w/2, (int)h /2 ), 0, new Vertex3d(0, 0, 0), new Vertex3d(50, 0, 0), 1);
+            GL1.addMonitor(new Rectangle((int)w / 2, 0 , (int)w /2, (int)h/ 2),1);
+            GL1.addMonitor(new Rectangle((int)w / 2, h/2, (int)w / 2, (int)h / 2), 2);
+            // GL1.addMonitor(new Rectangle(0, h/2, w / 4, h / 4), 2);
+            // GL1.addMonitor(new Rectangle(w / 2, h/2, w/4, h/4), 3);
             addButForMonitor(GL1,send.Size,send.Location);
 
             GL1.add_Label(lab_kor,lab_curCor);
             GL1.add_TextBox(debugBox);
 
         }
-        
+        Mat toMat(Bitmap bitmap)
+        {
+            var data = new byte[bitmap.Height, bitmap.Width, 3];
+            for(int i=0; i< bitmap.Width; i++)
+            {
+                for (int j = 0; j < bitmap.Height; j++)
+                {
+                    data[j, i, 0] = bitmap.GetPixel(i, j).B;
+                    data[j, i, 1] = bitmap.GetPixel(i, j).G;
+                    data[j, i, 2] = bitmap.GetPixel(i, j).B;
+                }
+            }
+            return new Image<Bgr, byte>(data).Mat;
+        }
+
+
 
         private void glControl1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -1887,6 +1910,12 @@ namespace opengl3
             
             GL1.glControl_Render(sender, e);
             GL1.printDebug(debugBox);
+
+            imBox_mark1.Image = GL1.matFromMonitor(0);
+            imBox_mark2.Image = GL1.matFromMonitor(1);
+
+            imBox_mark1.Image =  drawChessboard(imBox_mark1, new Size(6, 7));
+            imBox_mark2.Image =  drawChessboard(imBox_mark2, new Size(6, 7));
 
 
         }
@@ -5307,6 +5336,127 @@ namespace opengl3
             return new float[] { K, min };
         }
 
+        Mat drawChessboard(ImageBox imageBox, Size size)
+        {
+            var corn = new VectorOfPointF();
+            var im = (Mat)imageBox.Image;
+            var gray = im.ToImage<Gray, byte>();
+            var ret = CvInvoke.FindChessboardCorners(gray, size, corn);
+            CvInvoke.DrawChessboardCorners(im, size, corn, ret);
+            return im;
+        }
+        void calibrateCamStereo(Frame[] frames1, Frame[] frames2, Size size)
+        {
+           var  stereo = new StereoBM();
+            
+            var corn = new VectorOfPointF();
+            Mat mtx = new Mat();
+            Mat dist = new Mat();
+            Mat[] tvecs = new Mat[0];
+            Mat[] rvecs = new Mat[0];
+
+            var objps = new List<MCvPoint3D32f[]>();
+            // var corners = new List<System.Drawing.PointF[]>();
+
+            var corners1 = new List<System.Drawing.PointF[]>();
+            var corners2 = new List<System.Drawing.PointF[]>();
+
+            var obp = new MCvPoint3D32f[size.Width * size.Height];
+            int ind = 0;
+            for (int j = 0; j < size.Height; j++)
+            {
+                for (int i = 0; i < size.Width; i++)
+                {
+                    obp[ind] = new MCvPoint3D32f((float)i, (float)j, 0.0f);
+                    //Console.WriteLine(i + " " + j);
+                    ind++;
+                }
+            }
+            foreach (var frame in frames1)
+            {
+                imageBox2.Image = frame.im;
+                var gray = frame.im.ToImage<Gray, byte>();
+                var ret = CvInvoke.FindChessboardCorners(gray, size, corn);
+                if (ret == true)
+                {
+                    CvInvoke.CornerSubPix(gray, corn, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(100, 0.0001));
+                    //draw_tour(new Point((int)corn[0].X, (int)corn[0].Y), 3, 0, frame.im, 255, 0, 0);
+                    //CvInvoke.Imshow(frame.name, frame.im);
+                    //CvInvoke.WaitKey(500);
+                    var corn2 = toPointF(corn);
+                    objps.Add(obp);
+                    corners1.Add(corn2);
+                }
+                else
+                {
+                    Console.WriteLine("NOT:");
+                    Console.WriteLine(frame.name);
+                }
+            }
+            foreach (var frame in frames2)
+            {
+                var gray = frame.im.ToImage<Gray, byte>();
+                var ret = CvInvoke.FindChessboardCorners(gray, size, corn);
+                if (ret == true)
+                {
+                    CvInvoke.CornerSubPix(gray, corn, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(100, 0.0001));
+                    var corn2 = toPointF(corn);
+                    corners2.Add(corn2);
+                }
+                else
+                {
+                    Console.WriteLine("NOT:");
+                    Console.WriteLine(frame.name);
+                }
+            }
+
+            Console.WriteLine(objps.Count);
+            Console.WriteLine(corners1.Count);
+            Console.WriteLine(corners2.Count);
+            var r = new Mat();
+            var t = new Mat();
+            var e = new Mat();
+            var f = new Mat();
+
+            var err = CvInvoke.StereoCalibrate
+                (objps.ToArray(), 
+                corners1.ToArray(),
+                corners2.ToArray(),
+                cameraMatrix1,
+                cameraDistortionCoeffs1,
+                cameraMatrix2,
+                cameraDistortionCoeffs2,
+                frames1[0].im.Size,
+                r, 
+                t,
+                e,
+                f,
+                CalibType.Default,
+                new MCvTermCriteria(100, 0.0001)
+                );
+
+            Console.WriteLine("cameraMatrix1:  ");
+            print(cameraMatrix1);
+            Console.WriteLine("cameraDistortionCoeffs1:  ");
+            print(cameraDistortionCoeffs1);
+
+            Console.WriteLine("cameraMatrix2:  ");
+            print(cameraMatrix2);
+            Console.WriteLine("cameraDistortionCoeffs2:  ");
+            print(cameraDistortionCoeffs2);
+
+            Console.WriteLine("r:  ");
+            print(r);
+            Console.WriteLine("t:  ");
+            print(t);
+            Console.WriteLine("e:  ");
+            print(e);
+            Console.WriteLine("f:  ");
+            print(f);
+            Console.WriteLine("err:  ");
+            print(err);
+
+        }
         void calibrateCam(Frame[] frames, Size size)
         {
 
@@ -5332,6 +5482,7 @@ namespace opengl3
                     ind++;
                 }
             }
+            
             foreach (var frame in frames)
             {
                 imageBox2.Image = frame.im;
@@ -5362,9 +5513,12 @@ namespace opengl3
             var err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, cameraMatrix, cameraDistortionCoeffs, CalibType.Default, new MCvTermCriteria(100, 0.0001), out rvecs, out tvecs);
            foreach(var tv in tvecs)
             {
-                print(tv);
+                //print(tv);
             }
-            
+            Console.WriteLine("cameraMatrix1:  ");
+            print(cameraMatrix);
+            Console.WriteLine("cameraDistortionCoeffs1:  ");
+            print(cameraDistortionCoeffs);
             print("_____________TVECS ^^^^^^");
             var newRoI = new Rectangle();
 
@@ -5636,34 +5790,12 @@ namespace opengl3
         {
             var mapx = new Mat();
             var mapy = new Mat();
-
             var roi = computeDistortionMaps(ref mapx, ref mapy, matrixCamera , matrixDistCoef , mat.Size);
-
-            var und_pic = new Mat();
-            var mapx_test = mapToMat(generateMap(mat.Size));
-            var mapy_test = mapToMat(generateMapY(mat.Size));
-
-            var mapx_test_inv = mapToMat(inverseMap(generateMap(mat.Size) , PlanType.X));
-            var mapy_test_inv = mapToMat(inverseMap(generateMapY(mat.Size), PlanType.Y));
-
-            var mat_test = generateImage(mat.Size);
-            // CvInvoke.Remap(mat_test, und_pic, mapx_test, mapy_test, Inter.Linear);
-
-            CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
-            //return und_pic;
-            imageBox_debug_cam_2.Image = und_pic;
-            //return (mapToIm(generateMap(mat.Size), PlanType.X)).Mat;
-            //return (mapToIm(mapx, PlanType.XY,mapy)).Mat;
-
-            //return remap(mapx, mapy, mat);
-            //var mat_inv = remap(mapx_test, mapy_test, mat_test);
-            //return remap(mapx_test_inv, mapy_test_inv, mat);
-            return  Minus(invRemap(mapx, mapy, mat),und_pic);
-            und_pic  = remap(mapx, mapy, mat);
-           //CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
-            Console.WriteLine("ROI: "+roi.X + " " + roi.Y + " " + roi.Width + " " + roi.Height + " ");
-            CvInvoke.Rectangle(und_pic, roi, new MCvScalar(255, 0, 0), 2);
-            return und_pic;
+            var invmap = remap(mapx, mapy, mat);
+            //CvInvoke.Rectangle(invmap, roi, new MCvScalar(255, 0, 0));
+            
+            imageBox_debug_cam3.Image = invmap;
+            return  new Mat(invmap,roi);
         }
 
         Mat Minus(Mat mat1, Mat mat2)
@@ -5676,24 +5808,29 @@ namespace opengl3
             var h2 = data2.GetLength(1);
             var w = Math.Min(w1, w2);
             var h = Math.Min(h1, h2);
+
             var data = new byte[w, h,1];
-            for (int i=0; i< w; i++)
-            {
-                for (int j = 0; j < h; j++)
-                {
-                    var val = data1[i, j,0] - data2[i, j,0] + 127;
-                    if(val>255)
-                    {
-                        val = 255;
-                    }
-                    if (val<0)
-                    {
-                        val = 0;
-                    }
-                    data[i, j,0] =  (byte)val;
-                }
-            }
-            return new Image<Gray,byte>(data).Mat;
+            Console.WriteLine("w h " + w + " " + h);
+            var cut_map1 = new Mat(mat1, new Rectangle(0, 0, h, w));
+            var cut_map2 = new Mat(mat2, new Rectangle(0, 0, h, w));
+            /* for (int i=0; i< w; i++)
+             {
+                 for (int j = 0; j < h; j++)
+                 {
+                     var val = data1[i, j,0] - data2[i, j,0] + 127;
+                     if(val>255)
+                     {
+                         val = 255;
+                     }
+                     if (val<0)
+                     {
+                         val = 0;
+                     }
+                     data[i, j,0] =  (byte)val;
+                 }
+             }*/
+            //return new Image<Gray,byte>(data).Mat;
+            return cut_map1 - cut_map2;
         }
 
         Mat invRemap(float[,] mapx, float[,] mapy, Mat mat)
@@ -5946,9 +6083,9 @@ namespace opengl3
            // print("________________________________");
             var mapx = compUnsignedMap((float[,])_mapx.GetData(), PlanType.X);
             var mapy = compUnsignedMap((float[,])_mapy.GetData(), PlanType.Y);
-            print("________________________________");
-            print(mapy);
-            print("________________________________");
+          //  print("________________________________");
+           // print(mapy);
+           // print("________________________________");
             var data = compRemap(mapx, mapy, mat);
             
             var color = 0;
@@ -5995,6 +6132,7 @@ namespace opengl3
                         min = map[i, 0];
                     }
                 }
+                min -= 1;
             }
             else if (planType == PlanType.Y)
             {
@@ -6005,16 +6143,24 @@ namespace opengl3
                         min = map[0, i];
                     }
                 }
+                min -= 1;
             }
-            min -= 20;
-            for (int i = 0; i < map.GetLength(0); i++)
+            if(min<0)
             {
-                for (int j = 0; j < map.GetLength(1); j++)
+                for (int i = 0; i < map.GetLength(0); i++)
                 {
-                     rmap[i, j] = map[i, j]-min;
-                    
+                    for (int j = 0; j < map.GetLength(1); j++)
+                    {
+                        rmap[i, j] = map[i, j] - min;
+
+                    }
                 }
             }
+            else
+            {
+                return map;
+            }
+            
             return rmap;
         }
 
@@ -6072,6 +6218,77 @@ namespace opengl3
             return new PointF(xu, yu);
         }
 
+        float findMaxMin(float[,] map, int col,PlanType planType,int maxminF)//min - 0; max - 1;
+        {
+            float maxmin = 0; 
+            int b_i_ind = 0;
+            int b_j_ind = 0;
+            int e_i_ind = 0;
+            int e_j_ind = 0;
+            if(planType == PlanType.X)
+            {
+                b_i_ind = 0;
+                e_i_ind = map.GetLength(0) - 1;
+
+                b_j_ind = col;     
+                e_j_ind = col;
+            }
+            else if(planType == PlanType.Y)
+            {
+                b_i_ind = col;
+                e_i_ind = col;
+
+                b_j_ind = 0;
+                e_j_ind = map.GetLength(1) - 1;
+            }
+            if (maxminF == 0)
+            {
+                maxmin = float.MaxValue;
+            }
+            else
+            {
+                maxmin = float.MinValue;
+            }
+            
+            for (int i= b_i_ind; i<= e_i_ind; i++)
+            {
+                for (int j = b_j_ind; j <= e_j_ind; j++)
+                {
+                    if (maxminF == 0)
+                    {
+                        if (map[i, j] < maxmin)
+                        {
+                            maxmin = map[i, j];
+                        }
+                    }
+                    else
+                    {
+                        if (map[i, j] > maxmin)
+                        {
+                            maxmin = map[i, j];
+                        }
+                    }
+
+                    
+                }
+            }
+            return maxmin;
+        }
+        Rectangle compROI(Mat mapx, Mat mapy)
+        {
+            return compROI((float[,])mapx.GetData(), (float[,])mapy.GetData());
+        }
+        Rectangle compROI(float[,] mapx, float[,] mapy)
+        {
+            float L = findMaxMin(mapx, 0, PlanType.X, 1);
+            float R = findMaxMin(mapx, mapx.GetLength(1)-1, PlanType.X, 0);
+
+            float U = findMaxMin(mapy, 0, PlanType.Y, 1);
+            float D = findMaxMin(mapy, mapx.GetLength(0)-1, PlanType.Y, 0);
+
+            //Console.WriteLine("L R U D " + L + " " + R + " " + U + " " + D + " ");
+            return new Rectangle((int)L, (int)U, (int)(R-L), (int)(D - U)); 
+        }
         Rectangle newRoi(Size size, double xc, double yc, Matrix<double> distCoefs, Func<int,int,double,double,Matrix<double>,PointF> calcDistPix)
         {
             var p1 = calcDistPix(0, 0, xc, yc, distCoefs);
@@ -6117,24 +6334,20 @@ namespace opengl3
 
             _mapx = mapx.Mat;
             _mapy = mapy.Mat;
-            return newRoi(size, xc, yc, distCoefs, calcDistorcPix_BC);
+            return compROI(_mapx,_mapy);
 
         }
         void distortFolder(string path)
         {
             var frms = loadImages_simple(path);
             var distPath = Path.Combine(path, "distort");
-            List<Mat> matsDist = new List<Mat>();
-            int boardx = 2;
-            int boardy = 2;
             foreach (var fr in frms)
             {
-                var matD = remapDistIm(fr.im, cameraMatrix, cameraDistortionCoeffs);
-
-                var matR = new Mat(matD, new Rectangle(boardx, boardy, matD.Width - boardx * 2, matD.Height - boardy * 2));
-                saveImage(matR, distPath, fr.name);
+                var matD = remapDistIm(fr.im, cameraMatrix, cameraDistortionCoeffs);            
+                saveImage(matD, distPath, fr.name);
             }
         }
+
         #endregion
 
         #region print

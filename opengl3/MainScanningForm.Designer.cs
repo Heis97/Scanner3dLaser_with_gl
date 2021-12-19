@@ -117,6 +117,9 @@ namespace opengl3
             this.but_addBufRob = new System.Windows.Forms.Button();
             this.but_robMod = new System.Windows.Forms.Button();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.imBox_mark2 = new Emgu.CV.UI.ImageBox();
+            this.imBox_mark1 = new Emgu.CV.UI.ImageBox();
+            this.lab_check = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
             this.textBox_monitor_id = new System.Windows.Forms.TextBox();
             this.but_swapMonit = new System.Windows.Forms.Button();
@@ -133,6 +136,7 @@ namespace opengl3
             this.glControl1 = new OpenGL.GlControl();
             this.tabDebug = new System.Windows.Forms.TabPage();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.imageBox_debug_cam3 = new Emgu.CV.UI.ImageBox();
             this.imageBox_debug_cam_2 = new Emgu.CV.UI.ImageBox();
             this.label_corPic = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
@@ -153,7 +157,6 @@ namespace opengl3
             this.textBox_K1 = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
             this.imageBox_cameraDist = new Emgu.CV.UI.ImageBox();
-            this.imageBox_debug_cam3 = new Emgu.CV.UI.ImageBox();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -173,11 +176,13 @@ namespace opengl3
             this.windowsTabs.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabOpenGl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).BeginInit();
             this.tabDebug.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam_2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam3)).BeginInit();
             this.SuspendLayout();
             // 
             // videoCapt
@@ -305,7 +310,7 @@ namespace opengl3
             // 
             // butSaveOpenGlIm
             // 
-            this.butSaveOpenGlIm.Location = new System.Drawing.Point(992, 528);
+            this.butSaveOpenGlIm.Location = new System.Drawing.Point(18, 955);
             this.butSaveOpenGlIm.Name = "butSaveOpenGlIm";
             this.butSaveOpenGlIm.Size = new System.Drawing.Size(121, 42);
             this.butSaveOpenGlIm.TabIndex = 20;
@@ -1044,6 +1049,9 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.imBox_mark2);
+            this.tabOpenGl.Controls.Add(this.imBox_mark1);
+            this.tabOpenGl.Controls.Add(this.lab_check);
             this.tabOpenGl.Controls.Add(this.label33);
             this.tabOpenGl.Controls.Add(this.textBox_monitor_id);
             this.tabOpenGl.Controls.Add(this.but_swapMonit);
@@ -1072,6 +1080,31 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // imBox_mark2
+            // 
+            this.imBox_mark2.Location = new System.Drawing.Point(965, 550);
+            this.imBox_mark2.Name = "imBox_mark2";
+            this.imBox_mark2.Size = new System.Drawing.Size(454, 313);
+            this.imBox_mark2.TabIndex = 71;
+            this.imBox_mark2.TabStop = false;
+            // 
+            // imBox_mark1
+            // 
+            this.imBox_mark1.Location = new System.Drawing.Point(1425, 550);
+            this.imBox_mark1.Name = "imBox_mark1";
+            this.imBox_mark1.Size = new System.Drawing.Size(454, 313);
+            this.imBox_mark1.TabIndex = 2;
+            this.imBox_mark1.TabStop = false;
+            // 
+            // lab_check
+            // 
+            this.lab_check.AutoSize = true;
+            this.lab_check.Location = new System.Drawing.Point(195, 815);
+            this.lab_check.Name = "lab_check";
+            this.lab_check.Size = new System.Drawing.Size(38, 13);
+            this.lab_check.TabIndex = 70;
+            this.lab_check.Text = "curCor";
             // 
             // label33
             // 
@@ -1191,7 +1224,7 @@ namespace opengl3
             // 
             this.debugBox.Location = new System.Drawing.Point(814, 5);
             this.debugBox.Name = "debugBox";
-            this.debugBox.Size = new System.Drawing.Size(972, 872);
+            this.debugBox.Size = new System.Drawing.Size(972, 425);
             this.debugBox.TabIndex = 62;
             this.debugBox.Text = "";
             // 
@@ -1263,6 +1296,14 @@ namespace opengl3
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "Камера";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // imageBox_debug_cam3
+            // 
+            this.imageBox_debug_cam3.Location = new System.Drawing.Point(655, 492);
+            this.imageBox_debug_cam3.Name = "imageBox_debug_cam3";
+            this.imageBox_debug_cam3.Size = new System.Drawing.Size(640, 480);
+            this.imageBox_debug_cam3.TabIndex = 22;
+            this.imageBox_debug_cam3.TabStop = false;
             // 
             // imageBox_debug_cam_2
             // 
@@ -1435,14 +1476,6 @@ namespace opengl3
             this.imageBox_cameraDist.TabStop = false;
             this.imageBox_cameraDist.MouseMove += new System.Windows.Forms.MouseEventHandler(this.imageBox_cameraDist_MouseMove);
             // 
-            // imageBox_debug_cam3
-            // 
-            this.imageBox_debug_cam3.Location = new System.Drawing.Point(655, 492);
-            this.imageBox_debug_cam3.Name = "imageBox_debug_cam3";
-            this.imageBox_debug_cam3.Size = new System.Drawing.Size(640, 480);
-            this.imageBox_debug_cam3.TabIndex = 22;
-            this.imageBox_debug_cam3.TabStop = false;
-            // 
             // MainScanningForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1474,12 +1507,14 @@ namespace opengl3
             this.tabMain.PerformLayout();
             this.tabOpenGl.ResumeLayout(false);
             this.tabOpenGl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).EndInit();
             this.tabDebug.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam_2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1610,6 +1645,9 @@ namespace opengl3
         private System.Windows.Forms.TextBox textBox_monitor_id;
         private Emgu.CV.UI.ImageBox imageBox_debug_cam_2;
         private Emgu.CV.UI.ImageBox imageBox_debug_cam3;
+        private System.Windows.Forms.Label lab_check;
+        private Emgu.CV.UI.ImageBox imBox_mark2;
+        private Emgu.CV.UI.ImageBox imBox_mark1;
     }
 }
 
