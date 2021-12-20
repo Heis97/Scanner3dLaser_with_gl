@@ -130,16 +130,16 @@ namespace opengl3
             maxArea = 15 * k * k * 250;
             red_c = 252;
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
-           
-           // Console.WriteLine(f);
-           
-            var frames1 = loadImages_test(@"virtual_stereo\test1\monitor_0\distort");
-            var frames2 = loadImages_test(@"virtual_stereo\test1\monitor_1\distort");
+
+            // Console.WriteLine(f);
+
+            // var frames1 = loadImages_test(@"virtual_stereo\test1\monitor_0\distort");
+            // var frames2 = loadImages_test(@"virtual_stereo\test1\monitor_1\distort");
 
             //EmguCVUndistortFisheye(@"ref_model\test4\distort", new Size(7, 6));
             //calibrateFishEyeCam(frames.ToArray(), new Size(7, 6));
-
-            calibrateCam(frames1.ToArray(), new Size(7, 6));
+            var framesStereo = loadImages_stereoCV(@"virtual_stereo\test1\monitor_0\distort", @"virtual_stereo\test1\monitor_1\distort");
+           // calibrateCam(frames1.ToArray(), new Size(7, 6));
             //calibrateCamStereo(frames1.ToArray(), frames2.ToArray(), new Size(7, 6));
             cameraDistortionCoeffs[0, 0] = 0.1 * Math.Pow(10, -5);
             cameraDistortionCoeffs[1, 0] = 0;
@@ -1631,6 +1631,38 @@ namespace opengl3
             return new Frame(im, name);
         }
 
+        public Frame loadImage_stereoCV(string filepath1, string filepath2)
+        {
+            string name1 = Path.GetFileName(filepath1);
+            var im1 = new Mat(filepath1);
+            string name2 = Path.GetFileName(filepath2);
+            var im2 = new Mat(filepath2);
+            return new Frame(im1,im2, name1);
+        }
+        public List<Frame> loadImages_stereoCV(string path1, string path2)
+        {
+            Console.WriteLine(path1);
+            var files1 = Directory.GetFiles(path1);
+            var files2 = Directory.GetFiles(path2);
+            List<Frame> frames = new List<Frame>();
+            for(int i=0; i<files1.Length; i++)
+            {
+                var frame = loadImage_stereoCV(files1[i], files2[2]);
+                if (frame != null)
+                {
+                    frames.Add(frame);
+                    comboImages.Items.Add(frame);
+                    comboImages.Items.Add(frame.im_sec);
+                }
+            }
+            if (frames.Count != 0)
+            {
+                return frames;
+            }
+            return null;
+        }
+
+
         public List<Frame> loadImages(string path, double FoV, double Side,int bin = 60, int frame_len = 15, bool visible = false)
         {
             Console.WriteLine(path);
@@ -2192,13 +2224,16 @@ namespace opengl3
             else if (fr.type == FrameType.Test)
             {
                 //findLaserArea(fr.im, imageBox1, (int)red_c);
-                imageBox_debug_cam_2.Image =  drawDescriptors(fr.im);
+                //imageBox_debug_cam_2.Image =  drawDescriptors(fr.im);
                 
                 //findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Up);
             }
-            else
+            else if(fr.type == FrameType.Stereo)
             {
 
+                imBox_debug1.Image = drawDescriptors(fr.im);
+                imBox_debug2.Image = drawDescriptors(fr.im_sec);
+                imageBox1.Image = fr.im_sec;
             }
             imageBox2.Image = fr.im;
         }
@@ -5825,7 +5860,7 @@ namespace opengl3
             var invmap = remap(mapx, mapy, mat);
             //CvInvoke.Rectangle(invmap, roi, new MCvScalar(255, 0, 0));
             
-            imageBox_debug_cam3.Image = invmap;
+            imBox_debug2.Image = invmap;
             return  new Mat(invmap,roi);
         }
 

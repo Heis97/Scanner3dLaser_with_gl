@@ -14,7 +14,7 @@ namespace opengl3
     public enum PlanType { X, Y, XY }
     public enum DirectionType { Up , Down }
     public enum SolveType { Simple, Complex }
-    public enum FrameType { Pos, Las, Test,MarkBoard }
+    public enum FrameType { Pos, Las, Test,MarkBoard,Stereo }
 
     public class Camera
     {
@@ -926,6 +926,7 @@ namespace opengl3
     public class Frame
     {
         public Mat im;
+        public Mat im_sec;
         public Point3d_GL pos_cam;
         public Point3d_GL pos_rob;
         public Point3d_GL pos_rob_or;
@@ -981,6 +982,15 @@ namespace opengl3
             name = _name;
             size = _im.Size;
             type = frameType;
+
+        }
+        public Frame(Mat _im, Mat _im2, string _name)
+        {
+            im = _im;
+            im_sec = _im2;
+            name = _name;
+            size = _im.Size;
+            type = FrameType.Stereo ;
 
         }
         override public string ToString()

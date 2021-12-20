@@ -136,8 +136,8 @@ namespace opengl3
             this.glControl1 = new OpenGL.GlControl();
             this.tabDebug = new System.Windows.Forms.TabPage();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.imageBox_debug_cam3 = new Emgu.CV.UI.ImageBox();
-            this.imageBox_debug_cam_2 = new Emgu.CV.UI.ImageBox();
+            this.imBox_debug2 = new Emgu.CV.UI.ImageBox();
+            this.imBox_debug1 = new Emgu.CV.UI.ImageBox();
             this.label_corPic = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox_P2deg = new System.Windows.Forms.TextBox();
@@ -180,8 +180,8 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).BeginInit();
             this.tabDebug.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam_2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_debug2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_debug1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).BeginInit();
             this.SuspendLayout();
             // 
@@ -1268,8 +1268,8 @@ namespace opengl3
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.imageBox_debug_cam3);
-            this.tabPage1.Controls.Add(this.imageBox_debug_cam_2);
+            this.tabPage1.Controls.Add(this.imBox_debug2);
+            this.tabPage1.Controls.Add(this.imBox_debug1);
             this.tabPage1.Controls.Add(this.label_corPic);
             this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.textBox_P2deg);
@@ -1297,21 +1297,21 @@ namespace opengl3
             this.tabPage1.Text = "Камера";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // imageBox_debug_cam3
+            // imBox_debug2
             // 
-            this.imageBox_debug_cam3.Location = new System.Drawing.Point(655, 492);
-            this.imageBox_debug_cam3.Name = "imageBox_debug_cam3";
-            this.imageBox_debug_cam3.Size = new System.Drawing.Size(640, 480);
-            this.imageBox_debug_cam3.TabIndex = 22;
-            this.imageBox_debug_cam3.TabStop = false;
+            this.imBox_debug2.Location = new System.Drawing.Point(655, 492);
+            this.imBox_debug2.Name = "imBox_debug2";
+            this.imBox_debug2.Size = new System.Drawing.Size(640, 480);
+            this.imBox_debug2.TabIndex = 22;
+            this.imBox_debug2.TabStop = false;
             // 
-            // imageBox_debug_cam_2
+            // imBox_debug1
             // 
-            this.imageBox_debug_cam_2.Location = new System.Drawing.Point(6, 492);
-            this.imageBox_debug_cam_2.Name = "imageBox_debug_cam_2";
-            this.imageBox_debug_cam_2.Size = new System.Drawing.Size(640, 480);
-            this.imageBox_debug_cam_2.TabIndex = 21;
-            this.imageBox_debug_cam_2.TabStop = false;
+            this.imBox_debug1.Location = new System.Drawing.Point(6, 492);
+            this.imBox_debug1.Name = "imBox_debug1";
+            this.imBox_debug1.Size = new System.Drawing.Size(640, 480);
+            this.imBox_debug1.TabIndex = 21;
+            this.imBox_debug1.TabStop = false;
             // 
             // label_corPic
             // 
@@ -1512,8 +1512,8 @@ namespace opengl3
             this.tabDebug.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox_debug_cam_2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_debug2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_debug1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).EndInit();
             this.ResumeLayout(false);
 
@@ -1643,8 +1643,8 @@ namespace opengl3
         private System.Windows.Forms.Button but_swapMonit;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.TextBox textBox_monitor_id;
-        private Emgu.CV.UI.ImageBox imageBox_debug_cam_2;
-        private Emgu.CV.UI.ImageBox imageBox_debug_cam3;
+        private Emgu.CV.UI.ImageBox imBox_debug1;
+        private Emgu.CV.UI.ImageBox imBox_debug2;
         private System.Windows.Forms.Label lab_check;
         private Emgu.CV.UI.ImageBox imBox_mark2;
         private Emgu.CV.UI.ImageBox imBox_mark1;
