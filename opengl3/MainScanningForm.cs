@@ -151,7 +151,7 @@ namespace opengl3
             var sq1 = new Square(0.5f, 0.5f, 1, 1);
             var sq2 = new Square(0, 0, 1, 1);
             Console.WriteLine("aresq " + compCrossArea(sq1, sq2));
-
+            
             generateImage3D_BOARD(8, 7,10);
 
             GL1.buffersGl.sortObj();
@@ -2191,7 +2191,9 @@ namespace opengl3
             }
             else if (fr.type == FrameType.Test)
             {
-                findLaserArea(fr.im, imageBox1, (int)red_c);
+                //findLaserArea(fr.im, imageBox1, (int)red_c);
+                imageBox_debug_cam_2.Image =  drawDescriptors(fr.im);
+                
                 //findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Up);
             }
             else
@@ -5336,6 +5338,33 @@ namespace opengl3
             return new float[] { K, min };
         }
 
+        Mat drawDescriptors(Mat mat)
+        {
+            var detector_freak = new Emgu.CV.XFeatures2D.Freak();
+
+            var kp = detector_freak.Detect(mat);
+
+            var desc_brief = new Emgu.CV.XFeatures2D.BriefDescriptorExtractor();
+           //new VectorOfKeyPoint();
+            var descrs = new Mat();
+           
+
+           // desc_brief.DetectAndCompute(mat, null, kp, descrs, false);
+            //var mat_desc = new Mat();
+            for(int i = 0; i< kp.Length; i++)
+            {
+                CvInvoke.DrawMarker(
+                    mat,
+                    new Point((int)kp[i].Point.X, (int)kp[i].Point.Y),
+                    new MCvScalar(0, 0, 255),
+                    MarkerTypes.Cross,
+                    4,
+                    1);
+
+            }
+
+            return mat;
+        }
         Mat drawChessboard(ImageBox imageBox, Size size)
         {
             var corn = new VectorOfPointF();
@@ -5349,6 +5378,8 @@ namespace opengl3
         {
            var  stereo = new StereoBM();
             
+            var desk1 = new Emgu.CV.XFeatures2D.LUCID();
+           // desk.
             var corn = new VectorOfPointF();
             Mat mtx = new Mat();
             Mat dist = new Mat();
