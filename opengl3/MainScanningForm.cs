@@ -5340,7 +5340,7 @@ namespace opengl3
 
         Mat drawDescriptors(Mat mat)
         {
-            var detector_freak = new Emgu.CV.XFeatures2D.Freak();
+            var detector_freak = new Emgu.CV.Features2D.ORBDetector();
 
             var kp = detector_freak.Detect(mat);
 
