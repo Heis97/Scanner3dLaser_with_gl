@@ -935,7 +935,8 @@ namespace opengl3
         public PointF[] points;
         public FrameType type;
         public Camera camera;
-        public double size_mark; 
+        public double size_mark;
+        public DateTime dateTime;
         public Frame(Mat _im, Point3d_GL _pos_cam, Point3d_GL _pos_rob, string _name, PointF[] _points)
         {
             im = _im;

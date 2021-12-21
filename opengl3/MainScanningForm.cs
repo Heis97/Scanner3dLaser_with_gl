@@ -139,7 +139,7 @@ namespace opengl3
             //EmguCVUndistortFisheye(@"ref_model\test4\distort", new Size(7, 6));
             //calibrateFishEyeCam(frames.ToArray(), new Size(7, 6));
             var framesStereo = loadImages_stereoCV(@"virtual_stereo\test1\monitor_0\distort", @"virtual_stereo\test1\monitor_1\distort");
-           // calibrateCam(frames1.ToArray(), new Size(7, 6));
+            //calibrateCam(frames1.ToArray(), new Size(7, 6));
             //calibrateCamStereo(frames1.ToArray(), frames2.ToArray(), new Size(7, 6));
             cameraDistortionCoeffs[0, 0] = 0.1 * Math.Pow(10, -5);
             cameraDistortionCoeffs[1, 0] = 0;
@@ -1556,7 +1556,7 @@ namespace opengl3
             var file_ext = name_t.Split(new char[] { '.' });
             var coords = name_t.Split(new char[] { ' ' });
             // Console.WriteLine(file_ext[file_ext.Length - 1]);
-
+            
             if ((file_ext[file_ext.Length - 1] == "jpg" || file_ext[file_ext.Length - 1] == "png") && file_ext[0] != "calibresult")
             {
                 //Console.WriteLine(coords.Length);
@@ -1626,9 +1626,11 @@ namespace opengl3
 
         public Frame loadImage_test(string filepath)
         {
-            string name = Path.GetFileName(filepath);
+            string name = Path.GetFileName(filepath);         
             var im = new Mat(filepath);
-            return new Frame(im, name);
+            var fr = new Frame(im, name);
+            fr.dateTime = File.GetCreationTime(filepath);
+            return fr;
         }
 
         public Frame loadImage_stereoCV(string filepath1, string filepath2)
@@ -1647,12 +1649,12 @@ namespace opengl3
             List<Frame> frames = new List<Frame>();
             for(int i=0; i<files1.Length; i++)
             {
-                var frame = loadImage_stereoCV(files1[i], files2[2]);
+                var frame = loadImage_stereoCV(files1[i], files2[i]);
                 if (frame != null)
                 {
                     frames.Add(frame);
                     comboImages.Items.Add(frame);
-                    comboImages.Items.Add(frame.im_sec);
+                    //comboImages.Items.Add(frame.im_sec);
                 }
             }
             if (frames.Count != 0)
@@ -5375,9 +5377,9 @@ namespace opengl3
 
         Mat drawDescriptors(Mat mat)
         {
-            var detector_freak = new Emgu.CV.Features2D.ORBDetector();
-
-            var kp = detector_freak.Detect(mat);
+            var detector_ORB= new Emgu.CV.Features2D.ORBDetector();
+            //var detector_SURF = new Emgu.CV.Features2D.
+            var kp = detector_ORB.Detect(mat);
 
             var desc_brief = new Emgu.CV.XFeatures2D.BriefDescriptorExtractor();
            //new VectorOfKeyPoint();
@@ -6405,12 +6407,20 @@ namespace opengl3
         }
         void distortFolder(string path)
         {
-            var frms = loadImages_simple(path);
+            
+            var frms = loadImages_test(path);
             var distPath = Path.Combine(path, "distort");
-            foreach (var fr in frms)
+
+            var fr1 = from f in frms
+                      orderby f.dateTime.Ticks
+                      select f;
+            var vfrs = fr1.ToList();
+            int ind = 0;
+            foreach (var fr in vfrs)
             {
                 var matD = remapDistIm(fr.im, cameraMatrix, cameraDistortionCoeffs);            
-                saveImage(matD, distPath, fr.name);
+                saveImage(matD, distPath, ind+" "+fr.name);
+                ind++;
             }
         }
 
