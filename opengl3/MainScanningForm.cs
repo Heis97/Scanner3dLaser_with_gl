@@ -132,10 +132,10 @@ namespace opengl3
             red_c = 252;
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-            var frames1 = loadImages_simple(@"virtual_stereo\test1\monitor_0\distort");
-            calibrateCam(frames1.ToArray(), new Size(6, 7));
+            //var frames1 = loadImages_test(@"virtual_stereo\test1\monitor_0\distort");
+           // calibrateCam(frames1.ToArray(), new Size(6, 7));
             var framesStereo = loadImages_stereoCV(@"virtual_stereo\test1\monitor_0\distort", @"virtual_stereo\test1\monitor_1\distort");
-            calibrateCamStereo(framesStereo.ToArray(), new Size(7, 6));
+            //calibrateCamStereo(framesStereo.ToArray(), new Size(7, 6));
             comboImages.SelectedIndex = 0;
 
             cameraDistortionCoeffs[0, 0] = 0.5 * Math.Pow(10, -6);
@@ -2226,6 +2226,7 @@ namespace opengl3
         {
             Console.WriteLine(comboImages.SelectedItem);
             var fr = (Frame)comboImages.SelectedItem;
+            Console.WriteLine(fr.type);
             if (fr.type == FrameType.Pos)
             {
                 finPointFsFromIm(fr.im, bin_pos, imageBox1);
@@ -2250,7 +2251,7 @@ namespace opengl3
                 //drawDescriptors(ref fr.im_sec);
                 //imBox_debug1.Image = fr.im;
                 // imBox_debug2.Image = fr.im_sec;
-
+                imageBox_cameraDist.Image = drawDescriptorsMatch(ref fr.im, ref fr.im_sec);
                 imBox_debug1.Image = drawChessboard(fr.im, new Size(6, 7));
                 imBox_debug2.Image = drawChessboard(fr.im_sec, new Size(6, 7));
                 imageBox1.Image = fr.im_sec;
@@ -5456,10 +5457,12 @@ namespace opengl3
 
         MKeyPoint[] drawDescriptors(ref Mat mat)
         {
-            var detector_ORB= new Emgu.CV.Features2D.ORBDetector(50,1.1f);
+            var detector_ORB= new Emgu.CV.Features2D.ORBDetector(50);
             var detector_SURF = new Emgu.CV.Features2D.FastFeatureDetector();
-            var kp = detector_SURF.Detect(mat);
-            var matcher = new Emgu.CV.Features2D.BFMatcher(Emgu.CV.Features2D.DistanceType.MinMax,false);
+            var kp = detector_ORB.Detect(mat);
+
+
+            
            // matcher.Match()
             var desc_brief = new Emgu.CV.XFeatures2D.BriefDescriptorExtractor();
            //new VectorOfKeyPoint();
@@ -5481,6 +5484,22 @@ namespace opengl3
             }
 
             return kp;
+        }
+        Mat drawDescriptorsMatch(ref Mat mat1, ref Mat mat2)
+        {
+            var kps1 = new VectorOfKeyPoint();
+            var desk1 = new Mat();
+            var kps2 = new VectorOfKeyPoint();
+            var desk2 = new Mat();
+            var detector_ORB = new Emgu.CV.Features2D.ORBDetector();
+            detector_ORB.DetectAndCompute(mat1, null, kps1, desk1, false);
+            detector_ORB.DetectAndCompute(mat2, null, kps2, desk2, false);
+            var matcher = new Emgu.CV.Features2D.BFMatcher(Emgu.CV.Features2D.DistanceType.Hamming,true);
+            var matches = new VectorOfDMatch();
+            matcher.Match(desk1, desk2, matches);
+            var mat3 = new Mat();
+            Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
+            return mat3;
         }
 
         Mat drawChessboard(Mat im, Size size)
@@ -6307,7 +6326,7 @@ namespace opengl3
 
         
 
-        PointF calcDistorcPix(int xd, int yd, double xc, double yc, Matrix<double> distCoefs)
+        PointF calcDistorcPix(int dim, int xd, int yd, double xc, double yc, Matrix<double> distCoefs)
         {
 
 
@@ -6332,7 +6351,7 @@ namespace opengl3
             
             return new PointF(xu, yu);
         }
-        PointF calcDistorcPix_BC(int _xd, int _yd, double _xc, double _yc, Matrix<double> distCoefs)
+        PointF calcDistorcPix_BC(int dim, int _xd, int _yd, double _xc, double _yc, Matrix<double> distCoefs)
         {
 
             var K1 = distCoefs[0, 0];
@@ -6340,11 +6359,11 @@ namespace opengl3
             var P1 = distCoefs[2, 0];
             var P2 = distCoefs[3, 0];
             var K3 = distCoefs[4, 0];
-            float xd = (float)_xd / 400;
-            float yd = (float)_yd / 400;
+            float xd = (float)_xd / dim;
+            float yd = (float)_yd / dim;
 
-            float xc = (float)_xc / 400;
-            float yc = (float)_yc / 400;
+            float xc = (float)_xc / dim;
+            float yc = (float)_yc / dim;
             var delt = new PointF((float)((double)xd - xc), (float)((double)yd - yc));
             var r = (double)delt.norm;
             var r2 = Math.Pow(r, 2);
@@ -6361,7 +6380,7 @@ namespace opengl3
            // var xu = xc + delx *(1 + K1 * r2 + K2 * r4 + K3 * r6);
            // var yu = yc + dely * (1 + K1 * r2 + K2 * r4 + K3 * r6);
 
-            return new PointF(_xu*400, _yu * 400);
+            return new PointF(_xu* dim, _yu * dim);
         }
 
         float findMaxMin(float[,] map, int col,PlanType planType,int maxminF)//min - 0; max - 1;
@@ -6435,12 +6454,12 @@ namespace opengl3
             //Console.WriteLine("L R U D " + L + " " + R + " " + U + " " + D + " ");
             return new Rectangle((int)L, (int)U, (int)(R-L), (int)(D - U)); 
         }
-        Rectangle newRoi(Size size, double xc, double yc, Matrix<double> distCoefs, Func<int,int,double,double,Matrix<double>,PointF> calcDistPix)
+        Rectangle newRoi(Size size, double xc, double yc, Matrix<double> distCoefs, Func<int,int,int,double,double,Matrix<double>,PointF> calcDistPix)
         {
-            var p1 = calcDistPix(0, 0, xc, yc, distCoefs);
-            var p2 = calcDistPix(size.Width, 0, xc, yc, distCoefs);
-            var p3 = calcDistPix(size.Width, size.Height, xc, yc, distCoefs);
-            var p4 = calcDistPix(0, size.Height, xc, yc, distCoefs);
+            var p1 = calcDistPix(size.Width,0, 0, xc, yc, distCoefs);
+            var p2 = calcDistPix(size.Width, size.Width, 0, xc, yc, distCoefs);
+            var p3 = calcDistPix(size.Width, size.Width, size.Height, xc, yc, distCoefs);
+            var p4 = calcDistPix(size.Width, 0, size.Height, xc, yc, distCoefs);
             print(p1 + " " + p2 + " " + p3 + " " + p4 + " ");
             return RoiFrom4Points(p1, p2, p3, p4);
         }
@@ -6471,7 +6490,7 @@ namespace opengl3
                 for (int j = 0; j < size.Width; j++)
                 {
 
-                    var p = calcDistorcPix_BC(j, i, xc, yc, distCoefs);
+                    var p = calcDistorcPix_BC(size.Width, j, i, xc, yc, distCoefs);
                     mapx[i, j] = p.X;
                     mapy[i, j] = p.Y;
                     //Console.WriteLine(i + " " + j);
