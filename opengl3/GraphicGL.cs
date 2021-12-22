@@ -207,6 +207,7 @@ namespace opengl3
                     trz_info.zRot = trz_m.zRot + consttransf.zRot;
                     trz_info.viewType_ = trz_m.viewType_;
                     trz_info.rect = rect;
+                    trz_info.visible = trz_m.visible;
                     
                     return trz_info;
                 default:
@@ -230,6 +231,51 @@ namespace opengl3
         {
 
         }
+
+        public TransRotZoom(string data)
+        {
+            var dt = data.Split();
+            if(dt.Length<7)
+            {
+                
+            }
+            xRot = Convert.ToDouble(dt[0]);
+            yRot = Convert.ToDouble(dt[1]);
+            zRot = Convert.ToDouble(dt[2]);
+            off_x = Convert.ToDouble(dt[3]);
+            off_y = Convert.ToDouble(dt[4]);
+            off_z = Convert.ToDouble(dt[5]);
+            zoom = Convert.ToDouble(dt[6]);
+        }
+
+        public void setTrz(double _xRot, double _yRot, double _zRot,
+            double _off_x, double _off_y, double _off_z, double _zoom)
+        {
+            xRot = _xRot;
+            yRot = _yRot;
+            zRot = _zRot;
+            off_x = _off_x;
+            off_y = _off_y;
+            off_z = _off_z;
+            zoom = _zoom;
+        }
+
+        public void setTrz(TransRotZoom trz)
+        {
+            xRot = trz.xRot;
+            yRot = trz.yRot;
+            zRot = trz.zRot;
+            off_x = trz.off_x;
+            off_y = trz.off_y;
+            off_z = trz.off_z;
+            zoom = trz.zoom;
+        }
+        public override string ToString()
+        {
+            return xRot + " " + yRot + " " + zRot + " "
+                + off_x + " " + off_y + " " + off_z + " "
+                + zoom + " " + viewType_ + " ";
+        }
         public void setxRot(double value)
         {
             xRot = value;
@@ -252,6 +298,9 @@ namespace opengl3
     class GraphicGL
     {
         #region vars
+        public int saveImagesLen = 0;
+        public int renderdelim = 3;
+        public int rendercout = 0;
         public viewType typeProj = viewType.Perspective;
         Size sizeControl;
         Point lastPos;
@@ -293,6 +342,7 @@ namespace opengl3
         List<Point3d_GL> pointsPaint = new List<Point3d_GL>();
         Point3d_GL curPointPaint = new Point3d_GL(0, 0, 0);
         public List<TransRotZoom> transRotZooms = new List<TransRotZoom>();
+        public TransRotZoom[] trzForSave;
         public Size size = new Size(1,1);
         #endregion
        
@@ -326,6 +376,12 @@ namespace opengl3
                         renderGlobj(opgl_obj);  
                     }
                 }
+            }
+
+            rendercout++;
+            if(rendercout%renderdelim==0)
+            {
+                rendercout = 0;
             }
         }
         void addCams()
@@ -455,29 +511,16 @@ namespace opengl3
         
 
         #region util
-        public void SaveToBitmap(string folder,int id)
+        public void SaveToFolder(string folder,int id)
         {
             var bitmap = matFromMonitor(id);
             var invVm = Vs[id].Inverse;
             var trz_in = transRotZooms[selectTRZ_id(id)];
             var trz = trz_in.getInfo(transRotZooms.ToArray());
-            /* Vertex3f ver0 = new Vertex3f(invVm.Column0.x, invVm.Column0.y, invVm.Column0.z);
-             Vertex3f ver1 = new Vertex3f(invVm.Column1.x, invVm.Column1.y, invVm.Column1.z);
-             Vertex3f ver2 = new Vertex3f(invVm.Column2.x, invVm.Column2.y, invVm.Column2.z);
-             Vertex3f ver3 = new Vertex3f(invVm.Column3.x, invVm.Column3.y, invVm.Column3.z);
-             var path_gl = Path.Combine(folder, "monitor_" + id.ToString());
-             Directory.CreateDirectory(path_gl);
-             bitmap.Save(path_gl + "/" + ver0.x + " " + ver0.y + " " + ver0.z + " "
-                 + ver1.x + " " + ver1.y + " " + ver1.z + " "
-                 + ver2.x + " " + ver2.y + " " + ver2.z + " "
-                 + ver3.x + " " + ver3.y + " " + ver3.z + " " + ".png");*/
-
 
             var path_gl = Path.Combine(folder, "monitor_" + id.ToString());
             Directory.CreateDirectory(path_gl);
-            bitmap.Save(path_gl + "/" + trz.xRot + " " + trz.yRot + " " + trz.zRot + " "
-                + trz.off_x + " " + trz.off_y + " " + trz.off_z + " "
-                + trz.zoom + " " + trz.viewType_ + " " + ".png");
+            bitmap.Save(path_gl + "/" + trz.ToString() + ".png");
         }
 
         public Bitmap bitmapFromMonitor(int id)
@@ -499,8 +542,12 @@ namespace opengl3
 
         public Mat matFromMonitor(int id)
         {
-            var recTRZ = (transRotZooms[selectTRZ_id(id)]).rect;
-            var data = new Mat(recTRZ.Width, recTRZ.Height, Emgu.CV.CvEnum.DepthType.Cv8U, 3);       
+            var trz = transRotZooms[selectTRZ_id(id)];
+            var recTRZ = trz.rect;
+            var data = new Mat(recTRZ.Width, recTRZ.Height, Emgu.CV.CvEnum.DepthType.Cv8U, 3);
+            Console.WriteLine("recTRZ.Width " + recTRZ.X + " " + recTRZ.Y + " " + recTRZ.Width + " " + recTRZ.Height);
+            Console.WriteLine(data.DataPointer);
+            Console.WriteLine(trz);
             Gl.ReadPixels(recTRZ.X, recTRZ.Y, recTRZ.Width, recTRZ.Height, PixelFormat.Bgr, PixelType.UnsignedByte, data.DataPointer);
             //CvInvoke.Rotate(data, data, Emgu.CV.CvEnum.RotateFlags.Rotate180);
             return data;
@@ -1247,7 +1294,7 @@ namespace opengl3
         }
         void addCamView(int id)
         {
-            var trz = transRotZooms[selectTRZ_id(id)];
+            var trz = transRotZooms[selectTRZ_id(id)].getInfo(transRotZooms.ToArray());
             if (trz.visible == true)
             {
                 if (trz.viewType_ == viewType.Perspective)
@@ -1274,6 +1321,7 @@ namespace opengl3
                 }
                 else if (trz.viewType_ == viewType.Ortho)
                 {
+                    
                     double _z = -2000;
                     double _z0 = 0.1;
                     double _x = 100 * trz.zoom;

@@ -117,6 +117,7 @@ namespace opengl3
             this.but_addBufRob = new System.Windows.Forms.Button();
             this.but_robMod = new System.Windows.Forms.Button();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_imGen = new System.Windows.Forms.Button();
             this.imBox_mark2 = new Emgu.CV.UI.ImageBox();
             this.imBox_mark1 = new Emgu.CV.UI.ImageBox();
             this.lab_check = new System.Windows.Forms.Label();
@@ -1049,6 +1050,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_imGen);
             this.tabOpenGl.Controls.Add(this.imBox_mark2);
             this.tabOpenGl.Controls.Add(this.imBox_mark1);
             this.tabOpenGl.Controls.Add(this.lab_check);
@@ -1080,6 +1082,16 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // but_imGen
+            // 
+            this.but_imGen.Location = new System.Drawing.Point(1298, 6);
+            this.but_imGen.Name = "but_imGen";
+            this.but_imGen.Size = new System.Drawing.Size(96, 56);
+            this.but_imGen.TabIndex = 72;
+            this.but_imGen.Text = "Начать генерацию";
+            this.but_imGen.UseVisualStyleBackColor = true;
+            this.but_imGen.Click += new System.EventHandler(this.but_imGen_Click);
             // 
             // imBox_mark2
             // 
@@ -1239,7 +1251,7 @@ namespace opengl3
             this.glControl1.Location = new System.Drawing.Point(6, 6);
             this.glControl1.MultisampleBits = ((uint)(0u));
             this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(800, 800);
+            this.glControl1.Size = new System.Drawing.Size(1600, 1600);
             this.glControl1.StencilBits = ((uint)(0u));
             this.glControl1.TabIndex = 65;
             this.glControl1.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_ContextCreated);
@@ -1370,7 +1382,7 @@ namespace opengl3
             this.textBox_K1deg.Name = "textBox_K1deg";
             this.textBox_K1deg.Size = new System.Drawing.Size(100, 20);
             this.textBox_K1deg.TabIndex = 14;
-            this.textBox_K1deg.Text = "-5";
+            this.textBox_K1deg.Text = "0";
             // 
             // but_comp_dist
             // 
@@ -1456,7 +1468,7 @@ namespace opengl3
             this.textBox_K1.Name = "textBox_K1";
             this.textBox_K1.Size = new System.Drawing.Size(100, 20);
             this.textBox_K1.TabIndex = 4;
-            this.textBox_K1.Text = "-0.1";
+            this.textBox_K1.Text = "0.1";
             // 
             // label28
             // 
@@ -1648,6 +1660,7 @@ namespace opengl3
         private System.Windows.Forms.Label lab_check;
         private Emgu.CV.UI.ImageBox imBox_mark2;
         private Emgu.CV.UI.ImageBox imBox_mark1;
+        private System.Windows.Forms.Button but_imGen;
     }
 }
 
