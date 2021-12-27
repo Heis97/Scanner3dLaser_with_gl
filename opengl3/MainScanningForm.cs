@@ -71,6 +71,9 @@ namespace opengl3
         Matrix<double> cameraDistortionCoeffs = new Matrix<double>(5, 1);
         Matrix<double> cameraMatrix = new Matrix<double>(3, 3);
 
+        Matrix<double> cameraDistortionCoeffs_dist = new Matrix<double>(5, 1);
+        Matrix<double> cameraMatrix_dist = new Matrix<double>(3, 3);
+
         Matrix<double> cameraDistortionCoeffs1 = new Matrix<double>(5, 1);
         Matrix<double> cameraMatrix1 = new Matrix<double>(3, 3);
         Matrix<double> cameraDistortionCoeffs2 = new Matrix<double>(5, 1);
@@ -132,17 +135,21 @@ namespace opengl3
             red_c = 252;
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-            //var frames1 = loadImages_test(@"virtual_stereo\test1\monitor_0\distort");
-           // calibrateCam(frames1.ToArray(), new Size(6, 7));
-            var framesStereo = loadImages_stereoCV(@"virtual_stereo\test1\monitor_0\distort", @"virtual_stereo\test1\monitor_1\distort");
-            //calibrateCamStereo(framesStereo.ToArray(), new Size(7, 6));
+            var frames1 = loadImages_test(@"tutor\cam1");
+            calibrateCam(frames1.ToArray(), new Size(6, 7));
+
+
+            //var framesStereo = loadImages_stereoCV(@"virtual_stereo\test3\monitor_2", @"virtual_stereo\test3\monitor_3");
+            //var framesStereo_tutor = loadImages_stereoCV(@"tutor\cam1", @"tutor\cam2");
+            //calibrateCamStereo(framesStereo.ToArray(), new Size(6, 7));
+
             comboImages.SelectedIndex = 0;
 
-            cameraDistortionCoeffs[0, 0] = 0.5 * Math.Pow(10, -6);
-            cameraDistortionCoeffs[1, 0] = 0;
-            cameraDistortionCoeffs[2, 0] = 0;
-            cameraDistortionCoeffs[3, 0] = 0;
-            cameraDistortionCoeffs[4, 0] = 0;
+            //cameraDistortionCoeffs[0, 0] = 0.5 * Math.Pow(10, -6);
+           // cameraDistortionCoeffs[1, 0] = 0;
+           // cameraDistortionCoeffs[2, 0] = 0;
+          // cameraDistortionCoeffs[3, 0] = 0;
+           // cameraDistortionCoeffs[4, 0] = 0;
 
 
            // distortFolder(@"virtual_stereo\test1\1\monitor_0");
@@ -154,6 +161,8 @@ namespace opengl3
             Console.WriteLine("aresq " + compCrossArea(sq1, sq2));
 
             generateImage3D_BOARD(8, 7, 10);
+
+           // generateImage3D_BOARD(80, 70, 5);
 
             GL1.buffersGl.sortObj();
             GL1.printDebug(debugBox);
@@ -252,15 +261,8 @@ namespace opengl3
         void saveImage(ImageBox box, string folder, string name)
         {
             var mat1 = (Mat)box.Image;
-            if (mat1 != null)
-            {
-                Directory.CreateDirectory(folder);
-                var im1 = mat1.ToImage<Bgr, byte>();
-                Console.WriteLine(folder + "\\" + name);
-                im1.Save(folder + "\\" + name);
-            }
+            saveImage(mat1, folder, name);
         }
-
         void saveImage(Mat mat1, string folder, string name)
         {
             if (mat1 != null)
@@ -1640,7 +1642,12 @@ namespace opengl3
             var im1 = new Mat(filepath1);
             string name2 = Path.GetFileName(filepath2);
             var im2 = new Mat(filepath2);
-            return new Frame(im1, im2, name1);
+            Console.WriteLine(name1);
+            Console.WriteLine(name2);
+            Console.WriteLine("------------");
+            var fr = new Frame(im1, im2, name1);
+            fr.dateTime = File.GetCreationTime(filepath1);
+            return fr;
         }
         public List<Frame> loadImages_stereoCV(string path1, string path2)
         {
@@ -1903,11 +1910,11 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            GL1.addMonitor(new Rectangle(0, 0, (int)w / 2, (int)h / 2), 0, new Vertex3d(0, 0, 0), new Vertex3d(50, 0, 0), 1);
-            GL1.addMonitor(new Rectangle((int)w / 2, 0, (int)w / 2, (int)h / 2), 1);
-            GL1.addMonitor(new Rectangle((int)w / 2, h / 2, (int)w / 2, (int)h / 2), 2);
-            // GL1.addMonitor(new Rectangle(0, h/2, w / 4, h / 4), 2);
-            // GL1.addMonitor(new Rectangle(w / 2, h/2, w/4, h/4), 3);
+            GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 0, new Vertex3d(0, 0, 0), new Vertex3d(50, 0, 0), 1);
+            GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 1);
+            GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2,h / 2), 2);
+            GL1.addMonitor(new Rectangle(0, h/2, w / 2, h / 2), 3);
+
             addButForMonitor(GL1, send.Size, send.Location);
 
             GL1.add_Label(lab_kor, lab_curCor);
@@ -1947,14 +1954,15 @@ namespace opengl3
         {
 
             GL1.glControl_Render(sender, e);
-            GL1.printDebug(debugBox);
+            //GL1.printDebug(debugBox);
             if (GL1.rendercout == 0)
             {
                 SaveMonitor(GL1);
             }
-            // imBox_mark1.Image = GL1.matFromMonitor(0);
-            //imBox_mark2.Image = GL1.matFromMonitor(1);
-
+           // imBox_mark1.
+            imBox_mark1.Image = remapDistImOpenCv(GL1.matFromMonitor(0), cameraMatrix, cameraDistortionCoeffs);
+            imBox_mark2.Image = remapDistImOpenCv(GL1.matFromMonitor(1), cameraMatrix, cameraDistortionCoeffs);
+            
             // imBox_mark1.Image =  drawChessboard((Mat)imBox_mark1.Image, new Size(6, 7));
             //  imBox_mark2.Image =  drawChessboard((Mat)imBox_mark2.Image, new Size(6, 7));
 
@@ -1970,7 +1978,7 @@ namespace opengl3
         #region buttons
         private void but_imGen_Click(object sender, EventArgs e)
         {
-            generateImagesFromAnotherFolder();
+            generateImagesFromAnotherFolderStereo(new string[] { @"virtual_stereo\test1\monitor_0", @"virtual_stereo\test1\monitor_1" });
             startGen = 1;
         }
         private void but_swapMonit_Click(object sender, EventArgs e)
@@ -2251,7 +2259,12 @@ namespace opengl3
                 //drawDescriptors(ref fr.im_sec);
                 //imBox_debug1.Image = fr.im;
                 // imBox_debug2.Image = fr.im_sec;
-                imageBox_cameraDist.Image = drawDescriptorsMatch(ref fr.im, ref fr.im_sec);
+                //var disp = epipolarTest(fr.im, fr.im_sec);
+               // var mesh = meshFromImage(disp.ToImage<Gray, float>());
+               // Console.WriteLine("LEN IM " + mesh.Length);
+               // GL1.addMesh(mesh, PrimitiveType.Triangles);
+                //GL1.buffersGl.sortObj();
+               // imageBox_cameraDist.Image = drawDescriptorsMatch(ref fr.im, ref fr.im_sec);
                 imBox_debug1.Image = drawChessboard(fr.im, new Size(6, 7));
                 imBox_debug2.Image = drawChessboard(fr.im_sec, new Size(6, 7));
                 imageBox1.Image = fr.im_sec;
@@ -2494,14 +2507,16 @@ namespace opengl3
             double K3 = Convert.ToDouble(textBox_K3.Text);
             double P1 = Convert.ToDouble(textBox_P1.Text);
             double P2 = Convert.ToDouble(textBox_P2.Text);
-            cameraDistortionCoeffs[0, 0] = K1 * Math.Pow(10, K1deg);
-            cameraDistortionCoeffs[1, 0] = K2 * Math.Pow(10, K2deg);
-            cameraDistortionCoeffs[2, 0] = P1 * Math.Pow(10, P1deg);
-            cameraDistortionCoeffs[3, 0] = P2 * Math.Pow(10, P2deg);
-            cameraDistortionCoeffs[4, 0] = K3 * Math.Pow(10, K3deg);
+            cameraDistortionCoeffs_dist[0, 0] = K1 * Math.Pow(10, K1deg);
+            cameraDistortionCoeffs_dist[1, 0] = K2 * Math.Pow(10, K2deg);
+            cameraDistortionCoeffs_dist[2, 0] = P1 * Math.Pow(10, P1deg);
+            cameraDistortionCoeffs_dist[3, 0] = P2 * Math.Pow(10, P2deg);
+            cameraDistortionCoeffs_dist[4, 0] = K3 * Math.Pow(10, K3deg);
 
             var frame = (Frame)comboImages.SelectedItem;
-            imageBox_cameraDist.Image = remapDistIm(frame.im  , cameraMatrix, cameraDistortionCoeffs);
+           // imageBox_cameraDist.Image = remapDistIm(frame.im  , cameraMatrix, cameraDistortionCoeffs);
+            imageBox_cameraDist.Image = remapDistImOpenCvCentr(frame.im, cameraDistortionCoeffs_dist);
+
 
             //imageBox_cameraDist.Image =  ;
         }
@@ -5201,31 +5216,83 @@ namespace opengl3
             {
                 var filename = Path.GetFileName(files[i]);
                 var trz = new TransRotZoom(filename);
+                trz.dateTime = File.GetCreationTime(filename);
                 if (trz != null)
                 {
                     trzs.Add(trz);
                 }
+                
             }
             if (trzs.Count != 0)
             {
-                return trzs.ToArray();
+                var trzs1 = from f in trzs
+                          orderby f.dateTime.Ticks
+                          select f;
+                return trzs1.ToArray();
             }
             return null;
         }
 
-         void generateImagesFromAnotherFolder()
-         {
-            string path = @"virtual_stereo\test1\monitor_1";
+         void generateImagesFromAnotherFolder(string[] paths)
+        {           
+            var trzs_L = new List<TransRotZoom[]>();
+            foreach(var path in paths)
+            {
+                var trzs = readTrz(path);
+                trzs_L.Add(trzs);
                 
-            var trzs = readTrz(path);
-            if (trzs==null)
+            }
+            if ( trzs_L.Count == 0)
             {
                 return;
             }
-            GL1.trzForSave = trzs;
-            GL1.saveImagesLen = trzs.Length-1;
+            GL1.monitorsForGenerate = new int[] { 2, 3 };
+            GL1.pathForSave  = "virtual_stereo\\test2";
+            GL1.imageBoxesForSave = new ImageBox[] { imBox_mark1, imBox_mark2 };
+            GL1.trzForSave = trzs_L;
+            GL1.saveImagesLen = trzs_L[0].Length-1;
+            Console.WriteLine("GL1.saveImagesLen " + GL1.saveImagesLen);        
+        }
+
+        void generateImagesFromAnotherFolderStereo(string[] paths)
+        {
+            var trzs_L = new List<TransRotZoom[]>();
+            int ind = 0;
+            foreach (var path in paths)
+            {
+                if(ind==0)
+                {
+                    var trzs = readTrz(path);
+                    trzs_L.Add(trzs);
+                }
+                else
+                {
+                    var trzs = readTrz(path);
+                    if(trzs.Length != trzs_L[0].Length)
+                    {
+                        return;
+                    }
+                    var trzs_slave = new TransRotZoom[trzs.Length];
+                    var trz_delta =   trzs_L[0][0] - trzs[0];
+                    for(int i =0; i< trzs_L[0].Length;i++)
+                    {
+                        trzs_slave[i] = trzs_L[0][i].minusDelta(trz_delta);
+                    }
+                    trzs_L.Add(trzs_slave);
+                }
+                ind++;
+
+            }
+            if (trzs_L.Count == 0)
+            {
+                return;
+            }
+            GL1.monitorsForGenerate = new int[] { 2, 3 };
+            GL1.pathForSave = "virtual_stereo\\test3";
+            GL1.imageBoxesForSave = new ImageBox[] { imBox_mark1, imBox_mark2 };
+            GL1.trzForSave = trzs_L;
+            GL1.saveImagesLen = trzs_L[0].Length - 1;
             Console.WriteLine("GL1.saveImagesLen " + GL1.saveImagesLen);
-         
         }
         void SaveMonitor(object obj)
         {
@@ -5233,14 +5300,24 @@ namespace opengl3
             //Console.WriteLine("GL1.saveImagesLen " + GL.saveImagesLen);
             if (GL.saveImagesLen >= 0 && startGen ==1)
             {
-                int indMonit = 1;
-                string newPath = @"virtual_stereo\test1\1";
-                var trzs = GL.trzForSave;
 
-                var trzMonitor = GL.transRotZooms[indMonit];
-                trzMonitor.setTrz(trzs[GL.saveImagesLen]);
-                GL.transRotZooms[indMonit] = trzMonitor;
-                GL.SaveToFolder(newPath, indMonit);
+                var monitors = GL.monitorsForGenerate;
+                string newPath = GL.pathForSave;
+                int ind_im = GL.saveImagesLen;
+                var trzs_L = GL.trzForSave;
+                int ind = 0;
+                foreach(var trzs in trzs_L)
+                {
+                    var indMonit = monitors[ind];
+                    var trzMonitor = GL.transRotZooms[indMonit];
+                    trzMonitor.setTrz(trzs[ind_im]);
+                    GL.transRotZooms[indMonit] = trzMonitor;
+                    GL.SaveToFolder(newPath, indMonit);
+
+                    var mat1 = remapDistImOpenCv(GL1.matFromMonitor(indMonit), cameraMatrix, cameraDistortionCoeffs);
+                    saveImage(mat1, newPath, Path.Combine( "monitor_"+ indMonit, trzMonitor.ToString()+".png"));
+                    ind++;
+                }
                 GL.saveImagesLen--;
                 if(GL1.saveImagesLen==-1)
                 {
@@ -5501,7 +5578,54 @@ namespace opengl3
             Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
             return mat3;
         }
+        
+        Mat epipolarTest(Mat matL, Mat matR)
+        {
+            // var _imL = new Mat();
+            var imL = matL.ToImage<Gray, byte>();
+            var imR = matR.ToImage<Gray, byte>();
 
+            CvInvoke.Resize(imL, imL, new Size(600, 600));
+            CvInvoke.Resize(imR, imR, new Size(600, 600));
+            var minDisparity = 0;
+            var numDisparities = 64;
+            var blockSize = 8;
+            var disp12MaxDiff = 1;
+            var uniquenessRatio = 10;
+            var speckleWindowSize = 100;
+            var speckleRange = 8;
+            var p1 = 8* imL.NumberOfChannels * blockSize * blockSize;
+            var p2 = 32 * imL.NumberOfChannels * blockSize * blockSize;
+            var stereo = new StereoSGBM(minDisparity, numDisparities, blockSize, p1, p2, disp12MaxDiff, 8, uniquenessRatio, speckleWindowSize, speckleRange,StereoSGBM.Mode.SGBM);
+            var disp = new Mat();
+            stereo.Compute(imL, imR, disp);
+            //CvInvoke.Imshow("imL", imL);
+           //CvInvoke.Imshow("imR", imR);
+           // CvInvoke.Imshow("epipolar0", disp);
+           // Console.WriteLine(disp.max)
+           // CvInvoke.Normalize(disp, disp, 0, 255, NormType.MinMax);
+           // CvInvoke.Imshow("epipolar", disp);
+            return disp;
+        }
+        Mat drawDisparityMap(ref Mat mat1, ref Mat mat2)
+        {
+            var kps1 = new VectorOfKeyPoint();
+            var desk1 = new Mat();
+            var kps2 = new VectorOfKeyPoint();
+            var desk2 = new Mat();
+            var detector_ORB = new Emgu.CV.Features2D.ORBDetector();
+           
+            //CvInvoke.StereoRectify();
+           // CvInvoke.ComputeCorrespondEpilines();
+            detector_ORB.DetectAndCompute(mat1, null, kps1, desk1, false);
+            detector_ORB.DetectAndCompute(mat2, null, kps2, desk2, false);
+            var matcher = new Emgu.CV.Features2D.BFMatcher(Emgu.CV.Features2D.DistanceType.Hamming, true);
+            var matches = new VectorOfDMatch();
+            matcher.Match(desk1, desk2, matches);
+            var mat3 = new Mat();
+            Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
+            return mat3;
+        }
         Mat drawChessboard(Mat im, Size size)
         {
             var corn = new VectorOfPointF();
@@ -5511,6 +5635,7 @@ namespace opengl3
             CvInvoke.DrawChessboardCorners(im, size, corn, ret);
             return im;
         }
+
         void calibrateCamStereo(Frame[] frames, Size size)
         {
            var  stereo = new StereoBM();
@@ -5945,19 +6070,79 @@ namespace opengl3
                 CvInvoke.Imshow("output", output);
             }
         }
+
         Mat remapDistIm(Mat mat, Matrix<double> matrixCamera, Matrix<double> matrixDistCoef)
         {
             var mapx = new Mat();
             var mapy = new Mat();
+            
             var roi = computeDistortionMaps(ref mapx, ref mapy, matrixCamera , matrixDistCoef , mat.Size);
             var invmap = remap(mapx, mapy, mat);
             //CvInvoke.Rectangle(invmap, roi, new MCvScalar(255, 0, 0));
+
             
+
             imBox_debug2.Image = invmap;
             //return  new Mat(invmap,roi);
             return invmap;
         }
+        Mat remapUnDistIm(Mat mat, Matrix<double> matrixCamera, Matrix<double> matrixDistCoef)
+        {
+            var mapx = new Mat();
+            var mapy = new Mat();
+            var size = mat.Size;
+            matrixCamera[0, 2] = size.Width / 2;
+            matrixCamera[1, 2] = size.Height / 2;
+            CvInvoke.InitUndistortRectifyMap(matrixCamera, matrixDistCoef, null, matr, mat.Size, DepthType.Cv32F, mapx, mapy);
 
+            var und_pic = new Mat();
+            CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
+            imBox_debug2.Image = mat;
+            return und_pic;
+        }
+        Mat remapDistImOpenCvCentr(Mat mat, Matrix<double> matrixDistCoef)
+        {
+            var mapx = new Mat();
+            var mapy = new Mat();
+            var size = mat.Size;
+
+            var reversDistor = new Matrix<double>(5, 1);
+            for (int i = 0; i < 5; i++)
+            {
+                reversDistor[i, 0] = -matrixDistCoef[i, 0];
+            }
+            double fov = 53;
+            //_x = _z * Math.Tan(toRad(53 / 2))
+            var fxc = size.Width / 2;
+            var fyc = size.Height / 2;
+            var f = size.Width * Math.Tan(toRad((float)(fov / 2)));
+            var matrixData = new double[3,3] { {f,0,fxc}, {0,f,fyc }, {0,0,1 } };
+            var matrixData_T= matrixData.Transpose();
+            var matrixCamera = new Matrix<double>(matrixData);
+            print(matrixCamera);
+            CvInvoke.InitUndistortRectifyMap(matrixCamera, matrixDistCoef, null, matr, size, DepthType.Cv32F, mapx, mapy);
+
+            var und_pic = new Mat();
+            CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
+            imBox_debug2.Image = mat;
+            return und_pic;
+        }
+        Mat remapDistImOpenCv(Mat mat, Matrix<double> matrixCamera, Matrix<double> matrixDistCoef)
+        {
+            var mapx = new Mat();
+            var mapy = new Mat();
+            var size = mat.Size;
+            var reversDistor = new Matrix<double>(5, 1);
+            for(int i=0; i<5; i++)
+            {
+                reversDistor[i, 0] = -matrixDistCoef[i, 0];
+            }
+            CvInvoke.InitUndistortRectifyMap(matrixCamera, reversDistor, null, matr, size, DepthType.Cv32F, mapx, mapy);
+            var und_pic = new Mat();
+            CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
+            imBox_debug2.Image = mat;
+            return und_pic;
+        }
         Mat Minus(Mat mat1, Mat mat2)
         {
             var data1 = (byte[,,])mat1.GetData();
@@ -6011,18 +6196,7 @@ namespace opengl3
         {
             return (float[,])map.GetData();
         }
-        Mat remapUnDistIm(Mat mat, Matrix<double> matrixCamera, Matrix<double> matrixDistCoef)
-        {
-            var mapx = new Mat();
-            var mapy = new Mat();
-
-            CvInvoke.InitUndistortRectifyMap(cameraMatrix, cameraDistortionCoeffs, null, matr, mat.Size, DepthType.Cv32F, mapx, mapy);
-
-            var und_pic = new Mat();
-            CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
-            imBox_debug2.Image = mat;
-            return und_pic;
-        }
+        
         Size findRemapSize(float[,] mapx, float[,] mapy)
         {
             var x = mapx.Max();// findMaxX(mapx);
@@ -6238,14 +6412,14 @@ namespace opengl3
         Mat remap (Mat _mapx, Mat _mapy, Mat mat)
         {
           
-            var fmapx = (float[,])_mapx.GetData();
-           // print(fmapx);
-           // print("________________________________");
             var mapx = compUnsignedMap((float[,])_mapx.GetData(), PlanType.X);
             var mapy = compUnsignedMap((float[,])_mapy.GetData(), PlanType.Y);
-          //  print("________________________________");
-           // print(mapy);
-           // print("________________________________");
+
+            mapx = (float[,])_mapx.GetData();
+            mapy = (float[,])_mapy.GetData();
+            //  print("________________________________");
+            // print(mapy);
+            // print("________________________________");
             var data = compRemap(mapx, mapy, mat);
             
             var color = 0;
@@ -7487,6 +7661,49 @@ namespace opengl3
         #endregion
 
         #region Mesh
+        private float[] meshFromImage(Image<Gray, float> im2)
+        {
+            int lenght = im2.Width * im2.Height;
+            if (vertex_buffer_data.Length != 6 * 3 * lenght)
+            {
+                vertex_buffer_data = new float[6 * 3 * lenght];
+            }
+            int i = 0;
+            Console.WriteLine(vertex_buffer_data.Length);
+            Console.WriteLine("-----------------------------------");
+            for (int x = 0; x < im2.Width - 1; x++)
+            {
+                for (int y = 0; y < im2.Height - 1; y++)
+                {
+                    vertex_buffer_data[i] = x - im2.Width / 2; i++;
+                    vertex_buffer_data[i] = y - im2.Height / 2; i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y, x, 0] - z_mult_cam / 2; i++;
+
+                    vertex_buffer_data[i] = x + 1 - im2.Width / 2; i++;
+                    vertex_buffer_data[i] = y - im2.Height / 2; i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y, x + 1, 0] - z_mult_cam / 2; i++;
+
+                    vertex_buffer_data[i] = x - im2.Width / 2; i++;
+                    vertex_buffer_data[i] = y + 1 - im2.Height / 2; i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x, 0] - z_mult_cam / 2; i++;
+
+                    //-------------------------------------------------------------
+
+                    vertex_buffer_data[i] = x - im2.Width / 2; i++;
+                    vertex_buffer_data[i] = y + 1 - im2.Height / 2; i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x, 0] - z_mult_cam / 2; i++;
+
+                    vertex_buffer_data[i] = x + 1 - im2.Width / 2; i++;
+                    vertex_buffer_data[i] = y - im2.Height / 2; i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y, x + 1, 0] - z_mult_cam / 2; i++;
+
+                    vertex_buffer_data[i] = x + 1 - im2.Width / 2; i++;
+                    vertex_buffer_data[i] = y + 1 - im2.Height / 2; i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x + 1, 0] - z_mult_cam / 2; i++;
+                }
+            }
+            return vertex_buffer_data;
+        }
         private float[] meshFromImage(Image<Gray, Byte> im2)
         {
             int lenght = im2.Width * im2.Height;

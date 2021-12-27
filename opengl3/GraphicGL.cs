@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Emgu.CV;
+using Emgu.CV.UI;
 using Emgu.CV.Structure;
 using Emgu.Util;
 
@@ -141,7 +142,10 @@ namespace opengl3
         public int id_m;
         public bool visible;
         public Rectangle rect;
+        public DateTime dateTime;
         public TransRotZoom consttransf;
+
+
         public TransRotZoom(Rectangle _rect,int _id)
         {
             zoom = 1;
@@ -247,7 +251,17 @@ namespace opengl3
             off_z = Convert.ToDouble(dt[5]);
             zoom = Convert.ToDouble(dt[6]);
         }
-
+        public TransRotZoom(double _xRot, double _yRot, double _zRot,
+            double _off_x, double _off_y, double _off_z, double _zoom)
+        {
+            xRot = _xRot;
+            yRot = _yRot;
+            zRot = _zRot;
+            off_x = _off_x;
+            off_y = _off_y;
+            off_z = _off_z;
+            zoom = _zoom;
+        }
         public void setTrz(double _xRot, double _yRot, double _zRot,
             double _off_x, double _off_y, double _off_z, double _zoom)
         {
@@ -259,7 +273,17 @@ namespace opengl3
             off_z = _off_z;
             zoom = _zoom;
         }
-
+        public TransRotZoom minusDelta(TransRotZoom trz)
+        {
+            xRot -= trz.xRot;
+            yRot -= trz.yRot;
+            zRot -= trz.zRot;
+            off_x -= trz.off_x;
+            off_y -= trz.off_y;
+            off_z -= trz.off_z;
+            zoom -= trz.zoom;
+            return this;
+        }
         public void setTrz(TransRotZoom trz)
         {
             xRot = trz.xRot;
@@ -275,6 +299,19 @@ namespace opengl3
             return xRot + " " + yRot + " " + zRot + " "
                 + off_x + " " + off_y + " " + off_z + " "
                 + zoom + " " + viewType_ + " ";
+        }
+
+        public static TransRotZoom operator -(TransRotZoom trz1,TransRotZoom trz2)
+        {
+            return new TransRotZoom(
+                trz1.xRot - trz2.xRot,
+                 trz1.yRot - trz2.yRot,
+                  trz1.zRot - trz2.zRot,
+                   trz1.off_x - trz2.off_x,
+                   trz1.off_y - trz2.off_y,
+                   trz1.off_z - trz2.off_z,
+                   trz1.zoom - trz2.zoom
+                  );
         }
         public void setxRot(double value)
         {
@@ -299,7 +336,7 @@ namespace opengl3
     {
         #region vars
         public int saveImagesLen = 0;
-        public int renderdelim = 3;
+        public int renderdelim = 15;
         public int rendercout = 0;
         public viewType typeProj = viewType.Perspective;
         Size sizeControl;
@@ -342,7 +379,10 @@ namespace opengl3
         List<Point3d_GL> pointsPaint = new List<Point3d_GL>();
         Point3d_GL curPointPaint = new Point3d_GL(0, 0, 0);
         public List<TransRotZoom> transRotZooms = new List<TransRotZoom>();
-        public TransRotZoom[] trzForSave;
+        public List<TransRotZoom[]> trzForSave;
+        public int[] monitorsForGenerate;
+        public string pathForSave;
+        public ImageBox[] imageBoxesForSave;
         public Size size = new Size(1,1);
         #endregion
        
@@ -517,7 +557,7 @@ namespace opengl3
             var invVm = Vs[id].Inverse;
             var trz_in = transRotZooms[selectTRZ_id(id)];
             var trz = trz_in.getInfo(transRotZooms.ToArray());
-
+            
             var path_gl = Path.Combine(folder, "monitor_" + id.ToString());
             Directory.CreateDirectory(path_gl);
             bitmap.Save(path_gl + "/" + trz.ToString() + ".png");

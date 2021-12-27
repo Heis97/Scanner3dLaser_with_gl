@@ -537,6 +537,7 @@ namespace opengl3
             this.trackX_light.Name = "trackX_light";
             this.trackX_light.Size = new System.Drawing.Size(281, 45);
             this.trackX_light.TabIndex = 49;
+            this.trackX_light.Value = 90;
             this.trackX_light.Scroll += new System.EventHandler(this.trackX_light_Scroll);
             // 
             // trackY_light
@@ -1095,17 +1096,17 @@ namespace opengl3
             // 
             // imBox_mark2
             // 
-            this.imBox_mark2.Location = new System.Drawing.Point(965, 550);
+            this.imBox_mark2.Location = new System.Drawing.Point(1376, 461);
             this.imBox_mark2.Name = "imBox_mark2";
-            this.imBox_mark2.Size = new System.Drawing.Size(454, 313);
+            this.imBox_mark2.Size = new System.Drawing.Size(500, 500);
             this.imBox_mark2.TabIndex = 71;
             this.imBox_mark2.TabStop = false;
             // 
             // imBox_mark1
             // 
-            this.imBox_mark1.Location = new System.Drawing.Point(1425, 550);
+            this.imBox_mark1.Location = new System.Drawing.Point(870, 461);
             this.imBox_mark1.Name = "imBox_mark1";
-            this.imBox_mark1.Size = new System.Drawing.Size(454, 313);
+            this.imBox_mark1.Size = new System.Drawing.Size(500, 500);
             this.imBox_mark1.TabIndex = 2;
             this.imBox_mark1.TabStop = false;
             // 
@@ -1251,7 +1252,7 @@ namespace opengl3
             this.glControl1.Location = new System.Drawing.Point(6, 6);
             this.glControl1.MultisampleBits = ((uint)(0u));
             this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(800, 800);
+            this.glControl1.Size = new System.Drawing.Size(1600, 1600);
             this.glControl1.StencilBits = ((uint)(0u));
             this.glControl1.TabIndex = 65;
             this.glControl1.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_ContextCreated);
