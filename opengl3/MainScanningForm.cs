@@ -134,32 +134,21 @@ namespace opengl3
             maxArea = 15 * k * k * 250;
             red_c = 252;
 
-            // var stl_loader = new STLmodel();
-            //var mesh = stl_loader.parsingStl_GL4(@"iiwa.stl");
-            //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
+            var stl_loader = new STLmodel();
+            var mesh = stl_loader.parsingStl_GL4(@"cube30.STL");
+            GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-            // var frames1 = loadImages_test(@"virtual_stereo\test4\monitor_2");
-            //calibrateCam(frames1.ToArray(), new Size(6, 7));
-
-
-            //var framesStereo = loadImages_stereoCV(@"virtual_stereo\test4\monitor_2", @"virtual_stereo\test4\monitor_3");
-
-            //var cam1 = new CameraCV(frames1.ToArray(), new Size(6, 7));
             var frLdr = new FrameLoader();
-            var frms1 = frLdr.loadImages_chess(@"virtual_stereo\test4\monitor_2");
+            var frms1 = frLdr.loadImages_chess(@"virtual_stereo\test5\monitor_2");
             comboImages.Items.AddRange(frms1);
             var cam1 = new CameraCV(frms1, new Size(6, 7));
-            var frms2 = frLdr.loadImages_chess(@"virtual_stereo\test4\monitor_3");
+            var frms2 = frLdr.loadImages_chess(@"virtual_stereo\test5\monitor_3");
             comboImages.Items.AddRange(frms2);
             var cam2 = new CameraCV(frms2, new Size(6, 7));
 
             var stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
-
-            //var framesStereo_tutor = loadImages_stereoCV(@"tutor\cam1", @"tutor\cam2");
-            
-            //calibrateCamStereo(framesStereo.ToArray(), new Size(6, 7));
             if (comboImages.Items.Count>0)
             {
                 comboImages.SelectedIndex = 0;
@@ -167,26 +156,8 @@ namespace opengl3
             
 
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-           // cameraDistortionCoeffs[1, 0] = 0;
-           // cameraDistortionCoeffs[2, 0] = 0;
-          // cameraDistortionCoeffs[3, 0] = 0;
-           // cameraDistortionCoeffs[4, 0] = 0;
-
-
-           // distortFolder(@"virtual_stereo\test1\1\monitor_0");
-           // distortFolder(@"virtual_stereo\test1\1\monitor_1");
-
-
-            var sq1 = new Square(0.5f, 0.5f, 1, 1);
-            var sq2 = new Square(0, 0, 1, 1);
-            Console.WriteLine("aresq " + compCrossArea(sq1, sq2));
-
-            generateImage3D_BOARD(8, 7, 10);
-
-           // generateImage3D_BOARD(80, 70, 5);
-
+            //generateImage3D_BOARD(8, 7, 10);
             GL1.buffersGl.sortObj();
-            //GL1.printDebug(debugBox);
         }
 
 
@@ -5316,7 +5287,7 @@ namespace opengl3
             }
 
             GL1.monitorsForGenerate = new int[] { 2, 3 };
-            GL1.pathForSave = "virtual_stereo\\test4";
+            GL1.pathForSave = "virtual_stereo\\test5";
             GL1.imageBoxesForSave = new ImageBox[] { imBox_mark1, imBox_mark2 };
             GL1.trzForSave = trzs_L;
             GL1.saveImagesLen = trzs_L[0].Length - 1;
@@ -8402,9 +8373,9 @@ namespace opengl3
 
        
     }
-    static public class printer
+    static public class prin
     {
-        public static void print(Image<Gray, float> matr)
+        public static void t(Image<Gray, float> matr)
         {
             var flarr = matr.Data;
             var ch = matr.NumberOfChannels;
@@ -8420,7 +8391,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        public static void print(Image<Bgr, float> matr)
+        public static void t(Image<Bgr, float> matr)
         {
             var flarr = matr.Data;
             var ch = 3;
@@ -8436,7 +8407,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        public static void print(VectorOfVectorOfPoint3D32F matr)
+        public static void t(VectorOfVectorOfPoint3D32F matr)
         {
             for (int i = 0; i < matr.Size; i++)
             {
@@ -8448,7 +8419,7 @@ namespace opengl3
             }
             Console.WriteLine(" ");
         }
-        public static void print(VectorOfVectorOfPointF matr)
+        public static void t(VectorOfVectorOfPointF matr)
         {
             for (int i = 0; i < matr.Size; i++)
             {
@@ -8460,7 +8431,7 @@ namespace opengl3
             }
             Console.WriteLine(" ");
         }
-        public static void print(double[] matr)
+        public static void t(double[] matr)
         {
             for (int i = 0; i < matr.Length; i++)
             {
@@ -8468,7 +8439,7 @@ namespace opengl3
             }
             Console.WriteLine(" ");
         }
-        public static void print(Frame frame, int cols = 3)
+        public static void t(Frame frame, int cols = 3)
         {
             var name = frame.name;
             var name_t = name.Trim();
@@ -8482,7 +8453,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        public static void print(double[,] matr)
+        public static void t(double[,] matr)
         {
             for (int i = 0; i < matr.GetColumn(0).Length; i++)
             {
@@ -8493,7 +8464,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        public static void print(float[,,] matr)
+        public static void t(float[,,] matr)
         {
             for (int i = 0; i < matr.GetLength(0); i++)
             {
@@ -8507,7 +8478,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        public static void print(float[,] matr)
+        public static void t(float[,] matr)
         {
             for (int i = 0; i < matr.GetLength(0); i++)
             {
@@ -8518,7 +8489,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        public static void print(Point3d_GL[][] matr)
+        public static void t(Point3d_GL[][] matr)
         {
             for (int i = 0; i < matr.GetColumn(0).Length; i++)
             {
@@ -8529,7 +8500,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        public static void print(MCvPoint3D32f[][] matr)
+        public static void t(MCvPoint3D32f[][] matr)
         {
             for (int i = 0; i < matr.GetColumn(0).Length; i++)
             {
@@ -8540,7 +8511,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        public static void print(System.Drawing.PointF[][] matr)
+        public static void t(System.Drawing.PointF[][] matr)
         {
             for (int i = 0; i < matr.GetColumn(0).Length; i++)
             {
@@ -8551,7 +8522,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        public static void print(Matrix<double> matr)
+        public static void t(Matrix<double> matr)
         {
             Console.WriteLine("cols x rows: " + matr.Cols + " x " + matr.Rows);
             if (matr.Cols != 1)
@@ -8575,7 +8546,7 @@ namespace opengl3
             }
 
         }
-        public static void print(Matrix4x4f matr)
+        public static void t(Matrix4x4f matr)
         {
             for (uint i = 0; i < 4; i++)
             {
@@ -8586,7 +8557,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        public static void print(Matrix3x3f matr)
+        public static void t(Matrix3x3f matr)
         {
             for (uint i = 0; i < 3; i++)
             {
@@ -8634,7 +8605,7 @@ namespace opengl3
             }
         }
         */
-        public static void print(Mat mat)
+        public static void t(Mat mat)
         {
             Console.WriteLine("cols x rows: " + mat.Cols + " x " + mat.Rows);
             var arr = mat.GetData();
@@ -8710,19 +8681,19 @@ namespace opengl3
 
 
         }
-        public static void print(Vertex3f v)
+        public static void t(Vertex3f v)
         {
             Console.WriteLine(v.x + " " + v.y + " " + v.z);
         }
-        public static void print(string s)
+        public static void t(string s)
         {
             Console.WriteLine(s);
         }
-        public static void print(int s)
+        public static void t(int s)
         {
             Console.WriteLine(s);
         }
-        public static void print(double s)
+        public static void t(double s)
         {
             Console.WriteLine(s);
         }
@@ -9050,27 +9021,7 @@ namespace opengl3
             cameraCVs = _cameraCVs;
             calibrateCamStereo(cameraCVs);
         }
-        void epipolarStereo(Mat imL, Mat imR)
-        {
-            if (cameraCVs.Length < 2)
-            {
-                return;
-            }
-            var cam1 = cameraCVs[0];
-            var cam2 = cameraCVs[1];
-            var r1 = new Mat();
-            var r2 = new Mat();
-            var p1 = new Mat();
-            var p2 = new Mat();
-            var q = new Mat();
-            var roi1 = new Rectangle();
-            var roi2 = new Rectangle();
-            CvInvoke.StereoRectify(
-                cam1.cameramatrix, cam1.distortmatrix,
-                cam2.cameramatrix, cam2.distortmatrix,
-                cam1.frames[0].im.Size, r, t, r1, r2, p1, p2, q,
-                StereoRectifyType.Default, -1, Size.Empty, ref roi1, ref roi2);
-        }
+        
         void calibrateCamStereo(CameraCV[] _cameraCVs)
         {
             if(_cameraCVs.Length<2)
@@ -9121,16 +9072,67 @@ namespace opengl3
             this.t = t;
             this.r = r;
             Console.WriteLine("r:  ");
-            printer.print(r);
+            prin.t(r);
             Console.WriteLine("t:  ");
-            printer.print(t);
+            prin.t(t);
             Console.WriteLine("e:  ");
-            printer.print(e);
+            prin.t(e);
             Console.WriteLine("f:  ");
-            printer.print(f);
+            prin.t(f);
             Console.WriteLine("err:  ");
-            printer.print(err);
+            prin.t(err);
 
+        }
+        void epipolarStereo(Mat imL, Mat imR)
+        {
+            if (cameraCVs.Length < 2)
+            {
+                return;
+            }
+            var cam1 = cameraCVs[0];
+            var cam2 = cameraCVs[1];
+            var r1 = new Mat();
+            var r2 = new Mat();
+            var p1 = new Mat();
+            var p2 = new Mat();
+            var q = new Mat();
+            var roi1 = new Rectangle();
+            var roi2 = new Rectangle();
+            CvInvoke.StereoRectify(
+                cam1.cameramatrix, cam1.distortmatrix,
+                cam2.cameramatrix, cam2.distortmatrix,
+                cam1.frames[0].im.Size, r, t, r1, r2, p1, p2, q,
+                StereoRectifyType.Default, -1, Size.Empty, ref roi1, ref roi2);
+
+        }
+        Mat epipolarTest(Mat matL, Mat matR)
+        {
+            // var _imL = new Mat();
+            var imL = matL.ToImage<Gray, byte>();
+            var imR = matR.ToImage<Gray, byte>();
+
+            CvInvoke.Resize(imL, imL, new Size(600, 600));
+            CvInvoke.Resize(imR, imR, new Size(600, 600));
+            var minDisparity = 0;
+            var numDisparities = 64;
+            var blockSize = 8;
+            var disp12MaxDiff = 1;
+            var uniquenessRatio = 10;
+            var speckleWindowSize = 100;
+            var speckleRange = 8;
+            var p1 = 8 * imL.NumberOfChannels * blockSize * blockSize;
+            var p2 = 32 * imL.NumberOfChannels * blockSize * blockSize;
+            var stereo = new StereoSGBM(minDisparity, numDisparities, blockSize, p1, p2, disp12MaxDiff, 8, uniquenessRatio, speckleWindowSize, speckleRange, StereoSGBM.Mode.SGBM);
+            var disp = new Mat();
+            stereo.Compute(imL, imR, disp);
+            
+            //CvInvoke.Imshow("imL", imL);
+            //CvInvoke.Imshow("imR", imR);
+            // CvInvoke.Imshow("epipolar0", disp);
+            // Console.WriteLine(disp.max)
+            // CvInvoke.Normalize(disp, disp, 0, 255, NormType.MinMax);
+            // CvInvoke.Imshow("epipolar", disp);
+            return disp;
         }
     }
 

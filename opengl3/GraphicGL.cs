@@ -69,7 +69,7 @@ namespace opengl3
                 }
             }
             float[] ret1 = new float[len];
-
+            Console.WriteLine("Len Stl " + len);
             int i2 = 0;
             foreach (string str in lines)
             {
