@@ -275,14 +275,14 @@ namespace opengl3
         }
         public TransRotZoom minusDelta(TransRotZoom trz)
         {
-            xRot -= trz.xRot;
-            yRot -= trz.yRot;
-            zRot -= trz.zRot;
-            off_x -= trz.off_x;
-            off_y -= trz.off_y;
-            off_z -= trz.off_z;
-            zoom -= trz.zoom;
-            return this;
+            var _xRot = xRot - trz.xRot;
+            var _yRot = yRot - trz.yRot;
+            var _zRot = zRot - trz.zRot;
+            var _off_x = off_x - trz.off_x;
+            var _off_y = off_y - trz.off_y;
+            var _off_z = off_z - trz.off_z;
+            var _zoom = zoom - trz.zoom;
+            return new TransRotZoom(_xRot,_yRot,_zRot,_off_x,_off_y,_off_z,_zoom);
         }
         public void setTrz(TransRotZoom trz)
         {
@@ -582,12 +582,18 @@ namespace opengl3
 
         public Mat matFromMonitor(int id)
         {
+            //Console.WriteLine("selectTRZ_id(id)" + selectTRZ_id(id));
+            var selecTrz = selectTRZ_id(id);
+            if(selecTrz<0)
+            {
+                return null;
+            }
             var trz = transRotZooms[selectTRZ_id(id)];
             var recTRZ = trz.rect;
             var data = new Mat(recTRZ.Width, recTRZ.Height, Emgu.CV.CvEnum.DepthType.Cv8U, 3);
-            Console.WriteLine("recTRZ.Width " + recTRZ.X + " " + recTRZ.Y + " " + recTRZ.Width + " " + recTRZ.Height);
-            Console.WriteLine(data.DataPointer);
-            Console.WriteLine(trz);
+            //Console.WriteLine("recTRZ.Width " + recTRZ.X + " " + recTRZ.Y + " " + recTRZ.Width + " " + recTRZ.Height);
+           // Console.WriteLine(data.DataPointer);
+           // Console.WriteLine(trz);
             Gl.ReadPixels(recTRZ.X, recTRZ.Y, recTRZ.Width, recTRZ.Height, PixelFormat.Bgr, PixelType.UnsignedByte, data.DataPointer);
             //CvInvoke.Rotate(data, data, Emgu.CV.CvEnum.RotateFlags.Rotate180);
             return data;
@@ -622,7 +628,7 @@ namespace opengl3
                 }
                 ind++;
             }
-            return ind;
+            return -1;
         }
         Matrix4x4f[] compMVPmatrix(TransRotZoom trz_in)
         {

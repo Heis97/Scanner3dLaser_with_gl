@@ -135,17 +135,17 @@ namespace opengl3
             red_c = 252;
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-            var frames1 = loadImages_test(@"tutor\cam1");
-            calibrateCam(frames1.ToArray(), new Size(6, 7));
+            //var frames1 = loadImages_test(@"virtual_stereo\test1\monitor_0");
+           // calibrateCam(frames1.ToArray(), new Size(6, 7));
 
 
-            //var framesStereo = loadImages_stereoCV(@"virtual_stereo\test3\monitor_2", @"virtual_stereo\test3\monitor_3");
+            var framesStereo = loadImages_stereoCV(@"virtual_stereo\test3\monitor_2", @"virtual_stereo\test3\monitor_3");
             //var framesStereo_tutor = loadImages_stereoCV(@"tutor\cam1", @"tutor\cam2");
-            //calibrateCamStereo(framesStereo.ToArray(), new Size(6, 7));
+            calibrateCamStereo(framesStereo.ToArray(), new Size(6, 7));
 
             comboImages.SelectedIndex = 0;
 
-            //cameraDistortionCoeffs[0, 0] = 0.5 * Math.Pow(10, -6);
+            cameraDistortionCoeffs_dist[0, 0] = -0.2;
            // cameraDistortionCoeffs[1, 0] = 0;
            // cameraDistortionCoeffs[2, 0] = 0;
           // cameraDistortionCoeffs[3, 0] = 0;
@@ -1914,7 +1914,7 @@ namespace opengl3
             GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 1);
             GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2,h / 2), 2);
             GL1.addMonitor(new Rectangle(0, h/2, w / 2, h / 2), 3);
-
+            Console.WriteLine();
             addButForMonitor(GL1, send.Size, send.Location);
 
             GL1.add_Label(lab_kor, lab_curCor);
@@ -1960,8 +1960,8 @@ namespace opengl3
                 SaveMonitor(GL1);
             }
            // imBox_mark1.
-            imBox_mark1.Image = remapDistImOpenCv(GL1.matFromMonitor(0), cameraMatrix, cameraDistortionCoeffs);
-            imBox_mark2.Image = remapDistImOpenCv(GL1.matFromMonitor(1), cameraMatrix, cameraDistortionCoeffs);
+            imBox_mark1.Image = remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
+            imBox_mark2.Image = remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
             
             // imBox_mark1.Image =  drawChessboard((Mat)imBox_mark1.Image, new Size(6, 7));
             //  imBox_mark2.Image =  drawChessboard((Mat)imBox_mark2.Image, new Size(6, 7));
@@ -5262,8 +5262,15 @@ namespace opengl3
             {
                 if(ind==0)
                 {
+                    Console.WriteLine("ind0_______________");
                     var trzs = readTrz(path);
-                    trzs_L.Add(trzs);
+                    var trzs_clone = new TransRotZoom[trzs.Length];
+                    for(int i=0; i< trzs.Length;i++)
+                    {
+                        trzs_clone[i] = trzs[i];
+                        Console.WriteLine(trzs[i]);
+                    }
+                    trzs_L.Add(trzs_clone);
                 }
                 else
                 {
@@ -5278,6 +5285,11 @@ namespace opengl3
                     {
                         trzs_slave[i] = trzs_L[0][i].minusDelta(trz_delta);
                     }
+                    Console.WriteLine("ind1_______________");
+                    foreach (var trzcons in trzs_slave)
+                    {
+                        Console.WriteLine(trzcons);
+                    }
                     trzs_L.Add(trzs_slave);
                 }
                 ind++;
@@ -5287,6 +5299,16 @@ namespace opengl3
             {
                 return;
             }
+            Console.WriteLine("before________");
+            foreach (var trzs in trzs_L)
+            {
+                Console.WriteLine("ind________");
+                foreach (var trzcons in trzs)
+                {
+                    Console.WriteLine(trzcons);
+                }
+            }
+
             GL1.monitorsForGenerate = new int[] { 2, 3 };
             GL1.pathForSave = "virtual_stereo\\test3";
             GL1.imageBoxesForSave = new ImageBox[] { imBox_mark1, imBox_mark2 };
@@ -5297,6 +5319,7 @@ namespace opengl3
         void SaveMonitor(object obj)
         {
             var GL = (GraphicGL)obj;
+
             //Console.WriteLine("GL1.saveImagesLen " + GL.saveImagesLen);
             if (GL.saveImagesLen >= 0 && startGen ==1)
             {
@@ -5305,16 +5328,26 @@ namespace opengl3
                 string newPath = GL.pathForSave;
                 int ind_im = GL.saveImagesLen;
                 var trzs_L = GL.trzForSave;
+                Console.WriteLine("after________");
+                foreach (var trzs in trzs_L)
+                {
+                    Console.WriteLine("ind________");
+                    foreach (var trzcons in trzs)
+                    {
+                        Console.WriteLine(trzcons);
+                    }
+                }
                 int ind = 0;
                 foreach(var trzs in trzs_L)
                 {
                     var indMonit = monitors[ind];
+                    Console.WriteLine("indMonit" + indMonit);
                     var trzMonitor = GL.transRotZooms[indMonit];
                     trzMonitor.setTrz(trzs[ind_im]);
                     GL.transRotZooms[indMonit] = trzMonitor;
                     GL.SaveToFolder(newPath, indMonit);
 
-                    var mat1 = remapDistImOpenCv(GL1.matFromMonitor(indMonit), cameraMatrix, cameraDistortionCoeffs);
+                    var mat1 = remapDistImOpenCvCentr(GL1.matFromMonitor(indMonit), cameraDistortionCoeffs_dist);
                     saveImage(mat1, newPath, Path.Combine( "monitor_"+ indMonit, trzMonitor.ToString()+".png"));
                     ind++;
                 }
@@ -6115,12 +6148,12 @@ namespace opengl3
             //_x = _z * Math.Tan(toRad(53 / 2))
             var fxc = size.Width / 2;
             var fyc = size.Height / 2;
-            var f = size.Width * Math.Tan(toRad((float)(fov / 2)));
+            var f = size.Width/(2* Math.Tan(toRad((float)(fov / 2))));
             var matrixData = new double[3,3] { {f,0,fxc}, {0,f,fyc }, {0,0,1 } };
             var matrixData_T= matrixData.Transpose();
             var matrixCamera = new Matrix<double>(matrixData);
-            print(matrixCamera);
-            CvInvoke.InitUndistortRectifyMap(matrixCamera, matrixDistCoef, null, matr, size, DepthType.Cv32F, mapx, mapy);
+           // print(matrixCamera);
+            CvInvoke.InitUndistortRectifyMap(matrixCamera, reversDistor, null, matr, size, DepthType.Cv32F, mapx, mapy);
 
             var und_pic = new Mat();
             CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
@@ -6657,7 +6690,7 @@ namespace opengl3
             xc = size.Width/2;
             yc = size.Height/2;
             Console.WriteLine("---xcyc-- " + xc + " " + yc);
-            print(cameraMatr);
+           // print(cameraMatr);
             //print(mapx);
             for (int i=0; i<size.Height;i++)
             {
