@@ -1250,7 +1250,7 @@ namespace opengl3
             this.glControl1.ColorBits = ((uint)(24u));
             this.glControl1.DepthBits = ((uint)(24u));
             this.glControl1.Location = new System.Drawing.Point(6, 6);
-            this.glControl1.MultisampleBits = ((uint)(0u));
+            this.glControl1.MultisampleBits = ((uint)(8u));
             this.glControl1.Name = "glControl1";
             this.glControl1.Size = new System.Drawing.Size(1600, 1600);
             this.glControl1.StencilBits = ((uint)(0u));

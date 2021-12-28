@@ -26,21 +26,49 @@ namespace opengl3
         }
         public double parseE(string num)
         {
-            var splnum = num.Split(new char[] { 'e' });
-            return Convert.ToDouble(splnum[0]) * Math.Pow(10, Convert.ToInt32(splnum[1]));
+            if(num.Contains("e"))
+            {
+                var splnum = num.Split(new char[] { 'e' });
+                return Convert.ToDouble(splnum[0]) * Math.Pow(10, Convert.ToInt32(splnum[1]));
+            }
+            else if(num.Contains("E"))
+            {
+                var splnum = num.Split(new char[] { 'E' });
+                return Convert.ToDouble(splnum[0]) * Math.Pow(10, Convert.ToInt32(splnum[1]));
+            }
+            else
+            {
+                return Convert.ToDouble(num);
+            }
+            
         }
         public float[] parsingStl_GL4(string path)
         {
-            var offx = 200;
-            var offy = 500;
-            var offz = 600;
+           // var offx = 200;
+           // var offy = 500;
+          //  var offz = 600;
             string file1;            
             using (StreamReader sr = new StreamReader(path, ASCIIEncoding.ASCII))
             {
                 file1 = sr.ReadToEnd();
             }
             string[] lines = file1.Split(new char[] { '\n' });
-            float[] ret1 = new float[(int)(9*lines.Length/7)];
+            int len = 0;
+            foreach (string str in lines)
+            {
+                string ver = str.Trim();
+                string[] vert = ver.Split(new char[] { ' ' });
+
+                if (vert.Length > 3)
+                {
+                    if (vert[0].Contains("ert"))
+                    {
+                        len += 3;
+                    }
+
+                }
+            }
+            float[] ret1 = new float[len];
 
             int i2 = 0;
             foreach (string str in lines)
@@ -468,6 +496,7 @@ namespace opengl3
         {
             sizeControl = ((Control)sender).Size;
             Gl.Initialize();
+            Gl.Enable(EnableCap.Multisample);
             Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
             Gl.PointSize(2f);
             programID_ps = createShader(_VertexSourceGL, _GeometryShaderPointsGL, _FragmentSourceGL);
