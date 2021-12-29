@@ -27,6 +27,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        StereoCameraCV stereocam;
         int startGen = 0;
         TCPclient con1;
         private const float PI = 3.14159265358979f;
@@ -135,7 +136,7 @@ namespace opengl3
             red_c = 252;
 
             var stl_loader = new STLmodel();
-            var mesh = stl_loader.parsingStl_GL4(@"cube30.STL");
+            var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
             GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
@@ -147,7 +148,7 @@ namespace opengl3
             comboImages.Items.AddRange(frms2);
             var cam2 = new CameraCV(frms2, new Size(6, 7));
 
-            var stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
+            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
             if (comboImages.Items.Count>0)
             {
@@ -1909,7 +1910,7 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 0, new Vertex3d(0, 0, 0), new Vertex3d(50, 0, 0), 1);
+            GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 0, new Vertex3d(0, 0, 0), new Vertex3d(10, 0, 0), 1);
             GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 1);
             GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2,h / 2), 2);
             GL1.addMonitor(new Rectangle(0, h/2, w / 2, h / 2), 3);
@@ -1919,8 +1920,8 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor);
             GL1.add_TextBox(debugBox);
             // startGenerate();
-           
-            
+
+            trB_SGBM_Enter();
 
         }
         Mat toMat(Bitmap bitmap)
@@ -1958,10 +1959,15 @@ namespace opengl3
             {
                 SaveMonitor(GL1);
             }
-           // imBox_mark1.
-            imBox_mark1.Image = remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
-            imBox_mark2.Image = remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
-            
+            // imBox_mark1.
+            //imBox_mark1.Image = remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
+            //imBox_mark2.Image = remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
+            var mat1 = GL1.matFromMonitor(0);
+            var mat2 = GL1.matFromMonitor(1);
+            //drawDescriptors(ref mat1);
+            //imBox_mark1.Image = drawDescriptorsMatch(ref mat1, ref mat2);
+           
+            imBox_disparity.Image =  stereocam.epipolarTest(GL1.matFromMonitor(1), GL1.matFromMonitor(0));
             // imBox_mark1.Image =  drawChessboard((Mat)imBox_mark1.Image, new Size(6, 7));
             //  imBox_mark2.Image =  drawChessboard((Mat)imBox_mark2.Image, new Size(6, 7));
 
@@ -1975,7 +1981,64 @@ namespace opengl3
 
         #endregion
         #region buttons
-        private void but_imGen_Click(object sender, EventArgs e)
+        private void trB_SGBM_Scroll(object sender, EventArgs e)
+        {
+            var trbar = (TrackBar)sender;
+            var val = trbar.Value;
+            var bs = stereocam.solver_param.blockSize;
+            switch (Convert.ToInt32(trbar.AccessibleName))
+            {
+                case 1://minDisp
+                    stereocam.solver_param.minDisparity = val;
+                    break;
+                case 2://numDisp
+                    stereocam.solver_param.numDisparities = 16*val;
+                    break;
+                case 3://blockSize
+                    stereocam.solver_param.blockSize= val;
+                    break;
+                case 4://p1
+                    stereocam.solver_param.p1 = bs*bs* val;
+                    break;
+                case 5://p2
+                    stereocam.solver_param.p2 = bs * bs * val;
+                    break;
+                case 6://disp12Max
+                    stereocam.solver_param.disp12MaxDiff = val;
+                    break;
+                case 7://prefilt
+                    stereocam.solver_param.preFilterCap = val;
+                    break;
+                case 8://uniq
+                    stereocam.solver_param.uniquenessRatio = val;
+                    break;
+                case 9://specleWindS
+                    stereocam.solver_param.speckleWindowSize = 20*val;
+                    break;
+                case 10://specleRange
+                    stereocam.solver_param.speckleRange = val;
+                    break;
+                default:
+                    break;
+            }
+            stereocam.setSGBM_parameters();
+        }
+        private void trB_SGBM_Enter()
+        {
+            var bs = stereocam.solver_param.blockSize;
+            trackBar1.Value = stereocam.solver_param.minDisparity ;
+            trackBar2.Value = stereocam.solver_param.numDisparities/ 16 ;
+            trackBar3.Value = stereocam.solver_param.blockSize;
+            trackBar4.Value = stereocam.solver_param.p1/( bs * bs) ;
+            trackBar5.Value = stereocam.solver_param.p2/(bs * bs );
+            trackBar6.Value = stereocam.solver_param.disp12MaxDiff;
+            trackBar7.Value = stereocam.solver_param.preFilterCap;
+            trackBar8.Value = stereocam.solver_param.uniquenessRatio;
+            trackBar9.Value = stereocam.solver_param.speckleWindowSize/20;
+            trackBar10.Value = stereocam.solver_param.speckleRange;        
+        }
+
+            private void but_imGen_Click(object sender, EventArgs e)
         {
             generateImagesFromAnotherFolderStereo(new string[] { @"virtual_stereo\test1\monitor_0", @"virtual_stereo\test1\monitor_1" });
             startGen = 1;
@@ -2292,17 +2355,6 @@ namespace opengl3
         }
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            var track = (TrackBar)sender;
-            var v = (VideoFrame)comboVideo.SelectedItem;
-            int i = (int)track.Value;
-            if (i < v.im.Length)
-            {
-                var im = v.im[i];
-                imageBox3.Image = im;
-                var im_out = binVideo(im, imageBox2, (int)red_c);
-                imageBox1.Image = im_out;
-
-            }
 
         }
         public float toRad(float degrees)
@@ -5572,11 +5624,19 @@ namespace opengl3
             var detector_ORB = new Emgu.CV.Features2D.ORBDetector();
             detector_ORB.DetectAndCompute(mat1, null, kps1, desk1, false);
             detector_ORB.DetectAndCompute(mat2, null, kps2, desk2, false);
-            var matcher = new Emgu.CV.Features2D.BFMatcher(Emgu.CV.Features2D.DistanceType.Hamming,true);
+            var matcher = new Emgu.CV.Features2D.BFMatcher(Emgu.CV.Features2D.DistanceType.L1,false);
+            //var matcherFlann = new Emgu.CV.Features2D.
             var matches = new VectorOfDMatch();
             matcher.Match(desk1, desk2, matches);
             var mat3 = new Mat();
-            Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
+            try
+            {
+                Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
+            }
+            catch
+            {
+
+            }
             return mat3;
         }
         
@@ -8369,10 +8429,11 @@ namespace opengl3
 
 
 
-        #endregion
 
-       
+
+        #endregion
     }
+    
     static public class prin
     {
         public static void t(Image<Gray, float> matr)
@@ -8644,6 +8705,22 @@ namespace opengl3
                         Console.WriteLine(" ");
                     }
                 }
+                else if (mat.Depth == DepthType.Cv16S)
+                {
+                    var flarr = (Int16[,,])arr;
+                    for (int i = 0; i < mat.Rows; i++)
+                    {
+                        for (int j = 0; j < mat.Cols; j++)
+                        {
+                            for (int k = 0; k < ch; k++)
+                            {
+                                Console.Write(flarr[i, j, k] + " ");
+                            }
+                            Console.Write(" | ");
+                        }
+                        Console.WriteLine(" ");
+                    }
+                }
             }
             else
             {
@@ -8669,6 +8746,20 @@ namespace opengl3
                         for (int j = 0; j < mat.Cols; j++)
                         {
                             Console.Write(Math.Round(flarr[i, j], 3) + " ");
+
+                            Console.Write(" | ");
+                        }
+                        Console.WriteLine(" ");
+                    }
+                }
+                else if (mat.Depth == DepthType.Cv16S)
+                {
+                    var flarr = (Int16[,])arr;
+                    for (int i = 0; i < mat.Rows; i++)
+                    {
+                        for (int j = 0; j < mat.Cols; j++)
+                        {
+                            Console.Write(flarr[i, j] + " ");
 
                             Console.Write(" | ");
                         }
@@ -9012,14 +9103,51 @@ namespace opengl3
 
         }
     }
+    public struct SGBM_param
+    {
+        public int minDisparity;
+        public int numDisparities;
+        public int blockSize;
+        public int disp12MaxDiff;
+        public int preFilterCap;
+        public int uniquenessRatio;
+        public int speckleWindowSize;
+        public int speckleRange;
+        public int p1;
+        public int p2;
+        public SGBM_param(
+            int _minDisparity,
+            int _numDisparities,
+            int _blockSize, int _p1 = 0, int _p2 = 0,
+            int _disp12MaxDiff = 0, int _preFilterCap = 0,
+            int _uniquenessRatio = 0,
+            int _speckleWindowSize = 0, int _speckleRange = 0)
+        {
+            minDisparity = _minDisparity;
+            numDisparities = _numDisparities;
+            blockSize = _blockSize;
+            disp12MaxDiff = _disp12MaxDiff;
+            preFilterCap = _preFilterCap;
+            uniquenessRatio = _uniquenessRatio;
+            speckleWindowSize = _speckleWindowSize;
+            speckleRange = _speckleRange;
+            p1 = _p1;
+            p2 = _p2;
+        }
+
+    }
     public class StereoCameraCV
     {
         public CameraCV[] cameraCVs;
         public Mat t,r;
+        StereoSGBM stereosolver;
+        StereoBM stereosolverBM;
+        public SGBM_param solver_param;
         public StereoCameraCV(CameraCV[] _cameraCVs)
         {
             cameraCVs = _cameraCVs;
             calibrateCamStereo(cameraCVs);
+            init();
         }
         
         void calibrateCamStereo(CameraCV[] _cameraCVs)
@@ -9105,14 +9233,25 @@ namespace opengl3
                 StereoRectifyType.Default, -1, Size.Empty, ref roi1, ref roi2);
 
         }
-        Mat epipolarTest(Mat matL, Mat matR)
+        public void setSGBM_parameters()
         {
-            // var _imL = new Mat();
-            var imL = matL.ToImage<Gray, byte>();
-            var imR = matR.ToImage<Gray, byte>();
-
-            CvInvoke.Resize(imL, imL, new Size(600, 600));
-            CvInvoke.Resize(imR, imR, new Size(600, 600));
+            stereosolver = new StereoSGBM(
+                solver_param.minDisparity,
+                solver_param.numDisparities,
+                solver_param.blockSize,
+                solver_param.p1, solver_param.p2,
+                solver_param.disp12MaxDiff,
+                solver_param.preFilterCap,
+                solver_param.uniquenessRatio,
+                solver_param.speckleWindowSize,
+                solver_param.speckleRange, StereoSGBM.Mode.SGBM);
+            stereosolverBM = new StereoBM(                
+                solver_param.numDisparities,
+                solver_param.blockSize
+                );
+        }
+        void init()
+        {
             var minDisparity = 0;
             var numDisparities = 64;
             var blockSize = 8;
@@ -9120,19 +9259,45 @@ namespace opengl3
             var uniquenessRatio = 10;
             var speckleWindowSize = 100;
             var speckleRange = 8;
-            var p1 = 8 * imL.NumberOfChannels * blockSize * blockSize;
-            var p2 = 32 * imL.NumberOfChannels * blockSize * blockSize;
-            var stereo = new StereoSGBM(minDisparity, numDisparities, blockSize, p1, p2, disp12MaxDiff, 8, uniquenessRatio, speckleWindowSize, speckleRange, StereoSGBM.Mode.SGBM);
-            var disp = new Mat();
-            stereo.Compute(imL, imR, disp);
+            var p1 = 8 * blockSize * blockSize;
+            var p2 = 32 * blockSize * blockSize;
+            var preFilterCap = 8;
+            solver_param = new SGBM_param(minDisparity, numDisparities, blockSize, p1, p2, disp12MaxDiff, preFilterCap, uniquenessRatio, speckleWindowSize, speckleRange);
+            setSGBM_parameters();
+        }
+        public Mat epipolarTest(Mat matL, Mat matR)
+        {
+            if(stereosolver==null)
+            {
+                return null;
+            }
             
-            //CvInvoke.Imshow("imL", imL);
-            //CvInvoke.Imshow("imR", imR);
-            // CvInvoke.Imshow("epipolar0", disp);
-            // Console.WriteLine(disp.max)
-            // CvInvoke.Normalize(disp, disp, 0, 255, NormType.MinMax);
-            // CvInvoke.Imshow("epipolar", disp);
-            return disp;
+            var imL = matL.ToImage<Gray, byte>();
+            var imR = matR.ToImage<Gray, byte>();
+            
+            var disp = new Mat();
+            var depth = new Mat();
+            var depth_norm = new Mat();
+            try
+            {
+                stereosolverBM.Compute(imL, imR, disp);
+                disp.ConvertTo(disp, DepthType.Cv32F);
+                disp += 1;
+                disp /= 16;
+                depth = 1000 / disp;
+
+                // CvInvoke.Normalize(depth, depth_norm, 255, 0);
+                depth.ConvertTo(depth_norm, DepthType.Cv8U);
+                // prin.t(depth);
+                //
+
+                return depth_norm;
+            }
+            catch
+            {
+                return null;
+            }
+            
         }
     }
 

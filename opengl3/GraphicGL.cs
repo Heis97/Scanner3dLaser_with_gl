@@ -586,7 +586,7 @@ namespace opengl3
             var invVm = Vs[id].Inverse;
             var trz_in = transRotZooms[selectTRZ_id(id)];
             var trz = trz_in.getInfo(transRotZooms.ToArray());
-            
+            //Gl.depth
             var path_gl = Path.Combine(folder, "monitor_" + id.ToString());
             Directory.CreateDirectory(path_gl);
             bitmap.Save(path_gl + "/" + trz.ToString() + ".png");
