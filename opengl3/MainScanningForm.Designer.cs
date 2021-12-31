@@ -180,6 +180,7 @@ namespace opengl3
             this.textBox_K1 = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
             this.imageBox_cameraDist = new Emgu.CV.UI.ImageBox();
+            this.but_SubpixPrec = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -1084,6 +1085,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_SubpixPrec);
             this.tabOpenGl.Controls.Add(this.label44);
             this.tabOpenGl.Controls.Add(this.trackBar10);
             this.tabOpenGl.Controls.Add(this.label43);
@@ -1761,6 +1763,16 @@ namespace opengl3
             this.imageBox_cameraDist.TabStop = false;
             this.imageBox_cameraDist.MouseMove += new System.Windows.Forms.MouseEventHandler(this.imageBox_cameraDist_MouseMove);
             // 
+            // but_SubpixPrec
+            // 
+            this.but_SubpixPrec.Location = new System.Drawing.Point(1218, 460);
+            this.but_SubpixPrec.Name = "but_SubpixPrec";
+            this.but_SubpixPrec.Size = new System.Drawing.Size(75, 23);
+            this.but_SubpixPrec.TabIndex = 96;
+            this.but_SubpixPrec.Text = "SubpixelPrec";
+            this.but_SubpixPrec.UseVisualStyleBackColor = true;
+            this.but_SubpixPrec.Click += new System.EventHandler(this.but_SubpixPrec_Click);
+            // 
             // MainScanningForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1967,6 +1979,7 @@ namespace opengl3
         private System.Windows.Forms.TrackBar trackBar5;
         private System.Windows.Forms.Label label38;
         private System.Windows.Forms.TrackBar trackBar4;
+        private System.Windows.Forms.Button but_SubpixPrec;
     }
 }
 

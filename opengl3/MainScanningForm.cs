@@ -27,6 +27,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        float markSize = 10f;
         StereoCameraCV stereocam;
         int startGen = 0;
         TCPclient con1;
@@ -135,12 +136,12 @@ namespace opengl3
             maxArea = 15 * k * k * 250;
             red_c = 252;
 
-            var stl_loader = new STLmodel();
-            var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-            GL1.addGLMesh(mesh, PrimitiveType.Triangles);
+           // var stl_loader = new STLmodel();
+           // var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
+          //  GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-            var frLdr = new FrameLoader();
+           /* var frLdr = new FrameLoader();
             var frms1 = frLdr.loadImages_chess(@"virtual_stereo\test5\monitor_2");
             comboImages.Items.AddRange(frms1);
             var cam1 = new CameraCV(frms1, new Size(6, 7));
@@ -148,7 +149,7 @@ namespace opengl3
             comboImages.Items.AddRange(frms2);
             var cam2 = new CameraCV(frms2, new Size(6, 7));
 
-            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
+            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });*/
 
             if (comboImages.Items.Count>0)
             {
@@ -157,10 +158,50 @@ namespace opengl3
             
 
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-            //generateImage3D_BOARD(8, 7, 10);
+            generateImage3D_BOARD(8, 7, markSize);
             GL1.buffersGl.sortObj();
         }
-
+        Mat calcSubpixelPrec(Mat mat, Size size)
+        {
+            var len = size.Width * size.Height;
+            var obp = new MCvPoint3D32f[len];
+            var cornF = new System.Drawing.PointF[len];
+            var cornF_GL = new System.Drawing.PointF[len];
+            var cornF_delt = new System.Drawing.PointF[len];
+            var sum = new System.Drawing.PointF(0, 0);
+            var kvs = new System.Drawing.PointF(0, 0);
+            var S = new System.Drawing.PointF(0, 0);
+            var ret =   compChessCoords(mat, ref obp, ref cornF,size);
+            if(!ret)
+            {
+                return null;
+            }
+            var mvpMtx = GL1.compMVPmatrix(GL1.transRotZooms[0]);
+            for(int i=0; i<obp.Length;i++)
+            {
+               var p_GL =  GL1.calcPixel(new Vertex4f(markSize* obp[i].Y, -markSize * obp[i].X, obp[i].Z, 1),mvpMtx[3]);
+                cornF_GL[i] = new System.Drawing.PointF(p_GL.X, p_GL.Y);
+                var p_chess = cornF[i];
+                cornF_delt[i] = new System.Drawing.PointF(p_GL.X-p_chess.X, p_GL.Y-p_chess.Y);
+                sum.X += cornF_delt[i].X;
+                sum.Y += cornF_delt[i].Y;
+                //prin.t(cornF[i].ToString());
+                //prin.t(cornF_GL[i].ToString());
+                //prin.t("_________________");
+            }
+            
+            for (int i = 0; i < obp.Length; i++)
+            {
+                kvs.X += (float) Math.Pow((cornF_delt[i].X - sum.X),2);
+                kvs.Y += (float)Math.Pow((cornF_delt[i].Y - sum.Y), 2);
+            }
+            S.X = kvs.X / len;
+            S.Y = kvs.Y / len;
+            Console.WriteLine(S);
+            drawPointsF(mat, cornF, 255, 0, 0,1);
+            drawPointsF(mat, cornF_GL, 0, 0, 255,1);
+            return mat;
+        }
 
         #region robot
         public void startScan(object sender, EventArgs e)
@@ -1921,7 +1962,7 @@ namespace opengl3
             GL1.add_TextBox(debugBox);
             // startGenerate();
 
-            trB_SGBM_Enter();
+          //  trB_SGBM_Enter();
 
         }
         Mat toMat(Bitmap bitmap)
@@ -1962,12 +2003,12 @@ namespace opengl3
             // imBox_mark1.
             //imBox_mark1.Image = remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
             //imBox_mark2.Image = remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
-            var mat1 = GL1.matFromMonitor(0);
-            var mat2 = GL1.matFromMonitor(1);
+            // var mat1 = GL1.matFromMonitor(0);
+            // var mat2 = GL1.matFromMonitor(1);
             //drawDescriptors(ref mat1);
             //imBox_mark1.Image = drawDescriptorsMatch(ref mat1, ref mat2);
-           
-            imBox_disparity.Image =  stereocam.epipolarTest(GL1.matFromMonitor(1), GL1.matFromMonitor(0));
+            imBox_mark2.Image = calcSubpixelPrec( GL1.matFromMonitor(0), new Size(6, 7));
+            //imBox_disparity.Image =  stereocam.epipolarTest(GL1.matFromMonitor(1), GL1.matFromMonitor(0));
             // imBox_mark1.Image =  drawChessboard((Mat)imBox_mark1.Image, new Size(6, 7));
             //  imBox_mark2.Image =  drawChessboard((Mat)imBox_mark2.Image, new Size(6, 7));
 
@@ -3222,7 +3263,20 @@ namespace opengl3
             }
             return ret;
         }
-       public PointF[] toPointF(Point[] ps)
+        Point[] toPoint(System.Drawing.PointF[] ps)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new System.Drawing.Point[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ret[i] = new System.Drawing.Point((int)ps[i].X, (int)ps[i].Y);
+            }
+            return ret;
+        }
+        public PointF[] toPointF(Point[] ps)
         {
             var ret = new PointF[ps.Length];
             for (int i = 0; i < ps.Length; i++)
@@ -4966,6 +5020,10 @@ namespace opengl3
             retMatr[3, 2] = (float)cam.pos.z;
             return retMatr;
         }
+        public void drawPointsF(Mat im, System.Drawing.PointF[] points, int r, int g, int b, int size = 1)
+        {
+            drawPoints(im, toPoint(points), r, g, b, size);
+        }
         public void drawPoints(Mat im, Point[] points, int r, int g, int b, int size = 1)
         {
             int ind = 0;
@@ -4976,12 +5034,17 @@ namespace opengl3
 
                 foreach (var p in points)
                 {
-                    CvInvoke.Circle(im, p, 0, color, -1);
+                    CvInvoke.Circle(im, p, size, color, -1);
                     ind++;
                 }
             }
         }
         public void drawPoints(Mat im, PointF[] points, int r, int g, int b, int size = 1)
+        {
+            drawPoints(im, toPoint(points), r, g, b, size);
+        }
+
+        public void drawPoints(Mat im, System.Drawing.PointF[] points, int r, int g, int b, int size = 1)
         {
             drawPoints(im, toPoint(points), r, g, b, size);
         }
@@ -5792,9 +5855,40 @@ namespace opengl3
             print(err);
 
         }
+        
+        bool compChessCoords(Mat mat, ref MCvPoint3D32f[] obp, ref System.Drawing.PointF[] cornF , Size size)
+        {
+            var corn = new VectorOfPointF(cornF);
+             obp = new MCvPoint3D32f[size.Width * size.Height];
+            int ind = 0;
+            for (int j = 0; j < size.Height; j++)
+            {
+                for (int i = 0; i < size.Width; i++)
+                {
+                    obp[ind] = new MCvPoint3D32f((float)i, (float)j, 0.0f);
+                    ind++;
+                }
+            }
+
+
+            var gray = mat.ToImage<Gray, byte>();
+            var ret = CvInvoke.FindChessboardCorners(gray, size, corn);
+            if (ret == true)
+            {
+                CvInvoke.CornerSubPix(gray, corn, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(100, 0.0001));
+            }
+            else
+            {
+                Console.WriteLine("NOT:");
+                //Console.WriteLine(frame.name);
+            }
+            cornF = corn.ToArray();
+            return ret;
+        }
         CameraCV calibrateCam(Frame[] frames, Size size)
         {
-
+       
+          
             var corn = new VectorOfPointF();
             Mat mtx = new Mat();
             Mat dist = new Mat();
@@ -8432,8 +8526,13 @@ namespace opengl3
 
 
         #endregion
+
+        private void but_SubpixPrec_Click(object sender, EventArgs e)
+        {
+            calcSubpixelPrec(GL1.matFromMonitor(0), new Size(6, 7));
+        }
     }
-    
+
     static public class prin
     {
         public static void t(Image<Gray, float> matr)

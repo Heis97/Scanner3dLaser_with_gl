@@ -628,10 +628,20 @@ namespace opengl3
             return data;
         }
         
-        PointF toGLcord(PointF pf, Size sizeView)
+        PointF toGLcord(PointF pf)
         {
+            var sizeView = transRotZooms[0].rect;
+
             var x = (sizeView.Width / 2) * pf.X + sizeView.Width / 2;
             var y = -((sizeView.Width / 2) * pf.Y) + sizeView.Height / 2;
+            return new PointF(x, y);
+        }
+        PointF toTRZcord(PointF pf)
+        {
+            var sizeView = transRotZooms[0].rect;
+
+            var x = (sizeView.Width / 2) * pf.X + sizeView.Width / 2;
+            var y = (sizeView.Width / 2) * pf.Y + sizeView.Height / 2;
             return new PointF(x, y);
         }
 
@@ -659,7 +669,7 @@ namespace opengl3
             }
             return -1;
         }
-        Matrix4x4f[] compMVPmatrix(TransRotZoom trz_in)
+        public Matrix4x4f[] compMVPmatrix(TransRotZoom trz_in)
         {
             var trz = trz_in.getInfo(transRotZooms.ToArray());
             var zoom = trz.zoom;
@@ -689,11 +699,21 @@ namespace opengl3
             MVP = Pm * Vm * Mm;
             return new Matrix4x4f[] { Pm, Vm, Mm, MVP };
         }
-        PointF calcPixel(Vertex4f point, Matrix4x4f mvp)
+        public PointF calcPixel(Vertex4f point, Matrix4x4f mvp)
         {
             var p2 = mvp * point;
             var p4 = p2 / p2.w;
-            var p3 = toGLcord(new PointF(p4.x, p4.y), sizeControl);
+            var p3 = toTRZcord(new PointF(p4.x, p4.y));
+            
+            //Console.WriteLine("v: " + p3.X + " " + p3.Y + " " + p2.z + " " + p2.w + " mvp_len: " + MVPs[0].ToString());
+            return p3;
+        }
+
+        public PointF calcPixelInv(Vertex4f point, Matrix4x4f mvp)
+        {
+            var p2 = mvp.Inverse * point;
+            var p4 = p2 / p2.w;
+            var p3 = toGLcord(new PointF(p4.x, p4.y));
             //Console.WriteLine("v: " + p3.X + " " + p3.Y + " " + p2.z + " " + p2.w + " mvp_len: " + MVPs[0].ToString());
             return p3;
         }
