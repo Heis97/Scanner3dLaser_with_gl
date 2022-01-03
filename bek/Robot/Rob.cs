@@ -183,6 +183,49 @@ namespace opengl3
 
 			return Answer;
 		}
+		void calcRob()
+		{
+			float[] q = new float[8]{ UtilMatr.toRad(-7.85f),
+					UtilMatr.toRad(44.46f),
+					UtilMatr.toRad(6.73f),
+				   UtilMatr.toRad(-109.17f),
+					UtilMatr.toRad(13.97f),
+				   UtilMatr.toRad(-23.34f),
+					UtilMatr.toRad(59.64f),
+					UtilMatr.toRad(0)};
+			//pos: 566.31 -30.62 220.70
+			//or : 94.43  12.03  132.04
+			float dbs = 360.0f;
+			float dse = 420.0f;
+			float dew = 400.0f;
+			float dwf = 126.0f;
+			float[] pos = { 0, 0, 0 };
+			Manipulator Kuka = new Manipulator();
+
+			float[] par = {  q[0], -PI / 2, 0, dbs,
+							 q[1],  PI / 2, 0, 0,
+							 q[2],  PI / 2, 0, dse,
+							 q[3], -PI / 2, 0, 0,
+							 q[4], -PI / 2, 0, dew,
+							 q[5], PI / 2, 0, 0,
+							 q[6], 0, 0, dwf,
+							 0   ,       0, 0, 0 };
+
+			float[] par_1 = {q[0], -PI/2, 0, dbs,
+							 q[1], PI / 2, 0, 0,
+							 q[2], PI / 2, 0, dse,
+							 q[3], -PI / 2, 0, 0,
+							 q[4], -PI / 2, 0, dew,
+							 q[5], PI / 2, 0, 0,
+							 q[6], 0, 0, dwf,
+							 0   , 0, 0, 0 };
+			Vector3d_GL pos1 = Kuka.calcPoz(par);
+			Kuka.printMatrix(Kuka.flange_matr);
+			Console.WriteLine("--------------");
+			prin.t(UtilMatr.AbcToMatrix(94.43f, 12.03f, 132.04f));
+			//print(AbcToMatrix(90f, 90f, 90f));
+			Console.WriteLine(pos1);
+		}
 	};
 	
 }
