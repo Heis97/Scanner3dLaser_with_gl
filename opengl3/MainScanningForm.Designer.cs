@@ -117,6 +117,7 @@ namespace opengl3
             this.but_addBufRob = new System.Windows.Forms.Button();
             this.but_robMod = new System.Windows.Forms.Button();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_SubpixPrec = new System.Windows.Forms.Button();
             this.label44 = new System.Windows.Forms.Label();
             this.trackBar10 = new System.Windows.Forms.TrackBar();
             this.label43 = new System.Windows.Forms.Label();
@@ -180,7 +181,7 @@ namespace opengl3
             this.textBox_K1 = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
             this.imageBox_cameraDist = new Emgu.CV.UI.ImageBox();
-            this.but_SubpixPrec = new System.Windows.Forms.Button();
+            this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -218,6 +219,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).BeginInit();
             this.SuspendLayout();
             // 
             // videoCapt
@@ -1085,6 +1087,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.imBox_3dDebug);
             this.tabOpenGl.Controls.Add(this.but_SubpixPrec);
             this.tabOpenGl.Controls.Add(this.label44);
             this.tabOpenGl.Controls.Add(this.trackBar10);
@@ -1140,6 +1143,16 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // but_SubpixPrec
+            // 
+            this.but_SubpixPrec.Location = new System.Drawing.Point(812, 818);
+            this.but_SubpixPrec.Name = "but_SubpixPrec";
+            this.but_SubpixPrec.Size = new System.Drawing.Size(75, 23);
+            this.but_SubpixPrec.TabIndex = 96;
+            this.but_SubpixPrec.Text = "SubpixelPrec";
+            this.but_SubpixPrec.UseVisualStyleBackColor = true;
+            this.but_SubpixPrec.Click += new System.EventHandler(this.but_SubpixPrec_Click);
             // 
             // label44
             // 
@@ -1763,15 +1776,13 @@ namespace opengl3
             this.imageBox_cameraDist.TabStop = false;
             this.imageBox_cameraDist.MouseMove += new System.Windows.Forms.MouseEventHandler(this.imageBox_cameraDist_MouseMove);
             // 
-            // but_SubpixPrec
+            // imBox_3dDebug
             // 
-            this.but_SubpixPrec.Location = new System.Drawing.Point(1218, 460);
-            this.but_SubpixPrec.Name = "but_SubpixPrec";
-            this.but_SubpixPrec.Size = new System.Drawing.Size(75, 23);
-            this.but_SubpixPrec.TabIndex = 96;
-            this.but_SubpixPrec.Text = "SubpixelPrec";
-            this.but_SubpixPrec.UseVisualStyleBackColor = true;
-            this.but_SubpixPrec.Click += new System.EventHandler(this.but_SubpixPrec_Click);
+            this.imBox_3dDebug.Location = new System.Drawing.Point(1218, 411);
+            this.imBox_3dDebug.Name = "imBox_3dDebug";
+            this.imBox_3dDebug.Size = new System.Drawing.Size(400, 400);
+            this.imBox_3dDebug.TabIndex = 97;
+            this.imBox_3dDebug.TabStop = false;
             // 
             // MainScanningForm
             // 
@@ -1823,6 +1834,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1980,6 +1992,7 @@ namespace opengl3
         private System.Windows.Forms.Label label38;
         private System.Windows.Forms.TrackBar trackBar4;
         private System.Windows.Forms.Button but_SubpixPrec;
+        private Emgu.CV.UI.ImageBox imBox_3dDebug;
     }
 }
 

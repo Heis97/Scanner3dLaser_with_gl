@@ -68,6 +68,32 @@ namespace opengl3
             }
             return ret;
         }
+        public static PointF[] toPointF(System.Drawing.PointF[] ps)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new PointF[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ret[i] = new PointF(ps[i].X, ps[i].Y);
+            }
+            return ret;
+        }
+        public static System.Drawing.PointF[] toSystemPoint(PointF[] ps)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new System.Drawing.PointF[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ret[i] = new System.Drawing.PointF(ps[i].X, ps[i].Y);
+            }
+            return ret;
+        }
         public static double calc_p_len(Point p1, Point p2)
         {
             var p = new Point(p1.X - p2.X, p1.Y - p2.Y);

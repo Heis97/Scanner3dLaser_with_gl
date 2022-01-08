@@ -21,14 +21,23 @@ namespace opengl3
         public MCvPoint3D32f[][] objps;
         public Mat[] tvecs;
         public Mat[] rvecs;
+        public Mat cur_t;
+        public Mat cur_r;
         public CameraCV(Matrix<double> _cameramatrix, Matrix<double> _distortmatrix)
         {
             cameramatrix = _cameramatrix;
             distortmatrix = _distortmatrix;
+            cur_t = new Mat();
+            cur_r = new Mat();
         }
         public CameraCV(Frame[] _frames, Size _size)
         {
             calibrateCam(_frames, _size);
+        }
+        public void compPos(MCvPoint3D32f[] points3D, System.Drawing.PointF[] points2D)
+        {            
+
+            CvInvoke.SolvePnP(points3D,points2D,cameramatrix,distortmatrix, cur_r, cur_t);           
         }
         void calibrateFishEyeCam(Frame[] frames, Size size)
         {

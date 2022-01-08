@@ -72,6 +72,7 @@ namespace opengl3
         {
             return _time_cur;
         }
+
     }
 
     class RobLine

@@ -31,7 +31,24 @@ namespace opengl3
     }
     static public class UtilOpenCV
     {
-
+        static double toRad(double degree)
+        {
+            return (Math.PI * 2 * degree) / 360;
+        }
+        public static Matrix<double> matrixForCamera(Size size, double fov)
+        {
+            var cx = size.Width/2;
+            var cy = size.Height/2;
+            var radFoV = toRad(fov);
+            var f = cx / Math.Tan(radFoV / 2);
+            var dataCam = new double[,]
+            {
+                {f,0,cx },
+                {0,f,cy },
+                {0,0,1 }
+            };
+            return new Matrix<double>(dataCam);
+        }
         public static void saveImage(ImageBox box, string folder, string name)
         {
             var mat1 = (Mat)box.Image;
@@ -62,8 +79,9 @@ namespace opengl3
             im1.Save("cam2\\" + folder + "\\" + name);
 
         }
-        static public Mat calcSubpixelPrec(Mat mat, Size size, GraphicGL graphicGL, float markSize)
+        static public Mat calcSubpixelPrec(Size size, GraphicGL graphicGL, float markSize,int id_monit)
         {
+            Mat mat = graphicGL.matFromMonitor(id_monit);
             var len = size.Width * size.Height;
             var obp = new MCvPoint3D32f[len];
             var cornF = new System.Drawing.PointF[len];
@@ -77,10 +95,9 @@ namespace opengl3
             {
                 return null;
             }
-            var mvpMtx = graphicGL.compMVPmatrix(graphicGL.transRotZooms[0]);
             for (int i = 0; i < obp.Length; i++)
             {
-                var p_GL = graphicGL.calcPixel(new Vertex4f(markSize * obp[i].Y, -markSize * obp[i].X, obp[i].Z, 1), mvpMtx[3]);
+                var p_GL = graphicGL.calcPixel(new Vertex4f(markSize * obp[i].Y, -markSize * obp[i].X, obp[i].Z, 1), id_monit);
                 cornF_GL[i] = new System.Drawing.PointF(p_GL.X, p_GL.Y);
                 var p_chess = cornF[i];
                 cornF_delt[i] = new System.Drawing.PointF(p_GL.X - p_chess.X, p_GL.Y - p_chess.Y);

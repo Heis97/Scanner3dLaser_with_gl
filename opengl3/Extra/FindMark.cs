@@ -308,7 +308,7 @@ namespace opengl3
             var orig = new Mat();
             im.CopyTo(receivedImage);
             im.CopyTo(orig);
-
+            
             var im_cont = revealContourQ(receivedImage, bin, box_debug);
             Image<Gray, byte> image = im_cont.ToImage<Gray, Byte>();//.ThresholdBinary(new Gray(bin), new Gray(255));
 
@@ -316,8 +316,10 @@ namespace opengl3
             VectorOfVectorOfPoint contours1 = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
             //  imageBox5.Image = im_cont;
+            
             CvInvoke.FindContours(image, contours, hier, RetrType.External, ChainApproxMethod.ChainApproxSimple);
             //imageBox6.Image = image;
+            box_debug.Image = image;
             //Console.WriteLine("cont all= " + contours.Size);
             if (contours.Size != 0)
             {
@@ -338,8 +340,8 @@ namespace opengl3
 
             CvInvoke.DrawContours(orig, contours1, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
             //Console.WriteLine("cont add= " + contours1.Size);
-            box_debug.Image = orig;
-
+            // box_debug.Image = orig;
+            
             // box.Image = im_cont;
             var lines = findSquares_rotate(contours1, 7, orig);
 
@@ -486,15 +488,15 @@ namespace opengl3
             return null;
         }
 
-        static Mat calcMark(Mat im, Mat orig)
+        static Mat calcMark(Mat im, Mat orig,ImageBox box)
         {
 
-            var c = findMark(im, orig);
-
-            return paintBlackAboveCont(orig, c);
+            var c = findMark(im, orig,box);
+            
+            return paintBlackAboveCont(orig, c,box);
         }
 
-        static VectorOfVectorOfPoint findBiggestContour(Mat im, Mat orig)
+        static VectorOfVectorOfPoint findBiggestContour(Mat im, Mat orig, ImageBox box)
         {
             Image<Gray, byte> image = im.ToImage<Gray, Byte>();
             VectorOfVectorOfPoint contours1 = new VectorOfVectorOfPoint();
@@ -535,12 +537,14 @@ namespace opengl3
                 return null;
             }
         }
-        static VectorOfVectorOfPoint findMark(Mat im, Mat orig)
+        static VectorOfVectorOfPoint findMark(Mat im, Mat orig,ImageBox box)
         {
-            var im_m = revealArea(im);
-            return findBiggestContour(im_m, orig);
+            box.Image = im;
+            var im_m = revealArea(im,box);
+            
+            return findBiggestContour(im_m, orig,box);
         }
-        static private Mat revealArea(Mat im)
+        static private Mat revealArea(Mat im,ImageBox box)
         {
             double scale = (double)im.Width / 600;
             var w = im.Width;
@@ -550,7 +554,7 @@ namespace opengl3
             var im_inp = im_.ToImage<Gray, Byte>();
             var im_med = new Image<Gray, Byte>(im_inp.Width, im_inp.Height);
             var im_lap = im_inp.Laplace(9).Convert<Gray, Byte>();
-
+            box.Image = im_lap.Mat;
             // CvInvoke.AdaptiveThreshold(im_lap, im_med, 255, AdaptiveThresholdType.GaussianC, ThresholdType.Binary, 21, red_c);
             CvInvoke.Threshold(im_lap, im_med, 140, 255, ThresholdType.Binary);
 
@@ -580,6 +584,7 @@ namespace opengl3
 
             //Console.WriteLine(im_med.Width + " " + im_med.Height);
             // var im_inp1 = deleteOnePixel(im_med.Mat);
+            
             var im_inp1 = im_med1.Mat;
 
             return im_inp1;
@@ -616,10 +621,13 @@ namespace opengl3
             im_med = im_med1.MorphologyEx(MorphOp.Close, kernel31, new Point(-1, -1), 1, BorderType.Default, new MCvScalar());
             CvInvoke.Resize(im_med, im_med, new Size(w, h));
             box.Image = im_med.Mat;*/
-
+            
 
             var mat_med = im_med.Mat;
-            var mat_out = calcMark(im_c, mat_med);
+            //box.Image = mat_med;
+            var mat_out = calcMark(im_c, mat_med,box);
+            Console.WriteLine("FIN");
+            
             return mat_out;
         }
         static int[,] calcBorder(Point[] cont, Size size)
@@ -733,7 +741,7 @@ namespace opengl3
                 return null;
             }
         }
-        static Mat paintBlackAboveCont(Mat _im, VectorOfVectorOfPoint cont)
+        static Mat paintBlackAboveCont(Mat _im, VectorOfVectorOfPoint cont, ImageBox box)
         {
             Image<Gray, Byte> im = _im.ToImage<Gray, Byte>();
 

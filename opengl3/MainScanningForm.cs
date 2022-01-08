@@ -150,6 +150,7 @@ namespace opengl3
 
              stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });*/
 
+
             if (comboImages.Items.Count > 0)
             {
                 comboImages.SelectedIndex = 0;
@@ -157,7 +158,11 @@ namespace opengl3
 
 
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-            generateImage3D_BOARD(8, 7, markSize);
+           // generateImage3D(7, 0.5f,  markSize);
+            GL1.addFrame(new Point3d_GL(0, 0, 0),
+                new Point3d_GL(10, 0, 0),
+                new Point3d_GL(0, 10, 0),
+                new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
         }
 
@@ -357,30 +362,69 @@ namespace opengl3
                 UtilOpenCV.SaveMonitor(GL1);
             }
             // imBox_mark1.
-            //imBox_mark1.Image = remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
-            //imBox_mark2.Image = remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
+            //  imBox_mark1.Image =UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
+            int id_mon = 0;
+            var mat1 = GL1.matFromMonitor(id_mon);
+
+            var points3D = new MCvPoint3D32f[]
+            {
+                new MCvPoint3D32f(0,0,0),
+                new MCvPoint3D32f(60, 0, 0),
+                new MCvPoint3D32f(0, 60, 0),
+                new MCvPoint3D32f(60, 60, 0)
+            };
+            var points2D = new System.Drawing.PointF[points3D.Length];
+            for(int i=0; i<points3D.Length;i++)
+            {
+                var p = GL1.calcPixel(new Vertex4f(points3D[i].X, points3D[i].Y, points3D[i].Z, 1), id_mon);
+                points2D[i] = new System.Drawing.PointF(p.X, p.Y);
+            }
+            UtilOpenCV.drawTours(mat1,PointF.toPointF(points2D),255,0,0);
+            GL1.cameraCV.compPos(points3D, points2D);
+            var mxCam = matrixFromCam(GL1.cameraCV);
+            prin.t(mxCam);
+            prin.t("-------------------");
+            prin.t(GL1.Vs[id_mon]);
+            prin.t("-------------------");
+            imBox_mark2.Image = mat1;
+
+
+            
+
+            //imBox_mark2.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
+            //var ps = FindMark.finPointFsFromIm(GL1.matFromMonitor(0), 60, imBox_disparity, imBox_3dDebug);
+
             // var mat1 = GL1.matFromMonitor(0);
             // var mat2 = GL1.matFromMonitor(1);
             //drawDescriptors(ref mat1);
             //imBox_mark1.Image = drawDescriptorsMatch(ref mat1, ref mat2);
-            imBox_mark2.Image = UtilOpenCV.calcSubpixelPrec(GL1.matFromMonitor(0), new Size(6, 7),GL1,markSize);
+            // imBox_mark2.Image = UtilOpenCV.calcSubpixelPrec(GL1.matFromMonitor(0), new Size(6, 7),GL1,markSize);
             //imBox_disparity.Image =  stereocam.epipolarTest(GL1.matFromMonitor(1), GL1.matFromMonitor(0));
             // imBox_mark1.Image =  drawChessboard((Mat)imBox_mark1.Image, new Size(6, 7));
             //  imBox_mark2.Image =  drawChessboard((Mat)imBox_mark2.Image, new Size(6, 7));
 
 
         }
+        Matrix4x4f matrixFromCam(CameraCV cam)
+        {
+            var rotateMatrix = new Matrix<double>(3, 3);
+            CvInvoke.Rodrigues(cam.cur_r, rotateMatrix);
+            var tvec = UtilMatr.toVertex3f(cam.cur_t);
+            var mx = UtilMatr.assemblMatrix(rotateMatrix, tvec);
+            // var invMx = mx.Inverse;
+            return mx;
+        }
         private void Form1_mousewheel(object sender, MouseEventArgs e)
         {
             GL1.Form1_mousewheel(sender, e);
         }
 
-
         #endregion
+
         #region buttons
         private void but_SubpixPrec_Click(object sender, EventArgs e)
-        {
-            UtilOpenCV.calcSubpixelPrec(GL1.matFromMonitor(0), new Size(6, 7),GL1,markSize);
+        {       
+            UtilOpenCV.calcSubpixelPrec(new Size(6, 7),GL1,markSize,0);
         }
         private void trB_SGBM_Scroll(object sender, EventArgs e)
         {
@@ -1248,10 +1292,9 @@ namespace opengl3
             im_ret.Save("black_sq_" + n + "_" + k + ".png");
         }
 
-        void generateImage3D(int n, float k, float sidef)
+        void generateImage3D(int n, float k, float side)
         {
-            float im_side = sidef * n / (n - 1);
-            float side = im_side / n;
+           
             float q_side = (k * side);
             Console.WriteLine("q_side " + q_side);
 
@@ -1261,14 +1304,14 @@ namespace opengl3
                            q_side,q_side, 0.0f, // triangle 1 : end
                             q_side, q_side,0.0f, // triangle 2 : begin
                            q_side,0.0f,0.0f,
-                            0.0f, 0.0f,0.0f };
+                            0.0f, 0.0f,0.0f // triangle 2 : end
+            };
 
-            //Console.WriteLine("side = "+side);
-            // Console.WriteLine("side = " + q_side);
-            for (float x = -side / 4; x >= -im_side; x -= side)
+            for (float x = -side / 4; x >= -n*side; x -= side)
             {
-                for (float y = -side / 4; y >= -im_side; y -= side)
+                for (float y = -side / 4; y >= -n * side; y -= side)
                 {
+                    Console.WriteLine(x+" "+y);
                     GL1.addGLMesh(square_buf, PrimitiveType.Triangles, (float)x, (float)y);
                 }
             }

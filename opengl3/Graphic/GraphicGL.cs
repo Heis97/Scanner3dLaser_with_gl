@@ -13,12 +13,9 @@ using Emgu.CV.Structure;
 using Emgu.Util;
 
 namespace opengl3
-{
-    
+{   
     public enum modeGL { Paint, View}
     public enum viewType { Perspective, Ortho }
-
-
     public class GraphicGL
     {
         #region vars
@@ -59,7 +56,7 @@ namespace opengl3
         Matrix4x4f MVP;
         Matrix4x4f[] MVPs;
         Matrix4x4f[] Ms;
-        Matrix4x4f[] Vs;
+        public Matrix4x4f[] Vs;
         Vertex3f lightPos = new Vertex3f(0.0f, 0.0f, 123.0f);
         Vertex3f MaterialDiffuse = new Vertex3f(0.1f, 0.1f, 0.1f);
         Vertex3f MaterialAmbient = new Vertex3f(0.1f, 0.1f, 0.1f);
@@ -166,6 +163,8 @@ namespace opengl3
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
+            cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(new Size(1, 5)));
+
             
         }
         
@@ -342,7 +341,7 @@ namespace opengl3
             var zRot = trz.zRot;
             if (trz.viewType_ == viewType.Perspective)
             {
-                Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.1f, 3000.0f);
+                Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.1f, 3000.0f);              
                 Vm = Matrix4x4f.Translated((float)(off_x), -(float)(off_y), (float)zoom * (float)(off_z)) *
                Matrix4x4f.RotatedX((float)xRot) *
                Matrix4x4f.RotatedY((float)yRot) *
@@ -360,9 +359,15 @@ namespace opengl3
             MVP = Pm * Vm * Mm;
             return new Matrix4x4f[] { Pm, Vm, Mm, MVP };
         }
-        public PointF calcPixel(Vertex4f point, Matrix4x4f mvp)
+        /// <summary>
+        /// 3dGL->2dIm
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="mvp"></param>
+        /// <returns></returns>
+        public PointF calcPixel(Vertex4f point, int id)
         {
-            var p2 = mvp * point;
+            var p2 = MVPs[id] * point;
             var p4 = p2 / p2.w;
             var p3 = toTRZcord(new PointF(p4.x, p4.y));
             

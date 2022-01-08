@@ -28,7 +28,6 @@ namespace opengl3
         public DateTime dateTime;
         public TransRotZoom consttransf;
 
-
         public TransRotZoom(Rectangle _rect, int _id)
         {
             zoom = 1;

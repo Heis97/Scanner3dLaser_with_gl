@@ -33,10 +33,11 @@ namespace opengl3
                     ret[(uint)i, (uint)j] = (float)rot[i, j];
                 }
             }
-            ret[3, 0] = 10.0f * trans.x; ret[3, 1] = 10.0f * trans.y; ret[3, 2] = 10.0f * trans.z;
+            ret[3, 0] = trans.x; ret[3, 1] = trans.y; ret[3, 2] = trans.z;
             ret[0, 3] = 0; ret[1, 3] = 0; ret[2, 3] = 0; ret[3, 3] = (float)1;
             return ret;
         }
+
         static public Vertex3f toVertex3f(Mat mat)
         {
             var arr = mat.GetData();
