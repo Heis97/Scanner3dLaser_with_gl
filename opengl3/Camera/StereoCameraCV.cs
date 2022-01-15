@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -46,7 +47,7 @@ namespace opengl3
     public class StereoCameraCV
     {
         public CameraCV[] cameraCVs;
-        public Mat t, r;
+        public Mat t, r,e,f;
         StereoSGBM stereosolver;
         StereoBM stereosolverBM;
         public SGBM_param solver_param;
@@ -65,24 +66,12 @@ namespace opengl3
             }
             var cam1 = _cameraCVs[0];
             var cam2 = _cameraCVs[1];
-            if (cam1.objps != cam2.objps)
+           /* for (int i = 0; i < cam1.tvecs.Length; i++)
             {
-                Console.WriteLine("!=!=!=");
-                //return;
-            }
-            for (int i = 0; i < cam1.tvecs.Length; i++)
-            {
-                //printer.print("_________________");
-                //printer.print(cam1.frames[i].name);
-                // printer.print(cam1.tvecs[i]- cam2.tvecs[i]);
-
-                //printer.print(cam2.tvecs[i]);
-
-            }
-            //printer.print(cam1.corners);
-            //printer.print("______________");
-            //printer.print(cam2.corners);
-
+                printer.print("_________________");
+                printer.print(cam1.frames[i].name);
+                printer.print(cam1.tvecs[i]- cam2.tvecs[i]);
+            }*/
             var r = new Mat();
             var t = new Mat();
             var e = new Mat();
@@ -106,6 +95,8 @@ namespace opengl3
                 );
             this.t = t;
             this.r = r;
+            this.e = e;
+            this.f = f;
             Console.WriteLine("r:  ");
             prin.t(r);
             Console.WriteLine("t:  ");
@@ -172,6 +163,27 @@ namespace opengl3
             solver_param = new SGBM_param(minDisparity, numDisparities, blockSize, p1, p2, disp12MaxDiff, preFilterCap, uniquenessRatio, speckleWindowSize, speckleRange);
             setSGBM_parameters();
         }
+        public Mat[] drawEpipolarLines(Mat mat1, Mat mat2, VectorOfPointF points)
+        {  
+            var lines = new VectorOfPoint3D32F() ;
+            var size = mat1.Size;
+            CvInvoke.ComputeCorrespondEpilines(points, 1, f, lines);
+            
+            for(int i=0; i<points.Size;i++)
+            {
+                int x0 = 0;
+                int y0 = (int)(-lines[i].Z/ lines[i].Y);
+
+                int x1 = size.Width;
+                int y1 = (int)(-(lines[i].Z+ lines[i].X* size.Width) / lines[i].Y);
+                CvInvoke.Line(mat1, new Point(x0, y0), new Point(x1, y1), new MCvScalar(255, 0, 0));
+            }
+
+            //prin.t(lines);
+           // prin.t("_________");
+            return new Mat[] { mat1, mat2 };
+        }
+
         public Mat epipolarTest(Mat matL, Mat matR)
         {
             if (stereosolver == null)
@@ -206,5 +218,6 @@ namespace opengl3
             }
 
         }
+
     }
 }

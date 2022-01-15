@@ -23,22 +23,28 @@ namespace opengl3
         public Mat[] rvecs;
         public Mat cur_t;
         public Mat cur_r;
+        public Mat mapx;
+        public Mat mapy;
         public CameraCV(Matrix<double> _cameramatrix, Matrix<double> _distortmatrix)
         {
             cameramatrix = _cameramatrix;
             distortmatrix = _distortmatrix;
             cur_t = new Mat();
             cur_r = new Mat();
+            
         }
         public CameraCV(Frame[] _frames, Size _size)
         {
             calibrateCam(_frames, _size);
+            cur_t = new Mat();
+            cur_r = new Mat();
         }
         public void compPos(MCvPoint3D32f[] points3D, System.Drawing.PointF[] points2D)
         {            
 
             CvInvoke.SolvePnP(points3D,points2D,cameramatrix,distortmatrix, cur_r, cur_t);           
         }
+
         void calibrateFishEyeCam(Frame[] frames, Size size)
         {
             var objps = new VectorOfVectorOfPoint3D32F();
@@ -189,6 +195,12 @@ namespace opengl3
             //  }
 
         }
+        public Mat undist(Mat mat)
+        {
+            var mat_ret = new Mat();
+            CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
+            return mat_ret;
+        }
         void calibrateCam(Frame[] frames, Size size)
         {
             this.frames = frames;
@@ -245,11 +257,10 @@ namespace opengl3
             this.rvecs = rvecs;
 
             var matr = CvInvoke.GetOptimalNewCameraMatrix(_cameramatrix, _distortmatrix, frames[0].im.Size, 1, frames[0].im.Size, ref newRoI);
-            var mapx = new Mat();
-            var mapy = new Mat();
 
             //computeDistortionMaps(ref mapx, ref mapy, _cameramatrix, _distortmatrix, frames[0].im.Size);
-
+            mapx = new Mat();
+            mapy = new Mat();
             CvInvoke.InitUndistortRectifyMap(_cameramatrix, _distortmatrix, null, matr, frames[0].im.Size, DepthType.Cv32F, mapx, mapy);
 
             var und_pic = new Mat();

@@ -58,6 +58,23 @@ namespace opengl3
             }
             Console.WriteLine(" ");
         }
+        public static void t(VectorOfPoint3D32F matr)
+        {
+            for (int i = 0; i < matr.Size; i++)
+            {               
+                Console.WriteLine(matr[i].X + " " + matr[i].Y + " " + matr[i].Z + "; ");
+            }
+            Console.WriteLine(" ");
+        }
+
+        public static void t(VectorOfKeyPoint matr)
+        {
+            for (int i = 0; i < matr.Size; i++)
+            {
+                Console.WriteLine(matr[i].Point.X + " " + matr[i].Point.Y + "; ");
+            }
+            Console.WriteLine(" ");
+        }
         public static void t(VectorOfVectorOfPointF matr)
         {
             for (int i = 0; i < matr.Size; i++)
@@ -246,9 +263,10 @@ namespace opengl3
         */
         public static void t(Mat mat)
         {
-            Console.WriteLine("cols x rows: " + mat.Cols + " x " + mat.Rows);
+            Console.WriteLine("cols x rows: " + mat.Rows + " x " + mat.Cols+" "+mat.Depth + " " + mat.NumberOfChannels);
             var arr = mat.GetData();
             var ch = mat.NumberOfChannels;
+
             if (ch > 1)
             {
                 if (mat.Depth == DepthType.Cv64F)

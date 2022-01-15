@@ -124,6 +124,7 @@ namespace opengl3
         int[,] flatInds = new int[1, 1];
         int[] flatLasInds = new int[1];
         int colr = 1;
+        Features features = new Features();
         #endregion
         public MainScanningForm()
         {
@@ -135,20 +136,20 @@ namespace opengl3
             maxArea = 15 * k * k * 250;
             red_c = 252;
 
-            // var stl_loader = new STLmodel();
-            // var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-            //  GL1.addGLMesh(mesh, PrimitiveType.Triangles);
+             var stl_loader = new STLmodel();
+             var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
+             GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-            /* var frLdr = new FrameLoader();
-             var frms1 = frLdr.loadImages_chess(@"virtual_stereo\test5\monitor_2");
+           
+             var frms1 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_2");
              comboImages.Items.AddRange(frms1);
              var cam1 = new CameraCV(frms1, new Size(6, 7));
-             var frms2 = frLdr.loadImages_chess(@"virtual_stereo\test5\monitor_3");
+             var frms2 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_3");
              comboImages.Items.AddRange(frms2);
              var cam2 = new CameraCV(frms2, new Size(6, 7));
 
-             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });*/
+             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
 
             if (comboImages.Items.Count > 0)
@@ -352,17 +353,10 @@ namespace opengl3
         {
             GL1.glControl_MouseDown(sender, e);
         }
-        private void glControl1_Render(object sender, GlControlEventArgs e)
-        {
 
-            GL1.glControl_Render(sender, e);
-            //GL1.printDebug(debugBox);
-            if (GL1.rendercout == 0)
-            {
-                UtilOpenCV.SaveMonitor(GL1);
-            }
-            // imBox_mark1.
-            //  imBox_mark1.Image =UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
+
+        void test4pointHomo()
+        {
             int id_mon = 0;
             var mat1 = GL1.matFromMonitor(id_mon);
 
@@ -374,12 +368,12 @@ namespace opengl3
                 new MCvPoint3D32f(60, 60, 0)
             };
             var points2D = new System.Drawing.PointF[points3D.Length];
-            for(int i=0; i<points3D.Length;i++)
+            for (int i = 0; i < points3D.Length; i++)
             {
                 var p = GL1.calcPixel(new Vertex4f(points3D[i].X, points3D[i].Y, points3D[i].Z, 1), id_mon);
                 points2D[i] = new System.Drawing.PointF(p.X, p.Y);
             }
-            UtilOpenCV.drawTours(mat1,PointF.toPointF(points2D),255,0,0);
+            UtilOpenCV.drawTours(mat1, PointF.toPointF(points2D), 255, 0, 0);
             GL1.cameraCV.compPos(points3D, points2D);
             var mxCam = matrixFromCam(GL1.cameraCV);
             prin.t(mxCam);
@@ -387,17 +381,27 @@ namespace opengl3
             prin.t(GL1.Vs[id_mon]);
             prin.t("-------------------");
             imBox_mark2.Image = mat1;
+        }
 
+        private void glControl1_Render(object sender, GlControlEventArgs e)
+        {
 
+            GL1.glControl_Render(sender, e);
+            //GL1.printDebug(debugBox);
+            if (GL1.rendercout == 0)
+            {
+                UtilOpenCV.SaveMonitor(GL1);
+            }
+            // imBox_mark1.
+            var mat1 = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
+            var mat2 = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
+            imBox_mark1.Image = stereocam.cameraCVs[0].undist(mat1);
+            imBox_mark2.Image = stereocam.cameraCVs[1].undist(mat2);
             
-
-            //imBox_mark2.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
-            //var ps = FindMark.finPointFsFromIm(GL1.matFromMonitor(0), 60, imBox_disparity, imBox_3dDebug);
-
-            // var mat1 = GL1.matFromMonitor(0);
-            // var mat2 = GL1.matFromMonitor(1);
             //drawDescriptors(ref mat1);
-            //imBox_mark1.Image = drawDescriptorsMatch(ref mat1, ref mat2);
+            imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1, ref mat2);
+            imBox_3dDebug.Image  = stereocam.drawEpipolarLines((Mat)imBox_mark1.Image, (Mat)imBox_mark2.Image, features.ps1)[0];
+            
             // imBox_mark2.Image = UtilOpenCV.calcSubpixelPrec(GL1.matFromMonitor(0), new Size(6, 7),GL1,markSize);
             //imBox_disparity.Image =  stereocam.epipolarTest(GL1.matFromMonitor(1), GL1.matFromMonitor(0));
             // imBox_mark1.Image =  drawChessboard((Mat)imBox_mark1.Image, new Size(6, 7));

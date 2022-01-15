@@ -234,7 +234,7 @@ namespace opengl3
             }
             return null;
         }
-
+        
         static public void generateImagesFromAnotherFolder(string[] paths, GraphicGL graphicGL, CameraCV cameraCV)
         {
             var trzs_L = new List<TransRotZoom[]>();
@@ -546,61 +546,6 @@ namespace opengl3
 
 
             return new float[] { K, min };
-        }
-
-        static public MKeyPoint[] drawDescriptors(ref Mat mat)
-        {
-            var detector_ORB = new Emgu.CV.Features2D.ORBDetector(50);
-            var detector_SURF = new Emgu.CV.Features2D.FastFeatureDetector();
-            var kp = detector_ORB.Detect(mat);
-
-
-
-            // matcher.Match()
-            var desc_brief = new Emgu.CV.XFeatures2D.BriefDescriptorExtractor();
-            //new VectorOfKeyPoint();
-            var descrs = new Mat();
-
-
-            // desc_brief.DetectAndCompute(mat, null, kp, descrs, false);
-            //var mat_desc = new Mat();
-            for (int i = 0; i < kp.Length; i++)
-            {
-                CvInvoke.DrawMarker(
-                    mat,
-                    new Point((int)kp[i].Point.X, (int)kp[i].Point.Y),
-                    new MCvScalar(0, 0, 255),
-                    MarkerTypes.Cross,
-                    4,
-                    1);
-
-            }
-
-            return kp;
-        }
-        static public Mat drawDescriptorsMatch(ref Mat mat1, ref Mat mat2)
-        {
-            var kps1 = new VectorOfKeyPoint();
-            var desk1 = new Mat();
-            var kps2 = new VectorOfKeyPoint();
-            var desk2 = new Mat();
-            var detector_ORB = new Emgu.CV.Features2D.ORBDetector();
-            detector_ORB.DetectAndCompute(mat1, null, kps1, desk1, false);
-            detector_ORB.DetectAndCompute(mat2, null, kps2, desk2, false);
-            var matcher = new Emgu.CV.Features2D.BFMatcher(Emgu.CV.Features2D.DistanceType.L1, false);
-            //var matcherFlann = new Emgu.CV.Features2D.
-            var matches = new VectorOfDMatch();
-            matcher.Match(desk1, desk2, matches);
-            var mat3 = new Mat();
-            try
-            {
-                Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
-            }
-            catch
-            {
-
-            }
-            return mat3;
         }
 
         static public Mat epipolarTest(Mat matL, Mat matR)

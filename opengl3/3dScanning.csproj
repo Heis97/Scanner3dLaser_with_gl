@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera\Features.cs" />
     <Compile Include="Graphic\BuffersGl.cs" />
     <Compile Include="Extra\Analyse.cs" />
     <Compile Include="Camera\CameraCV.cs" />
