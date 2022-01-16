@@ -47,7 +47,7 @@ namespace opengl3
     public class StereoCameraCV
     {
         public CameraCV[] cameraCVs;
-        public Mat t, r,e,f;
+        public Mat t, r,e,f,p1,p2;
         StereoSGBM stereosolver;
         StereoBM stereosolverBM;
         public SGBM_param solver_param;
@@ -55,6 +55,7 @@ namespace opengl3
         {
             cameraCVs = _cameraCVs;
             calibrateCamStereo(cameraCVs);
+            rectify();
             init();
         }
 
@@ -66,12 +67,12 @@ namespace opengl3
             }
             var cam1 = _cameraCVs[0];
             var cam2 = _cameraCVs[1];
-           /* for (int i = 0; i < cam1.tvecs.Length; i++)
+            for (int i = 0; i < cam1.tvecs.Length; i++)
             {
-                printer.print("_________________");
-                printer.print(cam1.frames[i].name);
-                printer.print(cam1.tvecs[i]- cam2.tvecs[i]);
-            }*/
+                prin.t("_________________");
+                prin.t(cam1.frames[i].name);
+                prin.t(cam1.tvecs[i]- cam2.tvecs[i]);
+            }
             var r = new Mat();
             var t = new Mat();
             var e = new Mat();
@@ -109,7 +110,7 @@ namespace opengl3
             prin.t(err);
 
         }
-        void epipolarStereo(Mat imL, Mat imR)
+        void rectify()
         {
             if (cameraCVs.Length < 2)
             {
@@ -129,7 +130,15 @@ namespace opengl3
                 cam2.cameramatrix, cam2.distortmatrix,
                 cam1.frames[0].im.Size, r, t, r1, r2, p1, p2, q,
                 StereoRectifyType.Default, -1, Size.Empty, ref roi1, ref roi2);
+            prin.t("p1: ");
+            prin.t(p1);
+            prin.t("_________");
 
+            prin.t("p2: ");
+            prin.t(p2);
+            prin.t("_________");
+            this.p1 = p1;
+            this.p2 = p2;
         }
         public void setSGBM_parameters()
         {

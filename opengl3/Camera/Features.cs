@@ -11,6 +11,46 @@ using System.Threading.Tasks;
 
 namespace opengl3
 {
+    public struct Descriptor
+    {
+        public float[] data;
+        public int ind_desc;
+        public int ind_im;
+        public MKeyPoint keyPoint;
+        public Descriptor( float[] _data, int _ind_desc, int _ind_im, MKeyPoint _keyPoint)
+        {
+            data = _data;
+            ind_desc = _ind_desc;
+            ind_im = _ind_im;
+            keyPoint = _keyPoint;
+        }
+        static public Descriptor[] toDescriptors(VectorOfKeyPoint _keyPoints,Mat desk,int im)
+        {
+
+            var allData = (float[,])desk.GetData();
+            var desks = new Descriptor[allData.GetLength(0)];
+            for (int i=0; i<allData.GetLength(0);i++)
+            {
+                var _data = new float[allData.GetLength(1)];
+                for (int j= 0; j < allData.GetLength(1); j++)
+                {
+                    _data[j] = allData[i, j];
+                }
+                desks[i] = new Descriptor(_data, i, im, _keyPoints[i]);
+            }
+            return desks;
+        }
+        static public double Diff(Descriptor desc1, Descriptor desc2)
+        {
+            float e = 0;
+            for(int i=0; i<desc1.data.Length;i++)
+            {
+                var diff = desc1.data[i] - desc2.data[i];
+                e += diff * diff;
+            }
+            return Math.Sqrt(e);
+        }
+    }
     public class Features
     {
         public VectorOfKeyPoint kps1;
@@ -18,6 +58,11 @@ namespace opengl3
 
         public VectorOfPointF ps1;
         public VectorOfPointF ps2;
+
+        public VectorOfDMatch mchs;
+
+        public Descriptor[] desks1;
+        public Descriptor[] desks2;
         public Features()
         {
 
@@ -80,19 +125,14 @@ namespace opengl3
             //var matcherFlann = new Emgu.CV.Features2D.
             var matches = new VectorOfDMatch();
 
-             //matcherBF.Match(desk1, desk2, matches);
-           
-            /* prin.t(desk1);
-             prin.t("________");
-             prin.t(desk2);
-             prin.t("________");
-             prin.t(kps1);
-             prin.t("________");
-             prin.t(kps2);
-             prin.t("________");
+            //matcherBF.Match(desk1, desk2, matches);
+            //matches = matchBF(desk1, desk2);
+            // matches = matchBF(Descriptor.toDescriptors(kps1,desk1,1), Descriptor.toDescriptors(kps2, desk2,2));
 
-             prin.t("________");*/
-            matches = deskDiff(desk1, desk2);
+            this.desks1 = Descriptor.toDescriptors(kps1, desk1, 1);
+            this.desks2 = Descriptor.toDescriptors(kps2, desk2, 2);
+            matches = matchEpiline(this.desks1, this.desks2);
+
             //prin.t("_______________");
             var mat3 = new Mat();
             try
@@ -102,6 +142,8 @@ namespace opengl3
 
                 this.ps1 = keyToPoint(kps1);
                 this.ps2 = keyToPoint(kps2);
+
+                this.mchs = matches;
                // matcher.KnnMatch(desk1, desk2, matches, 2);
                 Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
             }
@@ -112,7 +154,112 @@ namespace opengl3
             }
             return mat3;
         }
-        VectorOfDMatch deskDiff(Mat desk1, Mat desk2)
+        
+        VectorOfDMatch matchEpiline(Descriptor[] desk1, Descriptor[] desk2)
+        {
+            var w = 400;
+            var h = 400;
+            var desk_line1 = new Descriptor[h][];
+            var desk_line2 = new Descriptor[h][];
+
+            VectorOfDMatch matches = new VectorOfDMatch();
+            for (int i = 0; i < desk1.Length; i++)
+            {
+                var y = (int)desk1[i].keyPoint.Point.Y;
+                var lr = desk_line1[y];
+                if(lr == null)
+                {
+                    lr = new Descriptor[0];
+                }
+                var lr_l =  lr.ToList();
+                lr_l.Add(desk1[i]);
+                desk_line1[y] = lr_l.ToArray();
+            }
+            for (int i = 0; i < desk2.Length; i++)
+            {
+                var y = (int)desk2[i].keyPoint.Point.Y;
+                var lr = desk_line2[y];
+                if (lr == null)
+                {
+                    lr = new Descriptor[0];
+                }
+                var lr_l = lr.ToList();
+                lr_l.Add(desk2[i]);
+                desk_line2[y] = lr_l.ToArray();
+            }
+
+            for(int y=0; y<desk_line1.Length;y++)
+            {
+                if(desk_line1[y]!=null && desk_line2[y] != null)
+                {
+                    //prin.t(y + " " + desk_line1[y].Length + " " + desk_line2[y].Length);
+                    if (desk_line1[y].Length >0 && desk_line2[y].Length > 0)
+                    {
+                        matches.Push(matchBF(desk_line1[y], desk_line2[y]));
+                        
+                    }
+                }
+            }
+
+            return matches;
+        }
+        VectorOfDMatch matchBF(Descriptor[] desk1, Descriptor[] desk2)
+        {
+            var mDMatchs = new List<MDMatch>();
+            var es = new double[desk1.Length, desk2.Length];
+            for (int i = 0; i < desk1.Length; i++)
+            {
+                var min_ind = 0;
+                double min_e = 1000000;
+                for (int j = 0; j < desk2.Length; j++)
+                {
+                    es[i, j] = Descriptor.Diff(desk1[i], desk2[j]);
+                    if (es[i, j] < min_e)
+                    {
+                        min_e = es[i, j];
+                        min_ind = j;
+                    }
+                }
+                var match = new MDMatch();
+                match.ImgIdx = 0;
+                match.TrainIdx = desk1[i].ind_desc;
+                match.QueryIdx = desk2[min_ind].ind_desc;
+                mDMatchs.Add(match);
+            }
+            return new VectorOfDMatch(mDMatchs.ToArray());
+        }
+        public float[] reconstuctScene(StereoCameraCV stereoCam ,Descriptor[] desk1, Descriptor[] desk2, VectorOfDMatch matches)
+        {
+            var ps1 = new System.Drawing.PointF[matches.Size];
+            var ps2 = new System.Drawing.PointF[matches.Size];
+            for(int i=0; i<matches.Size;i++)
+            {
+                var m = matches[i];
+                ps1[i] = desk1[m.TrainIdx].keyPoint.Point;
+                ps2[i] = desk2[m.QueryIdx].keyPoint.Point;
+            }
+            var p4s = new Mat();
+            CvInvoke.TriangulatePoints(stereoCam.p1, stereoCam.p2,new VectorOfPointF(ps1), new VectorOfPointF(ps2),p4s);
+
+            return reconstrToMesh(p4s);
+        }
+
+        float[] reconstrToMesh(Mat p4s)
+        {
+            var mesh = new List<float>();
+            var pdata = (float[,])p4s.GetData();
+            for(int i=0; i<pdata.GetLength(1); i++)
+            {
+                if(pdata[3,i]!=0)
+                {
+                    mesh.Add(pdata[0, i] / pdata[3, i]);
+                    mesh.Add(pdata[1, i] / pdata[3, i]);
+                    mesh.Add(pdata[2, i] / pdata[3, i]);
+                }
+            }
+            return mesh.ToArray();
+        }
+        VectorOfDMatch matchBF(Mat desk1, Mat desk2)
         {
             var mDMatchs = new List<MDMatch>();
             var data1 = (float[,])desk1.GetData();
@@ -153,10 +300,7 @@ namespace opengl3
             return new VectorOfDMatch(mDMatchs.ToArray());
         }
         
-        public VectorOfDMatch epilineMatch(Mat mat1, Mat mat2, StereoCameraCV stereoCameraCV)
-        {
-            return null;
-        }
+        
     }
 
     

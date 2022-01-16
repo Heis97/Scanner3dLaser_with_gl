@@ -79,6 +79,7 @@ namespace opengl3
         Matrix<double> cameraMatrix1 = new Matrix<double>(3, 3);
         Matrix<double> cameraDistortionCoeffs2 = new Matrix<double>(5, 1);
         Matrix<double> cameraMatrix2 = new Matrix<double>(3, 3);
+        float[] reconst = new float[3];
         int k = 1;
         bool writ = false;
         int bin_pos = 40;
@@ -159,7 +160,8 @@ namespace opengl3
 
 
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-           // generateImage3D(7, 0.5f,  markSize);
+            //generateImage3D_BOARD(7, 8, 10f);
+            //generateImage3D(7, 0.5f,  markSize);
             GL1.addFrame(new Point3d_GL(0, 0, 0),
                 new Point3d_GL(10, 0, 0),
                 new Point3d_GL(0, 10, 0),
@@ -392,16 +394,23 @@ namespace opengl3
             {
                 UtilOpenCV.SaveMonitor(GL1);
             }
+
+           // imBox_mark1.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
+           // imBox_mark2.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
             // imBox_mark1.
-            var mat1 = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
-            var mat2 = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
-            imBox_mark1.Image = stereocam.cameraCVs[0].undist(mat1);
-            imBox_mark2.Image = stereocam.cameraCVs[1].undist(mat2);
+            var mat1 = stereocam.cameraCVs[0].undist(UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist));
+            var mat2 = stereocam.cameraCVs[1].undist(UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist));
+            imBox_mark1.Image = mat1;
+            imBox_mark2.Image = mat2;
             
-            //drawDescriptors(ref mat1);
+            
             imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1, ref mat2);
-            imBox_3dDebug.Image  = stereocam.drawEpipolarLines((Mat)imBox_mark1.Image, (Mat)imBox_mark2.Image, features.ps1)[0];
-            
+            reconst = features.reconstuctScene(stereocam, features.desks1, features.desks2, features.mchs);
+          //  prin.t(reconst);
+           // prin.t("_____________-");
+           
+            //imBox_3dDebug.Image  = stereocam.drawEpipolarLines(mat1, mat2, features.ps1)[0];
+
             // imBox_mark2.Image = UtilOpenCV.calcSubpixelPrec(GL1.matFromMonitor(0), new Size(6, 7),GL1,markSize);
             //imBox_disparity.Image =  stereocam.epipolarTest(GL1.matFromMonitor(1), GL1.matFromMonitor(0));
             // imBox_mark1.Image =  drawChessboard((Mat)imBox_mark1.Image, new Size(6, 7));
@@ -428,7 +437,10 @@ namespace opengl3
         #region buttons
         private void but_SubpixPrec_Click(object sender, EventArgs e)
         {       
-            UtilOpenCV.calcSubpixelPrec(new Size(6, 7),GL1,markSize,0);
+           //UtilOpenCV.calcSubpixelPrec(new Size(6, 7),GL1,markSize,0);
+            reconst = GL1.translateMesh(reconst, 0, 0, 100);
+            GL1.addMeshWithoutNorm(reconst, PrimitiveType.Points, 1f, 0, 0);
+            GL1.buffersGl.sortObj();
         }
         private void trB_SGBM_Scroll(object sender, EventArgs e)
         {

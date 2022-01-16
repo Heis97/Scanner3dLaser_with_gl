@@ -156,7 +156,7 @@ namespace opengl3
             Gl.Initialize();
             Gl.Enable(EnableCap.Multisample);
             Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
-            Gl.PointSize(2f);
+            Gl.PointSize(10f);
             programID_ps = createShader(_VertexSourceGL, _GeometryShaderPointsGL, _FragmentSourceGL);
             programID_lns = createShader(_VertexSourceGL, _GeometryShaderLinesGL, _FragmentSourceGL);
             programID_trs = createShader(_VertexSourceGL, _GeometryShaderTrianglesGL, _FragmentSourceGL);

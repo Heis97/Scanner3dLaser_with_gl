@@ -300,7 +300,7 @@ namespace opengl3
             }
 
             graphicGL.monitorsForGenerate = new int[] { 2, 3 };
-            graphicGL.pathForSave = "virtual_stereo\\test5";
+            graphicGL.pathForSave = "virtual_stereo\\test6";
             //GL1.imageBoxesForSave = new ImageBox[] { imBox_mark1, imBox_mark2 };
             graphicGL.trzForSave = trzs_L;
             graphicGL.saveImagesLen = trzs_L[0].Length - 1;

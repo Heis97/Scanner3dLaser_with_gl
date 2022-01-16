@@ -95,6 +95,19 @@ namespace opengl3
             }
             Console.WriteLine(" ");
         }
+
+        public static void t(float[] matr)
+        {
+            for (int i = 0; i < matr.Length; i++)
+            {
+                Console.Write(matr[i] + " ");
+                if((i+1)%3==0)
+                {
+                    Console.WriteLine("; ");
+                }
+            }
+            Console.WriteLine(" ");
+        }
         public static void t(Frame frame, int cols = 3)
         {
             var name = frame.name;
@@ -263,7 +276,7 @@ namespace opengl3
         */
         public static void t(Mat mat)
         {
-            Console.WriteLine("cols x rows: " + mat.Rows + " x " + mat.Cols+" "+mat.Depth + " " + mat.NumberOfChannels);
+            Console.WriteLine("cols x rows: " + mat.Cols + " x " + mat.Rows+" "+mat.Depth + " " + mat.NumberOfChannels);
             var arr = mat.GetData();
             var ch = mat.NumberOfChannels;
 

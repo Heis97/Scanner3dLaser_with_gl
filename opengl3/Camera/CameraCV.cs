@@ -25,6 +25,7 @@ namespace opengl3
         public Mat cur_r;
         public Mat mapx;
         public Mat mapy;
+
         public CameraCV(Matrix<double> _cameramatrix, Matrix<double> _distortmatrix)
         {
             cameramatrix = _cameramatrix;
@@ -44,7 +45,7 @@ namespace opengl3
 
             CvInvoke.SolvePnP(points3D,points2D,cameramatrix,distortmatrix, cur_r, cur_t);           
         }
-
+      
         void calibrateFishEyeCam(Frame[] frames, Size size)
         {
             var objps = new VectorOfVectorOfPoint3D32F();
