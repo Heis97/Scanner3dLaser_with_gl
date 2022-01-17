@@ -65,8 +65,6 @@ namespace opengl3
         string openGl_folder = @"virtual_stereo/test1";
         Point3d_GL p1_scan = new Point3d_GL(548.0, -60.0, 225.0);//(655.35, -73.21, 80.40);
         Point3d_GL p2_scan = new Point3d_GL(548.0, 60.0, 225.0);
-        Frame calib_frame;
-        List<Flat_4P> laserFlat;
         RobotModel RobotModel_1;
 
         Matrix<double> cameraDistortionCoeffs = new Matrix<double>(5, 1);
@@ -75,10 +73,6 @@ namespace opengl3
         Matrix<double> cameraDistortionCoeffs_dist = new Matrix<double>(5, 1);
         Matrix<double> cameraMatrix_dist = new Matrix<double>(3, 3);
 
-        Matrix<double> cameraDistortionCoeffs1 = new Matrix<double>(5, 1);
-        Matrix<double> cameraMatrix1 = new Matrix<double>(3, 3);
-        Matrix<double> cameraDistortionCoeffs2 = new Matrix<double>(5, 1);
-        Matrix<double> cameraMatrix2 = new Matrix<double>(3, 3);
         float[] reconst = new float[3];
         int k = 1;
         bool writ = false;
@@ -122,10 +116,14 @@ namespace opengl3
                             1.0f,-1.0f, 1.0f
                                     };
         List<Mat> cap_mats = new List<Mat>();
-        int[,] flatInds = new int[1, 1];
-        int[] flatLasInds = new int[1];
-        int colr = 1;
         Features features = new Features();
+        MCvPoint3D32f[] points3D = new MCvPoint3D32f[]
+            {
+                new MCvPoint3D32f(0,0,0),
+                new MCvPoint3D32f(60, 0, 0),
+                new MCvPoint3D32f(0, 60, 0),
+                new MCvPoint3D32f(60, 60, 0)
+            };
         #endregion
         public MainScanningForm()
         {
@@ -160,7 +158,7 @@ namespace opengl3
 
 
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-            //generateImage3D_BOARD(7, 8, 10f);
+            //generateImage3D_BOARD(7, 8, markSize);
             //generateImage3D(7, 0.5f,  markSize);
             GL1.addFrame(new Point3d_GL(0, 0, 0),
                 new Point3d_GL(10, 0, 0),
@@ -362,20 +360,13 @@ namespace opengl3
             int id_mon = 0;
             var mat1 = GL1.matFromMonitor(id_mon);
 
-            var points3D = new MCvPoint3D32f[]
-            {
-                new MCvPoint3D32f(0,0,0),
-                new MCvPoint3D32f(60, 0, 0),
-                new MCvPoint3D32f(0, 60, 0),
-                new MCvPoint3D32f(60, 60, 0)
-            };
             var points2D = new System.Drawing.PointF[points3D.Length];
             for (int i = 0; i < points3D.Length; i++)
             {
                 var p = GL1.calcPixel(new Vertex4f(points3D[i].X, points3D[i].Y, points3D[i].Z, 1), id_mon);
                 points2D[i] = new System.Drawing.PointF(p.X, p.Y);
             }
-            UtilOpenCV.drawTours(mat1, PointF.toPointF(points2D), 255, 0, 0);
+            //UtilOpenCV.drawTours(mat1, PointF.toPointF(points2D), 255, 0, 0);
             GL1.cameraCV.compPos(points3D, points2D);
             var mxCam = matrixFromCam(GL1.cameraCV);
             prin.t(mxCam);
@@ -383,6 +374,20 @@ namespace opengl3
             prin.t(GL1.Vs[id_mon]);
             prin.t("-------------------");
             imBox_mark2.Image = mat1;
+        }
+
+        Matrix<double> projMatr(CameraCV cameraCV, int id_mon)
+        {
+            var points2D = new System.Drawing.PointF[points3D.Length];
+            for (int i = 0; i < points3D.Length; i++)
+            {
+                var p = GL1.calcPixel(new Vertex4f(points3D[i].X, points3D[i].Y, points3D[i].Z, 1), id_mon);
+                points2D[i] = new System.Drawing.PointF(p.X, p.Y);
+            }
+            cameraCV.compPos(points3D, points2D);
+            var mxCam = matrixFromCam(cameraCV);
+            var prjCam = cameraCV.cameramatrix * mxCam;
+            return prjCam;
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -402,13 +407,26 @@ namespace opengl3
             var mat2 = stereocam.cameraCVs[1].undist(UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist));
             imBox_mark1.Image = mat1;
             imBox_mark2.Image = mat2;
-            
-            
+
             imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1, ref mat2);
+            stereocam.prM1 = projMatr(stereocam.cameraCVs[0], 0);
+            stereocam.prM2 = projMatr(stereocam.cameraCVs[1], 1);
+
             reconst = features.reconstuctScene(stereocam, features.desks1, features.desks2, features.mchs);
-          //  prin.t(reconst);
-           // prin.t("_____________-");
-           
+
+            /*prin.t("p1: ");
+            prin.t(stereocam.p1);
+            prin.t("p2: ");
+            prin.t(stereocam.p2);
+            prin.t("prM1: ");
+            prin.t(stereocam.prM1);
+            prin.t("prM2: ");
+            prin.t(stereocam.prM2);
+            prin.t("___________");*/
+            //test4pointHomo();
+            //  prin.t(reconst);
+            // prin.t("_____________-");
+
             //imBox_3dDebug.Image  = stereocam.drawEpipolarLines(mat1, mat2, features.ps1)[0];
 
             // imBox_mark2.Image = UtilOpenCV.calcSubpixelPrec(GL1.matFromMonitor(0), new Size(6, 7),GL1,markSize);
@@ -418,14 +436,22 @@ namespace opengl3
 
 
         }
-        Matrix4x4f matrixFromCam(CameraCV cam)
+        Matrix<double> matrixFromCam(CameraCV cam)
         {
             var rotateMatrix = new Matrix<double>(3, 3);
             CvInvoke.Rodrigues(cam.cur_r, rotateMatrix);
             var tvec = UtilMatr.toVertex3f(cam.cur_t);
             var mx = UtilMatr.assemblMatrix(rotateMatrix, tvec);
+            var datam = new double[3, 4];
+            for(int i=0; i<datam.GetLength(0);i++)
+            {
+                for (int j = 0; j < datam.GetLength(1); j++)
+                {
+                    datam[i, j] = mx[(uint)i, (uint)j];
+                }
+            }
             // var invMx = mx.Inverse;
-            return mx;
+            return new Matrix<double>(datam);
         }
         private void Form1_mousewheel(object sender, MouseEventArgs e)
         {
@@ -438,7 +464,7 @@ namespace opengl3
         private void but_SubpixPrec_Click(object sender, EventArgs e)
         {       
            //UtilOpenCV.calcSubpixelPrec(new Size(6, 7),GL1,markSize,0);
-            reconst = GL1.translateMesh(reconst, 0, 0, 100);
+            //reconst = GL1.translateMesh(reconst, 0, 0, 100);
             GL1.addMeshWithoutNorm(reconst, PrimitiveType.Points, 1f, 0, 0);
             GL1.buffersGl.sortObj();
         }

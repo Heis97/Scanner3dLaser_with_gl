@@ -268,7 +268,8 @@ namespace opengl3
             CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
             cameramatrix = _cameramatrix;
             distortmatrix = _distortmatrix;
-
+            prin.t("cameramatrix");
+            prin.t(cameramatrix);
             /*for (int i = 0; i < corners.Count; i++)
             {
                 CvInvoke.Rodrigues(rvecs[i], rotateMatrix);

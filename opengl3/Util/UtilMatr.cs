@@ -33,8 +33,11 @@ namespace opengl3
                     ret[(uint)i, (uint)j] = (float)rot[i, j];
                 }
             }
-            ret[3, 0] = trans.x; ret[3, 1] = trans.y; ret[3, 2] = trans.z;
-            ret[0, 3] = 0; ret[1, 3] = 0; ret[2, 3] = 0; ret[3, 3] = (float)1;
+            //ret[3, 0] = trans.x; ret[3, 1] = trans.y; ret[3, 2] = trans.z;
+           // ret[0, 3] = 0; ret[1, 3] = 0; ret[2, 3] = 0; ret[3, 3] = (float)1;
+
+            ret[3, 0] = 0; ret[3, 1] = 0; ret[3, 2] = 0;
+            ret[0, 3] = trans.x; ret[1, 3] = trans.y; ret[2, 3] = trans.z; ret[3, 3] = (float)1;
             return ret;
         }
 

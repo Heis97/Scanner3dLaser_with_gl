@@ -54,9 +54,10 @@ namespace opengl3
         public BuffersGl buffersGl = new BuffersGl();
         Matrix4x4f Mm;
         Matrix4x4f MVP;
-        Matrix4x4f[] MVPs;
-        Matrix4x4f[] Ms;
+        public Matrix4x4f[] MVPs;
+        public Matrix4x4f[] Ms;
         public Matrix4x4f[] Vs;
+        public Matrix4x4f[] Ps;
         Vertex3f lightPos = new Vertex3f(0.0f, 0.0f, 123.0f);
         Vertex3f MaterialDiffuse = new Vertex3f(0.1f, 0.1f, 0.1f);
         Vertex3f MaterialAmbient = new Vertex3f(0.1f, 0.1f, 0.1f);
@@ -77,7 +78,8 @@ namespace opengl3
             MVPs = new Matrix4x4f[4];
             Ms = new Matrix4x4f[4];
             Vs = new Matrix4x4f[4];
-            
+            Ps = new Matrix4x4f[4];
+
             for (int i = 0; i < transRotZooms.Count; i++)
             {
                 Gl.ViewportIndexed((uint)i,
@@ -89,6 +91,7 @@ namespace opengl3
                 MVPs[i] = retM[3];
                 Ms[i] = retM[2];
                 Vs[i] = retM[1];
+                Ps[i] = retM[0];
             }
             
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -156,7 +159,7 @@ namespace opengl3
             Gl.Initialize();
             Gl.Enable(EnableCap.Multisample);
             Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
-            Gl.PointSize(10f);
+            Gl.PointSize(2f);
             programID_ps = createShader(_VertexSourceGL, _GeometryShaderPointsGL, _FragmentSourceGL);
             programID_lns = createShader(_VertexSourceGL, _GeometryShaderLinesGL, _FragmentSourceGL);
             programID_trs = createShader(_VertexSourceGL, _GeometryShaderTrianglesGL, _FragmentSourceGL);
@@ -341,7 +344,7 @@ namespace opengl3
             var zRot = trz.zRot;
             if (trz.viewType_ == viewType.Perspective)
             {
-                Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.1f, 3000.0f);              
+                Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.01f, 3000.0f);              
                 Vm = Matrix4x4f.Translated((float)(off_x), -(float)(off_y), (float)zoom * (float)(off_z)) *
                Matrix4x4f.RotatedX((float)xRot) *
                Matrix4x4f.RotatedY((float)yRot) *

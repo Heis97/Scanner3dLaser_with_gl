@@ -196,9 +196,9 @@ namespace opengl3
             Console.WriteLine("cols x rows: " + matr.Cols + " x " + matr.Rows);
             if (matr.Cols != 1)
             {
-                for (int i = 0; i < matr.Cols; i++)
+                for (int i = 0; i < matr.Rows; i++)
                 {
-                    for (int j = 0; j < matr.Rows; j++)
+                    for (int j = 0; j < matr.Cols; j++)
                     {
                         Console.Write(matr[i, j] + " ");
                     }

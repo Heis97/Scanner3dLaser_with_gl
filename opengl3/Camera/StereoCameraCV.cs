@@ -47,7 +47,8 @@ namespace opengl3
     public class StereoCameraCV
     {
         public CameraCV[] cameraCVs;
-        public Mat t, r,e,f,p1,p2;
+        public Mat t,r,e,f,p1,p2;
+        public Matrix<double> prM1, prM2;
         StereoSGBM stereosolver;
         StereoBM stereosolverBM;
         public SGBM_param solver_param;
@@ -67,12 +68,12 @@ namespace opengl3
             }
             var cam1 = _cameraCVs[0];
             var cam2 = _cameraCVs[1];
-            for (int i = 0; i < cam1.tvecs.Length; i++)
+            /*for (int i = 0; i < cam1.tvecs.Length; i++)
             {
                 prin.t("_________________");
                 prin.t(cam1.frames[i].name);
                 prin.t(cam1.tvecs[i]- cam2.tvecs[i]);
-            }
+            }*/
             var r = new Mat();
             var t = new Mat();
             var e = new Mat();

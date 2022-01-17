@@ -210,7 +210,7 @@ namespace opengl3
             for (int i = 0; i < desk1.Length; i++)
             {
                 var min_ind = 0;
-                double min_e = 1000000;
+                double min_e = double.MaxValue;
                 for (int j = 0; j < desk2.Length; j++)
                 {
                     es[i, j] = Descriptor.Diff(desk1[i], desk2[j]);
@@ -237,9 +237,11 @@ namespace opengl3
                 var m = matches[i];
                 ps1[i] = desk1[m.TrainIdx].keyPoint.Point;
                 ps2[i] = desk2[m.QueryIdx].keyPoint.Point;
+                //prin.t(ps1[i].Y - ps2[i].Y);
             }
+            //prin.t("ps_________________");
             var p4s = new Mat();
-            CvInvoke.TriangulatePoints(stereoCam.p1, stereoCam.p2,new VectorOfPointF(ps1), new VectorOfPointF(ps2),p4s);
+            CvInvoke.TriangulatePoints(stereoCam.prM1, stereoCam.prM2, new VectorOfPointF(ps1), new VectorOfPointF(ps2),p4s);
 
             return reconstrToMesh(p4s);
         }
@@ -254,11 +256,12 @@ namespace opengl3
                 {
                     mesh.Add(pdata[0, i] / pdata[3, i]);
                     mesh.Add(pdata[1, i] / pdata[3, i]);
-                    mesh.Add(pdata[2, i] / pdata[3, i]);
+                    mesh.Add(-pdata[2, i] / pdata[3, i]);
                 }
             }
             return mesh.ToArray();
         }
+
         VectorOfDMatch matchBF(Mat desk1, Mat desk2)
         {
             var mDMatchs = new List<MDMatch>();
