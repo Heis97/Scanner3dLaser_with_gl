@@ -13,6 +13,16 @@ namespace opengl3
 {
     static public class UtilMatr
     {
+        static public Matrix4x4f matrixGLFromCam(CameraCV cam)
+        {
+            var rotateMatrix = new Matrix<double>(3, 3);
+            CvInvoke.Rodrigues(cam.cur_r, rotateMatrix);
+            var tvec = toVertex3f(cam.cur_t);
+            var mx = assemblMatrix_Near(rotateMatrix, tvec);
+            return mx;
+        }
+
+
         static float PI = (float)Math.PI;
         static public float toRad(float degrees)
         {
@@ -38,6 +48,24 @@ namespace opengl3
 
             ret[3, 0] = 0; ret[3, 1] = 0; ret[3, 2] = 0;
             ret[0, 3] = trans.x; ret[1, 3] = trans.y; ret[2, 3] = trans.z; ret[3, 3] = (float)1;
+            return ret;
+        }
+
+        static public Matrix4x4f assemblMatrix_Near(Matrix<double> rot, Vertex3f trans)
+        {
+            var ret = new Matrix4x4f();
+            for (int i = 0; i < rot.Cols; i++)
+            {
+                for (int j = 0; j < rot.Rows; j++)
+                {
+                    ret[(uint)i, (uint)j] = (float)rot[i, j];
+                }
+            }
+            ret[3, 0] = trans.x; ret[3, 1] = trans.y; ret[3, 2] = trans.z;
+             ret[0, 3] = 0; ret[1, 3] = 0; ret[2, 3] = 0; ret[3, 3] = (float)1;
+
+            //ret[3, 0] = 0; ret[3, 1] = 0; ret[3, 2] = 0;
+           // ret[0, 3] = trans.x; ret[1, 3] = trans.y; ret[2, 3] = trans.z; ret[3, 3] = (float)1;
             return ret;
         }
 

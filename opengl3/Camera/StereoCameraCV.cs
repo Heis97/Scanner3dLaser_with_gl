@@ -59,7 +59,7 @@ namespace opengl3
             rectify();
             init();
         }
-
+       
         void calibrateCamStereo(CameraCV[] _cameraCVs)
         {
             if (_cameraCVs.Length < 2)

@@ -166,7 +166,7 @@ namespace opengl3
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
-            cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(new Size(1, 5)));
+            cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(1, 5));
 
             
         }
@@ -243,6 +243,26 @@ namespace opengl3
         
 
         #region util
+        public double[,] rightMatrMon(int ind_mon)
+        {
+            var data_r = new double[4, 4];
+            var left_m = Vs[ind_mon].Inverse.Transposed;
+            for(int i=0; i<4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if((i==2 || j==2)&&i!=j)
+                    {
+                        data_r[i, j] = -left_m[(uint)i, (uint)j];
+                    }
+                    else
+                    {
+                        data_r[i, j] = left_m[(uint)i, (uint)j];
+                    }                   
+                }
+            }
+            return data_r;
+        }
         public void SaveToFolder(string folder,int id)
         {
             var bitmap = matFromMonitor(id);
@@ -344,7 +364,7 @@ namespace opengl3
             var zRot = trz.zRot;
             if (trz.viewType_ == viewType.Perspective)
             {
-                Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.01f, 3000.0f);              
+                Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.2f, 3000.0f);              
                 Vm = Matrix4x4f.Translated((float)(off_x), -(float)(off_y), (float)zoom * (float)(off_z)) *
                Matrix4x4f.RotatedX((float)xRot) *
                Matrix4x4f.RotatedY((float)yRot) *
@@ -709,7 +729,7 @@ namespace opengl3
             {
                 if (trz.viewType_ == viewType.Perspective)
                 {
-                    var p1 = new Vertex4f(0, 0, 0.1f, 1f);
+                    var p1 = new Vertex4f(0, 0, 0.01f, 1f);
                     double _z = -1000;
                     double _x = _z * Math.Tan(toRad(53 / 2)), _y = _z * Math.Tan(toRad(53 / 2));
                     float x = (float)_x; float y = (float)_y; float z = (float)_z;
@@ -811,6 +831,7 @@ namespace opengl3
             addLineMesh(new Point3d_GL[] { pos, y }, 0, 1.0f, 0);
             addLineMesh(new Point3d_GL[] { pos, z }, 0, 0, 1.0f);
         }
+
         public void addFrame_Cam(Camera cam, int frame_len = 15)
         {
 
@@ -862,7 +883,21 @@ namespace opengl3
             }
             addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, r, g, b);
         }
-
+        public void addLineFanMesh(float[] startpoint, float[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        {
+            var mesh = new float[points.Length * 2];
+            var j = 0;
+            for(int i=0; i<points.Length-3;i+=3)
+            {
+                mesh[j] = startpoint[0]; j++;
+                mesh[j] = startpoint[1]; j++;
+                mesh[j] = startpoint[2]; j++;
+                mesh[j] = points[i]; j++;
+                mesh[j] = points[i+1]; j++;
+                mesh[j] = points[i+2]; j++;
+            }
+            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b);
+        }
         public void addLineMesh(Point3d_GL[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
         {
             var mesh = new List<float>();

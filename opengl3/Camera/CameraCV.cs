@@ -23,29 +23,76 @@ namespace opengl3
         public Mat[] rvecs;
         public Mat cur_t;
         public Mat cur_r;
+        public float[] pos;
         public Mat mapx;
         public Mat mapy;
-
+        public Matrix<double> prjmatrix;
+        public Matrix<double> matrixCam;
+        public Matrix<double> matrixScene;
+        void init_vars()
+        {
+            cur_t = new Mat();
+            cur_r = new Mat();
+            matrixCam = new Matrix<double>(4,4);
+            matrixScene = new Matrix<double>(4, 4);
+            pos = new float[3] { 0, 0, 0 };
+        }
         public CameraCV(Matrix<double> _cameramatrix, Matrix<double> _distortmatrix)
         {
             cameramatrix = _cameramatrix;
             distortmatrix = _distortmatrix;
-            cur_t = new Mat();
-            cur_r = new Mat();
-            
+            init_vars();
         }
         public CameraCV(Frame[] _frames, Size _size)
         {
             calibrateCam(_frames, _size);
-            cur_t = new Mat();
-            cur_r = new Mat();
+            init_vars();
         }
-        public void compPos(MCvPoint3D32f[] points3D, System.Drawing.PointF[] points2D)
+        public void setMatrixScene(Matrix<double> matrixSc)
+        {
+            matrixScene = matrixSc;
+            CvInvoke.Invert(matrixScene, matrixCam, DecompMethod.LU);
+            prjmatrix = cameramatrix* matrixScene.GetRows(0, 3, 1);
+            pos[0] = (float)matrixScene[0, 3];
+            pos[1] = (float)matrixScene[1, 3];
+            pos[2] = -(float)matrixScene[2, 3];
+
+           // prin.t(prjmatrix);
+        }
+        void assemblMatrix(Mat cur_r, Mat cur_t)
+        {
+           
+            var r = new Matrix<double>(3, 3);
+            CvInvoke.Rodrigues(cur_r, r);
+            var data_t = (double[,])cur_t.GetData();
+            var data_mx = new double[4, 4]
+            {
+                {r[0,0] ,r[0,1],r[0,2],data_t[0,0]},
+                {r[1,0] ,r[1,1],r[1,2],data_t[1,0]},
+                {r[2,0] ,r[2,1],r[2,2],data_t[2,0]},
+                {0,0,0,1 }
+            };
+
+            matrixCam = new Matrix<double>(data_mx);
+            matrixScene = new Matrix<double>(4, 4);
+            CvInvoke.Invert(matrixCam, matrixScene, DecompMethod.LU);
+           // prin.t("matrixCam * matrixScene");
+           // prin.t(matrixCam * matrixScene);
+        }
+        public float[] compPos(MCvPoint3D32f[] points3D, System.Drawing.PointF[] points2D)
         {            
 
-            CvInvoke.SolvePnP(points3D,points2D,cameramatrix,distortmatrix, cur_r, cur_t);           
+            CvInvoke.SolvePnP(points3D,points2D,cameramatrix,distortmatrix, cur_r, cur_t);
+            assemblMatrix(cur_r, cur_t);
+           
+            var _pos = new float[3];
+            _pos[0] = (float)matrixScene[0, 3];
+            _pos[1] = (float)matrixScene[1, 3];
+            _pos[2] = -(float)matrixScene[2, 3];
+
+            return _pos;
         }
-      
+        
         void calibrateFishEyeCam(Frame[] frames, Size size)
         {
             var objps = new VectorOfVectorOfPoint3D32F();

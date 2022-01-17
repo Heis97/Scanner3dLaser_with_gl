@@ -74,6 +74,8 @@ namespace opengl3
         Matrix<double> cameraMatrix_dist = new Matrix<double>(3, 3);
 
         float[] reconst = new float[3];
+        float[] reconst_lines1 = new float[3];
+        float[] reconst_lines2 = new float[3];
         int k = 1;
         bool writ = false;
         int bin_pos = 40;
@@ -135,9 +137,9 @@ namespace opengl3
             maxArea = 15 * k * k * 250;
             red_c = 252;
 
-             var stl_loader = new STLmodel();
+            /* var stl_loader = new STLmodel();
              var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-             GL1.addGLMesh(mesh, PrimitiveType.Triangles);
+             GL1.addGLMesh(mesh, PrimitiveType.Triangles);*/
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
            
@@ -158,7 +160,7 @@ namespace opengl3
 
 
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-            //generateImage3D_BOARD(7, 8, markSize);
+            generateImage3D_BOARD(7, 8, markSize);
             //generateImage3D(7, 0.5f,  markSize);
             GL1.addFrame(new Point3d_GL(0, 0, 0),
                 new Point3d_GL(10, 0, 0),
@@ -376,18 +378,20 @@ namespace opengl3
             imBox_mark2.Image = mat1;
         }
 
-        Matrix<double> projMatr(CameraCV cameraCV, int id_mon)
+        CameraCV projMatr(CameraCV cameraCV, int id_mon)
         {
+
             var points2D = new System.Drawing.PointF[points3D.Length];
             for (int i = 0; i < points3D.Length; i++)
             {
                 var p = GL1.calcPixel(new Vertex4f(points3D[i].X, points3D[i].Y, points3D[i].Z, 1), id_mon);
                 points2D[i] = new System.Drawing.PointF(p.X, p.Y);
             }
-            cameraCV.compPos(points3D, points2D);
+            cameraCV.pos = cameraCV.compPos(points3D, points2D);
             var mxCam = matrixFromCam(cameraCV);
             var prjCam = cameraCV.cameramatrix * mxCam;
-            return prjCam;
+            cameraCV.prjmatrix = prjCam;
+            return cameraCV;
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -409,10 +413,21 @@ namespace opengl3
             imBox_mark2.Image = mat2;
 
             imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1, ref mat2);
-            stereocam.prM1 = projMatr(stereocam.cameraCVs[0], 0);
-            stereocam.prM2 = projMatr(stereocam.cameraCVs[1], 1);
+
+            stereocam.cameraCVs[0].setMatrixScene(new Matrix<double>(GL1.rightMatrMon(0)));
+            stereocam.cameraCVs[1].setMatrixScene(new Matrix<double>(GL1.rightMatrMon(1)));
+             
+            stereocam.prM1 = stereocam.cameraCVs[0].prjmatrix;
+            stereocam.prM2 = stereocam.cameraCVs[1].prjmatrix;
 
             reconst = features.reconstuctScene(stereocam, features.desks1, features.desks2, features.mchs);
+
+            reconst_lines1 = features.pointsForLines(features.mps1, stereocam.cameraCVs[0]);
+            reconst_lines2 = features.pointsForLines(features.mps2, stereocam.cameraCVs[1]);
+            prin.t(" stereocam.cameraCVs[1].pos: ");
+            prin.t(stereocam.cameraCVs[1].cameramatrix);
+            prin.t(" GL1.MVPs[1]: ");
+            prin.t(GL1.Ps[1].Inverse.Transposed);
 
             /*prin.t("p1: ");
             prin.t(stereocam.p1);
@@ -453,6 +468,8 @@ namespace opengl3
             // var invMx = mx.Inverse;
             return new Matrix<double>(datam);
         }
+
+        
         private void Form1_mousewheel(object sender, MouseEventArgs e)
         {
             GL1.Form1_mousewheel(sender, e);
@@ -466,8 +483,14 @@ namespace opengl3
            //UtilOpenCV.calcSubpixelPrec(new Size(6, 7),GL1,markSize,0);
             //reconst = GL1.translateMesh(reconst, 0, 0, 100);
             GL1.addMeshWithoutNorm(reconst, PrimitiveType.Points, 1f, 0, 0);
+            var stp1 = stereocam.cameraCVs[0].pos;
+            GL1.addLineFanMesh(stp1,reconst_lines1);
+            var stp2 = stereocam.cameraCVs[1].pos;
+            GL1.addLineFanMesh(stp2, reconst_lines2);
+
             GL1.buffersGl.sortObj();
         }
+
         private void trB_SGBM_Scroll(object sender, EventArgs e)
         {
             var trbar = (TrackBar)sender;

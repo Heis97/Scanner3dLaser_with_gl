@@ -2,6 +2,7 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -61,8 +62,13 @@ namespace opengl3
 
         public VectorOfDMatch mchs;
 
+        public System.Drawing.PointF[] mps1;
+        public System.Drawing.PointF[] mps2;
+
         public Descriptor[] desks1;
         public Descriptor[] desks2;
+
+
         public Features()
         {
 
@@ -131,6 +137,7 @@ namespace opengl3
 
             this.desks1 = Descriptor.toDescriptors(kps1, desk1, 1);
             this.desks2 = Descriptor.toDescriptors(kps2, desk2, 2);
+
             matches = matchEpiline(this.desks1, this.desks2);
 
             //prin.t("_______________");
@@ -239,10 +246,12 @@ namespace opengl3
                 ps2[i] = desk2[m.QueryIdx].keyPoint.Point;
                 //prin.t(ps1[i].Y - ps2[i].Y);
             }
+            this.mps1 = ps1;
+            this.mps2 = ps2;
             //prin.t("ps_________________");
             var p4s = new Mat();
             CvInvoke.TriangulatePoints(stereoCam.prM1, stereoCam.prM2, new VectorOfPointF(ps1), new VectorOfPointF(ps2),p4s);
-
+            
             return reconstrToMesh(p4s);
         }
 
@@ -256,10 +265,48 @@ namespace opengl3
                 {
                     mesh.Add(pdata[0, i] / pdata[3, i]);
                     mesh.Add(pdata[1, i] / pdata[3, i]);
-                    mesh.Add(-pdata[2, i] / pdata[3, i]);
+                    mesh.Add(pdata[2, i] / pdata[3, i]);
                 }
             }
             return mesh.ToArray();
+        }
+
+        public float[] pointsForLines(System.Drawing.PointF[] ps, CameraCV cam, float z = 600)
+        {
+            var invmx = cam.matrixScene;
+            var dataP = new float[ps.Length * 3];
+            var j = 0;
+            for(int i=0; i<ps.Length;i++)
+            {
+
+                var p = point3DfromCam(ps[i], cam, z);
+                var v4 = new Matrix<double>(new double[] { p[0], p[1], p[2], 1 });
+                var p_s = invmx * v4;
+                dataP[j] = (float)p_s[0,0]; j++;
+                dataP[j] = (float)p_s[1, 0]; j++;
+                dataP[j] = (float)p_s[2, 0]; j++;
+            }
+            return dataP;
+        }
+
+        float[] point3DfromCam(System.Drawing.PointF p, CameraCV cam,float z)
+        {
+            var A = cam.cameramatrix;
+            var fx = A[0, 0];
+            var fy = A[1, 1];
+            var cx = A[0, 2];
+            var cy = A[1, 2];
+            var u = p.X;
+            var v = p.Y;
+
+            var x = (u - cx) / fx;
+            var y = (v - cy) / fy;
+            // var x = u  / fx;
+            //   var y = v / fy;
+             x *= z;
+              y *= z;
+            var k = 1f;
+            return new float[] {  k*(float)x, k * (float)y, k * (float)z };
         }
 
         VectorOfDMatch matchBF(Mat desk1, Mat desk2)
