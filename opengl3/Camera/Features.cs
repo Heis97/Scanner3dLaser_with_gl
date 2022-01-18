@@ -112,6 +112,7 @@ namespace opengl3
 
             return kp;
         }
+
         public Mat drawDescriptorsMatch(ref Mat mat1, ref Mat mat2)
         {
             var kps1 = new VectorOfKeyPoint();
@@ -122,14 +123,15 @@ namespace opengl3
             var detector = new Emgu.CV.Features2D.SIFT();
             detector.DetectAndCompute(mat1, null, kps1, desk1, false);
             detector.DetectAndCompute(mat2, null, kps2, desk2, false);
-            var matcherBF = new Emgu.CV.Features2D.BFMatcher(Emgu.CV.Features2D.DistanceType.L1, false);
+
+           /* var matcherBF = new Emgu.CV.Features2D.BFMatcher(Emgu.CV.Features2D.DistanceType.L1, false);
 
             var ip = new Emgu.CV.Flann.KdTreeIndexParams(5);
             var sp = new Emgu.CV.Flann.SearchParams(50);
-            var matcher = new Emgu.CV.Features2D.FlannBasedMatcher(ip, sp);
+            var matcher = new Emgu.CV.Features2D.FlannBasedMatcher(ip, sp);*/
 
             //var matcherFlann = new Emgu.CV.Features2D.
-            var matches = new VectorOfDMatch();
+           // var matches = new VectorOfDMatch();
 
             //matcherBF.Match(desk1, desk2, matches);
             //matches = matchBF(desk1, desk2);
@@ -138,8 +140,13 @@ namespace opengl3
             this.desks1 = Descriptor.toDescriptors(kps1, desk1, 1);
             this.desks2 = Descriptor.toDescriptors(kps2, desk2, 2);
 
-            matches = matchEpiline(this.desks1, this.desks2);
-
+           
+           var matches = matchEpiline(this.desks1, this.desks2);
+            if (matches.Size>10)
+            {
+                matches = new VectorOfDMatch(new MDMatch[] { matches[5], matches[6], matches[7], matches[8], matches[9] });
+            }
+               
             //prin.t("_______________");
             var mat3 = new Mat();
             try
@@ -151,8 +158,9 @@ namespace opengl3
                 this.ps2 = keyToPoint(kps2);
 
                 this.mchs = matches;
-               // matcher.KnnMatch(desk1, desk2, matches, 2);
-                Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
+
+                // matcher.KnnMatch(desk1, desk2, matches, 2);
+                Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255), null,Emgu.CV.Features2D.Features2DToolbox.KeypointDrawType.NotDrawSinglePoints) ;
             }
             catch
             {
@@ -250,22 +258,53 @@ namespace opengl3
             this.mps2 = ps2;
             //prin.t("ps_________________");
             var p4s = new Mat();
-            CvInvoke.TriangulatePoints(stereoCam.prM1, stereoCam.prM2, new VectorOfPointF(ps1), new VectorOfPointF(ps2),p4s);
-            
-            return reconstrToMesh(p4s);
+            prin.t("prM1: ");
+            prin.t(stereoCam.prM1);
+            prin.t("p1: ");
+            prin.t(stereoCam.p1);
+            prin.t("stereoCam.cameraCVs[0].matrixCam: ");
+            prin.t(stereoCam.cameraCVs[0].matrixCam);
+            prin.t("stereoCam.cameraCVs[0].matrixScene: ");
+            prin.t(stereoCam.cameraCVs[0].matrixScene);
+            prin.t("stereoCam.cameraCVs[0].cameramatrix: ");
+            prin.t(stereoCam.cameraCVs[0].cameramatrix);
+            prin.t("______________________________________ ");
+            //CvInvoke.TriangulatePoints(stereoCam.prM1, stereoCam.prM2, new VectorOfPointF(ps1), new VectorOfPointF(ps2),p4s);
+            CvInvoke.TriangulatePoints(stereoCam.p1, stereoCam.p2, new VectorOfPointF(ps1), new VectorOfPointF(ps2), p4s);
+            return reconstrToMesh(stereoCam,p4s);
         }
+        float[] meshPointTranslate(Matrix<double> trans)
+        {
 
-        float[] reconstrToMesh(Mat p4s)
+            
+
+            return null;
+
+        }
+        float[] reconstrToMesh(StereoCameraCV stereoCam,Mat p4s)
         {
             var mesh = new List<float>();
             var pdata = (float[,])p4s.GetData();
             for(int i=0; i<pdata.GetLength(1); i++)
             {
-                if(pdata[3,i]!=0)
+                //var mx = stereoCam.cameraCVs[0].matrixScene;
+                var mx = new Matrix<double>(4, 4);
+                mx.SetIdentity(new MCvScalar(1));
+                if (pdata[3,i]!=0)
                 {
-                    mesh.Add(pdata[0, i] / pdata[3, i]);
-                    mesh.Add(pdata[1, i] / pdata[3, i]);
-                    mesh.Add(pdata[2, i] / pdata[3, i]);
+
+                    var v4 = new Matrix<double>(new double[] {
+                        pdata[0, i] / pdata[3, i],
+                        pdata[1, i] / pdata[3, i],
+                        pdata[2, i] / pdata[3, i], 1 });
+
+                    var v4_sc = mx * v4;
+
+
+
+                    mesh.Add(-(float)v4_sc[0,0]);
+                    mesh.Add((float)v4_sc[1, 0]);
+                    mesh.Add((float)v4_sc[2, 0]);
                 }
             }
             return mesh.ToArray();
@@ -280,12 +319,16 @@ namespace opengl3
             {
 
                 var p = point3DfromCam(ps[i], cam, z);
+               
                 var v4 = new Matrix<double>(new double[] { p[0], p[1], p[2], 1 });
-                var p_s = invmx * v4;
+                var p_s =  invmx * v4;
+               // prin.t(p_s);
                 dataP[j] = (float)p_s[0,0]; j++;
                 dataP[j] = (float)p_s[1, 0]; j++;
                 dataP[j] = (float)p_s[2, 0]; j++;
+
             }
+           // prin.t("______");
             return dataP;
         }
 
@@ -299,14 +342,14 @@ namespace opengl3
             var u = p.X;
             var v = p.Y;
 
-            var x = (u - cx) / fx;
-            var y = (v - cy) / fy;
-            // var x = u  / fx;
-            //   var y = v / fy;
+            var x = (u - cx)/ fx;
+            var y = (v - cy)/ fy;
+            //var x = u  / fx;
+            //var y = v / fy;
              x *= z;
-              y *= z;
-            var k = 1f;
-            return new float[] {  k*(float)x, k * (float)y, k * (float)z };
+             y *= z;
+            
+            return new float[] {  (float)x, -(float)y, -(float)z};
         }
 
         VectorOfDMatch matchBF(Mat desk1, Mat desk2)

@@ -145,10 +145,10 @@ namespace opengl3
            
              var frms1 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_2");
              comboImages.Items.AddRange(frms1);
-             var cam1 = new CameraCV(frms1, new Size(6, 7));
+             var cam1 = new CameraCV(frms1, new Size(6, 7),markSize);
              var frms2 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_3");
              comboImages.Items.AddRange(frms2);
-             var cam2 = new CameraCV(frms2, new Size(6, 7));
+             var cam2 = new CameraCV(frms2, new Size(6, 7), markSize);
 
              stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
@@ -315,7 +315,7 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 0, new Vertex3d(0, 0, 0), new Vertex3d(10, 0, 0), 1);
+            GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 0, new Vertex3d(0, 0, 0), new Vertex3d(50, 0, 0), 1);
             GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 1);
             GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
             GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
@@ -419,15 +419,15 @@ namespace opengl3
              
             stereocam.prM1 = stereocam.cameraCVs[0].prjmatrix;
             stereocam.prM2 = stereocam.cameraCVs[1].prjmatrix;
-
+           
             reconst = features.reconstuctScene(stereocam, features.desks1, features.desks2, features.mchs);
 
             reconst_lines1 = features.pointsForLines(features.mps1, stereocam.cameraCVs[0]);
             reconst_lines2 = features.pointsForLines(features.mps2, stereocam.cameraCVs[1]);
-            prin.t(" stereocam.cameraCVs[1].pos: ");
+           /* prin.t(" stereocam.cameraCVs[1].pos: ");
             prin.t(stereocam.cameraCVs[1].cameramatrix);
             prin.t(" GL1.MVPs[1]: ");
-            prin.t(GL1.Ps[1].Inverse.Transposed);
+            prin.t(GL1.Ps[1].Inverse.Transposed);*/
 
             /*prin.t("p1: ");
             prin.t(stereocam.p1);
@@ -1391,20 +1391,20 @@ namespace opengl3
             float h = sidef * (float)k;
             float offx = -sidef;
             float offy = -h + sidef;
-
+            float z = 0f;
             float[] square_buf = {
                             0.0f,0.0f,0.0f, // triangle 1 : begin
                             0.0f,sidef, 0.0f,
                            sidef,sidef, 0.0f, // triangle 1 : end
                             sidef, sidef,0.0f, // triangle 2 : begin
                            sidef,0.0f,0.0f,
-                            0.0f, 0.0f,0.0f };
+                            0.0f, 0.0f,0.0f};
 
             for (float x = 0; x < w; x += side)
             {
                 for (float y = 0; y < h; y += side)
                 {
-                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, x + offx, y + offy);
+                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, x + offx, y + offy,z);
                 }
             }
 
@@ -1412,7 +1412,7 @@ namespace opengl3
             {
                 for (float y = sidef; y < h; y += side)
                 {
-                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, x + offx, y + offy);
+                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, x + offx, y + offy,z);
                 }
             }
 

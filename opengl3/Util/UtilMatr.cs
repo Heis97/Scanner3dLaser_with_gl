@@ -20,6 +20,7 @@ namespace opengl3
             var tvec = toVertex3f(cam.cur_t);
             var mx = assemblMatrix_Near(rotateMatrix, tvec);
             return mx;
+            
         }
 
 

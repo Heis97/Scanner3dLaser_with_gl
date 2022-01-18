@@ -251,9 +251,9 @@ namespace opengl3
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if((i==2 || j==2)&&i!=j)
+                    if(((i==2  && j<2)|| i < 2 && j == 2) )
                     {
-                        data_r[i, j] = -left_m[(uint)i, (uint)j];
+                        data_r[i, j] = left_m[(uint)i, (uint)j];
                     }
                     else
                     {
@@ -308,6 +308,7 @@ namespace opengl3
            // Console.WriteLine(trz);
             Gl.ReadPixels(recTRZ.X, recTRZ.Y, recTRZ.Width, recTRZ.Height, PixelFormat.Bgr, PixelType.UnsignedByte, data.DataPointer);
             //CvInvoke.Rotate(data, data, Emgu.CV.CvEnum.RotateFlags.Rotate180);
+            CvInvoke.Flip(data, data, Emgu.CV.CvEnum.FlipType.Vertical);
             return data;
         }
         
@@ -364,7 +365,7 @@ namespace opengl3
             var zRot = trz.zRot;
             if (trz.viewType_ == viewType.Perspective)
             {
-                Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.2f, 3000.0f);              
+                Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.002f, 3000.0f);              
                 Vm = Matrix4x4f.Translated((float)(off_x), -(float)(off_y), (float)zoom * (float)(off_z)) *
                Matrix4x4f.RotatedX((float)xRot) *
                Matrix4x4f.RotatedY((float)yRot) *

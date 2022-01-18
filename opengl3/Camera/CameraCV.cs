@@ -43,9 +43,9 @@ namespace opengl3
             distortmatrix = _distortmatrix;
             init_vars();
         }
-        public CameraCV(Frame[] _frames, Size _size)
+        public CameraCV(Frame[] _frames, Size _size, float markSize)
         {
-            calibrateCam(_frames, _size);
+            calibrateCam(_frames, _size,markSize);
             init_vars();
         }
         public void setMatrixScene(Matrix<double> matrixSc)
@@ -55,7 +55,7 @@ namespace opengl3
             prjmatrix = cameramatrix* matrixScene.GetRows(0, 3, 1);
             pos[0] = (float)matrixScene[0, 3];
             pos[1] = (float)matrixScene[1, 3];
-            pos[2] = -(float)matrixScene[2, 3];
+            pos[2] = (float)matrixScene[2, 3];
 
            // prin.t(prjmatrix);
         }
@@ -249,7 +249,7 @@ namespace opengl3
             CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
             return mat_ret;
         }
-        void calibrateCam(Frame[] frames, Size size)
+        void calibrateCam(Frame[] frames, Size size, float markSize)
         {
             this.frames = frames;
 
@@ -265,7 +265,7 @@ namespace opengl3
             {
                 for (int i = 0; i < size.Width; i++)
                 {
-                    obp[ind] = new MCvPoint3D32f((float)i, (float)j, 0.0f);
+                    obp[ind] = new MCvPoint3D32f(markSize*(float)i, markSize * (float)j, 0.0f);
                     ind++;
                 }
             }
