@@ -270,16 +270,12 @@ namespace opengl3
             prin.t(stereoCam.cameraCVs[0].cameramatrix);
             prin.t("______________________________________ ");
             //CvInvoke.TriangulatePoints(stereoCam.prM1, stereoCam.prM2, new VectorOfPointF(ps1), new VectorOfPointF(ps2),p4s);
-            CvInvoke.TriangulatePoints(stereoCam.p1, stereoCam.p2, new VectorOfPointF(ps1), new VectorOfPointF(ps2), p4s);
+            CvInvoke.TriangulatePoints(stereoCam.prM1, stereoCam.prM2, new VectorOfPointF(ps1), new VectorOfPointF(ps2), p4s);
             return reconstrToMesh(stereoCam,p4s);
         }
         float[] meshPointTranslate(Matrix<double> trans)
         {
-
-            
-
             return null;
-
         }
         float[] reconstrToMesh(StereoCameraCV stereoCam,Mat p4s)
         {
@@ -302,7 +298,7 @@ namespace opengl3
 
 
 
-                    mesh.Add(-(float)v4_sc[0,0]);
+                    mesh.Add((float)v4_sc[0,0]);
                     mesh.Add((float)v4_sc[1, 0]);
                     mesh.Add((float)v4_sc[2, 0]);
                 }

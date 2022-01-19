@@ -404,30 +404,33 @@ namespace opengl3
                 UtilOpenCV.SaveMonitor(GL1);
             }
 
-           // imBox_mark1.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
-           // imBox_mark2.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
+            // imBox_mark1.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
+            // imBox_mark2.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
             // imBox_mark1.
-            var mat1 = stereocam.cameraCVs[0].undist(UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist));
-            var mat2 = stereocam.cameraCVs[1].undist(UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist));
-            imBox_mark1.Image = mat1;
-            imBox_mark2.Image = mat2;
+            var mat1_or = GL1.matFromMonitor(0);
+            var mat2_or = GL1.matFromMonitor(1);
+            var mat1 = stereocam.cameraCVs[0].undist(UtilOpenCV.remapDistImOpenCvCentr(mat1_or, cameraDistortionCoeffs_dist));
+            var mat2 = stereocam.cameraCVs[1].undist(UtilOpenCV.remapDistImOpenCvCentr(mat1_or, cameraDistortionCoeffs_dist));
+            imBox_mark1.Image = mat1_or;
+            imBox_mark2.Image = mat2_or;
 
-            imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1, ref mat2);
+            imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
 
             stereocam.cameraCVs[0].setMatrixScene(new Matrix<double>(GL1.rightMatrMon(0)));
             stereocam.cameraCVs[1].setMatrixScene(new Matrix<double>(GL1.rightMatrMon(1)));
              
             stereocam.prM1 = stereocam.cameraCVs[0].prjmatrix;
             stereocam.prM2 = stereocam.cameraCVs[1].prjmatrix;
-           
+            
             reconst = features.reconstuctScene(stereocam, features.desks1, features.desks2, features.mchs);
 
             reconst_lines1 = features.pointsForLines(features.mps1, stereocam.cameraCVs[0]);
             reconst_lines2 = features.pointsForLines(features.mps2, stereocam.cameraCVs[1]);
-           /* prin.t(" stereocam.cameraCVs[1].pos: ");
-            prin.t(stereocam.cameraCVs[1].cameramatrix);
-            prin.t(" GL1.MVPs[1]: ");
-            prin.t(GL1.Ps[1].Inverse.Transposed);*/
+            
+            prin.t(" GL1.Ps[1]: ");
+            prin.t(GL1.Ps[0]);
+            prin.t(" GL1.Vs[1]: ");
+            prin.t(GL1.Vs[0]);
 
             /*prin.t("p1: ");
             prin.t(stereocam.p1);

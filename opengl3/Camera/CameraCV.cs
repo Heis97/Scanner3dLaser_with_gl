@@ -15,6 +15,8 @@ namespace opengl3
     public class CameraCV
     {
         public Matrix<double> cameramatrix;
+        public Matrix<double> cameramatrix_inv;
+        
         public Matrix<double> distortmatrix;
         public Frame[] frames;
         public System.Drawing.PointF[][] corners;
@@ -27,6 +29,7 @@ namespace opengl3
         public Mat mapx;
         public Mat mapy;
         public Matrix<double> prjmatrix;
+        public Matrix<double> prjmatrix_inv;
         public Matrix<double> matrixCam;
         public Matrix<double> matrixScene;
         void init_vars()
@@ -48,11 +51,19 @@ namespace opengl3
             calibrateCam(_frames, _size,markSize);
             init_vars();
         }
+        
         public void setMatrixScene(Matrix<double> matrixSc)
         {
             matrixScene = matrixSc;
             CvInvoke.Invert(matrixScene, matrixCam, DecompMethod.LU);
-            prjmatrix = cameramatrix* matrixScene.GetRows(0, 3, 1);
+            cameramatrix_inv = new Matrix<double>(3, 3);
+            CvInvoke.Invert(cameramatrix, cameramatrix_inv, DecompMethod.LU);
+
+            prjmatrix = cameramatrix*matrixScene.GetRows(0, 3, 1);
+            var row = new Matrix<double>(new double[1, 4] { { 0 ,  0 ,  0 ,  1 } });
+            prjmatrix_inv = prjmatrix.ConcateVertical(row);
+            CvInvoke.Invert(prjmatrix_inv, prjmatrix_inv, DecompMethod.LU);
+            prjmatrix_inv = prjmatrix_inv.GetRows(0, 3, 1);
             pos[0] = (float)matrixScene[0, 3];
             pos[1] = (float)matrixScene[1, 3];
             pos[2] = (float)matrixScene[2, 3];

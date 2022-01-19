@@ -246,7 +246,8 @@ namespace opengl3
         public double[,] rightMatrMon(int ind_mon)
         {
             var data_r = new double[4, 4];
-            var left_m = Vs[ind_mon].Inverse.Transposed;
+            var left_m = Vs[ind_mon].Transposed.Inverse;
+
             for(int i=0; i<4; i++)
             {
                 for (int j = 0; j < 4; j++)
