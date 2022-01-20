@@ -276,7 +276,7 @@ namespace opengl3
             {
                 for (int i = 0; i < size.Width; i++)
                 {
-                    obp[ind] = new MCvPoint3D32f(markSize*(float)i, markSize * (float)j, 0.0f);
+                    obp[ind] = new MCvPoint3D32f(-markSize*(float)i, markSize * (float)j, 0.0f);
                     ind++;
                 }
             }

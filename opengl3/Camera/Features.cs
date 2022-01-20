@@ -29,6 +29,10 @@ namespace opengl3
         {
 
             var allData = (float[,])desk.GetData();
+            if(allData==null)
+            {
+                return null;
+            }
             var desks = new Descriptor[allData.GetLength(0)];
             for (int i=0; i<allData.GetLength(0);i++)
             {
@@ -142,15 +146,21 @@ namespace opengl3
 
            
            var matches = matchEpiline(this.desks1, this.desks2);
-            if (matches.Size>10)
-            {
-                matches = new VectorOfDMatch(new MDMatch[] { matches[5], matches[6], matches[7], matches[8], matches[9] });
-            }
+            
+            
                
             //prin.t("_______________");
             var mat3 = new Mat();
             try
             {
+                if(matches==null)
+                {
+                    return null;
+                }
+                if (matches.Size > 10)
+                {
+                    matches = new VectorOfDMatch(new MDMatch[] { matches[5], matches[6], matches[7], matches[8], matches[9] });
+                }
                 this.kps1 = kps1;
                 this.kps2 = kps2;
 
@@ -176,7 +186,17 @@ namespace opengl3
             var h = 400;
             var desk_line1 = new Descriptor[h][];
             var desk_line2 = new Descriptor[h][];
-
+            if (desk1 == null || desk2 == null)
+            {
+                return null;               
+            }
+            else
+            {
+                if (desk1.Length == 0 || desk2.Length == 0)
+                {
+                    return null;
+                }
+            }
             VectorOfDMatch matches = new VectorOfDMatch();
             for (int i = 0; i < desk1.Length; i++)
             {
@@ -245,6 +265,10 @@ namespace opengl3
         }
         public float[] reconstuctScene(StereoCameraCV stereoCam ,Descriptor[] desk1, Descriptor[] desk2, VectorOfDMatch matches)
         {
+            if(matches==null || desk1== null || desk2 == null)
+            {
+                return null;
+            }
             var ps1 = new System.Drawing.PointF[matches.Size];
             var ps2 = new System.Drawing.PointF[matches.Size];
             for(int i=0; i<matches.Size;i++)
@@ -258,7 +282,7 @@ namespace opengl3
             this.mps2 = ps2;
             //prin.t("ps_________________");
             var p4s = new Mat();
-            prin.t("prM1: ");
+            /*prin.t("prM1: ");
             prin.t(stereoCam.prM1);
             prin.t("p1: ");
             prin.t(stereoCam.p1);
@@ -268,19 +292,31 @@ namespace opengl3
             prin.t(stereoCam.cameraCVs[0].matrixScene);
             prin.t("stereoCam.cameraCVs[0].cameramatrix: ");
             prin.t(stereoCam.cameraCVs[0].cameramatrix);
-            prin.t("______________________________________ ");
+            prin.t("______________________________________ ");*/
             //CvInvoke.TriangulatePoints(stereoCam.prM1, stereoCam.prM2, new VectorOfPointF(ps1), new VectorOfPointF(ps2),p4s);
-            CvInvoke.TriangulatePoints(stereoCam.prM1, stereoCam.prM2, new VectorOfPointF(ps1), new VectorOfPointF(ps2), p4s);
+            try
+            {
+                CvInvoke.TriangulatePoints(stereoCam.prM1, stereoCam.prM2, new VectorOfPointF(ps1), new VectorOfPointF(ps2), p4s);
+            }
+            catch
+            {
+
+            }
+            if(p4s.Size.Width==0 && p4s.Size.Height == 0)
+            {
+                return null;
+            }
             return reconstrToMesh(stereoCam,p4s);
         }
-        float[] meshPointTranslate(Matrix<double> trans)
-        {
-            return null;
-        }
+
         float[] reconstrToMesh(StereoCameraCV stereoCam,Mat p4s)
         {
             var mesh = new List<float>();
             var pdata = (float[,])p4s.GetData();
+            if(pdata==null)
+            {
+                return null;
+            }
             for(int i=0; i<pdata.GetLength(1); i++)
             {
                 //var mx = stereoCam.cameraCVs[0].matrixScene;
@@ -309,6 +345,10 @@ namespace opengl3
         public float[] pointsForLines(System.Drawing.PointF[] ps, CameraCV cam, float z = 600)
         {
             var invmx = cam.matrixScene;
+            if(ps==null)
+            {
+                return null;
+            }
             var dataP = new float[ps.Length * 3];
             var j = 0;
             for(int i=0; i<ps.Length;i++)

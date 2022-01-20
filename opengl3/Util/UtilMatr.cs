@@ -34,6 +34,7 @@ namespace opengl3
         {
             return rad * 180 / PI;
         }
+      
         static public Matrix4x4f assemblMatrix(Matrix<double> rot, Vertex3f trans)
         {
             var ret = new Matrix4x4f();

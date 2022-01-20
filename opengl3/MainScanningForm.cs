@@ -426,11 +426,43 @@ namespace opengl3
 
             reconst_lines1 = features.pointsForLines(features.mps1, stereocam.cameraCVs[0]);
             reconst_lines2 = features.pointsForLines(features.mps2, stereocam.cameraCVs[1]);
+            var point_t1 = new Vert4f(10, 10, 10);
+            var point_t2 = new Vert4f(10, 10, 400);
+            var idm = 1;
+            point_t1 = new Matr4x4f(GL1.MVPs[idm]).Transpose() * point_t1;
+            point_t2 = new Matr4x4f(GL1.MVPs[idm]).Transpose() * point_t2;
+            GL1.MVPs[idm].Transpose();
+            GL1.Vs[idm].Transpose();
+            GL1.Ps[idm].Transpose();
+            prin.t(" point_4dt : ");
+            prin.t(point_t1.ToString());
+            prin.t(point_t2.ToString());
+            point_t1.Norm();
+            point_t2.Norm();
+            prin.t(" point_2dt : ");
+            prin.t(point_t1.ToString());
+            prin.t(point_t2.ToString());
             
-            prin.t(" GL1.Ps[1]: ");
-            prin.t(GL1.Ps[0]);
-            prin.t(" GL1.Vs[1]: ");
-            prin.t(GL1.Vs[0]);
+            prin.t(" GL1.Ps[0]: ");
+            prin.t(GL1.Ps[idm]);
+            prin.t(" GL1.Vs[0]: ");
+            prin.t(GL1.Vs[idm]);
+            prin.t(" GL1.MVPs[0]: ");
+            prin.t(GL1.MVPs[idm]);
+            prin.t(" ___________");
+            GL1.MVPs[idm].Transpose();
+            GL1.Vs[idm].Transpose();
+            GL1.Ps[idm].Transpose();
+
+
+            /*var mat_t1 = new Matr4x4f(new float[] { 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0 }).Transpose();
+            var p_t1 = new Vert4f(new float[] { 1, 2, 3, 4 });
+            var mat_t2 = new Matrix4x4f(new float[] { 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0 });
+            var p_t2 = new Vertex4f(1, 2, 3, 4);
+            prin.t(" mat_t1* p_t1 : ");
+            prin.t((mat_t1* p_t1).ToString());
+            prin.t(" mat_t2* p_t2 : ");
+            prin.t((mat_t2 * p_t2).ToString());*/
 
             /*prin.t("p1: ");
             prin.t(stereocam.p1);
@@ -1394,7 +1426,7 @@ namespace opengl3
             float h = sidef * (float)k;
             float offx = -sidef;
             float offy = -h + sidef;
-            float z = 0f;
+            float z = 10f;
             float[] square_buf = {
                             0.0f,0.0f,0.0f, // triangle 1 : begin
                             0.0f,sidef, 0.0f,

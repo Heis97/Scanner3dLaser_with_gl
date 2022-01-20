@@ -19,6 +19,7 @@ namespace opengl3
     public class GraphicGL
     {
         #region vars
+        static float PI = 3.1415926535f;
         public CameraCV cameraCV;
         public int startGen = 0;
         public int saveImagesLen = 0;
@@ -153,6 +154,19 @@ namespace opengl3
             }
             
         }
+        string[] stringAdd(string[] st1, string[] st2)
+        {
+            var st_ret = new string[st1.Length+st2.Length];
+            for(int i=0; i<st1.Length;i++)
+            {
+                st_ret[i] = st1[i];
+            }
+            for (int i = 0; i < st2.Length; i++)
+            {
+                st_ret[st1.Length+i] = st2[i];
+            }
+            return st_ret;
+        }
         public void glControl_ContextCreated(object sender, GlControlEventArgs e)
         {
             sizeControl = ((Control)sender).Size;
@@ -160,9 +174,10 @@ namespace opengl3
             Gl.Enable(EnableCap.Multisample);
             Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
             Gl.PointSize(2f);
-            programID_ps = createShader(_VertexSourceGL, _GeometryShaderPointsGL, _FragmentSourceGL);
-            programID_lns = createShader(_VertexSourceGL, _GeometryShaderLinesGL, _FragmentSourceGL);
-            programID_trs = createShader(_VertexSourceGL, _GeometryShaderTrianglesGL, _FragmentSourceGL);
+
+            programID_ps = createShader(_VertexSourceGL, stringAdd( _GeometryShaderPointsGL, _GeometryShaderBody), _FragmentSourceGL);
+            programID_lns = createShader(_VertexSourceGL, stringAdd(_GeometryShaderLinesGL,_GeometryShaderBody), _FragmentSourceGL);
+            programID_trs = createShader(_VertexSourceGL, stringAdd(_GeometryShaderTrianglesGL , _GeometryShaderBody), _FragmentSourceGL);
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
@@ -246,7 +261,7 @@ namespace opengl3
         public double[,] rightMatrMon(int ind_mon)
         {
             var data_r = new double[4, 4];
-            var left_m = Vs[ind_mon].Transposed.Inverse;
+            var left_m = Vs[ind_mon];
 
             for(int i=0; i<4; i++)
             {
@@ -354,6 +369,7 @@ namespace opengl3
             }
             return -1;
         }
+
         public Matrix4x4f[] compMVPmatrix(TransRotZoom trz_in)
         {
             var trz = trz_in.getInfo(transRotZooms.ToArray());
@@ -366,11 +382,18 @@ namespace opengl3
             var zRot = trz.zRot;
             if (trz.viewType_ == viewType.Perspective)
             {
-                Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.002f, 3000.0f);              
+                var _Pm = Projmatr(10f);              
+                var _Vm = Transmatr((float)(off_x), -(float)(off_y), (float)zoom * (float)(off_z)) * RotXmatr(xRot) * RotYmatr(yRot) * RotZmatr(zRot);
+                Pm = new Matrix4x4f((_Pm).Transpose().data);
+                Vm = new Matrix4x4f((_Vm).Transpose().data);
+                /*Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.2f, 300.0f);
                 Vm = Matrix4x4f.Translated((float)(off_x), -(float)(off_y), (float)zoom * (float)(off_z)) *
                Matrix4x4f.RotatedX((float)xRot) *
                Matrix4x4f.RotatedY((float)yRot) *
-               Matrix4x4f.RotatedZ((float)zRot);
+               Matrix4x4f.RotatedZ((float)zRot);*/
+                Mm = Matrix4x4f.Identity;
+                MVP = new Matrix4x4f((_Vm * _Pm).Transpose().data);
+               // MVP = Pm * Vm * Mm;
             }
             else if (trz.viewType_ == viewType.Ortho)
             {
@@ -379,11 +402,73 @@ namespace opengl3
                Matrix4x4f.RotatedX((float)xRot) *
                Matrix4x4f.RotatedY((float)yRot) *
                Matrix4x4f.RotatedZ((float)zRot);
+                Mm = Matrix4x4f.Identity;
+                MVP = Pm * Vm * Mm;
             }
-            Mm = Matrix4x4f.Identity;
-            MVP = Pm * Vm * Mm;
+            
+
             return new Matrix4x4f[] { Pm, Vm, Mm, MVP };
         }
+        static public float toRad(float degrees)
+        {
+            return degrees * PI / 180;
+        }
+        static public float cos(double alpha)
+        {
+            return (float)Math.Cos(toRad((float)alpha));
+        }
+        static public float sin(double alpha)
+        {
+            return (float)Math.Sin(toRad((float)alpha));
+        }
+        static public Matr4x4f Transmatr(float x = 0, float y = 0, float z = 0)
+        {
+            var data = new float[] {
+                 1, 0, 0, x ,
+                 0, 1, 0, y,
+                 0, 0, 1, z ,
+                 0, 0, 0, 1  };
+            return new Matr4x4f(data);
+        }
+
+        static public Matr4x4f Projmatr(float f = 1)
+        {
+            var data = new float[] {
+                 f, 0, 0, 0 ,
+                 0, f, 0, 0 ,
+                 0, 0, 1.001f,  0.04f,
+                 0, 0, 100, 0  };
+            return new Matr4x4f(data);
+        }
+        static public Matr4x4f RotZmatr(double alpha)
+        {
+            var data =  new float[] {
+                 cos(alpha), -sin(alpha), 0,0 ,
+                 sin(alpha), cos(alpha), 0, 0 ,
+                 0, 0, 1, 0 ,
+                 0, 0, 0, 1  };
+            return new Matr4x4f(data);
+        }
+        static public Matr4x4f RotYmatr(double alpha)
+        {
+            var data = new float[] {
+                 cos(alpha),0, sin(alpha), 0,
+                 0,1,0 , 0,
+                 -sin(alpha), 0, cos(alpha), 0 ,
+                 0, 0, 0, 1  };
+            return new Matr4x4f(data);
+        }
+        static public Matr4x4f RotXmatr(double alpha)
+        {
+            var data = new float[] {
+                1,0,0,0,
+                0, cos(alpha), -sin(alpha), 0,
+                0, sin(alpha), cos(alpha), 0, 
+                 0, 0, 0, 1  };
+            return new Matr4x4f(data);
+        }
+
+
         /// <summary>
         /// 3dGL->2dIm
         /// </summary>
@@ -518,7 +603,7 @@ namespace opengl3
                     }
                     if (e.Button == MouseButtons.Left)
                     {
-                        trz.xRot += dy;
+                        trz.xRot -= dy;
                         trz.yRot -= dx;
                         trz.zRot += dz;
                         
@@ -720,10 +805,7 @@ namespace opengl3
         }
         #endregion
         #region mesh
-        double toRad(double degree)
-        {
-            return (Math.PI * 2 * degree) / 360;
-        }
+ 
         void addCamView(int id)
         {
             var trz = transRotZooms[selectTRZ_id(id)].getInfo(transRotZooms.ToArray());
@@ -1068,13 +1150,7 @@ namespace opengl3
             "	vs_out.vertexColor = _vertexColor;\n",
             "}\n"
         };
-
-        private readonly string[] _GeometryShaderLinesGL = {
-            "#version 460 core\n",
-
-            "layout (lines, invocations = 4) in;\n",
-            "layout (line_strip, max_vertices = 2) out;\n",
-
+        private readonly string[] _GeometryShaderBody = {
             "uniform mat4 MVP;\n",
             "uniform mat4 M;\n",
             "uniform mat4 V;\n",
@@ -1099,6 +1175,8 @@ namespace opengl3
             "uniform mat4 MVPs[4];\n",
             "uniform mat4 Ms[4];\n",
             "uniform mat4 Vs[4];\n",
+
+
 
             "void main() {\n",
 
@@ -1120,55 +1198,18 @@ namespace opengl3
             "}\n"
         };
 
+        private readonly string[] _GeometryShaderLinesGL = {
+            "#version 460 core\n",
+
+            "layout (lines, invocations = 4) in;\n",
+            "layout (line_strip, max_vertices = 2) out;\n", 
+        };
+
         private readonly string[] _GeometryShaderPointsGL = {
             "#version 460 core\n",
 
             "layout (points, invocations = 4) in;\n",
-            "layout (points, max_vertices = 1) out;\n",
-
-            "uniform mat4 MVP;\n",
-            "uniform mat4 M;\n",
-            "uniform mat4 V;\n",
-            "uniform vec3 LightPosition_worldspace;\n",
-
-            "in VS_GS_INTERFACE\n",
-            "{\n",
-            "vec3 vertexPosition_modelspace;\n",
-            "vec3 vertexNormal_modelspace;\n",
-            "vec3 vertexColor;\n",
-              "}vs_out[];\n",
-
-            "out GS_FS_INTERFACE\n",
-            "{\n",
-            "vec3 Position_worldspace;\n",
-            "vec3 Color;\n",
-            "vec3 Normal_cameraspace;\n",
-            "vec3 EyeDirection_cameraspace;\n",
-            "vec3 LightDirection_cameraspace;\n",
-            "} fs_in;\n",
-
-            "uniform mat4 MVPs[4];\n",
-            "uniform mat4 Ms[4];\n",
-            "uniform mat4 Vs[4];\n",
-
-            "void main() {\n",
-
-            "   for (int i = 0; i < gl_in.length(); i++){ \n",
-            "	    gl_ViewportIndex = gl_InvocationID;\n",
-
-            "       gl_Position = MVPs[gl_InvocationID] * vec4(vs_out[i].vertexPosition_modelspace, 1.0);\n",
-            "	    fs_in.Position_worldspace = (M * vec4(vs_out[i].vertexPosition_modelspace,1)).xyz;\n",
-            "	    vec3 vertexPosition_cameraspace = ( Vs[gl_InvocationID] * Ms[gl_InvocationID] * vec4(vs_out[i].vertexPosition_modelspace,1)).xyz;\n",
-            "	    fs_in.EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace;\n",
-            "	    vec3 LightPosition_cameraspace = ( Vs[gl_InvocationID] * vec4(LightPosition_worldspace,1)).xyz;\n",
-            "	    fs_in.LightDirection_cameraspace = LightPosition_cameraspace + fs_in.EyeDirection_cameraspace;\n",
-            "	    fs_in.Normal_cameraspace = ( Vs[gl_InvocationID] * Ms[gl_InvocationID] * vec4(vs_out[i].vertexNormal_modelspace,0)).xyz;\n",
-            "	    fs_in.Color = vs_out[i].vertexColor;\n",
-
-            "	    EmitVertex();}\n",
-
-
-            "}\n"
+            "layout (points, max_vertices = 1) out;\n", 
         };
 
         private readonly string[] _GeometryShaderTrianglesGL = {
@@ -1177,49 +1218,6 @@ namespace opengl3
             "layout (triangles, invocations = 4) in;\n",
             "layout (triangle_strip, max_vertices = 3) out;\n",
 
-            "uniform mat4 MVP;\n",
-            "uniform mat4 M;\n",
-            "uniform mat4 V;\n",
-            "uniform vec3 LightPosition_worldspace;\n",
-
-            "in VS_GS_INTERFACE\n",
-            "{\n",
-            "vec3 vertexPosition_modelspace;\n",
-            "vec3 vertexNormal_modelspace;\n",
-            "vec3 vertexColor;\n",
-              "}vs_out[];\n",
-
-            "out GS_FS_INTERFACE\n",
-            "{\n",
-            "vec3 Position_worldspace;\n",
-            "vec3 Color;\n",
-            "vec3 Normal_cameraspace;\n",
-            "vec3 EyeDirection_cameraspace;\n",
-            "vec3 LightDirection_cameraspace;\n",
-            "} fs_in;\n",
-
-            "uniform mat4 MVPs[4];\n",
-            "uniform mat4 Ms[4];\n",
-            "uniform mat4 Vs[4];\n",
-
-            "void main() {\n",
-
-            "   for (int i = 0; i < gl_in.length(); i++){ \n",
-            "	    gl_ViewportIndex = gl_InvocationID;\n",
-
-            "       gl_Position = MVPs[gl_InvocationID] * vec4(vs_out[i].vertexPosition_modelspace, 1.0);\n",
-            "	    fs_in.Position_worldspace = (M * vec4(vs_out[i].vertexPosition_modelspace,1)).xyz;\n",
-            "	    vec3 vertexPosition_cameraspace = ( Vs[gl_InvocationID] * Ms[gl_InvocationID] * vec4(vs_out[i].vertexPosition_modelspace,1)).xyz;\n",
-            "	    fs_in.EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace;\n",
-            "	    vec3 LightPosition_cameraspace = ( Vs[gl_InvocationID] * vec4(LightPosition_worldspace,1)).xyz;\n",
-            "	    fs_in.LightDirection_cameraspace = LightPosition_cameraspace + fs_in.EyeDirection_cameraspace;\n",
-            "	    fs_in.Normal_cameraspace = ( Vs[gl_InvocationID] * Ms[gl_InvocationID] * vec4(vs_out[i].vertexNormal_modelspace,0)).xyz;\n",
-            "	    fs_in.Color = vs_out[i].vertexColor;\n",
-
-            "	    EmitVertex();}\n",
-
-
-            "}\n"
         };
 
         private readonly string[] _FragmentSourceGL = {
