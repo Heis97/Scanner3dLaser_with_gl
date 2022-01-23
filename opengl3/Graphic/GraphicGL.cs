@@ -37,6 +37,7 @@ namespace opengl3
         int[] LocationMVPs = new int[4];
         int[] LocationMs = new int[4];
         int[] LocationVs = new int[4];
+        int[] LocationPs = new int[4];
         int LocationMVP;
         int LocationV;
         int LocationM;
@@ -175,9 +176,15 @@ namespace opengl3
             Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
             Gl.PointSize(2f);
 
-            programID_ps = createShader(_VertexSourceGL, stringAdd( _GeometryShaderPointsGL, _GeometryShaderBody), _FragmentSourceGL);
-            programID_lns = createShader(_VertexSourceGL, stringAdd(_GeometryShaderLinesGL,_GeometryShaderBody), _FragmentSourceGL);
-            programID_trs = createShader(_VertexSourceGL, stringAdd(_GeometryShaderTrianglesGL , _GeometryShaderBody), _FragmentSourceGL);
+            var VertexSourceGL = assembCode(new string[] { @"Graphic\Shaders\Vert\VertexSh.txt" });
+            var FragmentSourceGL = assembCode(new string[] { @"Graphic\Shaders\Frag\FragmSh.txt" });
+            var GeometryShaderPointsGL = assembCode(new string[] { @"Graphic\Shaders\Geom_R\GeomShP_head.txt", @"Graphic\Shaders\Geom_R\GeomSh_body.txt" });
+            var GeometryShaderLinesGL = assembCode(new string[] { @"Graphic\Shaders\Geom_R\GeomShL_head.txt", @"Graphic\Shaders\Geom_R\GeomSh_body.txt" });
+            var GeometryShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders\Geom_R\GeomShT_head.txt", @"Graphic\Shaders\Geom_R\GeomSh_body.txt" });
+
+            programID_lns = createShader(VertexSourceGL, GeometryShaderLinesGL, FragmentSourceGL);
+            programID_ps = createShader(VertexSourceGL, GeometryShaderPointsGL, FragmentSourceGL);
+            programID_trs = createShader(VertexSourceGL, GeometryShaderTrianglesGL , FragmentSourceGL);
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
@@ -185,7 +192,13 @@ namespace opengl3
 
             
         }
-        
+        string[] assembCode(string[] paths)
+        {
+            var text = "";
+            foreach (var path in paths)
+                text += File.ReadAllText(path);
+            return new string[] { text };
+        }
         
         private void load_buff_gl(float[] vertex_buffer_dat, float[] color_buffer_dat, float[] normal_buffer_dat)
         {
@@ -224,6 +237,7 @@ namespace opengl3
                 LocationMVPs[i] = Gl.GetUniformLocation(prog, "MVPs["+i+"]");
                 LocationMs[i] = Gl.GetUniformLocation(prog, "Ms[" + i + "]");
                 LocationVs[i] = Gl.GetUniformLocation(prog, "Vs[" + i + "]");
+                LocationPs[i] = Gl.GetUniformLocation(prog, "Ps[" + i + "]");
             }
             
             LocationMVP = Gl.GetUniformLocation(prog, "MVP");
@@ -232,7 +246,7 @@ namespace opengl3
             MaterialDiffuseID = Gl.GetUniformLocation(prog, "MaterialDiffuse");
             MaterialAmbientID = Gl.GetUniformLocation(prog, "MaterialAmbient");
             MaterialSpecularID = Gl.GetUniformLocation(prog, "MaterialSpecular");
-            LightID = Gl.GetUniformLocation(prog, "LightPosition_worldspace");
+            LightID = Gl.GetUniformLocation(prog, "LightPosition_world");
             LightPowerID = Gl.GetUniformLocation(prog, "lightPower");
 
             
@@ -241,6 +255,7 @@ namespace opengl3
                 Gl.UniformMatrix4f(LocationMVPs[i], 1, false, MVPs[i]);
                 Gl.UniformMatrix4f(LocationMs[i], 1, false, Ms[i]);
                 Gl.UniformMatrix4f(LocationVs[i], 1, false, Vs[i]);
+                Gl.UniformMatrix4f(LocationPs[i], 1, false, Ps[i]);
             }
 
             
@@ -258,26 +273,18 @@ namespace opengl3
         
 
         #region util
-        public double[,] rightMatrMon(int ind_mon)
+        public Matr4x4f rightMatrMon(int ind_mon)
         {
-            var data_r = new double[4, 4];
+            var data_r = new float[16];
             var left_m = Vs[ind_mon];
-
-            for(int i=0; i<4; i++)
+            for(int i=0; i < 4; i++)
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if(((i==2  && j<2)|| i < 2 && j == 2) )
-                    {
-                        data_r[i, j] = left_m[(uint)i, (uint)j];
-                    }
-                    else
-                    {
-                        data_r[i, j] = left_m[(uint)i, (uint)j];
-                    }                   
+                    data_r[4*i + j] = left_m[(uint)i, (uint)j];                                     
                 }
             }
-            return data_r;
+            return new Matr4x4f(data_r);
         }
         public void SaveToFolder(string folder,int id)
         {
@@ -324,7 +331,7 @@ namespace opengl3
            // Console.WriteLine(trz);
             Gl.ReadPixels(recTRZ.X, recTRZ.Y, recTRZ.Width, recTRZ.Height, PixelFormat.Bgr, PixelType.UnsignedByte, data.DataPointer);
             //CvInvoke.Rotate(data, data, Emgu.CV.CvEnum.RotateFlags.Rotate180);
-            CvInvoke.Flip(data, data, Emgu.CV.CvEnum.FlipType.Vertical);
+            //CvInvoke.Flip(data, data, Emgu.CV.CvEnum.FlipType.Vertical);
             return data;
         }
         
@@ -382,17 +389,17 @@ namespace opengl3
             var zRot = trz.zRot;
             if (trz.viewType_ == viewType.Perspective)
             {
-                var _Pm = Projmatr(10f);              
-                var _Vm = Transmatr((float)(off_x), -(float)(off_y), (float)zoom * (float)(off_z)) * RotXmatr(xRot) * RotYmatr(yRot) * RotZmatr(zRot);
-                Pm = new Matrix4x4f((_Pm).Transpose().data);
-                Vm = new Matrix4x4f((_Vm).Transpose().data);
+                var _Pm = ProjmatrF(53f);              
+                var _Vm = Transmatr((float)off_x, -(float)off_y, (float)zoom * (float)off_z) * RotXmatr(xRot) * RotYmatr(yRot) * RotZmatr(zRot);
+                Pm = new Matrix4x4f((_Pm).data);
+                Vm = new Matrix4x4f((_Vm).data);
                 /*Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.2f, 300.0f);
                 Vm = Matrix4x4f.Translated((float)(off_x), -(float)(off_y), (float)zoom * (float)(off_z)) *
                Matrix4x4f.RotatedX((float)xRot) *
                Matrix4x4f.RotatedY((float)yRot) *
                Matrix4x4f.RotatedZ((float)zRot);*/
                 Mm = Matrix4x4f.Identity;
-                MVP = new Matrix4x4f((_Vm * _Pm).Transpose().data);
+                MVP = new Matrix4x4f((_Pm * _Vm).data);
                // MVP = Pm * Vm * Mm;
             }
             else if (trz.viewType_ == viewType.Ortho)
@@ -430,9 +437,23 @@ namespace opengl3
                  0, 0, 0, 1  };
             return new Matr4x4f(data);
         }
-
+        static public Matr4x4f ProjmatrF(float fx = 1, float aspec = 1, float n =0.1f ,float f = 3000f)
+        {
+            var fy = fx / aspec;
+            var a = (f + n) / (f - n);
+            var b = (-2*f * n) / (f - n);
+            var cx = 1 / (float)Math.Tan(toRad(fx) / 2);
+            var cy = 1 / (float)Math.Tan(toRad(fy) / 2);
+            var data = new float[] {
+                 cx, 0, 0, 0 ,
+                 0, cy, 0, 0 ,
+                 0, 0, a,  b,
+                 0, 0, 1, 0  };
+            return new Matr4x4f(data);
+        }
         static public Matr4x4f Projmatr(float f = 1)
         {
+
             var data = new float[] {
                  f, 0, 0, 0 ,
                  0, f, 0, 0 ,
@@ -814,18 +835,18 @@ namespace opengl3
                 if (trz.viewType_ == viewType.Perspective)
                 {
                     var p1 = new Vertex4f(0, 0, 0.01f, 1f);
-                    double _z = -1000;
+                    double _z = 1000;
                     double _x = _z * Math.Tan(toRad(53 / 2)), _y = _z * Math.Tan(toRad(53 / 2));
                     float x = (float)_x; float y = (float)_y; float z = (float)_z;
                     var p2 = new Vertex4f(-x, -y, z, 1);
                     var p3 = new Vertex4f(-x, y, z, 1);
                     var p4 = new Vertex4f(x, -y, z, 1);
                     var p5 = new Vertex4f(x, y, z, 1);
-                    p1 = Vs[id].Inverse * p1;
-                    p2 = Vs[id].Inverse * p2;
-                    p3 = Vs[id].Inverse * p3;
-                    p4 = Vs[id].Inverse * p4;
-                    p5 = Vs[id].Inverse * p5;
+                    p1 = Vs[id].Inverse.Transposed * p1;
+                    p2 = Vs[id].Inverse.Transposed * p2;
+                    p3 = Vs[id].Inverse.Transposed * p3;
+                    p4 = Vs[id].Inverse.Transposed * p4;
+                    p5 = Vs[id].Inverse.Transposed * p5;
 
                     var verts = new Vertex4f[16]
                     {
@@ -897,6 +918,7 @@ namespace opengl3
             }
             return fl;
         }
+
         public void add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp)
         {            
             buffersGl.add_obj(new openGlobj(data_v, data_c, data_n, tp));
@@ -907,8 +929,9 @@ namespace opengl3
         }
         public void add_buff_gl_lines_id(float[] data_v, int id, bool visible)
         {
-            buffersGl.add_obj_id(data_v,id, visible);
+            buffersGl.add_obj_id(data_v,id, visible, PrimitiveType.Lines);
         }
+
         public void addFrame(Point3d_GL pos, Point3d_GL x, Point3d_GL y, Point3d_GL z)
         {
             addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 0, 0);
@@ -1128,7 +1151,13 @@ namespace opengl3
             return ProgrammID;
         }
 
-        private readonly string[] _VertexSourceGL = {
+        
+        #endregion
+    }
+
+    /*
+     * 
+     * private  string[] _VertexSourceGL = {
             "#version 460 core\n",
 
 
@@ -1150,7 +1179,7 @@ namespace opengl3
             "	vs_out.vertexColor = _vertexColor;\n",
             "}\n"
         };
-        private readonly string[] _GeometryShaderBody = {
+        private  string[] _GeometryShaderBody = {
             "uniform mat4 MVP;\n",
             "uniform mat4 M;\n",
             "uniform mat4 V;\n",
@@ -1184,8 +1213,13 @@ namespace opengl3
             "	    gl_ViewportIndex = gl_InvocationID;\n",
 
             "       gl_Position = MVPs[gl_InvocationID] * vec4(vs_out[i].vertexPosition_modelspace, 1.0);\n",
+
             "	    fs_in.Position_worldspace = (M * vec4(vs_out[i].vertexPosition_modelspace,1)).xyz;\n",
+
             "	    vec3 vertexPosition_cameraspace = ( Vs[gl_InvocationID] * Ms[gl_InvocationID] * vec4(vs_out[i].vertexPosition_modelspace,1)).xyz;\n",
+
+            "	    float[16] mx = float[](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);\n",
+
             "	    fs_in.EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace;\n",
             "	    vec3 LightPosition_cameraspace = ( Vs[gl_InvocationID] * vec4(LightPosition_worldspace,1)).xyz;\n",
             "	    fs_in.LightDirection_cameraspace = LightPosition_cameraspace + fs_in.EyeDirection_cameraspace;\n",
@@ -1198,21 +1232,21 @@ namespace opengl3
             "}\n"
         };
 
-        private readonly string[] _GeometryShaderLinesGL = {
+        private string[] _GeometryShaderLinesGL = {
             "#version 460 core\n",
 
             "layout (lines, invocations = 4) in;\n",
             "layout (line_strip, max_vertices = 2) out;\n", 
         };
 
-        private readonly string[] _GeometryShaderPointsGL = {
+        private  string[] _GeometryShaderPointsGL = {
             "#version 460 core\n",
 
             "layout (points, invocations = 4) in;\n",
             "layout (points, max_vertices = 1) out;\n", 
         };
 
-        private readonly string[] _GeometryShaderTrianglesGL = {
+        private string[] _GeometryShaderTrianglesGL = {
             "#version 460 core\n",
 
             "layout (triangles, invocations = 4) in;\n",
@@ -1220,7 +1254,7 @@ namespace opengl3
 
         };
 
-        private readonly string[] _FragmentSourceGL = {
+        private string[] _FragmentSourceGL = {
             "#version 460 core\n",
             "uniform vec3 LightPosition_worldspace;\n",
             "uniform vec3 MaterialDiffuse;\n",
@@ -1270,7 +1304,7 @@ namespace opengl3
         };
 
 
-        private readonly string[] _FragmentSourceGL_ = {
+        private string[] _FragmentSourceGL_ = {
             "#version 460 core\n",
             "uniform vec3 LightPosition_worldspace;\n",
             "uniform vec3 MaterialDiffuse;\n",
@@ -1304,7 +1338,7 @@ namespace opengl3
            // "	color = vec3(color_grey,color_grey,color_grey);\n",
             "}\n"
         };
-        private readonly string[] _GeometryShaderGL_ = {
+        private string[] _GeometryShaderGL_ = {
             "#version 460 core\n",
             //"uniform mat4 MVP;\n",
             //"uniform mat4 M;\n",
@@ -1332,8 +1366,6 @@ namespace opengl3
            // "	Color = vertexColor;\n",
             "}\n"
         };
-        #endregion
-    }
-
-
+     * 
+     */
 }

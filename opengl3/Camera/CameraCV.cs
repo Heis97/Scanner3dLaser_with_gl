@@ -30,14 +30,14 @@ namespace opengl3
         public Mat mapy;
         public Matrix<double> prjmatrix;
         public Matrix<double> prjmatrix_inv;
-        public Matrix<double> matrixCam;
-        public Matrix<double> matrixScene;
+        public Matrix<double> matrixCS;
+        public Matrix<double> matrixSC;
         void init_vars()
         {
             cur_t = new Mat();
             cur_r = new Mat();
-            matrixCam = new Matrix<double>(4,4);
-            matrixScene = new Matrix<double>(4, 4);
+            matrixCS = new Matrix<double>(4,4);
+            matrixSC = new Matrix<double>(4, 4);
             pos = new float[3] { 0, 0, 0 };
         }
         public CameraCV(Matrix<double> _cameramatrix, Matrix<double> _distortmatrix)
@@ -51,22 +51,21 @@ namespace opengl3
             calibrateCam(_frames, _size,markSize);
             init_vars();
         }
-        
-        public void setMatrixScene(Matrix<double> matrixSc)
+        void setPos()
         {
-            matrixScene = matrixSc;
-            CvInvoke.Invert(matrixScene, matrixCam, DecompMethod.LU);
+            pos[0] = (float)matrixCS[0, 3];
+            pos[1] = (float)matrixCS[1, 3];
+            pos[2] = (float)matrixCS[2, 3];
+        }
+        public void setMatrixScene(Matr4x4f matrixSc)
+        {
+            matrixSC = matrixSc.ToOpenCVMatr();
+            CvInvoke.Invert(matrixSC, matrixCS, DecompMethod.LU);
             cameramatrix_inv = new Matrix<double>(3, 3);
             CvInvoke.Invert(cameramatrix, cameramatrix_inv, DecompMethod.LU);
 
-            prjmatrix = cameramatrix*matrixScene.GetRows(0, 3, 1);
-            var row = new Matrix<double>(new double[1, 4] { { 0 ,  0 ,  0 ,  1 } });
-            prjmatrix_inv = prjmatrix.ConcateVertical(row);
-            CvInvoke.Invert(prjmatrix_inv, prjmatrix_inv, DecompMethod.LU);
-            prjmatrix_inv = prjmatrix_inv.GetRows(0, 3, 1);
-            pos[0] = (float)matrixScene[0, 3];
-            pos[1] = (float)matrixScene[1, 3];
-            pos[2] = (float)matrixScene[2, 3];
+            prjmatrix = cameramatrix*matrixSC.GetRows(0, 3, 1);
+            setPos();
 
            // prin.t(prjmatrix);
         }
@@ -84,9 +83,9 @@ namespace opengl3
                 {0,0,0,1 }
             };
 
-            matrixCam = new Matrix<double>(data_mx);
-            matrixScene = new Matrix<double>(4, 4);
-            CvInvoke.Invert(matrixCam, matrixScene, DecompMethod.LU);
+            matrixCS = new Matrix<double>(data_mx);
+            matrixSC = new Matrix<double>(4, 4);
+            CvInvoke.Invert(matrixCS, matrixSC, DecompMethod.LU);
            // prin.t("matrixCam * matrixScene");
            // prin.t(matrixCam * matrixScene);
         }
@@ -95,13 +94,8 @@ namespace opengl3
 
             CvInvoke.SolvePnP(points3D,points2D,cameramatrix,distortmatrix, cur_r, cur_t);
             assemblMatrix(cur_r, cur_t);
-           
-            var _pos = new float[3];
-            _pos[0] = (float)matrixScene[0, 3];
-            _pos[1] = (float)matrixScene[1, 3];
-            _pos[2] = -(float)matrixScene[2, 3];
-
-            return _pos;
+            setPos();
+            return pos;
         }
         
         void calibrateFishEyeCam(Frame[] frames, Size size)

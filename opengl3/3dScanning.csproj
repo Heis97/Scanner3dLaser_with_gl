@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Camera\Features.cs" />
     <Compile Include="Geometry\Matr4x4f.cs" />
+    <Compile Include="Geometry\Matr3x3f_.cs" />
     <Compile Include="Graphic\BuffersGl.cs" />
     <Compile Include="Extra\Analyse.cs" />
     <Compile Include="Camera\CameraCV.cs" />
@@ -212,6 +213,37 @@
       <Version>4.3.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Graphic\Shaders\Geom_R\GeomShL_head.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Geom_R\GeomShP_head.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Geom_R\GeomShT_head.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Geom_R\GeomSh_body.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Geom\GeomShT_head.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Geom\GeomShL_head.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Geom\GeomShP_head.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Geom\GeomSh_body.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Frag\FragmSh.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Vert\VertexSh.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

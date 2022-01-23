@@ -1,0 +1,41 @@
+﻿uniform mat4 MVP;
+uniform mat4 M;
+uniform mat4 V;
+uniform vec3 LightPosition_worldspace;
+uniform mat4 MVPs[4];
+uniform mat4 Ms[4];
+uniform mat4 Vs[4];
+
+in VS_GS_INTERFACE
+{
+vec3 vertexPosition_modelspace;
+vec3 vertexNormal_modelspace;
+vec3 vertexColor;
+}vs_out[];
+
+out GS_FS_INTERFACE
+{
+vec3 Position_worldspace;
+vec3 Color;
+vec3 Normal_cameraspace;
+vec3 EyeDirection_cameraspace;
+vec3 LightDirection_cameraspace;
+} fs_in;
+
+void main() 
+{
+   for (int i = 0; i < gl_in.length(); i++)
+   { 
+	    gl_ViewportIndex = gl_InvocationID;
+        gl_Position = MVPs[gl_InvocationID] * vec4(vs_out[i].vertexPosition_modelspace, 1.0);
+	    fs_in.Position_worldspace = (M * vec4(vs_out[i].vertexPosition_modelspace,1)).xyz;
+	    vec3 vertexPosition_cameraspace = ( Vs[gl_InvocationID] * Ms[gl_InvocationID] * vec4(vs_out[i].vertexPosition_modelspace,1)).xyz;
+	    float[16] mx = float[](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	    fs_in.EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace;
+	    vec3 LightPosition_cameraspace = ( Vs[gl_InvocationID] * vec4(LightPosition_worldspace,1)).xyz;
+	    fs_in.LightDirection_cameraspace = LightPosition_cameraspace + fs_in.EyeDirection_cameraspace;
+	    fs_in.Normal_cameraspace = ( Vs[gl_InvocationID] * Ms[gl_InvocationID] * vec4(vs_out[i].vertexNormal_modelspace,0)).xyz;
+	    fs_in.Color = vs_out[i].vertexColor;
+	    EmitVertex();
+	}
+}

@@ -1,0 +1,129 @@
+﻿uniform mat4 MVP;
+uniform mat4 M;
+uniform mat4 V;
+uniform vec3 LightPosition_world;
+uniform mat4 MVPs[4];
+uniform mat4 Ms[4];
+uniform mat4 Vs[4];
+uniform mat4 Ps[4];
+
+float[16] matrMul(in float[16] m1,in float[16] m2)
+{
+	float[16] res = float[](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                res[i * 4 + j] += m1[i * 4 + k] * m2[k * 4 + j];
+            }
+        }
+    }
+	return(res);
+}
+mat4 matrMMul(in mat4 m1,in mat4 m2)
+{
+	mat4 res = mat4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                res[i][j] += m1[i][k] * m2[k][j];
+            }
+        }
+    }
+	return(res);
+}
+vec4 matrVecMul(in float[16] m1,in vec4 m2)
+{
+	vec4 res = vec4(0,0,0,0);
+	for (int i = 0; i < 4; i++)
+    {        
+        for (int k = 0; k < 4; k++)
+        {
+            res[i] += m1[i * 4 + k] * m2[k];
+        }        
+    }
+	return(res);
+}
+
+vec4 matrVecMul(in mat4 m1,in vec4 m2)
+{
+	vec4 res = vec4(0,0,0,0);
+	for (int i = 0; i < 4; i++)
+    {        
+        for (int k = 0; k < 4; k++)
+        {
+            res[i] += m1[i][k] * m2[k];
+        }        
+    }
+	return(res);
+}
+
+in VS_GS_INTERFACE
+{
+	vec3 vertexPosition_model;
+	vec3 vertexNormal_model;
+	vec3 vertexColor;
+}vs_out[];
+
+out GS_FS_INTERFACE
+{
+	vec3 Position_world;
+	vec3 Color;
+	vec3 Normal_camera;
+	vec3 EyeDirection_camera;
+	vec3 LightDirection_camera;
+
+} fs_in;
+
+
+
+
+void main() 
+{
+   for (int i = 0; i < gl_in.length(); i++)
+   { 
+		int glID = gl_InvocationID;
+		if(gl_in.length()==1)
+		{
+			glID = 2;
+		}
+	    gl_ViewportIndex = glID;
+		
+		vec4 pos_world = vec4(vs_out[i].vertexPosition_model, 1.0);
+
+		vec4 pos_cam = matrVecMul( Vs[glID] , pos_world);
+
+		//gl_Position = matrVecMul(Ps[glID], pos_cam);
+
+		mat4 PV = matrMMul(Ps[glID],Vs[glID]);
+
+		gl_Position = matrVecMul(PV, pos_world);
+        //gl_Position = matrVecMul(MVPs[glID], pos_world);
+
+	    fs_in.Position_world = (matrVecMul(M , pos_world)).xyz;
+
+	    vec3 vertexPosition_camera = (matrVecMul( Vs[glID] , pos_world)).xyz;       //model matrix!
+
+	    fs_in.EyeDirection_camera= vec3(0,0,0) - vertexPosition_camera;
+
+	    vec3 LightPosition_camera = (
+			matrVecMul(
+				Vs[gl_InvocationID] , vec4(LightPosition_world,1.0)
+			)
+		).xyz;
+
+	    fs_in.LightDirection_camera= LightPosition_camera + fs_in.EyeDirection_camera;
+
+	    fs_in.Normal_camera =matrVecMul ( PV , vec4(vs_out[i].vertexNormal_model,0)).xyz;
+	    fs_in.Color = vs_out[i].vertexColor;
+	    EmitVertex();
+	}
+}
+
+
+

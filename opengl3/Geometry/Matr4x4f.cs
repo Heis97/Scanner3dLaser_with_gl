@@ -1,4 +1,5 @@
-﻿using OpenGL;
+﻿using Emgu.CV;
+using OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,7 +57,19 @@ namespace opengl3
             }
             return new Matr4x4f(res);
         }
-       
+
+        public Matrix<double> ToOpenCVMatr()
+        {
+            var matr = new Matrix<double>(4, 4);
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    matr[i,j] = data[4*i+j];
+                }
+            }
+            return matr;
+        }
     }
     public struct Vert4f
     {

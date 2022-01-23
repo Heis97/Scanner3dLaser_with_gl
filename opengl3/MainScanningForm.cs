@@ -129,17 +129,12 @@ namespace opengl3
         #endregion
         public MainScanningForm()
         {
-            mat_global[0] = new Mat();
-            mat_global[1] = new Mat();
-            mat_global[2] = new Mat();
-            InitializeComponent();
-            minArea = 1.0 * k * k * 15;
-            maxArea = 15 * k * k * 250;
-            red_c = 252;
+             init_vars();
 
-            /* var stl_loader = new STLmodel();
+             var stl_loader = new STLmodel();
              var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-             GL1.addGLMesh(mesh, PrimitiveType.Triangles);*/
+             GL1.addGLMesh(mesh, PrimitiveType.Triangles);
+            // GL1.add_buff_gl_lines_id(mesh, 10, true);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
            
@@ -149,7 +144,7 @@ namespace opengl3
              var frms2 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_3");
              comboImages.Items.AddRange(frms2);
              var cam2 = new CameraCV(frms2, new Size(6, 7), markSize);
-
+             
              stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
 
@@ -168,7 +163,16 @@ namespace opengl3
                 new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
         }
-
+        void init_vars()
+        {
+            mat_global[0] = new Mat();
+            mat_global[1] = new Mat();
+            mat_global[2] = new Mat();
+            InitializeComponent();
+            minArea = 1.0 * k * k * 15;
+            maxArea = 15 * k * k * 250;
+            red_c = 252;
+        }
         #region robot
         public void startScan(object sender, EventArgs e)
         {
@@ -394,6 +398,7 @@ namespace opengl3
             return cameraCV;
         }
 
+
         private void glControl1_Render(object sender, GlControlEventArgs e)
         {
 
@@ -407,85 +412,37 @@ namespace opengl3
             // imBox_mark1.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
             // imBox_mark2.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
             // imBox_mark1.
-            var mat1_or = GL1.matFromMonitor(0);
+        
+            var mat1_or =  GL1.matFromMonitor(0);
             var mat2_or = GL1.matFromMonitor(1);
-            var mat1 = stereocam.cameraCVs[0].undist(UtilOpenCV.remapDistImOpenCvCentr(mat1_or, cameraDistortionCoeffs_dist));
-            var mat2 = stereocam.cameraCVs[1].undist(UtilOpenCV.remapDistImOpenCvCentr(mat1_or, cameraDistortionCoeffs_dist));
-            imBox_mark1.Image = mat1_or;
-            imBox_mark2.Image = mat2_or;
 
-            imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
+            // CvInvoke.Flip(mat1_or, mat1_or, FlipType.Vertical);
+            //CvInvoke.Flip(mat2_or, mat2_or, FlipType.Vertical);
+            // var mat1 = stereocam.cameraCVs[0].undist(UtilOpenCV.remapDistImOpenCvCentr(mat1_or, cameraDistortionCoeffs_dist));
+            // var mat2 = stereocam.cameraCVs[1].undist(UtilOpenCV.remapDistImOpenCvCentr(mat1_or, cameraDistortionCoeffs_dist));
+            var mat1 = new Mat();
+            var mat2 = new Mat();
+            CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
+            CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
+            imBox_mark1.Image = mat1;
+            imBox_mark2.Image = mat2;
+            
+            //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
 
-            stereocam.cameraCVs[0].setMatrixScene(new Matrix<double>(GL1.rightMatrMon(0)));
-            stereocam.cameraCVs[1].setMatrixScene(new Matrix<double>(GL1.rightMatrMon(1)));
+            stereocam.cameraCVs[0].setMatrixScene(GL1.rightMatrMon(0));
+            stereocam.cameraCVs[1].setMatrixScene(GL1.rightMatrMon(1));
              
             stereocam.prM1 = stereocam.cameraCVs[0].prjmatrix;
             stereocam.prM2 = stereocam.cameraCVs[1].prjmatrix;
-            
-            reconst = features.reconstuctScene(stereocam, features.desks1, features.desks2, features.mchs);
 
-            reconst_lines1 = features.pointsForLines(features.mps1, stereocam.cameraCVs[0]);
-            reconst_lines2 = features.pointsForLines(features.mps2, stereocam.cameraCVs[1]);
-            var point_t1 = new Vert4f(10, 10, 10);
-            var point_t2 = new Vert4f(10, 10, 400);
-            var idm = 1;
-            point_t1 = new Matr4x4f(GL1.MVPs[idm]).Transpose() * point_t1;
-            point_t2 = new Matr4x4f(GL1.MVPs[idm]).Transpose() * point_t2;
-            GL1.MVPs[idm].Transpose();
-            GL1.Vs[idm].Transpose();
-            GL1.Ps[idm].Transpose();
-            prin.t(" point_4dt : ");
-            prin.t(point_t1.ToString());
-            prin.t(point_t2.ToString());
-            point_t1.Norm();
-            point_t2.Norm();
-            prin.t(" point_2dt : ");
-            prin.t(point_t1.ToString());
-            prin.t(point_t2.ToString());
-            
-            prin.t(" GL1.Ps[0]: ");
-            prin.t(GL1.Ps[idm]);
-            prin.t(" GL1.Vs[0]: ");
-            prin.t(GL1.Vs[idm]);
-            prin.t(" GL1.MVPs[0]: ");
-            prin.t(GL1.MVPs[idm]);
-            prin.t(" ___________");
-            GL1.MVPs[idm].Transpose();
-            GL1.Vs[idm].Transpose();
-            GL1.Ps[idm].Transpose();
+            //reconst = features.reconstuctScene(stereocam, features.desks1, features.desks2, features.mchs);
 
-
-            /*var mat_t1 = new Matr4x4f(new float[] { 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0 }).Transpose();
-            var p_t1 = new Vert4f(new float[] { 1, 2, 3, 4 });
-            var mat_t2 = new Matrix4x4f(new float[] { 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0 });
-            var p_t2 = new Vertex4f(1, 2, 3, 4);
-            prin.t(" mat_t1* p_t1 : ");
-            prin.t((mat_t1* p_t1).ToString());
-            prin.t(" mat_t2* p_t2 : ");
-            prin.t((mat_t2 * p_t2).ToString());*/
-
-            /*prin.t("p1: ");
-            prin.t(stereocam.p1);
-            prin.t("p2: ");
-            prin.t(stereocam.p2);
-            prin.t("prM1: ");
-            prin.t(stereocam.prM1);
-            prin.t("prM2: ");
-            prin.t(stereocam.prM2);
-            prin.t("___________");*/
-            //test4pointHomo();
-            //  prin.t(reconst);
-            // prin.t("_____________-");
-
-            //imBox_3dDebug.Image  = stereocam.drawEpipolarLines(mat1, mat2, features.ps1)[0];
-
-            // imBox_mark2.Image = UtilOpenCV.calcSubpixelPrec(GL1.matFromMonitor(0), new Size(6, 7),GL1,markSize);
-            //imBox_disparity.Image =  stereocam.epipolarTest(GL1.matFromMonitor(1), GL1.matFromMonitor(0));
-            // imBox_mark1.Image =  drawChessboard((Mat)imBox_mark1.Image, new Size(6, 7));
-            //  imBox_mark2.Image =  drawChessboard((Mat)imBox_mark2.Image, new Size(6, 7));
-
-
+            //reconst_lines1 = features.pointsForLines(features.mps1, stereocam.cameraCVs[0]);
+            //reconst_lines2 = features.pointsForLines(features.mps2, stereocam.cameraCVs[1]);
+            GL1.buffersGl.removeObj(10);
+            GL1.buffersGl.add_obj_id(reconst, 10, true, PrimitiveType.Points);
         }
+
         Matrix<double> matrixFromCam(CameraCV cam)
         {
             var rotateMatrix = new Matrix<double>(3, 3);
@@ -514,16 +471,19 @@ namespace opengl3
 
         #region buttons
         private void but_SubpixPrec_Click(object sender, EventArgs e)
-        {       
-           //UtilOpenCV.calcSubpixelPrec(new Size(6, 7),GL1,markSize,0);
+        {
+            //UtilOpenCV.calcSubpixelPrec(new Size(6, 7),GL1,markSize,0);
             //reconst = GL1.translateMesh(reconst, 0, 0, 100);
-            GL1.addMeshWithoutNorm(reconst, PrimitiveType.Points, 1f, 0, 0);
+
+            /*GL1.addMeshWithoutNorm(reconst, PrimitiveType.Points, 1f, 0, 0);
             var stp1 = stereocam.cameraCVs[0].pos;
             GL1.addLineFanMesh(stp1,reconst_lines1);
             var stp2 = stereocam.cameraCVs[1].pos;
             GL1.addLineFanMesh(stp2, reconst_lines2);
 
-            GL1.buffersGl.sortObj();
+            GL1.buffersGl.sortObj();*/
+           imBox_3dDebug.Image= features.disparMap((Mat)imBox_mark1.Image, (Mat)imBox_mark2.Image,15,2);
+            
         }
 
         private void trB_SGBM_Scroll(object sender, EventArgs e)
@@ -1426,7 +1386,7 @@ namespace opengl3
             float h = sidef * (float)k;
             float offx = -sidef;
             float offy = -h + sidef;
-            float z = 10f;
+            float z = 0f;
             float[] square_buf = {
                             0.0f,0.0f,0.0f, // triangle 1 : begin
                             0.0f,sidef, 0.0f,
@@ -1439,7 +1399,7 @@ namespace opengl3
             {
                 for (float y = 0; y < h; y += side)
                 {
-                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, x + offx, y + offy,z);
+                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, x + offx, y + offy, z);
                 }
             }
 
@@ -1501,7 +1461,7 @@ namespace opengl3
                     }
                 }
             }
-
+           
             im_ret.Save("black_br_" + n + "_" + m + ".png");
         }
 
@@ -1707,6 +1667,10 @@ namespace opengl3
     }
     
 }
+
+
+
+
 
 /*addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(30, 0, 0), new Point3d_GL(0, 30, 0), new Point3d_GL(0, 0, 30));
 

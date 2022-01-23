@@ -200,7 +200,7 @@ namespace opengl3
                 {
                     for (int j = 0; j < matr.Cols; j++)
                     {
-                        Console.Write(matr[i, j] + " ");
+                        Console.Write(Math.Round(matr[i, j],3) + " ");
                     }
                     Console.WriteLine(" ");
                 }
@@ -209,7 +209,7 @@ namespace opengl3
             {
                 for (int i = 0; i < matr.Rows; i++)
                 {
-                    Console.Write(matr[i, 0] + " ");
+                    Console.Write(Math.Round(matr[i, 0],3) + " ");
                 }
                 Console.WriteLine(" ");
             }
@@ -221,7 +221,7 @@ namespace opengl3
             {
                 for (uint j = 0; j < 4; j++)
                 {
-                    Console.Write(matr[i, j] + " ");
+                    Console.Write(Math.Round(matr[i, j],3) + " ");
                 }
                 Console.WriteLine(" ");
             }
@@ -330,6 +330,22 @@ namespace opengl3
                         Console.WriteLine(" ");
                     }
                 }
+                else if (mat.Depth == DepthType.Cv8U)
+                {
+                    var flarr = (byte[,,])arr;
+                    for (int i = 0; i < mat.Rows; i++)
+                    {
+                        for (int j = 0; j < mat.Cols; j++)
+                        {
+                            for (int k = 0; k < ch; k++)
+                            {
+                                Console.Write(flarr[i, j, k] + " ");
+                            }
+                            Console.Write(" | ");
+                        }
+                        Console.WriteLine(" ");
+                    }
+                }
             }
             else
             {
@@ -364,6 +380,20 @@ namespace opengl3
                 else if (mat.Depth == DepthType.Cv16S)
                 {
                     var flarr = (Int16[,])arr;
+                    for (int i = 0; i < mat.Rows; i++)
+                    {
+                        for (int j = 0; j < mat.Cols; j++)
+                        {
+                            Console.Write(flarr[i, j] + " ");
+
+                            Console.Write(" | ");
+                        }
+                        Console.WriteLine(" ");
+                    }
+                }
+                else if (mat.Depth == DepthType.Cv8U)
+                {
+                    var flarr = (byte[,])arr;
                     for (int i = 0; i < mat.Rows; i++)
                     {
                         for (int j = 0; j < mat.Cols; j++)

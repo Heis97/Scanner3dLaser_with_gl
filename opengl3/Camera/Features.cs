@@ -157,10 +157,10 @@ namespace opengl3
                 {
                     return null;
                 }
-                if (matches.Size > 10)
+                /*if (matches.Size > 10)
                 {
                     matches = new VectorOfDMatch(new MDMatch[] { matches[5], matches[6], matches[7], matches[8], matches[9] });
-                }
+                }*/
                 this.kps1 = kps1;
                 this.kps2 = kps2;
 
@@ -274,9 +274,11 @@ namespace opengl3
             for(int i=0; i<matches.Size;i++)
             {
                 var m = matches[i];
-                ps1[i] = desk1[m.TrainIdx].keyPoint.Point;
+                ps1[i] = desk1[m.TrainIdx].keyPoint.Point;                
                 ps2[i] = desk2[m.QueryIdx].keyPoint.Point;
                 //prin.t(ps1[i].Y - ps2[i].Y);
+                //ps1[i].Y = 400 - ps1[i].Y;
+               // ps2[i].Y = 400 - ps2[i].Y;
             }
             this.mps1 = ps1;
             this.mps2 = ps2;
@@ -319,24 +321,15 @@ namespace opengl3
             }
             for(int i=0; i<pdata.GetLength(1); i++)
             {
-                //var mx = stereoCam.cameraCVs[0].matrixScene;
-                var mx = new Matrix<double>(4, 4);
-                mx.SetIdentity(new MCvScalar(1));
+
                 if (pdata[3,i]!=0)
                 {
-
-                    var v4 = new Matrix<double>(new double[] {
-                        pdata[0, i] / pdata[3, i],
-                        pdata[1, i] / pdata[3, i],
-                        pdata[2, i] / pdata[3, i], 1 });
-
-                    var v4_sc = mx * v4;
-
-
-
-                    mesh.Add((float)v4_sc[0,0]);
-                    mesh.Add((float)v4_sc[1, 0]);
-                    mesh.Add((float)v4_sc[2, 0]);
+                    var x = pdata[0, i] / pdata[3, i];
+                    var y = pdata[1, i] / pdata[3, i];
+                    var z = pdata[2, i] / pdata[3, i];
+                    mesh.Add(x);
+                    mesh.Add(y);
+                    mesh.Add(z);
                 }
             }
             return mesh.ToArray();
@@ -344,7 +337,7 @@ namespace opengl3
 
         public float[] pointsForLines(System.Drawing.PointF[] ps, CameraCV cam, float z = 600)
         {
-            var invmx = cam.matrixScene;
+            var invmx = cam.matrixCS;
             if(ps==null)
             {
                 return null;
@@ -353,7 +346,6 @@ namespace opengl3
             var j = 0;
             for(int i=0; i<ps.Length;i++)
             {
-
                 var p = point3DfromCam(ps[i], cam, z);
                
                 var v4 = new Matrix<double>(new double[] { p[0], p[1], p[2], 1 });
@@ -368,24 +360,22 @@ namespace opengl3
             return dataP;
         }
 
-        float[] point3DfromCam(System.Drawing.PointF p, CameraCV cam,float z)
+        float[] point3DfromCam(System.Drawing.PointF _p, CameraCV cam,float z)
         {
-            var A = cam.cameramatrix;
+            /*var A = cam.cameramatrix;
             var fx = A[0, 0];
             var fy = A[1, 1];
             var cx = A[0, 2];
             var cy = A[1, 2];
-            var u = p.X;
-            var v = p.Y;
+            var u = _p.X;
+            var v = _p.Y;
 
             var x = (u - cx)/ fx;
             var y = (v - cy)/ fy;
-            //var x = u  / fx;
-            //var y = v / fy;
              x *= z;
-             y *= z;
-            
-            return new float[] {  (float)x, -(float)y, -(float)z};
+             y *= z;*/
+            var p = new Matr3x3f(cam.cameramatrix_inv) * new Vert3f(_p.X, _p.Y, 1);
+            return new float[] {  p.x * z, p.y * z, p.z * z };
         }
 
         VectorOfDMatch matchBF(Mat desk1, Mat desk2)
@@ -429,7 +419,113 @@ namespace opengl3
             return new VectorOfDMatch(mDMatchs.ToArray());
         }
         
-        
+        public Mat disparMap(Mat imL, Mat imR, int maxDisp, int blockSize)
+        {
+            var grayL = imL.ToImage<Gray, byte>();
+            var grayR = imR.ToImage<Gray, byte>();
+            //prin.t(grayL.Mat);
+            var dimL = (byte[,])grayL.Mat.GetData();
+            var dimR = (byte[,])grayR.Mat.GetData();
+            var line1 = new int [dimL.GetLength(1)];
+            var line2 = new int[dimL.GetLength(1)];
+            var dispMap = new byte[dimL.GetLength(0), dimL.GetLength(1)];
+            prin.t("dimL.GetLength(0):");
+            prin.t(dimL.GetLength(0));
+            prin.t("line1.Length:");
+            prin.t(line1.Length);
+            for (int i=0; i < dimL.GetLength(0); i++)
+            {
+                for (int j = 0; j < line1.Length; j++)
+                {
+                    /*prin.t("i:");
+                    prin.t(i);
+                    prin.t("j:");
+                    prin.t(j);*/
+                    line1[j] = dimL[i, j];
+                    line2[j] = dimR[i, j];
+                }
+                var dispLine = bmatcherLine(line1, line2,maxDisp,blockSize);
+                for (int j = 0; j < line1.Length; j++)
+                {
+                    var disp = dispLine[j];
+                    if(disp>255)
+                    {
+                        dispMap[i, j] = 255;
+                    }
+                    else if(disp<0)
+                    {
+                        dispMap[i, j] = 0;
+                    }
+                    else
+                    {
+                        dispMap[i, j] = (byte)dispLine[j];
+                    }
+                    
+                    //dispMap[i, j] = 255;
+                }
+            }
+            var matrD = new Matrix<byte>(dispMap);
+            return matrD.Mat;
+        }
+        int[] bmatcherLine(int[] line1, int[] line2, int maxDisp, int blockSize)
+        {
+            var disp_line = new int[line1.Length];
+            var wind = maxDisp;
+            if(blockSize>maxDisp)
+            {
+                wind = blockSize;
+            }
+            wind++;
+            for (int i = wind; i<line1.Length-wind; i++)
+            {
+                var block = takeBlok(line1, i, blockSize);
+                var batch = takeBlok(line2, i, maxDisp);
+                disp_line[i] = disp(block, batch);
+            }
+            return disp_line;
+        }
+        int[] takeBlok(int[] line, int indB, int blockSize)
+        {
+            var bl = new int[2*blockSize+1];
+            
+            for(int i = -blockSize; i < bl.Length - blockSize; i++)
+            {
+                //prin.t(indB + i);
+                bl[i+ blockSize] = line[indB + i];
+            }
+            return bl;
+        }
+        int compDiff(int[] block1, int[] block2)
+        {
+            
+            int diff = 0;
+            for(int i =0; i<block1.Length;i++)
+            {
+                diff += (block1[i] - block2[i]);
+            }
+            if(diff<0)
+            {
+                return -diff;
+            }
+            return diff;
+        }
+        int disp(int[] block, int[] batch)
+        {
+            var min = int.MaxValue;
+            var disp = 0;
+            var wind = (block.Length - 1) / 2;
+            for (int i= wind; i< batch.Length-wind; i++)
+            {
+                var block2 = takeBlok(batch, i, wind);
+                var en = compDiff(block, block2);
+                if(en<min)
+                {
+                    min = en;
+                    disp = i;
+                }
+            }
+            return 16*disp+127;
+        }
     }
 
     

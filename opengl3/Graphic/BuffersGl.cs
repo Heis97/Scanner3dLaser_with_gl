@@ -10,6 +10,7 @@ namespace opengl3
 
     public class BuffersGl
     {
+
         List<openGlobj> objs;
         public List<openGlobj> objs_out;
         public BuffersGl()
@@ -19,7 +20,6 @@ namespace opengl3
         }
         public void add_obj(openGlobj opgl_obj)
         {
-
             objs.Add(opgl_obj);
             if (opgl_obj.animType == openGlobj.AnimType.Dynamic)
             {
@@ -27,12 +27,15 @@ namespace opengl3
             }
         }
 
-        public void add_obj_id(float[] data_v, int id, bool visible)
+        public void add_obj_id(float[] data_v, int id, bool visible, PrimitiveType primitiveType)
         {
             int ind = 0;
+            if(data_v ==null)
+            {
+                return;
+            }
             if (objs.Count != 0)
             {
-
                 foreach (var ob in objs_out)
                 {
                     if (ob.id == id)
@@ -45,8 +48,8 @@ namespace opengl3
                             var data_c_ = new float[data_v.Length];
                             for (int i = 0; i < data_v.Length; i++)
                             {
-                                data_c_[i] = 0.5f;
-                                data_n_[i] = 0.5f;
+                                data_c_[i] = 1f;
+                                data_n_[i] = 1f;
                             }
                             lam_obj.vertex_buffer_data = data_v;
                             lam_obj.color_buffer_data = data_c_;
@@ -70,11 +73,11 @@ namespace opengl3
             var data_c = new float[data_v.Length];
             for (int i = 0; i < data_v.Length; i++)
             {
-                data_c[i] = 0.5f;
-                data_n[i] = 0.5f;
+                data_c[i] = 1f;
+                data_n[i] = 1f;
             }
             //Console.WriteLine("new ver " + id+" all "+ind);
-            add_obj(new openGlobj(data_v, data_c, data_n, PrimitiveType.Lines, id));
+            add_obj(new openGlobj(data_v, data_c, data_n, primitiveType, id));
         }
         public void sortObj()
         {
@@ -107,23 +110,21 @@ namespace opengl3
 
             }
         }
-        public void removeObj(int id)//!!!!!!!!!!!!!!
+        public void removeObj(int id)
         {
-            foreach (var ob in objs)
-            {
-                if (ob.id == id)
-                {
+            var objs_lam = new openGlobj[objs.Count];
+            objs.CopyTo(objs_lam);
+            objs = new List<openGlobj>();
+            objs_out = new List<openGlobj>();
 
-                    objs.Remove(ob);
-                }
-            }
-            foreach (var ob in objs_out)
+            foreach (var ob in objs_lam)
             {
-                if (ob.id == id)
+                if (ob.id != id)
                 {
-                    objs_out.Remove(ob);
+                    objs.Add(ob);
                 }
             }
+            sortObj();
         }
 
     }
