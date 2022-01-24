@@ -429,10 +429,6 @@ namespace opengl3
             var line1 = new int [dimL.GetLength(1)];
             var line2 = new int[dimL.GetLength(1)];
             var dispMap = new byte[dimL.GetLength(0), dimL.GetLength(1)];
-            prin.t("dimL.GetLength(0):");
-            prin.t(dimL.GetLength(0));
-            prin.t("line1.Length:");
-            prin.t(line1.Length);
             for (int i=0; i < dimL.GetLength(0); i++)
             {
                 for (int j = 0; j < line1.Length; j++)
@@ -499,15 +495,21 @@ namespace opengl3
         {
             
             int diff = 0;
+            int min = int.MaxValue;
             for(int i =0; i<block1.Length;i++)
             {
-                diff += (block1[i] - block2[i]);
+                var d = block1[i] - block2[i];
+                diff += d;
+                if(d<min)
+                {
+                    min = d;
+                }
             }
             if(diff<0)
             {
-                return -diff;
+                return - diff + min* block1.Length;
             }
-            return diff;
+            return diff - min * block1.Length;
         }
         int disp(int[] block, int[] batch)
         {
@@ -524,8 +526,9 @@ namespace opengl3
                     disp = i;
                 }
             }
-            return 16*disp+127;
+            return disp;
         }
+
     }
 
     

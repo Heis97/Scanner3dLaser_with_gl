@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera\Features.cs" />
+    <Compile Include="Extra\Magnetic.cs" />
     <Compile Include="Geometry\Matr4x4f.cs" />
     <Compile Include="Geometry\Matr3x3f_.cs" />
     <Compile Include="Graphic\BuffersGl.cs" />
