@@ -129,38 +129,60 @@ namespace opengl3
         #endregion
         public MainScanningForm()
         {
-             init_vars();
+            init_vars();
 
-             var stl_loader = new STLmodel();
-             var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-             GL1.addGLMesh(mesh, PrimitiveType.Triangles);
+            var stl_loader = new STLmodel();
+            var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
+
+
+            //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             // GL1.add_buff_gl_lines_id(mesh, 10, true);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
+            var meshB = stl_loader.parsingTxt_Tab(@"вертикальный0_2.txt");
+            //GL1.addMeshWithoutNorm(mesh1, PrimitiveType.Points,0.9f, 0.1f, 0.1f);
+            var B_mesh = meshFromImage(MeshToIm(meshB), 0.2f, 0.5f, 1, 0.15f, 0.1f);
 
-           
-             var frms1 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_2");
-             comboImages.Items.AddRange(frms1);
-             var cam1 = new CameraCV(frms1, new Size(6, 7),markSize);
-             var frms2 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_3");
-             comboImages.Items.AddRange(frms2);
-             var cam2 = new CameraCV(frms2, new Size(6, 7), markSize);
-             
-             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
+             var gr_mesh = meshFromImage(gradMesh(meshB), 0.2f, 0.5f, 1, 0.15f,0.1f);
+            // var colorGr = coloring_mesh(gr_mesh);
+
+            var for_mesh = meshForce(B_mesh, gr_mesh);
+            calcF(100, 100);
+
+            var ro_bak = 1.5;
+            var ro_liq = 1.015;
+            var V_bak = 6 * Math.Pow(10, -18);
+            var grav = calcFarch_Gr(V_bak, ro_liq, ro_bak);
+            Console.WriteLine("grav) " +grav);
+            for_mesh = cutMeshLvl(for_mesh, -(float)grav);
+
+            var colorB = coloring_mesh(B_mesh);
+            var colorF = coloring_mesh(for_mesh);
+            //for_mesh = GL1.scaleMesh(for_mesh, 1, 1, 1,-(float)Math.Pow(10, 11));
+            B_mesh = GL1.scaleMesh(B_mesh, 1, 1, 1, 10f);
+            //GL1.addMeshColor(B_mesh, colorB, PrimitiveType.Triangles);
+
+           // GL1.addMeshColor(gr_mesh, colorGr, PrimitiveType.Triangles);
+            GL1.addMeshColor(for_mesh, colorF, PrimitiveType.Triangles);
+            var frms1 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_2");
+            comboImages.Items.AddRange(frms1);
+            var cam1 = new CameraCV(frms1, new Size(6, 7), markSize);
+            var frms2 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_3");
+            comboImages.Items.AddRange(frms2);
+            var cam2 = new CameraCV(frms2, new Size(6, 7), markSize);
+
+            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
 
             if (comboImages.Items.Count > 0)
             {
                 comboImages.SelectedIndex = 0;
             }
-
+            //calcF();
 
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-            generateImage3D_BOARD(7, 8, markSize);
+            // generateImage3D_BOARD(7, 8, markSize);
             //generateImage3D(7, 0.5f,  markSize);
-            GL1.addFrame(new Point3d_GL(0, 0, 0),
-                new Point3d_GL(10, 0, 0),
-                new Point3d_GL(0, 10, 0),
-                new Point3d_GL(0, 0, 10));
+            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
         }
         void init_vars()
@@ -172,6 +194,156 @@ namespace opengl3
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
             red_c = 252;
+        }
+
+        float[] meshForce(float[] meshB, float[] meshGradB)
+        {
+            var force = new float[meshGradB.Length];
+            Console.WriteLine(meshB.Length);
+            Console.WriteLine(meshGradB.Length);
+            for (int i=0; i< meshGradB.Length; i+=3)
+            {
+                force[i] = meshGradB[i];
+                force[i+1] = meshGradB[i+1];
+                force[i+2] = calcF(meshB[i+2], meshGradB[i+2]);
+            }
+            return force;
+        }
+        float calcF(float B, float gradB)
+        {
+            var r = 4 * Math.Pow(10, -6);
+            var u0 = 1.2566 * Math.Pow(10, -6);
+            var up = 0.999992;
+            var uf = 1.000012;
+            var K = (up - uf) / (up + 2 * uf);
+            var f = 2 * PI * Math.Pow(r, 3) * uf ;
+            
+
+            var v_bak = VolumeSph(r);
+
+            f = v_bak *  uf * K /(u0) ;
+            var ro_bak = 1.5;
+            var ro_liq = 1.015;
+            Console.WriteLine("F = "+f);
+            return (float)f;
+        }
+
+
+        double VolumeSph(double r)
+        {
+            return PI * (4 / 3) * Math.Pow(r, 3);
+        }
+        double calcFarch_Gr(double V_b, double ro_liq, double ro_b)
+        {
+            double g = 9.8;
+            var m = V_b * ro_b;
+            var Fa = ro_liq * g * V_b;
+            var Fg = m * g;
+            return Fa - Fg;
+
+        }
+        float calcGradZ(float x1, float y1, float z1, float dx, float z2, float dy, float z3)
+        {
+            float mash = 0.001f;
+            return (float)Math.Sqrt((z1 - z3 / mash * dx) * (z1 - z3 / mash * dx) + (z1 - z3 / mash * dy) * (z1 - z3 / mash * dy));
+        }
+        float[] cutMeshLvl(float[] mesh, float Lvl)
+        {
+            var meshL = new float[mesh.Length];
+            for(int i=0; i< meshL.Length;i+=3)
+            {
+                Console.WriteLine(mesh[i + 2]+" " + Lvl);
+                if(-mesh[i+2]>=Lvl)
+                {
+                    meshL[i] = mesh[i];
+                    meshL[i + 1] = mesh[i + 1];
+                    meshL[i + 2] = mesh[i + 2];
+                }
+            }
+            return meshL;
+        }
+
+
+
+        Image<Gray, float> gradMesh(float[] mesh, int cols=41, int rows=91)
+        {
+            var grad = new float[mesh.Length];
+            var im_grad = new Image<Gray, float>(cols, rows);
+            var im_grad_data = new float[cols, rows, 1];
+            for (int i = 0; i < cols-1; i++)
+            {
+                for (int j = 0; j < rows-1; j++)
+                {
+                   // Console.WriteLine(3 * (i * rows + j) + " " + i + " " + j);
+                    var x1 = mesh[3 * (i * rows + j)];
+                    var y1 = mesh[3 * (i * rows + j)+1];
+                    var z1 = mesh[3 * (i * rows + j)+2];
+                    var z2 = mesh[3 * ((i +1)* rows + j) + 2];
+                    var z3 = mesh[3 * (i  * rows + j+1) + 2];
+
+                    grad[3 * (i * rows + j)] = mesh[3 * (i * rows + j) ];
+                    grad[3 * (i * rows + j) + 1] = mesh[3 * (i * rows + j) + 1];
+                    grad[3 * (i * rows + j) + 2] = calcGradZ(x1, y1, z1, 0.5f, z2, 0.2f, z3);
+                    im_grad_data[i, j, 0] = grad[3 * (i * rows + j) + 2];
+                }
+            }
+            return new Image<Gray, float>(im_grad_data);
+        }
+        Image<Gray, float> MeshToIm(float[] mesh, int cols = 41, int rows = 91)
+        {
+            var im_grad = new Image<Gray, float>(cols, rows);
+            var im_grad_data = new float[cols, rows, 1];
+            for (int i = 0; i < cols - 1; i++)
+            {
+                for (int j = 0; j < rows - 1; j++)
+                {
+                    im_grad_data[i, j, 0] = mesh[3 * (i * rows + j) + 2];
+                }
+            }
+            return new Image<Gray, float>(im_grad_data);
+        }
+        float[] coloring_mesh(float[] mesh)
+        {
+            var zmin = float.MaxValue;
+            var zmax = float.MinValue;
+            var color = new float[mesh.Length];
+            for (int i = 0; i < mesh.Length; i += 3)
+            {
+                var z = mesh[i + 2];
+                if (z > zmax)
+                {
+                    zmax = z;
+                }
+                if (z < zmin)
+                {
+                    zmin = z;
+                }
+            }
+            var zs = (zmax - zmin) / 2;
+            Console.WriteLine("zmin = " + zmin + "zmax = " + zmax);
+            for (int i = 0; i < color.Length; i += 3)
+            {
+                var z = mesh[i + 2];
+                float r = 0.0f;
+                float g = 0.0f;
+                float b = 0.0f;
+                if (z < zs)
+                {
+                    b = 1f - (z-zmin) / (zs - zmin);
+                   // Console.WriteLine("b = " + b);
+                    g = 1f - b;
+                }
+                else
+                {
+                    r = (z - zs) / (zmax - zs);
+                    g = 1f - r;
+                }
+                color[i    ] = r/1;
+                color[i + 1] = g/1;
+                color[i + 2] = b/1;
+
+            }
+            return color;
         }
         #region robot
         public void startScan(object sender, EventArgs e)
@@ -319,10 +491,11 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 0, new Vertex3d(0, 0, 0), new Vertex3d(50, 0, 0), 1);
-            GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 1);
-            GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
-            GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
+            GL1.addMonitor(new Rectangle(0, 0, w , h ), 0);
+            //GL1.addMonitor(new Rectangle(0, 0, w/2, h/2), 0, new Vertex3d(0, 0, 0), new Vertex3d(50, 0, 0), 1);
+            GL1.addMonitor(new Rectangle(w / 20, 0, w / 20, h / 20), 1);
+           // GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
+           // GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
             Console.WriteLine();
             addButForMonitor(GL1, send.Size, send.Location);
 
@@ -1224,7 +1397,7 @@ namespace opengl3
             }
             GL1.addMesh(vertex_buffer_data, type);
         }
-        private float[] meshFromImage(Image<Gray, float> im2)
+        private float[] meshFromImage(Image<Gray, float> im2, float dx,float dy, float z_mult_cam, float x_cut = 0, float y_cut = 0, float offx=0, float offy=0, float offz=0)
         {
             int lenght = im2.Width * im2.Height;
             if (vertex_buffer_data.Length != 6 * 3 * lenght)
@@ -1234,37 +1407,38 @@ namespace opengl3
             int i = 0;
             Console.WriteLine(vertex_buffer_data.Length);
             Console.WriteLine("-----------------------------------");
-            for (int x = 0; x < im2.Width - 1; x++)
+            for (int x = (int)(x_cut * im2.Width); x < im2.Width - 1-(int)(x_cut * im2.Width); x++)
             {
-                for (int y = 0; y < im2.Height - 1; y++)
+                for (int y =(int)( y_cut* im2.Height); y < im2.Height - 1 - (int)(y_cut * im2.Height); y++)
                 {
-                    vertex_buffer_data[i] = x - im2.Width / 2; i++;
-                    vertex_buffer_data[i] = y - im2.Height / 2; i++;
-                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y, x, 0] - z_mult_cam / 2; i++;
+                    vertex_buffer_data[i] = dx * x  ; i++;
+                    vertex_buffer_data[i] = dy * y ; i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y, x, 0]; i++;
 
-                    vertex_buffer_data[i] = x + 1 - im2.Width / 2; i++;
-                    vertex_buffer_data[i] = y - im2.Height / 2; i++;
-                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y, x + 1, 0] - z_mult_cam / 2; i++;
+                    vertex_buffer_data[i] = dx * (x + 1) ; i++;
+                    vertex_buffer_data[i] = dy * y; i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y, x + 1, 0]; i++;
 
-                    vertex_buffer_data[i] = x - im2.Width / 2; i++;
-                    vertex_buffer_data[i] = y + 1 - im2.Height / 2; i++;
-                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x, 0] - z_mult_cam / 2; i++;
+                    vertex_buffer_data[i] = dx * x ; i++;
+                    vertex_buffer_data[i] = dy * (y + 1); i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x, 0]; i++;
 
                     //-------------------------------------------------------------
 
-                    vertex_buffer_data[i] = x - im2.Width / 2; i++;
-                    vertex_buffer_data[i] = y + 1 - im2.Height / 2; i++;
-                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x, 0] - z_mult_cam / 2; i++;
+                    vertex_buffer_data[i] = dx * x; i++;
+                    vertex_buffer_data[i] = dy * (y + 1); i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x, 0]; i++;
 
-                    vertex_buffer_data[i] = x + 1 - im2.Width / 2; i++;
-                    vertex_buffer_data[i] = y - im2.Height / 2; i++;
-                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y, x + 1, 0] - z_mult_cam / 2; i++;
+                    vertex_buffer_data[i] = dx * (x + 1); i++;
+                    vertex_buffer_data[i] = dy * y; i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y, x + 1, 0]; i++;
 
-                    vertex_buffer_data[i] = x + 1 - im2.Width / 2; i++;
-                    vertex_buffer_data[i] = y + 1 - im2.Height / 2; i++;
-                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x + 1, 0] - z_mult_cam / 2; i++;
+                    vertex_buffer_data[i] = dx * (x + 1); i++;
+                    vertex_buffer_data[i] = dy * (y + 1) ; i++;
+                    vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x + 1, 0]; i++;
                 }
             }
+            //GL1.translateMesh(vertex_buffer_data,)
             return vertex_buffer_data;
         }
         private float[] meshFromImage(Image<Gray, Byte> im2)

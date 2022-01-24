@@ -15,6 +15,35 @@ namespace opengl3
         {
             path = _path;
         }
+        public float[] parsingTxt_Tab(string path)
+        {
+            
+            var text = File.ReadAllText(path);
+            var lines = text.Split('\n');
+            var mesh = new float[(lines.Length - 2) * 3];
+            var ind = 0;
+            for(int i=1; i<lines.Length-1;i++)
+            {
+                var p = lines[i].Split('\t');
+                mesh[ind] = (float)parseE(p[0]); ind++;
+                mesh[ind] = (float)parseE(p[1])-30; ind++;
+                mesh[ind] = (float)parseE(p[2]); ind++;
+
+            }
+            for(int i=0; i<41-1;i++)
+            {
+                for (int j = 0; j < 91-1; j++)
+                {
+                    //Console.WriteLine(mesh[3 * (i * 91 + j+1) ] - mesh[3 * (i * 91 + j) ]);
+                    //mesh[3*(i * 91 + j) +2] += j;    
+                    
+                }
+            }
+            var text1 = text.Replace('\t', ';');
+           // Console.WriteLine("Len = "+((double)lines.Length-2)/91);
+            return mesh;
+        }
+
         public double parseE(string num)
         {
             if (num.Contains("e"))

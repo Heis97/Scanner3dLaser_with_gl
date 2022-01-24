@@ -90,7 +90,7 @@ void main()
 		int glID = gl_InvocationID;
 		if(gl_in.length()==1)
 		{
-			glID = 2;
+			//glID = 2;
 		}
 	    gl_ViewportIndex = glID;
 		
