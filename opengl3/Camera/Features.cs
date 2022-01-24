@@ -419,7 +419,7 @@ namespace opengl3
             return new VectorOfDMatch(mDMatchs.ToArray());
         }
         
-        public Mat disparMap(Mat imL, Mat imR, int maxDisp, int blockSize)
+        public Mat[] disparMap(Mat imL, Mat imR, int maxDisp, int blockSize)
         {
             var grayL = imL.ToImage<Gray, byte>();
             var grayR = imR.ToImage<Gray, byte>();
@@ -429,43 +429,43 @@ namespace opengl3
             var line1 = new int [dimL.GetLength(1)];
             var line2 = new int[dimL.GetLength(1)];
             var dispMap = new byte[dimL.GetLength(0), dimL.GetLength(1)];
+            var diff2Map = new byte[dimL.GetLength(0), dimL.GetLength(1)];
             for (int i=0; i < dimL.GetLength(0); i++)
             {
                 for (int j = 0; j < line1.Length; j++)
                 {
-                    /*prin.t("i:");
-                    prin.t(i);
-                    prin.t("j:");
-                    prin.t(j);*/
                     line1[j] = dimL[i, j];
                     line2[j] = dimR[i, j];
                 }
                 var dispLine = bmatcherLine(line1, line2,maxDisp,blockSize);
                 for (int j = 0; j < line1.Length; j++)
                 {
-                    var disp = dispLine[j];
-                    if(disp>255)
+                    if(dispLine[j]!=null)
                     {
-                        dispMap[i, j] = 255;
+                        var disp = dispLine[j][0];
+                        diff2Map[i, j] = (byte)dispLine[j][1];
+                        if (disp > 255)
+                        {
+                            dispMap[i, j] = 255;
+                        }
+                        else if (disp < 0)
+                        {
+                            dispMap[i, j] = 0;
+                        }
+                        else
+                        {
+                            dispMap[i, j] = (byte)disp;
+                        }
                     }
-                    else if(disp<0)
-                    {
-                        dispMap[i, j] = 0;
-                    }
-                    else
-                    {
-                        dispMap[i, j] = (byte)dispLine[j];
-                    }
-                    
-                    //dispMap[i, j] = 255;
                 }
             }
             var matrD = new Matrix<byte>(dispMap);
-            return matrD.Mat;
+            var matrD2 = new Matrix<byte>(diff2Map);
+            return new Mat[] { matrD.Mat , matrD2.Mat };
         }
-        int[] bmatcherLine(int[] line1, int[] line2, int maxDisp, int blockSize)
+        int[][] bmatcherLine(int[] line1, int[] line2, int maxDisp, int blockSize)
         {
-            var disp_line = new int[line1.Length];
+            var disp_line = new int[line1.Length][];
             var wind = maxDisp;
             if(blockSize>maxDisp)
             {
@@ -491,6 +491,7 @@ namespace opengl3
             }
             return bl;
         }
+
         int compDiff(int[] block1, int[] block2)
         {
             
@@ -511,7 +512,7 @@ namespace opengl3
             }
             return diff - min * block1.Length;
         }
-        int disp(int[] block, int[] batch)
+        int[] disp(int[] block, int[] batch)
         {
             var min = int.MaxValue;
             var disp = 0;
@@ -526,7 +527,35 @@ namespace opengl3
                     disp = i;
                 }
             }
-            return disp;
+
+            return new int[] { disp, diff2(takeBlok(batch, disp, wind)) };
+        }
+        int diff2(int[] block)
+        {
+            
+            var diff = new int[block.Length-1];
+            for(int i=0; i<diff.Length;i++)
+            {
+                diff[i] = block[i] - block[i+1];
+            }
+
+            int min = int.MaxValue;
+            int diff_sum = 0;
+            var d = 0;
+            for (int i = 0; i < diff.Length - 1; i++)
+            {
+                d = diff[i] - diff[i + 1];
+                diff_sum += d;
+                if (d < min)
+                {
+                    min = d;
+                }
+            }
+            if (diff_sum < 0)
+            {
+                return -diff_sum + min * (diff.Length - 1);
+            }
+            return diff_sum - min * (diff.Length - 1);
         }
 
     }

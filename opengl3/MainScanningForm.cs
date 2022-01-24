@@ -462,11 +462,49 @@ namespace opengl3
         #region buttons
         private void but_SubpixPrec_Click(object sender, EventArgs e)
         {
-            var disp = features.disparMap((Mat)imBox_mark1.Image, (Mat)imBox_mark2.Image, 20, 2);
-            imBox_3dDebug.Image = disp;
-            var mesh = meshFromImage(disp.ToImage<Gray, byte>());
-            mesh =  GL1.scaleMesh(mesh, 1f, 0.1f, 0.1f, 2f);
-            GL1.addMesh(mesh, PrimitiveType.Triangles, 0.9f);
+            var mat1 = (Mat)imBox_mark1.Image;
+            var mat2 = (Mat)imBox_mark2.Image;
+            imBox_3dDebug.Image = PaintLines(mat1.ToImage<Gray, byte>(), mat2.ToImage<Gray, byte>(), mat1.Height / 2);
+            /*var disp = features.disparMap((Mat)imBox_mark1.Image, (Mat)imBox_mark2.Image, 30, 3);
+            imBox_3dDebug.Image = disp[0];
+            var mesh = meshFromImage(disp[0].ToImage<Gray, byte>());
+            mesh =  GL1.scaleMesh(mesh, 1f, 0.5f, 0.5f, 2f);
+            mesh = GL1.translateMesh(mesh, 200f);
+            GL1.addMesh(mesh, PrimitiveType.Triangles, 0.9f);*/
+        }
+        int[] takeLineFromMat(Image<Gray,byte> im,int y)
+        {
+            var line = new int[im.Width];
+            for(int i=0; i<line.Length;i++)
+            {
+                line[i] = im.Data[y, i, 0];
+            }
+            return line;
+        }
+
+        Image<Bgr, byte> PaintLines(Image<Gray, byte> im1, Image<Gray, byte> im2,int y)
+        {            
+            var disp = features.disparMap(im1.Mat, im2.Mat, 30, 3);
+            var line1 = takeLineFromMat(im1, y);
+            var line2 = takeLineFromMat(im2, y);
+            var dispLine = takeLineFromMat(disp[0].ToImage<Gray,byte>(), y);
+            var diffLine = takeLineFromMat(disp[1].ToImage<Gray, byte>(), y);
+
+            var data = new byte[im1.Width, im1.Height, 3];
+            for(int i=0; i<line1.Length;i++)
+            {
+                data[line1[i], i, 0] = 255;
+
+                data[line2[i], i, 1] = 255;
+
+                data[dispLine[i], i, 0] = 255;
+                data[dispLine[i], i, 2] = 255;
+
+                data[diffLine[i], i, 0] = 255;
+                data[diffLine[i], i, 1] = 255;
+            }
+
+            return new Image<Bgr, byte>(data);
         }
 
         private void trB_SGBM_Scroll(object sender, EventArgs e)

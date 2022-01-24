@@ -957,7 +957,7 @@ namespace opengl3
             }
 
         }
-        public float[] translateMesh(float[] _mesh, float x, float y, float z)
+        public float[] translateMesh(float[] _mesh, float x=0, float y=0, float z=0)
         {
             var mesh = new float[_mesh.Length];
             for (int i = 0; i < mesh.Length; i += 3)
