@@ -432,7 +432,7 @@ namespace opengl3
 
             //reconst_lines1 = features.pointsForLines(features.mps1, stereocam.cameraCVs[0]);
             //reconst_lines2 = features.pointsForLines(features.mps2, stereocam.cameraCVs[1]);
-            GL1.buffersGl.removeObj(10);
+            //GL1.buffersGl.removeObj(10);
             GL1.buffersGl.add_obj_id(reconst, 10, true, PrimitiveType.Points);
         }
         Matrix<double> matrixFromCam(CameraCV cam)
@@ -589,17 +589,17 @@ namespace opengl3
         }
         private void but_SubpixPrec_Click(object sender, EventArgs e)
         {
-            var mat1 = (Mat)imBox_mark1.Image;
-            var mat2 = (Mat)imBox_mark2.Image;
-            var im_name = "venus";//"tsukuba";//"venus"
-            //var mat1 = new Mat(@"datasets\" + im_name + @"\im2.png");
-           // var mat2 = new Mat(@"datasets\" + im_name + @"\im6.png");
+           // var mat1 = (Mat)imBox_mark1.Image;
+           // var mat2 = (Mat)imBox_mark2.Image;
+            var im_name = "tsukuba";//"tsukuba";//"venus"
+            var mat1 = new Mat(@"datasets\" + im_name + @"\im2.png");
+            var mat2 = new Mat(@"datasets\" + im_name + @"\im6.png");
             var disp = PaintLines(mat1.ToImage<Gray, byte>(), mat2.ToImage<Gray, byte>(), mat1.Height / 2);
             var depth = new Mat();
             //prin.t(mat1);
             var hist = histogram(disp[1].Mat);
             depth = normalize(disp[1].Mat);
-            imBox_3dDebug.Image = normalize(disp[1].Mat); ;
+            imBox_3dDebug.Image = normalize(disp[1].Mat); 
             imBox_disparity.Image = normalize(disp[2].Mat);
 
             /*var disp = features.disparMap((Mat)imBox_mark1.Image, (Mat)imBox_mark2.Image, 30, 3);
@@ -621,7 +621,7 @@ namespace opengl3
 
         Image<Bgr, byte>[] PaintLines(Image<Gray, byte> im1, Image<Gray, byte> im2,int y)
         {            
-            var disp = features.disparMap(im1.Mat, im2.Mat, 50, 3);
+            var disp = features.disparMap_3d(im1.Mat, im2.Mat, 40, 3);
             var line1 = takeLineFromMat(im1, y);
             var line2 = takeLineFromMat(im2, y);
             var dispLine = takeLineFromMat(disp[0].ToImage<Gray,byte>(), y);
@@ -629,7 +629,7 @@ namespace opengl3
 
             var data = new byte[im1.Height, im1.Width, 3];
             
-            for(int i=0; i<line1.Length;i++)
+           /* for(int i=0; i<line1.Length;i++)
             {
                 //Console.WriteLine("im1.Width: " + im1.Width + " im1.Height: " + im1.Height);
                 //Console.WriteLine("line2[i]: " + line2[i] + "; line1[i]: " + line1[i] + "; i: " + i);
@@ -642,7 +642,7 @@ namespace opengl3
 
                 data[diffLine[i], i, 0] = 255;
                 data[diffLine[i], i, 1] = 255;
-            }
+            }*/
 
             return new Image<Bgr, byte>[] { new Image<Bgr, byte>(data), disp[0].ToImage<Bgr, byte>(), disp[1].ToImage<Bgr, byte>() };
         }

@@ -423,6 +423,8 @@ namespace opengl3
         {
             var grayL = imL.ToImage<Gray, byte>();
             var grayR = imR.ToImage<Gray, byte>();
+            //CvInvoke.Rotate(grayL, grayL, RotateFlags.Rotate90Clockwise);
+            //CvInvoke.Rotate(grayR, grayR, RotateFlags.Rotate90Clockwise);
             //prin.t(grayL.Mat);
             var dimL = (byte[,])grayL.Mat.GetData();
             var dimR = (byte[,])grayR.Mat.GetData();
@@ -463,6 +465,48 @@ namespace opengl3
             var matrD2 = new Matrix<byte>(diff2Map);
             return new Mat[] { matrD.Mat , matrD2.Mat };
         }
+        public Mat[] disparMap_3d(Mat imL, Mat imR, int maxDisp, int blockSize)
+        {
+            var grayL = imL.ToImage<Gray, byte>();
+            var grayR = imR.ToImage<Gray, byte>();
+            CvInvoke.Rotate(grayL, grayL, RotateFlags.Rotate90Clockwise);
+            CvInvoke.Rotate(grayR, grayR, RotateFlags.Rotate90Clockwise);
+            //prin.t(grayL.Mat);
+            var dimL = (byte[,])grayL.Mat.GetData();
+            var dimR = (byte[,])grayR.Mat.GetData();
+            
+            var dispMap = new byte[dimL.GetLength(0), dimL.GetLength(1)];
+            var diff2Map = new byte[dimL.GetLength(0), dimL.GetLength(1)];
+            var mat1 = new int[dimL.GetLength(0), dimL.GetLength(1)];
+            var mat2 = new int[dimL.GetLength(0), dimL.GetLength(1)];
+            for(int i=0; i< mat1.GetLength(0);i++)
+            {
+                for (int j = 0; j < mat1.GetLength(1); j++)
+                {
+                    mat1[i, j] = dimL[i, j];
+                    mat2[i, j] = dimR[i, j];
+                }
+            }
+            var data = bmatcherImage(mat1, mat2, maxDisp, blockSize);
+
+            for (int i = 0; i < mat1.GetLength(0); i++)
+            {
+                for (int j = 0; j < mat1.GetLength(1); j++)
+                {
+                    if(data[i, j] != null)
+                    {
+                        dispMap[i, j] = (byte)data[i, j][0];
+                        diff2Map[i, j] = (byte)data[i, j][1];
+                    }
+                    
+                }
+            }
+ 
+            var matrD = new Matrix<byte>(dispMap);
+            var matrD2 = new Matrix<byte>(diff2Map);
+            return new Mat[] { matrD.Mat, matrD2.Mat };
+        }
+        #region 2d
         int[][] bmatcherLine(int[] line1, int[] line2, int maxDisp, int blockSize)
         {
             var disp_line = new int[line1.Length][];
@@ -557,7 +601,128 @@ namespace opengl3
             }
             return diff_sum - min * (diff.Length - 1);
         }
+        #endregion
 
+        int[,][] bmatcherImage(int[,] im1, int[,] im2, int maxDisp, int blockSize)
+        {
+            var disp_line = new int[im1.GetLength(0), im1.GetLength(1)][];
+            var wind = maxDisp;
+            if (blockSize > maxDisp)
+            {
+                wind = blockSize;
+            }
+            wind++;
+            //wind++;
+            for (int i = wind; i < im1.GetLength(0) - wind; i++)
+            {
+                for (int j = wind; j < im1.GetLength(1) - wind; j++)
+                {
+                    var block = takeBlok3d(im1, i,j, blockSize, blockSize);
+                    var batch = takeBlok3d(im2, i,j, maxDisp, blockSize);
+                    disp_line[i,j] = disp3d(block, batch);
+                }
+            }
+            return disp_line;
+        }
+        int[,] takeBlok3d(int[,] im, int x, int y, int xSize,int ySize)
+        {
+            var dimx = 2 * xSize + 1;
+            var dimy = 2 * ySize + 1;
+            var bl = new int[dimx, dimy];
+           // Console.WriteLine("_________________"+x+" "+y);
+            for (int i = -xSize; i < bl.GetLength(0) - xSize; i++)
+            {
+                for (int j = -ySize; j < bl.GetLength(1) - ySize; j++)
+                {
+                    
+                    //Console.WriteLine("vlock size: " + bl.GetLength(0) + " " + bl.GetLength(1)+ "im size: " + im.GetLength(0) + " " + im.GetLength(1));
+                    //Console.WriteLine("i:  " + (i + xSize) + " j:  " + (j + ySize) + " x : " + (x + i) + " y : " + (y + j));
+                    bl[i + xSize, j + ySize] = im[x + i, y + j];
+                }
+            }
+            return bl;
+        }
+
+        int compDiff3d(int[,] block1, int[,] block2)
+        {
+
+            int diff = 0;
+            int min = int.MaxValue;
+            int w = block1.GetLength(0);
+            int h = block1.GetLength(1);
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    var d = block1[i,j] - block2[i,j];
+                    diff += d;
+                    if (d < min)
+                    {
+                        min = d;
+                    }
+                }
+            }
+            if (diff < 0)
+            {
+                return -diff + min * (w*h);
+            }
+            return diff - min * (w * h);
+        }
+        int[] disp3d(int[,] block, int[,] batch)
+        {
+            var min = int.MaxValue;
+            var disp = 0;
+            var xSize = (block.GetLength(0) - 1) / 2;
+            var ySizeBatch = (batch.GetLength(1) - 1) / 2;
+            var xdimBatch = batch.GetLength(0);
+            for (int i = xSize; i < xdimBatch - xSize; i++)
+            {
+
+                var block2 = takeBlok3d(batch, i, ySizeBatch, xSize, xSize);
+                var en = compDiff3d(block, block2);
+                if (en < min)
+                {
+                    min = en;
+                    disp = i;
+                }
+            }
+
+            return new int[] { disp, diff2_3d(takeBlok3d(batch, disp, ySizeBatch, xSize, xSize)) };
+        }
+        int diff2_3d(int[,] block)
+        {
+            int w = block.GetLength(0);
+            int h = block.GetLength(1);
+            var diff = new int[w - 1,h];
+            for (int i = 0; i < w-1; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    diff[i,j] = block[i,j] - block[i + 1,j];
+                }
+            }
+
+            int min = int.MaxValue;
+            int diff_sum = 0;
+            var d = 0;
+            for (int i = 0; i < w - 2; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    d = diff[i,j] - diff[i + 1,j];
+                    diff_sum += d;
+                    if (d < min)
+                    {
+                        min = d;
+                    }
+                }
+            }
+            if (diff_sum < 0)
+            {
+                return -diff_sum + min * (w-2)*h;
+            }
+            return diff_sum - min * (w - 2) * h;
+        }
     }
 
     
