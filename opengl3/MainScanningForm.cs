@@ -135,8 +135,8 @@ namespace opengl3
             var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
 
 
-            GL1.addGLMesh(mesh, PrimitiveType.Triangles);
-            // GL1.add_buff_gl_lines_id(mesh, 10, true);
+            //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
+            //GL1.add_buff_gl_lines_id(mesh, 10, true);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
             
             var frms1 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_2");
@@ -156,7 +156,7 @@ namespace opengl3
             //calcF();
 
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-            // generateImage3D_BOARD(7, 8, markSize);
+            generateImage3D_BOARD(7, 8, markSize);
             //generateImage3D(7, 0.5f,  markSize);
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
@@ -460,11 +460,148 @@ namespace opengl3
         #endregion
 
         #region buttons
+        Mat normalize(Mat im, int max=255)
+        {
+            var data = new byte[1, 1, 1];
+            if (im.NumberOfChannels == 1)
+            {
+                data = im.ToImage<Gray, byte>().Data;
+            }
+            else if (im.NumberOfChannels == 3)
+            {
+                data = im.ToImage<Bgr, byte>().Data;
+            }
+            int maxH = int.MinValue;
+            var data_n = new byte[data.GetLength(0), data.GetLength(1), data.GetLength(2)];
+            for (int x = 0; x < data.GetLength(0); x++)
+            {
+                for (int y = 0; y < data.GetLength(1); y++)
+                {
+                    for (int c = 0; c < data.GetLength(2); c++)
+                    {
+                        var val = data[x, y, c];
+                        if(val>maxH)
+                        {
+                            maxH = val;
+                        }
+                    }
+                }
+            }
+
+            for (int x = 0; x < data.GetLength(0); x++)
+            {
+                for (int y = 0; y < data.GetLength(1); y++)
+                {
+                    for (int c = 0; c < data.GetLength(2); c++)
+                    {
+                        //Console.WriteLine("h " + h + "maxH " + maxH);
+                        data_n[x, y, c] = (byte)((float)(max - 1) * data[x, y, c] / (float)maxH);
+                    }
+                }
+            }
+
+            var mat_ret = new Mat();
+            if (im.NumberOfChannels == 1)
+            {
+                mat_ret = new Image<Gray, byte>(data_n).Mat;
+            }
+            else if (im.NumberOfChannels == 3)
+            {
+                mat_ret = new Image<Bgr, byte>(data_n).Mat;
+            }
+         
+            return mat_ret;
+        }
+        Mat histogram(Mat im, int max =300, int range = 256)
+        {
+
+            var data = new byte[1,1,1];
+            if(im.NumberOfChannels==1)
+            {
+                data = im.ToImage<Gray, byte>().Data;
+            }
+            else if(im.NumberOfChannels == 3)
+            {
+                data = im.ToImage<Bgr, byte>().Data;
+            }
+            var hist = new int[range,  data.GetLength(2)];
+            int maxH = int.MinValue;
+
+            for (int c=0; c< data.GetLength(2);c++)
+            {
+                for(int x=0; x< data.GetLength(0);x++)
+                {
+                    for (int y= 0; y < data.GetLength(1); y++)
+                    {
+                        var val = data[x, y, c];
+                        hist[val,c]++;
+                    }
+                }
+
+                
+                for (int i = 0; i < hist.GetLength(0); i++)
+                {
+                    var val = hist[i, c];
+                    if (val>maxH)
+                    {
+                        maxH = val;
+                    }
+                }
+
+            }
+
+            var hist_im = new byte[max, range,  hist.GetLength(1)];
+            for (int c = 0; c < hist_im.GetLength(2); c++)
+            {
+                for (int x = 0; x < hist_im.GetLength(0); x++)
+                {
+                    for (int y = 0; y < hist_im.GetLength(1); y++)
+                    {
+                        hist_im[x, y, c] = 0;
+                        
+                    }
+                }
+            }
+            for (int c=0; c < hist.GetLength(1); c++)
+            {
+                for (int i = 0; i < range; i++)
+                {
+                    var h = (int)((float)(max-1) * hist[i, c] / (float)maxH);
+                    //Console.WriteLine("h " + h + "maxH " + maxH);
+                    //hist_im[h, i, c] = 255;
+                    for (int j=0; j<h;j++)
+                    {
+                        hist_im[j, i, c] = 255;
+                    }
+                }
+            }
+            var mat_ret = new Mat();
+            if (im.NumberOfChannels == 1)
+            {
+                mat_ret = new Image<Gray, byte>(hist_im).Mat;
+            }
+            else if (im.NumberOfChannels == 3)
+            {
+                mat_ret = new Image<Bgr, byte>(hist_im).Mat;
+            }
+            CvInvoke.Flip(mat_ret, mat_ret, FlipType.Vertical);
+            return mat_ret;
+        }
         private void but_SubpixPrec_Click(object sender, EventArgs e)
         {
             var mat1 = (Mat)imBox_mark1.Image;
             var mat2 = (Mat)imBox_mark2.Image;
-            imBox_3dDebug.Image = PaintLines(mat1.ToImage<Gray, byte>(), mat2.ToImage<Gray, byte>(), mat1.Height / 2);
+            var im_name = "venus";//"tsukuba";//"venus"
+            //var mat1 = new Mat(@"datasets\" + im_name + @"\im2.png");
+           // var mat2 = new Mat(@"datasets\" + im_name + @"\im6.png");
+            var disp = PaintLines(mat1.ToImage<Gray, byte>(), mat2.ToImage<Gray, byte>(), mat1.Height / 2);
+            var depth = new Mat();
+            //prin.t(mat1);
+            var hist = histogram(disp[1].Mat);
+            depth = normalize(disp[1].Mat);
+            imBox_3dDebug.Image = normalize(disp[1].Mat); ;
+            imBox_disparity.Image = normalize(disp[2].Mat);
+
             /*var disp = features.disparMap((Mat)imBox_mark1.Image, (Mat)imBox_mark2.Image, 30, 3);
             imBox_3dDebug.Image = disp[0];
             var mesh = meshFromImage(disp[0].ToImage<Gray, byte>());
@@ -482,17 +619,20 @@ namespace opengl3
             return line;
         }
 
-        Image<Bgr, byte> PaintLines(Image<Gray, byte> im1, Image<Gray, byte> im2,int y)
+        Image<Bgr, byte>[] PaintLines(Image<Gray, byte> im1, Image<Gray, byte> im2,int y)
         {            
-            var disp = features.disparMap(im1.Mat, im2.Mat, 30, 3);
+            var disp = features.disparMap(im1.Mat, im2.Mat, 50, 3);
             var line1 = takeLineFromMat(im1, y);
             var line2 = takeLineFromMat(im2, y);
             var dispLine = takeLineFromMat(disp[0].ToImage<Gray,byte>(), y);
             var diffLine = takeLineFromMat(disp[1].ToImage<Gray, byte>(), y);
 
-            var data = new byte[im1.Width, im1.Height, 3];
+            var data = new byte[im1.Height, im1.Width, 3];
+            
             for(int i=0; i<line1.Length;i++)
             {
+                //Console.WriteLine("im1.Width: " + im1.Width + " im1.Height: " + im1.Height);
+                //Console.WriteLine("line2[i]: " + line2[i] + "; line1[i]: " + line1[i] + "; i: " + i);
                 data[line1[i], i, 0] = 255;
 
                 data[line2[i], i, 1] = 255;
@@ -504,7 +644,7 @@ namespace opengl3
                 data[diffLine[i], i, 1] = 255;
             }
 
-            return new Image<Bgr, byte>(data);
+            return new Image<Bgr, byte>[] { new Image<Bgr, byte>(data), disp[0].ToImage<Bgr, byte>(), disp[1].ToImage<Bgr, byte>() };
         }
 
         private void trB_SGBM_Scroll(object sender, EventArgs e)
