@@ -68,15 +68,15 @@ namespace opengl3
         {
             var mat1 = (Mat)box1.Image;
 
-            var im1 = mat1.ToImage<Bgr, byte>();
+            //var im1 = mat1.ToImage<Bgr, byte>();
             Console.WriteLine("cam2\\" + folder + "\\" + name);
             Directory.CreateDirectory("cam1\\" + folder);
-            im1.Save("cam1\\" + folder + "\\" + name);
+            mat1.Save("cam1\\" + folder + "\\" + name);
 
             mat1 = (Mat)box2.Image;
             Directory.CreateDirectory("cam2\\" + folder);
-            im1 = mat1.ToImage<Bgr, byte>();
-            im1.Save("cam2\\" + folder + "\\" + name);
+            //im1 = mat1.ToImage<Bgr, byte>();
+            mat1.Save("cam2\\" + folder + "\\" + name);
 
         }
         static public Mat calcSubpixelPrec(Size size, GraphicGL graphicGL, float markSize,int id_monit)
@@ -599,10 +599,10 @@ namespace opengl3
         {
             var corn = new VectorOfPointF();
             var gray = im.ToImage<Gray, byte>();
-            var ret = CvInvoke.FindChessboardCorners(gray, size, corn);
+            var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.FastCheck);
             Console.WriteLine("chess: " + ret + " " + size.Width + " " + size.Height);
-            CvInvoke.DrawChessboardCorners(im, size, corn, ret);
-            return im;
+            CvInvoke.DrawChessboardCorners(gray, size, corn, ret);
+            return gray.Mat;
         }
 
 

@@ -114,9 +114,34 @@ namespace opengl3
             this.nameA2 = new System.Windows.Forms.TextBox();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.imBox_base_2 = new Emgu.CV.UI.ImageBox();
+            this.imBox_base_1 = new Emgu.CV.UI.ImageBox();
+            this.imBox_base = new Emgu.CV.UI.ImageBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label45 = new System.Windows.Forms.Label();
+            this.trackBar11 = new System.Windows.Forms.TrackBar();
+            this.label46 = new System.Windows.Forms.Label();
+            this.trackBar12 = new System.Windows.Forms.TrackBar();
+            this.label47 = new System.Windows.Forms.Label();
+            this.trackBar13 = new System.Windows.Forms.TrackBar();
+            this.label48 = new System.Windows.Forms.Label();
+            this.trackBar14 = new System.Windows.Forms.TrackBar();
+            this.label49 = new System.Windows.Forms.Label();
+            this.trackBar15 = new System.Windows.Forms.TrackBar();
+            this.label50 = new System.Windows.Forms.Label();
+            this.trackBar16 = new System.Windows.Forms.TrackBar();
+            this.label51 = new System.Windows.Forms.Label();
+            this.trackBar17 = new System.Windows.Forms.TrackBar();
+            this.label52 = new System.Windows.Forms.Label();
+            this.trackBar18 = new System.Windows.Forms.TrackBar();
+            this.label53 = new System.Windows.Forms.Label();
+            this.trackBar19 = new System.Windows.Forms.TrackBar();
+            this.label54 = new System.Windows.Forms.Label();
+            this.trackBar20 = new System.Windows.Forms.TrackBar();
             this.but_addBufRob = new System.Windows.Forms.Button();
             this.but_robMod = new System.Windows.Forms.Button();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
             this.but_SubpixPrec = new System.Windows.Forms.Button();
             this.label44 = new System.Windows.Forms.Label();
             this.trackBar10 = new System.Windows.Forms.TrackBar();
@@ -181,7 +206,8 @@ namespace opengl3
             this.textBox_K1 = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
             this.imageBox_cameraDist = new Emgu.CV.UI.ImageBox();
-            this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
+            this.label55 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -200,7 +226,21 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.trackOz)).BeginInit();
             this.windowsTabs.SuspendLayout();
             this.tabMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar11)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar12)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar13)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar14)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar15)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar16)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar17)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar18)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar19)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar20)).BeginInit();
             this.tabOpenGl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar10)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar9)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar8)).BeginInit();
@@ -219,7 +259,6 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).BeginInit();
             this.SuspendLayout();
             // 
             // videoCapt
@@ -450,7 +489,7 @@ namespace opengl3
             // 
             // boxN
             // 
-            this.boxN.Location = new System.Drawing.Point(630, 768);
+            this.boxN.Location = new System.Drawing.Point(1356, 567);
             this.boxN.Name = "boxN";
             this.boxN.Size = new System.Drawing.Size(69, 26);
             this.boxN.TabIndex = 31;
@@ -459,7 +498,7 @@ namespace opengl3
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(655, 794);
+            this.label8.Location = new System.Drawing.Point(1381, 593);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(20, 20);
             this.label8.TabIndex = 32;
@@ -655,13 +694,13 @@ namespace opengl3
             this.but_photo.Name = "but_photo";
             this.but_photo.Size = new System.Drawing.Size(106, 33);
             this.but_photo.TabIndex = 56;
-            this.but_photo.Text = "One photo";
+            this.but_photo.Text = "Robot photo";
             this.but_photo.UseVisualStyleBackColor = true;
             this.but_photo.Click += new System.EventHandler(this.but_photo_Click);
             // 
             // box_scanFolder
             // 
-            this.box_scanFolder.Location = new System.Drawing.Point(630, 692);
+            this.box_scanFolder.Location = new System.Drawing.Point(1356, 491);
             this.box_scanFolder.Name = "box_scanFolder";
             this.box_scanFolder.Size = new System.Drawing.Size(130, 26);
             this.box_scanFolder.TabIndex = 57;
@@ -671,7 +710,7 @@ namespace opengl3
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label9.Location = new System.Drawing.Point(505, 695);
+            this.label9.Location = new System.Drawing.Point(1231, 494);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(113, 20);
             this.label9.TabIndex = 58;
@@ -681,7 +720,7 @@ namespace opengl3
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label10.Location = new System.Drawing.Point(505, 726);
+            this.label10.Location = new System.Drawing.Point(1231, 525);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(118, 20);
             this.label10.TabIndex = 60;
@@ -689,7 +728,7 @@ namespace opengl3
             // 
             // box_photoFolder
             // 
-            this.box_photoFolder.Location = new System.Drawing.Point(630, 723);
+            this.box_photoFolder.Location = new System.Drawing.Point(1356, 522);
             this.box_photoFolder.Name = "box_photoFolder";
             this.box_photoFolder.Size = new System.Drawing.Size(130, 26);
             this.box_photoFolder.TabIndex = 59;
@@ -770,7 +809,7 @@ namespace opengl3
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label16.Location = new System.Drawing.Point(501, 771);
+            this.label16.Location = new System.Drawing.Point(1227, 570);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(123, 20);
             this.label16.TabIndex = 69;
@@ -986,6 +1025,32 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.label55);
+            this.tabMain.Controls.Add(this.textBox1);
+            this.tabMain.Controls.Add(this.imBox_base_2);
+            this.tabMain.Controls.Add(this.imBox_base_1);
+            this.tabMain.Controls.Add(this.imBox_base);
+            this.tabMain.Controls.Add(this.button2);
+            this.tabMain.Controls.Add(this.label45);
+            this.tabMain.Controls.Add(this.trackBar11);
+            this.tabMain.Controls.Add(this.label46);
+            this.tabMain.Controls.Add(this.trackBar12);
+            this.tabMain.Controls.Add(this.label47);
+            this.tabMain.Controls.Add(this.trackBar13);
+            this.tabMain.Controls.Add(this.label48);
+            this.tabMain.Controls.Add(this.trackBar14);
+            this.tabMain.Controls.Add(this.label49);
+            this.tabMain.Controls.Add(this.trackBar15);
+            this.tabMain.Controls.Add(this.label50);
+            this.tabMain.Controls.Add(this.trackBar16);
+            this.tabMain.Controls.Add(this.label51);
+            this.tabMain.Controls.Add(this.trackBar17);
+            this.tabMain.Controls.Add(this.label52);
+            this.tabMain.Controls.Add(this.trackBar18);
+            this.tabMain.Controls.Add(this.label53);
+            this.tabMain.Controls.Add(this.trackBar19);
+            this.tabMain.Controls.Add(this.label54);
+            this.tabMain.Controls.Add(this.trackBar20);
             this.tabMain.Controls.Add(this.but_addBufRob);
             this.tabMain.Controls.Add(this.but_robMod);
             this.tabMain.Controls.Add(this.Save_sing);
@@ -1062,6 +1127,241 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // imBox_base_2
+            // 
+            this.imBox_base_2.Location = new System.Drawing.Point(978, 676);
+            this.imBox_base_2.Name = "imBox_base_2";
+            this.imBox_base_2.Size = new System.Drawing.Size(320, 240);
+            this.imBox_base_2.TabIndex = 118;
+            this.imBox_base_2.TabStop = false;
+            // 
+            // imBox_base_1
+            // 
+            this.imBox_base_1.Location = new System.Drawing.Point(652, 676);
+            this.imBox_base_1.Name = "imBox_base_1";
+            this.imBox_base_1.Size = new System.Drawing.Size(320, 240);
+            this.imBox_base_1.TabIndex = 117;
+            this.imBox_base_1.TabStop = false;
+            // 
+            // imBox_base
+            // 
+            this.imBox_base.Location = new System.Drawing.Point(323, 676);
+            this.imBox_base.Name = "imBox_base";
+            this.imBox_base.Size = new System.Drawing.Size(320, 240);
+            this.imBox_base.TabIndex = 94;
+            this.imBox_base.TabStop = false;
+            // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button2.Location = new System.Drawing.Point(1295, 295);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(106, 33);
+            this.button2.TabIndex = 116;
+            this.button2.Text = "photo";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.butSaveIm_Click);
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(1619, 21);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(66, 20);
+            this.label45.TabIndex = 115;
+            this.label45.Text = "minDisp";
+            // 
+            // trackBar11
+            // 
+            this.trackBar11.AccessibleName = "10";
+            this.trackBar11.Location = new System.Drawing.Point(1688, 475);
+            this.trackBar11.Maximum = 20;
+            this.trackBar11.Name = "trackBar11";
+            this.trackBar11.Size = new System.Drawing.Size(188, 45);
+            this.trackBar11.TabIndex = 114;
+            this.trackBar11.Value = 10;
+            this.trackBar11.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(1587, 489);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(103, 20);
+            this.label46.TabIndex = 113;
+            this.label46.Text = "specleRange";
+            // 
+            // trackBar12
+            // 
+            this.trackBar12.AccessibleName = "9";
+            this.trackBar12.Location = new System.Drawing.Point(1688, 424);
+            this.trackBar12.Maximum = 20;
+            this.trackBar12.Name = "trackBar12";
+            this.trackBar12.Size = new System.Drawing.Size(188, 45);
+            this.trackBar12.TabIndex = 112;
+            this.trackBar12.Value = 10;
+            this.trackBar12.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(1601, 437);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(81, 20);
+            this.label47.TabIndex = 111;
+            this.label47.Text = "specleWS";
+            // 
+            // trackBar13
+            // 
+            this.trackBar13.AccessibleName = "8";
+            this.trackBar13.Location = new System.Drawing.Point(1688, 372);
+            this.trackBar13.Maximum = 20;
+            this.trackBar13.Name = "trackBar13";
+            this.trackBar13.Size = new System.Drawing.Size(188, 45);
+            this.trackBar13.TabIndex = 110;
+            this.trackBar13.Value = 10;
+            this.trackBar13.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(1631, 385);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(54, 20);
+            this.label48.TabIndex = 109;
+            this.label48.Text = "unuqe";
+            // 
+            // trackBar14
+            // 
+            this.trackBar14.AccessibleName = "7";
+            this.trackBar14.Location = new System.Drawing.Point(1688, 321);
+            this.trackBar14.Maximum = 20;
+            this.trackBar14.Name = "trackBar14";
+            this.trackBar14.Size = new System.Drawing.Size(188, 45);
+            this.trackBar14.TabIndex = 108;
+            this.trackBar14.Value = 10;
+            this.trackBar14.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Location = new System.Drawing.Point(1621, 332);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(62, 20);
+            this.label49.TabIndex = 107;
+            this.label49.Text = "prefilter";
+            // 
+            // trackBar15
+            // 
+            this.trackBar15.AccessibleName = "6";
+            this.trackBar15.Location = new System.Drawing.Point(1688, 270);
+            this.trackBar15.Maximum = 20;
+            this.trackBar15.Name = "trackBar15";
+            this.trackBar15.Size = new System.Drawing.Size(188, 45);
+            this.trackBar15.TabIndex = 106;
+            this.trackBar15.Value = 10;
+            this.trackBar15.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label50
+            // 
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(1575, 282);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(110, 20);
+            this.label50.TabIndex = 105;
+            this.label50.Text = "Disp12maxdiff";
+            // 
+            // trackBar16
+            // 
+            this.trackBar16.AccessibleName = "5";
+            this.trackBar16.Location = new System.Drawing.Point(1688, 219);
+            this.trackBar16.Maximum = 60;
+            this.trackBar16.Name = "trackBar16";
+            this.trackBar16.Size = new System.Drawing.Size(188, 45);
+            this.trackBar16.TabIndex = 104;
+            this.trackBar16.Value = 10;
+            this.trackBar16.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label51
+            // 
+            this.label51.AutoSize = true;
+            this.label51.Location = new System.Drawing.Point(1656, 235);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(27, 20);
+            this.label51.TabIndex = 103;
+            this.label51.Text = "p2";
+            // 
+            // trackBar17
+            // 
+            this.trackBar17.AccessibleName = "4";
+            this.trackBar17.Location = new System.Drawing.Point(1688, 168);
+            this.trackBar17.Maximum = 60;
+            this.trackBar17.Name = "trackBar17";
+            this.trackBar17.Size = new System.Drawing.Size(188, 45);
+            this.trackBar17.TabIndex = 102;
+            this.trackBar17.Value = 10;
+            this.trackBar17.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.Location = new System.Drawing.Point(1656, 181);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(27, 20);
+            this.label52.TabIndex = 101;
+            this.label52.Text = "p1";
+            // 
+            // trackBar18
+            // 
+            this.trackBar18.AccessibleName = "3";
+            this.trackBar18.Location = new System.Drawing.Point(1688, 117);
+            this.trackBar18.Maximum = 20;
+            this.trackBar18.Name = "trackBar18";
+            this.trackBar18.Size = new System.Drawing.Size(188, 45);
+            this.trackBar18.TabIndex = 100;
+            this.trackBar18.Value = 10;
+            this.trackBar18.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(1613, 135);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(77, 20);
+            this.label53.TabIndex = 99;
+            this.label53.Text = "blockSize";
+            // 
+            // trackBar19
+            // 
+            this.trackBar19.AccessibleName = "2";
+            this.trackBar19.Location = new System.Drawing.Point(1688, 66);
+            this.trackBar19.Maximum = 20;
+            this.trackBar19.Name = "trackBar19";
+            this.trackBar19.Size = new System.Drawing.Size(188, 45);
+            this.trackBar19.TabIndex = 98;
+            this.trackBar19.Value = 2;
+            this.trackBar19.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Location = new System.Drawing.Point(1613, 80);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(72, 20);
+            this.label54.TabIndex = 97;
+            this.label54.Text = "manDisp";
+            // 
+            // trackBar20
+            // 
+            this.trackBar20.AccessibleName = "1";
+            this.trackBar20.Location = new System.Drawing.Point(1688, 15);
+            this.trackBar20.Maximum = 20;
+            this.trackBar20.Name = "trackBar20";
+            this.trackBar20.Size = new System.Drawing.Size(188, 45);
+            this.trackBar20.TabIndex = 96;
+            this.trackBar20.Value = 1;
+            this.trackBar20.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
             // 
             // but_addBufRob
             // 
@@ -1143,6 +1443,14 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // imBox_3dDebug
+            // 
+            this.imBox_3dDebug.Location = new System.Drawing.Point(1218, 411);
+            this.imBox_3dDebug.Name = "imBox_3dDebug";
+            this.imBox_3dDebug.Size = new System.Drawing.Size(400, 400);
+            this.imBox_3dDebug.TabIndex = 97;
+            this.imBox_3dDebug.TabStop = false;
             // 
             // but_SubpixPrec
             // 
@@ -1776,13 +2084,23 @@ namespace opengl3
             this.imageBox_cameraDist.TabStop = false;
             this.imageBox_cameraDist.MouseMove += new System.Windows.Forms.MouseEventHandler(this.imageBox_cameraDist_MouseMove);
             // 
-            // imBox_3dDebug
+            // label55
             // 
-            this.imBox_3dDebug.Location = new System.Drawing.Point(1218, 411);
-            this.imBox_3dDebug.Name = "imBox_3dDebug";
-            this.imBox_3dDebug.Size = new System.Drawing.Size(400, 400);
-            this.imBox_3dDebug.TabIndex = 97;
-            this.imBox_3dDebug.TabStop = false;
+            this.label55.AutoSize = true;
+            this.label55.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label55.Location = new System.Drawing.Point(1227, 619);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(129, 20);
+            this.label55.TabIndex = 120;
+            this.label55.Text = "Number Photo ->";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(1356, 616);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(69, 26);
+            this.textBox1.TabIndex = 119;
+            this.textBox1.Text = "0";
             // 
             // MainScanningForm
             // 
@@ -1813,8 +2131,22 @@ namespace opengl3
             this.windowsTabs.ResumeLayout(false);
             this.tabMain.ResumeLayout(false);
             this.tabMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar11)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar12)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar13)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar14)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar15)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar16)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar17)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar18)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar19)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar20)).EndInit();
             this.tabOpenGl.ResumeLayout(false);
             this.tabOpenGl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar10)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar9)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar8)).EndInit();
@@ -1834,7 +2166,6 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1993,6 +2324,32 @@ namespace opengl3
         private System.Windows.Forms.TrackBar trackBar4;
         private System.Windows.Forms.Button but_SubpixPrec;
         private Emgu.CV.UI.ImageBox imBox_3dDebug;
+        private Emgu.CV.UI.ImageBox imBox_base;
+        private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.TrackBar trackBar11;
+        private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.TrackBar trackBar12;
+        private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.TrackBar trackBar13;
+        private System.Windows.Forms.Label label48;
+        private System.Windows.Forms.TrackBar trackBar14;
+        private System.Windows.Forms.Label label49;
+        private System.Windows.Forms.TrackBar trackBar15;
+        private System.Windows.Forms.Label label50;
+        private System.Windows.Forms.TrackBar trackBar16;
+        private System.Windows.Forms.Label label51;
+        private System.Windows.Forms.TrackBar trackBar17;
+        private System.Windows.Forms.Label label52;
+        private System.Windows.Forms.TrackBar trackBar18;
+        private System.Windows.Forms.Label label53;
+        private System.Windows.Forms.TrackBar trackBar19;
+        private System.Windows.Forms.Label label54;
+        private System.Windows.Forms.TrackBar trackBar20;
+        private System.Windows.Forms.Button button2;
+        private Emgu.CV.UI.ImageBox imBox_base_2;
+        private Emgu.CV.UI.ImageBox imBox_base_1;
+        private System.Windows.Forms.Label label55;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

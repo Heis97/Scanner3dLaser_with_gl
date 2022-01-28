@@ -1032,7 +1032,12 @@ namespace opengl3
             Console.WriteLine(name);
 
         }
+        private void butSaveIm_Click(object sender, EventArgs e)
+        {
+            //string name = " " + nameX.Text + " " + nameY.Text + " " + nameZ.Text + " " + boxN.Text + " .png";
+            UtilOpenCV.saveImage(imageBox1, imageBox2, nameX.Text + " .png", box_photoFolder.Text);
 
+        }
         private void butSaveSing_Click(object sender, EventArgs e)
         {
             string name = " " + nameX.Text + " " + nameY.Text + " " + nameZ.Text + " " + boxN.Text + " .png";
@@ -1243,11 +1248,10 @@ namespace opengl3
         void capturingVideo(object sender, EventArgs e)
         {
             drawCameras((VideoCapture)sender);
+
         }
         void drawCameras(VideoCapture cap)
         {
-
-
             if (camera_ind != null)
             {
 
@@ -1261,11 +1265,20 @@ namespace opengl3
                 else if ((camera_ind.Count > 1) && ((int)cap.Ptr == camera_ind[1]))
                 {
                     cap.Retrieve(mat_global[1]);
+                    var mat = stereoProc(mat_global[0], mat_global[1]);
                     //finPointFsFromIm(mat_global[1], 40, imageBox2);
+                    imBox_base.Image = mat;
                     imageBox2.Image = mat_global[1];
 
                 }
             }
+        }
+        Mat stereoProc(Mat mat1, Mat mat2)
+        {
+            //return features.drawDescriptorsMatch(ref mat1, ref mat2);
+            imBox_base_1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
+            imBox_base_2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
+            return null;
         }
         private void videoStart_Click(object sender, EventArgs e)
         {
@@ -1686,7 +1699,7 @@ namespace opengl3
         }
         #endregion
 
-        #region video
+        #region video_leg
         public void binImage(ImageBox box, double bin, double points)
         {
             Mat im = new Mat();
