@@ -31,6 +31,222 @@ namespace opengl3
     }
     static public class UtilOpenCV
     {
+        public static Mat warpPerspNorm(Mat mat, Matrix<double> matrixPers,Size size)
+        {
+            var bord = new System.Drawing.PointF[4]
+                {
+                    new System.Drawing.PointF(0,0),
+                    new System.Drawing.PointF(mat.Width,0),
+                    new System.Drawing.PointF(0,mat.Height),
+                    new System.Drawing.PointF(mat.Width,mat.Height),
+                };
+
+
+            
+            var bord_warp = CvInvoke.PerspectiveTransform(bord, matrixPers);
+            var rect = CvInvoke.BoundingRectangle(new VectorOfPointF( bord_warp));
+            for (int i=0; i<4;i++)
+            {
+                bord_warp[i].X -= rect.X;
+                bord_warp[i].Y -= rect.Y;
+            }
+            var persp_Norm = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(bord), new VectorOfPointF(bord_warp));
+            var mat_warp = new Mat();
+            CvInvoke.WarpPerspective(mat, mat_warp, persp_Norm, rect.Size, Inter.Linear, Warp.Default);
+            double kx = (double)size.Width / (double)mat_warp.Width;
+            double ky = (double)size.Height / (double)mat_warp.Height;
+            double k = 1;
+            double offx = 0;
+            double offy = 0;
+            if (kx>ky)
+            {
+                k = ky;
+                offx = (size.Width - mat_warp.Width * ky) / 2;
+            }
+            else
+            {
+                k = kx;
+                offy = (size.Height - mat_warp.Height * kx) / 2;
+            }
+            
+            
+            var affineMatr = new Matrix<double>(new double[2, 3]
+            {
+                {k,0,offx },
+                {0,k,offy },
+            });
+            CvInvoke.WarpAffine(mat_warp, mat_warp, affineMatr, 
+                new Size(
+                    (int)(k * mat_warp.Width+offx), 
+                    (int)(k * mat_warp.Height+offy)
+                    ));
+            return mat_warp;
+        }
+        public static Mat normalize(Mat im, int max = 255)
+        {
+            var data = new byte[1, 1, 1];
+            if (im.NumberOfChannels == 1)
+            {
+                data = im.ToImage<Gray, byte>().Data;
+            }
+            else if (im.NumberOfChannels == 3)
+            {
+                data = im.ToImage<Bgr, byte>().Data;
+            }
+            int maxH = int.MinValue;
+            var data_n = new byte[data.GetLength(0), data.GetLength(1), data.GetLength(2)];
+            for (int x = 0; x < data.GetLength(0); x++)
+            {
+                for (int y = 0; y < data.GetLength(1); y++)
+                {
+                    for (int c = 0; c < data.GetLength(2); c++)
+                    {
+                        var val = data[x, y, c];
+                        if (val > maxH)
+                        {
+                            maxH = val;
+                        }
+                    }
+                }
+            }
+
+            for (int x = 0; x < data.GetLength(0); x++)
+            {
+                for (int y = 0; y < data.GetLength(1); y++)
+                {
+                    for (int c = 0; c < data.GetLength(2); c++)
+                    {
+                        //Console.WriteLine("h " + h + "maxH " + maxH);
+                        data_n[x, y, c] = (byte)((float)(max - 1) * data[x, y, c] / (float)maxH);
+                    }
+                }
+            }
+
+            var mat_ret = new Mat();
+            if (im.NumberOfChannels == 1)
+            {
+                mat_ret = new Image<Gray, byte>(data_n).Mat;
+            }
+            else if (im.NumberOfChannels == 3)
+            {
+                mat_ret = new Image<Bgr, byte>(data_n).Mat;
+            }
+
+            return mat_ret;
+        }
+        public static Mat histogram(Mat im, int max = 300, int range = 256)
+        {
+
+            var data = new byte[1, 1, 1];
+            if (im.NumberOfChannels == 1)
+            {
+                data = im.ToImage<Gray, byte>().Data;
+            }
+            else if (im.NumberOfChannels == 3)
+            {
+                data = im.ToImage<Bgr, byte>().Data;
+            }
+            var hist = new int[range, data.GetLength(2)];
+            int maxH = int.MinValue;
+
+            for (int c = 0; c < data.GetLength(2); c++)
+            {
+                for (int x = 0; x < data.GetLength(0); x++)
+                {
+                    for (int y = 0; y < data.GetLength(1); y++)
+                    {
+                        var val = data[x, y, c];
+                        hist[val, c]++;
+                    }
+                }
+
+
+                for (int i = 0; i < hist.GetLength(0); i++)
+                {
+                    var val = hist[i, c];
+                    if (val > maxH)
+                    {
+                        maxH = val;
+                    }
+                }
+
+            }
+
+            var hist_im = new byte[max, range, hist.GetLength(1)];
+            for (int c = 0; c < hist_im.GetLength(2); c++)
+            {
+                for (int x = 0; x < hist_im.GetLength(0); x++)
+                {
+                    for (int y = 0; y < hist_im.GetLength(1); y++)
+                    {
+                        hist_im[x, y, c] = 0;
+
+                    }
+                }
+            }
+            for (int c = 0; c < hist.GetLength(1); c++)
+            {
+                for (int i = 0; i < range; i++)
+                {
+                    var h = (int)((float)(max - 1) * hist[i, c] / (float)maxH);
+                    //Console.WriteLine("h " + h + "maxH " + maxH);
+                    //hist_im[h, i, c] = 255;
+                    for (int j = 0; j < h; j++)
+                    {
+                        hist_im[j, i, c] = 255;
+                    }
+                }
+            }
+            var mat_ret = new Mat();
+            if (im.NumberOfChannels == 1)
+            {
+                mat_ret = new Image<Gray, byte>(hist_im).Mat;
+            }
+            else if (im.NumberOfChannels == 3)
+            {
+                mat_ret = new Image<Bgr, byte>(hist_im).Mat;
+            }
+            CvInvoke.Flip(mat_ret, mat_ret, FlipType.Vertical);
+            return mat_ret;
+        }
+
+        public static int[] takeLineFromMat(Image<Gray, byte> im, int y)
+        {
+            var line = new int[im.Width];
+            for (int i = 0; i < line.Length; i++)
+            {
+                line[i] = im.Data[y, i, 0];
+            }
+            return line;
+        }
+
+        public static Image<Bgr, byte>[] PaintLines(Image<Gray, byte> im1, Image<Gray, byte> im2, int y, Features features)
+        {
+            var disp = features.disparMap_3d(im1.Mat, im2.Mat, 40, 3);
+            var line1 = takeLineFromMat(im1, y);
+            var line2 = takeLineFromMat(im2, y);
+            var dispLine = takeLineFromMat(disp[0].ToImage<Gray, byte>(), y);
+            var diffLine = takeLineFromMat(disp[1].ToImage<Gray, byte>(), y);
+
+            var data = new byte[im1.Height, im1.Width, 3];
+
+            /* for(int i=0; i<line1.Length;i++)
+             {
+                 //Console.WriteLine("im1.Width: " + im1.Width + " im1.Height: " + im1.Height);
+                 //Console.WriteLine("line2[i]: " + line2[i] + "; line1[i]: " + line1[i] + "; i: " + i);
+                 data[line1[i], i, 0] = 255;
+
+                 data[line2[i], i, 1] = 255;
+
+                 data[dispLine[i], i, 0] = 255;
+                 data[dispLine[i], i, 2] = 255;
+
+                 data[diffLine[i], i, 0] = 255;
+                 data[diffLine[i], i, 1] = 255;
+             }*/
+
+            return new Image<Bgr, byte>[] { new Image<Bgr, byte>(data), disp[0].ToImage<Bgr, byte>(), disp[1].ToImage<Bgr, byte>() };
+        }
         static double toRad(double degree)
         {
             return (Math.PI * 2 * degree) / 360;
@@ -61,7 +277,7 @@ namespace opengl3
                 Directory.CreateDirectory(folder);
                 var im1 = mat1.ToImage<Bgr, byte>();
                 Console.WriteLine(folder + "\\" + name);
-                im1.Save(folder + "\\" + name);
+                im1.Save(folder + "\\" + name+".png");
             }
         }
         public static void saveImage(ImageBox box1, ImageBox box2, string name, string folder)
@@ -595,17 +811,66 @@ namespace opengl3
             Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
             return mat3;
         }
-        static public Mat drawChessboard(Mat im, Size size)
+        static public Mat drawChessboard(Mat im, Size size, bool subpix = false,bool blur = false)
         {
+
             var corn = new VectorOfPointF();
             var gray = im.ToImage<Gray, byte>();
-            var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.FastCheck);
+            var mat_ch = new Mat();
+            im.CopyTo(mat_ch);
+            if(blur)
+            {
+                CvInvoke.GaussianBlur(gray, gray, new Size(5, 5), 0);
+            }
+           
+            var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.Default);
+            if(subpix)
+            {
+                CvInvoke.CornerSubPix(gray, corn, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+            }
+
+            //perspective2Dmatr(size, corn);
+            
             Console.WriteLine("chess: " + ret + " " + size.Width + " " + size.Height);
-            CvInvoke.DrawChessboardCorners(gray, size, corn, ret);
-            return gray.Mat;
+            
+            CvInvoke.DrawChessboardCorners(mat_ch, size, corn, ret);
+            return mat_ch;
+           // return gray.Mat;
         }
-
-
+        static Mat perspective2Dmatr(Size size,VectorOfPointF corn)
+        {
+            var w = size.Width;
+            var h = size.Height;
+            var ps = generatePoints(size, 100f);
+            var points_1 = new System.Drawing.PointF[4];
+            var points_2 = new System.Drawing.PointF[4];
+            var inds_1 = new int[4] { 0, w - 1, w * (h - 1), w * h - 1 };
+            var inds_2 = new int[4] { 0, h - 1, h * (w - 1), h * w - 1 };
+            for (int i=0; i<4; i++)
+            {
+                int ind_1 = inds_1[i];
+                int ind_2 = inds_2[i];
+                points_1[i] = corn[ind_1];
+                points_2[i] = ps[ind_2];
+            }
+            var perspMatr = CvInvoke.GetPerspectiveTransform(points_1, points_2);
+            prin.t("perspMatr");
+            prin.t(perspMatr);
+            return perspMatr;
+        }
+        static System.Drawing.PointF[] generatePoints(Size size, float side = 1f)
+        {
+            var ps = new System.Drawing.PointF[size.Width * size.Height];
+            int ind = 0;
+            for(int i = 0; i<size.Width;i++)
+            {
+                for (int j = 0; j < size.Height; j++)
+                {
+                    ps[ind] = new System.Drawing.PointF(j * side, i * side); ind++;
+                }
+            }
+            return ps;
+        }
 
         static public bool compChessCoords(Mat mat, ref MCvPoint3D32f[] obp, ref System.Drawing.PointF[] cornF, Size size)
         {
@@ -1256,6 +1521,101 @@ namespace opengl3
                 saveImage(matD, distPath, ind + " " + fr.name);
                 ind++;
             }
+        }
+
+        public static Image<Gray, Byte> generateImage_chessboard(int n, int m,int side = 100)//!!!!!!!!!!remake
+        {
+  
+            int q_side = side / 2;
+            int im_side_w = q_side * (n + 2);
+            int im_side_h = q_side * (m + 2);
+            var im_ret = new Image<Gray, Byte>(im_side_w, im_side_h);
+            var pattern_s = new Size(side, side);
+
+            var quad_s = new Size(q_side, q_side);
+            /*Console.WriteLine(k + "k-");
+            Console.WriteLine(side + "s-");
+            Console.WriteLine(q_side + "q-");*/
+
+            var p_start = new List<Point>();
+            var offx = pattern_s.Width/2;
+            var offy = pattern_s.Height/2;
+            for (int x = offx; x < im_ret.Width - q_side; x += pattern_s.Width)
+            {
+                for (int y = offy; y < im_ret.Height - q_side; y += pattern_s.Height)
+                {
+                    p_start.Add(new Point(x, y));
+                }
+            }
+            for (int x = q_side + offx; x < im_ret.Width - q_side; x += pattern_s.Width)
+            {
+                for (int y = q_side + offy; y < im_ret.Height - q_side; y += pattern_s.Height)
+                {
+                    p_start.Add(new Point(x, y));
+                }
+            }
+            Console.WriteLine(p_start.Count);
+            for (int x = 0; x < im_ret.Width; x++)
+            {
+                for (int y = 0; y < im_ret.Height; y++)
+                {
+                    im_ret.Data[y, x, 0] = 255;
+                }
+            }
+
+            for (int i = 0; i < p_start.Count; i++)
+            {
+                for (int x = p_start[i].X ; x < p_start[i].X + quad_s.Width; x++)
+                {
+                    for (int y = p_start[i].Y ; y < p_start[i].Y + quad_s.Height; y++)
+                    {
+                        im_ret.Data[y, x, 0] = 0;
+                    }
+                }
+            }
+            im_ret.Save("black_br_" + n + "_" + m + ".png");
+            return im_ret;
+        }
+       public static Image<Gray, Byte> generateImage_mesh(int n, double k)
+        {
+            int im_side = 700;
+            int side = im_side / n;
+            var im_ret = new Image<Gray, Byte>(im_side, im_side);
+            var pattern_s = new Size(side, side);
+            int q_side = (int)(k * side);
+            var quad_s = new Size(q_side, q_side);
+            /*Console.WriteLine(k + "k-");
+            Console.WriteLine(side + "s-");
+            Console.WriteLine(q_side + "q-");*/
+
+            var p_start = new List<Point>();
+            for (int x = 0; x <= im_ret.Width - pattern_s.Width; x += pattern_s.Width)
+            {
+                for (int y = 0; y <= im_ret.Height - pattern_s.Height; y += pattern_s.Height)
+                {
+                    p_start.Add(new Point(x, y));
+                }
+            }
+            for (int x = 0; x < im_ret.Width; x++)
+            {
+                for (int y = 0; y < im_ret.Height; y++)
+                {
+                    im_ret.Data[y, x, 0] = 255;
+                }
+            }
+
+            for (int i = 0; i < p_start.Count; i++)
+            {
+                for (int x = p_start[i].X; x < p_start[i].X + quad_s.Width; x++)
+                {
+                    for (int y = p_start[i].Y; y < p_start[i].Y + quad_s.Height; y++)
+                    {
+                        im_ret.Data[y, x, 0] = 0;
+                    }
+                }
+            }
+            im_ret.Save("black_sq_" + n + "_" + k + ".png");
+            return im_ret;
         }
     }
 }

@@ -193,14 +193,14 @@ namespace opengl3
         }
         public static void t(Matrix<double> matr)
         {
-            Console.WriteLine("cols x rows: " + matr.Cols + " x " + matr.Rows);
+            Console.WriteLine("cols x rows: " + matr.Rows + " x " + matr.Cols);
             if (matr.Cols != 1)
             {
                 for (int i = 0; i < matr.Rows; i++)
                 {
                     for (int j = 0; j < matr.Cols; j++)
                     {
-                        Console.Write(Math.Round(matr[i, j],3) + " ");
+                        Console.Write(Math.Round(matr[i, j],5) + " ");
                     }
                     Console.WriteLine(" ");
                 }

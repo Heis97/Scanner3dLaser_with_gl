@@ -60,6 +60,10 @@ namespace opengl3
             init();
         }
        
+        void debugCalib()
+        {
+
+        }
         void calibrateCamStereo(CameraCV[] _cameraCVs)
         {
             if (_cameraCVs.Length < 2)
@@ -68,11 +72,19 @@ namespace opengl3
             }
             var cam1 = _cameraCVs[0];
             var cam2 = _cameraCVs[1];
+
             /*for (int i = 0; i < cam1.tvecs.Length; i++)
             {
-                prin.t("_________________");
+                
                 prin.t(cam1.frames[i].name);
-                prin.t(cam1.tvecs[i]- cam2.tvecs[i]);
+                prin.t(cam2.frames[i].name);
+                //prin.t(cam1.tvecs[i]- cam2.tvecs[i]);
+                var A_1 = CameraCV.assemblMatrix(cam1.rvecs[i], cam1.tvecs[i])[0];
+                var B = CameraCV.assemblMatrix(cam2.rvecs[i], cam2.tvecs[i])[1];
+                var C = A_1 * B;
+                prin.t(C);
+                prin.t("_________________");
+
             }*/
             var r = new Mat();
             var t = new Mat();

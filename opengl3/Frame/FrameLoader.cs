@@ -241,9 +241,9 @@ namespace opengl3
             var im1 = new Mat(filepath1);
             string name2 = Path.GetFileName(filepath2);
             var im2 = new Mat(filepath2);
-            Console.WriteLine(name1);
-            Console.WriteLine(name2);
-            Console.WriteLine("------------");
+            //Console.WriteLine(name1);
+            //Console.WriteLine(name2);
+            //Console.WriteLine("------------");
             var fr = new Frame(im1, im2, name1);
             fr.dateTime = File.GetCreationTime(filepath1);
             return fr;

@@ -27,6 +27,10 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        Mat patt;
+        Matrix<double> persp_matr = new Matrix<double>(new double[3,3] { {1,0,0},{0,1,0 },{0,0,1 } });
+        TextBox[] textBoxes_Persp;
+        int photo_number = 0;
         float markSize = 10f;
         StereoCameraCV stereocam;
         TCPclient con1;
@@ -134,18 +138,21 @@ namespace opengl3
             var stl_loader = new STLmodel();
             var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
 
-
+            var load_path = "calib_1_640";
+            //var load_path = "tutor";
             //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //GL1.add_buff_gl_lines_id(mesh, 10, true);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
-            
-            var frms1 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_2");
-            comboImages.Items.AddRange(frms1);
-            var cam1 = new CameraCV(frms1, new Size(6, 7), markSize);
-            var frms2 = FrameLoader.loadImages_chess(@"virtual_stereo\test5\monitor_3");
-            comboImages.Items.AddRange(frms2);
-            var cam2 = new CameraCV(frms2, new Size(6, 7), markSize);
 
+            var frms1 = FrameLoader.loadImages_chess(@"cam1\"+ load_path);
+            //comboImages.Items.AddRange(frms1);
+            var cam1 = new CameraCV(frms1, new Size(6, 7), markSize);
+            var frms2 = FrameLoader.loadImages_chess(@"cam2\" + load_path);
+            //comboImages.Items.AddRange(frms2);
+            
+            var cam2 = new CameraCV(frms2, new Size(6, 7), markSize);
+            var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_path, @"cam2\" + load_path);
+            comboImages.Items.AddRange(frms3.ToArray());
             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
 
@@ -170,6 +177,13 @@ namespace opengl3
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
             red_c = 252;
+            textBoxes_Persp = new TextBox[]
+            {
+                textBoxK_0,textBoxK_1,textBoxK_2,
+                textBoxK_3,textBoxK_4,textBoxK_5,
+                textBoxK_6,textBoxK_7,textBoxK_8,
+            };
+            patt = UtilOpenCV.generateImage_chessboard(8, 7,500).Mat;
         }
 
        
@@ -459,148 +473,44 @@ namespace opengl3
 
         #endregion
 
+
         #region buttons
-        Mat normalize(Mat im, int max=255)
+        private void but_calib_Start_Click(object sender, EventArgs e)
         {
-            var data = new byte[1, 1, 1];
-            if (im.NumberOfChannels == 1)
-            {
-                data = im.ToImage<Gray, byte>().Data;
-            }
-            else if (im.NumberOfChannels == 3)
-            {
-                data = im.ToImage<Bgr, byte>().Data;
-            }
-            int maxH = int.MinValue;
-            var data_n = new byte[data.GetLength(0), data.GetLength(1), data.GetLength(2)];
-            for (int x = 0; x < data.GetLength(0); x++)
-            {
-                for (int y = 0; y < data.GetLength(1); y++)
-                {
-                    for (int c = 0; c < data.GetLength(2); c++)
-                    {
-                        var val = data[x, y, c];
-                        if(val>maxH)
-                        {
-                            maxH = val;
-                        }
-                    }
-                }
-            }
-
-            for (int x = 0; x < data.GetLength(0); x++)
-            {
-                for (int y = 0; y < data.GetLength(1); y++)
-                {
-                    for (int c = 0; c < data.GetLength(2); c++)
-                    {
-                        //Console.WriteLine("h " + h + "maxH " + maxH);
-                        data_n[x, y, c] = (byte)((float)(max - 1) * data[x, y, c] / (float)maxH);
-                    }
-                }
-            }
-
-            var mat_ret = new Mat();
-            if (im.NumberOfChannels == 1)
-            {
-                mat_ret = new Image<Gray, byte>(data_n).Mat;
-            }
-            else if (im.NumberOfChannels == 3)
-            {
-                mat_ret = new Image<Bgr, byte>(data_n).Mat;
-            }
-         
-            return mat_ret;
+            CameraCV.calibrMonit(imBox_pattern, new ImageBox[]{ imBox_input_1, imBox_input_2 }, patt, txBx_photoName.Text);
         }
-        Mat histogram(Mat im, int max =300, int range = 256)
+        private void tr_Persp_Scroll(object sender, EventArgs e)
         {
+            var trbar = (TrackBar)sender;
+            var ind = Convert.ToInt32(trbar.AccessibleName);
+            var txbox = textBoxes_Persp[ind];
+            var mult = Convert.ToDouble(txbox.Text);
+            var val = mult* (double)trbar.Value/100;
+            var i = ind % 3;
+            var j = (ind - i) / 3;
+            persp_matr[i, j] = val;
+            //prin.t("i " + i + " j " + j);
+            
+            
+            //CvInvoke.WarpPerspective(patt, patt_warp, persp_matr, patt.Size+ patt.Size,Inter.Linear,Warp.Default);
 
-            var data = new byte[1,1,1];
-            if(im.NumberOfChannels==1)
-            {
-                data = im.ToImage<Gray, byte>().Data;
-            }
-            else if(im.NumberOfChannels == 3)
-            {
-                data = im.ToImage<Bgr, byte>().Data;
-            }
-            var hist = new int[range,  data.GetLength(2)];
-            int maxH = int.MinValue;
-
-            for (int c=0; c< data.GetLength(2);c++)
-            {
-                for(int x=0; x< data.GetLength(0);x++)
-                {
-                    for (int y= 0; y < data.GetLength(1); y++)
-                    {
-                        var val = data[x, y, c];
-                        hist[val,c]++;
-                    }
-                }
-
-                
-                for (int i = 0; i < hist.GetLength(0); i++)
-                {
-                    var val = hist[i, c];
-                    if (val>maxH)
-                    {
-                        maxH = val;
-                    }
-                }
-
-            }
-
-            var hist_im = new byte[max, range,  hist.GetLength(1)];
-            for (int c = 0; c < hist_im.GetLength(2); c++)
-            {
-                for (int x = 0; x < hist_im.GetLength(0); x++)
-                {
-                    for (int y = 0; y < hist_im.GetLength(1); y++)
-                    {
-                        hist_im[x, y, c] = 0;
-                        
-                    }
-                }
-            }
-            for (int c=0; c < hist.GetLength(1); c++)
-            {
-                for (int i = 0; i < range; i++)
-                {
-                    var h = (int)((float)(max-1) * hist[i, c] / (float)maxH);
-                    //Console.WriteLine("h " + h + "maxH " + maxH);
-                    //hist_im[h, i, c] = 255;
-                    for (int j=0; j<h;j++)
-                    {
-                        hist_im[j, i, c] = 255;
-                    }
-                }
-            }
-            var mat_ret = new Mat();
-            if (im.NumberOfChannels == 1)
-            {
-                mat_ret = new Image<Gray, byte>(hist_im).Mat;
-            }
-            else if (im.NumberOfChannels == 3)
-            {
-                mat_ret = new Image<Bgr, byte>(hist_im).Mat;
-            }
-            CvInvoke.Flip(mat_ret, mat_ret, FlipType.Vertical);
-            return mat_ret;
+            imBox_pattern.Image = UtilOpenCV.warpPerspNorm(patt, persp_matr, imBox_pattern.Size);
+            imBox_input_1.Image = UtilOpenCV.drawChessboard((Mat)imBox_pattern.Image, new Size(7, 6),false,true);
         }
         private void but_SubpixPrec_Click(object sender, EventArgs e)
         {
-           // var mat1 = (Mat)imBox_mark1.Image;
-           // var mat2 = (Mat)imBox_mark2.Image;
+            // var mat1 = (Mat)imBox_mark1.Image;
+            // var mat2 = (Mat)imBox_mark2.Image;
             var im_name = "tsukuba";//"tsukuba";//"venus"
             var mat1 = new Mat(@"datasets\" + im_name + @"\im2.png");
             var mat2 = new Mat(@"datasets\" + im_name + @"\im6.png");
-            var disp = PaintLines(mat1.ToImage<Gray, byte>(), mat2.ToImage<Gray, byte>(), mat1.Height / 2);
+            var disp = UtilOpenCV.PaintLines(mat1.ToImage<Gray, byte>(), mat2.ToImage<Gray, byte>(), mat1.Height / 2,features);
             var depth = new Mat();
             //prin.t(mat1);
-            var hist = histogram(disp[1].Mat);
-            depth = normalize(disp[1].Mat);
-            imBox_3dDebug.Image = normalize(disp[1].Mat); 
-            imBox_disparity.Image = normalize(disp[2].Mat);
+            var hist = UtilOpenCV.histogram(disp[1].Mat);
+            depth = UtilOpenCV.normalize(disp[1].Mat);
+            imBox_3dDebug.Image = UtilOpenCV.normalize(disp[1].Mat);
+            imBox_disparity.Image = UtilOpenCV.normalize(disp[2].Mat);
 
             /*var disp = features.disparMap((Mat)imBox_mark1.Image, (Mat)imBox_mark2.Image, 30, 3);
             imBox_3dDebug.Image = disp[0];
@@ -609,44 +519,6 @@ namespace opengl3
             mesh = GL1.translateMesh(mesh, 200f);
             GL1.addMesh(mesh, PrimitiveType.Triangles, 0.9f);*/
         }
-        int[] takeLineFromMat(Image<Gray,byte> im,int y)
-        {
-            var line = new int[im.Width];
-            for(int i=0; i<line.Length;i++)
-            {
-                line[i] = im.Data[y, i, 0];
-            }
-            return line;
-        }
-
-        Image<Bgr, byte>[] PaintLines(Image<Gray, byte> im1, Image<Gray, byte> im2,int y)
-        {            
-            var disp = features.disparMap_3d(im1.Mat, im2.Mat, 40, 3);
-            var line1 = takeLineFromMat(im1, y);
-            var line2 = takeLineFromMat(im2, y);
-            var dispLine = takeLineFromMat(disp[0].ToImage<Gray,byte>(), y);
-            var diffLine = takeLineFromMat(disp[1].ToImage<Gray, byte>(), y);
-
-            var data = new byte[im1.Height, im1.Width, 3];
-            
-           /* for(int i=0; i<line1.Length;i++)
-            {
-                //Console.WriteLine("im1.Width: " + im1.Width + " im1.Height: " + im1.Height);
-                //Console.WriteLine("line2[i]: " + line2[i] + "; line1[i]: " + line1[i] + "; i: " + i);
-                data[line1[i], i, 0] = 255;
-
-                data[line2[i], i, 1] = 255;
-
-                data[dispLine[i], i, 0] = 255;
-                data[dispLine[i], i, 2] = 255;
-
-                data[diffLine[i], i, 0] = 255;
-                data[diffLine[i], i, 1] = 255;
-            }*/
-
-            return new Image<Bgr, byte>[] { new Image<Bgr, byte>(data), disp[0].ToImage<Bgr, byte>(), disp[1].ToImage<Bgr, byte>() };
-        }
-
         private void trB_SGBM_Scroll(object sender, EventArgs e)
         {
             var trbar = (TrackBar)sender;
@@ -980,13 +852,18 @@ namespace opengl3
             }
             else if (fr.type == FrameType.Stereo)
             {
-                imBox_debug1.Image = UtilOpenCV.drawChessboard(fr.im, new Size(6, 7));
-                imBox_debug2.Image = UtilOpenCV.drawChessboard(fr.im_sec, new Size(6, 7));
+                //var mat1 = stereocam.cameraCVs[0].undist(fr.im);
+                //var mat2 = stereocam.cameraCVs[1].undist(fr.im_sec);
+                var mat1 = fr.im;
+                var mat2 = fr.im_sec;
+                imBox_debug1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
+                imBox_debug2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
                 imageBox1.Image = fr.im_sec;
             }
             else if (fr.type == FrameType.MarkBoard)
             {
                 imBox_debug1.Image = UtilOpenCV.drawChessboard(fr.im, new Size(6, 7));
+                imageBox1.Image = UtilOpenCV.drawChessboard(fr.im, new Size(6, 7));
             }
             imageBox2.Image = fr.im;
         }
@@ -1035,7 +912,8 @@ namespace opengl3
         private void butSaveIm_Click(object sender, EventArgs e)
         {
             //string name = " " + nameX.Text + " " + nameY.Text + " " + nameZ.Text + " " + boxN.Text + " .png";
-            UtilOpenCV.saveImage(imageBox1, imageBox2, nameX.Text + " .png", box_photoFolder.Text);
+            UtilOpenCV.saveImage(imageBox1, imageBox2, txBx_photoName.Text +"_"+ photo_number.ToString()+ ".png", box_photoFolder.Text);
+            photo_number++;
 
         }
         private void butSaveSing_Click(object sender, EventArgs e)
@@ -1260,7 +1138,6 @@ namespace opengl3
                     cap.Retrieve(mat_global[0]);
                     //finPointFsFromIm(mat_global[0], 40, imageBox1);
                     imageBox1.Image = mat_global[0];
-
                 }
                 else if ((camera_ind.Count > 1) && ((int)cap.Ptr == camera_ind[1]))
                 {
@@ -1269,15 +1146,16 @@ namespace opengl3
                     //finPointFsFromIm(mat_global[1], 40, imageBox2);
                     imBox_base.Image = mat;
                     imageBox2.Image = mat_global[1];
-
                 }
             }
         }
         Mat stereoProc(Mat mat1, Mat mat2)
         {
             //return features.drawDescriptorsMatch(ref mat1, ref mat2);
-            imBox_base_1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
-            imBox_base_2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
+            imBox_input_1.Image = mat1;
+            imBox_input_2.Image = mat2;
+           //imBox_input_1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
+            //imBox_input_2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
             return null;
         }
         private void videoStart_Click(object sender, EventArgs e)
@@ -1485,47 +1363,7 @@ namespace opengl3
             }
             return vertex_buffer_data;
         }
-        void generateImage(int n, double k)
-        {
-            int im_side = 700;
-            int side = im_side / n;
-            var im_ret = new Image<Gray, Byte>(im_side, im_side);
-            var pattern_s = new Size(side, side);
-            int q_side = (int)(k * side);
-            var quad_s = new Size(q_side, q_side);
-            /*Console.WriteLine(k + "k-");
-            Console.WriteLine(side + "s-");
-            Console.WriteLine(q_side + "q-");*/
-
-            var p_start = new List<Point>();
-            for (int x = 0; x <= im_ret.Width - pattern_s.Width; x += pattern_s.Width)
-            {
-                for (int y = 0; y <= im_ret.Height - pattern_s.Height; y += pattern_s.Height)
-                {
-                    p_start.Add(new Point(x, y));
-                }
-            }
-            for (int x = 0; x < im_ret.Width; x++)
-            {
-                for (int y = 0; y < im_ret.Height; y++)
-                {
-                    im_ret.Data[y, x, 0] = 255;
-                }
-            }
-
-            for (int i = 0; i < p_start.Count; i++)
-            {
-                for (int x = p_start[i].X; x < p_start[i].X + quad_s.Width; x++)
-                {
-                    for (int y = p_start[i].Y; y < p_start[i].Y + quad_s.Height; y++)
-                    {
-                        im_ret.Data[y, x, 0] = 0;
-                    }
-                }
-            }
-
-            im_ret.Save("black_sq_" + n + "_" + k + ".png");
-        }
+        
 
         void generateImage3D(int n, float k, float side)
         {
@@ -1587,58 +1425,7 @@ namespace opengl3
             }
 
         }
-        void generateImage_BOARD(int n, int m)
-        {
-
-            int side = 500;
-            int q_side = side / 2;
-            int im_side_w = q_side * n;
-            int im_side_h = q_side * m;
-            var im_ret = new Image<Gray, Byte>(im_side_w, im_side_h);
-            var pattern_s = new Size(side, side);
-
-            var quad_s = new Size(q_side, q_side);
-            /*Console.WriteLine(k + "k-");
-            Console.WriteLine(side + "s-");
-            Console.WriteLine(q_side + "q-");*/
-
-            var p_start = new List<Point>();
-            for (int x = 0; x < im_ret.Width; x += pattern_s.Width)
-            {
-                for (int y = 0; y < im_ret.Height; y += pattern_s.Height)
-                {
-                    p_start.Add(new Point(x, y));
-                }
-            }
-            for (int x = q_side; x < im_ret.Width; x += pattern_s.Width)
-            {
-                for (int y = q_side; y < im_ret.Height; y += pattern_s.Height)
-                {
-                    p_start.Add(new Point(x, y));
-                }
-            }
-            Console.WriteLine(p_start.Count);
-            for (int x = 0; x < im_ret.Width; x++)
-            {
-                for (int y = 0; y < im_ret.Height; y++)
-                {
-                    im_ret.Data[y, x, 0] = 255;
-                }
-            }
-
-            for (int i = 0; i < p_start.Count; i++)
-            {
-                for (int x = p_start[i].X; x < p_start[i].X + quad_s.Width; x++)
-                {
-                    for (int y = p_start[i].Y; y < p_start[i].Y + quad_s.Height; y++)
-                    {
-                        im_ret.Data[y, x, 0] = 0;
-                    }
-                }
-            }
-           
-            im_ret.Save("black_br_" + n + "_" + m + ".png");
-        }
+        
 
         
         Image<Gray, float> MeshToIm(float[] mesh, int cols = 41, int rows = 91)
@@ -1895,6 +1682,8 @@ namespace opengl3
 
 
         #endregion
+
+        
     }
     
 }

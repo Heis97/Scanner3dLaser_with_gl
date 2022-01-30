@@ -2,6 +2,7 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using Emgu.CV.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace opengl3
 {
@@ -32,6 +34,82 @@ namespace opengl3
         public Matrix<double> prjmatrix_inv;
         public Matrix<double> matrixCS;
         public Matrix<double> matrixSC;
+
+
+        async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat pattern, string path)
+        {
+            var pat_size = new Size(6, 7);
+            var matrs = GetMatricesCalib();
+            for(int i=0; i<matrs.Length;i++)
+            {
+                //prin.t(matrs[i]);
+                pattern_box.Image = UtilOpenCV.warpPerspNorm(pattern, matrs[i], pattern_box.Size);
+                await Task.Delay(500);
+                for (int j=0; j<input.Length;j++)
+                {
+                    if (input[j].Image != null)
+                    {
+                        var inp = (Mat)input[j].Image;
+                   
+                    if(CvInvoke.FindChessboardCorners(inp.ToImage<Gray, byte>(), pat_size, new Mat()))
+                        {
+                        //input[j].Image = UtilOpenCV.drawChessboard(inp, pat_size);
+                        
+                            UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString()+"\\"+path, i.ToString());
+                        }
+                    }
+                    
+                   
+                }
+                await Task.Delay(500);
+                //Thread.Sleep(500);
+            }
+            
+        }
+        static Matrix<double>[] GetMatricesCalib()
+        {
+            var p1 = 4; var p2 = 3;
+            var matrs =new  Matrix<double>[2*p1*p2];
+
+            double a00 = 1; double a01 = 0; double a02 = 0;
+
+            double a10 = 0; double a11 = 1; double a12 = 0;
+
+            double a20 = 0; double a21 = 0; double a22 = 1;
+            int ind = 0;
+            var diap1 = 0.3;
+            var diap2 = 0.0001;
+            for (int i=0; i<p1;i++)
+            {
+                for (int j = 0; j < p2; j++)
+                {
+                    a01 = calcCurA(i, p1, diap1);
+                    a21 = calcCurA(j, p2, diap2);
+                    matrs[ind] = new Matrix<double>(new double[3, 3] {
+                        { a00, a01, a02 }, 
+                        { a10, a11, a12 }, 
+                        { a20, a21, a22 } });ind++;
+                }
+            }
+            for (int i = 0; i < p1; i++)
+            {
+                for (int j = 0; j < p2; j++)
+                {
+                    a10 = calcCurA(i, p1, diap1);
+                    a20 = calcCurA(j, p2, diap2);
+                    matrs[ind] = new Matrix<double>(new double[3, 3] {
+                        { a00, a01, a02 },
+                        { a10, a11, a12 },
+                        { a20, a21, a22 } }); ind++;
+                }
+            }
+            return matrs;
+        }
+        static double calcCurA(int i,int p,double diap)
+        {
+            var step = (2 * diap) / p;
+            return -diap + step * i;
+        }
         void init_vars()
         {
             cur_t = new Mat();
@@ -69,7 +147,30 @@ namespace opengl3
 
            // prin.t(prjmatrix);
         }
-        void assemblMatrix(Mat cur_r, Mat cur_t)
+        static public Matrix<double> assembMatrix(Mat rvec, Mat tvec)
+        {
+            var rotMatr = new Matrix<double>(3, 3);
+            CvInvoke.Rodrigues(rvec, rotMatr);
+            var t = (double[,])tvec.GetData();
+            var trMatr = new Matrix<double>(t);
+            var asMatr = rotMatr.ConcateHorizontal(trMatr);
+            var lastRow = new double[1, 4] { { 0, 0, 0, 1 } };
+            var lastMatr = new Matrix<double>(lastRow);
+            return asMatr.ConcateVertical(lastMatr);
+        }
+        static public Matrix<double> invMatrix(Matrix<double> matr)
+        {
+            var inv_matr = new Matrix<double>(matr.Size);
+            CvInvoke.Invert(matr, inv_matr, DecompMethod.LU);
+            return inv_matr;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cur_r"></param>
+        /// <param name="cur_t"></param>
+        /// <returns>matr Cam->Scene,matr Scene->Cam</returns>
+        static public Matrix<double>[] assemblMatrix(Mat cur_r, Mat cur_t)
         {
            
             var r = new Matrix<double>(3, 3);
@@ -83,17 +184,19 @@ namespace opengl3
                 {0,0,0,1 }
             };
 
-            matrixCS = new Matrix<double>(data_mx);
-            matrixSC = new Matrix<double>(4, 4);
-            CvInvoke.Invert(matrixCS, matrixSC, DecompMethod.LU);
-           // prin.t("matrixCam * matrixScene");
-           // prin.t(matrixCam * matrixScene);
+            var matrCS = new Matrix<double>(data_mx);
+            var matrSC = new Matrix<double>(4, 4);
+            CvInvoke.Invert(matrCS, matrSC, DecompMethod.LU);
+            return new Matrix<double>[] { matrCS, matrSC };
+
         }
         public float[] compPos(MCvPoint3D32f[] points3D, System.Drawing.PointF[] points2D)
         {            
 
             CvInvoke.SolvePnP(points3D,points2D,cameramatrix,distortmatrix, cur_r, cur_t);
-            assemblMatrix(cur_r, cur_t);
+            var matrs = assemblMatrix(cur_r, cur_t);
+            matrixCS = matrs[0];
+            matrixSC = matrs[1];
             setPos();
             return pos;
         }
@@ -286,6 +389,7 @@ namespace opengl3
                     var corn2 = corn.ToArray();
                     objps.Add(obp);
                     corners.Add(corn2);
+                    //Console.WriteLine(frame.name);
                 }
                 else
                 {
@@ -304,6 +408,7 @@ namespace opengl3
             this.corners = corners.ToArray();
             var err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(100, 0.0001), out rvecs, out tvecs);
             Console.WriteLine("err: " + err);
+            Console.WriteLine("t,r_len: " + tvecs.Length +" "+ rvecs.Length);
             var newRoI = new Rectangle();
 
             this.tvecs = tvecs;

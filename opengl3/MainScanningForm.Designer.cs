@@ -114,10 +114,12 @@ namespace opengl3
             this.nameA2 = new System.Windows.Forms.TextBox();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.label55 = new System.Windows.Forms.Label();
+            this.txBx_photoName = new System.Windows.Forms.TextBox();
             this.imBox_base_2 = new Emgu.CV.UI.ImageBox();
             this.imBox_base_1 = new Emgu.CV.UI.ImageBox();
             this.imBox_base = new Emgu.CV.UI.ImageBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.but_ph = new System.Windows.Forms.Button();
             this.label45 = new System.Windows.Forms.Label();
             this.trackBar11 = new System.Windows.Forms.TrackBar();
             this.label46 = new System.Windows.Forms.Label();
@@ -184,7 +186,7 @@ namespace opengl3
             this.debugBox = new System.Windows.Forms.RichTextBox();
             this.glControl1 = new OpenGL.GlControl();
             this.tabDebug = new System.Windows.Forms.TabPage();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabDistort = new System.Windows.Forms.TabPage();
             this.imBox_debug2 = new Emgu.CV.UI.ImageBox();
             this.imBox_debug1 = new Emgu.CV.UI.ImageBox();
             this.label_corPic = new System.Windows.Forms.Label();
@@ -206,8 +208,29 @@ namespace opengl3
             this.textBox_K1 = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
             this.imageBox_cameraDist = new Emgu.CV.UI.ImageBox();
-            this.label55 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tabCalibMonit = new System.Windows.Forms.TabPage();
+            this.but_calib_Start = new System.Windows.Forms.Button();
+            this.textBoxK_8 = new System.Windows.Forms.TextBox();
+            this.trackBar27 = new System.Windows.Forms.TrackBar();
+            this.textBoxK_7 = new System.Windows.Forms.TextBox();
+            this.trackBar28 = new System.Windows.Forms.TrackBar();
+            this.textBoxK_6 = new System.Windows.Forms.TextBox();
+            this.trackBar29 = new System.Windows.Forms.TrackBar();
+            this.textBoxK_5 = new System.Windows.Forms.TextBox();
+            this.trackBar24 = new System.Windows.Forms.TrackBar();
+            this.textBoxK_4 = new System.Windows.Forms.TextBox();
+            this.trackBar25 = new System.Windows.Forms.TrackBar();
+            this.textBoxK_3 = new System.Windows.Forms.TextBox();
+            this.trackBar26 = new System.Windows.Forms.TrackBar();
+            this.textBoxK_2 = new System.Windows.Forms.TextBox();
+            this.trackBar23 = new System.Windows.Forms.TrackBar();
+            this.textBoxK_1 = new System.Windows.Forms.TextBox();
+            this.trackBar22 = new System.Windows.Forms.TrackBar();
+            this.textBoxK_0 = new System.Windows.Forms.TextBox();
+            this.trackBar21 = new System.Windows.Forms.TrackBar();
+            this.imBox_input_2 = new Emgu.CV.UI.ImageBox();
+            this.imBox_input_1 = new Emgu.CV.UI.ImageBox();
+            this.imBox_pattern = new Emgu.CV.UI.ImageBox();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -255,10 +278,23 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).BeginInit();
             this.tabDebug.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.tabDistort.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).BeginInit();
+            this.tabCalibMonit.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar29)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar24)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar25)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar26)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar23)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar22)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar21)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_input_2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_input_1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_pattern)).BeginInit();
             this.SuspendLayout();
             // 
             // videoCapt
@@ -498,7 +534,7 @@ namespace opengl3
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(1381, 593);
+            this.label8.Location = new System.Drawing.Point(1431, 570);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(20, 20);
             this.label8.TabIndex = 32;
@@ -1016,7 +1052,8 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabMain);
             this.windowsTabs.Controls.Add(this.tabOpenGl);
             this.windowsTabs.Controls.Add(this.tabDebug);
-            this.windowsTabs.Controls.Add(this.tabPage1);
+            this.windowsTabs.Controls.Add(this.tabDistort);
+            this.windowsTabs.Controls.Add(this.tabCalibMonit);
             this.windowsTabs.Location = new System.Drawing.Point(12, 3);
             this.windowsTabs.Name = "windowsTabs";
             this.windowsTabs.SelectedIndex = 0;
@@ -1026,11 +1063,11 @@ namespace opengl3
             // tabMain
             // 
             this.tabMain.Controls.Add(this.label55);
-            this.tabMain.Controls.Add(this.textBox1);
+            this.tabMain.Controls.Add(this.txBx_photoName);
             this.tabMain.Controls.Add(this.imBox_base_2);
             this.tabMain.Controls.Add(this.imBox_base_1);
             this.tabMain.Controls.Add(this.imBox_base);
-            this.tabMain.Controls.Add(this.button2);
+            this.tabMain.Controls.Add(this.but_ph);
             this.tabMain.Controls.Add(this.label45);
             this.tabMain.Controls.Add(this.trackBar11);
             this.tabMain.Controls.Add(this.label46);
@@ -1128,6 +1165,24 @@ namespace opengl3
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label55.Location = new System.Drawing.Point(1227, 619);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(115, 20);
+            this.label55.TabIndex = 120;
+            this.label55.Text = "Name Photo ->";
+            // 
+            // txBx_photoName
+            // 
+            this.txBx_photoName.Location = new System.Drawing.Point(1356, 616);
+            this.txBx_photoName.Name = "txBx_photoName";
+            this.txBx_photoName.Size = new System.Drawing.Size(184, 26);
+            this.txBx_photoName.TabIndex = 119;
+            this.txBx_photoName.Text = "photo_1";
+            // 
             // imBox_base_2
             // 
             this.imBox_base_2.Location = new System.Drawing.Point(978, 676);
@@ -1152,16 +1207,16 @@ namespace opengl3
             this.imBox_base.TabIndex = 94;
             this.imBox_base.TabStop = false;
             // 
-            // button2
+            // but_ph
             // 
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(1295, 295);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(106, 33);
-            this.button2.TabIndex = 116;
-            this.button2.Text = "photo";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.butSaveIm_Click);
+            this.but_ph.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_ph.Location = new System.Drawing.Point(1295, 295);
+            this.but_ph.Name = "but_ph";
+            this.but_ph.Size = new System.Drawing.Size(106, 33);
+            this.but_ph.TabIndex = 116;
+            this.but_ph.Text = "photo";
+            this.but_ph.UseVisualStyleBackColor = true;
+            this.but_ph.Click += new System.EventHandler(this.butSaveIm_Click);
             // 
             // label45
             // 
@@ -1874,36 +1929,36 @@ namespace opengl3
             this.tabDebug.Text = "Отладка";
             this.tabDebug.UseVisualStyleBackColor = true;
             // 
-            // tabPage1
+            // tabDistort
             // 
-            this.tabPage1.Controls.Add(this.imBox_debug2);
-            this.tabPage1.Controls.Add(this.imBox_debug1);
-            this.tabPage1.Controls.Add(this.label_corPic);
-            this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Controls.Add(this.textBox_P2deg);
-            this.tabPage1.Controls.Add(this.textBox_P1deg);
-            this.tabPage1.Controls.Add(this.textBox_K3deg);
-            this.tabPage1.Controls.Add(this.textBox_K2deg);
-            this.tabPage1.Controls.Add(this.textBox_K1deg);
-            this.tabPage1.Controls.Add(this.but_comp_dist);
-            this.tabPage1.Controls.Add(this.textBox_P2);
-            this.tabPage1.Controls.Add(this.label32);
-            this.tabPage1.Controls.Add(this.textBox_P1);
-            this.tabPage1.Controls.Add(this.label31);
-            this.tabPage1.Controls.Add(this.textBox_K3);
-            this.tabPage1.Controls.Add(this.label30);
-            this.tabPage1.Controls.Add(this.textBox_K2);
-            this.tabPage1.Controls.Add(this.label29);
-            this.tabPage1.Controls.Add(this.textBox_K1);
-            this.tabPage1.Controls.Add(this.label28);
-            this.tabPage1.Controls.Add(this.imageBox_cameraDist);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1882, 1003);
-            this.tabPage1.TabIndex = 4;
-            this.tabPage1.Text = "Камера";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabDistort.Controls.Add(this.imBox_debug2);
+            this.tabDistort.Controls.Add(this.imBox_debug1);
+            this.tabDistort.Controls.Add(this.label_corPic);
+            this.tabDistort.Controls.Add(this.button1);
+            this.tabDistort.Controls.Add(this.textBox_P2deg);
+            this.tabDistort.Controls.Add(this.textBox_P1deg);
+            this.tabDistort.Controls.Add(this.textBox_K3deg);
+            this.tabDistort.Controls.Add(this.textBox_K2deg);
+            this.tabDistort.Controls.Add(this.textBox_K1deg);
+            this.tabDistort.Controls.Add(this.but_comp_dist);
+            this.tabDistort.Controls.Add(this.textBox_P2);
+            this.tabDistort.Controls.Add(this.label32);
+            this.tabDistort.Controls.Add(this.textBox_P1);
+            this.tabDistort.Controls.Add(this.label31);
+            this.tabDistort.Controls.Add(this.textBox_K3);
+            this.tabDistort.Controls.Add(this.label30);
+            this.tabDistort.Controls.Add(this.textBox_K2);
+            this.tabDistort.Controls.Add(this.label29);
+            this.tabDistort.Controls.Add(this.textBox_K1);
+            this.tabDistort.Controls.Add(this.label28);
+            this.tabDistort.Controls.Add(this.imageBox_cameraDist);
+            this.tabDistort.Location = new System.Drawing.Point(4, 22);
+            this.tabDistort.Name = "tabDistort";
+            this.tabDistort.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDistort.Size = new System.Drawing.Size(1882, 1003);
+            this.tabDistort.TabIndex = 4;
+            this.tabDistort.Text = "Камера";
+            this.tabDistort.UseVisualStyleBackColor = true;
             // 
             // imBox_debug2
             // 
@@ -2084,23 +2139,245 @@ namespace opengl3
             this.imageBox_cameraDist.TabStop = false;
             this.imageBox_cameraDist.MouseMove += new System.Windows.Forms.MouseEventHandler(this.imageBox_cameraDist_MouseMove);
             // 
-            // label55
+            // tabCalibMonit
             // 
-            this.label55.AutoSize = true;
-            this.label55.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label55.Location = new System.Drawing.Point(1227, 619);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(129, 20);
-            this.label55.TabIndex = 120;
-            this.label55.Text = "Number Photo ->";
+            this.tabCalibMonit.Controls.Add(this.but_calib_Start);
+            this.tabCalibMonit.Controls.Add(this.textBoxK_8);
+            this.tabCalibMonit.Controls.Add(this.trackBar27);
+            this.tabCalibMonit.Controls.Add(this.textBoxK_7);
+            this.tabCalibMonit.Controls.Add(this.trackBar28);
+            this.tabCalibMonit.Controls.Add(this.textBoxK_6);
+            this.tabCalibMonit.Controls.Add(this.trackBar29);
+            this.tabCalibMonit.Controls.Add(this.textBoxK_5);
+            this.tabCalibMonit.Controls.Add(this.trackBar24);
+            this.tabCalibMonit.Controls.Add(this.textBoxK_4);
+            this.tabCalibMonit.Controls.Add(this.trackBar25);
+            this.tabCalibMonit.Controls.Add(this.textBoxK_3);
+            this.tabCalibMonit.Controls.Add(this.trackBar26);
+            this.tabCalibMonit.Controls.Add(this.textBoxK_2);
+            this.tabCalibMonit.Controls.Add(this.trackBar23);
+            this.tabCalibMonit.Controls.Add(this.textBoxK_1);
+            this.tabCalibMonit.Controls.Add(this.trackBar22);
+            this.tabCalibMonit.Controls.Add(this.textBoxK_0);
+            this.tabCalibMonit.Controls.Add(this.trackBar21);
+            this.tabCalibMonit.Controls.Add(this.imBox_input_2);
+            this.tabCalibMonit.Controls.Add(this.imBox_input_1);
+            this.tabCalibMonit.Controls.Add(this.imBox_pattern);
+            this.tabCalibMonit.Location = new System.Drawing.Point(4, 22);
+            this.tabCalibMonit.Name = "tabCalibMonit";
+            this.tabCalibMonit.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCalibMonit.Size = new System.Drawing.Size(1882, 1003);
+            this.tabCalibMonit.TabIndex = 5;
+            this.tabCalibMonit.Text = "Калибровка";
+            this.tabCalibMonit.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // but_calib_Start
             // 
-            this.textBox1.Location = new System.Drawing.Point(1356, 616);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(69, 26);
-            this.textBox1.TabIndex = 119;
-            this.textBox1.Text = "0";
+            this.but_calib_Start.Location = new System.Drawing.Point(1749, 585);
+            this.but_calib_Start.Name = "but_calib_Start";
+            this.but_calib_Start.Size = new System.Drawing.Size(100, 67);
+            this.but_calib_Start.TabIndex = 23;
+            this.but_calib_Start.Text = "Начать калибровку";
+            this.but_calib_Start.UseVisualStyleBackColor = true;
+            this.but_calib_Start.Click += new System.EventHandler(this.but_calib_Start_Click);
+            // 
+            // textBoxK_8
+            // 
+            this.textBoxK_8.Location = new System.Drawing.Point(1749, 531);
+            this.textBoxK_8.Name = "textBoxK_8";
+            this.textBoxK_8.Size = new System.Drawing.Size(100, 20);
+            this.textBoxK_8.TabIndex = 22;
+            this.textBoxK_8.Text = "1";
+            // 
+            // trackBar27
+            // 
+            this.trackBar27.AccessibleName = "8";
+            this.trackBar27.Location = new System.Drawing.Point(1514, 519);
+            this.trackBar27.Maximum = 100;
+            this.trackBar27.Minimum = -100;
+            this.trackBar27.Name = "trackBar27";
+            this.trackBar27.Size = new System.Drawing.Size(229, 45);
+            this.trackBar27.TabIndex = 21;
+            this.trackBar27.Value = 100;
+            this.trackBar27.Scroll += new System.EventHandler(this.tr_Persp_Scroll);
+            // 
+            // textBoxK_7
+            // 
+            this.textBoxK_7.Location = new System.Drawing.Point(1749, 480);
+            this.textBoxK_7.Name = "textBoxK_7";
+            this.textBoxK_7.Size = new System.Drawing.Size(100, 20);
+            this.textBoxK_7.TabIndex = 20;
+            this.textBoxK_7.Text = "1";
+            // 
+            // trackBar28
+            // 
+            this.trackBar28.AccessibleName = "7";
+            this.trackBar28.Location = new System.Drawing.Point(1514, 468);
+            this.trackBar28.Maximum = 100;
+            this.trackBar28.Minimum = -100;
+            this.trackBar28.Name = "trackBar28";
+            this.trackBar28.Size = new System.Drawing.Size(229, 45);
+            this.trackBar28.TabIndex = 19;
+            this.trackBar28.Scroll += new System.EventHandler(this.tr_Persp_Scroll);
+            // 
+            // textBoxK_6
+            // 
+            this.textBoxK_6.Location = new System.Drawing.Point(1749, 429);
+            this.textBoxK_6.Name = "textBoxK_6";
+            this.textBoxK_6.Size = new System.Drawing.Size(100, 20);
+            this.textBoxK_6.TabIndex = 18;
+            this.textBoxK_6.Text = "1";
+            // 
+            // trackBar29
+            // 
+            this.trackBar29.AccessibleName = "6";
+            this.trackBar29.Location = new System.Drawing.Point(1514, 417);
+            this.trackBar29.Maximum = 100;
+            this.trackBar29.Minimum = -100;
+            this.trackBar29.Name = "trackBar29";
+            this.trackBar29.Size = new System.Drawing.Size(229, 45);
+            this.trackBar29.TabIndex = 17;
+            this.trackBar29.Scroll += new System.EventHandler(this.tr_Persp_Scroll);
+            // 
+            // textBoxK_5
+            // 
+            this.textBoxK_5.Location = new System.Drawing.Point(1749, 324);
+            this.textBoxK_5.Name = "textBoxK_5";
+            this.textBoxK_5.Size = new System.Drawing.Size(100, 20);
+            this.textBoxK_5.TabIndex = 16;
+            this.textBoxK_5.Text = "0.01";
+            // 
+            // trackBar24
+            // 
+            this.trackBar24.AccessibleName = "5";
+            this.trackBar24.Location = new System.Drawing.Point(1514, 312);
+            this.trackBar24.Maximum = 100;
+            this.trackBar24.Minimum = -100;
+            this.trackBar24.Name = "trackBar24";
+            this.trackBar24.Size = new System.Drawing.Size(229, 45);
+            this.trackBar24.TabIndex = 15;
+            this.trackBar24.Scroll += new System.EventHandler(this.tr_Persp_Scroll);
+            // 
+            // textBoxK_4
+            // 
+            this.textBoxK_4.Location = new System.Drawing.Point(1749, 273);
+            this.textBoxK_4.Name = "textBoxK_4";
+            this.textBoxK_4.Size = new System.Drawing.Size(100, 20);
+            this.textBoxK_4.TabIndex = 14;
+            this.textBoxK_4.Text = "1";
+            // 
+            // trackBar25
+            // 
+            this.trackBar25.AccessibleName = "4";
+            this.trackBar25.Location = new System.Drawing.Point(1514, 261);
+            this.trackBar25.Maximum = 100;
+            this.trackBar25.Minimum = -100;
+            this.trackBar25.Name = "trackBar25";
+            this.trackBar25.Size = new System.Drawing.Size(229, 45);
+            this.trackBar25.TabIndex = 13;
+            this.trackBar25.Value = 100;
+            this.trackBar25.Scroll += new System.EventHandler(this.tr_Persp_Scroll);
+            // 
+            // textBoxK_3
+            // 
+            this.textBoxK_3.Location = new System.Drawing.Point(1749, 222);
+            this.textBoxK_3.Name = "textBoxK_3";
+            this.textBoxK_3.Size = new System.Drawing.Size(100, 20);
+            this.textBoxK_3.TabIndex = 12;
+            this.textBoxK_3.Text = "1";
+            // 
+            // trackBar26
+            // 
+            this.trackBar26.AccessibleName = "3";
+            this.trackBar26.Location = new System.Drawing.Point(1514, 210);
+            this.trackBar26.Maximum = 100;
+            this.trackBar26.Minimum = -100;
+            this.trackBar26.Name = "trackBar26";
+            this.trackBar26.Size = new System.Drawing.Size(229, 45);
+            this.trackBar26.TabIndex = 11;
+            this.trackBar26.Scroll += new System.EventHandler(this.tr_Persp_Scroll);
+            // 
+            // textBoxK_2
+            // 
+            this.textBoxK_2.Location = new System.Drawing.Point(1749, 133);
+            this.textBoxK_2.Name = "textBoxK_2";
+            this.textBoxK_2.Size = new System.Drawing.Size(100, 20);
+            this.textBoxK_2.TabIndex = 10;
+            this.textBoxK_2.Text = "0.01";
+            // 
+            // trackBar23
+            // 
+            this.trackBar23.AccessibleName = "2";
+            this.trackBar23.Location = new System.Drawing.Point(1514, 121);
+            this.trackBar23.Maximum = 100;
+            this.trackBar23.Minimum = -100;
+            this.trackBar23.Name = "trackBar23";
+            this.trackBar23.Size = new System.Drawing.Size(229, 45);
+            this.trackBar23.TabIndex = 9;
+            this.trackBar23.Scroll += new System.EventHandler(this.tr_Persp_Scroll);
+            // 
+            // textBoxK_1
+            // 
+            this.textBoxK_1.Location = new System.Drawing.Point(1749, 82);
+            this.textBoxK_1.Name = "textBoxK_1";
+            this.textBoxK_1.Size = new System.Drawing.Size(100, 20);
+            this.textBoxK_1.TabIndex = 8;
+            this.textBoxK_1.Text = "1";
+            // 
+            // trackBar22
+            // 
+            this.trackBar22.AccessibleName = "1";
+            this.trackBar22.Location = new System.Drawing.Point(1514, 70);
+            this.trackBar22.Maximum = 100;
+            this.trackBar22.Minimum = -100;
+            this.trackBar22.Name = "trackBar22";
+            this.trackBar22.Size = new System.Drawing.Size(229, 45);
+            this.trackBar22.TabIndex = 7;
+            this.trackBar22.Scroll += new System.EventHandler(this.tr_Persp_Scroll);
+            // 
+            // textBoxK_0
+            // 
+            this.textBoxK_0.Location = new System.Drawing.Point(1749, 31);
+            this.textBoxK_0.Name = "textBoxK_0";
+            this.textBoxK_0.Size = new System.Drawing.Size(100, 20);
+            this.textBoxK_0.TabIndex = 6;
+            this.textBoxK_0.Text = "1";
+            // 
+            // trackBar21
+            // 
+            this.trackBar21.AccessibleName = "0";
+            this.trackBar21.Location = new System.Drawing.Point(1514, 19);
+            this.trackBar21.Maximum = 100;
+            this.trackBar21.Minimum = -100;
+            this.trackBar21.Name = "trackBar21";
+            this.trackBar21.Size = new System.Drawing.Size(229, 45);
+            this.trackBar21.TabIndex = 5;
+            this.trackBar21.Value = 100;
+            this.trackBar21.Scroll += new System.EventHandler(this.tr_Persp_Scroll);
+            // 
+            // imBox_input_2
+            // 
+            this.imBox_input_2.Location = new System.Drawing.Point(252, 817);
+            this.imBox_input_2.Name = "imBox_input_2";
+            this.imBox_input_2.Size = new System.Drawing.Size(240, 180);
+            this.imBox_input_2.TabIndex = 4;
+            this.imBox_input_2.TabStop = false;
+            // 
+            // imBox_input_1
+            // 
+            this.imBox_input_1.Location = new System.Drawing.Point(6, 817);
+            this.imBox_input_1.Name = "imBox_input_1";
+            this.imBox_input_1.Size = new System.Drawing.Size(240, 180);
+            this.imBox_input_1.TabIndex = 3;
+            this.imBox_input_1.TabStop = false;
+            // 
+            // imBox_pattern
+            // 
+            this.imBox_pattern.Location = new System.Drawing.Point(6, 6);
+            this.imBox_pattern.Name = "imBox_pattern";
+            this.imBox_pattern.Size = new System.Drawing.Size(1200, 600);
+            this.imBox_pattern.TabIndex = 2;
+            this.imBox_pattern.TabStop = false;
             // 
             // MainScanningForm
             // 
@@ -2161,11 +2438,25 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).EndInit();
             this.tabDebug.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
+            this.tabDistort.ResumeLayout(false);
+            this.tabDistort.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).EndInit();
+            this.tabCalibMonit.ResumeLayout(false);
+            this.tabCalibMonit.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar29)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar24)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar25)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar26)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar23)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar22)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar21)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_input_2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_input_1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_pattern)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -2269,7 +2560,7 @@ namespace opengl3
         private System.Windows.Forms.Label lab_kor;
         private System.Windows.Forms.Button but_robMod;
         private System.Windows.Forms.Button but_addBufRob;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabDistort;
         private Emgu.CV.UI.ImageBox imageBox_cameraDist;
         private System.Windows.Forms.TextBox textBox_P2;
         private System.Windows.Forms.Label label32;
@@ -2345,11 +2636,34 @@ namespace opengl3
         private System.Windows.Forms.TrackBar trackBar19;
         private System.Windows.Forms.Label label54;
         private System.Windows.Forms.TrackBar trackBar20;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button but_ph;
         private Emgu.CV.UI.ImageBox imBox_base_2;
         private Emgu.CV.UI.ImageBox imBox_base_1;
         private System.Windows.Forms.Label label55;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txBx_photoName;
+        private System.Windows.Forms.TabPage tabCalibMonit;
+        private Emgu.CV.UI.ImageBox imBox_pattern;
+        private Emgu.CV.UI.ImageBox imBox_input_2;
+        private Emgu.CV.UI.ImageBox imBox_input_1;
+        private System.Windows.Forms.TextBox textBoxK_8;
+        private System.Windows.Forms.TrackBar trackBar27;
+        private System.Windows.Forms.TextBox textBoxK_7;
+        private System.Windows.Forms.TrackBar trackBar28;
+        private System.Windows.Forms.TextBox textBoxK_6;
+        private System.Windows.Forms.TrackBar trackBar29;
+        private System.Windows.Forms.TextBox textBoxK_5;
+        private System.Windows.Forms.TrackBar trackBar24;
+        private System.Windows.Forms.TextBox textBoxK_4;
+        private System.Windows.Forms.TrackBar trackBar25;
+        private System.Windows.Forms.TextBox textBoxK_3;
+        private System.Windows.Forms.TrackBar trackBar26;
+        private System.Windows.Forms.TextBox textBoxK_2;
+        private System.Windows.Forms.TrackBar trackBar23;
+        private System.Windows.Forms.TextBox textBoxK_1;
+        private System.Windows.Forms.TrackBar trackBar22;
+        private System.Windows.Forms.TextBox textBoxK_0;
+        private System.Windows.Forms.TrackBar trackBar21;
+        private System.Windows.Forms.Button but_calib_Start;
     }
 }
 
