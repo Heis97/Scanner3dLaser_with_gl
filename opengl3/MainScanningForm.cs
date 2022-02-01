@@ -27,7 +27,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
-        Mat patt;
+        Mat[] patt;
         Matrix<double> persp_matr = new Matrix<double>(new double[3,3] { {1,0,0},{0,1,0 },{0,0,1 } });
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
@@ -135,25 +135,28 @@ namespace opengl3
         {
             init_vars();
 
-            var stl_loader = new STLmodel();
-            var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
+           // var stl_loader = new STLmodel();
+            //var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
 
-            var load_path = "calib_1_640";
+            var load_path = "photo";
             //var load_path = "tutor";
             //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //GL1.add_buff_gl_lines_id(mesh, 10, true);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-            var frms1 = FrameLoader.loadImages_chess(@"cam1\"+ load_path);
-            //comboImages.Items.AddRange(frms1);
-            var cam1 = new CameraCV(frms1, new Size(6, 7), markSize);
+          /*  var frms1 = FrameLoader.loadImages_chess(@"cam1\" + load_path);
             var frms2 = FrameLoader.loadImages_chess(@"cam2\" + load_path);
-            //comboImages.Items.AddRange(frms2);
-            
-            var cam2 = new CameraCV(frms2, new Size(6, 7), markSize);
+
+        
+
+            var objps = CameraCV.generateObjps(imBox_pattern, patt);
+
+            var cam1 = new CameraCV(frms1, new Size(6, 7), markSize, objps);    
+            var cam2 = new CameraCV(frms2, new Size(6, 7), markSize, objps);
+
             var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_path, @"cam2\" + load_path);
             comboImages.Items.AddRange(frms3.ToArray());
-            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
+            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });*/
 
 
             if (comboImages.Items.Count > 0)
@@ -183,7 +186,7 @@ namespace opengl3
                 textBoxK_3,textBoxK_4,textBoxK_5,
                 textBoxK_6,textBoxK_7,textBoxK_8,
             };
-            patt = UtilOpenCV.generateImage_chessboard(8, 7,500).Mat;
+            patt = UtilOpenCV.generateImage_chessboard(8, 7,500);
         }
 
        
@@ -493,8 +496,11 @@ namespace opengl3
             
             
             //CvInvoke.WarpPerspective(patt, patt_warp, persp_matr, patt.Size+ patt.Size,Inter.Linear,Warp.Default);
-
-            imBox_pattern.Image = UtilOpenCV.warpPerspNorm(patt, persp_matr, imBox_pattern.Size);
+            var ptt = UtilOpenCV.warpPerspNorm(patt, persp_matr, imBox_pattern.Size);
+            var mat1 = ptt[0];
+           // prin.t(ptt[1]);
+            UtilOpenCV.drawPointsF(mat1, UtilOpenCV.matToPointF(ptt[1]), 255, 0, 0, 5);
+            imBox_pattern.Image = mat1;
             imBox_input_1.Image = UtilOpenCV.drawChessboard((Mat)imBox_pattern.Image, new Size(7, 6),false,true);
         }
         private void but_SubpixPrec_Click(object sender, EventArgs e)

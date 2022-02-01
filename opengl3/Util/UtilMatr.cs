@@ -102,6 +102,17 @@ namespace opengl3
             }
             return points;
         }
+        static public System.Drawing.PointF[] toPointF(MCvPoint3D32f[] corn)
+        {
+            var points = new System.Drawing.PointF[corn.Length];
+            //  Console.WriteLine(flarr.Length);
+            for (int i = 0; i < corn.Length; i++)
+            {
+                points[i] = new System.Drawing.PointF(corn[i].X, corn[i].Y);
+                // Console.WriteLine(flarr[i, 0, 0] + " " + flarr[i, 0, 1]);
+            }
+            return points;
+        }
         static public double[,] convToDouble(float[,] f_mass)
         {
             var d_mass = new double[f_mass.GetLength(0), f_mass.GetLength(1)];

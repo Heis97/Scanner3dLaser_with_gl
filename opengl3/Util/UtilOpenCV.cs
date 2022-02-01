@@ -31,8 +31,11 @@ namespace opengl3
     }
     static public class UtilOpenCV
     {
-        public static Mat warpPerspNorm(Mat mat, Matrix<double> matrixPers,Size size)
+        public static Mat[] warpPerspNorm(Mat[] mats, Matrix<double> matrixPers,Size size)
         {
+            var mat = mats[0];
+           
+            var p_control = matToPointF(mats[1]);
             var bord = new System.Drawing.PointF[4]
                 {
                     new System.Drawing.PointF(0,0),
@@ -52,7 +55,10 @@ namespace opengl3
             }
             var persp_Norm = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(bord), new VectorOfPointF(bord_warp));
             var mat_warp = new Mat();
+
             CvInvoke.WarpPerspective(mat, mat_warp, persp_Norm, rect.Size, Inter.Linear, Warp.Default);
+            var p_warp = CvInvoke.PerspectiveTransform(p_control, persp_Norm);
+
             double kx = (double)size.Width / (double)mat_warp.Width;
             double ky = (double)size.Height / (double)mat_warp.Height;
             double k = 1;
@@ -75,13 +81,17 @@ namespace opengl3
                 {k,0,offx },
                 {0,k,offy },
             });
+           
             CvInvoke.WarpAffine(mat_warp, mat_warp, affineMatr, 
                 new Size(
                     (int)(k * mat_warp.Width+offx), 
                     (int)(k * mat_warp.Height+offy)
                     ));
-            return mat_warp;
+            var affineMatr_3d = affineMatr.ConcateVertical(new Matrix<double>(new double[1, 3] { { 0, 0, 1 } }));
+            var p_aff = CvInvoke.PerspectiveTransform(p_warp, affineMatr_3d);
+            return new Mat[] { mat_warp , pointFTomat(p_aff) };
         }
+        //static System.Drawing.PointF[] 
         public static Mat normalize(Mat im, int max = 255)
         {
             var data = new byte[1, 1, 1];
@@ -336,6 +346,28 @@ namespace opengl3
             drawPointsF(mat, cornF_GL, 0, 0, 255, 1);
             return mat;
         }
+
+        static public void drawMatches(Mat im, System.Drawing.PointF[] points1, System.Drawing.PointF[] points2, int r, int g, int b, int size = 1)
+        {
+            drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);
+        }
+        static public void drawMatches(Mat im, System.Drawing.Point[] points1, System.Drawing.Point[] points2, int r, int g, int b, int size = 1)
+        {
+            int ind = 0;
+            var color = new MCvScalar(b, g, r);//bgr
+            if (points1.Length != 0 && points2.Length != 0 && points1.Length == points2.Length)
+            {
+
+                for(int i=0; i<points1.Length;i++)
+                {
+                    CvInvoke.Circle(im, points1[i], size, color, -1);
+                    CvInvoke.Circle(im, points2[i], size, color, -1);
+                    CvInvoke.Line(im, points1[i], points2[i], color, size);
+                    ind++;
+                }
+            }
+        }
+
         static public void drawPointsF(Mat im, System.Drawing.PointF[] points, int r, int g, int b, int size = 1)
         {
             drawPoints(im, PointF.toPoint(points), r, g, b, size);
@@ -1522,14 +1554,34 @@ namespace opengl3
                 ind++;
             }
         }
-
-        public static Image<Gray, Byte> generateImage_chessboard(int n, int m,int side = 100)//!!!!!!!!!!remake
+        static public System.Drawing.PointF[] matToPointF(Mat mat)
+        {
+            var data = (float[,])mat.GetData();
+            var ps = new System.Drawing.PointF[data.GetLength(0)];
+            for (int i=0; i< data.GetLength(0);i++)
+            {
+                ps[i] = new System.Drawing.PointF(data[i, 0], data[i, 1]);
+            }
+            return ps;
+        }
+        static public  Mat pointFTomat(System.Drawing.PointF[] ps)
+        {
+            var data = new float[ps.Length, 2];
+           // var ps = new System.Drawing.PointF[data.GetLength(0)];
+            for (int i = 0; i < data.GetLength(0); i++)
+            {
+                data[i, 0] = ps[i].X;
+                data[i, 1] = ps[i].Y;
+            }
+            return new Matrix<float>(data).Mat;
+        }
+        public static Mat[] generateImage_chessboard(int n, int m,int side = 100)//!!!!!!!!!!remake
         {
   
             int q_side = side / 2;
             int im_side_w = q_side * (n + 2);
             int im_side_h = q_side * (m + 2);
-            var im_ret = new Image<Gray, Byte>(im_side_w, im_side_h);
+            var im_ret = new Image<Bgr, Byte>(im_side_w, im_side_h);
             var pattern_s = new Size(side, side);
 
             var quad_s = new Size(q_side, q_side);
@@ -1540,6 +1592,22 @@ namespace opengl3
             var p_start = new List<Point>();
             var offx = pattern_s.Width/2;
             var offy = pattern_s.Height/2;
+            var w_cv = n - 1;
+            var h_cv = m - 1;
+            var points_cv = new float[w_cv * h_cv, 2];
+            int ind = 0;
+            for (int x = 0; x < w_cv ; x++)
+            {
+                for (int y = h_cv-1; y >= 0 ; y--)
+                {
+                    points_cv[ind, 0] = (x + 2) * q_side;
+                    points_cv[ind, 1] = (y + 2) * q_side;
+                    ind++;
+                }
+            }
+
+
+
             for (int x = offx; x < im_ret.Width - q_side; x += pattern_s.Width)
             {
                 for (int y = offy; y < im_ret.Height - q_side; y += pattern_s.Height)
@@ -1560,6 +1628,8 @@ namespace opengl3
                 for (int y = 0; y < im_ret.Height; y++)
                 {
                     im_ret.Data[y, x, 0] = 255;
+                    im_ret.Data[y, x, 1] = 255;
+                    im_ret.Data[y, x, 2] = 255;
                 }
             }
 
@@ -1570,11 +1640,13 @@ namespace opengl3
                     for (int y = p_start[i].Y ; y < p_start[i].Y + quad_s.Height; y++)
                     {
                         im_ret.Data[y, x, 0] = 0;
+                        im_ret.Data[y, x, 1] = 0;
+                        im_ret.Data[y, x, 2] = 0;
                     }
                 }
             }
             im_ret.Save("black_br_" + n + "_" + m + ".png");
-            return im_ret;
+            return new Mat[] { im_ret.Mat, new Matrix<float>(points_cv).Mat } ;
         }
        public static Image<Gray, Byte> generateImage_mesh(int n, double k)
         {

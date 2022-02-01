@@ -36,35 +36,70 @@ namespace opengl3
         public Matrix<double> matrixSC;
 
 
-        async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat pattern, string path)
+        public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern)
+        {
+            var matrs = GetMatricesCalib();
+            var objps = new List<MCvPoint3D32f[]>();
+            for (int i=0; i<matrs.Length;i++)
+            {
+               var ps = UtilOpenCV.matToPointF(UtilOpenCV.warpPerspNorm(pattern, matrs[i], pattern_box.Size)[1]);
+               var ps3d = new MCvPoint3D32f[ps.Length];
+                for(int j=0; j<ps3d.Length;j++)
+                {
+                    ps3d[j] = new MCvPoint3D32f(ps[j].X, ps[j].Y, 0);
+                }
+                objps.Add(ps3d);
+            }
+            return objps.ToArray();
+        }
+        async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat[] pattern, string path)
+        {
+
+            //var matrs = GetMatricesCalib();
+            var matrs = GetMatricesCalibAffine(pattern[0].Size, pattern_box.Size);
+            for (int i=0; i<matrs.Length;i++)
+            {
+                await showAndSaveImage_Chess_affine_tr(matrs[i], pattern_box, input, pattern, path,  i);
+            }            
+        }
+        async static Task showAndSaveImage_Chess_affine_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i)
         {
             var pat_size = new Size(6, 7);
-            var matrs = GetMatricesCalib();
-            for(int i=0; i<matrs.Length;i++)
+            var mat = pattern[0];
+            var mat_aff = new Mat();
+            CvInvoke.WarpAffine(mat, mat_aff, matrix, pattern_box.Size);
+            pattern_box.Image = mat_aff;
+            await Task.Delay(500);
+            for (int j = 0; j < input.Length; j++)
             {
-                //prin.t(matrs[i]);
-                pattern_box.Image = UtilOpenCV.warpPerspNorm(pattern, matrs[i], pattern_box.Size);
-                await Task.Delay(500);
-                for (int j=0; j<input.Length;j++)
+                if (input[j].Image != null)
                 {
-                    if (input[j].Image != null)
+                    var inp = (Mat)input[j].Image;
+                    if (CvInvoke.FindChessboardCorners(inp.ToImage<Gray, byte>(), pat_size, new Mat()))
                     {
-                        var inp = (Mat)input[j].Image;
-                   
-                    if(CvInvoke.FindChessboardCorners(inp.ToImage<Gray, byte>(), pat_size, new Mat()))
-                        {
-                        //input[j].Image = UtilOpenCV.drawChessboard(inp, pat_size);
-                        
-                            UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString()+"\\"+path, i.ToString());
-                        }
+                        //UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());
                     }
-                    
-                   
                 }
-                await Task.Delay(500);
-                //Thread.Sleep(500);
             }
-            
+            await Task.Delay(500);
+        }
+        async static Task showAndSaveImage_Chess_persp_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i )
+        {
+            var pat_size = new Size(6, 7);
+            pattern_box.Image = UtilOpenCV.warpPerspNorm(pattern, matrix, pattern_box.Size)[0];
+            await Task.Delay(500);
+            for (int j = 0; j < input.Length; j++)
+            {
+                if (input[j].Image != null)
+                {
+                    var inp = (Mat)input[j].Image;
+                    if (CvInvoke.FindChessboardCorners(inp.ToImage<Gray, byte>(), pat_size, new Mat()))
+                    {
+                        //UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());
+                    }
+                }
+            }
+            await Task.Delay(500);
         }
         static Matrix<double>[] GetMatricesCalib()
         {
@@ -105,6 +140,39 @@ namespace opengl3
             }
             return matrs;
         }
+
+        static Matrix<double>[] GetMatricesCalibAffine(Size pat_size, Size box_size)
+        {
+
+            var len = 9;
+            var matrs = new Matrix<double>[len];
+
+            double n = 3;
+            //Console.WriteLine("k " + k);
+            double k = (double)box_size.Height/ ((double)3*pat_size.Height);
+           // Console.WriteLine("k " +k);
+            double offx = pat_size.Width * k;
+            double offy = pat_size.Height * k;
+            int ind = 0;
+            
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    matrs[ind] = affinematr(0, 0, i * offx, j * offy);ind++;
+                }
+            }
+
+            return matrs;
+        }
+         static Matrix<double> affinematr(double alpha = 0, double k = 0, double offx = 0, double offy=0)
+         {
+           
+            return new Matrix<double>(new double[2, 3] {
+                    { k*Math.Cos(alpha),Math.Sin(alpha),  offx},
+                    { Math.Sin(alpha),  k*Math.Cos(alpha),offy}
+                    });
+        }
         static double calcCurA(int i,int p,double diap)
         {
             var step = (2 * diap) / p;
@@ -124,9 +192,9 @@ namespace opengl3
             distortmatrix = _distortmatrix;
             init_vars();
         }
-        public CameraCV(Frame[] _frames, Size _size, float markSize)
+        public CameraCV(Frame[] _frames, Size _size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
-            calibrateCam(_frames, _size,markSize);
+            calibrateCam(_frames, _size, markSize, obp_inp);            
             init_vars();
         }
         void setPos()
@@ -357,7 +425,9 @@ namespace opengl3
             CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
             return mat_ret;
         }
-        void calibrateCam(Frame[] frames, Size size, float markSize)
+
+        
+        void calibrateCam(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
             this.frames = frames;
 
@@ -368,16 +438,20 @@ namespace opengl3
             var corners = new List<System.Drawing.PointF[]>();
 
             var obp = new MCvPoint3D32f[size.Width * size.Height];
-            int ind = 0;
-            for (int j = 0; j < size.Height; j++)
-            {
-                for (int i = 0; i < size.Width; i++)
+                          
+                int ind = 0;
+                for (int j = 0; j < size.Height; j++)
                 {
-                    obp[ind] = new MCvPoint3D32f(-markSize*(float)i, markSize * (float)j, 0.0f);
-                    ind++;
+                    for (int i = 0; i < size.Width; i++)
+                    {
+                        obp[ind] = new MCvPoint3D32f(-markSize * (float)i, markSize * (float)j, 0.0f);
+                        ind++;
+                    }
                 }
-            }
 
+
+
+            int ind_fr = 0;
             foreach (var frame in frames)
             {
                 var gray = frame.im.ToImage<Gray, byte>();
@@ -389,6 +463,16 @@ namespace opengl3
                     var corn2 = corn.ToArray();
                     objps.Add(obp);
                     corners.Add(corn2);
+                  //  var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));
+                   // UtilOpenCV.drawPointsF(mat1, corn2, 255, 0, 0, 5);
+                    if(obp_inp!=null)
+                    {
+                        //UtilOpenCV.drawPointsF(mat1, UtilMatr.toPointF(obp_inp[ind_fr]), 0, 255, 0, 5);
+                       // UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);
+                       // CvInvoke.Imshow("asda", mat1);
+                        //CvInvoke.WaitKey();
+                    }
+                    
                     //Console.WriteLine(frame.name);
                 }
                 else
@@ -396,17 +480,29 @@ namespace opengl3
                     Console.WriteLine("NOT:");
                     Console.WriteLine(frame.name);
                 }
+                ind_fr++;
             }
 
-            Console.WriteLine(objps);
-            Console.WriteLine(corners.Count);
+            
 
             var rvecs = new Mat[corners.Count];
             var tvecs = new Mat[corners.Count];
 
+            
             this.objps = objps.ToArray();
             this.corners = corners.ToArray();
-            var err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(100, 0.0001), out rvecs, out tvecs);
+
+            if (obp_inp != null)
+            {
+                this.objps = obp_inp;
+            }
+           /* Console.WriteLine(this.objps[0].Length);
+            Console.WriteLine(this.corners[0].Length);
+            prin.t("_______________");
+            prin.t(this.objps);
+            prin.t("_______________");
+            prin.t(this.corners);*/
+            var err = CvInvoke.CalibrateCamera(this.objps, this.corners, frames[0].im.Size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(100, 0.01), out rvecs, out tvecs);
             Console.WriteLine("err: " + err);
             Console.WriteLine("t,r_len: " + tvecs.Length +" "+ rvecs.Length);
             var newRoI = new Rectangle();
@@ -427,18 +523,6 @@ namespace opengl3
             distortmatrix = _distortmatrix;
             prin.t("cameramatrix");
             prin.t(cameramatrix);
-            /*for (int i = 0; i < corners.Count; i++)
-            {
-                CvInvoke.Rodrigues(rvecs[i], rotateMatrix);
-                var tvec = toVertex3f(tvecs[i]);
-                var mx = assemblMatrix(rotateMatrix, tvec);
-                var invMx = mx.Inverse;
-
-                //Console.WriteLine("INV-----------");
-                // print(invMx);
-                // Console.WriteLine("FRAME-------------");
-                //print(frames[i]);
-            }*/
 
         }
         void EmguCVUndistortFisheye(string path, Size patternSize)

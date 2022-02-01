@@ -191,6 +191,14 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
+        public static void t(System.Drawing.PointF[] matr)
+        {
+            for (int i = 0; i < matr.Length; i++)
+            {
+               Console.Write(matr[i].X + " " + matr[i].Y + "; ");               
+               Console.WriteLine(" ");
+            }
+        }
         public static void t(Matrix<double> matr)
         {
             Console.WriteLine("cols x rows: " + matr.Rows + " x " + matr.Cols);
