@@ -158,6 +158,17 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
+        public static void t(float[][] matr)
+        {
+            for (int i = 0; i < matr.Length; i++)
+            {
+                for (int j = 0; j < matr[i].Length; j++)
+                {
+                    Console.Write(matr[i][ j] + " ");
+                }
+                Console.WriteLine(" ");
+            }
+        }
         public static void t(Point3d_GL[][] matr)
         {
             for (int i = 0; i < matr.GetColumn(0).Length; i++)

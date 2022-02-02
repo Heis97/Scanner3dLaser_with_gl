@@ -931,7 +931,10 @@ namespace opengl3
         {
             buffersGl.add_obj_id(data_v,id, visible, PrimitiveType.Lines);
         }
-
+        public void add_buff_gl_mesh_id(float[] data_v, int id, bool visible)
+        {
+            buffersGl.add_obj_id(data_v, id, visible, PrimitiveType.Triangles);
+        }
         public void addFrame(Point3d_GL pos, Point3d_GL x, Point3d_GL y, Point3d_GL z)
         {
             addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 0, 0);
@@ -1110,7 +1113,7 @@ namespace opengl3
                 color_buffer_data[i + 1] = g;
                 color_buffer_data[i + 2] = b;
             }
-            // Console.WriteLine("vert len " + gl_vertex_buffer_data.Length);
+             Console.WriteLine("vert len " + gl_vertex_buffer_data.Length);
             add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
         }
         #endregion
