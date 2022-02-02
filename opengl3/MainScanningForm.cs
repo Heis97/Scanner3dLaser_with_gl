@@ -439,18 +439,18 @@ namespace opengl3
             
             //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
 
-            /*stereocam.cameraCVs[0].setMatrixScene(GL1.rightMatrMon(0));
+            stereocam.cameraCVs[0].setMatrixScene(GL1.rightMatrMon(0));
             stereocam.cameraCVs[1].setMatrixScene(GL1.rightMatrMon(1));
              
             stereocam.prM1 = stereocam.cameraCVs[0].prjmatrix;
-            stereocam.prM2 = stereocam.cameraCVs[1].prjmatrix;*/
+            stereocam.prM2 = stereocam.cameraCVs[1].prjmatrix;
 
             //reconst = features.reconstuctScene(stereocam, features.desks1, features.desks2, features.mchs);
 
             //reconst_lines1 = features.pointsForLines(features.mps1, stereocam.cameraCVs[0]);
             //reconst_lines2 = features.pointsForLines(features.mps2, stereocam.cameraCVs[1]);
             //GL1.buffersGl.removeObj(10);
-            //GL1.buffersGl.add_obj_id(reconst, 10, true, PrimitiveType.Points);
+            GL1.buffersGl.add_obj_id(reconst, 10, true, PrimitiveType.Points);
         }
         Matrix<double> matrixFromCam(CameraCV cam)
         {
@@ -480,8 +480,7 @@ namespace opengl3
         #region buttons
         private void but_calib_Start_Click(object sender, EventArgs e)
         {
-            CameraCV.calibrMonit(imBox_pattern, new ImageBox[] { imBox_mark1, imBox_mark2 }, patt, txBx_photoName.Text,ref GL1);
-           // CameraCV.calibrMonit(imBox_pattern, new ImageBox[]{ imBox_input_1, imBox_input_2 }, patt, txBx_photoName.Text,GL1);
+            CameraCV.calibrMonit(imBox_pattern, new ImageBox[]{ imBox_input_1, imBox_input_2 }, patt, txBx_photoName.Text);
         }
         private void tr_Persp_Scroll(object sender, EventArgs e)
         {
@@ -1432,9 +1431,9 @@ namespace opengl3
             }
 
         }
-
         
 
+        
         Image<Gray, float> MeshToIm(float[] mesh, int cols = 41, int rows = 91)
         {
             var im_grad = new Image<Gray, float>(cols, rows);
