@@ -1547,12 +1547,13 @@ namespace opengl3
 
             var fr1 = from f in frms
                       orderby f.dateTime.Ticks
-                      select f;
+                      select f; 
             var vfrs = fr1.ToList();
             int ind = 0;
             foreach (var fr in vfrs)
             {
-                var matD = remapDistIm(fr.im, cameraCV.cameramatrix, cameraCV.distortmatrix);
+               // var matD = remapDistIm(fr.im, cameraCV.cameramatrix, cameraCV.distortmatrix);
+                var matD = remapDistImOpenCv(fr.im, cameraCV.cameramatrix, cameraCV.distortmatrix);
                 saveImage(matD, distPath, ind + " " + fr.name);
                 ind++;
             }
@@ -1696,23 +1697,20 @@ namespace opengl3
         }
         static public float[][] generate_BOARDs(MCvPoint3D32f [][] point3D32Fs)
         {
-            var boards = new float[point3D32Fs.GetLength(0)][];
-            for (int i = 0; i < point3D32Fs.GetLength(0); i++)
+            var boards = new float[point3D32Fs.Length][];
+            for (int i = 0; i < point3D32Fs.Length; i++)
             {
-                var board = new List<float>();
-                
+                var board = new List<float>();                
                 for (int j = 0; j < point3D32Fs[i].Length; j += 4)
                 {
-
                     float[] square_buf = {
-                            point3D32Fs[i][j].X,point3D32Fs[i][j].Y,0.0f, // triangle 1 : begin
-                           point3D32Fs[i][j+1].X,point3D32Fs[i][j+1].Y, 0.0f,
-                           point3D32Fs[i][j+2].X,point3D32Fs[i][j+2].Y, 0.0f, // triangle 1 : end
-                            point3D32Fs[i][j+2].X,point3D32Fs[i][j+2].Y,0.0f, // triangle 2 : begin
-                           point3D32Fs[i][j+3].X,point3D32Fs[i][j+3].Y,0.0f,
-                            point3D32Fs[i][j].X,point3D32Fs[i][j].Y,0.0f};
+                            point3D32Fs[i][j].X  , point3D32Fs[i][j].Y  , 0.0f, // triangle 1 : begin
+                            point3D32Fs[i][j+1].X, point3D32Fs[i][j+1].Y, 0.0f,
+                            point3D32Fs[i][j+3].X, point3D32Fs[i][j+3].Y, 0.0f, // triangle 1 : end
+                            point3D32Fs[i][j+3].X, point3D32Fs[i][j+3].Y, 0.0f, // triangle 2 : begin
+                            point3D32Fs[i][j+2].X, point3D32Fs[i][j+2].Y, 0.0f,
+                            point3D32Fs[i][j].X  , point3D32Fs[i][j].Y  , 0.0f};
                     board.AddRange(square_buf);
-
                 }
                 boards[i] = board.ToArray();
             }

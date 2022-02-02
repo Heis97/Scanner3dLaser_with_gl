@@ -39,7 +39,7 @@ namespace opengl3
         public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern,int num = 1)
         {
             var matrs = GetMatricesCalib();
-            var objps = new List<MCvPoint3D32f[]>();
+            var objps = new MCvPoint3D32f[matrs.Length][];
             for (int i=0; i<matrs.Length;i++)
             {
                var ps = UtilOpenCV.matToPointF(UtilOpenCV.warpPerspNorm(pattern, matrs[i], pattern_box.Size)[num]);
@@ -48,35 +48,60 @@ namespace opengl3
                 {
                     ps3d[j] = new MCvPoint3D32f(ps[j].X, ps[j].Y, 0);
                 }
-                objps.Add(ps3d);
+                objps[i] = ps3d;
             }
-            return objps.ToArray();
+            return objps;
         }
-         public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat[] pattern, string path, ref GraphicGL graphicGL)
-        {
-
-           var matrs = GetMatricesCalib();
+         async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat[] pattern, string path,  GraphicGL graphicGL)
+         {
+            var matrs = GetMatricesCalib();
             //var matrs = GetMatricesCalibAffine(pattern[0].Size, pattern_box.Size);
 
             var p3d = generateObjps(pattern_box, pattern, 2);
             var boards = UtilOpenCV.generate_BOARDs(p3d);
-           // prin.t(boards);
+            //prin.t(boards);
             for (int i=0; i<matrs.Length;i++)
             {
-                //prin.t(i);
-                //await showAndSaveImage_Chess_affine_tr(matrs[i], pattern_box, input, pattern, path,  i);
-                //await Task.Delay(1500);
-                graphicGL.addMesh(boards[i], OpenGL.PrimitiveType.Triangles);
+                if(graphicGL!=null)
+                {                   
+                    if(i!=0)
+                    {
+                        graphicGL.remove_buff_gl_id(i + 9);
+                        //graphicGL.add_buff_gl_mesh_id(boards[i], i + 10, true);
+                    }
+                    graphicGL.add_buff_gl_mesh_id(boards[i], i + 10, true);
+                    await Task.Delay(100);
+                    SaveImage_Chess(input, path,i);
+                    await Task.Delay(100);
+                }
+                else
+                {
+                    await Task.Delay(500);
+                    showAndSaveImage_Chess_persp_tr(matrs[i], pattern_box, input, pattern, path, i);
+                    //showAndSaveImage_Chess_affine_tr(matrs[i], pattern_box, input, pattern, path, i);
+                    await Task.Delay(500);
+                }
             }            
         }
-        async static Task showAndSaveImage_Chess_affine_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i)
+        static void SaveImage_Chess(ImageBox[] input, string path,int i)
+        {
+            for (int j = 0; j < input.Length; j++)
+            {
+                if (input[j].Image != null)
+                {
+                    var inp = (Mat)input[j].Image;
+                    UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());                    
+                }
+            }
+        }
+         static void showAndSaveImage_Chess_affine_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i)
         {
             var pat_size = new Size(6, 7);
             var mat = pattern[0];
             var mat_aff = new Mat();
             CvInvoke.WarpAffine(mat, mat_aff, matrix, pattern_box.Size);
             pattern_box.Image = mat_aff;
-            await Task.Delay(500);
+            
             for (int j = 0; j < input.Length; j++)
             {
                 if (input[j].Image != null)
@@ -88,13 +113,11 @@ namespace opengl3
                     }
                 }
             }
-            await Task.Delay(500);
         }
-        async static Task showAndSaveImage_Chess_persp_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i )
+        static void showAndSaveImage_Chess_persp_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i )
         {
             var pat_size = new Size(6, 7);
             pattern_box.Image = UtilOpenCV.warpPerspNorm(pattern, matrix, pattern_box.Size)[0];
-            await Task.Delay(500);
             for (int j = 0; j < input.Length; j++)
             {
                 if (input[j].Image != null)
@@ -106,7 +129,6 @@ namespace opengl3
                     }
                 }
             }
-            await Task.Delay(500);
         }
         static Matrix<double>[] GetMatricesCalib()
         {

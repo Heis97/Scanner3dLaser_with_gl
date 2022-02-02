@@ -50,6 +50,7 @@ namespace opengl3
         float LightPower = 500000.0f;
         Label Label_cor;
         Label Label_cor_cur;
+        Label Label_trz_cur;
         RichTextBox debug_box;
         Matrix4x4f Pm;
         Matrix4x4f Vm;
@@ -81,7 +82,7 @@ namespace opengl3
             Ms = new Matrix4x4f[4];
             Vs = new Matrix4x4f[4];
             Ps = new Matrix4x4f[4];
-
+            var txt = "";
             for (int i = 0; i < transRotZooms.Count; i++)
             {
                 Gl.ViewportIndexed((uint)i,
@@ -89,13 +90,15 @@ namespace opengl3
                     transRotZooms[i].rect.Y,
                     transRotZooms[i].rect.Width,
                     transRotZooms[i].rect.Height);
-                var retM = compMVPmatrix(transRotZooms[i]);
+                var retM = compMVPmatrix(transRotZooms[i]);               
                 MVPs[i] = retM[3];
                 Ms[i] = retM[2];
                 Vs[i] = retM[1];
                 Ps[i] = retM[0];
+
+                txt += "TRZ " + i + ": "+transRotZooms[i].getInfo(transRotZooms.ToArray()).ToString()+"\n";
             }
-            
+            Label_trz_cur.Text = txt;
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             addCams();
             if (buffersGl.objs_out!=null)
@@ -188,9 +191,10 @@ namespace opengl3
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
-            cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(1, 5));
+            cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(5, 1));
+            cameraCV.distortmatrix[0,0] = -0.1;
 
-            
+
         }
         string[] assembCode(string[] paths)
         {
@@ -380,6 +384,7 @@ namespace opengl3
         public Matrix4x4f[] compMVPmatrix(TransRotZoom trz_in)
         {
             var trz = trz_in.getInfo(transRotZooms.ToArray());
+            
             var zoom = trz.zoom;
             var off_x = trz.off_x;
             var off_y = trz.off_y;
@@ -526,7 +531,7 @@ namespace opengl3
                         + ob.vertex_buffer_data[i * 3 + 1].ToString() + " "
                         + ob.vertex_buffer_data[i * 3 + 2].ToString() + " |";
                 }
-                txt += "_____________\n";
+                txt += "\n________________________";
             }
             box.Text = txt;
         }
@@ -534,11 +539,12 @@ namespace opengl3
 
        
         #region mouse
-        public void add_Label(Label label_list, Label label_cur)
+        public void add_Label(Label label_list, Label label_cur, Label label_trz)
         {
+            Label_trz_cur = label_trz;
             Label_cor = label_list;
             Label_cor_cur = label_cur;
-            if (Label_cor == null || Label_cor_cur==null) 
+            if (Label_cor == null || Label_cor_cur==null || Label_trz_cur==null) 
             {
                 Console.WriteLine("null_start");
             }
@@ -934,6 +940,10 @@ namespace opengl3
         public void add_buff_gl_mesh_id(float[] data_v, int id, bool visible)
         {
             buffersGl.add_obj_id(data_v, id, visible, PrimitiveType.Triangles);
+        }
+        public void remove_buff_gl_id(int id)
+        {
+            buffersGl.removeObj(id);
         }
         public void addFrame(Point3d_GL pos, Point3d_GL x, Point3d_GL y, Point3d_GL z)
         {

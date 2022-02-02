@@ -135,16 +135,16 @@ namespace opengl3
         {
             init_vars();
 
-           // var stl_loader = new STLmodel();
+            // var stl_loader = new STLmodel();
             //var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-
-            var load_path = "photo";
+            
+            var load_path = @"photo_1\distort";
             //var load_path = "tutor";
             //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //GL1.add_buff_gl_lines_id(mesh, 10, true);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-          /*  var frms1 = FrameLoader.loadImages_chess(@"cam1\" + load_path);
+            var frms1 = FrameLoader.loadImages_chess(@"cam1\" + load_path);
             var frms2 = FrameLoader.loadImages_chess(@"cam2\" + load_path);
 
         
@@ -156,7 +156,7 @@ namespace opengl3
 
             var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_path, @"cam2\" + load_path);
             comboImages.Items.AddRange(frms3.ToArray());
-            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });*/
+            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
 
             if (comboImages.Items.Count > 0)
@@ -166,7 +166,7 @@ namespace opengl3
             //calcF();
 
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-            generateImage3D_BOARD(7, 8, markSize);
+            //generateImage3D_BOARD(7, 8, markSize);
             //generateImage3D(7, 0.5f,  markSize);
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
@@ -341,11 +341,17 @@ namespace opengl3
             GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 1);
             GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
             GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
-            Console.WriteLine();
+            GL1.transRotZooms[1].off_x = -532;
+            GL1.transRotZooms[1].off_y = 332;
+            GL1.transRotZooms[1].zoom = 2.2699;
+            
             addButForMonitor(GL1, send.Size, send.Location);
 
-            GL1.add_Label(lab_kor, lab_curCor);
+            GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             GL1.add_TextBox(debugBox);
+
+            //UtilOpenCV.distortFolder(@"cam1\photo_1", GL1.cameraCV);
+            //UtilOpenCV.distortFolder(@"cam2\photo_1", GL1.cameraCV);
             // startGenerate();
 
             //  trB_SGBM_Enter();
@@ -393,6 +399,7 @@ namespace opengl3
             prin.t(GL1.Vs[id_mon]);
             prin.t("-------------------");
             imBox_mark2.Image = mat1;
+           
         }
         CameraCV projMatr(CameraCV cameraCV, int id_mon)
         {
@@ -478,10 +485,15 @@ namespace opengl3
 
 
         #region buttons
+        private void but_gl_cam_calib_Click(object sender, EventArgs e)
+        {
+            CameraCV.calibrMonit(imBox_pattern, new ImageBox[] { imBox_mark1, imBox_mark2 }, patt, txBx_photoName.Text,  GL1);
+            GL1.printDebug(debugBox);
+        }
         private void but_calib_Start_Click(object sender, EventArgs e)
         {
-            CameraCV.calibrMonit(imBox_pattern, new ImageBox[] { imBox_mark1, imBox_mark2 }, patt, txBx_photoName.Text,ref GL1);
-           // CameraCV.calibrMonit(imBox_pattern, new ImageBox[]{ imBox_input_1, imBox_input_2 }, patt, txBx_photoName.Text,GL1);
+            
+            CameraCV.calibrMonit(imBox_pattern, new ImageBox[]{ imBox_input_1, imBox_input_2 }, patt, txBx_photoName.Text, null);
         }
         private void tr_Persp_Scroll(object sender, EventArgs e)
         {
@@ -1688,9 +1700,10 @@ namespace opengl3
         }
 
 
+
         #endregion
 
-        
+       
     }
     
 }
