@@ -36,13 +36,13 @@ namespace opengl3
         public Matrix<double> matrixSC;
 
 
-        public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern)
+        public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern,int num = 1)
         {
             var matrs = GetMatricesCalib();
             var objps = new List<MCvPoint3D32f[]>();
             for (int i=0; i<matrs.Length;i++)
             {
-               var ps = UtilOpenCV.matToPointF(UtilOpenCV.warpPerspNorm(pattern, matrs[i], pattern_box.Size)[1]);
+               var ps = UtilOpenCV.matToPointF(UtilOpenCV.warpPerspNorm(pattern, matrs[i], pattern_box.Size)[num]);
                var ps3d = new MCvPoint3D32f[ps.Length];
                 for(int j=0; j<ps3d.Length;j++)
                 {
@@ -52,14 +52,21 @@ namespace opengl3
             }
             return objps.ToArray();
         }
-        async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat[] pattern, string path)
+         public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat[] pattern, string path, ref GraphicGL graphicGL)
         {
 
-            //var matrs = GetMatricesCalib();
-            var matrs = GetMatricesCalibAffine(pattern[0].Size, pattern_box.Size);
+           var matrs = GetMatricesCalib();
+            //var matrs = GetMatricesCalibAffine(pattern[0].Size, pattern_box.Size);
+
+            var p3d = generateObjps(pattern_box, pattern, 2);
+            var boards = UtilOpenCV.generate_BOARDs(p3d);
+           // prin.t(boards);
             for (int i=0; i<matrs.Length;i++)
             {
-                await showAndSaveImage_Chess_affine_tr(matrs[i], pattern_box, input, pattern, path,  i);
+                //prin.t(i);
+                //await showAndSaveImage_Chess_affine_tr(matrs[i], pattern_box, input, pattern, path,  i);
+                //await Task.Delay(1500);
+                graphicGL.addMesh(boards[i], OpenGL.PrimitiveType.Triangles);
             }            
         }
         async static Task showAndSaveImage_Chess_affine_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i)

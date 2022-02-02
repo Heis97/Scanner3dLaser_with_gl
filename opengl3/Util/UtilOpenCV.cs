@@ -36,6 +36,7 @@ namespace opengl3
             var mat = mats[0];
            
             var p_control = matToPointF(mats[1]);
+            var p_control_2 = matToPointF(mats[2]);
             var bord = new System.Drawing.PointF[4]
                 {
                     new System.Drawing.PointF(0,0),
@@ -58,6 +59,7 @@ namespace opengl3
 
             CvInvoke.WarpPerspective(mat, mat_warp, persp_Norm, rect.Size, Inter.Linear, Warp.Default);
             var p_warp = CvInvoke.PerspectiveTransform(p_control, persp_Norm);
+            var p_warp_2 = CvInvoke.PerspectiveTransform(p_control_2, persp_Norm);
 
             double kx = (double)size.Width / (double)mat_warp.Width;
             double ky = (double)size.Height / (double)mat_warp.Height;
@@ -89,7 +91,8 @@ namespace opengl3
                     ));
             var affineMatr_3d = affineMatr.ConcateVertical(new Matrix<double>(new double[1, 3] { { 0, 0, 1 } }));
             var p_aff = CvInvoke.PerspectiveTransform(p_warp, affineMatr_3d);
-            return new Mat[] { mat_warp , pointFTomat(p_aff) };
+            var p_aff_2 = CvInvoke.PerspectiveTransform(p_warp_2, affineMatr_3d);
+            return new Mat[] { mat_warp , pointFTomat(p_aff), pointFTomat(p_aff_2) };
         }
         //static System.Drawing.PointF[] 
         public static Mat normalize(Mat im, int max = 255)
@@ -1575,6 +1578,26 @@ namespace opengl3
             }
             return new Matrix<float>(data).Mat;
         }
+        public static System.Drawing.PointF[][] dividePointF(System.Drawing.PointF[] ps, int len0)
+        {
+            prin.t(ps.Length);
+            prin.t("ps.Length");
+            if (ps.Length%len0!=0)
+            {
+                return null;
+            }
+            var ps2d = new System.Drawing.PointF[len0][];
+            var len1 = ps.Length / len0;
+            for (int i=0; i<len0;i++)
+            {
+                ps2d[i] = new System.Drawing.PointF[len1];
+                for (int j = 0; j < len1; j++)
+                {
+                    ps2d[i][j] = ps[i * len1 + j];
+                }
+            }
+            return ps2d;
+        }
         public static Mat[] generateImage_chessboard(int n, int m,int side = 100)//!!!!!!!!!!remake
         {
   
@@ -1595,6 +1618,7 @@ namespace opengl3
             var w_cv = n - 1;
             var h_cv = m - 1;
             var points_cv = new float[w_cv * h_cv, 2];
+            var points_all = new float[n*m*4, 2];
             int ind = 0;
             for (int x = 0; x < w_cv ; x++)
             {
@@ -1607,12 +1631,23 @@ namespace opengl3
             }
 
 
-
+            ind = 0;
             for (int x = offx; x < im_ret.Width - q_side; x += pattern_s.Width)
             {
                 for (int y = offy; y < im_ret.Height - q_side; y += pattern_s.Height)
                 {
                     p_start.Add(new Point(x, y));
+                    points_all[ind, 0] = x;
+                    points_all[ind, 1] = y; ind++;
+
+                    points_all[ind, 0] = x + q_side;
+                    points_all[ind, 1] = y; ind++;
+
+                    points_all[ind, 0] = x;
+                    points_all[ind, 1] = y + q_side; ind++;
+
+                    points_all[ind, 0] = x + q_side;
+                    points_all[ind, 1] = y + q_side; ind++;
                 }
             }
             for (int x = q_side + offx; x < im_ret.Width - q_side; x += pattern_s.Width)
@@ -1620,6 +1655,17 @@ namespace opengl3
                 for (int y = q_side + offy; y < im_ret.Height - q_side; y += pattern_s.Height)
                 {
                     p_start.Add(new Point(x, y));
+                    points_all[ind, 0] = x;
+                    points_all[ind, 1] = y; ind++;
+
+                    points_all[ind, 0] = x + q_side;
+                    points_all[ind, 1] = y; ind++;
+
+                    points_all[ind, 0] = x;
+                    points_all[ind, 1] = y + q_side; ind++;
+
+                    points_all[ind, 0] = x + q_side;
+                    points_all[ind, 1] = y + q_side; ind++;
                 }
             }
             Console.WriteLine(p_start.Count);
@@ -1646,9 +1692,33 @@ namespace opengl3
                 }
             }
             im_ret.Save("black_br_" + n + "_" + m + ".png");
-            return new Mat[] { im_ret.Mat, new Matrix<float>(points_cv).Mat } ;
+            return new Mat[] { im_ret.Mat, new Matrix<float>(points_cv).Mat, new Matrix<float>(points_all).Mat } ;
         }
-       public static Image<Gray, Byte> generateImage_mesh(int n, double k)
+        static public float[][] generate_BOARDs(MCvPoint3D32f [][] point3D32Fs)
+        {
+            var boards = new float[point3D32Fs.GetLength(0)][];
+            for (int i = 0; i < point3D32Fs.GetLength(0); i++)
+            {
+                var board = new List<float>();
+                
+                for (int j = 0; j < point3D32Fs[i].Length; j += 4)
+                {
+
+                    float[] square_buf = {
+                            point3D32Fs[i][j].X,point3D32Fs[i][j].Y,0.0f, // triangle 1 : begin
+                           point3D32Fs[i][j+1].X,point3D32Fs[i][j+1].Y, 0.0f,
+                           point3D32Fs[i][j+2].X,point3D32Fs[i][j+2].Y, 0.0f, // triangle 1 : end
+                            point3D32Fs[i][j+2].X,point3D32Fs[i][j+2].Y,0.0f, // triangle 2 : begin
+                           point3D32Fs[i][j+3].X,point3D32Fs[i][j+3].Y,0.0f,
+                            point3D32Fs[i][j].X,point3D32Fs[i][j].Y,0.0f};
+                    board.AddRange(square_buf);
+
+                }
+                boards[i] = board.ToArray();
+            }
+            return boards;
+        }
+        public static Image<Gray, Byte> generateImage_mesh(int n, double k)
         {
             int im_side = 700;
             int side = im_side / n;
