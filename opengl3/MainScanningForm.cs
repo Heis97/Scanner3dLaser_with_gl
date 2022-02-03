@@ -137,24 +137,35 @@ namespace opengl3
 
             // var stl_loader = new STLmodel();
             //var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-            
-            var load_path = @"photo_1\distort";
+            var load_path1 = @"photo_1\distort";
+            var load_path2 = @"photo_2\distort";
             //var load_path = "tutor";
             //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //GL1.add_buff_gl_lines_id(mesh, 10, true);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-            var frms1 = FrameLoader.loadImages_chess(@"cam1\" + load_path);
-            var frms2 = FrameLoader.loadImages_chess(@"cam2\" + load_path);
+            var frms1a = FrameLoader.loadImages_chess(@"cam1\" + load_path1);
+            var frms2a = FrameLoader.loadImages_chess(@"cam2\" + load_path1);
 
-        
+            var frms1b = FrameLoader.loadImages_chess(@"cam1\" + load_path2);
+            var frms2b = FrameLoader.loadImages_chess(@"cam2\" + load_path2);
 
-            var objps = CameraCV.generateObjps(imBox_pattern, patt);
+            var frms1 = frms1a.ToList();
+            frms1.AddRange(frms1b);
 
-            var cam1 = new CameraCV(frms1, new Size(6, 7), markSize, objps);    
-            var cam2 = new CameraCV(frms2, new Size(6, 7), markSize, objps);
+            var frms2 = frms2a.ToList();
+            frms2.AddRange(frms2b);
 
-            var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_path, @"cam2\" + load_path);
+            var objps1a = CameraCV.generateObjps(imBox_pattern, patt, false,true);
+            var objps1b = CameraCV.generateObjps(imBox_pattern, patt, false, false);
+
+            var objps = objps1a.ToList();
+            objps.AddRange(objps1b);
+            //Console.WriteLine(frms1.Count);
+            var cam1 = new CameraCV(frms1.ToArray(), new Size(6, 7), markSize, null);    
+            var cam2 = new CameraCV(frms2.ToArray(), new Size(6, 7), markSize, null);
+
+            var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_path1, @"cam2\" + load_path1);
             comboImages.Items.AddRange(frms3.ToArray());
             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
@@ -343,15 +354,15 @@ namespace opengl3
             GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
             GL1.transRotZooms[1].off_x = -532;
             GL1.transRotZooms[1].off_y = 332;
-            GL1.transRotZooms[1].zoom = 2.2699;
+            GL1.transRotZooms[1].zoom = 2.6699;
             
             addButForMonitor(GL1, send.Size, send.Location);
 
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             GL1.add_TextBox(debugBox);
 
-            //UtilOpenCV.distortFolder(@"cam1\photo_1", GL1.cameraCV);
-            //UtilOpenCV.distortFolder(@"cam2\photo_1", GL1.cameraCV);
+            UtilOpenCV.distortFolder(@"cam1\photo_4", GL1.cameraCV);
+            UtilOpenCV.distortFolder(@"cam2\photo_4", GL1.cameraCV);
             // startGenerate();
 
             //  trB_SGBM_Enter();
@@ -1701,9 +1712,8 @@ namespace opengl3
 
 
 
-        #endregion
 
-       
+        #endregion
     }
     
 }

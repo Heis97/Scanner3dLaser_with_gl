@@ -95,6 +95,12 @@ namespace opengl3
             return new Mat[] { mat_warp , pointFTomat(p_aff), pointFTomat(p_aff_2) };
         }
         //static System.Drawing.PointF[] 
+        public static System.Drawing.PointF[] transfAffine(System.Drawing.PointF[] pointFs, Matrix<double> matrix)
+        {
+            var affineMatr_3d = matrix.ConcateVertical(new Matrix<double>(new double[1, 3] { { 0, 0, 1 } }));
+            var p_aff = CvInvoke.PerspectiveTransform(pointFs, affineMatr_3d);
+            return p_aff;
+        }
         public static Mat normalize(Mat im, int max = 255)
         {
             var data = new byte[1, 1, 1];
@@ -459,6 +465,19 @@ namespace opengl3
             CvInvoke.Line(im, new Point(im.Width / 2, 0), new Point(im.Width / 2, im.Height), color, 1);//
             CvInvoke.Line(im, new Point(0, im.Height / 2), new Point(im.Width, im.Height / 2), color, 1);//central krest
             CvInvoke.PutText(im, "P" + Convert.ToString(ind), pt5, FontFace.HersheyPlain, 1, color);
+        }
+
+        static public void printMatch(MCvPoint3D32f[][] p3d, System.Drawing.PointF[][] p2d )
+        {
+            for(int i=0;i<p3d.Length;i++)
+            {
+                for (int j = 0; j < p3d[i].Length; j++)
+                {
+                    Console.WriteLine(p3d[i][j].X + " | " + p3d[i][j].Y + " | " + p3d[i][j].Z + " -> " + p2d[i][j].X + " | " + p2d[i][j].X + " | ");
+                }
+                Console.WriteLine("________________________________________");
+            }
+            
         }
         static public TransRotZoom[] readTrz(string path)
         {
@@ -1619,7 +1638,7 @@ namespace opengl3
             var w_cv = n - 1;
             var h_cv = m - 1;
             var points_cv = new float[w_cv * h_cv, 2];
-            var points_all = new float[n*m*4, 2];
+            var points_all = new float[n*m*2, 2];
             int ind = 0;
             for (int x = 0; x < w_cv ; x++)
             {
@@ -1669,6 +1688,7 @@ namespace opengl3
                     points_all[ind, 1] = y + q_side; ind++;
                 }
             }
+            Console.WriteLine("point all len0: " + points_all.GetLength(0)+" ind : "+ind);
             Console.WriteLine(p_start.Count);
             for (int x = 0; x < im_ret.Width; x++)
             {

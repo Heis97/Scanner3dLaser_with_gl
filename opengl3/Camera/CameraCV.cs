@@ -36,14 +36,37 @@ namespace opengl3
         public Matrix<double> matrixSC;
 
 
-        public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern,int num = 1)
+        public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern,bool gen_board = false,bool affine = true)
         {
-            var matrs = GetMatricesCalib();
+            int num = 1;
+            if(gen_board)
+            {
+                num = 2;
+            }
+            var matrs = new Matrix<double>[1];
+            if(affine)
+            {
+                matrs = GetMatricesCalibAffine(pattern[0].Size, pattern_box.Size);
+            }
+            else
+            {
+                matrs = GetMatricesCalib();
+            }
+           
             var objps = new MCvPoint3D32f[matrs.Length][];
             for (int i=0; i<matrs.Length;i++)
             {
-               var ps = UtilOpenCV.matToPointF(UtilOpenCV.warpPerspNorm(pattern, matrs[i], pattern_box.Size)[num]);
-               var ps3d = new MCvPoint3D32f[ps.Length];
+                var ps = new System.Drawing.PointF[1];
+                if(affine)
+                {
+                    ps = UtilOpenCV.transfAffine(UtilOpenCV.matToPointF(pattern[num]), matrs[i]);
+                }
+                else
+                {
+                    ps = UtilOpenCV.matToPointF(UtilOpenCV.warpPerspNorm(pattern, matrs[i], pattern_box.Size)[num]);
+                }
+
+                var ps3d = new MCvPoint3D32f[ps.Length];
                 for(int j=0; j<ps3d.Length;j++)
                 {
                     ps3d[j] = new MCvPoint3D32f(ps[j].X, ps[j].Y, 0);
@@ -52,23 +75,34 @@ namespace opengl3
             }
             return objps;
         }
-         async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat[] pattern, string path,  GraphicGL graphicGL)
+         async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat[] pattern, string path,  GraphicGL graphicGL, bool affine = true)
          {
-            var matrs = GetMatricesCalib();
-            //var matrs = GetMatricesCalibAffine(pattern[0].Size, pattern_box.Size);
-
-            var p3d = generateObjps(pattern_box, pattern, 2);
-            var boards = UtilOpenCV.generate_BOARDs(p3d);
-            //prin.t(boards);
+            var matrs = new Matrix<double>[1];
+            if (affine)
+            {
+                matrs = GetMatricesCalibAffine(pattern[0].Size, pattern_box.Size);
+            }
+            else
+            {
+                matrs = GetMatricesCalib();
+            }
+            var boards = new float[1][];
+            
+            if (graphicGL != null)
+            {
+                var p3d = generateObjps(pattern_box, pattern, true,affine);
+                boards = UtilOpenCV.generate_BOARDs(p3d);
+            }
+           // prin.t(boards);
             for (int i=0; i<matrs.Length;i++)
             {
                 if(graphicGL!=null)
                 {                   
                     if(i!=0)
                     {
-                        graphicGL.remove_buff_gl_id(i + 9);
-                        //graphicGL.add_buff_gl_mesh_id(boards[i], i + 10, true);
+                        graphicGL.remove_buff_gl_id ( i + 9);
                     }
+                    //prin.t(i);
                     graphicGL.add_buff_gl_mesh_id(boards[i], i + 10, true);
                     await Task.Delay(100);
                     SaveImage_Chess(input, path,i);
@@ -77,8 +111,14 @@ namespace opengl3
                 else
                 {
                     await Task.Delay(500);
-                    showAndSaveImage_Chess_persp_tr(matrs[i], pattern_box, input, pattern, path, i);
-                    //showAndSaveImage_Chess_affine_tr(matrs[i], pattern_box, input, pattern, path, i);
+                    if(affine)
+                    {
+                        showAndSaveImage_Chess_affine_tr(matrs[i], pattern_box, input, pattern, path, i);
+                    }
+                    else
+                    {
+                        showAndSaveImage_Chess_persp_tr(matrs[i], pattern_box, input, pattern, path, i);
+                    }
                     await Task.Delay(500);
                 }
             }            
@@ -173,7 +213,7 @@ namespace opengl3
         static Matrix<double>[] GetMatricesCalibAffine(Size pat_size, Size box_size)
         {
 
-            var len = 9;
+            var len = 10;
             var matrs = new Matrix<double>[len];
 
             double n = 3;
@@ -184,13 +224,14 @@ namespace opengl3
             double offy = pat_size.Height * k;
             int ind = 0;
             
-            for (int i = 0; i < 3; i++)
+            for (int i = 1; i < 4; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    matrs[ind] = affinematr(0, 0, i * offx, j * offy);ind++;
+                    matrs[ind] = affinematr(0.1, k, i * offx, j * offy);ind++;
                 }
             }
+            matrs[ind] = affinematr(0.01, 3 * k, 0, 0);
 
             return matrs;
         }
@@ -198,7 +239,7 @@ namespace opengl3
          {
            
             return new Matrix<double>(new double[2, 3] {
-                    { k*Math.Cos(alpha),Math.Sin(alpha),  offx},
+                    { k*Math.Cos(alpha),-Math.Sin(alpha),  offx},
                     { Math.Sin(alpha),  k*Math.Cos(alpha),offy}
                     });
         }
@@ -479,7 +520,7 @@ namespace opengl3
                 }
 
 
-
+            Console.WriteLine("fr len: "+frames.Length);
             int ind_fr = 0;
             foreach (var frame in frames)
             {
@@ -492,16 +533,22 @@ namespace opengl3
                     var corn2 = corn.ToArray();
                     objps.Add(obp);
                     corners.Add(corn2);
-                  //  var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));
-                   // UtilOpenCV.drawPointsF(mat1, corn2, 255, 0, 0, 5);
+
+                    var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));                
                     if(obp_inp!=null)
-                    {
-                        //UtilOpenCV.drawPointsF(mat1, UtilMatr.toPointF(obp_inp[ind_fr]), 0, 255, 0, 5);
-                       // UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);
-                       // CvInvoke.Imshow("asda", mat1);
-                        //CvInvoke.WaitKey();
+                    {               
+                        UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);                       
                     }
-                    
+                    else
+                    {
+                        CvInvoke.DrawChessboardCorners(mat1, size, corn, ret);
+                        //UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp), 255, 0, 0, 3);
+                    }
+
+                    CvInvoke.Imshow("asda", mat1);
+                    CvInvoke.WaitKey();
+
+
                     //Console.WriteLine(frame.name);
                 }
                 else
@@ -525,10 +572,11 @@ namespace opengl3
             {
                 this.objps = obp_inp;
             }
-           /* Console.WriteLine(this.objps[0].Length);
-            Console.WriteLine(this.corners[0].Length);
-            prin.t("_______________");
-            prin.t(this.objps);
+            Console.WriteLine("objp: "+this.objps.Length);
+            Console.WriteLine("corn: " + this.corners.Length);
+            //prin.t("_______________");
+            //UtilOpenCV.printMatch(this.objps, this.corners);
+           /* prin.t(this.objps);
             prin.t("_______________");
             prin.t(this.corners);*/
             var err = CvInvoke.CalibrateCamera(this.objps, this.corners, frames[0].im.Size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(100, 0.01), out rvecs, out tvecs);
