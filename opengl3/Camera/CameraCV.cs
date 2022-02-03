@@ -529,7 +529,7 @@ namespace opengl3
                 var ret = CvInvoke.FindChessboardCorners(gray, size, corn);
                 if (ret == true)
                 {
-                    CvInvoke.CornerSubPix(gray, corn, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+                    CvInvoke.CornerSubPix(gray, corn, new Size(6, 6), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
                     var corn2 = corn.ToArray();
                     objps.Add(obp);
                     corners.Add(corn2);
@@ -544,11 +544,11 @@ namespace opengl3
                         CvInvoke.DrawChessboardCorners(mat1, size, corn, ret);
                         //UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp), 255, 0, 0, 3);
                     }
-
+                    
                     CvInvoke.Imshow("asda", mat1);
                     CvInvoke.WaitKey();
 
-
+                    
                     //Console.WriteLine(frame.name);
                 }
                 else

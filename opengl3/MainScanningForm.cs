@@ -137,8 +137,8 @@ namespace opengl3
 
             // var stl_loader = new STLmodel();
             //var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-            var load_path1 = @"photo_1\distort";
-            var load_path2 = @"photo_2\distort";
+            var load_path1 = @"photo_4\distort";
+            var load_path2 = @"photo_3\distort";
             //var load_path = "tutor";
             //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //GL1.add_buff_gl_lines_id(mesh, 10, true);
@@ -157,7 +157,7 @@ namespace opengl3
             frms2.AddRange(frms2b);
 
             var objps1a = CameraCV.generateObjps(imBox_pattern, patt, false,true);
-            var objps1b = CameraCV.generateObjps(imBox_pattern, patt, false, false);
+            var objps1b = CameraCV.generateObjps(imBox_pattern, patt, false, true);
 
             var objps = objps1a.ToList();
             objps.AddRange(objps1b);
@@ -352,6 +352,7 @@ namespace opengl3
             GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 1);
             GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
             GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
+            GL1.transRotZooms[1].xRot = 33;
             GL1.transRotZooms[1].off_x = -532;
             GL1.transRotZooms[1].off_y = 332;
             GL1.transRotZooms[1].zoom = 2.6699;
@@ -361,8 +362,8 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             GL1.add_TextBox(debugBox);
 
-            UtilOpenCV.distortFolder(@"cam1\photo_4", GL1.cameraCV);
-            UtilOpenCV.distortFolder(@"cam2\photo_4", GL1.cameraCV);
+           UtilOpenCV.distortFolder(@"cam1\photo_5", GL1.cameraCV);
+            UtilOpenCV.distortFolder(@"cam2\photo_5", GL1.cameraCV);
             // startGenerate();
 
             //  trB_SGBM_Enter();
