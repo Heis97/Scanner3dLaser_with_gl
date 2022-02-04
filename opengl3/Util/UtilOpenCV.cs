@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace opengl3
 {
@@ -95,6 +96,7 @@ namespace opengl3
             return new Mat[] { mat_warp , pointFTomat(p_aff), pointFTomat(p_aff_2) };
         }
         //static System.Drawing.PointF[] 
+
         public static System.Drawing.PointF[] transfAffine(System.Drawing.PointF[] pointFs, Matrix<double> matrix)
         {
             var affineMatr_3d = matrix.ConcateVertical(new Matrix<double>(new double[1, 3] { { 0, 0, 1 } }));
@@ -229,6 +231,37 @@ namespace opengl3
             return mat_ret;
         }
 
+        public static Mat noise(Mat mat, int val = 0, int range = 30)
+        {
+            Matrix<byte> matrix = new Matrix<byte>(mat.Width, mat.Height);
+            var data = (byte[,,])mat.GetData();
+            for(int i=0; i<data.GetLength(0);i++)
+            {
+                for (int j = 0; j < data.GetLength(1); j++)
+                {
+                    for (int k = 0; k < data.GetLength(2); k++)
+                    {
+
+                        data[i, j, k] += (byte)NormalDistribution.Random(val, range);
+                    }
+                }
+            }
+            //CvInvoke.cvConvertScale(mat, matrix);
+            //matrix.SetRandNormal(new MCvScalar(val), new MCvScalar(range));
+
+           // prin.t(matrix);
+            return new Image<Bgr,byte>(data).Mat;
+        }
+        public static Mat GLnoise(Mat mat, int val = 0, int range = 30, int kernel_size = 7)
+        {
+            
+            CvInvoke.GaussianBlur(mat, mat, new Size(kernel_size, kernel_size), 0);
+            //CvInvoke.Randn(mat, new MCvScalar(val), new MCvScalar(range));
+            mat = noise(mat, val, range);
+            var mat1 = new Mat();
+            //CvInvoke.Flip(mat, mat1, FlipType.Vertical);
+            return mat;
+        }
         public static int[] takeLineFromMat(Image<Gray, byte> im, int y)
         {
             var line = new int[im.Width];
@@ -314,9 +347,17 @@ namespace opengl3
             mat1.Save("cam2\\" + folder + "\\" + name);
 
         }
-        static public Mat calcSubpixelPrec(Size size, GraphicGL graphicGL, float markSize,int id_monit)
+        static public Mat calcSubpixelPrec(Size size, GraphicGL graphicGL, float markSize, int id_monit, Mat inpMat = null)
         {
-            Mat mat = graphicGL.matFromMonitor(id_monit);
+            Mat mat = new Mat();
+            if(inpMat==null)
+            {
+                mat = graphicGL.matFromMonitor(id_monit);
+            }
+            else
+            {
+                mat = inpMat;
+            }
             var len = size.Width * size.Height;
             var obp = new MCvPoint3D32f[len];
             var cornF = new System.Drawing.PointF[len];
@@ -332,7 +373,7 @@ namespace opengl3
             }
             for (int i = 0; i < obp.Length; i++)
             {
-                var p_GL = graphicGL.calcPixel(new Vertex4f(markSize * obp[i].Y, -markSize * obp[i].X, obp[i].Z, 1), id_monit);
+                var p_GL = graphicGL.calcPixel(new Vertex4f( markSize * obp[i].X, markSize * obp[i].Y, obp[i].Z, 1), id_monit);
                 cornF_GL[i] = new System.Drawing.PointF(p_GL.X, p_GL.Y);
                 var p_chess = cornF[i];
                 cornF_delt[i] = new System.Drawing.PointF(p_GL.X - p_chess.X, p_GL.Y - p_chess.Y);
@@ -351,6 +392,9 @@ namespace opengl3
             S.X = kvs.X / len;
             S.Y = kvs.Y / len;
             Console.WriteLine(S);
+            var matM = new Mat(mat, new Rectangle(0, 0, mat.Width, mat.Height));
+            drawMatches(matM, cornF, cornF_GL, 0, 255, 0);
+            //CvInvoke.Imshow("2", matM);
             drawPointsF(mat, cornF, 255, 0, 0, 1);
             drawPointsF(mat, cornF_GL, 0, 0, 255, 1);
             return mat;
@@ -387,7 +431,7 @@ namespace opengl3
             var color = new MCvScalar(b, g, r);//bgr
             if (points.Length != 0)
             {
-                Console.WriteLine("LEN_ DRAW_P " + points.Length);
+                //Console.WriteLine("LEN_ DRAW_P " + points.Length);
 
                 foreach (var p in points)
                 {
@@ -940,9 +984,8 @@ namespace opengl3
                 }
             }
 
-
             var gray = mat.ToImage<Gray, byte>();
-            var ret = CvInvoke.FindChessboardCorners(gray, size, corn);
+            var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.FastCheck);
             if (ret == true)
             {
                 CvInvoke.CornerSubPix(gray, corn, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(100, 0.0001));

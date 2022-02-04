@@ -82,6 +82,10 @@ namespace opengl3
         {
             data = new float[] { x, y, z, 1 };
         }
+        public Vert4f(Vertex4f vertex)
+        {
+            data = new float[] { vertex.x, vertex.y, vertex.z, vertex.w };
+        }
         public PointF getPoint()
         {
             if(data[3]!=0)

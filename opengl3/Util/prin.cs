@@ -234,6 +234,40 @@ namespace opengl3
             }
 
         }
+        public static void t(Matrix<byte> matr)
+        {
+            Console.WriteLine("cols x rows: " + matr.Rows + " x " + matr.Cols);
+            if (matr.Cols != 1)
+            {
+                for (int i = 0; i < matr.Rows; i++)
+                {
+                    for (int j = 0; j < matr.Cols; j++)
+                    {
+                        if(matr.NumberOfChannels==1)
+                        {
+                            Console.Write(matr[i, j] + " ");
+                        }
+                        else
+                        {
+                            for(int k=0; k< matr.NumberOfChannels; k++)
+                            {
+                                //Console.Write(matr. + " ");
+                            }
+                        }
+                    }
+                    Console.WriteLine(" ");
+                }
+            }
+            else
+            {
+                for (int i = 0; i < matr.Rows; i++)
+                {
+                    Console.Write(matr[i, 0] + " ");
+                }
+                Console.WriteLine(" ");
+            }
+
+        }
         public static void t(Matrix4x4f matr)
         {
             for (uint i = 0; i < 4; i++)

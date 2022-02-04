@@ -503,9 +503,9 @@ namespace opengl3
         /// <returns></returns>
         public PointF calcPixel(Vertex4f point, int id)
         {
-            var p2 = MVPs[id] * point;
-            var p4 = p2 / p2.w;
-            var p3 = toTRZcord(new PointF(p4.x, p4.y));
+            var p2 =new  Matr4x4f( MVPs[id]) * new Vert4f(point);
+            p2.Norm();
+            var p3 = toTRZcord(new PointF(p2.data[0], p2.data[1]));
             
             //Console.WriteLine("v: " + p3.X + " " + p3.Y + " " + p2.z + " " + p2.w + " mvp_len: " + MVPs[0].ToString());
             return p3;

@@ -534,7 +534,7 @@ namespace opengl3
                     objps.Add(obp);
                     corners.Add(corn2);
 
-                    var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));                
+                   /* var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));                
                     if(obp_inp!=null)
                     {               
                         UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);                       
@@ -546,7 +546,7 @@ namespace opengl3
                     }
                     
                     CvInvoke.Imshow("asda", mat1);
-                    CvInvoke.WaitKey();
+                    CvInvoke.WaitKey();*/
 
                     
                     //Console.WriteLine(frame.name);

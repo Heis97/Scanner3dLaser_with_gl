@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Accord.Statistics.Models.Regression;
+
 using Accord.Statistics.Models.Regression.Linear;
 using Accord.Math;
 using Accord.Math.Optimization.Losses;
@@ -168,7 +169,7 @@ namespace opengl3
             var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_path1, @"cam2\" + load_path1);
             comboImages.Items.AddRange(frms3.ToArray());
             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
-
+            
 
             if (comboImages.Items.Count > 0)
             {
@@ -177,10 +178,13 @@ namespace opengl3
             //calcF();
 
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-            //generateImage3D_BOARD(7, 8, markSize);
-            //generateImage3D(7, 0.5f,  markSize);
+            generateImage3D_BOARD(7, 8, markSize);
+
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
+
+
+         
         }
         void init_vars()
         {
@@ -352,21 +356,22 @@ namespace opengl3
             GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 1);
             GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
             GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
-            GL1.transRotZooms[1].xRot = 33;
+           /* GL1.transRotZooms[1].xRot = 33;
             GL1.transRotZooms[1].off_x = -532;
             GL1.transRotZooms[1].off_y = 332;
-            GL1.transRotZooms[1].zoom = 2.6699;
+            GL1.transRotZooms[1].zoom = 2.6699;*/
             
             addButForMonitor(GL1, send.Size, send.Location);
 
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             GL1.add_TextBox(debugBox);
 
-           UtilOpenCV.distortFolder(@"cam1\photo_5", GL1.cameraCV);
-            UtilOpenCV.distortFolder(@"cam2\photo_5", GL1.cameraCV);
-            // startGenerate();
+            //UtilOpenCV.distortFolder(@"cam1\photo_5", GL1.cameraCV);
+            //UtilOpenCV.distortFolder(@"cam2\photo_5", GL1.cameraCV);
 
-            //  trB_SGBM_Enter();
+            // startGenerate();
+            //trB_SGBM_Enter();
+            
 
         }
         Mat toMat(Bitmap bitmap)
@@ -432,45 +437,28 @@ namespace opengl3
         {
 
             GL1.glControl_Render(sender, e);
-            //GL1.printDebug(debugBox);
             if (GL1.rendercout == 0)
             {
                 UtilOpenCV.SaveMonitor(GL1);
             }
-
-            // imBox_mark1.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(0), cameraDistortionCoeffs_dist);
-            // imBox_mark2.Image = UtilOpenCV.remapDistImOpenCvCentr(GL1.matFromMonitor(1), cameraDistortionCoeffs_dist);
-            // imBox_mark1.
         
             var mat1_or =  GL1.matFromMonitor(0);
             var mat2_or = GL1.matFromMonitor(1);
 
-            // CvInvoke.Flip(mat1_or, mat1_or, FlipType.Vertical);
-            //CvInvoke.Flip(mat2_or, mat2_or, FlipType.Vertical);
-            // var mat1 = stereocam.cameraCVs[0].undist(UtilOpenCV.remapDistImOpenCvCentr(mat1_or, cameraDistortionCoeffs_dist));
-            // var mat2 = stereocam.cameraCVs[1].undist(UtilOpenCV.remapDistImOpenCvCentr(mat1_or, cameraDistortionCoeffs_dist));
-            var mat1 = new Mat();
-            var mat2 = new Mat();
-            CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
-            CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
-            imBox_mark1.Image = mat1;
-            imBox_mark2.Image = mat2;
-            
+            /* var mat1 = new Mat();
+             var mat2 = new Mat();
+             CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
+             CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);*/
+
+            var mat1 = UtilOpenCV.remapDistImOpenCvCentr(UtilOpenCV.GLnoise(mat1_or, 0, 10), cameraDistortionCoeffs_dist);
+            var mat2 = UtilOpenCV.GLnoise(mat2_or, 0, 10);
+            imBox_mark1.Image = UtilOpenCV.calcSubpixelPrec(new Size(6, 7), GL1, markSize, 1, mat2);
+            imBox_mark2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
+
             //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
 
-            /*stereocam.cameraCVs[0].setMatrixScene(GL1.rightMatrMon(0));
-            stereocam.cameraCVs[1].setMatrixScene(GL1.rightMatrMon(1));
-             
-            stereocam.prM1 = stereocam.cameraCVs[0].prjmatrix;
-            stereocam.prM2 = stereocam.cameraCVs[1].prjmatrix;*/
-
-            //reconst = features.reconstuctScene(stereocam, features.desks1, features.desks2, features.mchs);
-
-            //reconst_lines1 = features.pointsForLines(features.mps1, stereocam.cameraCVs[0]);
-            //reconst_lines2 = features.pointsForLines(features.mps2, stereocam.cameraCVs[1]);
-            //GL1.buffersGl.removeObj(10);
-            //GL1.buffersGl.add_obj_id(reconst, 10, true, PrimitiveType.Points);
         }
+
         Matrix<double> matrixFromCam(CameraCV cam)
         {
             var rotateMatrix = new Matrix<double>(3, 3);
@@ -1429,7 +1417,7 @@ namespace opengl3
             float w = sidef * (float)n;
             float h = sidef * (float)k;
             float offx = -sidef;
-            float offy = -h + sidef;
+            float offy =  -sidef;
             float z = 0f;
             float[] square_buf = {
                             0.0f,0.0f,0.0f, // triangle 1 : begin

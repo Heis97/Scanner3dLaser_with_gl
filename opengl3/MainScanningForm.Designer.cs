@@ -2143,7 +2143,7 @@ namespace opengl3
             this.textBox_K1.Name = "textBox_K1";
             this.textBox_K1.Size = new System.Drawing.Size(100, 20);
             this.textBox_K1.TabIndex = 4;
-            this.textBox_K1.Text = "0.1";
+            this.textBox_K1.Text = "-1";
             // 
             // label28
             // 
