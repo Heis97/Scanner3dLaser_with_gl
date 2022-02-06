@@ -139,7 +139,7 @@ namespace opengl3
             var pat_size = new Size(6, 7);
             var mat = pattern[0];
             var mat_aff = new Mat();
-            CvInvoke.WarpAffine(mat, mat_aff, matrix, pattern_box.Size);
+            CvInvoke.WarpAffine(mat, mat_aff, matrix, pattern_box.Size,Inter.Linear,Warp.Default,BorderType.Constant,new MCvScalar(127,127,127));
             pattern_box.Image = mat_aff;
             
             for (int j = 0; j < input.Length; j++)
@@ -165,7 +165,7 @@ namespace opengl3
                     var inp = (Mat)input[j].Image;
                     if (CvInvoke.FindChessboardCorners(inp.ToImage<Gray, byte>(), pat_size, new Mat()))
                     {
-                        //UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());
+                        UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());
                     }
                 }
             }
@@ -218,8 +218,11 @@ namespace opengl3
 
             double n = 3;
             //Console.WriteLine("k " + k);
-            double k = (double)box_size.Height/ ((double)3*pat_size.Height);
-           // Console.WriteLine("k " +k);
+            double k1 = (double)box_size.Height/ ((double)3*pat_size.Height);
+            double k2 = (double)box_size.Width / ((double)3 * pat_size.Width);
+            double k = Math.Min(k1, k2);
+           
+            // Console.WriteLine("k " +k);
             double offx = pat_size.Width * k;
             double offy = pat_size.Height * k;
             int ind = 0;
@@ -228,7 +231,7 @@ namespace opengl3
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    matrs[ind] = affinematr(0.1, k, i * offx, j * offy);ind++;
+                    matrs[ind] = affinematr(0.01, 1.5*k, i * offx/2, j * offy/2);ind++;
                 }
             }
             matrs[ind] = affinematr(0.01, 3 * k, 0, 0);
@@ -529,7 +532,7 @@ namespace opengl3
                 var ret = CvInvoke.FindChessboardCorners(gray, size, corn);
                 if (ret == true)
                 {
-                    CvInvoke.CornerSubPix(gray, corn, new Size(6, 6), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+                    CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
                     var corn2 = corn.ToArray();
                     objps.Add(obp);
                     corners.Add(corn2);

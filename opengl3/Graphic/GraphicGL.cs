@@ -355,7 +355,14 @@ namespace opengl3
             var y = (sizeView.Width / 2) * pf.Y + sizeView.Height / 2;
             return new PointF(x, y);
         }
+        PointF toTRZcord_photo(PointF pf,Size size_trz)
+        {
+            var sizeView = new Rectangle(new Point(0, 0), size_trz);
 
+            var x = (sizeView.Width / 2) * pf.X + sizeView.Width / 2;
+            var y = (sizeView.Width / 2) * pf.Y + sizeView.Height / 2;
+            return new PointF(x, y);
+        }
         public void swapTRZ(int ind1, int ind2)
         {
             var lamb1 = transRotZooms[ind1].rect;
@@ -379,6 +386,27 @@ namespace opengl3
                 ind++;
             }
             return -1;
+        }
+         public Matrix4x4f[] compMVP_photo(string data)
+        {
+            var trz = new TransRotZoom(data);
+            var zoom = trz.zoom;
+            var off_x = trz.off_x;
+            var off_y = trz.off_y;
+            var off_z = trz.off_z;
+            var xRot = trz.xRot;
+            var yRot = trz.yRot;
+            var zRot = trz.zRot;
+            
+            var _Pm = ProjmatrF(53f);
+            var _Vm = Transmatr((float)off_x, -(float)off_y, (float)zoom * (float)off_z) * RotXmatr(xRot) * RotYmatr(yRot) * RotZmatr(zRot);
+            var Pm_ = new Matrix4x4f((_Pm).data);
+            var Vm_ = new Matrix4x4f((_Vm).data);
+
+            var Mm_ = Matrix4x4f.Identity;
+            var MVP_ = new Matrix4x4f((_Pm * _Vm).data);
+
+            return new Matrix4x4f[] { Pm_, Vm_, Mm_, MVP_ };
         }
 
         public Matrix4x4f[] compMVPmatrix(TransRotZoom trz_in)
@@ -507,6 +535,16 @@ namespace opengl3
             p2.Norm();
             var p3 = toTRZcord(new PointF(p2.data[0], p2.data[1]));
             
+            //Console.WriteLine("v: " + p3.X + " " + p3.Y + " " + p2.z + " " + p2.w + " mvp_len: " + MVPs[0].ToString());
+            return p3;
+        }
+
+         public PointF calcPixel_photo(Vertex4f point, string data,Size size_trz)
+        {
+            var p2 = new Matr4x4f(compMVP_photo(data)[3]) * new Vert4f(point);
+            p2.Norm();
+            var p3 = toTRZcord_photo(new PointF(p2.data[0], p2.data[1]), size_trz);
+
             //Console.WriteLine("v: " + p3.X + " " + p3.Y + " " + p2.z + " " + p2.w + " mvp_len: " + MVPs[0].ToString());
             return p3;
         }

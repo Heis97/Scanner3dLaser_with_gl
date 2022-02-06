@@ -233,6 +233,7 @@ namespace opengl3
             this.imBox_input_2 = new Emgu.CV.UI.ImageBox();
             this.imBox_input_1 = new Emgu.CV.UI.ImageBox();
             this.imBox_pattern = new Emgu.CV.UI.ImageBox();
+            this.but_ph_1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -1183,7 +1184,7 @@ namespace opengl3
             this.txBx_photoName.Name = "txBx_photoName";
             this.txBx_photoName.Size = new System.Drawing.Size(184, 26);
             this.txBx_photoName.TabIndex = 119;
-            this.txBx_photoName.Text = "photo_5";
+            this.txBx_photoName.Text = "photo_6";
             // 
             // imBox_base_2
             // 
@@ -2165,6 +2166,7 @@ namespace opengl3
             // 
             // tabCalibMonit
             // 
+            this.tabCalibMonit.Controls.Add(this.but_ph_1);
             this.tabCalibMonit.Controls.Add(this.but_calib_Start);
             this.tabCalibMonit.Controls.Add(this.textBoxK_8);
             this.tabCalibMonit.Controls.Add(this.trackBar27);
@@ -2197,7 +2199,7 @@ namespace opengl3
             // 
             // but_calib_Start
             // 
-            this.but_calib_Start.Location = new System.Drawing.Point(1749, 585);
+            this.but_calib_Start.Location = new System.Drawing.Point(1776, 479);
             this.but_calib_Start.Name = "but_calib_Start";
             this.but_calib_Start.Size = new System.Drawing.Size(100, 67);
             this.but_calib_Start.TabIndex = 23;
@@ -2207,7 +2209,7 @@ namespace opengl3
             // 
             // textBoxK_8
             // 
-            this.textBoxK_8.Location = new System.Drawing.Point(1749, 531);
+            this.textBoxK_8.Location = new System.Drawing.Point(1749, 439);
             this.textBoxK_8.Name = "textBoxK_8";
             this.textBoxK_8.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_8.TabIndex = 22;
@@ -2216,7 +2218,7 @@ namespace opengl3
             // trackBar27
             // 
             this.trackBar27.AccessibleName = "8";
-            this.trackBar27.Location = new System.Drawing.Point(1514, 519);
+            this.trackBar27.Location = new System.Drawing.Point(1514, 427);
             this.trackBar27.Maximum = 100;
             this.trackBar27.Minimum = -100;
             this.trackBar27.Name = "trackBar27";
@@ -2227,7 +2229,7 @@ namespace opengl3
             // 
             // textBoxK_7
             // 
-            this.textBoxK_7.Location = new System.Drawing.Point(1749, 480);
+            this.textBoxK_7.Location = new System.Drawing.Point(1749, 388);
             this.textBoxK_7.Name = "textBoxK_7";
             this.textBoxK_7.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_7.TabIndex = 20;
@@ -2236,7 +2238,7 @@ namespace opengl3
             // trackBar28
             // 
             this.trackBar28.AccessibleName = "7";
-            this.trackBar28.Location = new System.Drawing.Point(1514, 468);
+            this.trackBar28.Location = new System.Drawing.Point(1514, 376);
             this.trackBar28.Maximum = 100;
             this.trackBar28.Minimum = -100;
             this.trackBar28.Name = "trackBar28";
@@ -2246,7 +2248,7 @@ namespace opengl3
             // 
             // textBoxK_6
             // 
-            this.textBoxK_6.Location = new System.Drawing.Point(1749, 429);
+            this.textBoxK_6.Location = new System.Drawing.Point(1749, 337);
             this.textBoxK_6.Name = "textBoxK_6";
             this.textBoxK_6.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_6.TabIndex = 18;
@@ -2255,7 +2257,7 @@ namespace opengl3
             // trackBar29
             // 
             this.trackBar29.AccessibleName = "6";
-            this.trackBar29.Location = new System.Drawing.Point(1514, 417);
+            this.trackBar29.Location = new System.Drawing.Point(1514, 325);
             this.trackBar29.Maximum = 100;
             this.trackBar29.Minimum = -100;
             this.trackBar29.Name = "trackBar29";
@@ -2265,7 +2267,7 @@ namespace opengl3
             // 
             // textBoxK_5
             // 
-            this.textBoxK_5.Location = new System.Drawing.Point(1749, 324);
+            this.textBoxK_5.Location = new System.Drawing.Point(1749, 286);
             this.textBoxK_5.Name = "textBoxK_5";
             this.textBoxK_5.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_5.TabIndex = 16;
@@ -2274,7 +2276,7 @@ namespace opengl3
             // trackBar24
             // 
             this.trackBar24.AccessibleName = "5";
-            this.trackBar24.Location = new System.Drawing.Point(1514, 312);
+            this.trackBar24.Location = new System.Drawing.Point(1514, 274);
             this.trackBar24.Maximum = 100;
             this.trackBar24.Minimum = -100;
             this.trackBar24.Name = "trackBar24";
@@ -2284,7 +2286,7 @@ namespace opengl3
             // 
             // textBoxK_4
             // 
-            this.textBoxK_4.Location = new System.Drawing.Point(1749, 273);
+            this.textBoxK_4.Location = new System.Drawing.Point(1749, 235);
             this.textBoxK_4.Name = "textBoxK_4";
             this.textBoxK_4.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_4.TabIndex = 14;
@@ -2293,7 +2295,7 @@ namespace opengl3
             // trackBar25
             // 
             this.trackBar25.AccessibleName = "4";
-            this.trackBar25.Location = new System.Drawing.Point(1514, 261);
+            this.trackBar25.Location = new System.Drawing.Point(1514, 223);
             this.trackBar25.Maximum = 100;
             this.trackBar25.Minimum = -100;
             this.trackBar25.Name = "trackBar25";
@@ -2304,7 +2306,7 @@ namespace opengl3
             // 
             // textBoxK_3
             // 
-            this.textBoxK_3.Location = new System.Drawing.Point(1749, 222);
+            this.textBoxK_3.Location = new System.Drawing.Point(1749, 184);
             this.textBoxK_3.Name = "textBoxK_3";
             this.textBoxK_3.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_3.TabIndex = 12;
@@ -2313,7 +2315,7 @@ namespace opengl3
             // trackBar26
             // 
             this.trackBar26.AccessibleName = "3";
-            this.trackBar26.Location = new System.Drawing.Point(1514, 210);
+            this.trackBar26.Location = new System.Drawing.Point(1514, 172);
             this.trackBar26.Maximum = 100;
             this.trackBar26.Minimum = -100;
             this.trackBar26.Name = "trackBar26";
@@ -2381,27 +2383,38 @@ namespace opengl3
             // 
             // imBox_input_2
             // 
-            this.imBox_input_2.Location = new System.Drawing.Point(252, 817);
+            this.imBox_input_2.Location = new System.Drawing.Point(1522, 735);
             this.imBox_input_2.Name = "imBox_input_2";
-            this.imBox_input_2.Size = new System.Drawing.Size(240, 180);
+            this.imBox_input_2.Size = new System.Drawing.Size(354, 265);
             this.imBox_input_2.TabIndex = 4;
             this.imBox_input_2.TabStop = false;
             // 
             // imBox_input_1
             // 
-            this.imBox_input_1.Location = new System.Drawing.Point(6, 817);
+            this.imBox_input_1.Location = new System.Drawing.Point(1154, 735);
             this.imBox_input_1.Name = "imBox_input_1";
-            this.imBox_input_1.Size = new System.Drawing.Size(240, 180);
+            this.imBox_input_1.Size = new System.Drawing.Size(362, 262);
             this.imBox_input_1.TabIndex = 3;
             this.imBox_input_1.TabStop = false;
             // 
             // imBox_pattern
             // 
-            this.imBox_pattern.Location = new System.Drawing.Point(6, 6);
+            this.imBox_pattern.Location = new System.Drawing.Point(552, 286);
             this.imBox_pattern.Name = "imBox_pattern";
-            this.imBox_pattern.Size = new System.Drawing.Size(1200, 600);
+            this.imBox_pattern.Size = new System.Drawing.Size(790, 443);
             this.imBox_pattern.TabIndex = 2;
             this.imBox_pattern.TabStop = false;
+            // 
+            // but_ph_1
+            // 
+            this.but_ph_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_ph_1.Location = new System.Drawing.Point(1770, 552);
+            this.but_ph_1.Name = "but_ph_1";
+            this.but_ph_1.Size = new System.Drawing.Size(106, 33);
+            this.but_ph_1.TabIndex = 117;
+            this.but_ph_1.Text = "photo";
+            this.but_ph_1.UseVisualStyleBackColor = true;
+            this.but_ph_1.Click += new System.EventHandler(this.butSaveIm_Click);
             // 
             // MainScanningForm
             // 
@@ -2688,6 +2701,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_calib_Start;
         private System.Windows.Forms.Button but_gl_cam_calib;
         private System.Windows.Forms.Label lab_TRZ;
+        private System.Windows.Forms.Button but_ph_1;
     }
 }
 

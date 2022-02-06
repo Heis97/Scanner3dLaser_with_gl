@@ -183,8 +183,9 @@ namespace opengl3
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
 
+            //load_subpix();
 
-         
+
         }
         void init_vars()
         {
@@ -201,7 +202,10 @@ namespace opengl3
                 textBoxK_3,textBoxK_4,textBoxK_5,
                 textBoxK_6,textBoxK_7,textBoxK_8,
             };
-            patt = UtilOpenCV.generateImage_chessboard(8, 7,500);
+
+            patt = UtilOpenCV.generateImage_chessboard_circle(7, 6,220);
+            var patt_ph = new Mat("old_patt_1.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
+            patt[0] = patt_ph;
         }
 
        
@@ -356,10 +360,10 @@ namespace opengl3
             GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 1);
             GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
             GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
-           /* GL1.transRotZooms[1].xRot = 33;
-            GL1.transRotZooms[1].off_x = -532;
-            GL1.transRotZooms[1].off_y = 332;
-            GL1.transRotZooms[1].zoom = 2.6699;*/
+          // GL1.transRotZooms[1].xRot = 33;
+            GL1.transRotZooms[1].off_x = -25;
+            GL1.transRotZooms[1].off_y = 31;
+           // GL1.transRotZooms[1].zoom = 2.6699;
             
             addButForMonitor(GL1, send.Size, send.Location);
 
@@ -371,8 +375,8 @@ namespace opengl3
 
             // startGenerate();
             //trB_SGBM_Enter();
-            
 
+           
         }
         Mat toMat(Bitmap bitmap)
         {
@@ -452,13 +456,56 @@ namespace opengl3
 
             var mat1 = UtilOpenCV.remapDistImOpenCvCentr(UtilOpenCV.GLnoise(mat1_or, 0, 10), cameraDistortionCoeffs_dist);
             var mat2 = UtilOpenCV.GLnoise(mat2_or, 0, 10);
-            imBox_mark1.Image = UtilOpenCV.calcSubpixelPrec(new Size(6, 7), GL1, markSize, 1, mat2);
+            imBox_mark1.Image = mat2;// UtilOpenCV.calcSubpixelPrec(new Size(6, 7), GL1, markSize, 1, mat2);
             imBox_mark2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
 
             //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
 
         }
+        void load_subpix()
+        {
+            var folders = Directory.GetDirectories("subpix");
+            var frms = new List<Frame[]>();
+            foreach (var s in folders)
+            {
+                var frm = FrameLoader.loadImages_chess(s);
+                frms.Add(frm);
+                //comboImages.Items.AddRange(frm);
+            }
 
+            var fr_ar = frms.ToArray();
+
+            for(int i=0; i<fr_ar.Length;i++)
+            {
+                for (int j = 0; j < fr_ar[i].Length; j++)
+                {
+                    for(int k = 1; k<13;k++)
+                    {
+                        var err = UtilOpenCV.calcSubpixelPrec(new Size(6, 7), GL1, markSize, 1, fr_ar[i][j].im, fr_ar[i][j].name,k);
+                        if(err[0].X<100000000000)
+                        {
+                            Console.WriteLine(err[0] + " " + err[1].X + " " + k);
+                        }                       
+                    }
+                    Console.WriteLine("__________________________");
+                }
+            }
+        }
+        async void calibr_make_photo()
+        {
+            var zoom = 0.1;
+            for(int i=0; i<20; i++)
+            {
+                for(int j=0; j <5; j++)
+                {
+                    
+                    GL1.transRotZooms[1].zoom = zoom * i;
+                    await Task.Delay(100);
+                    UtilOpenCV.saveImage(imBox_mark1, "subpix\\calib_graph_" + i, GL1.transRotZooms[1].ToString() + j);
+                }
+                
+            }           
+        }
         Matrix<double> matrixFromCam(CameraCV cam)
         {
             var rotateMatrix = new Matrix<double>(3, 3);
@@ -512,24 +559,28 @@ namespace opengl3
             var ptt = UtilOpenCV.warpPerspNorm(patt, persp_matr, imBox_pattern.Size);
             var mat1 = ptt[0];
            // prin.t(ptt[1]);
-            UtilOpenCV.drawPointsF(mat1, UtilOpenCV.matToPointF(ptt[1]), 255, 0, 0, 5);
+            
             imBox_pattern.Image = mat1;
-            imBox_input_1.Image = UtilOpenCV.drawChessboard((Mat)imBox_pattern.Image, new Size(7, 6),false,true);
+            //var ps = CvInvoke.FindCirclesGrid(mat1.ToImage<Gray,byte>(), new Size(6, 7), CalibCgType.SymmetricGrid,new Emgu.CV.Features2D.SimpleBlobDetector());
+            
+            //UtilOpenCV.drawPointsF(mat1, ps, 255, 0, 5, 10);
+             imBox_input_1.Image = FindCircles.findCircles( mat1,new Size(6,7));
+            //imBox_input_1.Image = UtilOpenCV.drawChessboard((Mat)imBox_pattern.Image, new Size(7, 6),false,true);
         }
         private void but_SubpixPrec_Click(object sender, EventArgs e)
         {
             // var mat1 = (Mat)imBox_mark1.Image;
             // var mat2 = (Mat)imBox_mark2.Image;
-            var im_name = "tsukuba";//"tsukuba";//"venus"
+           /* var im_name = "tsukuba";//"tsukuba";//"venus"
             var mat1 = new Mat(@"datasets\" + im_name + @"\im2.png");
             var mat2 = new Mat(@"datasets\" + im_name + @"\im6.png");
             var disp = UtilOpenCV.PaintLines(mat1.ToImage<Gray, byte>(), mat2.ToImage<Gray, byte>(), mat1.Height / 2,features);
             var depth = new Mat();
-            //prin.t(mat1);
+  
             var hist = UtilOpenCV.histogram(disp[1].Mat);
             depth = UtilOpenCV.normalize(disp[1].Mat);
             imBox_3dDebug.Image = UtilOpenCV.normalize(disp[1].Mat);
-            imBox_disparity.Image = UtilOpenCV.normalize(disp[2].Mat);
+            imBox_disparity.Image = UtilOpenCV.normalize(disp[2].Mat);*/
 
             /*var disp = features.disparMap((Mat)imBox_mark1.Image, (Mat)imBox_mark2.Image, 30, 3);
             imBox_3dDebug.Image = disp[0];
@@ -537,6 +588,8 @@ namespace opengl3
             mesh =  GL1.scaleMesh(mesh, 1f, 0.5f, 0.5f, 2f);
             mesh = GL1.translateMesh(mesh, 200f);
             GL1.addMesh(mesh, PrimitiveType.Triangles, 0.9f);*/
+
+            calibr_make_photo();
         }
         private void trB_SGBM_Scroll(object sender, EventArgs e)
         {
@@ -1171,10 +1224,10 @@ namespace opengl3
         Mat stereoProc(Mat mat1, Mat mat2)
         {
             //return features.drawDescriptorsMatch(ref mat1, ref mat2);
-            imBox_input_1.Image = mat1;
-            imBox_input_2.Image = mat2;
-           //imBox_input_1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
-            //imBox_input_2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
+            //imBox_input_1.Image = mat1;
+            //imBox_input_2.Image = mat2;
+           imBox_input_1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
+            imBox_input_2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
             return null;
         }
         private void videoStart_Click(object sender, EventArgs e)
@@ -1187,7 +1240,7 @@ namespace opengl3
             var capture = new VideoCapture(number);
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
             capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-            capture.SetCaptureProperty(CapProp.Contrast, 30);
+            //capture.SetCaptureProperty(CapProp.Contrast, 30);
             camera_ind.Add((int)capture.Ptr);
             capture.ImageGrabbed += capturingVideo;
             capture.Start();

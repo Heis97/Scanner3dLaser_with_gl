@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Accord.Math;
 using Accord.Statistics.Distributions.Univariate;
 
 namespace opengl3
@@ -32,6 +33,7 @@ namespace opengl3
     }
     static public class UtilOpenCV
     {
+        
         public static Mat[] warpPerspNorm(Mat[] mats, Matrix<double> matrixPers,Size size)
         {
             var mat = mats[0];
@@ -347,7 +349,18 @@ namespace opengl3
             mat1.Save("cam2\\" + folder + "\\" + name);
 
         }
-        static public Mat calcSubpixelPrec(Size size, GraphicGL graphicGL, float markSize, int id_monit, Mat inpMat = null)
+        /// <summary>
+        /// ret (err, dist betw 2 points)
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="graphicGL"></param>
+        /// <param name="markSize"></param>
+        /// <param name="id_monit"></param>
+        /// <param name="inpMat"></param>
+        /// <param name="photo"></param>
+        /// <param name="kernel"></param>
+        /// <returns></returns>
+        static public System.Drawing.PointF[] calcSubpixelPrec(Size size, GraphicGL graphicGL, float markSize, int id_monit, Mat inpMat = null, string photo = null,int kernel=11)
         {
             Mat mat = new Mat();
             if(inpMat==null)
@@ -366,56 +379,108 @@ namespace opengl3
             var sum = new System.Drawing.PointF(0, 0);
             var kvs = new System.Drawing.PointF(0, 0);
             var S = new System.Drawing.PointF(0, 0);
-            var ret = compChessCoords(mat, ref obp, ref cornF, size);
+
+            var ret = compChessCoords(mat, ref obp, ref cornF, size,kernel);
             if (!ret)
             {
-                return null;
+                return new System.Drawing.PointF[] { new System.Drawing.PointF(float.MaxValue, float.MaxValue), new System.Drawing.PointF(float.MaxValue, float.MaxValue) };
             }
             for (int i = 0; i < obp.Length; i++)
             {
-                var p_GL = graphicGL.calcPixel(new Vertex4f( markSize * obp[i].X, markSize * obp[i].Y, obp[i].Z, 1), id_monit);
+                var p_GL = new PointF(0,0);
+                if (photo==null)
+                {
+                    p_GL = graphicGL.calcPixel(new Vertex4f(markSize * obp[i].X, markSize * obp[i].Y, obp[i].Z, 1), id_monit);
+                }
+                else
+                {
+                    p_GL = graphicGL.calcPixel_photo(new Vertex4f(markSize * obp[i].X, markSize * obp[i].Y, obp[i].Z, 1), photo, mat.Size);
+                }
                 cornF_GL[i] = new System.Drawing.PointF(p_GL.X, p_GL.Y);
                 var p_chess = cornF[i];
                 cornF_delt[i] = new System.Drawing.PointF(p_GL.X - p_chess.X, p_GL.Y - p_chess.Y);
                 sum.X += cornF_delt[i].X;
                 sum.Y += cornF_delt[i].Y;
                 //prin.t(cornF[i].ToString());
-                //prin.t(cornF_GL[i].ToString());
-                //prin.t("_________________");
+                
+                
             }
+            var x = cornF_GL[0].X - cornF_GL[1].X;
+            var y = cornF_GL[0].Y - cornF_GL[1].Y;
+
+            var dist = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+            //prin.t("_________________");
+            var raz = new System.Drawing.PointF(0, 0);
+            raz.X = sum.X / len;
+            raz.Y = sum.Y / len;
 
             for (int i = 0; i < obp.Length; i++)
             {
-                kvs.X += (float)Math.Pow((cornF_delt[i].X - sum.X), 2);
-                kvs.Y += (float)Math.Pow((cornF_delt[i].Y - sum.Y), 2);
+                cornF_delt[i].X -= raz.X;
+                cornF_delt[i].Y -= raz.Y;
+                //prin.t(cornF_delt[i].ToString());
+                S.X += Math.Abs(cornF_delt[i].X);
+                S.Y += Math.Abs(cornF_delt[i].Y);
+
             }
-            S.X = kvs.X / len;
-            S.Y = kvs.Y / len;
-            Console.WriteLine(S);
+
+
+          
+            //Console.WriteLine(S);
             var matM = new Mat(mat, new Rectangle(0, 0, mat.Width, mat.Height));
-            drawMatches(matM, cornF, cornF_GL, 0, 255, 0);
+            //drawMatches(matM, cornF, cornF_GL, 0, 255, 0);
             //CvInvoke.Imshow("2", matM);
-            drawPointsF(mat, cornF, 255, 0, 0, 1);
-            drawPointsF(mat, cornF_GL, 0, 0, 255, 1);
-            return mat;
+            //drawPointsF(mat, cornF, 255, 0, 0, 1);
+            //drawPointsF(mat, cornF_GL, 0, 0, 255, 1);
+            return new System.Drawing.PointF[] { S,  new System.Drawing.PointF((float)dist,0) };
         }
 
         static public void drawMatches(Mat im, System.Drawing.PointF[] points1, System.Drawing.PointF[] points2, int r, int g, int b, int size = 1)
         {
             drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);
         }
+        static MCvScalar randomColor()
+        {
+            var rand = Accord.Math.Random.Generator.Random;
+            int r = rand.Next(0, 255);
+            int g = rand.Next(0, 255);
+            int b = rand.Next(0, 255);
+            //Console.WriteLine(r + " " + g + " " + b);
+            return new MCvScalar(b, g, r);
+        }
         static public void drawMatches(Mat im, System.Drawing.Point[] points1, System.Drawing.Point[] points2, int r, int g, int b, int size = 1)
         {
             int ind = 0;
             var color = new MCvScalar(b, g, r);//bgr
+
             if (points1.Length != 0 && points2.Length != 0 && points1.Length == points2.Length)
             {
 
                 for(int i=0; i<points1.Length;i++)
                 {
+                    
                     CvInvoke.Circle(im, points1[i], size, color, -1);
                     CvInvoke.Circle(im, points2[i], size, color, -1);
-                    CvInvoke.Line(im, points1[i], points2[i], color, size);
+                    CvInvoke.Line(im, points1[i], points2[i], randomColor(), size);
+                    ind++;
+                }
+            }
+        }
+
+        static public void drawLines(Mat im, System.Drawing.PointF[] points1, int r, int g, int b, int size = 1)
+        {
+            drawLines(im, PointF.toPoint(points1), r, g, b, size);
+        }
+        static public void drawLines(Mat im, System.Drawing.Point[] points1, int r, int g, int b, int size = 1)
+        {
+            int ind = 0;
+            var color = new MCvScalar(b, g, r);//bgr
+            if (points1.Length != 0 )
+            {
+                for (int i = 0; i < points1.Length-1; i++)
+                {                  
+                    CvInvoke.Circle(im, points1[i], 2*size, color, 1);
+                    CvInvoke.Line(im, points1[i], points1[i+1], randomColor(), size);
                     ind++;
                 }
             }
@@ -429,6 +494,10 @@ namespace opengl3
         {
             int ind = 0;
             var color = new MCvScalar(b, g, r);//bgr
+            if(points==null)
+            {
+                return;
+            }
             if (points.Length != 0)
             {
                 //Console.WriteLine("LEN_ DRAW_P " + points.Length);
@@ -921,7 +990,7 @@ namespace opengl3
                 CvInvoke.GaussianBlur(gray, gray, new Size(5, 5), 0);
             }
            
-            var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.Default);
+            var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.FastCheck);
             if(subpix)
             {
                 CvInvoke.CornerSubPix(gray, corn, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
@@ -970,7 +1039,7 @@ namespace opengl3
             return ps;
         }
 
-        static public bool compChessCoords(Mat mat, ref MCvPoint3D32f[] obp, ref System.Drawing.PointF[] cornF, Size size)
+        static public bool compChessCoords(Mat mat, ref MCvPoint3D32f[] obp, ref System.Drawing.PointF[] cornF, Size size, int kernel = 11)
         {
             var corn = new VectorOfPointF(cornF);
             obp = new MCvPoint3D32f[size.Width * size.Height];
@@ -988,7 +1057,7 @@ namespace opengl3
             var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.FastCheck);
             if (ret == true)
             {
-                CvInvoke.CornerSubPix(gray, corn, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(100, 0.0001));
+                CvInvoke.CornerSubPix(gray, corn, new Size(kernel, kernel), new Size(-1, -1), new MCvTermCriteria(100, 0.0001));
             }
             else
             {
@@ -1757,6 +1826,79 @@ namespace opengl3
             }
             im_ret.Save("black_br_" + n + "_" + m + ".png");
             return new Mat[] { im_ret.Mat, new Matrix<float>(points_cv).Mat, new Matrix<float>(points_all).Mat } ;
+        }
+
+        public static Mat[] generateImage_chessboard_circle(int n, int m, int side = 100)//!!!!!!!!!!remake
+        {
+
+            int q_side = side / 2;
+            int im_side_w = q_side * (n + 2);
+            int im_side_h = q_side * (m + 2);
+            var im_ret = new Image<Bgr, Byte>(im_side_w, im_side_h);
+            var pattern_s = new Size(side, side);
+
+            var quad_s = new Size(q_side, q_side);
+            /*Console.WriteLine(k + "k-");
+            Console.WriteLine(side + "s-");
+            Console.WriteLine(q_side + "q-");*/
+
+            var p_start = new List<Point>();
+            var offx = pattern_s.Width / 2;
+            var offy = pattern_s.Height / 2;
+            var w_cv = n - 1;
+            var h_cv = m - 1;
+            var points_cv = new float[w_cv * h_cv, 2];
+            var points_all = new float[n * m , 2];
+            int ind = 0;
+
+            ind = 0;
+            var n1 = (int)(n / 2);
+            var n2 = n - n1;
+            var m1 = (int)(m / 2);
+            var m2 = m - m1;
+            for (int i = 0; i < n; i ++)
+            {
+                for (int j = 0; j < m; j ++)
+                {
+                    var x = offx + i * q_side;
+                    var y = offy + j * q_side;
+                    p_start.Add(new Point(x, y));
+                    points_all[ind, 0] = x;
+                    points_all[ind, 1] = y; ind++;
+
+                }
+            }
+            /*for (int i = 0; i < n2; i++)
+            {
+                for (int j = 0; j < m2; j ++)
+                {
+                    var x = offx +q_side+ i * pattern_s.Width;
+                    var y = offy + q_side+ j * pattern_s.Height;
+                    p_start.Add(new Point(x, y));
+                    points_all[ind, 0] = x;
+                    points_all[ind, 1] = y; ind++;
+
+                }
+            }*/
+            points_cv = points_all;
+            Console.WriteLine("point all len0: " + points_all.GetLength(0) + " ind : " + ind);
+            Console.WriteLine(p_start.Count);
+            for (int x = 0; x < im_ret.Width; x++)
+            {
+                for (int y = 0; y < im_ret.Height; y++)
+                {
+                    im_ret.Data[y, x, 0] = 255;
+                    im_ret.Data[y, x, 1] = 255;
+                    im_ret.Data[y, x, 2] = 255;
+                }
+            }
+
+            for (int i = 0; i < p_start.Count; i++)
+            {   
+               CvInvoke.Circle(im_ret, new Point(p_start[i].X, p_start[i].Y), q_side / 4, new MCvScalar(0, 0, 0),-1);       
+            }
+            im_ret.Save("black_br_" + n + "_" + m + ".png");
+            return new Mat[] { im_ret.Mat, new Matrix<float>(points_cv).Mat, new Matrix<float>(points_all).Mat };
         }
         static public float[][] generate_BOARDs(MCvPoint3D32f [][] point3D32Fs)
         {
