@@ -211,6 +211,7 @@ namespace opengl3
             this.label28 = new System.Windows.Forms.Label();
             this.imageBox_cameraDist = new Emgu.CV.UI.ImageBox();
             this.tabCalibMonit = new System.Windows.Forms.TabPage();
+            this.but_ph_1 = new System.Windows.Forms.Button();
             this.but_calib_Start = new System.Windows.Forms.Button();
             this.textBoxK_8 = new System.Windows.Forms.TextBox();
             this.trackBar27 = new System.Windows.Forms.TrackBar();
@@ -233,7 +234,6 @@ namespace opengl3
             this.imBox_input_2 = new Emgu.CV.UI.ImageBox();
             this.imBox_input_1 = new Emgu.CV.UI.ImageBox();
             this.imBox_pattern = new Emgu.CV.UI.ImageBox();
-            this.but_ph_1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -1184,7 +1184,7 @@ namespace opengl3
             this.txBx_photoName.Name = "txBx_photoName";
             this.txBx_photoName.Size = new System.Drawing.Size(184, 26);
             this.txBx_photoName.TabIndex = 119;
-            this.txBx_photoName.Text = "photo_6";
+            this.txBx_photoName.Text = "photo_8";
             // 
             // imBox_base_2
             // 
@@ -2197,6 +2197,17 @@ namespace opengl3
             this.tabCalibMonit.Text = "Калибровка";
             this.tabCalibMonit.UseVisualStyleBackColor = true;
             // 
+            // but_ph_1
+            // 
+            this.but_ph_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_ph_1.Location = new System.Drawing.Point(1770, 552);
+            this.but_ph_1.Name = "but_ph_1";
+            this.but_ph_1.Size = new System.Drawing.Size(106, 33);
+            this.but_ph_1.TabIndex = 117;
+            this.but_ph_1.Text = "photo";
+            this.but_ph_1.UseVisualStyleBackColor = true;
+            this.but_ph_1.Click += new System.EventHandler(this.butSaveIm_Click);
+            // 
             // but_calib_Start
             // 
             this.but_calib_Start.Location = new System.Drawing.Point(1776, 479);
@@ -2399,22 +2410,11 @@ namespace opengl3
             // 
             // imBox_pattern
             // 
-            this.imBox_pattern.Location = new System.Drawing.Point(552, 286);
+            this.imBox_pattern.Location = new System.Drawing.Point(543, 413);
             this.imBox_pattern.Name = "imBox_pattern";
-            this.imBox_pattern.Size = new System.Drawing.Size(790, 443);
+            this.imBox_pattern.Size = new System.Drawing.Size(537, 271);
             this.imBox_pattern.TabIndex = 2;
             this.imBox_pattern.TabStop = false;
-            // 
-            // but_ph_1
-            // 
-            this.but_ph_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_ph_1.Location = new System.Drawing.Point(1770, 552);
-            this.but_ph_1.Name = "but_ph_1";
-            this.but_ph_1.Size = new System.Drawing.Size(106, 33);
-            this.but_ph_1.TabIndex = 117;
-            this.but_ph_1.Text = "photo";
-            this.but_ph_1.UseVisualStyleBackColor = true;
-            this.but_ph_1.Click += new System.EventHandler(this.butSaveIm_Click);
             // 
             // MainScanningForm
             // 

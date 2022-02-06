@@ -435,6 +435,58 @@ namespace opengl3
             return new System.Drawing.PointF[] { S,  new System.Drawing.PointF((float)dist,0) };
         }
 
+        static public System.Drawing.PointF[] calcSubpixelPrecCircle(Size size, Mat[] mat)
+        {
+            var len = size.Width * size.Height;
+            var obp = new MCvPoint3D32f[len];
+            var cornF = new System.Drawing.PointF[len];
+          
+            var cornF_delt = new System.Drawing.PointF[len];
+            var sum = new System.Drawing.PointF(0, 0);
+            var S = new System.Drawing.PointF(0, 0);
+
+            var mat_c = FindCircles.findCircles(mat[0],cornF, size);
+           // CvInvoke.Imshow("matC", mat_c);
+           // prin.t(cornF);
+            var corn_patt = matToPointF(mat[1]);
+         
+            for (int i = 0; i < obp.Length; i++)
+            {
+                cornF_delt[i] = new System.Drawing.PointF(corn_patt[i].X - cornF[i].X, corn_patt[i].Y - cornF[i].Y);
+                sum.X += cornF_delt[i].X;
+                sum.Y += cornF_delt[i].Y;
+            }
+            var x = cornF[0].X - cornF[1].X;
+            var y = cornF[0].Y - cornF[1].Y;
+
+            var dist = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+            //prin.t("_________________");
+            var raz = new System.Drawing.PointF(0, 0);
+            raz.X = sum.X / len;
+            raz.Y = sum.Y / len;
+
+            for (int i = 0; i < obp.Length; i++)
+            {
+                cornF_delt[i].X -= raz.X;
+                cornF_delt[i].Y -= raz.Y;
+                //prin.t(cornF_delt[i].ToString());
+                S.X += Math.Abs(cornF_delt[i].X);
+                S.Y += Math.Abs(cornF_delt[i].Y);
+
+            }
+
+
+
+            Console.WriteLine(S);
+            var matM = new Mat(mat[0], new Rectangle(0, 0, mat[0].Width, mat[0].Height));
+            drawMatches(matM, cornF, corn_patt, 0, 255, 0);
+            CvInvoke.Imshow("2", matM);
+            //drawPointsF(mat, cornF, 255, 0, 0, 1);
+            //drawPointsF(mat, cornF_GL, 0, 0, 255, 1);
+            return new System.Drawing.PointF[] { S, new System.Drawing.PointF((float)dist, 0) };
+        }
+
+
         static public void drawMatches(Mat im, System.Drawing.PointF[] points1, System.Drawing.PointF[] points2, int r, int g, int b, int size = 1)
         {
             drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);
@@ -475,6 +527,10 @@ namespace opengl3
         {
             int ind = 0;
             var color = new MCvScalar(b, g, r);//bgr
+            if(points1 == null)
+            {
+                return;
+            }
             if (points1.Length != 0 )
             {
                 for (int i = 0; i < points1.Length-1; i++)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace opengl3
 {
 
-    public enum FrameType { Pos, Las, Test, MarkBoard, Stereo }
+    public enum FrameType { Pos, Las, Test, MarkBoard, Pattern }
 
     public class Frame
     {
@@ -25,6 +25,7 @@ namespace opengl3
         public Camera camera;
         public double size_mark;
         public DateTime dateTime;
+        public bool stereo = false;
         public Frame(Mat _im, Point3d_GL _pos_cam, Point3d_GL _pos_rob, string _name, PointF[] _points)
         {
             im = _im;
@@ -73,13 +74,14 @@ namespace opengl3
             type = frameType;
 
         }
-        public Frame(Mat _im, Mat _im2, string _name)
+        public Frame(Mat _im, Mat _im2, string _name, FrameType frameType)
         {
             im = _im;
             im_sec = _im2;
             name = _name;
             size = _im.Size;
-            type = FrameType.Stereo;
+            type = frameType;
+            stereo = true;
 
         }
         override public string ToString()

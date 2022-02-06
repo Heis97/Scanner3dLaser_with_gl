@@ -138,47 +138,48 @@ namespace opengl3
 
             // var stl_loader = new STLmodel();
             //var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-            var load_path1 = @"photo_4\distort";
-            var load_path2 = @"photo_3\distort";
+            var load_path1 = @"photo_7";
+            var load_path2 = @"photo_8";
+            //var load_path2 = @"photo_3\distort";
             //var load_path = "tutor";
             //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //GL1.add_buff_gl_lines_id(mesh, 10, true);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-            var frms1a = FrameLoader.loadImages_chess(@"cam1\" + load_path1);
-            var frms2a = FrameLoader.loadImages_chess(@"cam2\" + load_path1);
+             var frms1a = FrameLoader.loadImages_diff(@"cam1\" + load_path1, FrameType.Pattern);
+             var frms2a = FrameLoader.loadImages_diff(@"cam2\" + load_path1, FrameType.Pattern);
 
-            var frms1b = FrameLoader.loadImages_chess(@"cam1\" + load_path2);
-            var frms2b = FrameLoader.loadImages_chess(@"cam2\" + load_path2);
+             var frms1b = FrameLoader.loadImages_diff(@"cam1\" + load_path2, FrameType.Pattern);
+             var frms2b = FrameLoader.loadImages_diff(@"cam2\" + load_path2, FrameType.Pattern);
 
-            var frms1 = frms1a.ToList();
-            frms1.AddRange(frms1b);
+             var frms1 = frms1a.ToList();
+             frms1.AddRange(frms1b);
 
-            var frms2 = frms2a.ToList();
-            frms2.AddRange(frms2b);
+             var frms2 = frms2a.ToList();
+             frms2.AddRange(frms2b);
 
-            var objps1a = CameraCV.generateObjps(imBox_pattern, patt, false,true);
-            var objps1b = CameraCV.generateObjps(imBox_pattern, patt, false, true);
+             var objps1a = CameraCV.generateObjps(imBox_pattern, patt, false,true);
+             var objps1b = CameraCV.generateObjps(imBox_pattern, patt, false, true);
 
-            var objps = objps1a.ToList();
-            objps.AddRange(objps1b);
-            //Console.WriteLine(frms1.Count);
-            var cam1 = new CameraCV(frms1.ToArray(), new Size(6, 7), markSize, null);    
-            var cam2 = new CameraCV(frms2.ToArray(), new Size(6, 7), markSize, null);
+             var objps = objps1a.ToList();
+             objps.AddRange(objps1b);
 
-            var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_path1, @"cam2\" + load_path1);
-            comboImages.Items.AddRange(frms3.ToArray());
-            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
-            
+             var cam1 = new CameraCV(frms1.ToArray(), new Size(6, 7), markSize, null);    
+             var cam2 = new CameraCV(frms2.ToArray(), new Size(6, 7), markSize, null);
 
-            if (comboImages.Items.Count > 0)
-            {
-                comboImages.SelectedIndex = 0;
-            }
-            //calcF();
+             var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_path1, @"cam2\" + load_path1,FrameType.Pattern);
+             comboImages.Items.AddRange(frms3.ToArray());
+             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
-            cameraDistortionCoeffs_dist[0, 0] = -0.1;
-            generateImage3D_BOARD(7, 8, markSize);
+
+             if (comboImages.Items.Count > 0)
+             {
+                 comboImages.SelectedIndex = 0;
+             }
+
+
+             cameraDistortionCoeffs_dist[0, 0] = -0.1;
+             generateImage3D_BOARD(7, 8, markSize);
 
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
@@ -204,8 +205,8 @@ namespace opengl3
             };
 
             patt = UtilOpenCV.generateImage_chessboard_circle(7, 6,220);
-            var patt_ph = new Mat("old_patt_1.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
-            patt[0] = patt_ph;
+            //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
+            //patt[0] = patt_ph;
         }
 
        
@@ -564,7 +565,8 @@ namespace opengl3
             //var ps = CvInvoke.FindCirclesGrid(mat1.ToImage<Gray,byte>(), new Size(6, 7), CalibCgType.SymmetricGrid,new Emgu.CV.Features2D.SimpleBlobDetector());
             
             //UtilOpenCV.drawPointsF(mat1, ps, 255, 0, 5, 10);
-             imBox_input_1.Image = FindCircles.findCircles( mat1,new Size(6,7));
+           //  imBox_input_1.Image = FindCircles.findCircles( mat1,null, new Size(6,7));
+            UtilOpenCV.calcSubpixelPrecCircle(new Size(6, 7), ptt);
             //imBox_input_1.Image = UtilOpenCV.drawChessboard((Mat)imBox_pattern.Image, new Size(7, 6),false,true);
         }
         private void but_SubpixPrec_Click(object sender, EventArgs e)
@@ -922,20 +924,35 @@ namespace opengl3
                 //imageBox_debug_cam_2.Image =  drawDescriptors(fr.im);
                 //findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Up);
             }
-            else if (fr.type == FrameType.Stereo)
+            else if (fr.stereo)
             {
-                //var mat1 = stereocam.cameraCVs[0].undist(fr.im);
-                //var mat2 = stereocam.cameraCVs[1].undist(fr.im_sec);
-                var mat1 = fr.im;
-                var mat2 = fr.im_sec;
-                imBox_debug1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
-                imBox_debug2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
-                imageBox1.Image = fr.im_sec;
+                var mat1 = fr.im_sec;
+                var mat2 = fr.im;
+                if (fr.type == FrameType.MarkBoard)
+                {
+
+                    imBox_debug1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
+                    imBox_debug2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
+                }
+                else if (fr.type == FrameType.Pattern)
+                {
+                    imBox_debug1.Image = stereocam.cameraCVs[0].undist(mat1);
+                    imBox_debug2.Image = stereocam.cameraCVs[1].undist(mat2);
+                    //imBox_debug1.Image = FindCircles.findCircles(mat1, null, new Size(6, 7));
+                    //imBox_debug2.Image = FindCircles.findCircles(mat2, null, new Size(6, 7));
+                }
+                imageBox1.Image = mat1;
+                imageBox2.Image = mat2;
             }
             else if (fr.type == FrameType.MarkBoard)
             {
                 imBox_debug1.Image = UtilOpenCV.drawChessboard(fr.im, new Size(6, 7));
                 imageBox1.Image = UtilOpenCV.drawChessboard(fr.im, new Size(6, 7));
+            }
+            else if (fr.type == FrameType.Pattern)
+            {
+
+                imageBox1.Image = FindCircles.findCircles(fr.im,null, new Size(6, 7));
             }
             imageBox2.Image = fr.im;
         }

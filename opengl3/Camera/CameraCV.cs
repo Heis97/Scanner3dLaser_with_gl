@@ -134,12 +134,13 @@ namespace opengl3
                 }
             }
         }
-         static void showAndSaveImage_Chess_affine_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i)
+        static void showAndSaveImage_Chess_affine_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i)
         {
             var pat_size = new Size(6, 7);
             var mat = pattern[0];
             var mat_aff = new Mat();
-            CvInvoke.WarpAffine(mat, mat_aff, matrix, pattern_box.Size,Inter.Linear,Warp.Default,BorderType.Constant,new MCvScalar(127,127,127));
+            int font = 255;
+            CvInvoke.WarpAffine(mat, mat_aff, matrix, pattern_box.Size,Inter.Linear,Warp.Default,BorderType.Constant,new MCvScalar(font, font, font));
             pattern_box.Image = mat_aff;
             
             for (int j = 0; j < input.Length; j++)
@@ -147,10 +148,10 @@ namespace opengl3
                 if (input[j].Image != null)
                 {
                     var inp = (Mat)input[j].Image;
-                    if (CvInvoke.FindChessboardCorners(inp.ToImage<Gray, byte>(), pat_size, new Mat()))
-                    {
-                        //UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());
-                    }
+                      //if (CvInvoke.FindChessboardCorners(inp.ToImage<Gray, byte>(), pat_size, new Mat()))
+                   // {
+                        UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());
+                    //}
                 }
             }
         }
@@ -527,37 +528,16 @@ namespace opengl3
             int ind_fr = 0;
             foreach (var frame in frames)
             {
-                var gray = frame.im.ToImage<Gray, byte>();
-                var corn = new VectorOfPointF();
-                var ret = CvInvoke.FindChessboardCorners(gray, size, corn);
-                if (ret == true)
-                {
-                    CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
-                    var corn2 = corn.ToArray();
-                    objps.Add(obp);
-                    corners.Add(corn2);
-
-                   /* var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));                
-                    if(obp_inp!=null)
-                    {               
-                        UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);                       
-                    }
-                    else
-                    {
-                        CvInvoke.DrawChessboardCorners(mat1, size, corn, ret);
-                        //UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp), 255, 0, 0, 3);
-                    }
-                    
-                    CvInvoke.Imshow("asda", mat1);
-                    CvInvoke.WaitKey();*/
-
-                    
-                    //Console.WriteLine(frame.name);
-                }
-                else
+                var corn2 = findPoints(frame, size);
+                if(corn2==null)
                 {
                     Console.WriteLine("NOT:");
                     Console.WriteLine(frame.name);
+                }
+                else
+                {
+                    objps.Add(obp);
+                    corners.Add(corn2);
                 }
                 ind_fr++;
             }
@@ -601,9 +581,70 @@ namespace opengl3
             CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
             cameramatrix = _cameramatrix;
             distortmatrix = _distortmatrix;
-            prin.t("cameramatrix");
+            prin.t("cameramatrix:");
             prin.t(cameramatrix);
+            prin.t("distortmatrix:");
+            prin.t(distortmatrix);
 
+        }
+
+        static System.Drawing.PointF[] findPoints(Frame frame,Size size_patt)
+        {
+            if(frame.type == FrameType.MarkBoard)
+            {
+                var gray = frame.im.ToImage<Gray, byte>();
+                var corn = new VectorOfPointF();
+                var ret = CvInvoke.FindChessboardCorners(gray, size_patt, corn);
+                if (ret == true)
+                {
+                    CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+                    var corn2 = corn.ToArray();
+                    return corn2;
+                    /* var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));                
+                     if(obp_inp!=null)
+                     {               
+                         UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);                       
+                     }
+                     else
+                     {
+                         CvInvoke.DrawChessboardCorners(mat1, size, corn, ret);
+                         //UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp), 255, 0, 0, 3);
+                     }
+
+                     CvInvoke.Imshow("asda", mat1);
+                     CvInvoke.WaitKey();*/
+
+
+                    //Console.WriteLine(frame.name);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else if(frame.type == FrameType.Pattern)
+            {
+                var len = size_patt.Width * size_patt.Height;
+                var cornF = new System.Drawing.PointF[len];
+                FindCircles.findCircles(frame.im, cornF, size_patt);
+                if(cornF == null)
+                {
+                    return null;
+                }
+                if(cornF.Length != len)
+                {
+                    return null;
+                }
+                else
+                {
+                    return cornF;
+                }
+            }
+            else
+            {
+                return null;
+            }
+            
         }
         void EmguCVUndistortFisheye(string path, Size patternSize)
         {

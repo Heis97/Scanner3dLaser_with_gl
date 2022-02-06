@@ -15,30 +15,41 @@ namespace opengl3
     public static class FindCircles
     {
 
-        public static Mat findCircles(Mat mat,Size pattern_size)
+        public static Mat findCircles(Mat mat, System.Drawing.PointF[]  corn,Size pattern_size)
         {
             var rec = new Mat();
             var orig = new Mat();
-            var ret = new Mat();
             mat.CopyTo(rec);
             mat.CopyTo(orig);
             var im = rec.ToImage<Gray, byte>();
-
-            var im_sob = sobel(im);
+            var im_blur = im.SmoothGaussian(3);
+            var im_sob = sobel(im_blur);
+           
             var im_tr = im_sob.ThresholdBinary(new Gray(120), new Gray(255));
-
+            
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
             CvInvoke.FindContours(im_tr, contours, hier, RetrType.External, ChainApproxMethod.ChainApproxSimple);
             var conts = sameContours(contours);
             var cents = findCentres(conts);
+            CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
             CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
+            
             UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0, 2);
-            var ps_ord = orderPoints(cents);
+            var ps_ord = orderPoints(cents,pattern_size);
+            //ps_ord = ps_ord.Reverse().ToArray();
+           
+            if (corn != null && ps_ord!= null)
+            {
+                ps_ord.CopyTo(corn, 0);
+            }
+          
 
             UtilOpenCV.drawLines(orig, ps_ord, 0, 0, 255, 2);
             return orig;
         }
+
+
         static System.Drawing.PointF[] findCentres(VectorOfVectorOfPoint contours)
         {
             var ps = new System.Drawing.PointF[contours.Size];
@@ -54,7 +65,7 @@ namespace opengl3
         static VectorOfVectorOfPoint sameContours(VectorOfVectorOfPoint contours)
         {
             var clasters = new List<VectorOfVectorOfPoint>();
-            var err = 0.3;
+            var err = 0.5;
             for(int i=0; i< contours.Size;i++)
             {
                 var area_cur = CvInvoke.ContourArea(contours[i]);
@@ -156,7 +167,7 @@ namespace opengl3
             return im_sob;
         }
 
-        static System.Drawing.PointF[] orderPoints(System.Drawing.PointF[] ps)
+        static System.Drawing.PointF[] orderPoints(System.Drawing.PointF[] ps, Size size_patt)
         {
 
             var mainDiag = findMainDiag(ps);
@@ -166,11 +177,85 @@ namespace opengl3
 
             var starts = findStarts(ps, mainDiag, additDiag);
 
+
             var inds_ord = findAllLines(ps, starts, step);
-            return arrFromP(ps, inds_ord);
+            var ind_size = ordBySize(inds_ord, size_patt);
+            if(ind_size == null)
+            {
+                return null;
+            }
+
+            return arrFromP(ps, ind_size);
         }
-        
-         static int[] findMainDiag(System.Drawing.PointF[] ps)
+        static int[][] ordBySize(int[][] inds, Size size)
+        {
+            if(inds==null)
+            {
+                return null;
+            }    
+            if(inds.Length!=size.Height)
+            {
+                return transpose(inds);
+            }
+            else
+            {
+                return inds;
+            }
+        }
+
+        static int[][] transpose(int[][] inds)
+        {
+            if(!checkTransp(inds))
+            {
+                Console.WriteLine("TRANSP FALSE");
+                return inds;
+            }
+            var inds_tr = new int[inds[0].Length][];
+            for(int i=0; i<inds_tr.Length; i++)
+            {
+                inds_tr[i] = new int[inds.Length];
+            }
+            for(int i=0; i<inds.Length;i++)
+            {
+                for (int j = 0; j < inds[i].Length; j++)
+                {
+                    inds_tr[j][i] = inds[i][j];
+                }
+            }
+            return inds_tr;
+        }
+        static bool checkTransp(int[][] matr)
+        {
+            if (matr == null){
+                return false;
+            }
+            if(matr.Length==0)
+            { 
+                return false;
+            }
+            if(matr[0]==null)
+            {
+                return false;
+            }
+            var len1 = matr[0].Length;
+            if(len1==0)
+            {
+                return false;
+            }
+            for(int i=0; i<matr.Length;i++)
+            {
+                if(matr[i]==null)
+                {
+                    return false;
+                }
+                if(matr[i].Length!=len1)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        static int[] findMainDiag(System.Drawing.PointF[] ps)
         {
            // Console.WriteLine("P_LEN : " + ps.Length);
             var max = float.MinValue;
@@ -198,7 +283,7 @@ namespace opengl3
             return new int[] { ind1, ind2,(int)min };
         }
 
-         static int[] findAdditDiag(System.Drawing.PointF[]  ps,double angle)
+        static int[] findAdditDiag(System.Drawing.PointF[]  ps,double angle)
          {
             var matAffMatr = new Matrix<double>(2,3);
             CvInvoke.GetRotationMatrix2D(new System.Drawing.PointF(0, 0), angle, 1, matAffMatr);
@@ -218,28 +303,60 @@ namespace opengl3
          
         static int[][] findStarts(System.Drawing.PointF[] ps, int[] main, int[] addit)
         {
+            int st_line1 = main[0];
+            int st_line2 = addit[1];
+            if (ps[main[0]].Y<ps[main[1]].Y)
+            {
+                st_line1 = main[0];
+                st_line2 = addit[1];
+            }
+            else
+            {
+                st_line1 = addit[0];
+                st_line2 = main[1];
+            }
             var line1 = findLinePoints(ps, main[0], addit[0],main[2]);
-           var  line1_sort= sortLine(ps, line1, main[0]);
+            var line1_sort = sortLine(ps, line1, st_line1);
 
             var line2 = findLinePoints(ps,  main[1], addit[1], main[2]);
-            var line2_sort = sortLine(ps, line2, addit[1]);
+            var line2_sort = sortLine(ps, line2, st_line2);
 
            
             return new int[][] { line1_sort ,  line2_sort };
         }
 
-        static int[] findAllLines(System.Drawing.PointF[] ps, int[][] starts, float min)
+        static int[][] findAllLines(System.Drawing.PointF[] ps, int[][] starts, float min)
         {
+            if (starts == null)
+            {
+                return null;
+            }
+            if (starts[0] == null || starts[1] == null)
+            {
+                return null;
+            }
             if(starts[0].Length!=starts[1].Length)
             {
                 return null;
             }
-            var inds_sort = new List<int>();
-            for(int i=0; i< starts[0].Length;i++)
+            var inds_sort = new List<int[]>();
+            var side1 = 0;
+            var side2 = 0;
+            if(ps[starts[0][0]].X < ps[starts[1][0]].X)
             {
-                var line = findLinePoints(ps, starts[0][i], starts[1][i], min);
-                var line_sort = sortLine(ps, line, starts[0][i]);
-                inds_sort.AddRange(line_sort);
+                side1 = 0;
+                side2 = 1;
+            }
+            else
+            {
+                side1 = 1;
+                side2 = 0;
+            }
+            for (int i=0; i< starts[0].Length;i++)
+            {
+                var line = findLinePoints(ps, starts[side1][i], starts[side2][i], min);
+                var line_sort = sortLine(ps, line, starts[side1][i]);
+                inds_sort.Add(line_sort);
             }
             return inds_sort.ToArray();
         }
@@ -304,7 +421,12 @@ namespace opengl3
             var inds_sort = new List<int>();
             var inds = new int[_inds.Length];
             _inds.CopyTo(inds, 0);
-            var st = _inds[getInd(inds, start_ind)];
+            var ind_st = getInd(inds, start_ind);
+            if(ind_st<0)
+            {
+                return null;
+            }
+            var st = _inds[ind_st];
             inds_sort.Add(st);
             inds = removeInd(inds, st);
             for(int i = 0; i< _inds.Length-1;i++ )
@@ -378,7 +500,19 @@ namespace opengl3
             return ps_arr.ToArray();
         }
 
+        static System.Drawing.PointF[] arrFromP(System.Drawing.PointF[] ps, int[][] ind)
+        {
+            var ps_arr = new List<System.Drawing.PointF>();
+            for (int i = 0; i < ind.Length; i++)
+            {
+                for (int j= 0; j < ind[i].Length; j++)
+                {
 
+                    ps_arr.Add(ps[ind[i][j]]);
+                }
+            }
+            return ps_arr.ToArray();
+        }
     }
 }
 

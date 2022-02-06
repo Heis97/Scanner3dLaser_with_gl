@@ -204,6 +204,10 @@ namespace opengl3
         }
         public static void t(System.Drawing.PointF[] matr)
         {
+            if(matr == null)
+            {
+                return;
+            }
             for (int i = 0; i < matr.Length; i++)
             {
                Console.Write(matr[i].X + " " + matr[i].Y + "; ");               

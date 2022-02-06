@@ -227,6 +227,14 @@ namespace opengl3
             fr.dateTime = File.GetCreationTime(filepath);
             return fr;
         }
+        static public Frame loadImage_diff(string filepath, FrameType frameType)
+        {
+            string name = Path.GetFileName(filepath);
+            var im = new Mat(filepath);
+            var fr = new Frame(im, name,frameType);
+            fr.dateTime = File.GetCreationTime(filepath);
+            return fr;
+        }
         static public Frame loadImage_chess(string filepath)
         {
             string name = Path.GetFileName(filepath);
@@ -235,7 +243,7 @@ namespace opengl3
             fr.dateTime = File.GetCreationTime(filepath);
             return fr;
         }
-        static public Frame loadImage_stereoCV(string filepath1, string filepath2)
+        static public Frame loadImage_stereoCV(string filepath1, string filepath2, FrameType frameType)
         {
             string name1 = Path.GetFileName(filepath1);
             var im1 = new Mat(filepath1);
@@ -244,7 +252,7 @@ namespace opengl3
             //Console.WriteLine(name1);
             //Console.WriteLine(name2);
             //Console.WriteLine("------------");
-            var fr = new Frame(im1, im2, name1);
+            var fr = new Frame(im1, im2, name1,frameType);
             fr.dateTime = File.GetCreationTime(filepath1);
             return fr;
         }
@@ -256,7 +264,7 @@ namespace opengl3
             return sortFiles.ToArray();
         }
 
-        static public List<Frame> loadImages_stereoCV(string path1, string path2)
+        static public List<Frame> loadImages_stereoCV(string path1, string path2,FrameType frameType)
         {
             Console.WriteLine(path1);
             var files1 = sortByDate(Directory.GetFiles(path1));
@@ -264,7 +272,7 @@ namespace opengl3
             List<Frame> frames = new List<Frame>();
             for (int i = 0; i < files1.Length; i++)
             {
-                var frame = loadImage_stereoCV(files1[i], files2[i]);
+                var frame = loadImage_stereoCV(files1[i], files2[i], frameType);
                 if (frame != null)
                 {
                     frames.Add(frame);
@@ -320,6 +328,24 @@ namespace opengl3
             foreach (string file in files)
             {
                 var frame = loadImage_chess(file);
+                if (frame != null)
+                {
+                    frames.Add(frame);
+                }
+            }
+            if (frames.Count != 0)
+            {
+                return frames.ToArray();
+            }
+            return null;
+        }
+        static public Frame[] loadImages_diff(string path,FrameType frameType)
+        {
+            var files = Directory.GetFiles(path);
+            List<Frame> frames = new List<Frame>();
+            foreach (string file in files)
+            {
+                var frame = loadImage_diff(file,frameType);
                 if (frame != null)
                 {
                     frames.Add(frame);
