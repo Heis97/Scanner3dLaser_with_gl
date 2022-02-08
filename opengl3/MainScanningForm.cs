@@ -55,7 +55,7 @@ namespace opengl3
         private Point3d_GL offset_model;
         int fr_ind = 0;
         private List<Frame> frames;
-
+       
         int res_min = 256 * 1;
         volatile Mat[] mat_global = new Mat[3];
         Mat matr = new Mat();
@@ -141,36 +141,21 @@ namespace opengl3
 
             // var stl_loader = new STLmodel();
             //var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-            var load_path1 = @"photo_7";
-            var load_path2 = @"photo_8";
+
+            var load_paths = new string []{ @"photo_9", @"photo_10", @"photo_11" };
             //var load_path2 = @"photo_3\distort";
             //var load_path = "tutor";
             //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
             //GL1.add_buff_gl_lines_id(mesh, 10, true);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-            /* var frms1a = FrameLoader.loadImages_diff(@"cam1\" + load_path1, FrameType.Pattern);
-             var frms2a = FrameLoader.loadImages_diff(@"cam2\" + load_path1, FrameType.Pattern);
+            var frms =  loadPathsDiff(load_paths);
 
-             var frms1b = FrameLoader.loadImages_diff(@"cam1\" + load_path2, FrameType.Pattern);
-             var frms2b = FrameLoader.loadImages_diff(@"cam2\" + load_path2, FrameType.Pattern);
 
-             var frms1 = frms1a.ToList();
-             frms1.AddRange(frms1b);
+             var cam1 = new CameraCV(frms[0], new Size(6, 7), markSize, null);    
+             var cam2 = new CameraCV(frms[1], new Size(6, 7), markSize, null);
 
-             var frms2 = frms2a.ToList();
-             frms2.AddRange(frms2b);
-
-             var objps1a = CameraCV.generateObjps(imBox_pattern, patt, false,true);
-             var objps1b = CameraCV.generateObjps(imBox_pattern, patt, false, true);
-
-             var objps = objps1a.ToList();
-             objps.AddRange(objps1b);
-
-             var cam1 = new CameraCV(frms1.ToArray(), new Size(6, 7), markSize, null);    
-             var cam2 = new CameraCV(frms2.ToArray(), new Size(6, 7), markSize, null);
-
-             var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_path1, @"cam2\" + load_path1,FrameType.Pattern);
+             var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_paths[0], @"cam2\" + load_paths[0], FrameType.Pattern);
              comboImages.Items.AddRange(frms3.ToArray());
              stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
 
@@ -182,7 +167,7 @@ namespace opengl3
 
 
              cameraDistortionCoeffs_dist[0, 0] = -0.1;
-             generateImage3D_BOARD(7, 8, markSize);*/
+             generateImage3D_BOARD(7, 8, markSize);
 
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
@@ -206,10 +191,24 @@ namespace opengl3
                 textBoxK_3,textBoxK_4,textBoxK_5,
                 textBoxK_6,textBoxK_7,textBoxK_8,
             };
-
+           
             patt = UtilOpenCV.generateImage_chessboard_circle(7, 6,220);
+            
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
+        }
+
+        static Frame[][] loadPathsDiff(string[] paths)
+        {
+            var frm1 = new List<Frame>();
+            var frm2 = new List<Frame>();
+            for (int i=0; i<paths.Length;i++)
+            {
+                frm1.AddRange(FrameLoader.loadImages_diff(@"cam1\" + paths[i], FrameType.Pattern));
+                frm2.AddRange(FrameLoader.loadImages_diff(@"cam2\" + paths[i], FrameType.Pattern));
+            }
+
+            return new Frame[][] { frm1.ToArray(), frm2.ToArray() };
         }
 
        
@@ -536,6 +535,87 @@ namespace opengl3
 
 
         #region buttons
+        private void but_set_wind_Click(object sender, EventArgs e)
+        {
+            var but = (Button)sender;
+            if (settingWindow)
+            {
+                settingWindow = false;
+                but.Text = "Установить окно";
+                imBox_pattern.Location = cam_calib_p1;
+                imBox_pattern.Size = new Size(cam_calib_p2.X - cam_calib_p1.X, cam_calib_p2.Y - cam_calib_p1.Y);
+            }
+            else
+            {
+                settingWindow = true;
+                but.Text = "Выйти из режима";
+                imBox_pattern.Location = new Point(0, 0);
+                imBox_pattern.Size = new Size(10, 10);
+            }
+        }
+
+        private void tabCalibMonit_MouseDown(object sender, MouseEventArgs e)
+        {
+            //Console.WriteLine("down");
+
+            if (e.Button == MouseButtons.Right)
+            {
+                cam_calib_p1.X = e.X;
+                cam_calib_p1.Y = e.Y;
+            }
+
+        }
+
+        private void tabCalibMonit_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Console.WriteLine("move");
+            if (e.Button == MouseButtons.Right)
+            {
+                cam_calib_p2.X = e.X;
+                cam_calib_p2.Y = e.Y;
+                lab_pos_mouse.Text = "p1: " + cam_calib_p1 + "\n p2: " + cam_calib_p2;
+            }
+
+        }
+
+        private void tabCalibMonit_MouseUp(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void tabCalibMonit_Paint(object sender, PaintEventArgs e)
+        {
+
+            // var g = e.Graphics;
+            var g = tabCalibMonit.CreateGraphics();
+            Pen pen1 = new Pen(Color.Black);
+            pen1.Width = 2;
+            // Console.WriteLine("paint");
+            //  g.DrawString()
+            if (settingWindow)
+            {
+
+                if (cam_calib_p1 != null && cam_calib_p2 != null)
+                {
+
+                    //Console.WriteLine("notNull");
+                    var w = cam_calib_p2.X - cam_calib_p1.X;
+                    var h = cam_calib_p2.Y - cam_calib_p1.Y;
+                    if (w > 0 && h > 0)
+                    {
+                        // Console.WriteLine("wh"+w+" "+h);
+                        g.Clear(Color.White);
+                        g.DrawRectangle(pen1, cam_calib_p1.X, cam_calib_p1.Y, w, h);
+
+                    }
+
+                }
+            }
+            // tabCalibMonit.CreateGraphics
+            //this.InvokePaint((Control)tabCalibMonit, e);
+            // this.Update();
+
+        }
         private void but_gl_cam_calib_Click(object sender, EventArgs e)
         {
             CameraCV.calibrMonit(imBox_pattern, new ImageBox[] { imBox_mark1, imBox_mark2 }, patt, txBx_photoName.Text,  GL1);
@@ -1777,64 +1857,7 @@ namespace opengl3
 
         #endregion
 
-        private void but_set_wind_Click(object sender, EventArgs e)
-        {
-            var but = (Button)sender;
-            if(settingWindow)
-            {
-                settingWindow = false;
-                but.Text = "Установить окно";
-            }
-            else
-            {
-                settingWindow = true;
-                but.Text = "Выйти из режима";
-            }
-        }
-
-        private void tabCalibMonit_MouseDown(object sender, MouseEventArgs e)
-        {
-            //Console.WriteLine("down");
-           
-            cam_calib_p1.X = e.X;
-            cam_calib_p1.Y = e.Y;
-        }
-
-        private void tabCalibMonit_MouseMove(object sender, MouseEventArgs e)
-        {
-            // Console.WriteLine("move");
-            cam_calib_p2.X = e.X;
-            cam_calib_p2.Y = e.Y;
-        }
-
-        private void tabCalibMonit_MouseUp(object sender, MouseEventArgs e)
-        {
-
-        }
-
-        private void tabCalibMonit_Paint(object sender, PaintEventArgs e)
-        {
-            var g = e.Graphics;
-            Pen pen1 = new Pen(Color.Red);
-            pen1.Width = 2;
-          //  g.DrawString()
-            if(settingWindow)
-            {
-                if(cam_calib_p1!= null && cam_calib_p2 != null)
-                {
-                    Console.WriteLine("notNull");
-                    var w = cam_calib_p2.X - cam_calib_p1.X;
-                    var h = cam_calib_p2.Y - cam_calib_p1.Y;
-                    if(w>0 && h>0)
-                    {
-                        Console.WriteLine("wh"+w+" "+h);
-                        g.DrawRectangle(pen1, cam_calib_p1.X, cam_calib_p1.Y, w, h);
-                    }
-                    
-                }
-            }
-           
-        }
+        
     }
     
 }

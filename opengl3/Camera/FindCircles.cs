@@ -65,11 +65,12 @@ namespace opengl3
         static VectorOfVectorOfPoint sameContours(VectorOfVectorOfPoint contours)
         {
             var clasters = new List<VectorOfVectorOfPoint>();
-            var err = 0.5;
+            var err = 0.4;
             for(int i=0; i< contours.Size;i++)
             {
                 var area_cur = CvInvoke.ContourArea(contours[i]);
                 var perim_cur = CvInvoke.ArcLength(contours[i], true);
+                var fig_cur = area_cur / perim_cur;
                 if(i==0)
                 {
                     clasters.Add(new VectorOfVectorOfPoint(new VectorOfPoint[] { contours[i] }));
@@ -81,9 +82,11 @@ namespace opengl3
                     {
                         var area_clast = areaAver(clasters[j]);
                         var perim_clast = perimAver(clasters[j]);
+                        var fig_clast = figAver(clasters[j]);
                         // Console.WriteLine("area_clast: " + area_clast + " perim_clast: " + perim_clast + "area_cur: " + area_cur + " perim_cur: " + perim_cur);
                         if ( ( (area_cur>(1-err)*area_clast)  &&  (area_cur < (1 + err) * area_clast) ) 
-                            && ((perim_cur > (1 - err) * perim_clast) && (perim_cur < (1 + err) * perim_clast))    )
+                            && ((perim_cur > (1 - err) * perim_clast) && (perim_cur < (1 + err) * perim_clast))
+                            && ((fig_cur > (1 - err) * fig_clast) && (fig_cur < (1 + err) * fig_clast)))
                         {
                             clasters[j].Push(contours[i]);
                             added = true;
@@ -98,6 +101,7 @@ namespace opengl3
             }
             int max = int.MinValue;
             int i_max = 0;
+            //Console.WriteLine("clasters[i].Size______________");
             for (int i=0; i<clasters.Count;i++)
             {
                 if(clasters[i].Size>max)
@@ -105,7 +109,11 @@ namespace opengl3
                     max = clasters[i].Size;
                     i_max = i;
                 }
-                //Console.WriteLine(clasters[i].Size);
+                if(clasters[i].Size>2)
+                {
+                    //Console.WriteLine(clasters[i].Size);
+                }
+               
             }
            // Console.WriteLine("clasters[i].Size");
             return clasters[i_max];
@@ -127,6 +135,12 @@ namespace opengl3
                 perim_sum += CvInvoke.ArcLength(contours[i], true);
             }
             return perim_sum / contours.Size;
+        }
+        static double figAver(VectorOfVectorOfPoint contours)
+        {
+            var areaAv = areaAver(contours);
+            var perimAv = perimAver(contours);
+            return areaAv / perimAv;
         }
 
         static Size calcSize(Size size)

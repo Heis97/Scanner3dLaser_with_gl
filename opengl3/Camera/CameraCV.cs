@@ -214,28 +214,31 @@ namespace opengl3
         static Matrix<double>[] GetMatricesCalibAffine(Size pat_size, Size box_size)
         {
 
-            var len = 10;
+            var len = 9;
+            double n = 3;
+            double k_delim = 1.7;
             var matrs = new Matrix<double>[len];
 
-            double n = 3;
+            
             //Console.WriteLine("k " + k);
-            double k1 = (double)box_size.Height/ ((double)3*pat_size.Height);
-            double k2 = (double)box_size.Width / ((double)3 * pat_size.Width);
+            double k1 = (double)box_size.Width/(k_delim * pat_size.Width);
+            double k2 = (double)box_size.Height / (k_delim * pat_size.Height);
             double k = Math.Min(k1, k2);
            
             // Console.WriteLine("k " +k);
-            double offx = pat_size.Width * k;
-            double offy = pat_size.Height * k;
+            double offx = (box_size.Width * k - box_size.Width )/n;
+            double offy = (box_size.Height * k - box_size.Height )/n;
             int ind = 0;
             
-            for (int i = 1; i < 4; i++)
+            for (int i = 0; i < n; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < n; j++)
                 {
-                    matrs[ind] = affinematr(0.01, 1.5*k, i * offx/2, j * offy/2);ind++;
+                    matrs[ind] = affinematr(0.01, k,  -i * offx,   -j * offy);
+                    ind++;
                 }
             }
-            matrs[ind] = affinematr(0.01, 3 * k, 0, 0);
+           // matrs[ind] = affinematr(0.01, 3 * k, 0, 0);
 
             return matrs;
         }
@@ -513,15 +516,15 @@ namespace opengl3
 
             var obp = new MCvPoint3D32f[size.Width * size.Height];
                           
-                int ind = 0;
-                for (int j = 0; j < size.Height; j++)
+            int ind = 0;
+            for (int j = 0; j < size.Height; j++)
+            {
+                for (int i = 0; i < size.Width; i++)
                 {
-                    for (int i = 0; i < size.Width; i++)
-                    {
-                        obp[ind] = new MCvPoint3D32f(-markSize * (float)i, markSize * (float)j, 0.0f);
-                        ind++;
-                    }
+                    obp[ind] = new MCvPoint3D32f(-markSize * (float)i, markSize * (float)j, 0.0f);
+                    ind++;
                 }
+            }
 
 
             Console.WriteLine("fr len: "+frames.Length);
@@ -626,7 +629,9 @@ namespace opengl3
             {
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
-                FindCircles.findCircles(frame.im, cornF, size_patt);
+                var mat = FindCircles.findCircles(frame.im, cornF, size_patt);
+               // CvInvoke.Imshow("calib",mat);
+                //CvInvoke.WaitKey();
                 if(cornF == null)
                 {
                     return null;
