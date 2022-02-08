@@ -28,6 +28,9 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        Point cam_calib_p1 = new Point(0, 0);
+          Point cam_calib_p2 = new Point(0, 0);
+        bool settingWindow = false;
         Mat[] patt;
         Matrix<double> persp_matr = new Matrix<double>(new double[3,3] { {1,0,0},{0,1,0 },{0,0,1 } });
         TextBox[] textBoxes_Persp;
@@ -146,7 +149,7 @@ namespace opengl3
             //GL1.add_buff_gl_lines_id(mesh, 10, true);
             //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
 
-             var frms1a = FrameLoader.loadImages_diff(@"cam1\" + load_path1, FrameType.Pattern);
+            /* var frms1a = FrameLoader.loadImages_diff(@"cam1\" + load_path1, FrameType.Pattern);
              var frms2a = FrameLoader.loadImages_diff(@"cam2\" + load_path1, FrameType.Pattern);
 
              var frms1b = FrameLoader.loadImages_diff(@"cam1\" + load_path2, FrameType.Pattern);
@@ -179,7 +182,7 @@ namespace opengl3
 
 
              cameraDistortionCoeffs_dist[0, 0] = -0.1;
-             generateImage3D_BOARD(7, 8, markSize);
+             generateImage3D_BOARD(7, 8, markSize);*/
 
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
@@ -1773,6 +1776,65 @@ namespace opengl3
 
 
         #endregion
+
+        private void but_set_wind_Click(object sender, EventArgs e)
+        {
+            var but = (Button)sender;
+            if(settingWindow)
+            {
+                settingWindow = false;
+                but.Text = "Установить окно";
+            }
+            else
+            {
+                settingWindow = true;
+                but.Text = "Выйти из режима";
+            }
+        }
+
+        private void tabCalibMonit_MouseDown(object sender, MouseEventArgs e)
+        {
+            //Console.WriteLine("down");
+           
+            cam_calib_p1.X = e.X;
+            cam_calib_p1.Y = e.Y;
+        }
+
+        private void tabCalibMonit_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Console.WriteLine("move");
+            cam_calib_p2.X = e.X;
+            cam_calib_p2.Y = e.Y;
+        }
+
+        private void tabCalibMonit_MouseUp(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void tabCalibMonit_Paint(object sender, PaintEventArgs e)
+        {
+            var g = e.Graphics;
+            Pen pen1 = new Pen(Color.Red);
+            pen1.Width = 2;
+          //  g.DrawString()
+            if(settingWindow)
+            {
+                if(cam_calib_p1!= null && cam_calib_p2 != null)
+                {
+                    Console.WriteLine("notNull");
+                    var w = cam_calib_p2.X - cam_calib_p1.X;
+                    var h = cam_calib_p2.Y - cam_calib_p1.Y;
+                    if(w>0 && h>0)
+                    {
+                        Console.WriteLine("wh"+w+" "+h);
+                        g.DrawRectangle(pen1, cam_calib_p1.X, cam_calib_p1.Y, w, h);
+                    }
+                    
+                }
+            }
+           
+        }
     }
     
 }
