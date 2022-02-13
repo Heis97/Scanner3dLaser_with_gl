@@ -236,6 +236,15 @@ namespace opengl3
             this.imBox_input_2 = new Emgu.CV.UI.ImageBox();
             this.imBox_input_1 = new Emgu.CV.UI.ImageBox();
             this.imBox_pattern = new Emgu.CV.UI.ImageBox();
+            this.tab_scanner = new System.Windows.Forms.TabPage();
+            this.but_find_ports = new System.Windows.Forms.Button();
+            this.comboBox_portsArd = new System.Windows.Forms.ComboBox();
+            this.textBox_powerLaser = new System.Windows.Forms.TextBox();
+            this.but_setPower = new System.Windows.Forms.Button();
+            this.but_laserOff = new System.Windows.Forms.Button();
+            this.but_laserOn = new System.Windows.Forms.Button();
+            this.but_close = new System.Windows.Forms.Button();
+            this.but_open = new System.Windows.Forms.Button();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -301,6 +310,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_input_2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_input_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_pattern)).BeginInit();
+            this.tab_scanner.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -1061,6 +1071,7 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabDebug);
             this.windowsTabs.Controls.Add(this.tabDistort);
             this.windowsTabs.Controls.Add(this.tabCalibMonit);
+            this.windowsTabs.Controls.Add(this.tab_scanner);
             this.windowsTabs.Location = new System.Drawing.Point(12, 3);
             this.windowsTabs.Name = "windowsTabs";
             this.windowsTabs.SelectedIndex = 0;
@@ -2447,6 +2458,101 @@ namespace opengl3
             this.imBox_pattern.TabIndex = 2;
             this.imBox_pattern.TabStop = false;
             // 
+            // tab_scanner
+            // 
+            this.tab_scanner.Controls.Add(this.but_find_ports);
+            this.tab_scanner.Controls.Add(this.comboBox_portsArd);
+            this.tab_scanner.Controls.Add(this.textBox_powerLaser);
+            this.tab_scanner.Controls.Add(this.but_setPower);
+            this.tab_scanner.Controls.Add(this.but_laserOff);
+            this.tab_scanner.Controls.Add(this.but_laserOn);
+            this.tab_scanner.Controls.Add(this.but_close);
+            this.tab_scanner.Controls.Add(this.but_open);
+            this.tab_scanner.Location = new System.Drawing.Point(4, 22);
+            this.tab_scanner.Name = "tab_scanner";
+            this.tab_scanner.Padding = new System.Windows.Forms.Padding(3);
+            this.tab_scanner.Size = new System.Drawing.Size(1882, 1003);
+            this.tab_scanner.TabIndex = 6;
+            this.tab_scanner.Text = "Сканер";
+            this.tab_scanner.UseVisualStyleBackColor = true;
+            // 
+            // but_find_ports
+            // 
+            this.but_find_ports.Location = new System.Drawing.Point(6, 38);
+            this.but_find_ports.Name = "but_find_ports";
+            this.but_find_ports.Size = new System.Drawing.Size(110, 38);
+            this.but_find_ports.TabIndex = 7;
+            this.but_find_ports.Text = "Найти порты";
+            this.but_find_ports.UseVisualStyleBackColor = true;
+            this.but_find_ports.Click += new System.EventHandler(this.but_find_ports_Click);
+            // 
+            // comboBox_portsArd
+            // 
+            this.comboBox_portsArd.FormattingEnabled = true;
+            this.comboBox_portsArd.Location = new System.Drawing.Point(6, 6);
+            this.comboBox_portsArd.Name = "comboBox_portsArd";
+            this.comboBox_portsArd.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_portsArd.TabIndex = 6;
+            this.comboBox_portsArd.SelectedIndexChanged += new System.EventHandler(this.comboBox_portsArd_SelectedIndexChanged);
+            // 
+            // textBox_powerLaser
+            // 
+            this.textBox_powerLaser.Location = new System.Drawing.Point(122, 268);
+            this.textBox_powerLaser.Name = "textBox_powerLaser";
+            this.textBox_powerLaser.Size = new System.Drawing.Size(100, 20);
+            this.textBox_powerLaser.TabIndex = 5;
+            this.textBox_powerLaser.Text = "0";
+            // 
+            // but_setPower
+            // 
+            this.but_setPower.Location = new System.Drawing.Point(6, 258);
+            this.but_setPower.Name = "but_setPower";
+            this.but_setPower.Size = new System.Drawing.Size(110, 38);
+            this.but_setPower.TabIndex = 4;
+            this.but_setPower.Text = "Установить мощность";
+            this.but_setPower.UseVisualStyleBackColor = true;
+            this.but_setPower.Click += new System.EventHandler(this.but_setPower_Click);
+            // 
+            // but_laserOff
+            // 
+            this.but_laserOff.Location = new System.Drawing.Point(6, 214);
+            this.but_laserOff.Name = "but_laserOff";
+            this.but_laserOff.Size = new System.Drawing.Size(110, 38);
+            this.but_laserOff.TabIndex = 3;
+            this.but_laserOff.Text = "Выключить лазер";
+            this.but_laserOff.UseVisualStyleBackColor = true;
+            this.but_laserOff.Click += new System.EventHandler(this.but_laserOff_Click);
+            // 
+            // but_laserOn
+            // 
+            this.but_laserOn.Location = new System.Drawing.Point(6, 170);
+            this.but_laserOn.Name = "but_laserOn";
+            this.but_laserOn.Size = new System.Drawing.Size(110, 38);
+            this.but_laserOn.TabIndex = 2;
+            this.but_laserOn.Text = "Включить лазер";
+            this.but_laserOn.UseVisualStyleBackColor = true;
+            this.but_laserOn.Click += new System.EventHandler(this.but_laserOn_Click);
+            // 
+            // but_close
+            // 
+            this.but_close.Location = new System.Drawing.Point(6, 126);
+            this.but_close.Name = "but_close";
+            this.but_close.Size = new System.Drawing.Size(110, 38);
+            this.but_close.TabIndex = 1;
+            this.but_close.Text = "Отключиться";
+            this.but_close.UseVisualStyleBackColor = true;
+            this.but_close.Click += new System.EventHandler(this.but_close_Click);
+            // 
+            // but_open
+            // 
+            this.but_open.Location = new System.Drawing.Point(6, 82);
+            this.but_open.Name = "but_open";
+            this.but_open.Size = new System.Drawing.Size(110, 38);
+            this.but_open.TabIndex = 0;
+            this.but_open.Text = "Подключиться";
+            this.but_open.UseVisualStyleBackColor = true;
+            this.but_open.Click += new System.EventHandler(this.but_open_Click);
+            // 
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
@@ -2527,6 +2633,8 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_input_2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_input_1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_pattern)).EndInit();
+            this.tab_scanner.ResumeLayout(false);
+            this.tab_scanner.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -2741,6 +2849,15 @@ namespace opengl3
         private System.Windows.Forms.Button but_set_wind;
         private System.Windows.Forms.BindingSource graphicGLBindingSource;
         private System.Windows.Forms.Label lab_pos_mouse;
+        private System.Windows.Forms.TabPage tab_scanner;
+        private System.Windows.Forms.Button but_close;
+        private System.Windows.Forms.Button but_open;
+        private System.Windows.Forms.Button but_setPower;
+        private System.Windows.Forms.Button but_laserOff;
+        private System.Windows.Forms.Button but_laserOn;
+        private System.Windows.Forms.TextBox textBox_powerLaser;
+        private System.Windows.Forms.ComboBox comboBox_portsArd;
+        private System.Windows.Forms.Button but_find_ports;
     }
 }
 

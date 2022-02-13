@@ -21,6 +21,7 @@ using Accord.Statistics.Models.Regression.Linear;
 using Accord.Math;
 using Accord.Math.Optimization.Losses;
 using System.Threading;
+using System.IO.Ports;
 
 namespace opengl3
 {
@@ -28,6 +29,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        LaserLine laserLine;
         Point cam_calib_p1 = new Point(0, 0);
           Point cam_calib_p2 = new Point(0, 0);
         bool settingWindow = false;
@@ -193,6 +195,8 @@ namespace opengl3
             };
            
             patt = UtilOpenCV.generateImage_chessboard_circle(7, 6,220);
+
+           
             
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
@@ -1855,9 +1859,61 @@ namespace opengl3
 
 
 
+
         #endregion
 
-        
+
+        string portArd;
+        private void but_find_ports_Click(object sender, EventArgs e)
+        {
+             comboBox_portsArd.Items.Clear();
+             // Получаем список COM портов доступных в системе
+             string[] portnames = SerialPort.GetPortNames();
+             // Проверяем есть ли доступные
+             if (portnames.Length == 0)
+             {
+                 MessageBox.Show("COM PORT not found");
+             }
+             foreach (string portName in portnames)
+             {
+                //добавляем доступные COM порты в список           
+                comboBox_portsArd.Items.Add(portName);
+                 //Console.WriteLine(portnames.Length);
+                 if (portnames[0] != null)
+                 {
+                    comboBox_portsArd.SelectedItem = portnames[0];
+                 }
+             }
+        }
+        private void but_close_Click(object sender, EventArgs e)
+        {
+            laserLine.connectStop();
+        }
+
+        private void but_open_Click(object sender, EventArgs e)
+        {
+            laserLine = new LaserLine(portArd);
+        }
+
+        private void but_laserOn_Click(object sender, EventArgs e)
+        {
+            laserLine.laserOn();
+        }
+
+        private void but_laserOff_Click(object sender, EventArgs e)
+        {
+            laserLine.laserOff();
+        }
+
+        private void but_setPower_Click(object sender, EventArgs e)
+        {
+            laserLine.setPower(Convert.ToInt32(textBox_powerLaser.Text));
+        }
+
+        private void comboBox_portsArd_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            portArd = (string)((ComboBox)sender).SelectedItem;
+        }
     }
     
 }
