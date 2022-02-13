@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace opengl3
 {
@@ -22,7 +23,7 @@ namespace opengl3
             var fr = from f in frames_scan
                      orderby f.pos_rob.y
                      select f;
-            frames_scan = fr.ToList();
+            frames_scan = fr.ToArray();
 
             var laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, 252, type);
 
@@ -37,7 +38,7 @@ namespace opengl3
             //GL1.addGLMesh(model, PrimitiveType.Triangles, (float)-offset_model.x, (float)-offset_model.y, (float)-offset_model.z, r, g, b);
             // }
         }
-        static public void loadScan(string path_pos_calib, string path_laser_calib, string path_scan, string path_basis, double FoV, double Side, int bin_pos = 40, SolveType type = SolveType.Simple, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        static public void loadScan(string path_pos_calib, string path_laser_calib, string path_scan, string path_basis, double FoV, double Side, int bin_pos = 40, SolveType type = SolveType.Simple, float r = 0.1f, float g = 0.1f, float b = 0.1f, ComboBox comboBox = null)
         {
             var frames_pos = FrameLoader.loadImages(path_pos_calib, FoV, Side, bin_pos, 15, true);
             var frames_las = FrameLoader.loadImages_simple(path_laser_calib);
@@ -45,10 +46,18 @@ namespace opengl3
             var zero_frame = findZeroFrame(frames_las);
             var robToCam = FrameLoader.loadImages_basis(path_basis, FoV, Side, bin_pos);
 
+            if(comboBox!=null)
+            {
+                comboBox.Items.AddRange(frames_pos);
+                comboBox.Items.AddRange(frames_las);
+                comboBox.Items.AddRange(frames_scan);
+                //comboBox.Items.AddRange(robToCam);
+            }
+
             var fr = from f in frames_scan
                      orderby f.pos_rob.y
                      select f;
-            frames_scan = fr.ToList();
+            frames_scan = fr.ToArray();
 
             //laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, (int)red_c, type,robToCam,DirectionType.Down);
 
@@ -59,10 +68,11 @@ namespace opengl3
             //Console.WriteLine("x = " + offset_model.x + "y = " + offset_model.y + "z = " + offset_model.z);
             //addGLMesh(model, PrimitiveType.Points, 0, 0, 0, r, g, b);
 
-            var laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, 252, type, robToCam, DirectionType.Down);
+            //var laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, 252, type, robToCam, DirectionType.Down);
+           // var model = paintScanningModel(laserFlat, frames_scan, frames_pos[0], zero_frame, type, robToCam, DirectionType.Down);
+           // Console.WriteLine("loading done");
 
-            var model = paintScanningModel(laserFlat, frames_scan, frames_pos[0], zero_frame, type, robToCam, DirectionType.Down);
-            Console.WriteLine("loading done");
+
             //Console.WriteLine("x = " + offset_model.x + "y = " + offset_model.y + "z = " + offset_model.z);
             //GL1.addGLMesh(model, PrimitiveType.Triangles, 0, 0, 0, 1, 0, 0);
         }
@@ -98,7 +108,7 @@ namespace opengl3
                 for (int j = 0; j < frames[i].points.Length; j++)
                 {
                     var p = calcPoint(frames[i].points[j], calib_frame, frames[i], laserFlat, zero_frame, type, matr);
-                    if (p != null)
+                    if (p.exist)
                     {
                         points3d.Add(new Point3d_GL(p.x, p.y, p.z));
                     }
@@ -107,7 +117,7 @@ namespace opengl3
             Console.WriteLine(frames.Count + " LEN_FR");
             return points3d.ToArray();
         }
-        static public float[] paintScanningModel(List<Flat_4P> laserFlat, List<Frame> videoframes, Frame calib_frame, Frame zero_frame, SolveType type, double[,] matr = null, DirectionType directionType = DirectionType.Down)
+        static public float[] paintScanningModel(List<Flat_4P> laserFlat, Frame[] videoframes, Frame calib_frame, Frame zero_frame, SolveType type, double[,] matr = null, DirectionType directionType = DirectionType.Down)
         {
             List<Frame> frames = new List<Frame>();
 
@@ -145,7 +155,7 @@ namespace opengl3
                 for (int j = 0; j < frames[i].points.Length; j++)
                 {
                     var p = calcPoint(frames[i].points[j], calib_frame, frames[i], laserFlat, zero_frame, type, matr);
-                    if (p != null)
+                    if (p.exist)
                     {
                         points3d[i, j] = new Point3d_GL(p.x, p.y, p.z);
                         flatInds[i, j] = colr;
@@ -263,7 +273,7 @@ namespace opengl3
                     var p1 = points3d[i, j];
                     var p2 = points3d[i + 1, j];
                     var p3 = points3d[i, j + 1];
-                    if (p1 != null & p2 != null & p3 != null)
+                    if (p1.exist & p2.exist & p3.exist)
                     {
                         mesh.Add((float)p1.x); mesh.Add((float)p1.y); mesh.Add((float)p1.z);
                         mesh.Add((float)p2.x); mesh.Add((float)p2.y); mesh.Add((float)p2.z);
@@ -273,7 +283,7 @@ namespace opengl3
                     p1 = points3d[i + 1, j];
                     p2 = points3d[i + 1, j + 1];
                     p3 = points3d[i, j + 1];
-                    if (p1 != null & p2 != null & p3 != null)
+                    if (p1.exist & p2.exist  & p3.exist)
                     {
                         mesh.Add((float)p1.x); mesh.Add((float)p1.y); mesh.Add((float)p1.z);
                         mesh.Add((float)p2.x); mesh.Add((float)p2.y); mesh.Add((float)p2.z);
@@ -284,7 +294,7 @@ namespace opengl3
             }
             return mesh.ToArray();
         }
-        static public Frame findZeroFrame(List<Frame> frames)
+        static public Frame findZeroFrame(Frame[] frames)
         {
             var fr = from f in frames
                      orderby f.pos_rob.z
@@ -292,7 +302,7 @@ namespace opengl3
             var vfrs = fr.ToList();
             return vfrs[vfrs.Count - 1];
         }
-        static public List<Flat_4P> calibrLaser(List<Frame> videoframes, Frame calib_frame, Frame zero_frame, int bin, SolveType type, double[,] matr = null, DirectionType directionType = DirectionType.Down)
+        static public List<Flat_4P> calibrLaser(Frame[] videoframes, Frame calib_frame, Frame zero_frame, int bin, SolveType type, double[,] matr = null, DirectionType directionType = DirectionType.Down)
         {
             List<Frame> frames = new List<Frame>();
             List<Flat_4P> mesh = new List<Flat_4P>();
@@ -419,12 +429,12 @@ namespace opengl3
             int ids = 0;
             if (type == SolveType.Complex)
             {
-                Point3d_GL ret = null;
+                Point3d_GL ret = Point3d_GL.notExistP();
                 foreach (var flat in laserFlat)
                 {
 
                     ret = flat.crossLine(line);
-                    if (ret != null)
+                    if (ret.exist)
                     {
 
                         var colr = ids;
@@ -438,7 +448,7 @@ namespace opengl3
                 Console.WriteLine("null");
                 var flat_max = laserFlat[0].F[0];
                 ret = line.calcCrossFlat(flat_max);
-                if (ret != null)
+                if (ret.exist)
                 {
                     return ret - moveToReal;
                 }
@@ -447,14 +457,14 @@ namespace opengl3
             {
                 var flat = laserFlat[0].F[0];
                 var ret = line.calcCrossFlat(flat);
-                if (ret != null)
+                if (ret.exist)
                 {
                     return ret - moveToReal;
 
                 }
             }
 
-            return null;
+            return Point3d_GL.notExistP();
         }
         static public Point3d_GL calcPoint(PointF point, Frame cframe, Frame frame, Frame frame_zero, double[,] matr)
         {
@@ -484,12 +494,12 @@ namespace opengl3
                 new Point3d_GL(10, 0, z));
             //Console.WriteLine("las z = "+z);
             var cr = line.calcCrossFlat(flat);
-            if (cr != null)
+            if (cr.exist)
             {
                 return cr;
             }
             //Console.WriteLine(vec.ToString());
-            return null;
+            return Point3d_GL.notExistP();
         }
         static public Point3d_GL calcPoint_leg(PointF point, Frame cframe, Frame frame, List<Flat_4P> laserFlat, Frame zero_frame, SolveType type, double[,] matr = null)
         {
@@ -540,12 +550,12 @@ namespace opengl3
             // Console.WriteLine("ids");
             if (type == SolveType.Complex)
             {
-                Point3d_GL ret = null;
+                Point3d_GL ret = Point3d_GL.notExistP();
                 foreach (var flat in laserFlat)
                 {
 
                     ret = flat.crossLine(line);
-                    if (ret != null)
+                    if (ret.exist)
                     {
                         var ps = flat.P;
                         ret_m.Add(ret);
@@ -558,7 +568,7 @@ namespace opengl3
                 }
                 //addPointMesh(ret_m.ToArray(), 0.1f, 0.8f, 0.1f);
                 // GL1.addPointMesh(new Point3d_GL[] { new Point3d_GL(0, 0, 0), moveToReal }, 0.8f, 0.8f, 0.1f);
-                if (ret != null)
+                if (ret.exist)
                 {
                     return ret - moveToReal;
                 }
@@ -569,7 +579,7 @@ namespace opengl3
                 //return ret - moveToReal;
                 var flat_max = laserFlat[0].F[0];
                 ret = line.calcCrossFlat(flat_max);
-                if (ret != null)
+                if (ret.exist)
                 {
                     //addLineMesh(new Point3d_GL[] { ret - moveToReal, zeroPos }, 0.8f, 0.8f, 0.1f);
                     return ret - moveToReal;
@@ -580,19 +590,19 @@ namespace opengl3
             {
                 var flat = laserFlat[0].F[0];
                 var ret = line.calcCrossFlat(flat);
-                if (ret == null)
+                if (ret.exist)
                 {
                     //Console.WriteLine("NULL");
                 }
 
-                if (ret != null)
+                if (ret.exist)
                 {
                     return ret - moveToReal;
 
                 }
             }
 
-            return null;
+            return Point3d_GL.notExistP();
         }
         static public Point3d_GL calcPoint_leg(PointF point, Frame cframe, Frame frame, Frame frame_zero)
         {
@@ -624,12 +634,12 @@ namespace opengl3
                 new Point3d_GL(10, 0, z));
             //Console.WriteLine("las z = "+z);
             var cr = line.calcCrossFlat(flat);
-            if (cr != null)
+            if (cr.exist)
             {
                 return cr;
             }
             //Console.WriteLine(vec.ToString());
-            return null;
+            return Point3d_GL.notExistP();
         }
     }
 }

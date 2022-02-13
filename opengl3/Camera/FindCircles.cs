@@ -15,7 +15,7 @@ namespace opengl3
     public static class FindCircles
     {
 
-        public static Mat findCircles(Mat mat, System.Drawing.PointF[]  corn,Size pattern_size)
+        public static Mat findCircles(Mat mat, System.Drawing.PointF[]  corn,Size pattern_size,bool order = true)
         {
             var rec = new Mat();
             var orig = new Mat();
@@ -35,18 +35,41 @@ namespace opengl3
             CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
             CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
             
-            UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0, 2);
-            var ps_ord = orderPoints(cents,pattern_size);
-            //ps_ord = ps_ord.Reverse().ToArray();
-           
-            if (corn != null && ps_ord!= null)
-            {
-                ps_ord.CopyTo(corn, 0);
-            }
-          
 
-            UtilOpenCV.drawLines(orig, ps_ord, 0, 0, 255, 2);
-            return orig;
+            UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0, 2);
+
+            if(corn==null)
+            {
+                corn = new System.Drawing.PointF[pattern_size.Width * pattern_size.Height];
+            }
+            if(order)
+            {
+                var ps_ord = orderPoints(cents, pattern_size);
+                //ps_ord = ps_ord.Reverse().ToArray();
+
+                if (corn != null && ps_ord != null)
+                {
+                    ps_ord.CopyTo(corn, 0);
+                }
+                else
+                {
+                    if (ps_ord == null)
+                    {
+                        Console.WriteLine("ps_ord NULL");
+                    }
+                }
+                UtilOpenCV.drawLines(orig, ps_ord, 0, 0, 255, 2);
+                return orig;
+            }
+            else
+            {
+                cents.CopyTo(corn, 0);
+                UtilOpenCV.drawLines(orig, cents, 0, 255, 0, 2);
+                return orig;
+            }
+            
+
+            
         }
 
 
@@ -65,7 +88,7 @@ namespace opengl3
         static VectorOfVectorOfPoint sameContours(VectorOfVectorOfPoint contours)
         {
             var clasters = new List<VectorOfVectorOfPoint>();
-            var err = 0.4;
+            var err = 0.45;
             for(int i=0; i< contours.Size;i++)
             {
                 var area_cur = CvInvoke.ContourArea(contours[i]);
@@ -196,6 +219,7 @@ namespace opengl3
             var ind_size = ordBySize(inds_ord, size_patt);
             if(ind_size == null)
             {
+                Console.WriteLine("ind_size NULL");
                 return null;
             }
 
@@ -205,6 +229,7 @@ namespace opengl3
         {
             if(inds==null)
             {
+                Console.WriteLine("inds NULL");
                 return null;
             }    
             if(inds.Length!=size.Height)
@@ -343,14 +368,18 @@ namespace opengl3
         {
             if (starts == null)
             {
+                Console.WriteLine("starts NULL");
                 return null;
             }
             if (starts[0] == null || starts[1] == null)
             {
+                Console.WriteLine("starts[0] == null || starts[1] == null");
                 return null;
             }
             if(starts[0].Length!=starts[1].Length)
             {
+                Console.WriteLine("starts[0].Length!=starts[1].Length");
+                Console.WriteLine(starts[0].Length+" "+starts[1].Length);
                 return null;
             }
             var inds_sort = new List<int[]>();

@@ -11,7 +11,7 @@ namespace opengl3
 {
     static public class FrameLoader
     {
-        static public List<Frame> loadImages(string path, double FoV, double Side, int bin = 60, int frame_len = 15, bool visible = false)
+        static public Frame[] loadImages(string path, double FoV, double Side, int bin = 60, int frame_len = 15, bool visible = false)
         {
             Console.WriteLine(path);
             var files = Directory.GetFiles(path);
@@ -26,7 +26,7 @@ namespace opengl3
             }
             if (frames.Count != 0)
             {
-                return frames;
+                return frames.ToArray();
             }
             return null;
         }
@@ -84,8 +84,8 @@ namespace opengl3
                     coords[i] += ".0";
                 }
             }
-            Point3d_GL name_pos = null;
-            Point3d_GL name_pos_or = null;
+            Point3d_GL name_pos = Point3d_GL.notExistP();
+            Point3d_GL name_pos_or = Point3d_GL.notExistP();
             if (coords.Length > 2)
             {
                 name_pos = new Point3d_GL(Convert.ToDouble(coords[0]),
@@ -105,7 +105,14 @@ namespace opengl3
             CvInvoke.Resize(im, im, new Size(im.Width * koef, im.Height * koef));
 
 
-            var ps = FindMark.finPointFsFromIm(im, bin, null, null, maxArea, minArea);
+           //var ps = FindMark.finPointFsFromIm(im, bin, null, null, maxArea, minArea);
+
+            var ps = FindMark.finPointFsFromImPattern(im, bin, null, null, maxArea, minArea);
+
+            if(ps==null)
+            {
+                Console.WriteLine("PS NULL");
+            }
 
             if (ps != null)
             {
@@ -118,7 +125,7 @@ namespace opengl3
                 Console.WriteLine(name);
                 Console.WriteLine("pos_rob " + pos.x + " " + pos.y + " " + pos.z);
                 Console.WriteLine("err " + (name_pos - pos).magnitude());
-                if (name_pos_or != null)
+                if (name_pos_or.exist)
                 {
                     var matr_rob = UtilMatr.AbcToMatrix(UtilMatr.toDegrees((float)name_pos_or.x), UtilMatr.toDegrees((float)name_pos_or.y), UtilMatr.toDegrees((float)name_pos_or.z));
                     matr_rob[3, 0] = (float)name_pos.x;
@@ -264,7 +271,7 @@ namespace opengl3
             return sortFiles.ToArray();
         }
 
-        static public List<Frame> loadImages_stereoCV(string path1, string path2,FrameType frameType)
+        static public Frame[] loadImages_stereoCV(string path1, string path2,FrameType frameType)
         {
             Console.WriteLine(path1);
             var files1 = sortByDate(Directory.GetFiles(path1));
@@ -280,12 +287,12 @@ namespace opengl3
             }
             if (frames.Count != 0)
             {
-                return frames;
+                return frames.ToArray();
             }
             return null;
         }
 
-        static public List<Frame> loadImages_simple(string path)
+        static public Frame[] loadImages_simple(string path)
         {
             var files = Directory.GetFiles(path);
             List<Frame> frames = new List<Frame>();
@@ -299,7 +306,7 @@ namespace opengl3
             }
             if (frames.Count != 0)
             {
-                return frames;
+                return frames.ToArray();
             }
             return null;
         }
@@ -357,7 +364,7 @@ namespace opengl3
             }
             return null;
         }
-        static public List<Frame> loadImages_calib(string path)
+        static public Frame[] loadImages_calib(string path)
         {
             var files = Directory.GetFiles(path);
             List<Frame> frames = new List<Frame>();
@@ -371,7 +378,7 @@ namespace opengl3
             }
             if (frames.Count != 0)
             {
-                return frames;
+                return frames.ToArray();
             }
             return null;
         }

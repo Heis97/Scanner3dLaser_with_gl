@@ -359,6 +359,8 @@ namespace opengl3
             box.Image = im_res;
             return stroka;
         }
+
+
     }
     }
 

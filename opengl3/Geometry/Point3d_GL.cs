@@ -9,16 +9,18 @@ using System.Threading.Tasks;
 namespace opengl3
 {
 
-    public class Point3d_GL
+    public struct Point3d_GL
     {
         public double x;
         public double y;
         public double z;
-        public Point3d_GL(double _x, double _y, double _z)
+        public bool exist;
+        public Point3d_GL(double _x = 0, double _y = 0, double _z = 0)
         {
             x = _x;
             y = _y;
             z = _z;
+            exist = true;
         }
 
         public Point3d_GL(Point p, double _z)
@@ -26,24 +28,28 @@ namespace opengl3
             x = p.X;
             y = p.Y;
             z = _z;
+            exist = true;
         }
         public Point3d_GL(PointF p, double _z)
         {
             x = p.X;
             y = p.Y;
             z = _z;
+            exist = true;
         }
         public Point3d_GL(Point3d_GL p1, Point3d_GL p2)
         {
             x = p1.x + (p2.x - p1.x) / 2;
             y = p1.y + (p2.y - p1.y) / 2;
             z = p1.z + (p2.z - p1.z) / 2;
+            exist = true;
         }
         public Point3d_GL(double[,] cor)
         {
             x = cor[0, 0];
             y = cor[1, 0];
             z = cor[2, 0];
+            exist = true;
         }
         public Point3d_GL normalize()
         {
@@ -67,7 +73,12 @@ namespace opengl3
         {
             return Math.Sqrt(x * x + y * y + z * z);
         }
-
+        public static Point3d_GL notExistP()
+        {
+            var p = new Point3d_GL();
+            p.exist = false;
+            return p;
+        }
         public double[,] ToDouble()
         {
             return new double[,] { { x }, { y }, { z }, { 1 } };
@@ -89,12 +100,12 @@ namespace opengl3
             }
             else
             {
-                return null;
+                return Point3d_GL.notExistP();
             }
 
             if (matrixA.GetLength(1) != matrixB.GetLength(0))
             {
-                return null;
+                return Point3d_GL.notExistP();
             }
             var matrixC = new double[matrixA.GetLength(0), matrixB.GetLength(1)];
             for (var i = 0; i < matrixA.GetLength(0); i++)

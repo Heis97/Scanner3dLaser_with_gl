@@ -302,6 +302,55 @@ namespace opengl3
             return new Point(0, 0);
         }
 
+        static public PointF[] finPointFsFromImPattern(Mat im, int bin, ImageBox box, ImageBox box_debug, double maxArea = 1000, double minArea = 0.1)
+        {
+            var receivedImage = new Mat();
+            var orig = new Mat();
+            im.CopyTo(receivedImage);
+            im.CopyTo(orig);
+
+            var size_pat = new Size(7, 7);
+            var pointsD_s = new System.Drawing.PointF[size_pat.Width * size_pat.Height];
+            FindCircles.findCircles(orig, pointsD_s, size_pat,false);
+            var pointsD = PointF.toPointF(pointsD_s);
+            prin.t(pointsD_s);
+            if (pointsD != null)
+            {
+                if (pointsD.Length != 0)
+                {
+                    var gbs = checkPoints(pointsD);
+
+                    //Console.WriteLine(pointsD[gbs[1]].X + " " + pointsD[gbs[1]].Y);
+                    if (gbs != null)
+                    {
+                        var pos = new List<PointF>();
+                        pos.Add(pointsD[gbs[3]]);
+                        pos.Add(pointsD[gbs[1]]);
+                        pos.Add(pointsD[gbs[2]]);
+                        pos.Add(pointsD[gbs[0]]);
+                        UtilOpenCV.drawTours(orig, pos.ToArray(), 255, 255, 0, 6);
+                        // box.Image = orig;
+                        return pos.ToArray();
+                    }
+                    else
+                    {
+                        Console.WriteLine("gbs == null");
+                        return null;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("pointsD.length == null");
+                }
+            }
+            else
+            {
+                Console.WriteLine("pointsD == null");
+            }
+
+            return null;
+        }
+
         static public PointF[] finPointFsFromIm(Mat im, int bin, ImageBox box, ImageBox box_debug, double maxArea = 1000, double minArea = 0.1)
         {
             var receivedImage = new Mat();
@@ -319,7 +368,7 @@ namespace opengl3
             
             CvInvoke.FindContours(image, contours, hier, RetrType.External, ChainApproxMethod.ChainApproxSimple);
             //imageBox6.Image = image;
-            box_debug.Image = image;
+            //box_debug.Image = image;
             //Console.WriteLine("cont all= " + contours.Size);
             if (contours.Size != 0)
             {
@@ -360,7 +409,11 @@ namespace opengl3
                     }
 
                     // imageBox3.Image = orig;
-                    var pointsD = findCrossingD_rotate(lines.ToArray(), image.Size, orig);
+                    //var pointsD = findCrossingD_rotate(lines.ToArray(), image.Size, orig);
+                    var size_pat = new Size(7, 7);
+                    var pointsD_s = new System.Drawing.PointF[size_pat.Width* size_pat.Height];
+                    FindCircles.findCircles(orig, pointsD_s, size_pat);
+                    var pointsD = PointF.toPointF(pointsD_s);
                     //drawTours(im, pointsD, 255, 255, 0, 3);
                     //box.Image = orig;
                     if (pointsD != null)
@@ -385,7 +438,7 @@ namespace opengl3
                                 pos.Add(pointsD[gbs[2]]);
                                 pos.Add(pointsD[gbs[0]]);
                                 UtilOpenCV.drawTours(orig, pos.ToArray(), 255, 255, 0, 6);
-                                box.Image = orig;
+                               // box.Image = orig;
                                 return pos.ToArray();
                             }
                             else
@@ -539,7 +592,7 @@ namespace opengl3
         }
         static VectorOfVectorOfPoint findMark(Mat im, Mat orig,ImageBox box)
         {
-            box.Image = im;
+           // box.Image = im;
             var im_m = revealArea(im,box);
             
             return findBiggestContour(im_m, orig,box);
@@ -554,7 +607,7 @@ namespace opengl3
             var im_inp = im_.ToImage<Gray, Byte>();
             var im_med = new Image<Gray, Byte>(im_inp.Width, im_inp.Height);
             var im_lap = im_inp.Laplace(9).Convert<Gray, Byte>();
-            box.Image = im_lap.Mat;
+            //box.Image = im_lap.Mat;
             // CvInvoke.AdaptiveThreshold(im_lap, im_med, 255, AdaptiveThresholdType.GaussianC, ThresholdType.Binary, 21, red_c);
             CvInvoke.Threshold(im_lap, im_med, 140, 255, ThresholdType.Binary);
 
@@ -2428,8 +2481,8 @@ namespace opengl3
                 bool minY = (ps[3].Y < ps[0].Y) && (ps[3].Y < ps[1].Y) && (ps[3].Y < ps[2].Y);
 
                 bool checking = maxX && minX && maxY && minY;
-                //Console.WriteLine("ITER N " + iter + " " + maxX + " " + minX + " " + maxY + " " + minY);
-                //Console.WriteLine("Max x " + ps[0] + " Min x " + ps[1] + " Max Y " + ps[2] + " Min Y " + ps[3]);
+               // Console.WriteLine("ITER N " + iter + " " + maxX + " " + minX + " " + maxY + " " + minY);
+               // Console.WriteLine("Max x " + ps[0] + " Min x " + ps[1] + " Max Y " + ps[2] + " Min Y " + ps[3]);
                 if (checking == true)
                 {
                     return ints;

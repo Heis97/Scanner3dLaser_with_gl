@@ -141,25 +141,7 @@ namespace opengl3
         {
             init_vars();
 
-            // var stl_loader = new STLmodel();
-            //var mesh = stl_loader.parsingStl_GL4(@"cube_scene.STL");
-
-            var load_paths = new string []{ @"photo_9", @"photo_10", @"photo_11" };
-            //var load_path2 = @"photo_3\distort";
-            //var load_path = "tutor";
-            //GL1.addGLMesh(mesh, PrimitiveType.Triangles);
-            //GL1.add_buff_gl_lines_id(mesh, 10, true);
-            //loadScan(@"cam1\pos_cal_big_Z\test", @"cam1\las_cal_big_1", @"cam1\scanl_big_2", @"cam1\pos_basis_big", 53.8, 30, SolveType.Complex, 0.1f, 0.8f, 0.1f);
-
-            var frms =  loadPathsDiff(load_paths);
-
-
-             var cam1 = new CameraCV(frms[0], new Size(6, 7), markSize, null);    
-             var cam2 = new CameraCV(frms[1], new Size(6, 7), markSize, null);
-
-             var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_paths[0], @"cam2\" + load_paths[0], FrameType.Pattern);
-             comboImages.Items.AddRange(frms3.ToArray());
-             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
+          
 
 
              if (comboImages.Items.Count > 0)
@@ -196,13 +178,28 @@ namespace opengl3
            
             patt = UtilOpenCV.generateImage_chessboard_circle(7, 6,220);
 
+            // var load_paths = new string []{ @"photo_9", @"photo_10", @"photo_11" };
+            var load_paths = new string[] { @"cam1\pos_cal_Z_2609_2\test", @"cam1\pos_basis_2609_2" };
+            var frms =  loadPathsDiff(load_paths);
+            foreach(var frm in frms)
+            {
+                comboImages.Items.AddRange(frm);
+            }
            
-            
+
+            /* var cam1 = new CameraCV(frms[0], new Size(6, 7), markSize, null);    
+             var cam2 = new CameraCV(frms[1], new Size(6, 7), markSize, null);
+
+             var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + load_paths[0], @"cam2\" + load_paths[0], FrameType.Pattern);
+             comboImages.Items.AddRange(frms3.ToArray());
+             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });*/
+
+            Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
         }
 
-        static Frame[][] loadPathsDiff(string[] paths)
+        static Frame[][] loadPathsDiffDouble(string[] paths)
         {
             var frm1 = new List<Frame>();
             var frm2 = new List<Frame>();
@@ -214,8 +211,19 @@ namespace opengl3
 
             return new Frame[][] { frm1.ToArray(), frm2.ToArray() };
         }
+        static Frame[][] loadPathsDiff(string[] paths)
+        {
+            var frm1 = new List<Frame>();
+            var frm2 = new List<Frame>();
+            for (int i = 0; i < paths.Length; i++)
+            {
+                frm1.AddRange(FrameLoader.loadImages_diff( paths[i], FrameType.Pattern));
 
-       
+            }
+
+            return new Frame[][] { frm1.ToArray(), frm2.ToArray() };
+        }
+
         #region robot
         public void startScan(object sender, EventArgs e)
         {
@@ -1039,7 +1047,7 @@ namespace opengl3
             else if (fr.type == FrameType.Pattern)
             {
 
-                imageBox1.Image = FindCircles.findCircles(fr.im,null, new Size(6, 7));
+                imageBox1.Image = FindCircles.findCircles(fr.im,null, new Size(7, 7),false);
             }
             imageBox2.Image = fr.im;
         }
@@ -1862,7 +1870,7 @@ namespace opengl3
 
         #endregion
 
-
+        #region laser_but
         string portArd;
         private void but_find_ports_Click(object sender, EventArgs e)
         {
@@ -1914,8 +1922,9 @@ namespace opengl3
         {
             portArd = (string)((ComboBox)sender).SelectedItem;
         }
+        #endregion
     }
-    
+
 }
 
 
@@ -2005,42 +2014,3 @@ loadImages_basis(@"cam1\pos_cal_basis_1108",53, 30, 30);
 
 calcRob();*/
 
-/*err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixAspectRatio, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixAspectRatio = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixFocalLength, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixFocalLength = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixIntrinsic, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixIntrinsic = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixK2, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixK2 = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixK3, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixK3 = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixK4, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixK4 = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixK5, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixK5 = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixK6, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixK6 = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixPrincipalPoint, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixPrincipalPoint = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixTauxTauy, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixTauxTauy = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.FixS1S2S3S4, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("FixS1S2S3S4 = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.RationalModel, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("RationalModel = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.SameFocalLength, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("SameFocalLength = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.ThinPrismModel, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("ThinPrismModel = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.TiltedModel, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("TiltedModel = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.UseIntrinsicGuess, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("UseIntrinsicGuess = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.UseLU, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("UseLU = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.UseQR, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("UseQR = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.ZeroDisparity, new MCvTermCriteria(30), out rvecs, out tvecs);
-            Console.WriteLine("ZeroDisparity = " + err);
-            err = CvInvoke.CalibrateCamera(objps.ToArray(), corners.ToArray(), frames[0].im.Size, mtx, dist, CalibType.ZeroTangentDist, new MCvTermCriteria(30), out rvecs, out tvecs);*/

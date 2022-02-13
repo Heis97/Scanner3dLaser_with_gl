@@ -100,7 +100,8 @@ namespace opengl3
             {
                 return pCposs;
             }
-            return null;
+
+            return Point3d_GL.notExistP();
         }
     }
 }
