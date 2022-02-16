@@ -140,25 +140,6 @@ namespace opengl3
         public MainScanningForm()
         {
             init_vars();
-
-          
-
-
-             if (comboImages.Items.Count > 0)
-             {
-                 comboImages.SelectedIndex = 0;
-             }
-
-
-             cameraDistortionCoeffs_dist[0, 0] = -0.1;
-             generateImage3D_BOARD(7, 8, markSize);
-
-            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-            GL1.buffersGl.sortObj();
-
-            //load_subpix();
-
-
         }
         void init_vars()
         {
@@ -196,9 +177,21 @@ namespace opengl3
 
             var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
             GL1.addGLMesh(scan, PrimitiveType.Triangles);
-            
+
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
+
+            if (comboImages.Items.Count > 0)
+            {
+                comboImages.SelectedIndex = 0;
+            }
+
+
+            cameraDistortionCoeffs_dist[0, 0] = -0.1;
+           // generateImage3D_BOARD(7, 8, markSize);
+
+            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            GL1.buffersGl.sortObj();
         }
 
         static Frame[][] loadPathsDiffDouble(string[] paths)
@@ -1014,8 +1007,10 @@ namespace opengl3
             {
                 //ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
                 var ps = Detection.detectLine(fr.im);
+            
                 var mat1 = new Mat(fr.im, new Rectangle(0, 0, fr.im.Width, fr.im.Height));
                 UtilOpenCV.drawPointsF(mat1,ps,0,255,0);
+              
                 imageBox1.Image = mat1;
              
             }
