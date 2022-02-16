@@ -82,6 +82,7 @@
     <Compile Include="Geometry\Flat3d_GL.cs" />
     <Compile Include="Geometry\Flat_4P.cs" />
     <Compile Include="Geometry\Line3d_GL.cs" />
+    <Compile Include="ScannerHandle\ComputeLine.cs" />
     <Compile Include="ScannerHandle\Detection.cs" />
     <Compile Include="ScannerRobot\ContourAnalyse.cs" />
     <Compile Include="Extra\FindMark.cs" />

@@ -175,9 +175,11 @@ namespace opengl3
              comboImages.Items.AddRange(frms3.ToArray());
              stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });*/
 
-            var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
-            GL1.addGLMesh(scan, PrimitiveType.Triangles);
+            //var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
+            //GL1.addGLMesh(scan, PrimitiveType.Triangles);
 
+            var frames_las = FrameLoader.loadImages_simple(@"cam1\las_cal_2609_3");
+            comboImages.Items.AddRange(frames_las);
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
 
