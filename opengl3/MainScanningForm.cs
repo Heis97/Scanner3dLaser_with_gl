@@ -194,7 +194,9 @@ namespace opengl3
              comboImages.Items.AddRange(frms3.ToArray());
              stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });*/
 
-            Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
+            var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
+            GL1.addGLMesh(scan, PrimitiveType.Triangles);
+            
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
         }
@@ -464,15 +466,15 @@ namespace opengl3
             var mat1_or =  GL1.matFromMonitor(0);
             var mat2_or = GL1.matFromMonitor(1);
 
-            /* var mat1 = new Mat();
+             var mat1 = new Mat();
              var mat2 = new Mat();
              CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
-             CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);*/
+             CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
 
-            var mat1 = UtilOpenCV.remapDistImOpenCvCentr(UtilOpenCV.GLnoise(mat1_or, 0, 10), cameraDistortionCoeffs_dist);
+           /* var mat1 = UtilOpenCV.remapDistImOpenCvCentr(UtilOpenCV.GLnoise(mat1_or, 0, 10), cameraDistortionCoeffs_dist);
             var mat2 = UtilOpenCV.GLnoise(mat2_or, 0, 10);
-            imBox_mark1.Image = mat2;// UtilOpenCV.calcSubpixelPrec(new Size(6, 7), GL1, markSize, 1, mat2);
-            imBox_mark2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
+            imBox_mark1.Image = mat2;=
+            imBox_mark2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));*/
 
             //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
 
@@ -1010,8 +1012,12 @@ namespace opengl3
             }
             else if (fr.type == FrameType.Las)
             {
-                ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
-                //findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Up);
+                //ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
+                var ps = Detection.detectLine(fr.im);
+                var mat1 = new Mat(fr.im, new Rectangle(0, 0, fr.im.Width, fr.im.Height));
+                UtilOpenCV.drawPointsF(mat1,ps,0,255,0);
+                imageBox1.Image = mat1;
+             
             }
             else if (fr.type == FrameType.Test)
             {

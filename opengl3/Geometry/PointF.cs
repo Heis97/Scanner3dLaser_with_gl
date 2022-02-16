@@ -8,31 +8,43 @@ using System.Threading.Tasks;
 
 namespace opengl3
 {
-    public class PointF
+    public struct PointF
     {
         public float X;
         public float Y;
+        public bool exist;
         public float norm { get { return (float)Math.Sqrt(X * X + Y * Y); } }
         public PointF(float _x, float _y)
         {
             X = _x;
             Y = _y;
+            exist = true;
         }
         public PointF(double _x, double _y)
         {
             X = (float)_x;
             Y = (float)_y;
+            exist = true;
         }
         public PointF(PointF p)
         {
             X = p.X;
             Y = p.Y;
+            exist = p.exist;
         }
         public PointF(Point p)
         {
             X = p.X;
             Y = p.Y;
+            exist = true;
         }
+        static public PointF notExistP()
+        {
+            var p = new PointF();
+            p.exist = false;
+            return p;
+        }
+
         public void normalize()
         {
             var n = (float)Math.Sqrt(X * X + Y * Y);

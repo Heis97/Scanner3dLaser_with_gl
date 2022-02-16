@@ -546,6 +546,10 @@ namespace opengl3
         {
             drawPoints(im, PointF.toPoint(points), r, g, b, size);
         }
+        static public void drawPointsF(Mat im, PointF[] points, int r, int g, int b, int size = 1)
+        {
+            drawPoints(im, PointF.toPoint(points), r, g, b, size);
+        }
         static public void drawPoints(Mat im, Point[] points, int r, int g, int b, int size = 1)
         {
             int ind = 0;

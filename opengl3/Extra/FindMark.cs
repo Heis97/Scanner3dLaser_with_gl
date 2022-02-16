@@ -313,7 +313,8 @@ namespace opengl3
             var pointsD_s = new System.Drawing.PointF[size_pat.Width * size_pat.Height];
             FindCircles.findCircles(orig, pointsD_s, size_pat,false);
             var pointsD = PointF.toPointF(pointsD_s);
-            prin.t(pointsD_s);
+
+            //prin.t(pointsD_s);
             if (pointsD != null)
             {
                 if (pointsD.Length != 0)

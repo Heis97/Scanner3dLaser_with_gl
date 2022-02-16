@@ -37,7 +37,9 @@ namespace opengl3
             
 
             UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0, 2);
-
+            //prin.t(cents);
+            //prin.t("____________");
+            //CvInvoke.Imshow("fnd", mat);
             if(corn==null)
             {
                 corn = new System.Drawing.PointF[pattern_size.Width * pattern_size.Height];

@@ -100,7 +100,7 @@ namespace opengl3
                 var y = data[1] / data[2];
                 return new PointF(x, y);
             }
-            return null;
+            return PointF.notExistP();
         }
         public void Normalyse()
         {

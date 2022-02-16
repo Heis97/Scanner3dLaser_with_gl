@@ -64,7 +64,6 @@ namespace opengl3
         static public Frame loadImage(string filepath, double FoV, double Side, int bin, int frame_len = 15, bool visible = false)//11.02,30.94  //41.9874, 112.7 FOV  
         {
             //options:
-            int k = 8;
             double maxArea = 0.1;
             double minArea = 1000;
             string name = Path.GetFileName(filepath);
@@ -101,8 +100,8 @@ namespace opengl3
 
             var im = new Mat(filepath);
 
-            int koef = k;
-            CvInvoke.Resize(im, im, new Size(im.Width * koef, im.Height * koef));
+            //int koef = k;
+           //CvInvoke.Resize(im, im, new Size(im.Width * koef, im.Height * koef));
 
 
            //var ps = FindMark.finPointFsFromIm(im, bin, null, null, maxArea, minArea);

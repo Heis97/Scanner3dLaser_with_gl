@@ -266,7 +266,7 @@ namespace opengl3
                 // imageBox4.Image = UtilMatr.doubleToMat(strk_1, im.Size);
                 var gauss = gauss2D(strk_1, 8);
                 //imageBox5.Image = UtilMatr.doubleToMat(gauss, im.Size);
-                box.Image = UtilMatr.doubleToMat(gauss, im.Size);
+                //box.Image = UtilMatr.doubleToMat(gauss, im.Size);
                 //Console.WriteLine("STRK");
                 return gauss;
             }

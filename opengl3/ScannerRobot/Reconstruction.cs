@@ -38,7 +38,7 @@ namespace opengl3
             //GL1.addGLMesh(model, PrimitiveType.Triangles, (float)-offset_model.x, (float)-offset_model.y, (float)-offset_model.z, r, g, b);
             // }
         }
-        static public void loadScan(string path_pos_calib, string path_laser_calib, string path_scan, string path_basis, double FoV, double Side, int bin_pos = 40, SolveType type = SolveType.Simple, float r = 0.1f, float g = 0.1f, float b = 0.1f, ComboBox comboBox = null)
+        static public float[] loadScan(string path_pos_calib, string path_laser_calib, string path_scan, string path_basis, double FoV, double Side, int bin_pos = 40, SolveType type = SolveType.Simple, float r = 0.1f, float g = 0.1f, float b = 0.1f, ComboBox comboBox = null)
         {
             var frames_pos = FrameLoader.loadImages(path_pos_calib, FoV, Side, bin_pos, 15, true);
             var frames_las = FrameLoader.loadImages_simple(path_laser_calib);
@@ -59,22 +59,9 @@ namespace opengl3
                      select f;
             frames_scan = fr.ToArray();
 
-            //laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, (int)red_c, type,robToCam,DirectionType.Down);
-
-
-            // var model = paintScanningModel_pts(laserFlat, frames_scan, frames_pos[0], zero_frame, type, robToCam, DirectionType.Down);
-            //addPointMesh(model, r, g, b);
-            //Console.WriteLine("loading done");
-            //Console.WriteLine("x = " + offset_model.x + "y = " + offset_model.y + "z = " + offset_model.z);
-            //addGLMesh(model, PrimitiveType.Points, 0, 0, 0, r, g, b);
-
-            //var laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, 252, type, robToCam, DirectionType.Down);
-           // var model = paintScanningModel(laserFlat, frames_scan, frames_pos[0], zero_frame, type, robToCam, DirectionType.Down);
-           // Console.WriteLine("loading done");
-
-
-            //Console.WriteLine("x = " + offset_model.x + "y = " + offset_model.y + "z = " + offset_model.z);
-            //GL1.addGLMesh(model, PrimitiveType.Triangles, 0, 0, 0, 1, 0, 0);
+            var laserFlat = calibrLaser(frames_las, frames_pos[0], zero_frame, 252, type, robToCam, DirectionType.Down);
+            var model = paintScanningModel(laserFlat, frames_scan, frames_pos[0], zero_frame, type, robToCam, DirectionType.Down);
+            return model;
         }
         static public Point3d_GL[] paintScanningModel_pts(List<Flat_4P> laserFlat, List<Frame> videoframes, Frame calib_frame, Frame zero_frame, SolveType type, double[,] matr = null, DirectionType directionType = DirectionType.Down)
         {
@@ -321,9 +308,9 @@ namespace opengl3
                 var stroka = ContourAnalyse.findContourZ(mat_im, null, bin, directionType);
                 f.points = UtilMatr.moveToCentr(Regression.regressionPoints(mat_im.Size, stroka, 80, 2), v.size);
 
-                Console.WriteLine(f.points.Length);
+                //Console.WriteLine(f.points.Length);
                 frames.Add(f);
-                Console.WriteLine(f);
+                //Console.WriteLine(f);
             }
 
             float r = 0.1f;

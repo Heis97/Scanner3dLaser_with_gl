@@ -82,7 +82,8 @@
     <Compile Include="Geometry\Flat3d_GL.cs" />
     <Compile Include="Geometry\Flat_4P.cs" />
     <Compile Include="Geometry\Line3d_GL.cs" />
-    <Compile Include="Modeling\ContourAnalyse.cs" />
+    <Compile Include="ScannerHandle\Detection.cs" />
+    <Compile Include="ScannerRobot\ContourAnalyse.cs" />
     <Compile Include="Extra\FindMark.cs" />
     <Compile Include="Frame\FrameLoader.cs" />
     <Compile Include="Geometry\LineF.cs" />
@@ -94,8 +95,8 @@
     <Compile Include="Graphic\STLmodel.cs" />
     <Compile Include="Graphic\TransRotZoom.cs" />
     <Compile Include="Util\prin.cs" />
-    <Compile Include="Modeling\Reconstruction.cs" />
-    <Compile Include="Modeling\Regression.cs" />
+    <Compile Include="ScannerRobot\Reconstruction.cs" />
+    <Compile Include="ScannerRobot\Regression.cs" />
     <Compile Include="Robot\CalcGauss.cs" />
     <Compile Include="Camera\Camera.cs" />
     <Compile Include="MainScanningForm.cs">

@@ -121,7 +121,7 @@ namespace opengl3
             }
             else
             {
-                return null;
+                return PointF.notExistP() ;
             }
         }
 
