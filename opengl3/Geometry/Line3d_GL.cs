@@ -37,7 +37,7 @@ namespace opengl3
             }
             else
             {
-                return new Point3d_GL(0, 0, 0);
+                return Point3d_GL.notExistP();
             }
         }
     }

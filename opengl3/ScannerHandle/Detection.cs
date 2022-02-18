@@ -14,7 +14,7 @@ namespace opengl3
 {
     public static class Detection
     {
-        public static PointF[] detectLine(Mat mat, int wind=40)
+        public static PointF[] detectLine(Mat mat, int wind=20)
         {
             var ps = new PointF[mat.Width];
             var data = (byte[,,])mat.GetData();
@@ -71,6 +71,18 @@ namespace opengl3
             }
             return masX_sum / mas_sum;
         }
+
+        public static PointF[] detectPointsForFlat(PointF[] ps1, PointF[] ps2)
+        {
+            var ps = new PointF[3];
+            var quart1 = (int)ps1.Length / 4;
+            var quart2 = (int)ps2.Length / 4;
+            ps[0] = ps1[quart1];
+            ps[1] = ps1[ps1.Length - quart1];
+            ps[2] = ps1[quart2];
+            return ps;
+        }
+
 
 
     }

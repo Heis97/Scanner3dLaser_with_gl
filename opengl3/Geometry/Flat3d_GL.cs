@@ -12,12 +12,14 @@ namespace opengl3
         public double B;
         public double C;
         public double D;
+        public bool exist;
         public Flat3d_GL(double _A, double _B, double _C, double _D)
         {
             A = _A;
             B = _B;
             C = _C;
             D = _D;
+            exist = true;
         }
         public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3)
         {
@@ -34,8 +36,9 @@ namespace opengl3
             B = x1 * z2 - x2 * z1 - x1 * z3 + x3 * z1 + x2 * z3 - x3 * z2;
             C = -(x1 * y2 - x2 * y1 - x1 * y3 + x3 * y1 + x2 * y3 - x3 * y2);
             D = x1 * y2 * z3 - x1 * y3 * z2 - x2 * y1 * z3 + x2 * y3 * z1 + x3 * y1 * z2 - x3 * y2 * z1;
+            exist = true;
         }
-        public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Flat3d_GL F)
+        public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Flat3d_GL F)//perpendic
         {
             var x1 = P1.x;
             var y1 = P1.y;
@@ -53,11 +56,20 @@ namespace opengl3
             B = A2 * z1 - C2 * x1 - A2 * z2 + C2 * x2;
             C = -(A2 * y1 - B2 * x1 - A2 * y2 + B2 * x2);
             D = A2 * y1 * z2 - A2 * y2 * z1 - B2 * x1 * z2 + B2 * x2 * z1 + C2 * x1 * y2 - C2 * x2 * y1;
+            exist = true;
 
+        }
+
+        static public Flat3d_GL notExistFlat()
+        {
+            var flat = new Flat3d_GL();
+            flat.exist = false;
+            return flat;
         }
         public double valP(Point3d_GL p)
         {
             return A * p.x + B * p.y + C * p.z + D;
         }
+
     }
 }
