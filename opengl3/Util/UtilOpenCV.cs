@@ -34,6 +34,30 @@ namespace opengl3
     static public class UtilOpenCV
     {
         
+        public static MCvPoint3D32f[] takeGabObp(MCvPoint3D32f[] obp, Size patt_size)
+        {
+            var ps3d = new MCvPoint3D32f[4];
+            var w = patt_size.Width;
+            var h = patt_size.Height;
+            var inds_1 = new int[4] { 0, w - 1, w * (h - 1), w * h - 1 };
+            for(int i=0; i<inds_1.Length;i++)
+            {
+                ps3d[i] = obp[inds_1[i]];
+            }
+            return ps3d;
+        }
+        public static System.Drawing.PointF[] takeGabObp(System.Drawing.PointF[] obp, Size patt_size)
+        {
+            var ps2d = new System.Drawing.PointF[4];
+            var w = patt_size.Width;
+            var h = patt_size.Height;
+            var inds_1 = new int[4] { 0, w - 1, w * (h - 1), w * h - 1 };
+            for (int i = 0; i < inds_1.Length; i++)
+            {
+                ps2d[i] = obp[inds_1[i]];
+            }
+            return ps2d;
+        }
         public static Mat[] warpPerspNorm(Mat[] mats, Matrix<double> matrixPers,Size size)
         {
             var mat = mats[0];
@@ -337,17 +361,20 @@ namespace opengl3
         public static void saveImage(ImageBox box1, ImageBox box2, string name, string folder)
         {
             var mat1 = (Mat)box1.Image;
-
-            //var im1 = mat1.ToImage<Bgr, byte>();
-            Console.WriteLine("cam2\\" + folder + "\\" + name);
-            Directory.CreateDirectory("cam1\\" + folder);
-            mat1.Save("cam1\\" + folder + "\\" + name);
-
+            if(mat1!=null)
+            {
+                Console.WriteLine("cam1\\" + folder + "\\" + name);
+                Directory.CreateDirectory("cam1\\" + folder);
+                mat1.Save("cam1\\" + folder + "\\" + name);
+            }  
+            
             mat1 = (Mat)box2.Image;
-            Directory.CreateDirectory("cam2\\" + folder);
-            //im1 = mat1.ToImage<Bgr, byte>();
-            mat1.Save("cam2\\" + folder + "\\" + name);
-
+            if (mat1 != null)
+            {
+                Console.WriteLine("cam2\\" + folder + "\\" + name);
+                Directory.CreateDirectory("cam2\\" + folder);
+                mat1.Save("cam2\\" + folder + "\\" + name);
+            }
         }
 
 
@@ -556,16 +583,15 @@ namespace opengl3
         {
             int ind = 0;
             var color = new MCvScalar(b, g, r);//bgr
-            if(points==null)
+            if(points==null || im == null)
             {
                 return;
             }
             if (points.Length != 0)
             {
-                //Console.WriteLine("LEN_ DRAW_P " + points.Length);
-
                 foreach (var p in points)
                 {
+                    
                     CvInvoke.Circle(im, p, size, color, -1);
                     ind++;
                 }
@@ -1042,20 +1068,24 @@ namespace opengl3
         }
         static public Mat drawChessboard(Mat im, Size size, bool subpix = false,bool blur = false)
         {
-
+            if(im==null)
+            {
+                return null;
+            }
             var corn = new VectorOfPointF();
-            var gray = im.ToImage<Gray, byte>();
             var mat_ch = new Mat();
             im.CopyTo(mat_ch);
+            var gray = mat_ch.ToImage<Gray, byte>();
+            
             if(blur)
             {
                 CvInvoke.GaussianBlur(gray, gray, new Size(5, 5), 0);
             }
            
-            var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.FastCheck);
+            var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.AdaptiveThresh);
             if(subpix)
             {
-                CvInvoke.CornerSubPix(gray, corn, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+                CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
             }
 
             //perspective2Dmatr(size, corn);

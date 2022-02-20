@@ -74,6 +74,17 @@ namespace opengl3
         {
             return Math.Sqrt(x * x + y * y + z * z);
         }
+        public static float[] toMesh(Point3d_GL[] point3Ds)
+        {
+            var mesh = new float[point3Ds.Length * 3];
+            for(int i=0; i<point3Ds.Length;i+=3)
+            {
+                mesh[i] = (float)point3Ds[i].x;
+                mesh[i+1] = (float)point3Ds[i].y;
+                mesh[i+2] = (float)point3Ds[i].z;
+            }
+            return mesh;
+        }
         public static Point3d_GL notExistP()
         {
             var p = new Point3d_GL();
@@ -83,6 +94,16 @@ namespace opengl3
         public double[,] ToDouble()
         {
             return new double[,] { { x }, { y }, { z }, { 1 } };
+        }
+
+        public static Point3d_GL[] multMatr(Point3d_GL[] ps,Matrix<double> matrix)
+        {
+            var ps_ret = new Point3d_GL[ps.Length];
+            for(int i=0; i<ps_ret.Length; i++)
+            {
+                ps_ret[i] = matrix * ps[i];
+            }
+            return ps_ret;
         }
         public static Point3d_GL operator *(Point3d_GL p, double k)
         {
@@ -140,9 +161,9 @@ namespace opengl3
         {
 
             var ret = new double[matrixA.Cols, matrixA.Rows];
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < ret.GetLength(0); i++)
             {
-                for (var j = 0; j < 4; j++)
+                for (var j = 0; j < ret.GetLength(1); j++)
                 {
                     ret[i, j] = (double)matrixA[i, j];
 

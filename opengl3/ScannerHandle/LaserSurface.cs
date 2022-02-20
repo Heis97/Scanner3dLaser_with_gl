@@ -14,6 +14,13 @@ namespace opengl3
         {
             flat3D = computeSurface(points);
         }
+        public LaserSurface(Mat[] mats, CameraCV cameraCV, PatternType patternType)
+        {
+            calibrate(mats, cameraCV,patternType);
+        }
+        public LaserSurface()
+        {
+        }
         public Flat3d_GL computeSurface(Point3d_GL[] points)
         {
             if (points.Length < 3)
@@ -23,25 +30,59 @@ namespace opengl3
             var flat = new Flat3d_GL(points[0], points[1], points[2]);
             return flat;
         }
-        public bool calibrate(Mat[] mats,Matrix<double>[] matrCS)
+        public bool calibrate(Mat[] mats,CameraCV cameraCV,PatternType patternType)
         {
-            var points1 = Detection.detectLine(mats[0]);
-            var points2 = Detection.detectLine(mats[1]);
-            var ps1 = takePointsForFlat(points1);
-            var ps2 = takePointsForFlat(points2);
+            var ps1 = points3dInCam(mats[0], cameraCV, patternType);
+            var ps2 = points3dInCam(mats[1], cameraCV, patternType);
+            if(ps1==null || ps2==null)
+            {
+                Console.WriteLine("ps1: " +ps1);
+                Console.WriteLine("ps2: " + ps2);
+                return false;
+            }
+            var ps = ps1.ToList();
+            ps.AddRange(ps2);
+            flat3D = computeSurface(ps.ToArray());
 
             return true;
         }
 
-        public static PointF[] takePointsForFlat(PointF[] ps1)
+        static Point3d_GL[] points3dInCam(Mat mat, CameraCV cameraCV,PatternType patternType)
         {
-            var ps = new PointF[2];
-            var quart1 = (int)ps1.Length / 4;
-            ps[0] = ps1[quart1];
-            ps[1] = ps1[ps1.Length - quart1];
-            return ps;
+            var points = Detection.detectLine(mat);
+            var ps = takePointsForFlat(points);
+            if (cameraCV.compPos(mat, patternType))
+            {
+                var lines = PointCloud.computeTraces(ps, cameraCV);
+                var ps3d = PointCloud.intersectWithFlat(lines, zeroFlatInCam(cameraCV.matrixCS));
+                return ps3d;
+            }
+            else
+            {
+                return null;
+            }
+            
         }
 
+        static PointF[] takePointsForFlat(PointF[] ps)
+        {
+            var psС = new PointF[2];
+            var quart = (int)ps.Length / 4;
+            psС[0] = ps[quart];
+            psС[1] = ps[ps.Length - quart];
+            return psС;
+        }
 
+        static Flat3d_GL zeroFlatInCam(Matrix<double> matrix)
+        {
+            if(matrix ==null)
+            {
+                Console.WriteLine("matrxZeroFlat   NULL");
+            }
+            var p1 = matrix * new Point3d_GL(100, 0, 0);
+            var p2 = matrix * new Point3d_GL(0, 0, 0);
+            var p3 = matrix * new Point3d_GL(0, 100, 0);
+            return new Flat3d_GL(p1, p2, p3);
+        }
     }
 }

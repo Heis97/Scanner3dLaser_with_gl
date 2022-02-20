@@ -260,13 +260,10 @@ namespace opengl3
                     }
                     strk.Add(new double[] { x, y_pos, real });
                 }
-                //imageBox3.Image = im_gray;
-                // imageBox6.Image = UtilMatr.doubleToMat(strk.ToArray(), im_gray.Size);
                 var strk_1 = connectPoints(strk.ToArray());
-                // imageBox4.Image = UtilMatr.doubleToMat(strk_1, im.Size);
                 var gauss = gauss2D(strk_1, 8);
-                //imageBox5.Image = UtilMatr.doubleToMat(gauss, im.Size);
-                //box.Image = UtilMatr.doubleToMat(gauss, im.Size);
+
+                
                 //Console.WriteLine("STRK");
                 return gauss;
             }

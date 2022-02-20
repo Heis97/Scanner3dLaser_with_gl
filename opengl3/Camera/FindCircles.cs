@@ -227,6 +227,18 @@ namespace opengl3
 
             return arrFromP(ps, ind_size);
         }
+        static public System.Drawing.PointF[] findGab(System.Drawing.PointF[] ps)
+        {
+            var mainDiag = findMainDiag(ps);
+            var step = mainDiag[2];
+            var angle = calcAngleX(ps[mainDiag[0]], ps[mainDiag[1]]);//!!!add if dx small rot Y
+            var additDiag = findAdditDiag(ps, angle);
+
+            return new System.Drawing.PointF[]
+            {
+                ps[mainDiag[0]], ps[additDiag[0]],ps[mainDiag[1]], ps[additDiag[1]]
+            };
+        }
         static int[][] ordBySize(int[][] inds, Size size)
         {
             if(inds==null)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace opengl3
 {
 
-    public enum FrameType { Pos, LasRob, Test, MarkBoard, Pattern }
+    public enum FrameType { Pos, LasRob, Test, MarkBoard, Pattern,LasHand }
 
     public class Frame
     {
@@ -21,7 +21,8 @@ namespace opengl3
         public string name;
         public Size size;
         public PointF[] points;
-        public FrameType type;
+        public FrameType frameType;
+        public PatternType patternType;
         public Camera camera;
         public double size_mark;
         public DateTime dateTime;
@@ -34,7 +35,7 @@ namespace opengl3
             name = _name;
             points = _points;
             size = _im.Size;
-            type = FrameType.LasRob;
+            frameType = FrameType.LasRob;
         }
         public Frame(Mat _im, Point3d_GL _pos_cam, Point3d_GL _pos_rob, string _name, PointF[] _points, Point3d_GL _pos_rob_or)
         {
@@ -45,7 +46,7 @@ namespace opengl3
             points = _points;
             size = _im.Size;
             pos_rob_or = _pos_rob_or;
-            type = FrameType.Pos;
+            frameType = FrameType.Pos;
         }
         public Frame(Mat _im, Point3d_GL _pos_cam, Point3d_GL _pos_rob, string _name)
         {
@@ -54,7 +55,7 @@ namespace opengl3
             pos_rob = _pos_rob;
             name = _name;
             size = _im.Size;
-            type = FrameType.LasRob;
+            frameType = FrameType.LasRob;
 
         }
         public Frame(Mat _im, string _name)
@@ -62,27 +63,43 @@ namespace opengl3
             im = _im;
             name = _name;
             size = _im.Size;
-            type = FrameType.Test;
-
+            frameType = FrameType.Test;
         }
 
-        public Frame(Mat _im, string _name, FrameType frameType)
+        public Frame(Mat _im, string _name, FrameType _frameType)
         {
             im = _im;
             name = _name;
             size = _im.Size;
-            type = frameType;
-
+            frameType = _frameType;
         }
-        public Frame(Mat _im, Mat _im2, string _name, FrameType frameType)
+        public Frame(Mat _im, string _name, FrameType _frameType,PatternType _patternType)
+        {
+            im = _im;
+            name = _name;
+            size = _im.Size;
+            frameType = _frameType;
+            patternType = _patternType;
+        }
+        public Frame(Mat _im, Mat _im2, string _name, FrameType _frameType)
         {
             im = _im;
             im_sec = _im2;
             name = _name;
             size = _im.Size;
-            type = frameType;
+            frameType = _frameType;
             stereo = true;
 
+        }
+
+        static public Mat[] getMats(Frame[] frames)
+        {
+            var mats = new Mat[frames.Length];
+            for(int i=0; i<mats.Length;i++)
+            {
+                mats[i] = frames[i].im;
+            }
+            return mats;
         }
         override public string ToString()
         {

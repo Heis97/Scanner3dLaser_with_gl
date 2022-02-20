@@ -14,6 +14,8 @@ using System.Threading;
 
 namespace opengl3
 {
+
+   public enum PatternType { Chess,Mesh};
     public class CameraCV
     {
         public Matrix<double> cameramatrix;
@@ -294,7 +296,7 @@ namespace opengl3
 
            // prin.t(prjmatrix);
         }
-        static public Matrix<double> assembMatrix(Mat rvec, Mat tvec)
+        /*static public Matrix<double> assembMatrix(Mat rvec, Mat tvec)
         {
             var rotMatr = new Matrix<double>(3, 3);
             CvInvoke.Rodrigues(rvec, rotMatr);
@@ -304,7 +306,7 @@ namespace opengl3
             var lastRow = new double[1, 4] { { 0, 0, 0, 1 } };
             var lastMatr = new Matrix<double>(lastRow);
             return asMatr.ConcateVertical(lastMatr);
-        }
+        }*/
         static public Matrix<double> invMatrix(Matrix<double> matr)
         {
             var inv_matr = new Matrix<double>(matr.Size);
@@ -347,6 +349,57 @@ namespace opengl3
             setPos();
             return pos;
         }
+        public bool compPos(Mat mat, PatternType patternType)
+        {
+            if(patternType == PatternType.Chess)
+            {
+                Size size_patt = new Size(6, 7);
+                var gray = mat.ToImage<Gray, byte>();
+                var corn = new VectorOfPointF();
+                float markSize = 10;
+                var obp = new MCvPoint3D32f[size_patt.Width * size_patt.Height];
+                int ind = 0;
+                for (int j = 0; j < size_patt.Height; j++)
+                {
+                    for (int i = 0; i < size_patt.Width; i++)
+                    {
+                        obp[ind] = new MCvPoint3D32f(-markSize * (float)i, markSize * (float)j, 0.0f);
+                        ind++;
+                    }
+                }
+                var ret = CvInvoke.FindChessboardCorners(gray, size_patt, corn, CalibCbType.AdaptiveThresh);
+                if (ret == true)
+                {
+                    CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+                    var corn2 = corn.ToArray();
+
+                    var points2d = UtilOpenCV.takeGabObp(corn2, size_patt);
+                    var points3d = UtilOpenCV.takeGabObp(obp, size_patt);
+                    compPos(points3d, points2d);
+                    return true;
+                   
+                }
+            }
+            else if(patternType == PatternType.Mesh)
+            {
+                Size size_patt = new Size(7, 7);
+                float markSize = 30;
+                var points3d = new MCvPoint3D32f[]
+                {
+                    new MCvPoint3D32f(0,0,0),new MCvPoint3D32f(markSize,0,0),
+                    new MCvPoint3D32f(markSize,markSize,0),new MCvPoint3D32f(0,markSize,0)
+                };
+               
+                var len = size_patt.Width * size_patt.Height;
+                var cornF = new System.Drawing.PointF[len];
+                var matDraw = FindCircles.findCircles(mat, cornF, size_patt);
+                var points2d = FindCircles.findGab(cornF);
+                compPos(points3d, points2d);
+                return true;
+            }
+            return false;
+        }
+
 
         public Point3d_GL point3DfromCam(PointF _p)
         {
@@ -510,7 +563,6 @@ namespace opengl3
             CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
             return mat_ret;
         }
-
         
         void calibrateCam(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
@@ -591,6 +643,7 @@ namespace opengl3
             var und_pic = new Mat();
             CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
             cameramatrix = _cameramatrix;
+            cameramatrix_inv = invMatrix(cameramatrix);
             distortmatrix = _distortmatrix;
             prin.t("cameramatrix:");
             prin.t(cameramatrix);
@@ -601,7 +654,7 @@ namespace opengl3
 
         static System.Drawing.PointF[] findPoints(Frame frame,Size size_patt)
         {
-            if(frame.type == FrameType.MarkBoard)
+            if(frame.frameType == FrameType.MarkBoard)
             {
                 var gray = frame.im.ToImage<Gray, byte>();
                 var corn = new VectorOfPointF();
@@ -633,7 +686,7 @@ namespace opengl3
                     return null;
                 }
             }
-            else if(frame.type == FrameType.Pattern)
+            else if(frame.frameType == FrameType.Pattern)
             {
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];

@@ -11,6 +11,30 @@ namespace opengl3
 {
     static public class FrameLoader
     {
+
+        static public Frame[][] loadPathsDiffDouble(string[] paths)
+        {
+            var frm1 = new List<Frame>();
+            var frm2 = new List<Frame>();
+            for (int i = 0; i < paths.Length; i++)
+            {
+                frm1.AddRange(FrameLoader.loadImages_diff(@"cam1\" + paths[i], FrameType.Pattern));
+                frm2.AddRange(FrameLoader.loadImages_diff(@"cam2\" + paths[i], FrameType.Pattern));
+            }
+
+            return new Frame[][] { frm1.ToArray(), frm2.ToArray() };
+        }
+        static public Frame[] loadPathsDiff(string[] paths)
+        {
+            var frm1 = new List<Frame>();
+            for (int i = 0; i < paths.Length; i++)
+            {
+                frm1.AddRange(loadImages_diff(paths[i], FrameType.Pattern));
+
+            }
+
+            return frm1.ToArray();
+        }
         static public Frame[] loadImages(string path, double FoV, double Side, int bin = 60, int frame_len = 15, bool visible = false)
         {
             Console.WriteLine(path);
@@ -241,6 +265,14 @@ namespace opengl3
             fr.dateTime = File.GetCreationTime(filepath);
             return fr;
         }
+        static public Frame loadImage_diff(string filepath, FrameType frameType,PatternType patternType)
+        {
+            string name = Path.GetFileName(filepath);
+            var im = new Mat(filepath);
+            var fr = new Frame(im, name, frameType,patternType);
+            fr.dateTime = File.GetCreationTime(filepath);
+            return fr;
+        }
         static public Frame loadImage_chess(string filepath)
         {
             string name = Path.GetFileName(filepath);
@@ -351,7 +383,27 @@ namespace opengl3
             List<Frame> frames = new List<Frame>();
             foreach (string file in files)
             {
+                //Console.WriteLine(file);
                 var frame = loadImage_diff(file,frameType);
+                if (frame != null)
+                {
+                    frames.Add(frame);
+                }
+            }
+            if (frames.Count != 0)
+            {
+                return frames.ToArray();
+            }
+            return null;
+        }
+        static public Frame[] loadImages_diff(string path, FrameType frameType,PatternType patternType)
+        {
+            var files = Directory.GetFiles(path);
+            List<Frame> frames = new List<Frame>();
+            foreach (string file in files)
+            {
+                //Console.WriteLine(file);
+                var frame = loadImage_diff(file, frameType, patternType);
                 if (frame != null)
                 {
                     frames.Add(frame);

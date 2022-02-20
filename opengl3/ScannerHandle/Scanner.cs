@@ -15,21 +15,43 @@ namespace opengl3
     {
         LaserSurface laserSurface;
         PointCloud pointCloud;
-        CameraCV[] camerasCV;
+        CameraCV cameraCV;
 
-        public Scanner(CameraCV[] cams)
+        public Scanner(CameraCV cam)
         {
-            init();
-            camerasCV = cams;
+            cameraCV = cam;
+            laserSurface = new LaserSurface();
+            pointCloud = new PointCloud();
         }
 
-        void init()
+        public bool calibrateLaser(Mat[] mats,PatternType patternType)
         {
-
+            return laserSurface.calibrate(mats, cameraCV, patternType);
         }
 
+        public bool addPoints(Mat mat)
+        {
 
+            return pointCloud.addPoints(mat, cameraCV, laserSurface);
+        }
 
+        public bool addPoints(Mat[] mats)
+        {
+            bool ret = false;
+            foreach(var mat in mats)
+            {
+                ret = addPoints(mat);
+            }
+            return ret;
+        }
+        public Point3d_GL[] getPointsScene()
+        {
+            return pointCloud.points3d;
+        }
 
+        public Point3d_GL[] getPointsCam()
+        {
+            return Point3d_GL.multMatr(pointCloud.points3d,cameraCV.matrixSC);
+        }
     }
 }
