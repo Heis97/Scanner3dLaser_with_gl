@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace opengl3
 {
 
-    public enum FrameType { Pos, Las, Test, MarkBoard, Pattern }
+    public enum FrameType { Pos, LasRob, Test, MarkBoard, Pattern }
 
     public class Frame
     {
@@ -34,7 +34,7 @@ namespace opengl3
             name = _name;
             points = _points;
             size = _im.Size;
-            type = FrameType.Las;
+            type = FrameType.LasRob;
         }
         public Frame(Mat _im, Point3d_GL _pos_cam, Point3d_GL _pos_rob, string _name, PointF[] _points, Point3d_GL _pos_rob_or)
         {
@@ -54,7 +54,7 @@ namespace opengl3
             pos_rob = _pos_rob;
             name = _name;
             size = _im.Size;
-            type = FrameType.Las;
+            type = FrameType.LasRob;
 
         }
         public Frame(Mat _im, string _name)

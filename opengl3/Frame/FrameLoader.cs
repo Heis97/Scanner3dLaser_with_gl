@@ -149,7 +149,7 @@ namespace opengl3
             }
             return null;
         }
-        static public Frame loadImage_simple(string filepath)
+        static public Frame loadImage_laserRob(string filepath)
         {
             string name = Path.GetFileName(filepath);
             //Console.WriteLine(name);
@@ -291,13 +291,13 @@ namespace opengl3
             return null;
         }
 
-        static public Frame[] loadImages_simple(string path)
+        static public Frame[] loadImages_laserRob(string path)
         {
             var files = Directory.GetFiles(path);
             List<Frame> frames = new List<Frame>();
             foreach (string file in files)
             {
-                var frame = loadImage_simple(file);
+                var frame = loadImage_laserRob(file);
                 if (frame != null)
                 {
                     frames.Add(frame);

@@ -125,6 +125,8 @@ namespace opengl3
             }
             return new Vert3f(res);
         }
+
+
         static public Vert3f operator /(Vert3f ver1, float d)
         {
             for (int i = 0; i < 3; ++i)

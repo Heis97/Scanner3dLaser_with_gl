@@ -35,7 +35,7 @@ namespace opengl3
         public Matrix<double> matrixCS;
         public Matrix<double> matrixSC;
 
-
+        #region monitCalib
         public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern,bool gen_board = false,bool affine = true)
         {
             int num = 1;
@@ -75,7 +75,7 @@ namespace opengl3
             }
             return objps;
         }
-         async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat[] pattern, string path,  GraphicGL graphicGL, bool affine = true)
+        async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat[] pattern, string path,  GraphicGL graphicGL, bool affine = true)
          {
             var matrs = new Matrix<double>[1];
             if (affine)
@@ -242,7 +242,7 @@ namespace opengl3
 
             return matrs;
         }
-         static Matrix<double> affinematr(double alpha = 0, double k = 0, double offx = 0, double offy=0)
+        static Matrix<double> affinematr(double alpha = 0, double k = 0, double offx = 0, double offy=0)
          {
            
             return new Matrix<double>(new double[2, 3] {
@@ -255,6 +255,8 @@ namespace opengl3
             var step = (2 * diap) / p;
             return -diap + step * i;
         }
+
+        #endregion
         void init_vars()
         {
             cur_t = new Mat();
@@ -345,7 +347,13 @@ namespace opengl3
             setPos();
             return pos;
         }
-        
+
+        public Point3d_GL point3DfromCam(PointF _p)
+        {
+            var p = cameramatrix_inv * new Point3d_GL(_p.X, _p.Y, 1);
+            return p;
+        }
+
         void calibrateFishEyeCam(Frame[] frames, Size size)
         {
             var objps = new VectorOfVectorOfPoint3D32F();

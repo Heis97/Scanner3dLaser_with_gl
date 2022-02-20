@@ -166,7 +166,7 @@ namespace opengl3
             {
                 comboImages.Items.AddRange(frm);
             }
-           
+
 
             /* var cam1 = new CameraCV(frms[0], new Size(6, 7), markSize, null);    
              var cam2 = new CameraCV(frms[1], new Size(6, 7), markSize, null);
@@ -176,9 +176,11 @@ namespace opengl3
              stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });*/
 
             //var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
+
+            //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);
             //GL1.addGLMesh(scan, PrimitiveType.Triangles);
 
-            var frames_las = FrameLoader.loadImages_simple(@"cam1\las_cal_2609_3");
+            var frames_las = FrameLoader.loadImages_laserRob(@"cam1\las_cal_2609_3");
             comboImages.Items.AddRange(frames_las);
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
@@ -1005,7 +1007,7 @@ namespace opengl3
             {
                 FindMark.finPointFsFromIm(fr.im, bin_pos, imageBox1,imageBox4,maxArea,minArea);
             }
-            else if (fr.type == FrameType.Las)
+            else if (fr.type == FrameType.LasRob)
             {
                 //ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
                 var ps = Detection.detectLine(fr.im);

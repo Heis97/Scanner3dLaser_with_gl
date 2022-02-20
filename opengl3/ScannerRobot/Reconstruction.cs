@@ -13,11 +13,11 @@ namespace opengl3
 
     static public class Reconstruction
     {
-        static public void loadScan_leg(string path_pos_calib, string path_laser_calib, string path_scan, double FoV, double Side, int bin_pos = 40, SolveType type = SolveType.Simple, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        static public void loadScan_leg(GraphicGL graphicGL, string path_pos_calib, string path_laser_calib, string path_scan, double FoV, double Side, int bin_pos = 40, SolveType type = SolveType.Simple, float r = 0.1f, float g = 0.1f, float b = 0.1f)
         {
             var frames_pos = FrameLoader.loadImages(path_pos_calib, FoV, Side, bin_pos);
-            var frames_las = FrameLoader.loadImages_simple(path_laser_calib);
-            var frames_scan = FrameLoader.loadImages_simple(path_scan);
+            var frames_las = FrameLoader.loadImages_laserRob(path_laser_calib);
+            var frames_scan = FrameLoader.loadImages_laserRob(path_scan);
             var zero_frame = findZeroFrame(frames_las);
 
             var fr = from f in frames_scan
@@ -29,6 +29,7 @@ namespace opengl3
 
             var model = paintScanningModel(laserFlat, frames_scan, frames_pos[0], zero_frame, type);
             Console.WriteLine("loading done");
+            graphicGL.addGLMesh(model, OpenGL.PrimitiveType.Triangles);
             //if (offset_model != null)
             // {
             //Console.WriteLine("x = " + offset_model.x + "y = " + offset_model.y + "z = " + offset_model.z);
@@ -41,8 +42,8 @@ namespace opengl3
         static public float[] loadScan(string path_pos_calib, string path_laser_calib, string path_scan, string path_basis, double FoV, double Side, int bin_pos = 40, SolveType type = SolveType.Simple, float r = 0.1f, float g = 0.1f, float b = 0.1f, ComboBox comboBox = null)
         {
             var frames_pos = FrameLoader.loadImages(path_pos_calib, FoV, Side, bin_pos, 15, true);
-            var frames_las = FrameLoader.loadImages_simple(path_laser_calib);
-            var frames_scan = FrameLoader.loadImages_simple(path_scan);
+            var frames_las = FrameLoader.loadImages_laserRob(path_laser_calib);
+            var frames_scan = FrameLoader.loadImages_laserRob(path_scan);
             var zero_frame = findZeroFrame(frames_las);
             var robToCam = FrameLoader.loadImages_basis(path_basis, FoV, Side, bin_pos);
 

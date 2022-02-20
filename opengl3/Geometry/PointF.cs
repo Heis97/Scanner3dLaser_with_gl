@@ -13,7 +13,13 @@ namespace opengl3
         public float X;
         public float Y;
         public bool exist;
-        public float norm { get { return (float)Math.Sqrt(X * X + Y * Y); } }
+        public float norm 
+        { 
+            get 
+            { 
+                return (float)Math.Sqrt(X * X + Y * Y); 
+            } 
+        }
         public PointF(float _x, float _y)
         {
             X = _x;

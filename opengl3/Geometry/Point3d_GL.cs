@@ -1,4 +1,5 @@
-﻿using OpenGL;
+﻿using Emgu.CV;
+using OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -134,11 +135,35 @@ namespace opengl3
             }
             return ret;
         }
+
+        static double[,] Matrix4x4ToDouble(Matrix<double> matrixA)
+        {
+
+            var ret = new double[matrixA.Cols, matrixA.Rows];
+            for (var i = 0; i < 4; i++)
+            {
+                for (var j = 0; j < 4; j++)
+                {
+                    ret[i, j] = (double)matrixA[i, j];
+
+                }
+            }
+            return ret;
+        }
+
+
         public static Point3d_GL operator *(Matrix4x4f matrixA, Point3d_GL p)
         {
             var matrix = Matrix4x4ToDouble(matrixA);
             return matrix * p;
         }
+
+        public static Point3d_GL operator *(Matrix<double> matrixA, Point3d_GL p)
+        {
+            var matrix = Matrix4x4ToDouble(matrixA);
+            return matrix * p;
+        }
+
         public static Point3d_GL operator +(Point3d_GL p, Vector3d_GL v1)
         {
             return new Point3d_GL(p.x + v1.x, p.y + v1.y, p.z + v1.z);
