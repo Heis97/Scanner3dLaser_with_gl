@@ -30,10 +30,10 @@ namespace opengl3
             var flat = new Flat3d_GL(points[0], points[1], points[2]);
             return flat;
         }
-        public bool calibrate(Mat[] mats,CameraCV cameraCV,PatternType patternType)
+        public bool calibrate(Mat[] mats,CameraCV cameraCV,PatternType patternType, GraphicGL graphicGL = null)
         {
-            var ps1 = points3dInCam(mats[0], cameraCV, patternType);
-            var ps2 = points3dInCam(mats[1], cameraCV, patternType);
+            var ps1 = points3dInCam(mats[0], cameraCV, patternType, graphicGL);
+            var ps2 = points3dInCam(mats[1], cameraCV, patternType, graphicGL);
             if(ps1==null || ps2==null)
             {
                 Console.WriteLine("ps1: " +ps1);
@@ -47,21 +47,29 @@ namespace opengl3
             return true;
         }
 
-        static Point3d_GL[] points3dInCam(Mat mat, CameraCV cameraCV,PatternType patternType)
+        static Point3d_GL[] points3dInCam(Mat mat, CameraCV cameraCV,PatternType patternType,GraphicGL graphicGL = null)
         {
             var points = Detection.detectLine(mat);
             var ps = takePointsForFlat(points);
+            //prin.t("_________________");
+            //prin.t(cameraCV.matrixSC);
             if (cameraCV.compPos(mat, patternType))
             {
-                var lines = PointCloud.computeTraces(ps, cameraCV);
-                var ps3d = PointCloud.intersectWithFlat(lines, zeroFlatInCam(cameraCV.matrixCS));
+                if(graphicGL!=null)
+                {
+                    graphicGL.addFrame_Cam(cameraCV);
+                    graphicGL.addCamArea(cameraCV, 100);
+                }
+               // prin.t("- - - - - - - -  - - - -");
+                //prin.t(cameraCV.matrixSC);
+                var lines = PointCloud.computeTracesCam(ps, cameraCV);
+                var ps3d = PointCloud.intersectWithFlat(lines, zeroFlatInCam(cameraCV.matrixSC));
                 return ps3d;
             }
             else
             {
                 return null;
-            }
-            
+            }            
         }
 
         static PointF[] takePointsForFlat(PointF[] ps)

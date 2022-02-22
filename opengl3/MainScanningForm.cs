@@ -141,7 +141,7 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-           loadScanner();
+           //loadScanner();
             GL1.buffersGl.sortObj();
         }
         void init_vars()
@@ -195,7 +195,8 @@ namespace opengl3
         void loadScanner()
         {
             var cam_cal_paths = new string[] { @"cam1\photo_9", @"cam1\photo_10", @"cam1\photo_11" };
-            var scan_path = @"cam1\scan_2002_1";
+            var scan_path = @"cam1\scan_2002_1"; 
+            //var scan_path = @"cam1\las_cal_2002_1\test";
             var las_cal_path = @"cam1\las_cal_2002_1\test";
 
             
@@ -210,7 +211,7 @@ namespace opengl3
             comboImages.Items.AddRange(frms_scan);
 
             var scanner1 = new Scanner(cam1);
-            if (scanner1.calibrateLaser(Frame.getMats(frms_las_cal), PatternType.Chess))
+            if (scanner1.calibrateLaser(Frame.getMats(frms_las_cal), PatternType.Chess,GL1))
             {
                 scanner1.addPoints(Frame.getMats(frms_scan));
                 var p3d_scan_sc = scanner1.getPointsScene();
@@ -218,7 +219,7 @@ namespace opengl3
                 var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
                 var mesh_scan_cam = Point3d_GL.toMesh(p3d_scan_cam);
                 GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points,0.9f);
-                GL1.addMeshWithoutNorm(mesh_scan_cam, PrimitiveType.Points, 0,0.9f);
+                //GL1.addMeshWithoutNorm(mesh_scan_cam, PrimitiveType.Points, 0,0.9f);
             }
             else
             {

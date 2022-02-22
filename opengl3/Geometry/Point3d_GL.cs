@@ -77,11 +77,11 @@ namespace opengl3
         public static float[] toMesh(Point3d_GL[] point3Ds)
         {
             var mesh = new float[point3Ds.Length * 3];
-            for(int i=0; i<point3Ds.Length;i+=3)
+            for(int i=0; i<point3Ds.Length;i++)
             {
-                mesh[i] = (float)point3Ds[i].x;
-                mesh[i+1] = (float)point3Ds[i].y;
-                mesh[i+2] = (float)point3Ds[i].z;
+                mesh[3 * i] =  (float)point3Ds[i].x;
+                mesh[3 * i +1] = (float)point3Ds[i].y;
+                mesh[3 * i +2] = (float)point3Ds[i].z;
             }
             return mesh;
         }

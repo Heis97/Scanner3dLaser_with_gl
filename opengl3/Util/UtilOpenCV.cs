@@ -602,6 +602,20 @@ namespace opengl3
             drawPoints(im, PointF.toPoint(points), r, g, b, size);
         }
 
+        static public void drawPoints(Mat im, System.Drawing.PointF[] points,MCvPoint3D32f[] points3d, int r, int g, int b, int size = 1)
+        {
+            var points2d = PointF.toPoint(points);
+            drawPoints(im, points2d, r, g, b, size);
+            if(points2d.Length == points3d.Length)
+            {
+                for(int i=0; i<points2d.Length; i++)
+                {
+                    CvInvoke.PutText(im, points3d[i].X + " " + points3d[i].Y + " " + points3d[i].Z, points2d[i], FontFace.HersheyComplex, 0.5, new MCvScalar(r, g, b), size);
+                }
+            }
+
+        }
+
         static public void drawPoints(Mat im, System.Drawing.PointF[] points, int r, int g, int b, int size = 1)
         {
             drawPoints(im, PointF.toPoint(points), r, g, b, size);

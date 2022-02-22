@@ -40,7 +40,7 @@ namespace opengl3
         }
         static Point3d_GL[] fromLines(PointF[] points_im, CameraCV cameraCV, LaserSurface laserSurface)
         {
-            var lines3d = computeTraces(points_im, cameraCV);
+            var lines3d = computeTracesCam(points_im, cameraCV);
             var points_cam = intersectWithLaser(lines3d, laserSurface);
             return points_cam;
         }
@@ -59,7 +59,7 @@ namespace opengl3
             }
             return points3d;
         }
-        public static Line3d_GL[] computeTraces(PointF[] points_im, CameraCV cameraCV)
+        public static Line3d_GL[] computeTracesCam(PointF[] points_im, CameraCV cameraCV)
         {
             var lines3d = new Line3d_GL[points_im.Length];
             for(int i=0; i<lines3d.Length;i++)

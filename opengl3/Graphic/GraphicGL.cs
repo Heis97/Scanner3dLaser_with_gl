@@ -426,24 +426,17 @@ namespace opengl3
                 var _Vm = Transmatr((float)off_x, -(float)off_y, (float)zoom * (float)off_z) * RotXmatr(xRot) * RotYmatr(yRot) * RotZmatr(zRot);
                 Pm = new Matrix4x4f((_Pm).data);
                 Vm = new Matrix4x4f((_Vm).data);
-                /*Pm = Matrix4x4f.Perspective(53.0f, (float)trz.rect.Width / (float)trz.rect.Height, 0.2f, 300.0f);
-                Vm = Matrix4x4f.Translated((float)(off_x), -(float)(off_y), (float)zoom * (float)(off_z)) *
-               Matrix4x4f.RotatedX((float)xRot) *
-               Matrix4x4f.RotatedY((float)yRot) *
-               Matrix4x4f.RotatedZ((float)zRot);*/
                 Mm = Matrix4x4f.Identity;
                 MVP = new Matrix4x4f((_Pm * _Vm).data);
-               // MVP = Pm * Vm * Mm;
             }
             else if (trz.viewType_ == viewType.Ortho)
             {
-                Pm = Matrix4x4f.Ortho(-100.0f * (float)zoom, +100.0f * (float)zoom, -100.0f * (float)zoom, +100.0f * (float)zoom, 0.1f, 6000.0f);
-                Vm = Matrix4x4f.Translated((float)(off_x), -(float)(off_y), (float)(off_z)) *
-               Matrix4x4f.RotatedX((float)xRot) *
-               Matrix4x4f.RotatedY((float)yRot) *
-               Matrix4x4f.RotatedZ((float)zRot);
+                var _Pm = OrthoF();
+                var _Vm = Transmatr((float)off_x, -(float)off_y, (float)zoom * (float)off_z) * RotXmatr(xRot) * RotYmatr(yRot) * RotZmatr(zRot);
+                Pm = new Matrix4x4f((_Pm).data);
+                Vm = new Matrix4x4f((_Vm).data);
                 Mm = Matrix4x4f.Identity;
-                MVP = Pm * Vm * Mm;
+                MVP = new Matrix4x4f((_Pm * _Vm).data);
             }
             
 
@@ -484,6 +477,22 @@ namespace opengl3
                  0, 0, 1, 0  };
             return new Matr4x4f(data);
         }
+
+        static public Matr4x4f OrthoF(float fx = 1, float aspec = 1, float n = 0.1f, float f = 3000f)
+        {
+            var fy = fx / aspec;
+            var a = (f + n) / (f - n);
+            var b = (-2 * f * n) / (f - n);
+            var cx = 1 / (float)Math.Tan(toRad(fx) / 2);
+            var cy = 1 / (float)Math.Tan(toRad(fy) / 2);
+            var data = new float[] {
+                 1, 0, 0, 0 ,
+                 0, 1, 0, 0 ,
+                 0, 0, 1,  0,
+                 0, 0, 0, 1 };
+            return new Matr4x4f(data);
+        }
+
         static public Matr4x4f Projmatr(float f = 1)
         {
 
@@ -668,7 +677,7 @@ namespace opengl3
                     }
                     if (e.Button == MouseButtons.Left)
                     {
-                        trz.xRot -= dy;
+                        trz.xRot += dy;
                         trz.yRot -= dx;
                         trz.zRot += dz;
                         
@@ -878,7 +887,7 @@ namespace opengl3
             {
                 if (trz.viewType_ == viewType.Perspective)
                 {
-                    var p1 = new Vertex4f(0, 0, 0.01f, 1f);
+                   /* var p1 = new Vertex4f(0, 0, 0.01f, 1f);
                     double _z = 1000;
                     double _x = _z * Math.Tan(toRad(53 / 2)), _y = _z * Math.Tan(toRad(53 / 2));
                     float x = (float)_x; float y = (float)_y; float z = (float)_z;
@@ -891,12 +900,12 @@ namespace opengl3
                     p3 = Vs[id].Inverse.Transposed * p3;
                     p4 = Vs[id].Inverse.Transposed * p4;
                     p5 = Vs[id].Inverse.Transposed * p5;
-
                     var verts = new Vertex4f[16]
                     {
                 p1,p2, p1,p3, p1,p4, p1,p5, p2,p3, p3,p5, p5,p4, p4,p2
                     };
-                    add_buff_gl_lines_id(toFloat(verts), id,true);
+                    add_buff_gl_lines_id(toFloat(verts), id,true);*/
+                   
                 }
                 else if (trz.viewType_ == viewType.Ortho)
                 {
@@ -994,6 +1003,31 @@ namespace opengl3
         {
 
             addFrame(cam.pos, cam.pos + cam.oX * frame_len, cam.pos + cam.oY * frame_len, cam.pos + cam.oZ * frame_len * 1.3);
+        }
+
+        public void addFrame_Cam(CameraCV cam, int frame_len = 15)
+        {
+            var posit = cam.matrixSC * new Point3d_GL(0, 0, 0);
+            var ox = cam.matrixSC * new Point3d_GL( frame_len, 0, 0);
+            var oy = cam.matrixSC * new Point3d_GL( 0, frame_len, 0);
+            var oz = cam.matrixSC * new Point3d_GL( 0, 0, frame_len);
+            addFrame(posit, ox, oy, oz);
+        }
+        public void addCamArea(CameraCV cam, double len, bool paint = true)
+        {
+            var p0 = cam.matrixSC * new Point3d_GL(0, 0, 0);
+            var p1 = cam.matrixSC * (cam.point3DfromCam(new PointF(0, 0)) * len);
+            var p2 = cam.matrixSC * (cam.point3DfromCam(new PointF(cam.image_size.Width, 0)) * len);
+            var p3 = cam.matrixSC * (cam.point3DfromCam(new PointF(cam.image_size.Width, cam.image_size.Height)) * len);
+            var p4 = cam.matrixSC * (cam.point3DfromCam(new PointF(0, cam.image_size.Height)) * len);
+            
+
+            var verts = new Point3d_GL[16]
+                    {
+                p0,p1, p0,p2, p0,p3, p0,p4, p1,p2, p2,p3, p3,p4, p4,p1
+                    };
+            addMeshWithoutNorm(Point3d_GL.toMesh(verts), PrimitiveType.Lines);
+
         }
         public void addGLMesh(float[] _mesh, PrimitiveType primitiveType, float x = 0, float y = 0, float z = 0, float r = 0.1f, float g = 0.1f, float b = 0.1f, float scale = 1f)
         {

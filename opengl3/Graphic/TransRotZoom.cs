@@ -1,4 +1,5 @@
-﻿using OpenGL;
+﻿using Emgu.CV;
+using OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -27,6 +28,7 @@ namespace opengl3
         public Rectangle rect;
         public DateTime dateTime;
         public TransRotZoom consttransf;
+        public CameraCV cameraCV;
 
         public TransRotZoom(Rectangle _rect, int _id)
         {
@@ -36,12 +38,13 @@ namespace opengl3
             zRot = 0;
             off_x = 0;
             off_y = 0;
-            off_z = 400;// 400;
+            off_z = 400;
             rect = _rect;
             id = _id;
             type = TRZtype.Master;
             viewType_ = viewType.Perspective;
             visible = false;
+            cameraCV =  new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), 53), new Matrix<double>(5, 1));
         }
 
         public TransRotZoom(Rectangle _rect, int _id, Vertex3d rotVer, Vertex3d transVer, int _idMast)
@@ -52,7 +55,7 @@ namespace opengl3
             zRot = 0;
             off_x = 0;
             off_y = 0;
-            off_z = -400;
+            off_z = 400;
             rect = _rect;
             id = _id;
             id_m = _idMast;
@@ -60,6 +63,7 @@ namespace opengl3
             consttransf = new TransRotZoom(rotVer, transVer);
             viewType_ = viewType.Perspective;
             visible = false;
+            cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), 53), new Matrix<double>(5, 1));
         }
         public TransRotZoom(Vertex3d rotVer, Vertex3d transVer)
         {

@@ -24,9 +24,9 @@ namespace opengl3
             pointCloud = new PointCloud();
         }
 
-        public bool calibrateLaser(Mat[] mats,PatternType patternType)
+        public bool calibrateLaser(Mat[] mats,PatternType patternType,GraphicGL graphicGL = null)
         {
-            return laserSurface.calibrate(mats, cameraCV, patternType);
+            return laserSurface.calibrate(mats, cameraCV, patternType, graphicGL);
         }
 
         public bool addPoints(Mat mat)

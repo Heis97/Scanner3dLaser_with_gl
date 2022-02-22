@@ -963,7 +963,7 @@ namespace opengl3
             // lab_TRZ
             // 
             this.lab_TRZ.AutoSize = true;
-            this.lab_TRZ.Location = new System.Drawing.Point(40, 872);
+            this.lab_TRZ.Location = new System.Drawing.Point(195, 915);
             this.lab_TRZ.Name = "lab_TRZ";
             this.lab_TRZ.Size = new System.Drawing.Size(22, 13);
             this.lab_TRZ.TabIndex = 99;
@@ -1308,7 +1308,7 @@ namespace opengl3
             // lab_curCor
             // 
             this.lab_curCor.AutoSize = true;
-            this.lab_curCor.Location = new System.Drawing.Point(86, 848);
+            this.lab_curCor.Location = new System.Drawing.Point(56, 850);
             this.lab_curCor.Name = "lab_curCor";
             this.lab_curCor.Size = new System.Drawing.Size(38, 13);
             this.lab_curCor.TabIndex = 66;
@@ -1317,7 +1317,7 @@ namespace opengl3
             // lab_kor
             // 
             this.lab_kor.AutoSize = true;
-            this.lab_kor.Location = new System.Drawing.Point(40, 848);
+            this.lab_kor.Location = new System.Drawing.Point(15, 850);
             this.lab_kor.Name = "lab_kor";
             this.lab_kor.Size = new System.Drawing.Size(22, 13);
             this.lab_kor.TabIndex = 64;
