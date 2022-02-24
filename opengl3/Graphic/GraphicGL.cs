@@ -1007,19 +1007,19 @@ namespace opengl3
 
         public void addFrame_Cam(CameraCV cam, int frame_len = 15)
         {
-            var posit = cam.matrixSC * new Point3d_GL(0, 0, 0);
-            var ox = cam.matrixSC * new Point3d_GL( frame_len, 0, 0);
-            var oy = cam.matrixSC * new Point3d_GL( 0, frame_len, 0);
-            var oz = cam.matrixSC * new Point3d_GL( 0, 0, frame_len);
+            var posit = cam.matrixCS * new Point3d_GL(0, 0, 0);
+            var ox = cam.matrixCS * new Point3d_GL( frame_len, 0, 0);
+            var oy = cam.matrixCS * new Point3d_GL( 0, frame_len, 0);
+            var oz = cam.matrixCS * new Point3d_GL( 0, 0, frame_len);
             addFrame(posit, ox, oy, oz);
         }
         public void addCamArea(CameraCV cam, double len, bool paint = true)
         {
-            var p0 = cam.matrixSC * new Point3d_GL(0, 0, 0);
-            var p1 = cam.matrixSC * (cam.point3DfromCam(new PointF(0, 0)) * len);
-            var p2 = cam.matrixSC * (cam.point3DfromCam(new PointF(cam.image_size.Width, 0)) * len);
-            var p3 = cam.matrixSC * (cam.point3DfromCam(new PointF(cam.image_size.Width, cam.image_size.Height)) * len);
-            var p4 = cam.matrixSC * (cam.point3DfromCam(new PointF(0, cam.image_size.Height)) * len);
+            var p0 = cam.matrixCS * new Point3d_GL(0, 0, 0);
+            var p1 = cam.matrixCS * (cam.point3DfromCam(new PointF(0, 0)) * len);
+            var p2 = cam.matrixCS * (cam.point3DfromCam(new PointF(cam.image_size.Width, 0)) * len);
+            var p3 = cam.matrixCS * (cam.point3DfromCam(new PointF(cam.image_size.Width, cam.image_size.Height)) * len);
+            var p4 = cam.matrixCS * (cam.point3DfromCam(new PointF(0, cam.image_size.Height)) * len);
             
 
             var verts = new Point3d_GL[16]
@@ -1195,7 +1195,6 @@ namespace opengl3
                 color_buffer_data[i + 1] = g;
                 color_buffer_data[i + 2] = b;
             }
-             Console.WriteLine("vert len " + gl_vertex_buffer_data.Length);
             add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
         }
         #endregion
@@ -1209,7 +1208,7 @@ namespace opengl3
             Gl.GetShader(ShaderName, ShaderParameterName.CompileStatus, out compiled);
             if (compiled != 0)
             {
-                Console.WriteLine("SHADER COMPILE");
+                //Console.WriteLine("SHADER COMPILE");
                 return;
             }
 

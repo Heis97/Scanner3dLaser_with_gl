@@ -49,19 +49,17 @@ namespace opengl3
 
         static Point3d_GL[] points3dInCam(Mat mat, CameraCV cameraCV,PatternType patternType,GraphicGL graphicGL = null)
         {
+            //var points = Detection.detectLine(cameraCV.undist(mat));
             var points = Detection.detectLine(mat);
             var ps = takePointsForFlat(points);
-            //prin.t("_________________");
-            //prin.t(cameraCV.matrixSC);
+            
             if (cameraCV.compPos(mat, patternType))
             {
                 if(graphicGL!=null)
                 {
                     graphicGL.addFrame_Cam(cameraCV);
-                    graphicGL.addCamArea(cameraCV, 100);
+                    graphicGL.addCamArea(cameraCV, 500);
                 }
-               // prin.t("- - - - - - - -  - - - -");
-                //prin.t(cameraCV.matrixSC);
                 var lines = PointCloud.computeTracesCam(ps, cameraCV);
                 var ps3d = PointCloud.intersectWithFlat(lines, zeroFlatInCam(cameraCV.matrixSC));
                 return ps3d;

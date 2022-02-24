@@ -20,6 +20,7 @@ namespace opengl3
         }
         public void add_obj(openGlobj opgl_obj)
         {
+           // Console.WriteLine(opgl_obj.vertex_buffer_data.Length + " " + opgl_obj.tp);
             objs.Add(opgl_obj);
             if (opgl_obj.animType == openGlobj.AnimType.Dynamic)
             {

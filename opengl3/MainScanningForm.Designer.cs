@@ -1685,7 +1685,7 @@ namespace opengl3
             this.txBx_photoName.Name = "txBx_photoName";
             this.txBx_photoName.Size = new System.Drawing.Size(184, 26);
             this.txBx_photoName.TabIndex = 119;
-            this.txBx_photoName.Text = "photo_12";
+            this.txBx_photoName.Text = "photo_13";
             // 
             // nameC2
             // 

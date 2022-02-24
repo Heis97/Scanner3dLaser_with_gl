@@ -17,6 +17,7 @@ namespace opengl3
         }
         public bool addPoints(Mat mat, CameraCV cameraCV,LaserSurface laserSurface)
         {
+            //var points_im = Detection.detectLine(cameraCV.undist(mat));
             var points_im = Detection.detectLine(mat);
             var points_cam = fromLines(points_im, cameraCV, laserSurface);
             cameraCV.compPos(mat, PatternType.Chess);

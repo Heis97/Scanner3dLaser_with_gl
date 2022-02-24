@@ -31,7 +31,7 @@ namespace opengl3
         #region var
         LaserLine laserLine;
         Point cam_calib_p1 = new Point(0, 0);
-          Point cam_calib_p2 = new Point(0, 0);
+        Point cam_calib_p2 = new Point(0, 0);
         bool settingWindow = false;
         Mat[] patt;
         Matrix<double> persp_matr = new Matrix<double>(new double[3,3] { {1,0,0},{0,1,0 },{0,0,1 } });
@@ -39,6 +39,7 @@ namespace opengl3
         int photo_number = 0;
         float markSize = 10f;
         StereoCameraCV stereocam;
+        CameraCV cameraCVcommon;
         TCPclient con1;
         private const float PI = 3.14159265358979f;
         // private Size cameraSize = new Size(1280, 960);
@@ -82,6 +83,8 @@ namespace opengl3
 
         Matrix<double> cameraDistortionCoeffs_dist = new Matrix<double>(5, 1);
         Matrix<double> cameraMatrix_dist = new Matrix<double>(3, 3);
+
+      
 
         float[] reconst = new float[3];
         float[] reconst_lines1 = new float[3];
@@ -141,7 +144,8 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-           //loadScanner();
+            loadScanner();
+        
             GL1.buffersGl.sortObj();
         }
         void init_vars()
@@ -175,7 +179,7 @@ namespace opengl3
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
 
-            // generateImage3D_BOARD(7, 8, markSize);
+             generateImage3D_BOARD(7, 8, markSize);
 
             //var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
 
@@ -194,7 +198,7 @@ namespace opengl3
         }
         void loadScanner()
         {
-            var cam_cal_paths = new string[] { @"cam1\photo_9", @"cam1\photo_10", @"cam1\photo_11" };
+            var cam_cal_paths = new string[] { @"cam1\photo_9" , @"cam1\photo_10", @"cam1\photo_11", @"cam1\photo_13" };
             var scan_path = @"cam1\scan_2002_1"; 
             //var scan_path = @"cam1\las_cal_2002_1\test";
             var las_cal_path = @"cam1\las_cal_2002_1\test";
@@ -206,7 +210,7 @@ namespace opengl3
 
             var frms = FrameLoader.loadPathsDiff(cam_cal_paths);
             var cam1 = new CameraCV(frms, new Size(6, 7), markSize, null);
-
+            cameraCVcommon = cam1;
             comboImages.Items.AddRange(frms_las_cal);
             comboImages.Items.AddRange(frms_scan);
 
@@ -215,18 +219,18 @@ namespace opengl3
             {
                 scanner1.addPoints(Frame.getMats(frms_scan));
                 var p3d_scan_sc = scanner1.getPointsScene();
-                var p3d_scan_cam = scanner1.getPointsCam();
                 var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
-                var mesh_scan_cam = Point3d_GL.toMesh(p3d_scan_cam);
+                Console.WriteLine(p3d_scan_sc[10]);
+                Console.WriteLine(mesh_scan_sc[30]+" "+ mesh_scan_sc[31] + " "+ mesh_scan_sc[32] + " ");
                 GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points,0.9f);
-                //GL1.addMeshWithoutNorm(mesh_scan_cam, PrimitiveType.Points, 0,0.9f);
             }
             else
             {
                 Console.WriteLine("CalibLas FALSE");
             }
             
-           
+
+
         }
 
         #region robot
@@ -388,7 +392,6 @@ namespace opengl3
             addButForMonitor(GL1, send.Size, send.Location);
 
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
-            GL1.add_TextBox(debugBox);
 
             //UtilOpenCV.distortFolder(@"cam1\photo_5", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"cam2\photo_5", GL1.cameraCV);
@@ -396,7 +399,6 @@ namespace opengl3
             // startGenerate();
             //trB_SGBM_Enter();
 
-           
         }
         Mat toMat(Bitmap bitmap)
         {
@@ -473,10 +475,15 @@ namespace opengl3
              CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
              CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
 
-           /* var mat1 = UtilOpenCV.remapDistImOpenCvCentr(UtilOpenCV.GLnoise(mat1_or, 0, 10), cameraDistortionCoeffs_dist);
-            var mat2 = UtilOpenCV.GLnoise(mat2_or, 0, 10);
-            imBox_mark1.Image = mat2;=
-            imBox_mark2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));*/
+            imBox_mark1.Image = mat1;
+            imBox_mark2.Image = mat2;
+
+            //GL1.printDebug(debugBox);
+
+            /* var mat1 = UtilOpenCV.remapDistImOpenCvCentr(UtilOpenCV.GLnoise(mat1_or, 0, 10), cameraDistortionCoeffs_dist);
+             var mat2 = UtilOpenCV.GLnoise(mat2_or, 0, 10);
+             imBox_mark1.Image = mat2;=
+             imBox_mark2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));*/
 
             //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
 
@@ -597,15 +604,17 @@ namespace opengl3
 
                 else if (fr.frameType == FrameType.LasHand)
                 {
-                    var mat1 = new Mat();
-                    fr.im.CopyTo(mat1);
+                    var mat1 = fr.im.Clone();
+                    if(cameraCVcommon!=null)
+                    {
 
-                    var ps = Detection.detectLine(fr.im);
+                        var ps = Detection.detectLine(cameraCVcommon.undist( fr.im));
+                        mat1 = cameraCVcommon.undist(mat1);
+                        fr.im = cameraCVcommon.undist(fr.im);
+                        UtilOpenCV.drawPointsF(mat1, ps, 0, 255, 0);
+                    }
+                    
 
-                    //var gauss = ContourAnalyse.findContourZ(fr.im, null, 245, DirectionType.Down);
-                    //UtilOpenCV.drawPointsF(mat1, UtilMatr.doubleToPointF(gauss), 0, 0, 255);
-
-                    UtilOpenCV.drawPointsF(mat1, ps, 0, 255, 0);
                     mat1 =  UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
                     imageBox1.Image = mat1;
 
@@ -615,6 +624,8 @@ namespace opengl3
                     //findLaserArea(fr.im, imageBox1, (int)red_c);
                     //imageBox_debug_cam_2.Image =  drawDescriptors(fr.im);
                     //findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Up);
+                    //var gauss = ContourAnalyse.findContourZ(fr.im, null, 245, DirectionType.Down);
+                    //UtilOpenCV.drawPointsF(mat1, UtilMatr.doubleToPointF(gauss), 0, 0, 255);
                 }
 
                 else if (fr.frameType == FrameType.MarkBoard)
@@ -1342,7 +1353,6 @@ namespace opengl3
         void capturingVideo(object sender, EventArgs e)
         {
             drawCameras((VideoCapture)sender);
-
         }
         void drawCameras(VideoCapture cap)
         {
@@ -1354,14 +1364,17 @@ namespace opengl3
                     cap.Retrieve(mat_global[0]);
                     //finPointFsFromIm(mat_global[0], 40, imageBox1);
                     imageBox1.Image = mat_global[0];
+                    imBox_input_1.Image = mat_global[0];
+
                 }
                 else if ((camera_ind.Count > 1) && ((int)cap.Ptr == camera_ind[1]))
                 {
                     cap.Retrieve(mat_global[1]);
-                    var mat = stereoProc(mat_global[0], mat_global[1]);
+                    //var mat = stereoProc(mat_global[0], mat_global[1]);
                     //finPointFsFromIm(mat_global[1], 40, imageBox2);
-                    imBox_base.Image = mat;
+                    //imBox_base.Image = mat;
                     imageBox2.Image = mat_global[1];
+                    imBox_input_2.Image = mat_global[1];
                 }
             }
         }

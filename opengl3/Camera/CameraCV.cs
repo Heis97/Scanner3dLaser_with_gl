@@ -334,9 +334,9 @@ namespace opengl3
                 {0,0,0,1 }
             };
 
-            var matrCS = new Matrix<double>(data_mx);
-            var matrSC = new Matrix<double>(4, 4);
-            CvInvoke.Invert(matrCS, matrSC, DecompMethod.LU);
+            var matrSC = new Matrix<double>(data_mx);
+            var matrCS = new Matrix<double>(4, 4);
+            CvInvoke.Invert(matrSC, matrCS, DecompMethod.LU);
             return new Matrix<double>[] { matrCS, matrSC };
 
         }
@@ -372,6 +372,7 @@ namespace opengl3
                 var ret = CvInvoke.FindChessboardCorners(gray, size_patt, corn, CalibCbType.AdaptiveThresh);
                 if (ret == true)
                 {
+                    //Console.WriteLine("CHESS TRUE");
                     CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
                     var corn2 = corn.ToArray();
 
@@ -382,6 +383,10 @@ namespace opengl3
                     //CvInvoke.Imshow("pos", mat1);
                     return true;
                    
+                }
+                else
+                {
+                    //Console.WriteLine("CHESS FALSE");
                 }
             }
             else if(patternType == PatternType.Mesh)
