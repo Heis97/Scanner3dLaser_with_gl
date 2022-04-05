@@ -198,7 +198,7 @@ namespace opengl3
         }
         void loadScanner()
         {
-            var cam_cal_paths = new string[] { @"cam1\photo_9" , @"cam1\photo_10", @"cam1\photo_11", @"cam1\photo_13" };
+            var cam_cal_paths = new string[] { @"cam1\photo_9" , @"cam1\photo_11", @"cam1\photo_13" };//, @"cam1\photo_10"
             var scan_path = @"cam1\scan_2002_1"; 
             //var scan_path = @"cam1\las_cal_2002_1\test";
             var las_cal_path = @"cam1\las_cal_2002_1\test";
@@ -211,8 +211,9 @@ namespace opengl3
             var frms = FrameLoader.loadPathsDiff(cam_cal_paths);
             var cam1 = new CameraCV(frms, new Size(6, 7), markSize, null);
             cameraCVcommon = cam1;
-            comboImages.Items.AddRange(frms_las_cal);
+            //comboImages.Items.AddRange(frms_las_cal);
             comboImages.Items.AddRange(frms_scan);
+            //comboImages.Items.AddRange(frms);
 
             var scanner1 = new Scanner(cam1);
             if (scanner1.calibrateLaser(Frame.getMats(frms_las_cal), PatternType.Chess,GL1))
@@ -220,8 +221,6 @@ namespace opengl3
                 scanner1.addPoints(Frame.getMats(frms_scan));
                 var p3d_scan_sc = scanner1.getPointsScene();
                 var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
-                Console.WriteLine(p3d_scan_sc[10]);
-                Console.WriteLine(mesh_scan_sc[30]+" "+ mesh_scan_sc[31] + " "+ mesh_scan_sc[32] + " ");
                 GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points,0.9f);
             }
             else
@@ -608,13 +607,11 @@ namespace opengl3
                     if(cameraCVcommon!=null)
                     {
 
-                        var ps = Detection.detectLine(cameraCVcommon.undist( fr.im));
+                        var ps = Detection.detectLine(cameraCVcommon.undist(fr.im));
                         mat1 = cameraCVcommon.undist(mat1);
-                        fr.im = cameraCVcommon.undist(fr.im);
+                        //fr.im = cameraCVcommon.undist(fr.im);
                         UtilOpenCV.drawPointsF(mat1, ps, 0, 255, 0);
                     }
-                    
-
                     mat1 =  UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
                     imageBox1.Image = mat1;
 
@@ -636,6 +633,7 @@ namespace opengl3
                 else if (fr.frameType == FrameType.Pattern)
                 {
 
+                    imBox_debug1.Image = cameraCVcommon.undist(fr.im.Clone());
                     imageBox1.Image = FindCircles.findCircles(fr.im, null, new Size(7, 7), false);
                 }
             }

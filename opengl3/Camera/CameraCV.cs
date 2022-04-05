@@ -277,7 +277,7 @@ namespace opengl3
         public CameraCV(Frame[] _frames, Size _size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
             calibrateCam(_frames, _size, markSize, obp_inp);
-            calibrateCamFish(_frames, _size, markSize, obp_inp);
+            //calibrateCamFish(_frames, _size, markSize, obp_inp);
             init_vars();
         }
         void setPos()
