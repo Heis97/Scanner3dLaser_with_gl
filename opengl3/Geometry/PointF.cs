@@ -1,4 +1,5 @@
-﻿using Emgu.CV.Util;
+﻿using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -86,7 +87,33 @@ namespace opengl3
             }
             return ret;
         }
+        public static Point[] toPoint(MCvPoint3D32f[] ps)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new System.Drawing.Point[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ret[i] = new System.Drawing.Point((int)ps[i].X, (int)ps[i].Y);
+            }
+            return ret;
+        }
         public static PointF[] toPointF(System.Drawing.PointF[] ps)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new PointF[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ret[i] = new PointF(ps[i].X, ps[i].Y);
+            }
+            return ret;
+        }
+        public static PointF[] toPointF(MCvPoint3D32f[] ps)
         {
             if (ps == null)
             {

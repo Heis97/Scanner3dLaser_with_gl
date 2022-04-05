@@ -515,7 +515,39 @@ namespace opengl3
             return new System.Drawing.PointF[] { S, new System.Drawing.PointF((float)dist, 0) };
         }
 
+        static public MCvPoint3D32f[] removeFromNegative( MCvPoint3D32f[] points)
+        {
+            var psPosit = new MCvPoint3D32f[points.Length];
+            float min_x = float.MaxValue;
+            float min_y = float.MaxValue;
+            int min_i_x = 0;
+            int min_i_y = 0;
+            for(int i=0; i<points.Length;i++)
+            {
+                if(points[i].X<min_x)
+                {
+                    min_x = points[i].X;
+                    min_i_x = i;
+                }
 
+                if (points[i].Y < min_y)
+                {
+                    min_y = points[i].Y;
+                    min_i_y = i;
+                }
+            }
+            for (int i = 0; i < points.Length; i++)
+            {
+                var x = points[i].X - min_x;
+                var y = points[i].Y - min_y;
+                psPosit[i] = new MCvPoint3D32f(x, y, points[i].Z);
+            }
+            return psPosit;
+        }
+        static public void drawMatches(Mat im, MCvPoint3D32f[] points1, System.Drawing.PointF[] points2, int r, int g, int b, int size = 1)
+        {
+            drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);
+        }
         static public void drawMatches(Mat im, System.Drawing.PointF[] points1, System.Drawing.PointF[] points2, int r, int g, int b, int size = 1)
         {
             drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);

@@ -276,7 +276,8 @@ namespace opengl3
         }
         public CameraCV(Frame[] _frames, Size _size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
-            calibrateCam(_frames, _size, markSize, obp_inp);            
+            calibrateCam(_frames, _size, markSize, obp_inp);
+            calibrateCamFish(_frames, _size, markSize, obp_inp);
             init_vars();
         }
         void setPos()
@@ -486,12 +487,17 @@ namespace opengl3
             prin.t("_______________");
             prin.t(this.corners);*/
             var err = CvInvoke.CalibrateCamera(this.objps, this.corners, this.image_size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(100, 0.01), out rvecs, out tvecs);
+
             Console.WriteLine("err: " + err);
             Console.WriteLine("t,r_len: " + tvecs.Length +" "+ rvecs.Length);
             var newRoI = new Rectangle();
 
             this.tvecs = tvecs;
             this.rvecs = rvecs;
+            foreach(var v in tvecs)
+            {
+                prin.t(v);
+            }
             
             var matr = CvInvoke.GetOptimalNewCameraMatrix(_cameramatrix, _distortmatrix, frames[0].im.Size, 1, frames[0].im.Size, ref newRoI);
 
@@ -512,6 +518,128 @@ namespace opengl3
 
         }
 
+        void calibrateCamFish(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)
+        {
+            this.frames = frames;
+
+            Matrix<double> _cameramatrix = new Matrix<double>(3, 3);
+            Matrix<double> _distortmatrix = new Matrix<double>(4, 1);
+
+            var objps = new List<MCvPoint3D32f[]>();
+            var corners = new List<System.Drawing.PointF[]>();
+            size = new Size(size.Height, size.Width);
+            var obp = new MCvPoint3D32f[size.Width * size.Height];
+
+            int ind = 0;
+            for (int j = 0; j < size.Height; j++)
+            {
+                for (int i = 0; i < size.Width; i++)
+                {
+                    obp[ind] = new MCvPoint3D32f(markSize * ((float)i - size.Width/2), markSize * ((float)j - size.Height / 2), 0.0f);
+                    ind++;
+                }
+            }
+
+            Console.WriteLine("FISH______________________________: " + frames.Length);
+            Console.WriteLine("fr len: " + frames.Length);
+            int ind_fr = 0;
+            foreach (var frame in frames)
+            {
+                var corn2 = findPoints(frame, size);
+                var im1 = frame.im.Clone();
+                //UtilOpenCV.drawMatches(im1, UtilOpenCV.removeFromNegative( obp), corn2, 1, 0, 0);
+                //CvInvoke.Imshow("yk"+ind_fr.ToString(), im1);
+                if (corn2 == null)
+                {
+                    Console.WriteLine("NOT:");
+                    Console.WriteLine(frame.name);
+                }
+                else
+                {
+                    objps.Add(obp);
+                    corners.Add(corn2);
+                }
+                ind_fr++;
+            }
+
+            //CvInvoke.WaitKey();
+
+            var rvecs = new Mat();
+            var tvecs = new Mat();
+
+
+            this.objps = objps.ToArray();
+            this.corners = corners.ToArray();
+
+            var p3d = new VectorOfVectorOfPoint3D32F(objps.GetRange(0,10).ToArray());
+            var p2d = new VectorOfVectorOfPointF(corners.GetRange(0, 10).ToArray());
+
+            this.image_size = frames[0].im.Size;
+            if (obp_inp != null)
+            {
+                this.objps = obp_inp;
+            }
+            Console.WriteLine("objp: " + this.objps.Length);
+            Console.WriteLine("corn: " + this.corners.Length);
+            //prin.t("_______________");
+            //UtilOpenCV.printMatch(this.objps, this.corners);
+            /* prin.t(this.objps);
+             prin.t("_______________");
+             prin.t(this.corners);*/
+            //var err = CvInvoke.CalibrateCamera(this.objps, this.corners, this.image_size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(100, 0.01), out rvecs, out tvecs);
+
+
+            Fisheye.Calibrate(p3d, p2d, this.image_size, _cameramatrix, _distortmatrix, rvecs, tvecs, Fisheye.CalibrationFlag.Default , new MCvTermCriteria(30, 0.01));
+
+            //Console.WriteLine("err: " + err);
+            //Console.WriteLine("t,r_len: " + tvecs.Length + " " + rvecs.Length);
+            var newRoI = new Rectangle();
+
+            //this.tvecs = tvecs;
+            //this.rvecs = rvecs;
+            prin.t(tvecs);
+            var matrP = new Matrix<double>(3, 3);
+            matrP[0, 0] = 1;
+            matrP[1, 1] = 1;
+            matrP[2, 2] = 1;
+            var matrR = new Matrix<double>(3, 3);
+            Fisheye.EstimateNewCameraMatrixForUndistorRectify(_cameramatrix, _distortmatrix, this.image_size, matrR, matrP);
+            var mapx = new Mat();
+            var mapy = new Mat();
+            /* var matr = CvInvoke.GetOptimalNewCameraMatrix(_cameramatrix, _distortmatrix, frames[0].im.Size, 1, frames[0].im.Size, ref newRoI);
+
+             //computeDistortionMaps(ref mapx, ref mapy, _cameramatrix, _distortmatrix, frames[0].im.Size);
+             mapx = new Mat();
+             mapy = new Mat();
+             CvInvoke.InitUndistortRectifyMap(_cameramatrix, _distortmatrix, null, matr, frames[0].im.Size, DepthType.Cv32F, mapx, mapy);
+
+             var und_pic = new Mat();
+             CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
+             cameramatrix = _cameramatrix;
+             cameramatrix_inv = invMatrix(cameramatrix);
+             distortmatrix = _distortmatrix;*/
+
+            Fisheye.InitUndistorRectifyMap(_cameramatrix, _distortmatrix, matrR, matrP, frames[0].im.Size, DepthType.Cv32F , mapx, mapy);
+            //prin.t(mapx);
+            prin.t(" matrR:");
+            prin.t(matrR);
+            prin.t(" matrP:");
+            prin.t(matrP);
+            var im = UtilOpenCV.mapToMat(UtilOpenCV.mapToFloat(mapx));
+            CvInvoke.Imshow("mapx", im);
+            var und_pic = new Mat();
+            CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
+            CvInvoke.Imshow("orig", frames[0].im);
+            CvInvoke.Imshow("undist", und_pic);
+           // CvInvoke.WaitKey();
+            prin.t("Fish cameramatrix:");
+            prin.t(_cameramatrix);
+            prin.t("Fish distortmatrix:");
+            prin.t(_distortmatrix);
+
+        }
+
+
         static System.Drawing.PointF[] findPoints(Frame frame,Size size_patt)
         {
             if(frame.frameType == FrameType.MarkBoard)
@@ -524,18 +652,18 @@ namespace opengl3
                     CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
                     var corn2 = corn.ToArray();
                     return corn2;
-                    /* var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));                
-                     if(obp_inp!=null)
-                     {               
-                         UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);                       
-                     }
-                     else
-                     {
-                         CvInvoke.DrawChessboardCorners(mat1, size, corn, ret);
-                         //UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp), 255, 0, 0, 3);
-                     }
-
-                     CvInvoke.Imshow("asda", mat1);
+                     var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));
+                    /*if(obp_inp!=null)
+                    {               
+                        UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);                       
+                    }
+                    else
+                    {
+                        CvInvoke.DrawChessboardCorners(mat1, size, corn, ret);
+                        //UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp), 255, 0, 0, 3);
+                    }
+                    UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);
+                    CvInvoke.Imshow("asda", mat1);
                      CvInvoke.WaitKey();*/
 
 
@@ -551,7 +679,7 @@ namespace opengl3
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
                 var mat = FindCircles.findCircles(frame.im, cornF, size_patt);
-               // CvInvoke.Imshow("calib",mat);
+                //CvInvoke.Imshow("calib",mat);
                 //CvInvoke.WaitKey();
                 if(cornF == null)
                 {
