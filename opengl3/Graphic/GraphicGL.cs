@@ -217,7 +217,8 @@ namespace opengl3
             buff_normal = Gl.GenBuffer();
             Gl.BindBuffer(BufferTarget.ArrayBuffer, buff_normal);
             Gl.BufferData(BufferTarget.ArrayBuffer, (uint)(4 * normal_buffer_dat.Length), normal_buffer_dat, BufferUsage.StaticDraw);
-            
+
+
             Gl.BindBuffer(BufferTarget.ArrayBuffer, buff_pos);
             Gl.VertexAttribPointer(0, 3, VertexAttribType.Float, false, 0, IntPtr.Zero);
             Gl.EnableVertexAttribArray(0);
