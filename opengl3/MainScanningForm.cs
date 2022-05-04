@@ -227,9 +227,6 @@ namespace opengl3
             {
                 Console.WriteLine("CalibLas FALSE");
             }
-            
-
-
         }
 
         #region robot

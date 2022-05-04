@@ -910,5 +910,64 @@ namespace opengl3
             //  }
 
         }
+
+        void calibrateCameraTest(MCvPoint3D32f[][] points3d, System.Drawing.PointF[][] points2d)
+        {
+            var objps = new List<MCvPoint3D32f[]>();
+            var corners = new List<System.Drawing.PointF[]>();
+
+
+            //CvInvoke.FindHomography
+        }
+
+        public double Determinant3x3(Matrix<double> matr)
+        {
+            if(matr.Cols==3 && matr.Rows==3)
+            {
+                double a = matr[0, 0], b = matr[1, 0], c = matr[2, 0];
+                double d = matr[0, 1], e = matr[1, 1], f = matr[2, 1];
+                double g = matr[0, 2], h = matr[1, 2], k = matr[2, 2];
+
+                return (e * k - f * h) * a + -(d * k - f * g) * b + (d * h - e * g) * c;
+            }
+            else
+            {
+                return 0;
+            }
+            
+            
+        }
+
+        /// <summary>
+        /// Compute the inverse of this Matrix3x3f.
+        /// </summary>
+        public Matrix<double> Inverse(Matrix<double> matr)
+        {
+            if (matr.Cols == 3 && matr.Rows == 3)
+            {
+                double det = Determinant3x3(matr);
+                if (Math.Abs(det) < 1e-6f)
+                {
+                    throw new InvalidOperationException("not invertible");
+                }
+                    
+                det = 1.0f / det;
+
+                double a = matr[0, 0], b = matr[1, 0], c = matr[2, 0];
+                double d = matr[0, 1], e = matr[1, 1], f = matr[2, 1];
+                double g = matr[0, 2], h = matr[1, 2], k = matr[2, 2];
+
+                return new Matrix<double>(new double[,] {
+                    { (e * k - f * h) * det, -(d * k - f * g) * det, (d * h - e * g) * det, },
+                    { -(b * k - c * h) * det, (a * k - c * g) * det, -(a * h - b * g) * det, },
+                    {  (b * f - c * e) * det, -(a * f - c * d) * det, (a * e - b * d) * det }
+                        }
+                    );
+            }
+            else
+            {
+                return new Matrix<double>(3,3);
+            }
+        }
     }
 }
