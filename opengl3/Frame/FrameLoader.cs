@@ -12,14 +12,14 @@ namespace opengl3
     static public class FrameLoader
     {
 
-        static public Frame[][] loadPathsDiffDouble(string[] paths)
+        static public Frame[][] loadPathsDiffDouble(string[] paths, FrameType frameType)
         {
             var frm1 = new List<Frame>();
             var frm2 = new List<Frame>();
             for (int i = 0; i < paths.Length; i++)
             {
-                frm1.AddRange(FrameLoader.loadImages_diff(@"cam1\" + paths[i], FrameType.Pattern));
-                frm2.AddRange(FrameLoader.loadImages_diff(@"cam2\" + paths[i], FrameType.Pattern));
+                frm1.AddRange(FrameLoader.loadImages_diff(@"cam1\" + paths[i], frameType));
+                frm2.AddRange(FrameLoader.loadImages_diff(@"cam2\" + paths[i], frameType));
             }
 
             return new Frame[][] { frm1.ToArray(), frm2.ToArray() };

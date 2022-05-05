@@ -483,9 +483,11 @@ namespace opengl3
             Console.WriteLine("corn: " + this.corners.Length);
             //prin.t("_______________");
             //UtilOpenCV.printMatch(this.objps, this.corners);
-           /* prin.t(this.objps);
-            prin.t("_______________");
-            prin.t(this.corners);*/
+            /* prin.t(this.objps);
+             prin.t("_______________");
+             prin.t(this.corners);*/
+
+            calibrateCameraTest(this.objps, this.corners);
             var err = CvInvoke.CalibrateCamera(this.objps, this.corners, this.image_size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(100, 0.01), out rvecs, out tvecs);
 
             Console.WriteLine("err: " + err);
@@ -496,7 +498,7 @@ namespace opengl3
             this.rvecs = rvecs;
             foreach(var v in tvecs)
             {
-                prin.t(v);
+                //prin.t(v);
             }
             
             var matr = CvInvoke.GetOptimalNewCameraMatrix(_cameramatrix, _distortmatrix, frames[0].im.Size, 1, frames[0].im.Size, ref newRoI);
@@ -913,11 +915,67 @@ namespace opengl3
 
         void calibrateCameraTest(MCvPoint3D32f[][] points3d, System.Drawing.PointF[][] points2d)
         {
-            var objps = new List<MCvPoint3D32f[]>();
-            var corners = new List<System.Drawing.PointF[]>();
+            var matrs = new List<Matrix<double>>();
+
+            for (int i = 0; i < points3d.Length; i++)
+            {
+                var p2d = UtilOpenCV.takeGabObp(points2d[i], new Size(6, 7));
+                var p3d = UtilOpenCV.takeGabObp(points3d[i], new Size(6, 7));
+                var hMatr = homographyMatr(p3d, p2d);
+
+                var hMat = CvInvoke.FindHomography(PointF.toSystemPoint(p3d), p2d);
+                //prin.t("_____________");
+                //prin.t(hMatr);
+                //prin.t(new Matrix<double>( (double[,])hMat.GetData()));
+                matrs.Add(hMatr);
+                //CvInvoke.SVDecomp()
+            }
+            
+        }
+        Matrix<double> matrixV(Matrix<double> matr,int i, int j)
+        {
+            return new Matrix<double>(new double[,] { 
+                { matr[i,1]* matr[j, 1] },
+                { matr[i,1]* matr[j, 2] + matr[i,2]* matr[j, 1] },
+                { matr[i,2]* matr[j, 2]},
+                { matr[i,3]* matr[j, 1] + matr[i,1]* matr[j, 3] },
+                { matr[i,3]* matr[j, 2] + matr[i,2]* matr[j, 3]},              
+                { matr[i,3]* matr[j, 3]}
+            });
+        }
 
 
-            //CvInvoke.FindHomography
+      
+        Matrix<double> homographyMatr(MCvPoint3D32f[] points3d, System.Drawing.PointF[] points2d)
+        {
+            Matrix<double> matrix3d = new Matrix<double>(3,3);
+            Matrix<double> matrix2d = new Matrix<double>(3,3);
+            Matrix<double> matrix = new Matrix<double>(3, 3);
+            if (points3d.Length>3 && points2d.Length > 3)
+            {
+                for(int i = 0; i < 3; i++)
+                {
+                    matrix3d[i, 0] = points3d[i].X; matrix3d[i, 1] = points3d[i].Y; matrix3d[i, 2] = 1;
+                    matrix2d[i, 0] = points2d[i].X; matrix2d[i, 1] = points2d[i].Y; matrix2d[i, 2] = 1;
+                }
+                var K = new Matrix<double>(3, 3);
+                CvInvoke.Invert(matrix3d, K, DecompMethod.LU);
+                var matrix1 = K * matrix2d;
+                //prin.t(matrix);
+
+                for (int i = 0; i < 3; i++)
+                {
+                    matrix3d[i, 0] = points3d[i + 1].X; matrix3d[i, 1] = points3d[i + 1].Y; matrix3d[i, 2] = 1;
+                    matrix2d[i, 0] = points2d[i + 1].X; matrix2d[i, 1] = points2d[i + 1].Y; matrix2d[i, 2] = 1;
+                }
+                K = new Matrix<double>(3, 3);
+                CvInvoke.Invert(matrix3d, K, DecompMethod.LU);
+                var matrix2 = K * matrix2d;
+
+                matrix = (matrix1 + matrix2) / 2;
+            }
+
+            return matrix.Transpose();
         }
 
         public double Determinant3x3(Matrix<double> matr)

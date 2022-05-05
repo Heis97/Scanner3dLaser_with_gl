@@ -92,44 +92,7 @@ namespace opengl3
         int k = 1;
         bool writ = false;
         int bin_pos = 40;
-        float[] cube_buf = {
-                            -1.0f,-1.0f,-1.0f, // triangle 1 : begin
-                            -1.0f,-1.0f, 1.0f,
-                            -1.0f, 1.0f, 1.0f, // triangle 1 : end
-                            1.0f, 1.0f,-1.0f, // triangle 2 : begin
-                            -1.0f,-1.0f,-1.0f,
-                            -1.0f, 1.0f,-1.0f, // triangle 2 : end
-                            1.0f,-1.0f, 1.0f,
-                            -1.0f,-1.0f,-1.0f,
-                            1.0f,-1.0f,-1.0f,
-                            1.0f, 1.0f,-1.0f,
-                            1.0f,-1.0f,-1.0f,
-                            -1.0f,-1.0f,-1.0f,
-                            -1.0f,-1.0f,-1.0f,
-                            -1.0f, 1.0f, 1.0f,
-                            -1.0f, 1.0f,-1.0f,
-                            1.0f,-1.0f, 1.0f,
-                            -1.0f,-1.0f, 1.0f,
-                            -1.0f,-1.0f,-1.0f,
-                            -1.0f, 1.0f, 1.0f,
-                            -1.0f,-1.0f, 1.0f,
-                            1.0f,-1.0f, 1.0f,
-                            1.0f, 1.0f, 1.0f,
-                            1.0f,-1.0f,-1.0f,
-                            1.0f, 1.0f,-1.0f,
-                            1.0f,-1.0f,-1.0f,
-                            1.0f, 1.0f, 1.0f,
-                            1.0f,-1.0f, 1.0f,
-                            1.0f, 1.0f, 1.0f,
-                            1.0f, 1.0f,-1.0f,
-                            -1.0f, 1.0f,-1.0f,
-                            1.0f, 1.0f, 1.0f,
-                            -1.0f, 1.0f,-1.0f,
-                            -1.0f, 1.0f, 1.0f,
-                            1.0f, 1.0f, 1.0f,
-                            -1.0f, 1.0f, 1.0f,
-                            1.0f,-1.0f, 1.0f
-                                    };
+       
         List<Mat> cap_mats = new List<Mat>();
         Features features = new Features();
         MCvPoint3D32f[] points3D = new MCvPoint3D32f[]
@@ -144,8 +107,8 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-            loadScanner();
-        
+            //loadScanner();
+            loadStereo();
             GL1.buffersGl.sortObj();
         }
         void init_vars()
@@ -187,8 +150,8 @@ namespace opengl3
         }
         void loadStereo()
         {
-            var cam_cal_paths = new string[] { @"photo_9", @"photo_10", @"photo_11" };
-            var frms = FrameLoader.loadPathsDiffDouble(cam_cal_paths);
+            var cam_cal_paths = new string[] { @"photo_3\distort", @"photo_4\distort" };
+            var frms = FrameLoader.loadPathsDiffDouble(cam_cal_paths,FrameType.MarkBoard);
             var cam1 = new CameraCV(frms[0], new Size(6, 7), markSize, null);
             var cam2 = new CameraCV(frms[1], new Size(6, 7), markSize, null);
 
@@ -196,6 +159,7 @@ namespace opengl3
             comboImages.Items.AddRange(frms3);
             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
         }
+
         void loadScanner()
         {
             var cam_cal_paths = new string[] { @"cam1\photo_9" , @"cam1\photo_11", @"cam1\photo_13" };//, @"cam1\photo_10"

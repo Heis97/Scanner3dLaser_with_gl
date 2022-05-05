@@ -84,13 +84,13 @@ namespace opengl3
                 var C = A_1 * B;
                 prin.t(C);
                 prin.t("_________________");
-
             }*/
+
             var r = new Mat();
             var t = new Mat();
             var e = new Mat();
             var f = new Mat();
-
+            Console.WriteLine(cam2.objps.Length + " " + cam2.corners.Length);
             var err = CvInvoke.StereoCalibrate
                 (cam1.objps,
                 cam1.corners,
