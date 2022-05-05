@@ -915,8 +915,8 @@ namespace opengl3
 
         void calibrateCameraTest(MCvPoint3D32f[][] points3d, System.Drawing.PointF[][] points2d)
         {
-            var matrs = new List<Matrix<double>>();
-
+            var matrsH = new List<Matrix<double>>();
+            var matrsSubV = new List<Matrix<double>>();
             for (int i = 0; i < points3d.Length; i++)
             {
                 var p2d = UtilOpenCV.takeGabObp(points2d[i], new Size(6, 7));
@@ -927,25 +927,99 @@ namespace opengl3
                 //prin.t("_____________");
                 //prin.t(hMatr);
                 //prin.t(new Matrix<double>( (double[,])hMat.GetData()));
-                matrs.Add(hMatr);
-                //CvInvoke.SVDecomp()
+                var subVmatr = matrix_subV(hMatr);
+                matrsH.Add(hMatr);
+                matrsSubV.Add(subVmatr);
+                //
             }
-            
+            var matrV1 = matrix_V(matrsSubV.GetRange(0, matrsSubV.Count / 2).ToArray());
+            var matrV2 = matrix_V(matrsSubV.GetRange(matrsSubV.Count / 2, matrsSubV.Count / 2).ToArray());
+            var w1 = new Mat();
+            var u1 = new Mat();
+            var v1 = new Mat();
+            var w2 = new Mat();
+            var u2 = new Mat();
+            var v2 = new Mat();
+
+            CvInvoke.SVDecomp(matrV1, w1, u1, v1, SvdFlag.FullUV);
+            CvInvoke.SVDecomp(matrV2, w2, u2, v2, SvdFlag.FullUV);
+
+            /*prin.t("matrV1_____________");
+            prin.t(matrV1);
+            prin.t("matrV2_____________");
+            prin.t(matrV2);*/
+            prin.t("w1_____________");
+            prin.t(w1);
+            prin.t("w2_____________");
+            prin.t(w2);
+            /*prin.t("u1_____________");
+            prin.t(u1);
+            prin.t("u2_____________");
+            prin.t(u2);*/
+            prin.t("v1_____________");
+            prin.t(v1);
+            prin.t("v2_____________");
+            prin.t(v2);
+
+            //var testMatr = new Matrix<double>(new double[,] { {0.96,1.72 }, { 2.28,0.96} });
+            var testMatr = new Matrix<double>(new double[,] { { -1, -6 }, {2, 6 } });
+           // var testMatr = new Matrix<double>(new double[,] { { 3, 2 }, { 2, 0 } });
+            var w = new Mat();
+            var u = new Mat();
+            var v = new Mat();
+            CvInvoke.SVDecomp(testMatr, w, u, v, SvdFlag.Default);
+            prin.t("testMatr_____________");
+            prin.t(testMatr);
+            prin.t("w_____________");
+            prin.t(w);
+            prin.t("u_____________");
+            prin.t(u);
+            prin.t("v_____________");
+            prin.t(v);
+
+            calcIntrisicParam(new Matrix<double>(new double[,]{ { 0.695, -0.104, -0.711, -0.003, -0.003, 0 } }));
+            calcIntrisicParam(new Matrix<double>(new double[,] { { 0.739, - 0.063, - 0.67, - 0.004, - 0.003, 0 } }));
+            calcIntrisicParam(new Matrix<double>(new double[,] { { -0.632, - 0.559, - 0.536, 0.003, 0.002, 0 } }));
+            calcIntrisicParam(new Matrix<double>(new double[,] { { -0.573, - 0.581, - 0.578, 0.003, 0.002, 0 } }));
         }
-        Matrix<double> matrixV(Matrix<double> matr,int i, int j)
+
+        Matrix<double> matrix_vij(Matrix<double> matr,int i, int j)
         {
             return new Matrix<double>(new double[,] { 
-                { matr[i,1]* matr[j, 1] },
-                { matr[i,1]* matr[j, 2] + matr[i,2]* matr[j, 1] },
-                { matr[i,2]* matr[j, 2]},
-                { matr[i,3]* matr[j, 1] + matr[i,1]* matr[j, 3] },
-                { matr[i,3]* matr[j, 2] + matr[i,2]* matr[j, 3]},              
-                { matr[i,3]* matr[j, 3]}
+                { matr[i,0]* matr[j, 0] },
+                { matr[i,0]* matr[j, 1] + matr[i,1]* matr[j, 0] },
+                { matr[i,1]* matr[j, 1]},
+                { matr[i,2]* matr[j, 0] + matr[i,0]* matr[j, 2] },
+                { matr[i,2]* matr[j, 1] + matr[i,1]* matr[j, 2]},              
+                { matr[i,2]* matr[j, 2]}
             });
         }
 
+        Matrix<double> matrix_subV(Matrix<double> matr)
+        {
+            var v12 = matrix_vij(matr, 1, 2);
+            var v11 = matrix_vij(matr, 1, 1);
+            var v22 = matrix_vij(matr, 2, 2);
+            var matr1 = v12.Transpose();
+            var matr2 = (v11-v22).Transpose();
+            var matr_res = matr1.ConcateVertical(matr2);
 
-      
+            return matr_res;
+        }
+        Matrix<double> matrix_V(Matrix<double>[] matr)
+        {
+            var matr_res = new Matrix<double>(3,3);
+            if (matr.Length>2)
+            {
+                matr_res = matr[0];
+                for (int i=1; i< matr.Length; i++)
+                {
+                    matr_res = matr_res.ConcateVertical(matr[i]);
+                }
+            }
+            return matr_res;
+        }
+
         Matrix<double> homographyMatr(MCvPoint3D32f[] points3d, System.Drawing.PointF[] points2d)
         {
             Matrix<double> matrix3d = new Matrix<double>(3,3);
@@ -976,6 +1050,36 @@ namespace opengl3
             }
 
             return matrix.Transpose();
+        }
+
+
+        void calcIntrisicParam(Matrix<double> eigenvector)
+        {
+
+            if(eigenvector.Cols>5)
+            {
+                var B11 = eigenvector[0, 0];
+                var B12 = eigenvector[0, 1];
+                var B22 = eigenvector[0, 2];
+                var B13 = eigenvector[0, 3];
+                var B23 = eigenvector[0, 4];
+                var B33 = eigenvector[0, 5];
+
+                var v0 = (B12 * B13 - B11 * B23) / (B11 * B22 - B12 * B12);
+                var lam = B33 - (B13 * B13 + v0 * (B12 * B13 - B11 * B23)) / B11;
+                var alph = Math.Sqrt(lam / B11);
+                var beta = Math.Sqrt((lam * B11) / (B11 * B22 - B12 * B12));
+                var gamm = -B12 * alph * alph * beta / lam;
+                var u0 = gamm * v0 / beta - B13 * alph * alph / lam;
+
+                Console.WriteLine("v0 = " + v0);
+                Console.WriteLine("lam = " + lam);
+                Console.WriteLine("alph = " + alph);
+                Console.WriteLine("beta = " + beta);
+                Console.WriteLine("gamm = " + gamm);
+                Console.WriteLine("u0 = " + u0);
+            }
+            
         }
 
         public double Determinant3x3(Matrix<double> matr)
