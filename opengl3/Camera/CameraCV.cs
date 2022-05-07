@@ -11,6 +11,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Accord.Math.Decompositions;
+using Accord.Math;
 
 namespace opengl3
 {
@@ -20,7 +22,7 @@ namespace opengl3
     {
         public Matrix<double> cameramatrix;
         public Matrix<double> cameramatrix_inv;
-        
+
         public Matrix<double> distortmatrix;
         public Frame[] frames;
         public System.Drawing.PointF[][] corners;
@@ -39,15 +41,15 @@ namespace opengl3
         public Size image_size;
 
         #region monitCalib
-        public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern,bool gen_board = false,bool affine = true)
+        public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern, bool gen_board = false, bool affine = true)
         {
             int num = 1;
-            if(gen_board)
+            if (gen_board)
             {
                 num = 2;
             }
             var matrs = new Matrix<double>[1];
-            if(affine)
+            if (affine)
             {
                 matrs = GetMatricesCalibAffine(pattern[0].Size, pattern_box.Size);
             }
@@ -55,12 +57,12 @@ namespace opengl3
             {
                 matrs = GetMatricesCalib();
             }
-           
+
             var objps = new MCvPoint3D32f[matrs.Length][];
-            for (int i=0; i<matrs.Length;i++)
+            for (int i = 0; i < matrs.Length; i++)
             {
                 var ps = new System.Drawing.PointF[1];
-                if(affine)
+                if (affine)
                 {
                     ps = UtilOpenCV.transfAffine(UtilOpenCV.matToPointF(pattern[num]), matrs[i]);
                 }
@@ -70,7 +72,7 @@ namespace opengl3
                 }
 
                 var ps3d = new MCvPoint3D32f[ps.Length];
-                for(int j=0; j<ps3d.Length;j++)
+                for (int j = 0; j < ps3d.Length; j++)
                 {
                     ps3d[j] = new MCvPoint3D32f(ps[j].X, ps[j].Y, 0);
                 }
@@ -78,8 +80,8 @@ namespace opengl3
             }
             return objps;
         }
-        async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input,Mat[] pattern, string path,  GraphicGL graphicGL, bool affine = true)
-         {
+        async public static void calibrMonit(ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, GraphicGL graphicGL, bool affine = true)
+        {
             var matrs = new Matrix<double>[1];
             if (affine)
             {
@@ -90,31 +92,31 @@ namespace opengl3
                 matrs = GetMatricesCalib();
             }
             var boards = new float[1][];
-            
+
             if (graphicGL != null)
             {
-                var p3d = generateObjps(pattern_box, pattern, true,affine);
+                var p3d = generateObjps(pattern_box, pattern, true, affine);
                 boards = UtilOpenCV.generate_BOARDs(p3d);
             }
-           // prin.t(boards);
-            for (int i=0; i<matrs.Length;i++)
+            // prin.t(boards);
+            for (int i = 0; i < matrs.Length; i++)
             {
-                if(graphicGL!=null)
-                {                   
-                    if(i!=0)
+                if (graphicGL != null)
+                {
+                    if (i != 0)
                     {
-                        graphicGL.remove_buff_gl_id ( i + 9);
+                        graphicGL.remove_buff_gl_id(i + 9);
                     }
                     //prin.t(i);
                     graphicGL.add_buff_gl_mesh_id(boards[i], i + 10, true);
                     await Task.Delay(100);
-                    SaveImage_Chess(input, path,i);
+                    SaveImage_Chess(input, path, i);
                     await Task.Delay(100);
                 }
                 else
                 {
                     await Task.Delay(500);
-                    if(affine)
+                    if (affine)
                     {
                         showAndSaveImage_Chess_affine_tr(matrs[i], pattern_box, input, pattern, path, i);
                     }
@@ -124,16 +126,16 @@ namespace opengl3
                     }
                     await Task.Delay(500);
                 }
-            }            
+            }
         }
-        static void SaveImage_Chess(ImageBox[] input, string path,int i)
+        static void SaveImage_Chess(ImageBox[] input, string path, int i)
         {
             for (int j = 0; j < input.Length; j++)
             {
                 if (input[j].Image != null)
                 {
                     var inp = (Mat)input[j].Image;
-                    UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());                    
+                    UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());
                 }
             }
         }
@@ -143,22 +145,22 @@ namespace opengl3
             var mat = pattern[0];
             var mat_aff = new Mat();
             int font = 255;
-            CvInvoke.WarpAffine(mat, mat_aff, matrix, pattern_box.Size,Inter.Linear,Warp.Default,BorderType.Constant,new MCvScalar(font, font, font));
+            CvInvoke.WarpAffine(mat, mat_aff, matrix, pattern_box.Size, Inter.Linear, Warp.Default, BorderType.Constant, new MCvScalar(font, font, font));
             pattern_box.Image = mat_aff;
-            
+
             for (int j = 0; j < input.Length; j++)
             {
                 if (input[j].Image != null)
                 {
                     var inp = (Mat)input[j].Image;
-                      //if (CvInvoke.FindChessboardCorners(inp.ToImage<Gray, byte>(), pat_size, new Mat()))
-                   // {
-                        UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());
+                    //if (CvInvoke.FindChessboardCorners(inp.ToImage<Gray, byte>(), pat_size, new Mat()))
+                    // {
+                    UtilOpenCV.saveImage(input[j], "cam" + (j + 1).ToString() + "\\" + path, i.ToString());
                     //}
                 }
             }
         }
-        static void showAndSaveImage_Chess_persp_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i )
+        static void showAndSaveImage_Chess_persp_tr(Matrix<double> matrix, ImageBox pattern_box, ImageBox[] input, Mat[] pattern, string path, int i)
         {
             var pat_size = new Size(6, 7);
             pattern_box.Image = UtilOpenCV.warpPerspNorm(pattern, matrix, pattern_box.Size)[0];
@@ -177,7 +179,7 @@ namespace opengl3
         static Matrix<double>[] GetMatricesCalib()
         {
             var p1 = 4; var p2 = 3;
-            var matrs =new  Matrix<double>[2*p1*p2];
+            var matrs = new Matrix<double>[2 * p1 * p2];
 
             double a00 = 1; double a01 = 0; double a02 = 0;
 
@@ -187,16 +189,16 @@ namespace opengl3
             int ind = 0;
             var diap1 = 0.3;
             var diap2 = 0.0001;
-            for (int i=0; i<p1;i++)
+            for (int i = 0; i < p1; i++)
             {
                 for (int j = 0; j < p2; j++)
                 {
                     a01 = calcCurA(i, p1, diap1);
                     a21 = calcCurA(j, p2, diap2);
                     matrs[ind] = new Matrix<double>(new double[3, 3] {
-                        { a00, a01, a02 }, 
-                        { a10, a11, a12 }, 
-                        { a20, a21, a22 } });ind++;
+                        { a00, a01, a02 },
+                        { a10, a11, a12 },
+                        { a20, a21, a22 } }); ind++;
                 }
             }
             for (int i = 0; i < p1; i++)
@@ -222,38 +224,38 @@ namespace opengl3
             double k_delim = 1.7;
             var matrs = new Matrix<double>[len];
 
-            
+
             //Console.WriteLine("k " + k);
-            double k1 = (double)box_size.Width/(k_delim * pat_size.Width);
+            double k1 = (double)box_size.Width / (k_delim * pat_size.Width);
             double k2 = (double)box_size.Height / (k_delim * pat_size.Height);
             double k = Math.Min(k1, k2);
-           
+
             // Console.WriteLine("k " +k);
-            double offx = (box_size.Width * k - box_size.Width )/n;
-            double offy = (box_size.Height * k - box_size.Height )/n;
+            double offx = (box_size.Width * k - box_size.Width) / n;
+            double offy = (box_size.Height * k - box_size.Height) / n;
             int ind = 0;
-            
+
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < n; j++)
                 {
-                    matrs[ind] = affinematr(0.01, k,  -i * offx,   -j * offy);
+                    matrs[ind] = affinematr(0.01, k, -i * offx, -j * offy);
                     ind++;
                 }
             }
-           // matrs[ind] = affinematr(0.01, 3 * k, 0, 0);
+            // matrs[ind] = affinematr(0.01, 3 * k, 0, 0);
 
             return matrs;
         }
-        static Matrix<double> affinematr(double alpha = 0, double k = 0, double offx = 0, double offy=0)
-         {
-           
+        static Matrix<double> affinematr(double alpha = 0, double k = 0, double offx = 0, double offy = 0)
+        {
+
             return new Matrix<double>(new double[2, 3] {
                     { k*Math.Cos(alpha),-Math.Sin(alpha),  offx},
                     { Math.Sin(alpha),  k*Math.Cos(alpha),offy}
                     });
         }
-        static double calcCurA(int i,int p,double diap)
+        static double calcCurA(int i, int p, double diap)
         {
             var step = (2 * diap) / p;
             return -diap + step * i;
@@ -264,7 +266,7 @@ namespace opengl3
         {
             cur_t = new Mat();
             cur_r = new Mat();
-            matrixCS = new Matrix<double>(4,4);
+            matrixCS = new Matrix<double>(4, 4);
             matrixSC = new Matrix<double>(4, 4);
             pos = new float[3] { 0, 0, 0 };
         }
@@ -293,10 +295,10 @@ namespace opengl3
             cameramatrix_inv = new Matrix<double>(3, 3);
             CvInvoke.Invert(cameramatrix, cameramatrix_inv, DecompMethod.LU);
 
-            prjmatrix = cameramatrix*matrixSC.GetRows(0, 3, 1);
+            prjmatrix = cameramatrix * matrixSC.GetRows(0, 3, 1);
             setPos();
 
-           // prin.t(prjmatrix);
+            // prin.t(prjmatrix);
         }
         /*static public Matrix<double> assembMatrix(Mat rvec, Mat tvec)
         {
@@ -323,7 +325,7 @@ namespace opengl3
         /// <returns>matr Cam->Scene,matr Scene->Cam</returns>
         static public Matrix<double>[] assemblMatrix(Mat cur_r, Mat cur_t)
         {
-           
+
             var r = new Matrix<double>(3, 3);
             CvInvoke.Rodrigues(cur_r, r);
             var data_t = (double[,])cur_t.GetData();
@@ -342,9 +344,9 @@ namespace opengl3
 
         }
         public float[] compPos(MCvPoint3D32f[] points3D, System.Drawing.PointF[] points2D)
-        {            
+        {
 
-            CvInvoke.SolvePnP(points3D,points2D,cameramatrix,distortmatrix, cur_r, cur_t);
+            CvInvoke.SolvePnP(points3D, points2D, cameramatrix, distortmatrix, cur_r, cur_t);
             var matrs = assemblMatrix(cur_r, cur_t);
             matrixCS = matrs[0];
             matrixSC = matrs[1];
@@ -353,7 +355,7 @@ namespace opengl3
         }
         public bool compPos(Mat mat, PatternType patternType)
         {
-            if(patternType == PatternType.Chess)
+            if (patternType == PatternType.Chess)
             {
                 Size size_patt = new Size(6, 7);
                 var mat1 = mat.Clone();
@@ -364,7 +366,7 @@ namespace opengl3
                 int ind = 0;
                 for (int j = 0; j < size_patt.Height; j++)
                 {
-                    for (int i = size_patt.Width-1; i >=0; i--)
+                    for (int i = size_patt.Width - 1; i >= 0; i--)
                     {
                         obp[ind] = new MCvPoint3D32f(markSize * (float)i, markSize * (float)j, 0.0f);
                         ind++;
@@ -383,14 +385,14 @@ namespace opengl3
                     //UtilOpenCV.drawPoints(mat1, points2d, points3d, 255, 0, 255, 2);
                     //CvInvoke.Imshow("pos", mat1);
                     return true;
-                   
+
                 }
                 else
                 {
                     //Console.WriteLine("CHESS FALSE");
                 }
             }
-            else if(patternType == PatternType.Mesh)
+            else if (patternType == PatternType.Mesh)
             {
                 Size size_patt = new Size(7, 7);
                 float markSize = 30;
@@ -399,7 +401,7 @@ namespace opengl3
                     new MCvPoint3D32f(0,0,0),new MCvPoint3D32f(markSize,0,0),
                     new MCvPoint3D32f(markSize,markSize,0),new MCvPoint3D32f(0,markSize,0)
                 };
-               
+
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
                 var matDraw = FindCircles.findCircles(mat, cornF, size_patt);
@@ -417,14 +419,14 @@ namespace opengl3
             return p;
         }
 
-        
+
         public Mat undist(Mat mat)
         {
             var mat_ret = new Mat();
             CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
             return mat_ret;
         }
-        
+
         void calibrateCam(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
             this.frames = frames;
@@ -436,7 +438,7 @@ namespace opengl3
             var corners = new List<System.Drawing.PointF[]>();
 
             var obp = new MCvPoint3D32f[size.Width * size.Height];
-                          
+
             int ind = 0;
             for (int j = 0; j < size.Height; j++)
             {
@@ -448,12 +450,12 @@ namespace opengl3
             }
 
 
-            Console.WriteLine("fr len: "+frames.Length);
+            Console.WriteLine("fr len: " + frames.Length);
             int ind_fr = 0;
             foreach (var frame in frames)
             {
                 var corn2 = findPoints(frame, size);
-                if(corn2==null)
+                if (corn2 == null)
                 {
                     Console.WriteLine("NOT:");
                     Console.WriteLine(frame.name);
@@ -466,12 +468,12 @@ namespace opengl3
                 ind_fr++;
             }
 
-            
+
 
             var rvecs = new Mat[corners.Count];
             var tvecs = new Mat[corners.Count];
 
-            
+
             this.objps = objps.ToArray();
             this.corners = corners.ToArray();
             this.image_size = frames[0].im.Size;
@@ -479,7 +481,7 @@ namespace opengl3
             {
                 this.objps = obp_inp;
             }
-            Console.WriteLine("objp: "+this.objps.Length);
+            Console.WriteLine("objp: " + this.objps.Length);
             Console.WriteLine("corn: " + this.corners.Length);
             //prin.t("_______________");
             //UtilOpenCV.printMatch(this.objps, this.corners);
@@ -487,20 +489,20 @@ namespace opengl3
              prin.t("_______________");
              prin.t(this.corners);*/
 
-            calibrateCameraTest(this.objps, this.corners);
+
             var err = CvInvoke.CalibrateCamera(this.objps, this.corners, this.image_size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(100, 0.01), out rvecs, out tvecs);
 
             Console.WriteLine("err: " + err);
-            Console.WriteLine("t,r_len: " + tvecs.Length +" "+ rvecs.Length);
+            Console.WriteLine("t,r_len: " + tvecs.Length + " " + rvecs.Length);
             var newRoI = new Rectangle();
 
             this.tvecs = tvecs;
             this.rvecs = rvecs;
-            foreach(var v in tvecs)
+            foreach (var v in tvecs)
             {
                 //prin.t(v);
             }
-            
+
             var matr = CvInvoke.GetOptimalNewCameraMatrix(_cameramatrix, _distortmatrix, frames[0].im.Size, 1, frames[0].im.Size, ref newRoI);
 
             //computeDistortionMaps(ref mapx, ref mapy, _cameramatrix, _distortmatrix, frames[0].im.Size);
@@ -513,6 +515,8 @@ namespace opengl3
             cameramatrix = _cameramatrix;
             cameramatrix_inv = invMatrix(cameramatrix);
             distortmatrix = _distortmatrix;
+
+            calibrateCameraTest(this.objps, this.corners);
             prin.t("cameramatrix:");
             prin.t(cameramatrix);
             prin.t("distortmatrix:");
@@ -537,7 +541,7 @@ namespace opengl3
             {
                 for (int i = 0; i < size.Width; i++)
                 {
-                    obp[ind] = new MCvPoint3D32f(markSize * ((float)i - size.Width/2), markSize * ((float)j - size.Height / 2), 0.0f);
+                    obp[ind] = new MCvPoint3D32f(markSize * ((float)i - size.Width / 2), markSize * ((float)j - size.Height / 2), 0.0f);
                     ind++;
                 }
             }
@@ -573,7 +577,7 @@ namespace opengl3
             this.objps = objps.ToArray();
             this.corners = corners.ToArray();
 
-            var p3d = new VectorOfVectorOfPoint3D32F(objps.GetRange(0,10).ToArray());
+            var p3d = new VectorOfVectorOfPoint3D32F(objps.GetRange(0, 10).ToArray());
             var p2d = new VectorOfVectorOfPointF(corners.GetRange(0, 10).ToArray());
 
             this.image_size = frames[0].im.Size;
@@ -591,7 +595,7 @@ namespace opengl3
             //var err = CvInvoke.CalibrateCamera(this.objps, this.corners, this.image_size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(100, 0.01), out rvecs, out tvecs);
 
 
-            Fisheye.Calibrate(p3d, p2d, this.image_size, _cameramatrix, _distortmatrix, rvecs, tvecs, Fisheye.CalibrationFlag.Default , new MCvTermCriteria(30, 0.01));
+            Fisheye.Calibrate(p3d, p2d, this.image_size, _cameramatrix, _distortmatrix, rvecs, tvecs, Fisheye.CalibrationFlag.Default, new MCvTermCriteria(30, 0.01));
 
             //Console.WriteLine("err: " + err);
             //Console.WriteLine("t,r_len: " + tvecs.Length + " " + rvecs.Length);
@@ -621,7 +625,7 @@ namespace opengl3
              cameramatrix_inv = invMatrix(cameramatrix);
              distortmatrix = _distortmatrix;*/
 
-            Fisheye.InitUndistorRectifyMap(_cameramatrix, _distortmatrix, matrR, matrP, frames[0].im.Size, DepthType.Cv32F , mapx, mapy);
+            Fisheye.InitUndistorRectifyMap(_cameramatrix, _distortmatrix, matrR, matrP, frames[0].im.Size, DepthType.Cv32F, mapx, mapy);
             //prin.t(mapx);
             prin.t(" matrR:");
             prin.t(matrR);
@@ -633,7 +637,7 @@ namespace opengl3
             CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
             CvInvoke.Imshow("orig", frames[0].im);
             CvInvoke.Imshow("undist", und_pic);
-           // CvInvoke.WaitKey();
+            // CvInvoke.WaitKey();
             prin.t("Fish cameramatrix:");
             prin.t(_cameramatrix);
             prin.t("Fish distortmatrix:");
@@ -642,9 +646,9 @@ namespace opengl3
         }
 
 
-        static System.Drawing.PointF[] findPoints(Frame frame,Size size_patt)
+        static System.Drawing.PointF[] findPoints(Frame frame, Size size_patt)
         {
-            if(frame.frameType == FrameType.MarkBoard)
+            if (frame.frameType == FrameType.MarkBoard)
             {
                 var gray = frame.im.ToImage<Gray, byte>();
                 var corn = new VectorOfPointF();
@@ -654,7 +658,7 @@ namespace opengl3
                     CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
                     var corn2 = corn.ToArray();
                     return corn2;
-                     var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));
+                    var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));
                     /*if(obp_inp!=null)
                     {               
                         UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);                       
@@ -676,18 +680,18 @@ namespace opengl3
                     return null;
                 }
             }
-            else if(frame.frameType == FrameType.Pattern)
+            else if (frame.frameType == FrameType.Pattern)
             {
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
                 var mat = FindCircles.findCircles(frame.im, cornF, size_patt);
                 //CvInvoke.Imshow("calib",mat);
                 //CvInvoke.WaitKey();
-                if(cornF == null)
+                if (cornF == null)
                 {
                     return null;
                 }
-                if(cornF.Length != len)
+                if (cornF.Length != len)
                 {
                     return null;
                 }
@@ -700,7 +704,7 @@ namespace opengl3
             {
                 return null;
             }
-            
+
         }
         void EmguCVUndistortFisheye(string path, Size patternSize)
         {
@@ -917,6 +921,7 @@ namespace opengl3
         {
             var matrsH = new List<Matrix<double>>();
             var matrsSubV = new List<Matrix<double>>();
+            var matrsSubV9 = new List<Matrix<double>>();
             for (int i = 0; i < points3d.Length; i++)
             {
                 var p2d = UtilOpenCV.takeGabObp(points2d[i], new Size(6, 7));
@@ -928,91 +933,97 @@ namespace opengl3
                 //prin.t(hMatr);
                 //prin.t(new Matrix<double>( (double[,])hMat.GetData()));
                 var subVmatr = matrix_subV(hMatr);
+                var subVmatr9 = matrix_subV9(hMatr);
                 matrsH.Add(hMatr);
                 matrsSubV.Add(subVmatr);
+                matrsSubV9.Add(subVmatr9);
                 //
             }
+            var matrV9 = matrix_V9(matrsSubV9.GetRange(0, matrsSubV.Count / 2).ToArray());
+            //prin.t("matrV9_____________");
+            //prin.t(matrV9);
             var matrV1 = matrix_V(matrsSubV.GetRange(0, matrsSubV.Count / 2).ToArray());
-            var matrV2 = matrix_V(matrsSubV.GetRange(matrsSubV.Count / 2, matrsSubV.Count / 2).ToArray());
             var w1 = new Mat();
             var u1 = new Mat();
             var v1 = new Mat();
-            var w2 = new Mat();
-            var u2 = new Mat();
-            var v2 = new Mat();
 
             CvInvoke.SVDecomp(matrV1, w1, u1, v1, SvdFlag.FullUV);
-            CvInvoke.SVDecomp(matrV2, w2, u2, v2, SvdFlag.FullUV);
+            vecWithSmallestEigevVal( matrV1);
 
-            /*prin.t("matrV1_____________");
-            prin.t(matrV1);
-            prin.t("matrV2_____________");
-            prin.t(matrV2);*/
-            prin.t("w1_____________");
-            prin.t(w1);
-            prin.t("w2_____________");
-            prin.t(w2);
-            /*prin.t("u1_____________");
-            prin.t(u1);
-            prin.t("u2_____________");
-            prin.t(u2);*/
-            prin.t("v1_____________");
-            prin.t(v1);
-            prin.t("v2_____________");
-            prin.t(v2);
+            var randMatr = new Matrix<double>(6, 7);
+            randMatr.SetRandNormal(new MCvScalar(0), new MCvScalar(100));
+            var matrDb = randMatr.Data;
+            //LinearEquationSolver.SolveSq(matrV1.Data);
+            //LinearEquationSolver.SolveSq(matrV9.Data);
 
-            //var testMatr = new Matrix<double>(new double[,] { {0.96,1.72 }, { 2.28,0.96} });
-            var testMatr = new Matrix<double>(new double[,] { { -1, -6 }, {2, 6 } });
-           // var testMatr = new Matrix<double>(new double[,] { { 3, 2 }, { 2, 0 } });
-            var w = new Mat();
-            var u = new Mat();
-            var v = new Mat();
-            CvInvoke.SVDecomp(testMatr, w, u, v, SvdFlag.Default);
-            prin.t("testMatr_____________");
-            prin.t(testMatr);
-            prin.t("w_____________");
-            prin.t(w);
-            prin.t("u_____________");
-            prin.t(u);
-            prin.t("v_____________");
-            prin.t(v);
+           //var b = calcBmatrParam(cameramatrix);
 
-            calcIntrisicParam(new Matrix<double>(new double[,]{ { 0.695, -0.104, -0.711, -0.003, -0.003, 0 } }));
-            calcIntrisicParam(new Matrix<double>(new double[,] { { 0.739, - 0.063, - 0.67, - 0.004, - 0.003, 0 } }));
-            calcIntrisicParam(new Matrix<double>(new double[,] { { -0.632, - 0.559, - 0.536, 0.003, 0.002, 0 } }));
-            calcIntrisicParam(new Matrix<double>(new double[,] { { -0.573, - 0.581, - 0.578, 0.003, 0.002, 0 } }));
+            //prin.t("gauss_____________");
+            //prin.t(matrV1*b.Transpose());
+            //var solut = solveMatr(randMatr);
+
+
+            
         }
 
-        Matrix<double> matrix_vij(Matrix<double> matr,int i, int j)
+       
+        Matrix<double> vecWithSmallestEigevVal(Matrix<double> matr1)
         {
-            return new Matrix<double>(new double[,] { 
-                { matr[i,0]* matr[j, 0] },
-                { matr[i,0]* matr[j, 1] + matr[i,1]* matr[j, 0] },
-                { matr[i,1]* matr[j, 1]},
-                { matr[i,2]* matr[j, 0] + matr[i,0]* matr[j, 2] },
-                { matr[i,2]* matr[j, 1] + matr[i,1]* matr[j, 2]},              
-                { matr[i,2]* matr[j, 2]}
-            });
+
+            var matr = matr1.Transpose() * matr1;
+            prin.t("matr_____________");
+            prin.t(matr.Data.GetLength(0) + " " + matr.Data.GetLength(1) + " ");
+            var eig = new EigenvalueDecomposition(matr.Data);
+            var eiVec = new Matrix<double>(eig.Eigenvectors);
+            var eiVal = new Matrix<double>(eig.RealEigenvalues);
+            var pmax = new Point();
+            var pmin = new Point();
+            var vmax = 0d;
+            var vmin = 0d;
+
+            eiVal.MinMax(out vmin, out vmax, out pmin, out pmax);
+            var minVec = new Matrix<double>(eiVec.Rows, 1);
+            var maxVec = new Matrix<double>(eiVec.Rows, 1);
+            for (int i = 0; i < minVec.Rows; i++)
+            {
+                minVec[i, 0] = eiVec[i, pmin.Y];
+                maxVec[i, 0] = eiVec[i, pmax.Y];
+            }
+
+            minVec = eiVec.GetCol(pmin.Y);
+            //calcIntrisicParam(minVec.Transpose());
+            var matrD = matr.Data;
+            var rside = new double[matrD.GetLength(0)-1];
+            var matr2 = remove(matr, matr.Rows - 1, matr.Cols);
+            //var solut= matr2.Data.Solve(rside, true);
+
+            //prin.t("solv_____________");
+            //prin.t(solut);
+            var intr = calcIntrisicParam(minVec.Transpose());
+            Console.WriteLine("Intr ___________");
+            prin.t(intr);
+            prin.t("eiVec_____________");
+            prin.t(eiVec);
+            prin.t("eiVal_____________");
+            prin.t(eiVal);
+            prin.t("minVec_____________");
+            prin.t(minVec);
+            prin.t("matr1 * minVec_____________");
+            prin.t(matr1 * minVec);
+            prin.t(vmin * minVec);
+
+
+            return minVec;
         }
 
-        Matrix<double> matrix_subV(Matrix<double> matr)
-        {
-            var v12 = matrix_vij(matr, 1, 2);
-            var v11 = matrix_vij(matr, 1, 1);
-            var v22 = matrix_vij(matr, 2, 2);
-            var matr1 = v12.Transpose();
-            var matr2 = (v11-v22).Transpose();
-            var matr_res = matr1.ConcateVertical(matr2);
 
-            return matr_res;
-        }
         Matrix<double> matrix_V(Matrix<double>[] matr)
         {
-            var matr_res = new Matrix<double>(3,3);
-            if (matr.Length>2)
+            var matr_res = new Matrix<double>(3, 3);
+            if (matr.Length > 2)
             {
                 matr_res = matr[0];
-                for (int i=1; i< matr.Length; i++)
+                for (int i = 1; i < 3; i++)
                 {
                     matr_res = matr_res.ConcateVertical(matr[i]);
                 }
@@ -1020,14 +1031,93 @@ namespace opengl3
             return matr_res;
         }
 
+        Matrix<double> matrix_vij(Matrix<double> matr, int i, int j)
+        {
+            return new Matrix<double>(new double[,] {
+                { matr[i,0]* matr[j, 0] },
+                { matr[i,0]* matr[j, 1] + matr[i,1]* matr[j, 0] },
+                { matr[i,1]* matr[j, 1]},
+                { matr[i,2]* matr[j, 0] + matr[i,0]* matr[j, 2] },
+                { matr[i,2]* matr[j, 1] + matr[i,1]* matr[j, 2]},
+                { matr[i,2]* matr[j, 2]}
+            });
+        }
+
+
+        Matrix<double> matrix_subV(Matrix<double> matr)
+        {
+            var v12 = matrix_vij(matr, 0, 1);
+            var v11 = matrix_vij(matr, 0, 0);
+            var v22 = matrix_vij(matr, 1, 1);
+            var matr1 = v12.Transpose();
+            var matr2 = (v11 - v22).Transpose();
+            var matr_res = matr1.ConcateVertical(matr2);
+
+            return matr_res;
+        }
+        Matrix<double> matrix_vij9(Matrix<double> matr, int i, int j)
+        {
+            return new Matrix<double>(new double[,] {
+                { matr[i,0]* matr[j, 0] },
+                { matr[i,0]* matr[j, 1] },
+                { matr[i,0]* matr[j, 2] },
+                { matr[i,1]* matr[j, 0] },
+                { matr[i,1]* matr[j, 1] },
+                { matr[i,1]* matr[j, 2] },
+                { matr[i,2]* matr[j, 0] },
+                { matr[i,2]* matr[j, 1] },
+                { matr[i,2]* matr[j, 2] },
+            });
+        }
+
+        Matrix<double> matrix_subV9(Matrix<double> matr)
+        {
+            var v12 = matrix_vij9(matr, 0, 1);
+            var v11 = matrix_vij9(matr, 0, 0);
+            var v22 = matrix_vij9(matr, 1, 1);
+            var matr1 = v12.Transpose();
+            var matr2 = (v11 - v22).Transpose();
+            var matr_res = matr1.ConcateVertical(matr2);
+
+            return matr_res;
+        }
+
+        Matrix<double> matrix_V9(Matrix<double>[] matr)
+        {
+            var matr_res = new Matrix<double>(3, 3);
+            if (matr.Length > 2)
+            {
+                matr_res = matr[0];
+                for (int i = 1; i < 5; i++)
+                {
+                    matr_res = matr_res.ConcateVertical(matr[i]);
+                }
+            }
+            if (matr_res.Rows > 9)
+            {
+
+                var data = matr_res.Data;
+                var data9 = new double[9, 9];
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        data9[i, j] = data[i, j];
+                    }
+                }
+                matr_res = new Matrix<double>(data9);
+            }
+            return matr_res;
+        }
+
         Matrix<double> homographyMatr(MCvPoint3D32f[] points3d, System.Drawing.PointF[] points2d)
         {
-            Matrix<double> matrix3d = new Matrix<double>(3,3);
-            Matrix<double> matrix2d = new Matrix<double>(3,3);
+            Matrix<double> matrix3d = new Matrix<double>(3, 3);
+            Matrix<double> matrix2d = new Matrix<double>(3, 3);
             Matrix<double> matrix = new Matrix<double>(3, 3);
-            if (points3d.Length>3 && points2d.Length > 3)
+            if (points3d.Length > 3 && points2d.Length > 3)
             {
-                for(int i = 0; i < 3; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     matrix3d[i, 0] = points3d[i].X; matrix3d[i, 1] = points3d[i].Y; matrix3d[i, 2] = 1;
                     matrix2d[i, 0] = points2d[i].X; matrix2d[i, 1] = points2d[i].Y; matrix2d[i, 2] = 1;
@@ -1052,18 +1142,67 @@ namespace opengl3
             return matrix.Transpose();
         }
 
-
-        void calcIntrisicParam(Matrix<double> eigenvector)
+        Matrix<double> solveMatr(Matrix<double> matrix)
         {
+            var rcol = remove(matrix, matrix.Rows , matrix.Cols, 0, matrix.Cols - 1)*(-1);
+            var matrixsmall = remove(matrix, matrix.Rows-1, matrix.Cols-1);
+            var revmatrixsmall = new Matrix<double>(matrixsmall.Size);
+            CvInvoke.Invert(matrixsmall, revmatrixsmall, DecompMethod.LU);
+            var rcols = remove(matrix, matrix.Rows-1, matrix.Cols,  0, matrix.Cols - 1) * (-1);
+            var solv = (revmatrixsmall * rcols).ConcateVertical(new Matrix<double>(new double[,] { { 1 } }));
+            return solv;
+        }
 
-            if(eigenvector.Cols>5)
+        Matrix<double> remove(Matrix<double> matrix, int rows, int cols,int strow =0,int stcol=0)
+        {
+            var data = matrix.Data;
+            var dataR = new double[rows- strow, cols-stcol];
+            int isl = 0;
+            for (int i = strow; i < rows; i++)
             {
-                var B11 = eigenvector[0, 0];
-                var B12 = eigenvector[0, 1];
-                var B22 = eigenvector[0, 2];
-                var B13 = eigenvector[0, 3];
-                var B23 = eigenvector[0, 4];
-                var B33 = eigenvector[0, 5];
+                int jsl = 0;
+                for (int j = stcol; j < cols; j++)
+                {
+                    dataR[isl, jsl] = data[i, j];
+                    jsl++;
+                }
+                isl++;
+            }
+            return new Matrix<double>(dataR);
+        }
+        Matrix<double> calcIntrisicParam(Matrix<double> eigenvector)
+        {
+            var B11 = 0d;
+            var B12 = 0d;
+            var B22 = 0d;
+            var B13 = 0d;
+            var B23 = 0d;
+            var B33 = 0d;
+            if (eigenvector.Cols == 6)
+            {
+                B11 = eigenvector[0, 0];
+                B12 = eigenvector[0, 1];
+                B22 = eigenvector[0, 2];
+                B13 = eigenvector[0, 3];
+                B23 = eigenvector[0, 4];
+                B33 = eigenvector[0, 5];
+            }
+            else if(eigenvector.Cols == 9)
+            {
+                B11 = eigenvector[0, 0];
+                B12 = eigenvector[0, 1];
+                B13 = eigenvector[0, 2];
+
+                B22 = eigenvector[0, 4];               
+                B23 = eigenvector[0, 5];
+
+
+                B33 = eigenvector[0, 8];
+            }
+            else
+            {
+
+            }
 
                 var v0 = (B12 * B13 - B11 * B23) / (B11 * B22 - B12 * B12);
                 var lam = B33 - (B13 * B13 + v0 * (B12 * B13 - B11 * B23)) / B11;
@@ -1071,64 +1210,185 @@ namespace opengl3
                 var beta = Math.Sqrt((lam * B11) / (B11 * B22 - B12 * B12));
                 var gamm = -B12 * alph * alph * beta / lam;
                 var u0 = gamm * v0 / beta - B13 * alph * alph / lam;
-
+                /*Console.WriteLine("Intr ___________");
                 Console.WriteLine("v0 = " + v0);
                 Console.WriteLine("lam = " + lam);
                 Console.WriteLine("alph = " + alph);
                 Console.WriteLine("beta = " + beta);
                 Console.WriteLine("gamm = " + gamm);
-                Console.WriteLine("u0 = " + u0);
-            }
-            
+                Console.WriteLine("u0 = " + u0);*/
+
+            return new Matrix<double>(new double[,]
+            {
+                {alph,gamm,u0 },
+                {0,beta,v0 },
+                {0,0,lam },
+            })/lam;
         }
 
-        public double Determinant3x3(Matrix<double> matr)
+        Matrix<double> calcBmatrParam(Matrix<double> A)
         {
-            if(matr.Cols==3 && matr.Rows==3)
-            {
-                double a = matr[0, 0], b = matr[1, 0], c = matr[2, 0];
-                double d = matr[0, 1], e = matr[1, 1], f = matr[2, 1];
-                double g = matr[0, 2], h = matr[1, 2], k = matr[2, 2];
+            var alph = A[0, 0];
+            var gamma = A[0, 1];
+            var u0 = A[0, 2];
+            var beta = A[1, 1];
+            var v0 = A[1, 2];
 
-                return (e * k - f * h) * a + -(d * k - f * g) * b + (d * h - e * g) * c;
-            }
-            else
-            {
-                return 0;
-            }
-            
-            
+            var B11 = 1 / (alph * alph);
+            var B12 =- gamma / (alph * alph*beta);
+            var B13 = (v0*gamma-u0*beta )/ (alph * alph * beta);
+
+            var B22 = (gamma* gamma) / (alph * alph * beta * beta)+1/ (beta * beta);
+
+            var B23 = -(gamma*( v0* gamma-u0*beta)) / (alph * alph * beta * beta) - v0 / (beta * beta);
+
+            var B33 = ((v0 * gamma - u0 * beta) * (v0 * gamma - u0 * beta)) / (alph * alph * beta * beta) + (v0*v0) / (beta * beta)+1;
+
+
+
+            Console.WriteLine("B11 = " + B11);
+            Console.WriteLine("B12 = " + B12);
+            Console.WriteLine("B22 = " + B22);
+            Console.WriteLine("B13 = " + B13);
+            Console.WriteLine("B23 = " + B23);
+            Console.WriteLine("B33 = " + B33);
+            var b = new Matrix<double>(new double[,] { { B11, B12, B22, B13, B23, B33 } });
+            calcIntrisicParam(b);
+            return b;
         }
 
-        /// <summary>
-        /// Compute the inverse of this Matrix3x3f.
-        /// </summary>
-        public Matrix<double> Inverse(Matrix<double> matr)
+        public static class LinearEquationSolver
         {
-            if (matr.Cols == 3 && matr.Rows == 3)
+            /// <summary>Computes the solution of a linear equation system.</summary>
+            /// <param name="M">
+            /// The system of linear equations as an augmented matrix[row, col] where (rows + 1 == cols).
+            /// It will contain the solution in "row canonical form" if the function returns "true".
+            /// </param>
+            /// <returns>Returns whether the matrix has a unique solution or not.</returns>
+            public static bool Solve(double[,] M)
             {
-                double det = Determinant3x3(matr);
-                if (Math.Abs(det) < 1e-6f)
-                {
-                    throw new InvalidOperationException("not invertible");
-                }
-                    
-                det = 1.0f / det;
+                prin.t("gauss_____________");
+                prin.t(M);
+                // input checks
+                int rowCount = M.GetUpperBound(0) + 1;
+                if (M == null || M.Length != rowCount * (rowCount + 1))
+                    throw new ArgumentException("The algorithm must be provided with a (n x n+1) matrix.");
+                if (rowCount < 1)
+                    throw new ArgumentException("The matrix must at least have one row.");
 
-                double a = matr[0, 0], b = matr[1, 0], c = matr[2, 0];
-                double d = matr[0, 1], e = matr[1, 1], f = matr[2, 1];
-                double g = matr[0, 2], h = matr[1, 2], k = matr[2, 2];
+                // pivoting
+                for (int col = 0; col + 1 < rowCount; col++) if (M[col, col] == 0)
+                    // check for zero coefficients
+                    {
+                        // find non-zero coefficient
+                        int swapRow = col + 1;
+                        for (; swapRow < rowCount; swapRow++) if (M[swapRow, col] != 0) break;
 
-                return new Matrix<double>(new double[,] {
-                    { (e * k - f * h) * det, -(d * k - f * g) * det, (d * h - e * g) * det, },
-                    { -(b * k - c * h) * det, (a * k - c * g) * det, -(a * h - b * g) * det, },
-                    {  (b * f - c * e) * det, -(a * f - c * d) * det, (a * e - b * d) * det }
+                        if (M[swapRow, col] != 0) // found a non-zero coefficient?
+                        {
+                            // yes, then swap it with the above
+                            double[] tmp = new double[rowCount + 1];
+                            for (int i = 0; i < rowCount + 1; i++)
+                            { tmp[i] = M[swapRow, i]; M[swapRow, i] = M[col, i]; M[col, i] = tmp[i]; }
                         }
-                    );
+                        else return false; // no, then the matrix has no unique solution
+                    }
+
+                // elimination
+                for (int sourceRow = 0; sourceRow + 1 < rowCount; sourceRow++)
+                {
+                    for (int destRow = sourceRow + 1; destRow < rowCount; destRow++)
+                    {
+                        double df = M[sourceRow, sourceRow];
+                        double sf = M[destRow, sourceRow];
+                        for (int i = 0; i < rowCount + 1; i++)
+                            M[destRow, i] = M[destRow, i] * df - M[sourceRow, i] * sf;
+                    }
+                }
+                prin.t("gauss_____________");
+                prin.t(M);
+                // back-insertion
+                for (int row = rowCount - 1; row >= 0; row--)
+                {
+                    double f = M[row, row];
+                    if (f == 0) return false;
+
+                    for (int i = 0; i < rowCount + 1; i++) M[row, i] /= f;
+                    for (int destRow = 0; destRow < row; destRow++)
+                    { M[destRow, rowCount] -= M[destRow, row] * M[row, rowCount]; M[destRow, row] = 0; }
+                }
+                prin.t("gauss_____________");
+                prin.t(M);
+                return true;
             }
-            else
+
+            public static bool SolveSq(double[,] M)
             {
-                return new Matrix<double>(3,3);
+                prin.t("gauss_____________");
+                prin.t(M);
+                // input checks
+                int rowCount = M.GetLength(0);
+                Console.WriteLine(rowCount +" "+ M.Length);
+                if (M == null || M.Length != rowCount * rowCount )
+                    throw new ArgumentException("The algorithm must be provided with a n x n matrix.");
+                if (rowCount < 1)
+                    throw new ArgumentException("The matrix must at least have one row.");
+
+                // pivoting
+                for (int col = 0; col + 1 < rowCount; col++) if (M[col, col] == 0)
+                    // check for zero coefficients
+                    {
+                        // find non-zero coefficient
+                        int swapRow = col + 1;
+                        for (; swapRow < rowCount; swapRow++) if (M[swapRow, col] != 0) break;
+
+                        if (M[swapRow, col] != 0) // found a non-zero coefficient?
+                        {
+                            // yes, then swap it with the above
+                            double[] tmp = new double[rowCount + 1];
+                            for (int i = 0; i < rowCount + 1; i++)
+                            { 
+                                tmp[i] = M[swapRow, i]; 
+                                M[swapRow, i] = M[col, i]; 
+                                M[col, i] = tmp[i]; 
+                            }
+                        }
+                        else return false; // no, then the matrix has no unique solution
+                    }
+
+                // elimination
+                for (int sourceRow = 0; sourceRow + 1 < rowCount; sourceRow++)
+                {
+                    for (int destRow = sourceRow + 1; destRow < rowCount; destRow++)
+                    {
+                        double df = M[sourceRow, sourceRow];
+                        double sf = M[destRow, sourceRow];
+                        for (int i = 0; i < rowCount; i++)
+                        {
+                            //Console.WriteLine(destRow + " " + i + " " + sourceRow);
+                            M[destRow, i] = M[destRow, i] * df - M[sourceRow, i] * sf;
+                           
+                        }            
+
+                    }
+                    prin.t("gauss_____________");
+                    prin.t(M);
+                }
+                prin.t("gauss_____________");
+                prin.t(M);
+                // back-insertion
+                /*for (int row = rowCount - 1; row >= 0; row--)
+                {
+                    double f = M[row, row];
+                    if (f == 0) return false;
+
+                    for (int i = 0; i < rowCount + 1; i++) M[row, i] /= f;
+                    for (int destRow = 0; destRow < row; destRow++)
+                    { M[destRow, rowCount] -= M[destRow, row] * M[row, rowCount]; M[destRow, row] = 0; }
+                }*/
+                //prin.t("gauss_____________");
+                //prin.t(M);
+                return true;
             }
         }
     }

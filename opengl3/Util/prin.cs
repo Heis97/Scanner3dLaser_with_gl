@@ -124,9 +124,10 @@ namespace opengl3
         }
         public static void t(double[,] matr)
         {
-            for (int i = 0; i < matr.GetColumn(0).Length; i++)
+            Console.WriteLine(matr.GetLength(0) + " "+ matr.GetLength(1));
+            for (int i = 0; i < matr.GetLength(0); i++)
             {
-                for (int j = 0; j < matr.GetRow(0).Length; j++)
+                for (int j = 0; j < matr.GetLength(1); j++)
                 {
                     Console.Write(matr[i, j] + " ");
                 }
@@ -232,7 +233,7 @@ namespace opengl3
             {
                 for (int i = 0; i < matr.Rows; i++)
                 {
-                    Console.Write(Math.Round(matr[i, 0],3) + " ");
+                    Console.Write(Math.Round(matr[i, 0],5) + " ");
                 }
                 Console.WriteLine(" ");
             }
@@ -294,43 +295,7 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
-        /*
-        void print(Mat mat)
-        {
-            Console.WriteLine("cols x rows: " + mat.Cols + " x " + mat.Rows);
-            var arr = mat.GetData();
-            double[,] flarr = new double[1, 1];
-           // Console.WriteLine("st");
-            try
-            {
-                
-                flarr = (double[,])arr;
-                //Console.WriteLine("fl");
-            }
-            catch (System.InvalidCastException)
-            {
-                try
-                {
-                    flarr = convToDouble((float[,])arr);
-                }
-                catch (System.InvalidCastException)
-                {
-
-                }
-                    //Console.WriteLine("db");
-            }
-            
-            for (int i = 0; i < mat.Rows; i++)
-            {
-                for (int j = 0; j < mat.Cols; j++)
-                {
-                    Console.Write(Math.Round(flarr[i, j],3) + " ");
-
-                }
-                Console.WriteLine(" ");
-            }
-        }
-        */
+        
         public static void t(Mat mat)
         {
             Console.WriteLine("cols x rows: " + mat.Cols + " x " + mat.Rows+" "+mat.Depth + " " + mat.NumberOfChannels);
@@ -414,7 +379,7 @@ namespace opengl3
                         for (int j = 0; j < mat.Cols; j++)
                         {
 
-                            Console.Write(Math.Round(flarr[i, j], 3) + " ");
+                            Console.Write(flarr[i, j] + " ");
 
                         }
                         Console.WriteLine(" ");
