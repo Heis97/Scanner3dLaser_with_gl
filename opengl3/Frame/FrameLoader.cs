@@ -24,12 +24,12 @@ namespace opengl3
 
             return new Frame[][] { frm1.ToArray(), frm2.ToArray() };
         }
-        static public Frame[] loadPathsDiff(string[] paths)
+        static public Frame[] loadPathsDiff(string[] paths, FrameType frameType)
         {
             var frm1 = new List<Frame>();
             for (int i = 0; i < paths.Length; i++)
             {
-                frm1.AddRange(loadImages_diff(paths[i], FrameType.Pattern));
+                frm1.AddRange(loadImages_diff(paths[i], frameType));
 
             }
 

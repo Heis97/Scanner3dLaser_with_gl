@@ -224,7 +224,7 @@ namespace opengl3
                 {
                     for (int j = 0; j < matr.Cols; j++)
                     {
-                        Console.Write(Math.Round(matr[i, j],5) + " ");
+                        Console.Write(Math.Round(matr[i, j],10) + " ");
                     }
                     Console.WriteLine(" ");
                 }
@@ -233,7 +233,7 @@ namespace opengl3
             {
                 for (int i = 0; i < matr.Rows; i++)
                 {
-                    Console.Write(Math.Round(matr[i, 0],5) + " ");
+                    Console.Write(Math.Round(matr[i, 0],10) + " ");
                 }
                 Console.WriteLine(" ");
             }

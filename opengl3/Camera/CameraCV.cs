@@ -515,7 +515,10 @@ namespace opengl3
             cameramatrix = _cameramatrix;
             cameramatrix_inv = invMatrix(cameramatrix);
             distortmatrix = _distortmatrix;
-
+            
+            var objpsn = new MCvPoint3D32f[0][];
+            var cornersn = new System.Drawing.PointF[0][];
+            //normalyseData(this.objps, this.corners, 640, 10, out objpsn, out cornersn);
             calibrateCameraTest(this.objps, this.corners);
             prin.t("cameramatrix:");
             prin.t(cameramatrix);
@@ -523,7 +526,37 @@ namespace opengl3
             prin.t(distortmatrix);
 
         }
+        void normalyseData(MCvPoint3D32f[][] points3d, System.Drawing.PointF[][] points2d,float k2d, float k3d, out MCvPoint3D32f[][] npoints3d,out System.Drawing.PointF[][] npoints2d)
+        {
+            npoints3d = (MCvPoint3D32f[][])points3d.Clone();
+            for(int i=0; i<npoints3d.Length;i++)
+            {
+                npoints3d[i] = (MCvPoint3D32f[])points3d[i].Clone();
+            }
+            npoints2d = (System.Drawing.PointF[][])points2d.Clone();
+            for(int i=0; i<npoints3d.Length;i++)
+            {
+                for (int j = 0; j < npoints3d[i].Length; j++)
+                {
+                    Console.WriteLine("_____________________");
+                    Console.WriteLine(points3d[i][j].X + " " + points3d[i][j].Y);
+                    npoints3d[i][j] = new MCvPoint3D32f(points3d[i][j].X / k3d, points3d[i][j].Y / k3d, points3d[i][j].Z / k3d);
+                    Console.WriteLine(npoints3d[i][j].X + " " + npoints3d[i][j].Y);
+                }
+            }
+            Console.WriteLine("|||||||||||||||||||||||||||||||||||||");
+            for (int i = 0; i < npoints2d.Length; i++)
+            {
+                for (int j = 0; j < npoints2d[i].Length; j++)
+                {
+                    //Console.WriteLine("_____________________");
+                    //Console.WriteLine(points2d[i][j].X + " " + points2d[i][j].Y);
+                    npoints2d[i][j] =new System.Drawing.PointF(npoints2d[i][j].X / k2d, npoints2d[i][j].Y / k2d);
+                    //Console.WriteLine(npoints2d[i][j].X + " " + npoints2d[i][j].Y);
+                }
+            }
 
+        }
         void calibrateCamFish(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
             this.frames = frames;
@@ -922,48 +955,103 @@ namespace opengl3
             var matrsH = new List<Matrix<double>>();
             var matrsSubV = new List<Matrix<double>>();
             var matrsSubV9 = new List<Matrix<double>>();
+            var p2ds = new List<System.Drawing.PointF[]>();
+            var p3ds = new List<MCvPoint3D32f[]>();
+            var Ainv = new Matrix<double>(3, 3);
+            
+            CvInvoke.Invert(cameramatrix, Ainv, DecompMethod.LU);
+            var B = Ainv.Transpose() * Ainv;
             for (int i = 0; i < points3d.Length; i++)
             {
                 var p2d = UtilOpenCV.takeGabObp(points2d[i], new Size(6, 7));
                 var p3d = UtilOpenCV.takeGabObp(points3d[i], new Size(6, 7));
                 var hMatr = homographyMatr(p3d, p2d);
-
-                var hMat = CvInvoke.FindHomography(PointF.toSystemPoint(p3d), p2d);
+                var hMat = CvInvoke.FindHomography(PointF.toSystemPoint(points3d[i]), points2d[i]);
+                prin.t("ps_____________");
+                for (int p =0; p< p2d.Length;p++)
+                {
+                    prin.t(p2d[p].X + " " + p2d[p].Y + " ");
+                    prin.t(p3d[p].X + " " + p3d[p].Y + " ");
+                }
+                prin.t("homo_____________");
+                var hMatrcv = new Matrix<double>((double[,])hMat.GetData());
+                var ch1 = hMatrcv * new Matrix<double>(new double[,] { { p3d[3].X }, { p3d[3].Y }, { 1 } });
+                prin.t(ch1/ch1[2,0]) ;
+                prin.t(hMatr* new Matrix<double>(new double[,] { { p3d[3].X }, { p3d[3].Y }, { 1 } }));
+                prin.t(p2d[3].X+" "+ p2d[3].Y + " ");
+                
+                var h1 = hMatrcv.GetCol(0);
+                var h2 = hMatrcv.GetCol(1);
+                var h1T = h1.Transpose();
+                var h2T = h2.Transpose();
+                prin.t("hMatr_____________");
+                prin.t(hMatr);
+                prin.t("h1_____________");
+                prin.t(h1);
+                prin.t("h2_____________");
+                prin.t(h2);
+                prin.t("h1T_____________");
+                prin.t(h1T);
+                prin.t("h2T_____________");
+                prin.t(h2T);
+                prin.t("A_____________");
+                prin.t(cameramatrix);
+                prin.t("B_____________");
+                prin.t(B);
+                prin.t("h1T*B*h2_____________");
+                prin.t(h1T*B*h2);
+                prin.t("h1T*B*h1_____________");
+                prin.t(h1T * B * h1);
+                prin.t("h2T*B*h2_____________");
+                prin.t(h2T * B * h2);
                 //prin.t("_____________");
                 //prin.t(hMatr);
                 //prin.t(new Matrix<double>( (double[,])hMat.GetData()));
-                var subVmatr = matrix_subV(hMatr);
+                p2ds.Add(p2d);
+                p3ds.Add(p3d);
+                var subVmatr = matrix_subV(hMatrcv);
                 var subVmatr9 = matrix_subV9(hMatr);
-                matrsH.Add(hMatr);
+                matrsH.Add(hMatrcv);
                 matrsSubV.Add(subVmatr);
                 matrsSubV9.Add(subVmatr9);
                 //
             }
             var matrV9 = matrix_V9(matrsSubV9.GetRange(0, matrsSubV.Count / 2).ToArray());
-            //prin.t("matrV9_____________");
-            //prin.t(matrV9);
-            var matrV1 = matrix_V(matrsSubV.GetRange(0, matrsSubV.Count / 2).ToArray());
+            
+            var matrV1 = matrix_V(matrsSubV.GetRange(1, matrsSubV.Count / 2).ToArray());
+            var matrV2 = matrix_V(matrsSubV.GetRange(matrsSubV.Count / 2, matrsSubV.Count / 2).ToArray());
             var w1 = new Mat();
             var u1 = new Mat();
             var v1 = new Mat();
 
             CvInvoke.SVDecomp(matrV1, w1, u1, v1, SvdFlag.FullUV);
-            vecWithSmallestEigevVal( matrV1);
+            //prin.t("matrV1_____________");
+            //prin.t(matrV1);
+            prin.t("w1_____________");
+            prin.t(w1);
+            //prin.t("u1_____________");
+            //prin.t(u1);
+            prin.t("v1T_____________");
+            prin.t(v1.T());
+            var vec1 = vecWithSmallestEigevVal(matrV1);
+            var vec2 = vecWithSmallestEigevVal(matrV2);
+            prin.t("matrV1_____________");
+            prin.t(matrV1);
+            prin.t("matrV2_____________");
+            prin.t(matrV2);
+            prin.t("vec1_____________");
+            prin.t(vec1);
+            prin.t("vec2_____________");
+            prin.t(vec2);
 
-            var randMatr = new Matrix<double>(6, 7);
-            randMatr.SetRandNormal(new MCvScalar(0), new MCvScalar(100));
-            var matrDb = randMatr.Data;
-            //LinearEquationSolver.SolveSq(matrV1.Data);
-            //LinearEquationSolver.SolveSq(matrV9.Data);
+            //var b = calcBmatrParam(cameramatrix);
+            var intr1 = calcIntrisicParam(vec1.Transpose());
+            var intr2 = calcIntrisicParam(vec2.Transpose());
+            Console.WriteLine("Intr ___________");
+            prin.t(intr1);
 
-           //var b = calcBmatrParam(cameramatrix);
+            var b = calcBmatrParam(cameramatrix);
 
-            //prin.t("gauss_____________");
-            //prin.t(matrV1*b.Transpose());
-            //var solut = solveMatr(randMatr);
-
-
-            
         }
 
        
@@ -989,19 +1077,14 @@ namespace opengl3
                 minVec[i, 0] = eiVec[i, pmin.Y];
                 maxVec[i, 0] = eiVec[i, pmax.Y];
             }
+            
+
 
             minVec = eiVec.GetCol(pmin.Y);
             //calcIntrisicParam(minVec.Transpose());
             var matrD = matr.Data;
-            var rside = new double[matrD.GetLength(0)-1];
-            var matr2 = remove(matr, matr.Rows - 1, matr.Cols);
-            //var solut= matr2.Data.Solve(rside, true);
+            
 
-            //prin.t("solv_____________");
-            //prin.t(solut);
-            var intr = calcIntrisicParam(minVec.Transpose());
-            Console.WriteLine("Intr ___________");
-            prin.t(intr);
             prin.t("eiVec_____________");
             prin.t(eiVec);
             prin.t("eiVal_____________");
@@ -1010,7 +1093,7 @@ namespace opengl3
             prin.t(minVec);
             prin.t("matr1 * minVec_____________");
             prin.t(matr1 * minVec);
-            prin.t(vmin * minVec);
+
 
 
             return minVec;
@@ -1046,11 +1129,23 @@ namespace opengl3
 
         Matrix<double> matrix_subV(Matrix<double> matr)
         {
+            //prin.t("hMatr____________________");
+            //prin.t(matr);
             var v12 = matrix_vij(matr, 0, 1);
             var v11 = matrix_vij(matr, 0, 0);
             var v22 = matrix_vij(matr, 1, 1);
+            /*prin.t("v12____________________");
+            prin.t(v12);
+            prin.t("v11____________________");
+            prin.t(v11);
+            prin.t("v22____________________");
+            prin.t(v22);*/
             var matr1 = v12.Transpose();
             var matr2 = (v11 - v22).Transpose();
+            /*prin.t("m1____________________");
+            prin.t(matr1);
+            prin.t("m2____________________");
+            prin.t(matr2);*/
             var matr_res = matr1.ConcateVertical(matr2);
 
             return matr_res;
@@ -1253,7 +1348,10 @@ namespace opengl3
             Console.WriteLine("B23 = " + B23);
             Console.WriteLine("B33 = " + B33);
             var b = new Matrix<double>(new double[,] { { B11, B12, B22, B13, B23, B33 } });
-            calcIntrisicParam(b);
+            var intr = calcIntrisicParam(b);
+            prin.t("intrTes:____________");
+            prin.t(intr);
+
             return b;
         }
 

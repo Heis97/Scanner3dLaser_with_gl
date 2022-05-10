@@ -108,7 +108,8 @@ namespace opengl3
             InitializeComponent();
             init_vars();
             //loadScanner();
-            loadStereo();
+            //loadStereo();
+
             GL1.buffersGl.sortObj();
         }
         void init_vars()
@@ -143,14 +144,14 @@ namespace opengl3
             //patt[0] = patt_ph;
 
              generateImage3D_BOARD(7, 8, markSize);
-
+            oneCam();
             //var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
 
             //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
         }
         void loadStereo()
         {
-            var cam_cal_paths = new string[] { @"photo_3\distort", @"photo_4\distort" };
+            var cam_cal_paths = new string[] { @"photo_3", @"photo_4" };
             var frms = FrameLoader.loadPathsDiffDouble(cam_cal_paths,FrameType.MarkBoard);
             var cam1 = new CameraCV(frms[0], new Size(6, 7), markSize, null);
             var cam2 = new CameraCV(frms[1], new Size(6, 7), markSize, null);
@@ -159,7 +160,15 @@ namespace opengl3
             comboImages.Items.AddRange(frms3);
             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
         }
+        void oneCam()
+        {
+            var cam_cal_paths = new string[] { @"ref_model\test3"};
+            var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.MarkBoard);
+            var cam1 = new CameraCV(frms, new Size(6, 7), markSize, null);
 
+            comboImages.Items.AddRange(frms);
+          
+        }
         void loadScanner()
         {
             var cam_cal_paths = new string[] { @"cam1\photo_9" , @"cam1\photo_11", @"cam1\photo_13" };//, @"cam1\photo_10"
@@ -172,7 +181,7 @@ namespace opengl3
             var frms_las_cal = FrameLoader.loadImages_diff(las_cal_path, FrameType.LasHand,PatternType.Chess);
             var frms_scan = FrameLoader.loadImages_diff(scan_path, FrameType.LasHand, PatternType.Chess);
 
-            var frms = FrameLoader.loadPathsDiff(cam_cal_paths);
+            var frms = FrameLoader.loadPathsDiff(cam_cal_paths,FrameType.Pattern);
             var cam1 = new CameraCV(frms, new Size(6, 7), markSize, null);
             cameraCVcommon = cam1;
             //comboImages.Items.AddRange(frms_las_cal);
