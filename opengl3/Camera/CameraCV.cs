@@ -1023,7 +1023,35 @@ namespace opengl3
             var w1 = new Mat();
             var u1 = new Mat();
             var v1 = new Mat();
+            Console.WriteLine("matrsSubV.Count " + matrsSubV.Count);
 
+            for (int i=0; i< matrsSubV.Count-3;i++)
+            {;
+                var matrV = matrix_V(matrsSubV.GetRange(i,  3).ToArray());
+                var vec = vecWithSmallestEigevVal(matrV);
+                var intr = calcIntrisicParam(vec.Transpose());
+                var Iinv = new Matrix<double>(3, 3);
+
+                CvInvoke.Invert(intr, Iinv, DecompMethod.LU);
+                var iB = Iinv.Transpose() * Iinv;
+
+                Console.WriteLine("Intr ___________");
+                prin.t(intr);
+
+                for(int hm =0; hm< matrsH.Count;hm++)
+                {
+                    var h1 = matrsH[hm].GetCol(0);
+                    var h2 = matrsH[hm].GetCol(1);
+                    var h1T = h1.Transpose();
+                    var h2T = h2.Transpose();
+                    prin.t("h1T*B*h2_____________");
+                    prin.t(h1T * iB * h2);
+                    prin.t("h1T*B*h1 - h2T*B*h2_____________");
+                    prin.t(h1T * iB * h1 - h2T * iB * h2);
+
+                }
+                
+            }
             CvInvoke.SVDecomp(matrV1, w1, u1, v1, SvdFlag.FullUV);
             //prin.t("matrV1_____________");
             //prin.t(matrV1);
@@ -1050,6 +1078,7 @@ namespace opengl3
             Console.WriteLine("Intr ___________");
             prin.t(intr1);
 
+
             var b = calcBmatrParam(cameramatrix);
 
         }
@@ -1059,8 +1088,8 @@ namespace opengl3
         {
 
             var matr = matr1.Transpose() * matr1;
-            prin.t("matr_____________");
-            prin.t(matr.Data.GetLength(0) + " " + matr.Data.GetLength(1) + " ");
+           // prin.t("matr_____________");
+            //prin.t(matr.Data.GetLength(0) + " " + matr.Data.GetLength(1) + " ");
             var eig = new EigenvalueDecomposition(matr.Data);
             var eiVec = new Matrix<double>(eig.Eigenvectors);
             var eiVal = new Matrix<double>(eig.RealEigenvalues);
@@ -1085,14 +1114,14 @@ namespace opengl3
             var matrD = matr.Data;
             
 
-            prin.t("eiVec_____________");
+           /*prin.t("eiVec_____________");
             prin.t(eiVec);
             prin.t("eiVal_____________");
             prin.t(eiVal);
             prin.t("minVec_____________");
             prin.t(minVec);
             prin.t("matr1 * minVec_____________");
-            prin.t(matr1 * minVec);
+            prin.t(matr1 * minVec);*/
 
 
 
