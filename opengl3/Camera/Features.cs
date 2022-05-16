@@ -179,8 +179,8 @@ namespace opengl3
             }
             return mat3;
         }
-        
-        VectorOfDMatch matchEpiline(Descriptor[] desk1, Descriptor[] desk2)
+
+        static VectorOfDMatch matchEpiline(Descriptor[] desk1, Descriptor[] desk2)
         {
             var w = 400;
             var h = 400;
@@ -238,7 +238,7 @@ namespace opengl3
 
             return matches;
         }
-        VectorOfDMatch matchBF(Descriptor[] desk1, Descriptor[] desk2)
+        static VectorOfDMatch matchBF(Descriptor[] desk1, Descriptor[] desk2)
         {
             var mDMatchs = new List<MDMatch>();
             var es = new double[desk1.Length, desk2.Length];
@@ -311,7 +311,7 @@ namespace opengl3
             return reconstrToMesh(stereoCam,p4s);
         }
 
-        float[] reconstrToMesh(StereoCameraCV stereoCam,Mat p4s)
+        static float[] reconstrToMesh(StereoCameraCV stereoCam,Mat p4s)
         {
             var mesh = new List<float>();
             var pdata = (float[,])p4s.GetData();
@@ -335,7 +335,7 @@ namespace opengl3
             return mesh.ToArray();
         }
 
-        public float[] pointsForLines(System.Drawing.PointF[] ps, CameraCV cam, float z = 600)
+        static public float[] pointsForLines(System.Drawing.PointF[] ps, CameraCV cam, float z = 600)
         {
             var invmx = cam.matrixCS;
             if(ps==null)
@@ -360,7 +360,7 @@ namespace opengl3
             return dataP;
         }
 
-        float[] point3DfromCam(System.Drawing.PointF _p, CameraCV cam,float z)
+        static float[] point3DfromCam(System.Drawing.PointF _p, CameraCV cam,float z)
         {
             /*var A = cam.cameramatrix;
             var fx = A[0, 0];
@@ -378,7 +378,7 @@ namespace opengl3
             return new float[] {  p.x * z, p.y * z, p.z * z };
         }
 
-        VectorOfDMatch matchBF(Mat desk1, Mat desk2)
+        static VectorOfDMatch matchBF(Mat desk1, Mat desk2)
         {
             var mDMatchs = new List<MDMatch>();
             var data1 = (float[,])desk1.GetData();
@@ -418,8 +418,8 @@ namespace opengl3
 
             return new VectorOfDMatch(mDMatchs.ToArray());
         }
-        
-        public Mat[] disparMap(Mat imL, Mat imR, int maxDisp, int blockSize)
+
+        static public Mat[] disparMap(Mat imL, Mat imR, int maxDisp, int blockSize)
         {
             var grayL = imL.ToImage<Gray, byte>();
             var grayR = imR.ToImage<Gray, byte>();
@@ -465,7 +465,7 @@ namespace opengl3
             var matrD2 = new Matrix<byte>(diff2Map);
             return new Mat[] { matrD.Mat , matrD2.Mat };
         }
-        public Mat[] disparMap_3d(Mat imL, Mat imR, int maxDisp, int blockSize)
+        static public Mat[] disparMap_3d(Mat imL, Mat imR, int maxDisp, int blockSize)
         {
             var grayL = imL.ToImage<Gray, byte>();
             var grayR = imR.ToImage<Gray, byte>();
@@ -507,7 +507,7 @@ namespace opengl3
             return new Mat[] { matrD.Mat, matrD2.Mat };
         }
         #region 2d
-        int[][] bmatcherLine(int[] line1, int[] line2, int maxDisp, int blockSize)
+        static int[][] bmatcherLine(int[] line1, int[] line2, int maxDisp, int blockSize)
         {
             var disp_line = new int[line1.Length][];
             var wind = maxDisp;
@@ -524,7 +524,7 @@ namespace opengl3
             }
             return disp_line;
         }
-        int[] takeBlok(int[] line, int indB, int blockSize)
+        static int[] takeBlok(int[] line, int indB, int blockSize)
         {
             var bl = new int[2*blockSize+1];
             
@@ -536,7 +536,7 @@ namespace opengl3
             return bl;
         }
 
-        int compDiff(int[] block1, int[] block2)
+        static int compDiff(int[] block1, int[] block2)
         {
             
             int diff = 0;
@@ -556,7 +556,7 @@ namespace opengl3
             }
             return diff - min * block1.Length;
         }
-        int[] disp(int[] block, int[] batch)
+        static int[] disp(int[] block, int[] batch)
         {
             var min = int.MaxValue;
             var disp = 0;
@@ -574,7 +574,7 @@ namespace opengl3
 
             return new int[] { disp, diff2(takeBlok(batch, disp, wind)) };
         }
-        int diff2(int[] block)
+        static int diff2(int[] block)
         {
             
             var diff = new int[block.Length-1];
@@ -603,7 +603,7 @@ namespace opengl3
         }
         #endregion
 
-        int[,][] bmatcherImage(int[,] im1, int[,] im2, int maxDisp, int blockSize)
+        static int[,][] bmatcherImage(int[,] im1, int[,] im2, int maxDisp, int blockSize)
         {
             var disp_line = new int[im1.GetLength(0), im1.GetLength(1)][];
             var wind = maxDisp;
@@ -624,7 +624,7 @@ namespace opengl3
             }
             return disp_line;
         }
-        int[,] takeBlok3d(int[,] im, int x, int y, int xSize,int ySize)
+        static int[,] takeBlok3d(int[,] im, int x, int y, int xSize,int ySize)
         {
             var dimx = 2 * xSize + 1;
             var dimy = 2 * ySize + 1;
@@ -643,7 +643,7 @@ namespace opengl3
             return bl;
         }
 
-        int compDiff3d(int[,] block1, int[,] block2)
+        static int compDiff3d(int[,] block1, int[,] block2)
         {
 
             int diff = 0;
@@ -668,7 +668,7 @@ namespace opengl3
             }
             return diff - min * (w * h);
         }
-        int[] disp3d(int[,] block, int[,] batch)
+        static int[] disp3d(int[,] block, int[,] batch)
         {
             var min = int.MaxValue;
             var disp = 0;
@@ -689,7 +689,7 @@ namespace opengl3
 
             return new int[] { disp, diff2_3d(takeBlok3d(batch, disp, ySizeBatch, xSize, xSize)) };
         }
-        int diff2_3d(int[,] block)
+        static int diff2_3d(int[,] block)
         {
             int w = block.GetLength(0);
             int h = block.GetLength(1);

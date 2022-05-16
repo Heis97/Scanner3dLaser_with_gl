@@ -300,7 +300,7 @@ namespace opengl3
 
         public static Image<Bgr, byte>[] PaintLines(Image<Gray, byte> im1, Image<Gray, byte> im2, int y, Features features)
         {
-            var disp = features.disparMap_3d(im1.Mat, im2.Mat, 40, 3);
+            var disp = Features.disparMap_3d(im1.Mat, im2.Mat, 40, 3);
             var line1 = takeLineFromMat(im1, y);
             var line2 = takeLineFromMat(im2, y);
             var dispLine = takeLineFromMat(disp[0].ToImage<Gray, byte>(), y);

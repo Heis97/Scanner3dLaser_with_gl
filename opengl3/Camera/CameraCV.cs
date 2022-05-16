@@ -1055,6 +1055,7 @@ namespace opengl3
             CvInvoke.SVDecomp(matrV1, w1, u1, v1, SvdFlag.FullUV);
             //prin.t("matrV1_____________");
             //prin.t(matrV1);
+            //CvInvoke.cal
             prin.t("w1_____________");
             prin.t(w1);
             //prin.t("u1_____________");
