@@ -519,13 +519,14 @@ namespace opengl3
             var objpsn = new MCvPoint3D32f[0][];
             var cornersn = new System.Drawing.PointF[0][];
             //normalyseData(this.objps, this.corners, 640, 10, out objpsn, out cornersn);
-            calibrateCameraTest(this.objps, this.corners);
+            //calibrateCameraTest(this.objps, this.corners);
             prin.t("cameramatrix:");
             prin.t(cameramatrix);
             prin.t("distortmatrix:");
             prin.t(distortmatrix);
 
         }
+
         void normalyseData(MCvPoint3D32f[][] points3d, System.Drawing.PointF[][] points2d,float k2d, float k3d, out MCvPoint3D32f[][] npoints3d,out System.Drawing.PointF[][] npoints2d)
         {
             npoints3d = (MCvPoint3D32f[][])points3d.Clone();
@@ -679,7 +680,7 @@ namespace opengl3
         }
 
 
-        static System.Drawing.PointF[] findPoints(Frame frame, Size size_patt)
+        public static System.Drawing.PointF[] findPoints(Frame frame, Size size_patt)
         {
             if (frame.frameType == FrameType.MarkBoard)
             {

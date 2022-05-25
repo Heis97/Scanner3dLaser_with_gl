@@ -1112,7 +1112,7 @@ namespace opengl3
             Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
             return mat3;
         }
-        static public Mat drawChessboard(Mat im, Size size, bool subpix = false,bool blur = false)
+        static public Mat drawChessboard(Mat im, Size size, bool subpix = false,bool blur = false, CalibCbType calibCbType = CalibCbType.AdaptiveThresh)
         {
             if(im==null)
             {
@@ -1128,7 +1128,7 @@ namespace opengl3
                 CvInvoke.GaussianBlur(gray, gray, new Size(5, 5), 0);
             }
            
-            var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.AdaptiveThresh);
+            var ret = CvInvoke.FindChessboardCorners(gray, size, corn, calibCbType);
             if(subpix)
             {
                 CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));

@@ -29,6 +29,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        FrameType imProcType = FrameType.Test;
         LaserLine laserLine;
         Point cam_calib_p1 = new Point(0, 0);
         Point cam_calib_p2 = new Point(0, 0);
@@ -38,7 +39,7 @@ namespace opengl3
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
         float markSize = 10f;
-        StereoCameraCV stereocam;
+        StereoCameraCV stereocam = new StereoCameraCV();
         CameraCV cameraCVcommon;
         TCPclient con1;
         private const float PI = 3.14159265358979f;
@@ -108,13 +109,14 @@ namespace opengl3
             InitializeComponent();
             init_vars();
             //loadScanner();
-            //loadStereo();
+            loadStereo();
 
             GL1.buffersGl.sortObj();
         }
         void init_vars()
         {
             #region important
+            combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн","Стерео Исп", "Ничего" });
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
 
@@ -151,14 +153,22 @@ namespace opengl3
         }
         void loadStereo()
         {
-            var cam_cal_paths = new string[] { @"photo_3", @"photo_4" };
-            var frms = FrameLoader.loadPathsDiffDouble(cam_cal_paths,FrameType.MarkBoard);
-            var cam1 = new CameraCV(frms[0], new Size(6, 7), markSize, null);
-            var cam2 = new CameraCV(frms[1], new Size(6, 7), markSize, null);
+            var cam_cal_1 = new string[] { @"cam1\calib_1_2505" };
+            var cam_cal_2 = new string[] { @"cam2\calib_2_2505" };
+            
+            var frms1 = FrameLoader.loadPathsDiff(cam_cal_1, FrameType.MarkBoard);
+            var frms2 = FrameLoader.loadPathsDiff(cam_cal_2, FrameType.MarkBoard);
+            var cam1 = new CameraCV(frms1, new Size(6, 7), markSize, null);
+            var cam2 = new CameraCV(frms2, new Size(6, 7), markSize, null);
 
-            var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + cam_cal_paths[0], @"cam2\" + cam_cal_paths[0], FrameType.Pattern);
+            var cam_cal_stereo = new string[] { @"stereocalib_2505" };
+            var frms = FrameLoader.loadPathsDiffDouble(cam_cal_stereo, FrameType.MarkBoard);
+
+            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 }, new Size(6, 7), markSize, frms);
+
+            var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + cam_cal_stereo[0], @"cam2\" + cam_cal_stereo[0], FrameType.Pattern);
             comboImages.Items.AddRange(frms3);
-            stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 });
+            
         }
         void oneCam()
         {
@@ -1329,31 +1339,54 @@ namespace opengl3
 
                 if ((camera_ind.Count > 0) && ((int)cap.Ptr == camera_ind[0]))
                 {
+                    
                     cap.Retrieve(mat_global[0]);
-                    //finPointFsFromIm(mat_global[0], 40, imageBox1);
                     imageBox1.Image = mat_global[0];
                     imBox_input_1.Image = mat_global[0];
+                    imBox_base_1.Image = imProcess(mat_global[0],1);
 
                 }
                 else if ((camera_ind.Count > 1) && ((int)cap.Ptr == camera_ind[1]))
                 {
-                    cap.Retrieve(mat_global[1]);
-                    //var mat = stereoProc(mat_global[0], mat_global[1]);
-                    //finPointFsFromIm(mat_global[1], 40, imageBox2);
-                    //imBox_base.Image = mat;
+                    cap.Retrieve(mat_global[1]);                  
+                    imBox_base.Image = stereoProc(mat_global[0], mat_global[1]);
                     imageBox2.Image = mat_global[1];
                     imBox_input_2.Image = mat_global[1];
+                    imBox_base_2.Image = imProcess(mat_global[1],2);
                 }
             }
         }
+
+        Mat imProcess(Mat mat,int ind)
+        {
+            var mat_r = new Mat();
+            switch (imProcType)
+            {
+                case FrameType.Test:
+                    mat_r = mat;
+                    break;
+                case FrameType.MarkBoard:
+                    mat_r = UtilOpenCV.drawChessboard(mat, new Size(6, 7),false,false,CalibCbType.FastCheck);
+                    break;
+                case FrameType.Undist:
+                    mat_r = stereocam.remapCam(mat, ind);
+                    break;
+                default:
+                    break;
+            }
+            return mat_r;
+        }
         Mat stereoProc(Mat mat1, Mat mat2)
         {
+
+            return stereocam.epipolarTest(mat1, mat2);
             //return features.drawDescriptorsMatch(ref mat1, ref mat2);
-            //imBox_input_1.Image = mat1;
+            
+            /*//imBox_input_1.Image = mat1;
             //imBox_input_2.Image = mat2;
-           imBox_input_1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
+            imBox_input_1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
             imBox_input_2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
-            return null;
+            return null;*/
         }
         private void videoStart_Click(object sender, EventArgs e)
         {
@@ -1942,6 +1975,22 @@ namespace opengl3
         private void but_setShvpPos_Click(object sender, EventArgs e)
         {
             laserLine.setShvpPos(Convert.ToInt32(textBox_shvpPos.Text));
+        }
+
+        private void combo_improc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(combo_improc.SelectedIndex==0)
+            {
+                imProcType = FrameType.MarkBoard;
+            }
+            else if(combo_improc.SelectedIndex == 1)
+            {
+                imProcType = FrameType.Undist;
+            }
+            else
+            {
+                imProcType = FrameType.Test;
+            }
         }
     }
 

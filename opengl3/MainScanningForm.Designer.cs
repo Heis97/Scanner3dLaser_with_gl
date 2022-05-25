@@ -31,7 +31,6 @@ namespace opengl3
         {
             this.components = new System.ComponentModel.Container();
             this.comboImages = new System.Windows.Forms.ComboBox();
-            this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabCalibMonit = new System.Windows.Forms.TabPage();
             this.lab_pos_mouse = new System.Windows.Forms.Label();
             this.but_set_wind = new System.Windows.Forms.Button();
@@ -142,7 +141,12 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.combo_improc = new System.Windows.Forms.ComboBox();
+            this.label56 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.but_setShvpPos = new System.Windows.Forms.Button();
+            this.textBox_shvpPos = new System.Windows.Forms.TextBox();
             this.but_open = new System.Windows.Forms.Button();
             this.but_close = new System.Windows.Forms.Button();
             this.but_laserOn = new System.Windows.Forms.Button();
@@ -201,9 +205,7 @@ namespace opengl3
             this.trackBar20 = new System.Windows.Forms.TrackBar();
             this.but_addBufRob = new System.Windows.Forms.Button();
             this.but_robMod = new System.Windows.Forms.Button();
-            this.Save_sing = new System.Windows.Forms.Button();
             this.label24 = new System.Windows.Forms.Label();
-            this.butSave = new System.Windows.Forms.Button();
             this.label25 = new System.Windows.Forms.Label();
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.butStop = new System.Windows.Forms.Button();
@@ -221,34 +223,20 @@ namespace opengl3
             this.but_scan_start = new System.Windows.Forms.Button();
             this.label17 = new System.Windows.Forms.Label();
             this.but_photo = new System.Windows.Forms.Button();
-            this.label18 = new System.Windows.Forms.Label();
             this.butCalcIm = new System.Windows.Forms.Button();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             this.comboVideo = new System.Windows.Forms.ComboBox();
-            this.label13 = new System.Windows.Forms.Label();
             this.comboNumber = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
-            this.textBox_shvpPos = new System.Windows.Forms.TextBox();
-            this.but_setShvpPos = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
+            this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -314,6 +302,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
             this.windowsTabs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // comboImages
@@ -324,10 +313,6 @@ namespace opengl3
             this.comboImages.Size = new System.Drawing.Size(431, 21);
             this.comboImages.TabIndex = 24;
             this.comboImages.SelectionChangeCommitted += new System.EventHandler(this.comboImages_SelectionChangeCommitted);
-            // 
-            // graphicGLBindingSource
-            // 
-            this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
             // tabCalibMonit
             // 
@@ -1407,7 +1392,7 @@ namespace opengl3
             // 
             // butSaveOpenGlIm
             // 
-            this.butSaveOpenGlIm.Location = new System.Drawing.Point(18, 955);
+            this.butSaveOpenGlIm.Location = new System.Drawing.Point(14, 929);
             this.butSaveOpenGlIm.Name = "butSaveOpenGlIm";
             this.butSaveOpenGlIm.Size = new System.Drawing.Size(121, 42);
             this.butSaveOpenGlIm.TabIndex = 20;
@@ -1471,6 +1456,9 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.label1);
+            this.tabMain.Controls.Add(this.combo_improc);
+            this.tabMain.Controls.Add(this.label56);
             this.tabMain.Controls.Add(this.groupBox1);
             this.tabMain.Controls.Add(this.label55);
             this.tabMain.Controls.Add(this.txBx_photoName);
@@ -1522,9 +1510,7 @@ namespace opengl3
             this.tabMain.Controls.Add(this.trackBar20);
             this.tabMain.Controls.Add(this.but_addBufRob);
             this.tabMain.Controls.Add(this.but_robMod);
-            this.tabMain.Controls.Add(this.Save_sing);
             this.tabMain.Controls.Add(this.label24);
-            this.tabMain.Controls.Add(this.butSave);
             this.tabMain.Controls.Add(this.label25);
             this.tabMain.Controls.Add(this.imageBox1);
             this.tabMain.Controls.Add(this.butStop);
@@ -1542,27 +1528,15 @@ namespace opengl3
             this.tabMain.Controls.Add(this.but_scan_start);
             this.tabMain.Controls.Add(this.label17);
             this.tabMain.Controls.Add(this.but_photo);
-            this.tabMain.Controls.Add(this.label18);
             this.tabMain.Controls.Add(this.butCalcIm);
-            this.tabMain.Controls.Add(this.label19);
-            this.tabMain.Controls.Add(this.label20);
-            this.tabMain.Controls.Add(this.label1);
-            this.tabMain.Controls.Add(this.label2);
-            this.tabMain.Controls.Add(this.label21);
-            this.tabMain.Controls.Add(this.label3);
-            this.tabMain.Controls.Add(this.label22);
-            this.tabMain.Controls.Add(this.label23);
             this.tabMain.Controls.Add(this.label7);
             this.tabMain.Controls.Add(this.label16);
             this.tabMain.Controls.Add(this.label6);
             this.tabMain.Controls.Add(this.label15);
             this.tabMain.Controls.Add(this.label5);
             this.tabMain.Controls.Add(this.label14);
-            this.tabMain.Controls.Add(this.label11);
             this.tabMain.Controls.Add(this.label8);
-            this.tabMain.Controls.Add(this.label12);
             this.tabMain.Controls.Add(this.comboVideo);
-            this.tabMain.Controls.Add(this.label13);
             this.tabMain.Controls.Add(this.comboNumber);
             this.tabMain.Controls.Add(this.label10);
             this.tabMain.Controls.Add(this.label9);
@@ -1574,6 +1548,33 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(1298, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(69, 20);
+            this.label1.TabIndex = 124;
+            this.label1.Text = "Camera:";
+            // 
+            // combo_improc
+            // 
+            this.combo_improc.FormattingEnabled = true;
+            this.combo_improc.Location = new System.Drawing.Point(1407, 298);
+            this.combo_improc.Name = "combo_improc";
+            this.combo_improc.Size = new System.Drawing.Size(121, 28);
+            this.combo_improc.TabIndex = 123;
+            this.combo_improc.SelectedIndexChanged += new System.EventHandler(this.combo_improc_SelectedIndexChanged);
+            // 
+            // label56
+            // 
+            this.label56.AutoSize = true;
+            this.label56.Location = new System.Drawing.Point(1412, 274);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(63, 20);
+            this.label56.TabIndex = 122;
+            this.label56.Text = "ImProc:";
             // 
             // groupBox1
             // 
@@ -1587,16 +1588,34 @@ namespace opengl3
             this.groupBox1.Controls.Add(this.comboBox_portsArd);
             this.groupBox1.Controls.Add(this.but_find_ports);
             this.groupBox1.Controls.Add(this.textBox_powerLaser);
-            this.groupBox1.Location = new System.Drawing.Point(1332, 648);
+            this.groupBox1.Location = new System.Drawing.Point(1472, 617);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(547, 235);
+            this.groupBox1.Size = new System.Drawing.Size(404, 235);
             this.groupBox1.TabIndex = 121;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Scaner Manual Control";
             // 
+            // but_setShvpPos
+            // 
+            this.but_setShvpPos.Location = new System.Drawing.Point(171, 152);
+            this.but_setShvpPos.Name = "but_setShvpPos";
+            this.but_setShvpPos.Size = new System.Drawing.Size(110, 55);
+            this.but_setShvpPos.TabIndex = 9;
+            this.but_setShvpPos.Text = "Установить положение";
+            this.but_setShvpPos.UseVisualStyleBackColor = true;
+            this.but_setShvpPos.Click += new System.EventHandler(this.but_setShvpPos_Click);
+            // 
+            // textBox_shvpPos
+            // 
+            this.textBox_shvpPos.Location = new System.Drawing.Point(287, 166);
+            this.textBox_shvpPos.Name = "textBox_shvpPos";
+            this.textBox_shvpPos.Size = new System.Drawing.Size(110, 26);
+            this.textBox_shvpPos.TabIndex = 8;
+            this.textBox_shvpPos.Text = "0";
+            // 
             // but_open
             // 
-            this.but_open.Location = new System.Drawing.Point(151, 55);
+            this.but_open.Location = new System.Drawing.Point(22, 122);
             this.but_open.Name = "but_open";
             this.but_open.Size = new System.Drawing.Size(143, 38);
             this.but_open.TabIndex = 0;
@@ -1606,7 +1625,7 @@ namespace opengl3
             // 
             // but_close
             // 
-            this.but_close.Location = new System.Drawing.Point(151, 99);
+            this.but_close.Location = new System.Drawing.Point(22, 166);
             this.but_close.Name = "but_close";
             this.but_close.Size = new System.Drawing.Size(143, 36);
             this.but_close.TabIndex = 1;
@@ -1616,7 +1635,7 @@ namespace opengl3
             // 
             // but_laserOn
             // 
-            this.but_laserOn.Location = new System.Drawing.Point(314, 19);
+            this.but_laserOn.Location = new System.Drawing.Point(171, 26);
             this.but_laserOn.Name = "but_laserOn";
             this.but_laserOn.Size = new System.Drawing.Size(110, 55);
             this.but_laserOn.TabIndex = 2;
@@ -1626,7 +1645,7 @@ namespace opengl3
             // 
             // but_laserOff
             // 
-            this.but_laserOff.Location = new System.Drawing.Point(430, 19);
+            this.but_laserOff.Location = new System.Drawing.Point(287, 26);
             this.but_laserOff.Name = "but_laserOff";
             this.but_laserOff.Size = new System.Drawing.Size(110, 55);
             this.but_laserOff.TabIndex = 3;
@@ -1636,7 +1655,7 @@ namespace opengl3
             // 
             // but_setPower
             // 
-            this.but_setPower.Location = new System.Drawing.Point(314, 80);
+            this.but_setPower.Location = new System.Drawing.Point(171, 87);
             this.but_setPower.Name = "but_setPower";
             this.but_setPower.Size = new System.Drawing.Size(110, 55);
             this.but_setPower.TabIndex = 4;
@@ -1647,18 +1666,18 @@ namespace opengl3
             // comboBox_portsArd
             // 
             this.comboBox_portsArd.FormattingEnabled = true;
-            this.comboBox_portsArd.Location = new System.Drawing.Point(5, 109);
+            this.comboBox_portsArd.Location = new System.Drawing.Point(22, 74);
             this.comboBox_portsArd.Name = "comboBox_portsArd";
-            this.comboBox_portsArd.Size = new System.Drawing.Size(121, 28);
+            this.comboBox_portsArd.Size = new System.Drawing.Size(143, 28);
             this.comboBox_portsArd.TabIndex = 6;
             this.comboBox_portsArd.SelectedIndexChanged += new System.EventHandler(this.comboBox_portsArd_SelectedIndexChanged);
             // 
             // but_find_ports
             // 
             this.but_find_ports.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.but_find_ports.Location = new System.Drawing.Point(5, 67);
+            this.but_find_ports.Location = new System.Drawing.Point(22, 32);
             this.but_find_ports.Name = "but_find_ports";
-            this.but_find_ports.Size = new System.Drawing.Size(121, 36);
+            this.but_find_ports.Size = new System.Drawing.Size(143, 36);
             this.but_find_ports.TabIndex = 7;
             this.but_find_ports.Text = "Найти порты";
             this.but_find_ports.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -1667,7 +1686,7 @@ namespace opengl3
             // 
             // textBox_powerLaser
             // 
-            this.textBox_powerLaser.Location = new System.Drawing.Point(431, 94);
+            this.textBox_powerLaser.Location = new System.Drawing.Point(288, 101);
             this.textBox_powerLaser.Name = "textBox_powerLaser";
             this.textBox_powerLaser.Size = new System.Drawing.Size(110, 26);
             this.textBox_powerLaser.TabIndex = 5;
@@ -1677,7 +1696,7 @@ namespace opengl3
             // 
             this.label55.AutoSize = true;
             this.label55.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label55.Location = new System.Drawing.Point(1227, 619);
+            this.label55.Location = new System.Drawing.Point(1296, 469);
             this.label55.Name = "label55";
             this.label55.Size = new System.Drawing.Size(115, 20);
             this.label55.TabIndex = 120;
@@ -1685,15 +1704,15 @@ namespace opengl3
             // 
             // txBx_photoName
             // 
-            this.txBx_photoName.Location = new System.Drawing.Point(1356, 616);
+            this.txBx_photoName.Location = new System.Drawing.Point(1425, 466);
             this.txBx_photoName.Name = "txBx_photoName";
-            this.txBx_photoName.Size = new System.Drawing.Size(184, 26);
+            this.txBx_photoName.Size = new System.Drawing.Size(103, 26);
             this.txBx_photoName.TabIndex = 119;
             this.txBx_photoName.Text = "photo_13";
             // 
             // nameC2
             // 
-            this.nameC2.Location = new System.Drawing.Point(1004, 609);
+            this.nameC2.Location = new System.Drawing.Point(1004, 555);
             this.nameC2.Name = "nameC2";
             this.nameC2.Size = new System.Drawing.Size(69, 26);
             this.nameC2.TabIndex = 88;
@@ -1701,7 +1720,7 @@ namespace opengl3
             // 
             // nameB2
             // 
-            this.nameB2.Location = new System.Drawing.Point(929, 609);
+            this.nameB2.Location = new System.Drawing.Point(929, 555);
             this.nameB2.Name = "nameB2";
             this.nameB2.Size = new System.Drawing.Size(69, 26);
             this.nameB2.TabIndex = 87;
@@ -1709,7 +1728,7 @@ namespace opengl3
             // 
             // textNimVid
             // 
-            this.textNimVid.Location = new System.Drawing.Point(1356, 15);
+            this.textNimVid.Location = new System.Drawing.Point(1373, 9);
             this.textNimVid.Name = "textNimVid";
             this.textNimVid.Size = new System.Drawing.Size(45, 26);
             this.textNimVid.TabIndex = 40;
@@ -1718,7 +1737,7 @@ namespace opengl3
             // 
             // nameA2
             // 
-            this.nameA2.Location = new System.Drawing.Point(854, 609);
+            this.nameA2.Location = new System.Drawing.Point(854, 555);
             this.nameA2.Name = "nameA2";
             this.nameA2.Size = new System.Drawing.Size(69, 26);
             this.nameA2.TabIndex = 86;
@@ -1726,7 +1745,7 @@ namespace opengl3
             // 
             // nameX
             // 
-            this.nameX.Location = new System.Drawing.Point(630, 548);
+            this.nameX.Location = new System.Drawing.Point(630, 522);
             this.nameX.Name = "nameX";
             this.nameX.Size = new System.Drawing.Size(69, 26);
             this.nameX.TabIndex = 11;
@@ -1734,7 +1753,7 @@ namespace opengl3
             // 
             // nameY
             // 
-            this.nameY.Location = new System.Drawing.Point(705, 548);
+            this.nameY.Location = new System.Drawing.Point(705, 522);
             this.nameY.Name = "nameY";
             this.nameY.Size = new System.Drawing.Size(69, 26);
             this.nameY.TabIndex = 12;
@@ -1750,7 +1769,7 @@ namespace opengl3
             // 
             // nameZ
             // 
-            this.nameZ.Location = new System.Drawing.Point(780, 548);
+            this.nameZ.Location = new System.Drawing.Point(780, 522);
             this.nameZ.Name = "nameZ";
             this.nameZ.Size = new System.Drawing.Size(69, 26);
             this.nameZ.TabIndex = 13;
@@ -1774,7 +1793,7 @@ namespace opengl3
             // 
             // nameX2
             // 
-            this.nameX2.Location = new System.Drawing.Point(630, 609);
+            this.nameX2.Location = new System.Drawing.Point(630, 555);
             this.nameX2.Name = "nameX2";
             this.nameX2.Size = new System.Drawing.Size(69, 26);
             this.nameX2.TabIndex = 25;
@@ -1790,7 +1809,7 @@ namespace opengl3
             // 
             // nameY2
             // 
-            this.nameY2.Location = new System.Drawing.Point(705, 609);
+            this.nameY2.Location = new System.Drawing.Point(705, 555);
             this.nameY2.Name = "nameY2";
             this.nameY2.Size = new System.Drawing.Size(69, 26);
             this.nameY2.TabIndex = 26;
@@ -1806,7 +1825,7 @@ namespace opengl3
             // 
             // nameZ2
             // 
-            this.nameZ2.Location = new System.Drawing.Point(780, 609);
+            this.nameZ2.Location = new System.Drawing.Point(780, 555);
             this.nameZ2.Name = "nameZ2";
             this.nameZ2.Size = new System.Drawing.Size(69, 26);
             this.nameZ2.TabIndex = 27;
@@ -1822,7 +1841,7 @@ namespace opengl3
             // 
             // boxN
             // 
-            this.boxN.Location = new System.Drawing.Point(1356, 567);
+            this.boxN.Location = new System.Drawing.Point(1425, 417);
             this.boxN.Name = "boxN";
             this.boxN.Size = new System.Drawing.Size(69, 26);
             this.boxN.TabIndex = 31;
@@ -1830,7 +1849,7 @@ namespace opengl3
             // 
             // nameC
             // 
-            this.nameC.Location = new System.Drawing.Point(1004, 548);
+            this.nameC.Location = new System.Drawing.Point(1004, 522);
             this.nameC.Name = "nameC";
             this.nameC.Size = new System.Drawing.Size(69, 26);
             this.nameC.TabIndex = 63;
@@ -1838,7 +1857,7 @@ namespace opengl3
             // 
             // nameB
             // 
-            this.nameB.Location = new System.Drawing.Point(929, 548);
+            this.nameB.Location = new System.Drawing.Point(929, 522);
             this.nameB.Name = "nameB";
             this.nameB.Size = new System.Drawing.Size(69, 26);
             this.nameB.TabIndex = 62;
@@ -1846,7 +1865,7 @@ namespace opengl3
             // 
             // nameA
             // 
-            this.nameA.Location = new System.Drawing.Point(854, 548);
+            this.nameA.Location = new System.Drawing.Point(854, 522);
             this.nameA.Name = "nameA";
             this.nameA.Size = new System.Drawing.Size(69, 26);
             this.nameA.TabIndex = 61;
@@ -1854,7 +1873,7 @@ namespace opengl3
             // 
             // box_scanFolder
             // 
-            this.box_scanFolder.Location = new System.Drawing.Point(1356, 491);
+            this.box_scanFolder.Location = new System.Drawing.Point(1425, 341);
             this.box_scanFolder.Name = "box_scanFolder";
             this.box_scanFolder.Size = new System.Drawing.Size(130, 26);
             this.box_scanFolder.TabIndex = 57;
@@ -1862,7 +1881,7 @@ namespace opengl3
             // 
             // box_photoFolder
             // 
-            this.box_photoFolder.Location = new System.Drawing.Point(1356, 522);
+            this.box_photoFolder.Location = new System.Drawing.Point(1425, 372);
             this.box_photoFolder.Name = "box_photoFolder";
             this.box_photoFolder.Size = new System.Drawing.Size(130, 26);
             this.box_photoFolder.TabIndex = 59;
@@ -1870,25 +1889,25 @@ namespace opengl3
             // 
             // imBox_base_2
             // 
-            this.imBox_base_2.Location = new System.Drawing.Point(978, 676);
+            this.imBox_base_2.Location = new System.Drawing.Point(978, 607);
             this.imBox_base_2.Name = "imBox_base_2";
-            this.imBox_base_2.Size = new System.Drawing.Size(320, 240);
+            this.imBox_base_2.Size = new System.Drawing.Size(480, 360);
             this.imBox_base_2.TabIndex = 118;
             this.imBox_base_2.TabStop = false;
             // 
             // imBox_base_1
             // 
-            this.imBox_base_1.Location = new System.Drawing.Point(652, 676);
+            this.imBox_base_1.Location = new System.Drawing.Point(492, 607);
             this.imBox_base_1.Name = "imBox_base_1";
-            this.imBox_base_1.Size = new System.Drawing.Size(320, 240);
+            this.imBox_base_1.Size = new System.Drawing.Size(480, 360);
             this.imBox_base_1.TabIndex = 117;
             this.imBox_base_1.TabStop = false;
             // 
             // imBox_base
             // 
-            this.imBox_base.Location = new System.Drawing.Point(323, 676);
+            this.imBox_base.Location = new System.Drawing.Point(6, 607);
             this.imBox_base.Name = "imBox_base";
-            this.imBox_base.Size = new System.Drawing.Size(320, 240);
+            this.imBox_base.Size = new System.Drawing.Size(480, 360);
             this.imBox_base.TabIndex = 94;
             this.imBox_base.TabStop = false;
             // 
@@ -2125,39 +2144,19 @@ namespace opengl3
             this.but_robMod.UseVisualStyleBackColor = true;
             this.but_robMod.Click += new System.EventHandler(this.but_robMod_Click);
             // 
-            // Save_sing
-            // 
-            this.Save_sing.Location = new System.Drawing.Point(20, 917);
-            this.Save_sing.Name = "Save_sing";
-            this.Save_sing.Size = new System.Drawing.Size(171, 37);
-            this.Save_sing.TabIndex = 52;
-            this.Save_sing.Text = "Save image 1 camera";
-            this.Save_sing.UseVisualStyleBackColor = true;
-            this.Save_sing.Click += new System.EventHandler(this.butSaveSing_Click);
-            // 
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(1022, 638);
+            this.label24.Location = new System.Drawing.Point(1022, 584);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(20, 20);
             this.label24.TabIndex = 91;
             this.label24.Text = "C";
             // 
-            // butSave
-            // 
-            this.butSave.Location = new System.Drawing.Point(20, 960);
-            this.butSave.Name = "butSave";
-            this.butSave.Size = new System.Drawing.Size(171, 37);
-            this.butSave.TabIndex = 10;
-            this.butSave.Text = "Save image 2 camera";
-            this.butSave.UseVisualStyleBackColor = true;
-            this.butSave.Click += new System.EventHandler(this.butSave_Click);
-            // 
             // label25
             // 
             this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(950, 638);
+            this.label25.Location = new System.Drawing.Point(950, 584);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(20, 20);
             this.label25.TabIndex = 90;
@@ -2184,7 +2183,7 @@ namespace opengl3
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(872, 638);
+            this.label26.Location = new System.Drawing.Point(872, 584);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(20, 20);
             this.label26.TabIndex = 89;
@@ -2243,7 +2242,7 @@ namespace opengl3
             // but_res_pos_2
             // 
             this.but_res_pos_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_res_pos_2.Location = new System.Drawing.Point(1082, 608);
+            this.but_res_pos_2.Location = new System.Drawing.Point(1082, 554);
             this.but_res_pos_2.Name = "but_res_pos_2";
             this.but_res_pos_2.Size = new System.Drawing.Size(106, 27);
             this.but_res_pos_2.TabIndex = 85;
@@ -2265,7 +2264,7 @@ namespace opengl3
             // but_res_pos1
             // 
             this.but_res_pos1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_res_pos1.Location = new System.Drawing.Point(1082, 548);
+            this.but_res_pos1.Location = new System.Drawing.Point(1082, 522);
             this.but_res_pos1.Name = "but_res_pos1";
             this.but_res_pos1.Size = new System.Drawing.Size(106, 26);
             this.but_res_pos1.TabIndex = 84;
@@ -2327,15 +2326,6 @@ namespace opengl3
             this.but_photo.UseVisualStyleBackColor = true;
             this.but_photo.Click += new System.EventHandler(this.but_photo_Click);
             // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(1022, 522);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(20, 20);
-            this.label18.TabIndex = 81;
-            this.label18.Text = "C";
-            // 
             // butCalcIm
             // 
             this.butCalcIm.Location = new System.Drawing.Point(1770, 573);
@@ -2346,82 +2336,10 @@ namespace opengl3
             this.butCalcIm.UseVisualStyleBackColor = true;
             this.butCalcIm.Click += new System.EventHandler(this.butCalcIm_Click);
             // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(950, 522);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(20, 20);
-            this.label19.TabIndex = 80;
-            this.label19.Text = "B";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(872, 522);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(20, 20);
-            this.label20.TabIndex = 79;
-            this.label20.Text = "A";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(648, 577);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(20, 20);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "X";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(726, 577);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(20, 20);
-            this.label2.TabIndex = 15;
-            this.label2.Text = "Y";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(798, 522);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(19, 20);
-            this.label21.TabIndex = 75;
-            this.label21.Text = "Z";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(798, 577);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(19, 20);
-            this.label3.TabIndex = 16;
-            this.label3.Text = "Z";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(726, 522);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(20, 20);
-            this.label22.TabIndex = 74;
-            this.label22.Text = "Y";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(648, 522);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(20, 20);
-            this.label23.TabIndex = 73;
-            this.label23.Text = "X";
-            // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(648, 638);
+            this.label7.Location = new System.Drawing.Point(648, 584);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(20, 20);
             this.label7.TabIndex = 28;
@@ -2431,7 +2349,7 @@ namespace opengl3
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label16.Location = new System.Drawing.Point(1227, 570);
+            this.label16.Location = new System.Drawing.Point(1296, 420);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(123, 20);
             this.label16.TabIndex = 69;
@@ -2440,7 +2358,7 @@ namespace opengl3
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(726, 638);
+            this.label6.Location = new System.Drawing.Point(726, 584);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(20, 20);
             this.label6.TabIndex = 29;
@@ -2450,7 +2368,7 @@ namespace opengl3
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label15.Location = new System.Drawing.Point(481, 612);
+            this.label15.Location = new System.Drawing.Point(481, 558);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(142, 20);
             this.label15.TabIndex = 68;
@@ -2459,7 +2377,7 @@ namespace opengl3
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(798, 638);
+            this.label5.Location = new System.Drawing.Point(798, 584);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(19, 20);
             this.label5.TabIndex = 30;
@@ -2469,38 +2387,20 @@ namespace opengl3
             // 
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label14.Location = new System.Drawing.Point(481, 551);
+            this.label14.Location = new System.Drawing.Point(481, 525);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(143, 20);
             this.label14.TabIndex = 67;
             this.label14.Text = "Start Scan Point ->";
             // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(1022, 577);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(20, 20);
-            this.label11.TabIndex = 66;
-            this.label11.Text = "C";
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(1431, 570);
+            this.label8.Location = new System.Drawing.Point(1500, 420);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(20, 20);
             this.label8.TabIndex = 32;
             this.label8.Text = "N";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(950, 577);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(20, 20);
-            this.label12.TabIndex = 65;
-            this.label12.Text = "B";
             // 
             // comboVideo
             // 
@@ -2510,15 +2410,6 @@ namespace opengl3
             this.comboVideo.Size = new System.Drawing.Size(431, 28);
             this.comboVideo.TabIndex = 36;
             this.comboVideo.SelectedIndexChanged += new System.EventHandler(this.comboVideo_SelectedIndexChanged);
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(872, 577);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(20, 20);
-            this.label13.TabIndex = 64;
-            this.label13.Text = "A";
             // 
             // comboNumber
             // 
@@ -2533,7 +2424,7 @@ namespace opengl3
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label10.Location = new System.Drawing.Point(1231, 525);
+            this.label10.Location = new System.Drawing.Point(1300, 375);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(118, 20);
             this.label10.TabIndex = 60;
@@ -2543,7 +2434,7 @@ namespace opengl3
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label9.Location = new System.Drawing.Point(1231, 494);
+            this.label9.Location = new System.Drawing.Point(1300, 344);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(113, 20);
             this.label9.TabIndex = 58;
@@ -2562,23 +2453,9 @@ namespace opengl3
             this.windowsTabs.Size = new System.Drawing.Size(1890, 1029);
             this.windowsTabs.TabIndex = 92;
             // 
-            // textBox_shvpPos
+            // graphicGLBindingSource
             // 
-            this.textBox_shvpPos.Location = new System.Drawing.Point(430, 159);
-            this.textBox_shvpPos.Name = "textBox_shvpPos";
-            this.textBox_shvpPos.Size = new System.Drawing.Size(110, 26);
-            this.textBox_shvpPos.TabIndex = 8;
-            this.textBox_shvpPos.Text = "0";
-            // 
-            // but_setShvpPos
-            // 
-            this.but_setShvpPos.Location = new System.Drawing.Point(314, 145);
-            this.but_setShvpPos.Name = "but_setShvpPos";
-            this.but_setShvpPos.Size = new System.Drawing.Size(110, 55);
-            this.but_setShvpPos.TabIndex = 9;
-            this.but_setShvpPos.Text = "Установить положение";
-            this.but_setShvpPos.UseVisualStyleBackColor = true;
-            this.but_setShvpPos.Click += new System.EventHandler(this.but_setShvpPos_Click);
+            this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
             // MainScanningForm
             // 
@@ -2587,8 +2464,8 @@ namespace opengl3
             this.Controls.Add(this.windowsTabs);
             this.Name = "MainScanningForm";
             this.Text = "Form1";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.tabCalibMonit.ResumeLayout(false);
             this.tabCalibMonit.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).EndInit();
@@ -2659,6 +2536,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).EndInit();
             this.windowsTabs.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -2827,9 +2705,7 @@ namespace opengl3
         private System.Windows.Forms.TrackBar trackBar20;
         private System.Windows.Forms.Button but_addBufRob;
         private System.Windows.Forms.Button but_robMod;
-        private System.Windows.Forms.Button Save_sing;
         private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Button butSave;
         private System.Windows.Forms.Label label25;
         private Emgu.CV.UI.ImageBox imageBox1;
         private System.Windows.Forms.Button butStop;
@@ -2847,27 +2723,15 @@ namespace opengl3
         private System.Windows.Forms.Button but_scan_start;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Button but_photo;
-        private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Button butCalcIm;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label12;
         private System.Windows.Forms.ComboBox comboVideo;
-        private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox comboNumber;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label9;
@@ -2882,6 +2746,9 @@ namespace opengl3
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button but_setShvpPos;
         private System.Windows.Forms.TextBox textBox_shvpPos;
+        private System.Windows.Forms.Label label56;
+        private System.Windows.Forms.ComboBox combo_improc;
+        private System.Windows.Forms.Label label1;
     }
 }
 

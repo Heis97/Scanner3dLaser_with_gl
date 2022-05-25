@@ -47,32 +47,82 @@ namespace opengl3
     public class StereoCameraCV
     {
         public CameraCV[] cameraCVs;
-        public Mat t,r,e,f,p1,p2;
+        public Mat t,r,e,f,p1,p2,mx1,mx2,my1,my2;
         public Matrix<double> prM1, prM2;
         StereoSGBM stereosolver;
         StereoBM stereosolverBM;
         public SGBM_param solver_param;
-        public StereoCameraCV(CameraCV[] _cameraCVs)
+        public StereoCameraCV(CameraCV[] _cameraCVs, Size size, float markSize, Frame[][] stereoFrames = null)
         {
             cameraCVs = _cameraCVs;
-            calibrateCamStereo(cameraCVs);
+            calibrateCamStereo(cameraCVs, size, markSize, stereoFrames);
             rectify();
             init();
         }
-       
-        void debugCalib()
-        {
 
+        public StereoCameraCV()
+        {
+            init();
         }
-        void calibrateCamStereo(CameraCV[] _cameraCVs)
+
+        void calibrateCamStereo(CameraCV[] _cameraCVs, Size size,float markSize, Frame[][] stereoFrames = null)
         {
             if (_cameraCVs.Length < 2)
             {
                 return;
             }
+
             var cam1 = _cameraCVs[0];
             var cam2 = _cameraCVs[1];
 
+            var objs = cam1.objps;
+            var cor1 = cam1.corners;
+            var cor2 = cam2.corners;
+            if (stereoFrames!=null)
+            {
+                var objps = new List<MCvPoint3D32f[]>();
+                var corners1 = new List<System.Drawing.PointF[]>();
+                var corners2 = new List<System.Drawing.PointF[]>();
+
+                var obp = new MCvPoint3D32f[size.Width * size.Height];
+
+                int ind = 0;
+                for (int j = 0; j < size.Height; j++)
+                {
+                    for (int i = 0; i < size.Width; i++)
+                    {
+                        obp[ind] = new MCvPoint3D32f(-markSize * (float)i, markSize * (float)j, 0.0f);
+                        ind++;
+                    }
+                }
+
+
+                Console.WriteLine("fr len: " + stereoFrames[0].Length);
+                for(int i =0; i< stereoFrames[0].Length;i++)
+                {
+                    var corn1 = CameraCV.findPoints(stereoFrames[0][i], size);
+                    var corn2 = CameraCV.findPoints(stereoFrames[1][i], size);
+                    if (corn1 == null || corn2 == null)
+                    {
+                        Console.WriteLine("NOT:");
+                        Console.WriteLine(i);
+                    }
+                    else
+                    {
+                        objps.Add(obp);
+                        corners1.Add(corn1);
+                        corners2.Add(corn2);
+                    }
+                }
+                objs = objps.ToArray();
+                cor1 = corners1.ToArray();
+                cor2 = corners2.ToArray();
+                Console.WriteLine("stereoFrames ");
+            }
+            else
+            {
+                Console.WriteLine("stereoFrames NULL");
+            }
             /*for (int i = 0; i < cam1.tvecs.Length; i++)
             {
                 
@@ -86,15 +136,17 @@ namespace opengl3
                 prin.t("_________________");
             }*/
 
+
+
             var r = new Mat();
             var t = new Mat();
             var e = new Mat();
             var f = new Mat();
-            Console.WriteLine(cam2.objps.Length + " " + cam2.corners.Length);
+            Console.WriteLine(cor1.Length + " " + cor2.Length);
             var err = CvInvoke.StereoCalibrate
-                (cam1.objps,
-                cam1.corners,
-                cam2.corners,
+                (objs,
+                cor1,
+                cor2,
                 cam1.cameramatrix,
                 cam1.distortmatrix,
                 cam2.cameramatrix,
@@ -143,6 +195,10 @@ namespace opengl3
                 cam2.cameramatrix, cam2.distortmatrix,
                 cam1.frames[0].im.Size, r, t, r1, r2, p1, p2, q,
                 StereoRectifyType.Default, -1, Size.Empty, ref roi1, ref roi2);
+
+            mx1 = new Mat(); my1 = new Mat(); mx2 = new Mat(); my2 = new Mat();
+            CvInvoke.InitUndistortRectifyMap(cam1.cameramatrix, cam1.distortmatrix, r1, p1, cam1.frames[0].im.Size, DepthType.Cv32F, mx1, my1);
+            CvInvoke.InitUndistortRectifyMap(cam2.cameramatrix, cam2.distortmatrix, r2, p2, cam2.frames[0].im.Size, DepthType.Cv32F, mx2, my2);
             prin.t("p1: ");
             prin.t(p1);
             prin.t("_________");
@@ -153,6 +209,8 @@ namespace opengl3
             this.p1 = p1;
             this.p2 = p2;
         }
+
+
         public void setSGBM_parameters()
         {
             stereosolver = new StereoSGBM(
@@ -206,15 +264,39 @@ namespace opengl3
             return new Mat[] { mat1, mat2 };
         }
 
+        public Mat remapCam(Mat mat,int ind)
+        {
+            var remat = new Mat();
+            if(ind==1)
+            {
+                CvInvoke.Remap(mat, remat, mx1, my1, Inter.Linear);
+            }
+            if(ind == 2)
+            {
+                CvInvoke.Remap(mat, remat, mx2, my2, Inter.Linear);
+            }
+            return remat;
+        }
         public Mat epipolarTest(Mat matL, Mat matR)
         {
+            var mat1 = matL.Clone();
+            var mat2 = matR.Clone();
             if (stereosolver == null)
             {
                 return null;
             }
+            if(cameraCVs!=null)
+            {
+                if(cameraCVs.Length>1)
+                {
+                    CvInvoke.Remap(mat1, mat1, mx1, my1, Inter.Linear);
+                    CvInvoke.Remap(mat2, mat2, mx2, my2, Inter.Linear);
+                }
+                
+            }
 
-            var imL = matL.ToImage<Gray, byte>();
-            var imR = matR.ToImage<Gray, byte>();
+            var imL = mat1.ToImage<Gray, byte>();
+            var imR = mat2.ToImage<Gray, byte>();
 
             var disp = new Mat();
             var depth = new Mat();
@@ -231,7 +313,6 @@ namespace opengl3
                 depth.ConvertTo(depth_norm, DepthType.Cv8U);
                 // prin.t(depth);
                 //
-
                 return depth_norm;
             }
             catch
