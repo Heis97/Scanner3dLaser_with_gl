@@ -246,6 +246,8 @@ namespace opengl3
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
+            this.textBox_shvpPos = new System.Windows.Forms.TextBox();
+            this.but_setShvpPos = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
@@ -1575,6 +1577,8 @@ namespace opengl3
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.but_setShvpPos);
+            this.groupBox1.Controls.Add(this.textBox_shvpPos);
             this.groupBox1.Controls.Add(this.but_open);
             this.groupBox1.Controls.Add(this.but_close);
             this.groupBox1.Controls.Add(this.but_laserOn);
@@ -1585,10 +1589,10 @@ namespace opengl3
             this.groupBox1.Controls.Add(this.textBox_powerLaser);
             this.groupBox1.Location = new System.Drawing.Point(1332, 648);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(547, 148);
+            this.groupBox1.Size = new System.Drawing.Size(547, 235);
             this.groupBox1.TabIndex = 121;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Laser Manual Control";
+            this.groupBox1.Text = "Scaner Manual Control";
             // 
             // but_open
             // 
@@ -1622,7 +1626,7 @@ namespace opengl3
             // 
             // but_laserOff
             // 
-            this.but_laserOff.Location = new System.Drawing.Point(314, 80);
+            this.but_laserOff.Location = new System.Drawing.Point(430, 19);
             this.but_laserOff.Name = "but_laserOff";
             this.but_laserOff.Size = new System.Drawing.Size(110, 55);
             this.but_laserOff.TabIndex = 3;
@@ -1632,7 +1636,7 @@ namespace opengl3
             // 
             // but_setPower
             // 
-            this.but_setPower.Location = new System.Drawing.Point(430, 19);
+            this.but_setPower.Location = new System.Drawing.Point(314, 80);
             this.but_setPower.Name = "but_setPower";
             this.but_setPower.Size = new System.Drawing.Size(110, 55);
             this.but_setPower.TabIndex = 4;
@@ -1663,7 +1667,7 @@ namespace opengl3
             // 
             // textBox_powerLaser
             // 
-            this.textBox_powerLaser.Location = new System.Drawing.Point(430, 94);
+            this.textBox_powerLaser.Location = new System.Drawing.Point(431, 94);
             this.textBox_powerLaser.Name = "textBox_powerLaser";
             this.textBox_powerLaser.Size = new System.Drawing.Size(110, 26);
             this.textBox_powerLaser.TabIndex = 5;
@@ -2558,6 +2562,24 @@ namespace opengl3
             this.windowsTabs.Size = new System.Drawing.Size(1890, 1029);
             this.windowsTabs.TabIndex = 92;
             // 
+            // textBox_shvpPos
+            // 
+            this.textBox_shvpPos.Location = new System.Drawing.Point(430, 159);
+            this.textBox_shvpPos.Name = "textBox_shvpPos";
+            this.textBox_shvpPos.Size = new System.Drawing.Size(110, 26);
+            this.textBox_shvpPos.TabIndex = 8;
+            this.textBox_shvpPos.Text = "0";
+            // 
+            // but_setShvpPos
+            // 
+            this.but_setShvpPos.Location = new System.Drawing.Point(314, 145);
+            this.but_setShvpPos.Name = "but_setShvpPos";
+            this.but_setShvpPos.Size = new System.Drawing.Size(110, 55);
+            this.but_setShvpPos.TabIndex = 9;
+            this.but_setShvpPos.Text = "Установить положение";
+            this.but_setShvpPos.UseVisualStyleBackColor = true;
+            this.but_setShvpPos.Click += new System.EventHandler(this.but_setShvpPos_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -2858,6 +2880,8 @@ namespace opengl3
         private System.Windows.Forms.Button but_open;
         private System.Windows.Forms.TabControl windowsTabs;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button but_setShvpPos;
+        private System.Windows.Forms.TextBox textBox_shvpPos;
     }
 }
 

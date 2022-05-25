@@ -27,6 +27,7 @@ namespace opengl3
                 serialPort.BaudRate = baudrate;
                 serialPort.Open();
                 isConnected = true;
+                Console.WriteLine("open " + port + " " + baudrate);
                 return true;
             }
             catch

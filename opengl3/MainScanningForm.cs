@@ -1887,7 +1887,9 @@ namespace opengl3
         string portArd;
         private void but_find_ports_Click(object sender, EventArgs e)
         {
-             comboBox_portsArd.Items.Clear();
+            //comboBox_portsArd.Items.Add("COM3");
+            comboBox_portsArd.Items.Clear();
+
              // Получаем список COM портов доступных в системе
              string[] portnames = SerialPort.GetPortNames();
              // Проверяем есть ли доступные
@@ -1936,6 +1938,11 @@ namespace opengl3
             portArd = (string)((ComboBox)sender).SelectedItem;
         }
         #endregion
+
+        private void but_setShvpPos_Click(object sender, EventArgs e)
+        {
+            laserLine.setShvpPos(Convert.ToInt32(textBox_shvpPos.Text));
+        }
     }
 
 }

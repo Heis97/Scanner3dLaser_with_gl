@@ -9,8 +9,8 @@ namespace opengl3
     public class LaserLine : DeviceArduino
     {
         string port;
-        int baudrate = 500000;
-        int laser = 1, power = 2;
+        int baudrate = 250000;
+        int laser = 1, power = 2, posit = 3, moveshvp = 4;
         int on = 1, off = 2;
         public LaserLine(string _port)
         {
@@ -36,6 +36,11 @@ namespace opengl3
         public void setPower(int _power)
         {
             send(_power, power);
+        }
+
+        public void setShvpPos(int _pos)
+        {
+            send(_pos, posit);
         }
 
     }
