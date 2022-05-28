@@ -21,21 +21,34 @@ namespace opengl3
             var points_im = Detection.detectLine(mat);
             var points_cam = fromLines(points_im, cameraCV, laserSurface);
             cameraCV.compPos(mat, PatternType.Chess);
-            points3d_cur = camToScene(points_cam, cameraCV);
+            points3d_cur = camToScene(points_cam, cameraCV.matrixSC);
             var ps_list = points3d.ToList();
             ps_list.AddRange(points3d_cur);
             points3d = ps_list.ToArray();
             return true;
         }
 
-        static Point3d_GL[] camToScene(Point3d_GL[] points_cam, CameraCV cameraCV)
+        public bool addPointsLin(Mat mat,double LinPos, CameraCV cameraCV, LaserSurface laserSurface,LinearAxis linearAxis )
         {
+            //var points_im = Detection.detectLine(cameraCV.undist(mat));
+            var points_im = Detection.detectLine(mat);
+            var points_cam = fromLines(points_im, cameraCV, laserSurface);
+            var matrixSC = linearAxis.getMatrixCamera(LinPos);
+            points3d_cur = camToScene(points_cam, matrixSC);
+            var ps_list = points3d.ToList();
+            ps_list.AddRange(points3d_cur);
+            points3d = ps_list.ToArray();
+            return true;
+        }
 
-            var matr = cameraCV.matrixCS;
+
+
+        static Point3d_GL[] camToScene(Point3d_GL[] points_cam, Matrix<double> MatrixSC)
+        {
             var points3d = new Point3d_GL[points_cam.Length];
             for (int i = 0; i < points3d.Length; i++)
             {
-                points3d[i] = matr * points_cam[i];
+                points3d[i] = MatrixSC * points_cam[i];
             }
             return points3d;
         }

@@ -16,12 +16,15 @@ namespace opengl3
         LaserSurface laserSurface;
         PointCloud pointCloud;
         CameraCV cameraCV;
+        LinearAxis linearAxis;
 
         public Scanner(CameraCV cam)
         {
             cameraCV = cam;
             laserSurface = new LaserSurface();
             pointCloud = new PointCloud();
+            linearAxis = new LinearAxis();
+
         }
 
         public bool calibrateLaser(Mat[] mats,PatternType patternType,GraphicGL graphicGL = null)
@@ -29,12 +32,33 @@ namespace opengl3
             return laserSurface.calibrate(mats, cameraCV, patternType, graphicGL);
         }
 
-        public bool addPoints(Mat mat)
+        public bool calibrateLinear(Mat[] mats, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
         {
-
-            return pointCloud.addPoints(mat, cameraCV, laserSurface);
+            return linearAxis.calibrate(mats, positions, cameraCV, patternType, graphicGL);
         }
 
+        public bool addPoints(Mat mat)
+        {
+            return pointCloud.addPoints(mat, cameraCV, laserSurface);
+        }
+        public bool addPointsLin(Mat mat, double linPos)
+        {
+            return pointCloud.addPointsLin(mat, linPos,  cameraCV, laserSurface,linearAxis);
+        }
+
+        public bool addPointsLin(Mat[] mats, double[] linPos)
+        {
+            bool ret = false;
+            if(mats.Length!=linPos.Length)
+            {
+                return false;
+            }
+            for(int i=0; i<mats.Length;i++)
+            {
+                ret = addPointsLin(mats[i],linPos[i]) ;
+            }
+            return ret;
+        }
         public bool addPoints(Mat[] mats)
         {
             bool ret = false;

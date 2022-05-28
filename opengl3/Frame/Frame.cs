@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace opengl3
 {
 
-    public enum FrameType { Pos, LasRob, Test, MarkBoard, Pattern,LasHand, Undist }
+    public enum FrameType { Pos, LasRob, Test, MarkBoard, Pattern,LasHand, Undist ,LasLin }
 
     public class Frame
     {
@@ -25,6 +25,7 @@ namespace opengl3
         public PatternType patternType;
         public Camera camera;
         public double size_mark;
+        public double linPos;
         public DateTime dateTime;
         public bool stereo = false;
         public Frame(Mat _im, Point3d_GL _pos_cam, Point3d_GL _pos_rob, string _name, PointF[] _points)
@@ -79,6 +80,10 @@ namespace opengl3
             name = _name;
             size = _im.Size;
             frameType = _frameType;
+            if(frameType == FrameType.LasLin)
+            {
+                linPos = posLinFromName(name);
+            }
             patternType = _patternType;
         }
         public Frame(Mat _im, Mat _im2, string _name, FrameType _frameType)
@@ -101,9 +106,44 @@ namespace opengl3
             }
             return mats;
         }
+
+        static public double[] getLinPos(Frame[] frames)
+        {
+            
+            var linpos = new double[frames.Length];
+            for (int i = 0; i < linpos.Length; i++)
+            {
+                if (frames[i].frameType == FrameType.LasLin)
+                {
+                    linpos[i] = frames[i].linPos;
+                }                
+            }
+            return linpos;
+        }
         override public string ToString()
         {
             return name;
+        }
+
+        static double posLinFromName(string name)
+        {
+            var names = name.Split('.');
+            if (names[0].Contains('_'))
+            {
+                var nms = names[0].Split('_');
+                names[0] = nms[nms.Length - 1];
+            }
+            double val = 0;
+            try
+            {
+                val = Convert.ToDouble(names[0]);
+            }
+            catch
+            {
+
+            }
+            Console.WriteLine(val);
+            return val;
         }
     }
 

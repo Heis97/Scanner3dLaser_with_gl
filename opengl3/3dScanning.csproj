@@ -136,6 +136,7 @@
     <Compile Include="Geometry\Line3d_GL.cs" />
     <Compile Include="ScannerHandle\LaserSurface.cs" />
     <Compile Include="ScannerHandle\Detection.cs" />
+    <Compile Include="ScannerHandle\LinearAxis.cs" />
     <Compile Include="ScannerHandle\PointCloud.cs" />
     <Compile Include="ScannerHandle\Scanner.cs" />
     <Compile Include="ScannerRobot\ContourAnalyse.cs" />
