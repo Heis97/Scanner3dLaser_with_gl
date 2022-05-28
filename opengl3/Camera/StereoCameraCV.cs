@@ -298,6 +298,8 @@ namespace opengl3
             var imL = mat1.ToImage<Gray, byte>();
             var imR = mat2.ToImage<Gray, byte>();
 
+            mat1.Dispose();
+            mat2.Dispose();
             var disp = new Mat();
             var depth = new Mat();
             var depth_norm = new Mat();
@@ -308,9 +310,11 @@ namespace opengl3
                 disp += 1;
                 disp /= 16;
                 depth = 1000 / disp;
-
+                disp.Dispose();
                 // CvInvoke.Normalize(depth, depth_norm, 255, 0);
                 depth.ConvertTo(depth_norm, DepthType.Cv8U);
+                depth.Dispose();
+                GC.Collect();
                 // prin.t(depth);
                 //
                 return depth_norm;

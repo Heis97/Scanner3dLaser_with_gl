@@ -29,6 +29,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        ImageBox[] imb_base = null;
         FrameType imProcType = FrameType.Test;
         LaserLine laserLine;
         Point cam_calib_p1 = new Point(0, 0);
@@ -138,6 +139,7 @@ namespace opengl3
 
             patt = UtilOpenCV.generateImage_chessboard_circle(7, 6, 220);
             #endregion
+            imb_base = new ImageBox[] { imBox_base_1, imBox_base_2 };
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
             red_c = 252;
@@ -211,6 +213,43 @@ namespace opengl3
                 Console.WriteLine("CalibLas FALSE");
             }
         }
+
+        #region laserScanner
+        public void startScanLaser()
+        {
+            try
+            {
+                Thread robot_thread = new Thread(scan_resLaser);
+                robot_thread.Start(con1);
+            }
+            catch
+            {
+            }
+        }
+        private void scan_resLaser(object obj)
+        {
+            int counts = Convert.ToInt32(boxN.Text);
+
+            string folder_scan = box_scanFolder.Text;
+            var p1_cur_scan = robFrameFromTextBox(nameX, nameY, nameZ, nameA, nameB, nameC);
+            var p2_cur_scan = robFrameFromTextBox(nameX2, nameY2, nameZ2, nameA, nameB, nameC);
+            float x = (float)p1_cur_scan.x;
+
+            var delx = (float)(p2_cur_scan.x - p1_cur_scan.x) / (float)counts;
+
+            for (int i = 0; i < counts; i++)
+            {
+
+                makePhotoLaser(
+                    new float[] { x },
+                    new string[] { "cam1\\" + folder_scan, "cam2\\" + folder_scan },
+                    new ImageBox[] { imageBox1, imageBox2 }
+                    );
+                x += delx;
+            }
+
+        }
+        #endregion
 
         #region robot
         public void startScan(object sender, EventArgs e)
@@ -980,6 +1019,34 @@ namespace opengl3
             }
 
         }
+        void initLaserFast()
+        {
+            find_ports();
+            Thread.Sleep(100);
+            laserLine = new LaserLine(portArd);
+        }
+        void makePhotoLaser(float[] pos, string[] folders, ImageBox[] imageBoxes)
+        {
+            if(laserLine==null)
+            {
+                initLaserFast();
+                Thread.Sleep(200);
+                laserLine.laserOn();
+            }
+            laserLine?.setShvpPos((int)pos[0]);
+            Console.WriteLine("cur_pos: "+(int)pos[0]);
+            Thread.Sleep(200);
+            if (folders.Length == imageBoxes.Length)
+            {
+                for (int i = 0; i < folders.Length; i++)
+                {
+
+                    UtilOpenCV.saveImage(imageBoxes[i], folders[i], pos[0] + ".png");
+                }
+            }
+
+
+        }
 
         void makePhoto(float[] pos, int count, string[] folders, ImageBox[] imageBoxes, TCPclient con)
         {
@@ -1343,7 +1410,7 @@ namespace opengl3
                     cap.Retrieve(mat_global[0]);
                     imageBox1.Image = mat_global[0];
                     imBox_input_1.Image = mat_global[0];
-                    imBox_base_1.Image = imProcess(mat_global[0],1);
+                    imProcess(mat_global[0],1);
 
                 }
                 else if ((camera_ind.Count > 1) && ((int)cap.Ptr == camera_ind[1]))
@@ -1352,29 +1419,28 @@ namespace opengl3
                     imBox_base.Image = stereoProc(mat_global[0], mat_global[1]);
                     imageBox2.Image = mat_global[1];
                     imBox_input_2.Image = mat_global[1];
-                    imBox_base_2.Image = imProcess(mat_global[1],2);
+                    imProcess(mat_global[1],2);
                 }
             }
         }
 
-        Mat imProcess(Mat mat,int ind)
+        void imProcess(Mat mat,int ind)
         {
-            var mat_r = new Mat();
+
             switch (imProcType)
             {
                 case FrameType.Test:
-                    mat_r = mat;
+                    imb_base[ind-1].Image = mat;
                     break;
                 case FrameType.MarkBoard:
-                    mat_r = UtilOpenCV.drawChessboard(mat, new Size(6, 7),false,false,CalibCbType.FastCheck);
+                    imb_base[ind - 1].Image = UtilOpenCV.drawChessboard(mat, new Size(6, 7),false,false,CalibCbType.FastCheck);
                     break;
                 case FrameType.Undist:
-                    mat_r = stereocam.remapCam(mat, ind);
+                    imb_base[ind - 1].Image = stereocam.remapCam(mat, ind);
                     break;
                 default:
                     break;
             }
-            return mat_r;
         }
         Mat stereoProc(Mat mat1, Mat mat2)
         {
@@ -1918,32 +1984,37 @@ namespace opengl3
 
         #region laser_but
         string portArd;
-        private void but_find_ports_Click(object sender, EventArgs e)
+
+        void find_ports()
         {
             //comboBox_portsArd.Items.Add("COM3");
             comboBox_portsArd.Items.Clear();
 
-             // Получаем список COM портов доступных в системе
-             string[] portnames = SerialPort.GetPortNames();
-             // Проверяем есть ли доступные
-             if (portnames.Length == 0)
-             {
-                 MessageBox.Show("COM PORT not found");
-             }
-             foreach (string portName in portnames)
-             {
+            // Получаем список COM портов доступных в системе
+            string[] portnames = SerialPort.GetPortNames();
+            // Проверяем есть ли доступные
+            if (portnames.Length == 0)
+            {
+                MessageBox.Show("COM PORT not found");
+            }
+            foreach (string portName in portnames)
+            {
                 //добавляем доступные COM порты в список           
                 comboBox_portsArd.Items.Add(portName);
-                 //Console.WriteLine(portnames.Length);
-                 if (portnames[0] != null)
-                 {
+                //Console.WriteLine(portnames.Length);
+                if (portnames[0] != null)
+                {
                     comboBox_portsArd.SelectedItem = portnames[0];
-                 }
-             }
+                }
+            }
+        }
+        private void but_find_ports_Click(object sender, EventArgs e)
+        {
+            find_ports();
         }
         private void but_close_Click(object sender, EventArgs e)
         {
-            laserLine.connectStop();
+            laserLine?.connectStop();
         }
 
         private void but_open_Click(object sender, EventArgs e)
@@ -1953,17 +2024,17 @@ namespace opengl3
 
         private void but_laserOn_Click(object sender, EventArgs e)
         {
-            laserLine.laserOn();
+            laserLine?.laserOn();
         }
 
         private void but_laserOff_Click(object sender, EventArgs e)
         {
-            laserLine.laserOff();
+            laserLine?.laserOff();
         }
 
         private void but_setPower_Click(object sender, EventArgs e)
         {
-            laserLine.setPower(Convert.ToInt32(textBox_powerLaser.Text));
+            laserLine?.setPower(Convert.ToInt32(textBox_powerLaser.Text));
         }
 
         private void comboBox_portsArd_SelectedIndexChanged(object sender, EventArgs e)
@@ -1974,7 +2045,7 @@ namespace opengl3
 
         private void but_setShvpPos_Click(object sender, EventArgs e)
         {
-            laserLine.setShvpPos(Convert.ToInt32(textBox_shvpPos.Text));
+            laserLine?.setShvpPos(Convert.ToInt32(textBox_shvpPos.Text));
         }
 
         private void combo_improc_SelectedIndexChanged(object sender, EventArgs e)
@@ -1991,6 +2062,11 @@ namespace opengl3
             {
                 imProcType = FrameType.Test;
             }
+        }
+
+        private void but_scan_start_laser_Click(object sender, EventArgs e)
+        {
+            startScanLaser();
         }
     }
 
