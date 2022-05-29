@@ -51,7 +51,12 @@ namespace opengl3
             p.exist = false;
             return p;
         }
-
+        public PointF Clone()
+        {
+            var p = new PointF(X, Y);
+            p.exist = exist;
+            return p;
+        }
         public void normalize()
         {
             var n = (float)Math.Sqrt(X * X + Y * Y);

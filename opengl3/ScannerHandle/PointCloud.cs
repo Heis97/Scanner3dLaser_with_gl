@@ -10,10 +10,13 @@ namespace opengl3
     public class PointCloud
     {
         public Point3d_GL[] points3d;
+        public List<Point3d_GL[]> points3d_lines;
         public Point3d_GL[] points3d_cur;
+
         public PointCloud()
         {
             points3d = new Point3d_GL[0];
+            points3d_lines = new  List<Point3d_GL[]>();
         }
         public bool addPoints(Mat mat, CameraCV cameraCV,LaserSurface laserSurface)
         {
@@ -24,6 +27,7 @@ namespace opengl3
             points3d_cur = camToScene(points_cam, cameraCV.matrixSC);
             var ps_list = points3d.ToList();
             ps_list.AddRange(points3d_cur);
+            points3d_lines.Add(points3d_cur);
             points3d = ps_list.ToArray();
             return true;
         }
@@ -37,6 +41,7 @@ namespace opengl3
             points3d_cur = camToScene(points_cam, matrixSC);
             var ps_list = points3d.ToList();
             ps_list.AddRange(points3d_cur);
+            points3d_lines.Add(points3d_cur);
             points3d = ps_list.ToArray();
             return true;
         }

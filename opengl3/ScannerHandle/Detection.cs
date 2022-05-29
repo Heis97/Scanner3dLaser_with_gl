@@ -21,7 +21,7 @@ namespace opengl3
             for(int i =0;i < data.GetLength(1);i++)
             {
                 //Console.WriteLine("_________________________________________________");
-                float br_max = -512;
+                float br_max = 512;
                 int j_max = 0;
                 for (int j = 0; j < data.GetLength(0); j++)
                 {
@@ -67,7 +67,9 @@ namespace opengl3
                     ps[i] = PointF.notExistP();
                 }
             }
-            return ps;
+            var ps_med = medianFilter(ps);
+
+            return ps_med;
         }
 
         static float centerOfMass(int[,] col)
@@ -99,6 +101,40 @@ namespace opengl3
                 }
             }
             return (float)col[i_max, 0];
+        }
+
+        static PointF[] medianFilter(PointF[] ps1, float delt = 5, int wind = 10)
+        {
+            var ps1L = ps1.ToList();
+            for(int i= wind; i< ps1.Length - wind; i++)
+            {
+                if( 
+                    Math.Abs
+                    (
+                        ps1[i].Y - averageYps(ps1L.GetRange(i-wind,2* wind).ToArray())
+                        )>delt
+                    )
+                    
+                {
+                    if(i>0)
+                    {
+
+                        ps1[i] = ps1[i - 1].Clone();
+                    }
+                    
+                }
+            }
+            return ps1;
+        }
+
+        static float averageYps(PointF[] ps1)
+        {
+            float avY = 0;
+            for (int i = 0; i < ps1.Length; i++)
+            {
+                avY += ps1[i].Y;
+            }
+            return avY / ps1.Length;
         }
 
     }

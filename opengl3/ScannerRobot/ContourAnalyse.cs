@@ -263,7 +263,7 @@ namespace opengl3
                 var strk_1 = connectPoints(strk.ToArray());
                 var gauss = gauss2D(strk_1, 8);
 
-                
+                box.Image = UtilMatr.doubleToMat(gauss, im.Size);
                 //Console.WriteLine("STRK");
                 return gauss;
             }
@@ -293,7 +293,7 @@ namespace opengl3
                 // imageBox4.Image = UtilMatr.doubleToMat(strk_1, im.Size);
                 var gauss = gauss2D(strk_1, 10);
                 //imageBox5.Image = UtilMatr.doubleToMat(gauss, im.Size);
-                //box.Image = (Mat)box.Image + doubleToMat(gauss, im.Size);
+                box.Image = UtilMatr.doubleToMat(gauss, im.Size);
                 return gauss;
             }
 

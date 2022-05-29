@@ -217,10 +217,10 @@ namespace opengl3
         void loadScannerLin()
         {
             var cam_cal_paths = new string[] { @"cam1\calib_1_2505" };//, @"cam1\photo_10"
-            var scan_path = @"cam1\test_2605_04_1";
+            var scan_path = @"cam1\sca_2805_1a";
             //var scan_path = @"cam1\las_cal_2002_1\test";
-            var las_cal_path = @"cam1\cal_las_2805";
-            var lin_cal_path = @"cam1\test_2605_04\LinCal";
+            var las_cal_path = @"cam1\lascal_2805_2\cal_1";
+            var lin_cal_path = @"cam1\lical_2805_1a\1";
 
             var frms_lin_cal = FrameLoader.loadImages_diff(lin_cal_path, FrameType.LasLin, PatternType.Chess);
             var frms_las_cal = FrameLoader.loadImages_diff(las_cal_path, FrameType.LasLin, PatternType.Chess);
@@ -244,8 +244,11 @@ namespace opengl3
                     scanner1.addPointsLin(Frame.getMats(frms_scan), Frame.getLinPos(frms_scan));
                     var p3d_scan_sc = scanner1.getPointsScene();
                     var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
-                    GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, 0.9f);
+                    
+                    GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, 0.1f,0.9f);
 
+                    var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesScene());
+                    GL1.addMeshWithoutNorm(mesh_scan_stl, PrimitiveType.Triangles, 0.9f);
                 }
                 else
                 {
@@ -654,13 +657,13 @@ namespace opengl3
                 }
                 else if (fr.frameType == FrameType.LasRob || fr.frameType == FrameType.LasLin)
                 {
-                    //ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
+                    ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
                     var ps = Detection.detectLine(fr.im);
 
                     var mat1 = new Mat(fr.im, new Rectangle(0, 0, fr.im.Width, fr.im.Height));
                     UtilOpenCV.drawPointsF(mat1, ps, 0, 255, 0);
 
-                    imageBox1.Image = mat1;
+                    //imageBox1.Image = mat1;
 
                 }
 
@@ -1703,8 +1706,40 @@ namespace opengl3
             }
             return vertex_buffer_data;
         }
-        
 
+        float[] meshFromPoints(Point3d_GL[][] points3d)
+        {
+            var mesh = new List<float>();
+            for (int i = 0; i < points3d.Length - 1; i++)
+            {
+                //Console.WriteLine(frames[0].points.Length - 2);
+                for (int j = 0; j < points3d[0].Length - 1; j++)
+                {
+                    //Console.WriteLine(i + " " + j);
+                    var p1 = points3d[i][j];
+                    var p2 = points3d[i + 1][j];
+                    var p3 = points3d[i][j + 1];
+                    if (p1.exist & p2.exist & p3.exist)
+                    {
+                        mesh.Add((float)p1.x); mesh.Add((float)p1.y); mesh.Add((float)p1.z);
+                        mesh.Add((float)p2.x); mesh.Add((float)p2.y); mesh.Add((float)p2.z);
+                        mesh.Add((float)p3.x); mesh.Add((float)p3.y); mesh.Add((float)p3.z);
+                    }
+
+                    p1 = points3d[i + 1][j];
+                    p2 = points3d[i + 1][j + 1];
+                    p3 = points3d[i][j + 1];
+                    if (p1.exist & p2.exist & p3.exist)
+                    {
+                        mesh.Add((float)p1.x); mesh.Add((float)p1.y); mesh.Add((float)p1.z);
+                        mesh.Add((float)p2.x); mesh.Add((float)p2.y); mesh.Add((float)p2.z);
+                        mesh.Add((float)p3.x); mesh.Add((float)p3.y); mesh.Add((float)p3.z);
+                    }
+
+                }
+            }
+            return mesh.ToArray();
+        }
         void generateImage3D(int n, float k, float side)
         {
            
