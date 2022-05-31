@@ -53,9 +53,7 @@ namespace opengl3
         }
         public PointF Clone()
         {
-            var p = new PointF(X, Y);
-            p.exist = exist;
-            return p;
+            return new PointF(X, Y);
         }
         public void normalize()
         {

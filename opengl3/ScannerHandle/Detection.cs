@@ -14,31 +14,52 @@ namespace opengl3
 {
     public static class Detection
     {
-        public static PointF[] detectLine(Mat mat, int wind=20)
+        public static PointF[] detectLine(Mat mat, int wind=12)
         {
             var ps = new PointF[mat.Width];
             var data = (byte[,,])mat.GetData();
-            for(int i =0;i < data.GetLength(1);i++)
+            //Console.WriteLine("_________________________________________________");
+            for (int i =0;i < data.GetLength(1);i++)
             {
                 //Console.WriteLine("_________________________________________________");
-                float br_max = 512;
-                int j_max = 0;
-                for (int j = 0; j < data.GetLength(0); j++)
+                float br_max = -512;
+                float bl_max = -512;
+                int j_max = 10;
+                int jr_max = 0;
+                int jl_max = 0;
+                for (int j = 1; j < data.GetLength(0); j++)
                 {
                     //float sum = (float)Math.Max(data[j, i, 2], Math.Max(data[j, i, 1], data[j, i, 0]));
                     float br_cur = -512;
-                    
+                    float bl_cur = -512;
                     //br_cur = (float)data[j, i, 2]  - 0.5f*(float)data[j, i, 1] - 0.5f*(float)data[j, i, 0] ;
-                    br_cur = (float)data[j, i, 2] + (float)data[j, i, 1] + (float)data[j, i, 0];
-                    //if(i>150 && i<160)
-                    //Console.WriteLine(br_max + "| " + data[j, i, 0] + " " + data[j, i, 1] + " " + data[j, i, 2]);
-                    if (br_cur>br_max)
-                    {
-                        
+                    var br_cur_y = (float)data[j, i, 2]/ (float)data[j-1, i, 2];
+                    var br_cur_x = (float)data[j, i, 2] / (float)data[j, i, 1];
+                    br_cur = br_cur_x* br_cur_x + br_cur_y* br_cur_y;
+
+                    var bl_cur_y = (float)data[j-1, i, 2] / (float)data[j, i, 2];
+                    var bl_cur_x = (float)data[j, i, 2] / (float)data[j, i, 1];
+                    bl_cur = bl_cur_x * bl_cur_x + bl_cur_y * bl_cur_y;
+                    //br_cur = (float)data[j, i, 2];
+                    //var br_r = (float)data[j, i, 2];
+                    //if (i== 480)
+                        //Console.WriteLine(br_max + "| " + data[j, i, 0] + " " + data[j, i, 1] + " " + data[j, i, 2]);
+                    if (br_cur>br_max && data[j, i, 2]>220)
+                    {                        
                         br_max = br_cur;
-                        j_max = j;
-                        
+                        jr_max = j; 
                     }
+
+                    if (bl_cur > bl_max && data[j, i, 2] > 220)
+                    {
+                        bl_max = bl_cur;
+                        jl_max = j;
+                    }
+                }
+
+                if( Math.Abs(jl_max - jr_max)<wind)
+                {
+                    j_max = jl_max;
                 }
                 if(j_max!=0)
                 {
@@ -64,12 +85,54 @@ namespace opengl3
                 }
                 else
                 {
+                   ps[i] = PointF.notExistP();
+                }
+            }
+
+            var ps_med = medianFilter(ps);
+
+            return ps;
+        }
+
+        public static PointF[] detectLineSobel(Mat mat, int wind = 12,int thr = 10)
+        {
+            var ps = new PointF[mat.Width];
+            var im1 = mat.ToImage<Gray, Byte>();
+            var bin = new Mat();
+            var sob = new Mat();
+            var gray = im1.Mat;
+            CvInvoke.Sobel(gray, sob, DepthType.Cv8U, 0, 1);
+            //CvInvoke.Threshold(gray, bin, 80, 255, ThresholdType.Binary);
+            var data_sob = (byte[,])sob.GetData();
+            var data = (byte[,])gray.GetData();
+            for (int i = 0; i < data.GetLength(1); i++)
+            {
+                int j_max = 0;
+                for (int j = wind; j < data.GetLength(0)- wind; j++)
+                {                 
+                    if (data_sob[j,i]>50)
+                    {
+                        if(Math.Abs((int)data[j+wind, i]-(int)data[j-wind, i])< thr)
+                        {
+                            j_max = j;
+                        }
+                        
+                    }
+                }
+
+                if (j_max != 0)
+                {
+                    ps[i] = new PointF(i, j_max);
+                }
+                else
+                {
                     ps[i] = PointF.notExistP();
                 }
             }
+
             var ps_med = medianFilter(ps);
 
-            return ps_med;
+            return ps;
         }
 
         static float centerOfMass(int[,] col)
@@ -80,11 +143,11 @@ namespace opengl3
             {
                 mas_sum += col[i,1];
                 masX_sum+= (col[i,1]* col[i, 0]);
-                Console.WriteLine(col[i, 0] + " "+col[i, 1]);
+                //Console.WriteLine(col[i, 0] + " "+col[i, 1]);
             }
             
             var mc = (float)masX_sum / (float)mas_sum;
-            Console.WriteLine(mc+"   _________________");
+            //Console.WriteLine(mc+"   _________________");
             return mc;
         }
 

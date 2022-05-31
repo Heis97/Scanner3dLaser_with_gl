@@ -217,7 +217,7 @@ namespace opengl3
         void loadScannerLin()
         {
             var cam_cal_paths = new string[] { @"cam1\calib_1_2505" };//, @"cam1\photo_10"
-            var scan_path = @"cam1\sca_2805_1a";
+            var scan_path = @"cam1\sca_2805_1a\test";
             //var scan_path = @"cam1\las_cal_2002_1\test";
             var las_cal_path = @"cam1\lascal_2805_2\cal_1";
             var lin_cal_path = @"cam1\lical_2805_1a\1";
@@ -247,8 +247,8 @@ namespace opengl3
                     
                     GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, 0.1f,0.9f);
 
-                    var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesScene());
-                    GL1.addMeshWithoutNorm(mesh_scan_stl, PrimitiveType.Triangles, 0.9f);
+                    //var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesScene());
+                    //GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, 0.9f);
                 }
                 else
                 {
@@ -626,6 +626,13 @@ namespace opengl3
         private void comboImages_SelectionChangeCommitted(object sender, EventArgs e)
         {
             Console.WriteLine(comboImages.SelectedItem);
+            Frame fr2 = null;
+            if(comboImages.SelectedIndex>1)
+            {
+                fr2 = (Frame)comboImages.Items[comboImages.SelectedIndex - 2];
+
+            }
+
             var fr = (Frame)comboImages.SelectedItem;
             Console.WriteLine(fr.frameType);
 
@@ -658,11 +665,33 @@ namespace opengl3
                 else if (fr.frameType == FrameType.LasRob || fr.frameType == FrameType.LasLin)
                 {
                     ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
-                    var ps = Detection.detectLine(fr.im);
+                    var mat1 = fr.im.Clone();
+                    var mat2 = fr.im.Clone();
+                    var mat3 = fr.im.Clone();
+                    var ps = Detection.detectLineSobel(mat2);
 
-                    var mat1 = new Mat(fr.im, new Rectangle(0, 0, fr.im.Width, fr.im.Height));
-                    UtilOpenCV.drawPointsF(mat1, ps, 0, 255, 0);
+                    imageBox1.Image = fr.im;
+                    //CvInvoke.GaussianBlur(mat1, mat1, new Size(3, 3), 0);
+                    var im2 = mat2.ToImage<Gray, Byte>();
 
+                    UtilOpenCV.drawPointsF(mat2, ps, 0, 255, 0);
+                    
+                    var im1 = mat1.ToImage<Gray, Byte>();
+                    
+                    CvInvoke.Sobel(im1, im1, DepthType.Cv8U, 0, 1);
+                    imBox_base_1.Image = im1;
+
+                    var im1_r = im1.Clone();
+                    CvInvoke.Rotate(im1_r, im1_r, RotateFlags.Rotate180);
+                    CvInvoke.Sobel(im1_r, im1_r, DepthType.Cv8U, 0, 1);
+                    CvInvoke.Rotate(im1_r, im1_r, RotateFlags.Rotate180);
+
+                    //CvInvoke.Threshold(im1, im1, 80, 255, ThresholdType.Binary);
+                    imageBox2.Image = im1;
+
+                    
+                    imBox_base_2.Image = im1_r;
+                   //imBox_base.Image = im1_r - im1;
                     //imageBox1.Image = mat1;
 
                 }
@@ -705,7 +734,7 @@ namespace opengl3
             }
 
 
-            imageBox2.Image = fr.im;
+            //imageBox2.Image = fr.im;
         }
         private void but_set_wind_Click(object sender, EventArgs e)
         {

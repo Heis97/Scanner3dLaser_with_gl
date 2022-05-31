@@ -141,6 +141,7 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_scan_start_laser = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.combo_improc = new System.Windows.Forms.ComboBox();
             this.label56 = new System.Windows.Forms.Label();
@@ -237,7 +238,6 @@ namespace opengl3
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_scan_start_laser = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -309,7 +309,7 @@ namespace opengl3
             // comboImages
             // 
             this.comboImages.FormattingEnabled = true;
-            this.comboImages.Location = new System.Drawing.Point(665, 3);
+            this.comboImages.Location = new System.Drawing.Point(646, -2);
             this.comboImages.Name = "comboImages";
             this.comboImages.Size = new System.Drawing.Size(431, 21);
             this.comboImages.TabIndex = 24;
@@ -1551,6 +1551,17 @@ namespace opengl3
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // but_scan_start_laser
+            // 
+            this.but_scan_start_laser.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_start_laser.Location = new System.Drawing.Point(1407, 217);
+            this.but_scan_start_laser.Name = "but_scan_start_laser";
+            this.but_scan_start_laser.Size = new System.Drawing.Size(148, 33);
+            this.but_scan_start_laser.TabIndex = 125;
+            this.but_scan_start_laser.Text = "Start scan Laser";
+            this.but_scan_start_laser.UseVisualStyleBackColor = true;
+            this.but_scan_start_laser.Click += new System.EventHandler(this.but_scan_start_laser_Click);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -2458,17 +2469,6 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
-            // 
-            // but_scan_start_laser
-            // 
-            this.but_scan_start_laser.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_scan_start_laser.Location = new System.Drawing.Point(1407, 217);
-            this.but_scan_start_laser.Name = "but_scan_start_laser";
-            this.but_scan_start_laser.Size = new System.Drawing.Size(148, 33);
-            this.but_scan_start_laser.TabIndex = 125;
-            this.but_scan_start_laser.Text = "Start scan Laser";
-            this.but_scan_start_laser.UseVisualStyleBackColor = true;
-            this.but_scan_start_laser.Click += new System.EventHandler(this.but_scan_start_laser_Click);
             // 
             // MainScanningForm
             // 

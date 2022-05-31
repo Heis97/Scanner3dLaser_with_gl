@@ -32,6 +32,7 @@ namespace opengl3
         }
         public bool calibrate(Mat[] mats,CameraCV cameraCV,PatternType patternType, GraphicGL graphicGL = null)
         {
+            Console.WriteLine("LAS CALIB#######################################");
             var ps1 = points3dInCam(mats[0], cameraCV, patternType, graphicGL);
             var ps2 = points3dInCam(mats[1], cameraCV, patternType, graphicGL);
             if(ps1==null || ps2==null)
