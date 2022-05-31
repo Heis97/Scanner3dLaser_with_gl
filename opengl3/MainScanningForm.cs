@@ -296,6 +296,62 @@ namespace opengl3
             }
 
         }
+
+        void initLaserFast()
+        {
+            find_ports();
+            Thread.Sleep(100);
+            laserLine = new LaserLine(portArd);
+        }
+        void makePhotoLaser(float[] pos, string[] folders, ImageBox[] imageBoxes)
+        {
+            if (laserLine == null)
+            {
+                initLaserFast();
+                Thread.Sleep(200);
+                laserLine.laserOn();
+            }
+            laserLine?.setShvpPos((int)pos[0]);
+            Console.WriteLine("cur_pos: " + (int)pos[0]);
+            Thread.Sleep(200);
+            if (folders.Length == imageBoxes.Length)
+            {
+                for (int i = 0; i < folders.Length; i++)
+                {
+
+                    UtilOpenCV.saveImage(imageBoxes[i], folders[i], pos[0] + ".png");
+                }
+            }
+        }
+
+        void makeDoublePhotoLaser(float[] pos, string[] folders, ImageBox[] imageBoxes)
+        {
+            if (laserLine == null)
+            {
+                initLaserFast();
+                Thread.Sleep(200);
+                laserLine.laserOn();
+            }
+            laserLine?.setShvpPos((int)pos[0]);
+            Console.WriteLine("cur_pos: " + (int)pos[0]);
+            Thread.Sleep(200);
+            if (folders.Length == imageBoxes.Length)
+            {
+                for (int i = 0; i < folders.Length; i++)
+                {
+                    UtilOpenCV.saveImage(imageBoxes[i], folders[i], pos[0] + ".png");
+                }
+            }
+            laserLine.laserOff();
+            Thread.Sleep(100);
+            if (folders.Length == imageBoxes.Length)
+            {
+                for (int i = 0; i < folders.Length; i++)
+                {
+                    UtilOpenCV.saveImage(imageBoxes[i], folders[i], pos[0] + ".png");
+                }
+            }
+        }
         #endregion
 
         #region robot
@@ -1095,34 +1151,7 @@ namespace opengl3
             }
 
         }
-        void initLaserFast()
-        {
-            find_ports();
-            Thread.Sleep(100);
-            laserLine = new LaserLine(portArd);
-        }
-        void makePhotoLaser(float[] pos, string[] folders, ImageBox[] imageBoxes)
-        {
-            if(laserLine==null)
-            {
-                initLaserFast();
-                Thread.Sleep(200);
-                laserLine.laserOn();
-            }
-            laserLine?.setShvpPos((int)pos[0]);
-            Console.WriteLine("cur_pos: "+(int)pos[0]);
-            Thread.Sleep(200);
-            if (folders.Length == imageBoxes.Length)
-            {
-                for (int i = 0; i < folders.Length; i++)
-                {
-
-                    UtilOpenCV.saveImage(imageBoxes[i], folders[i], pos[0] + ".png");
-                }
-            }
-
-
-        }
+        
 
         void makePhoto(float[] pos, int count, string[] folders, ImageBox[] imageBoxes, TCPclient con)
         {

@@ -93,6 +93,11 @@ namespace opengl3
 
             return ps;
         }
+        public static Mat diffImages(Mat mat_def, Mat mat_las)
+        {
+            return mat_las - mat_def;
+        }
+
 
         public static PointF[] detectLineSobel(Mat mat, int wind = 12,int thr = 10)
         {
