@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace opengl3
 {
 
-    public enum FrameType { Pos, LasRob, Test, MarkBoard, Pattern,LasHand, Undist ,LasLin }
+    public enum FrameType { Pos, LasRob, Test, MarkBoard, Pattern,LasHand, Undist ,LasLin,LasDif }
 
     public class Frame
     {

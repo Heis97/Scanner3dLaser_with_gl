@@ -218,6 +218,7 @@ namespace opengl3
         {
             var cam_cal_paths = new string[] { @"cam1\calib_1_2505" };//, @"cam1\photo_10"
             var scan_path = @"cam1\sca_2805_1a\test";
+            var scand_path = @"cam2\test0106d\dif";
             //var scan_path = @"cam1\las_cal_2002_1\test";
             var las_cal_path = @"cam1\lascal_2805_2\cal_1";
             var lin_cal_path = @"cam1\lical_2805_1a\1";
@@ -226,10 +227,13 @@ namespace opengl3
             var frms_las_cal = FrameLoader.loadImages_diff(las_cal_path, FrameType.LasLin, PatternType.Chess);
             var frms_scan = FrameLoader.loadImages_diff(scan_path, FrameType.LasLin, PatternType.Chess);
 
+            var frms_scan_diff = FrameLoader.loadImages_diff(scand_path, FrameType.LasDif, PatternType.Chess);
+
             var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.MarkBoard);
             var cam1 = new CameraCV(frms, new Size(6, 7), markSize, null);
 
             cameraCVcommon = cam1;
+            comboImages.Items.AddRange(frms_scan_diff);
             comboImages.Items.AddRange(frms_las_cal);
             comboImages.Items.AddRange(frms_scan);
             //comboImages.Items.AddRange(frms);
@@ -267,7 +271,7 @@ namespace opengl3
             try
             {
                 Thread robot_thread = new Thread(scan_resLaser);
-                robot_thread.Start(con1);
+                robot_thread.Start();
             }
             catch
             {
@@ -286,8 +290,7 @@ namespace opengl3
 
             for (int i = 0; i < counts; i++)
             {
-
-                makePhotoLaser(
+                makeDoublePhotoLaser(
                     new float[] { x },
                     new string[] { "cam1\\" + folder_scan, "cam2\\" + folder_scan },
                     new ImageBox[] { imageBox1, imageBox2 }
@@ -333,24 +336,41 @@ namespace opengl3
                 laserLine.laserOn();
             }
             laserLine?.setShvpPos((int)pos[0]);
-            Console.WriteLine("cur_pos: " + (int)pos[0]);
-            Thread.Sleep(200);
+            //Console.WriteLine("cur_pos: " + (int)pos[0]);
+            laserLine.laserOn();
+            Thread.Sleep(500);
+            var mats_def = new Mat[folders.Length];
+            var mats_las = new Mat[folders.Length];
+            var mats_dif = new Mat[folders.Length];
             if (folders.Length == imageBoxes.Length)
             {
                 for (int i = 0; i < folders.Length; i++)
                 {
-                    UtilOpenCV.saveImage(imageBoxes[i], folders[i], pos[0] + ".png");
+                    //UtilOpenCV.saveImage(imageBoxes[i], folders[i], pos[0] + ".png");
+                    mats_def[i] = ((Mat)imageBoxes[i].Image).Clone();
                 }
             }
             laserLine.laserOff();
-            Thread.Sleep(100);
-            if (folders.Length == imageBoxes.Length)
+            Thread.Sleep(500);
+
+            for (int i = 0; i < folders.Length; i++)
             {
-                for (int i = 0; i < folders.Length; i++)
+                mats_las[i] = ((Mat)imageBoxes[i].Image).Clone();
+                
+                if (mats_def[i] !=null && mats_las[i] != null)
                 {
-                    UtilOpenCV.saveImage(imageBoxes[i], folders[i], pos[0] + ".png");
+                    mats_dif[i] = (mats_def[i] - mats_las[i]).Clone();
+                    Directory.CreateDirectory(folders[i] + "\\def");
+                    Directory.CreateDirectory(folders[i] + "\\las");
+                    Directory.CreateDirectory(folders[i] + "\\dif");
+                    
+                    (mats_def[i]?.ToImage<Bgr, Byte>()).Save((folders[i] + "\\def") + "\\" + Convert.ToString(pos[0]) + ".png");
+                    (mats_las[i]?.ToImage<Bgr, Byte>()).Save((folders[i] + "\\las") + "\\" + Convert.ToString(pos[0]) + ".png");
+                    (mats_dif[i]?.ToImage<Bgr, Byte>()).Save((folders[i] + "\\dif") + "\\" + Convert.ToString(pos[0]) + ".png");
                 }
+                
             }
+            GC.Collect();
         }
         #endregion
 
@@ -750,6 +770,21 @@ namespace opengl3
                    //imBox_base.Image = im1_r - im1;
                     //imageBox1.Image = mat1;
 
+                }
+
+                else if (fr.frameType == FrameType.LasDif)
+                {
+                    var mat1 = fr.im.Clone();
+                    var mat2 = fr.im.Clone();
+                    var rgb = mat1.Split();
+                    var im1 = (rgb[0] + rgb[1] + rgb[2]).ToImage<Gray, Byte>();
+                    var im2 = im1.Clone();
+                
+                    var ps = Detection.detectLineDiff(mat2,12,imBox_base);
+                    UtilOpenCV.drawPointsF(mat2, ps, 0, 255, 0);
+                    //imBox_base.Image = im2;
+                    imBox_base_1.Image = im1;
+                    imBox_base_2.Image = mat2;
                 }
 
                 else if (fr.frameType == FrameType.LasHand)
