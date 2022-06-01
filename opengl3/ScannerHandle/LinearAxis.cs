@@ -70,7 +70,9 @@ namespace opengl3
 
         void compOneMatrix()
         {
+            
             oneMatrix = (MatrixesCamera[MatrixesCamera.Count - 1] - MatrixesCamera[0]) / (PositionsAxis[PositionsAxis.Count - 1] - PositionsAxis[0]);
+            prin.t(oneMatrix);
         }
 
         public Matrix<double> getMatrixCamera(double PositionLinear)

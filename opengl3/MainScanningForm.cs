@@ -217,15 +217,15 @@ namespace opengl3
         void loadScannerLin()
         {
             var cam_cal_paths = new string[] { @"cam1\calib_1_2505" };//, @"cam1\photo_10"
-            var scan_path = @"cam1\sca_2805_1a\test";
-            var scand_path = @"cam2\test0106d\dif";
+           // var scan_path = @"cam1\scan_0106_1\def";
+            var scand_path = @"cam1\scan_0106_1\dif";
             //var scan_path = @"cam1\las_cal_2002_1\test";
-            var las_cal_path = @"cam1\lascal_2805_2\cal_1";
-            var lin_cal_path = @"cam1\lical_2805_1a\1";
+            var las_cal_path = @"cam1\las_cal_0106_1\1";
+            var lin_cal_path = @"cam1\lin_cal_0106_1";
 
             var frms_lin_cal = FrameLoader.loadImages_diff(lin_cal_path, FrameType.LasLin, PatternType.Chess);
             var frms_las_cal = FrameLoader.loadImages_diff(las_cal_path, FrameType.LasLin, PatternType.Chess);
-            var frms_scan = FrameLoader.loadImages_diff(scan_path, FrameType.LasLin, PatternType.Chess);
+            //var frms_scan = FrameLoader.loadImages_diff(scan_path, FrameType.LasLin, PatternType.Chess);
 
             var frms_scan_diff = FrameLoader.loadImages_diff(scand_path, FrameType.LasDif, PatternType.Chess);
 
@@ -233,9 +233,10 @@ namespace opengl3
             var cam1 = new CameraCV(frms, new Size(6, 7), markSize, null);
 
             cameraCVcommon = cam1;
+            comboImages.Items.AddRange(frms_lin_cal);
             comboImages.Items.AddRange(frms_scan_diff);
             comboImages.Items.AddRange(frms_las_cal);
-            comboImages.Items.AddRange(frms_scan);
+            //comboImages.Items.AddRange(frms_scan);
             //comboImages.Items.AddRange(frms);
 
             var scanner1 = new Scanner(cam1);
@@ -245,14 +246,22 @@ namespace opengl3
                 if (scanner1.calibrateLinear(Frame.getMats(frms_lin_cal), Frame.getLinPos(frms_lin_cal), PatternType.Chess, GL1))
                 {
                     Console.WriteLine("CalibLin Done________________________");
-                    scanner1.addPointsLin(Frame.getMats(frms_scan), Frame.getLinPos(frms_scan));
-                    var p3d_scan_sc = scanner1.getPointsScene();
-                    var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
-                    
-                    GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, 0.1f,0.9f);
+                    var lins = scanner1.addPointsLin(Frame.getMats(frms_scan_diff), Frame.getLinPos(frms_scan_diff));
+                    if (lins > 0)
+                    {
+                        Console.WriteLine("Load Points Done__" + lins+"_lins__________________");
+                        var p3d_scan_sc = scanner1.getPointsScene();
+                        var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
 
-                    //var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesScene());
-                    //GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, 0.9f);
+                        GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, 0.1f, 0.9f);
+
+                        //var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesScene());
+                        //GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, 0.9f);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Load Points FALSE________________");
+                    }
                 }
                 else
                 {
@@ -740,13 +749,13 @@ namespace opengl3
                 }
                 else if (fr.frameType == FrameType.LasRob || fr.frameType == FrameType.LasLin)
                 {
-                    ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
+                  //ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
                     var mat1 = fr.im.Clone();
                     var mat2 = fr.im.Clone();
                     var mat3 = fr.im.Clone();
-                    var ps = Detection.detectLineSobel(mat2);
-
-                    imageBox1.Image = fr.im;
+                    var rgb = mat1.Split();
+                    var ps = Detection.detectLineDiff(mat2,5);
+                    mat3= UtilOpenCV.drawChessboard(mat3, new Size(6, 7));
                     //CvInvoke.GaussianBlur(mat1, mat1, new Size(3, 3), 0);
                     var im2 = mat2.ToImage<Gray, Byte>();
 
@@ -755,6 +764,8 @@ namespace opengl3
                     var im1 = mat1.ToImage<Gray, Byte>();
                     
                     CvInvoke.Sobel(im1, im1, DepthType.Cv8U, 0, 1);
+
+                    im1 = (0.3*rgb[0] + 0.3 * rgb[1] + 0.3 * rgb[2]).ToImage<Gray, Byte>();
                     imBox_base_1.Image = im1;
 
                     var im1_r = im1.Clone();
@@ -763,9 +774,10 @@ namespace opengl3
                     CvInvoke.Rotate(im1_r, im1_r, RotateFlags.Rotate180);
 
                     //CvInvoke.Threshold(im1, im1, 80, 255, ThresholdType.Binary);
-                    imageBox2.Image = im1;
+                    imageBox2.Image = mat2;
 
-                    
+                    imageBox1.Image = fr.im;
+                    imBox_base.Image = mat3;
                     imBox_base_2.Image = im1_r;
                    //imBox_base.Image = im1_r - im1;
                     //imageBox1.Image = mat1;
@@ -781,7 +793,7 @@ namespace opengl3
                     var im2 = im1.Clone();
                 
                     var ps = Detection.detectLineDiff(mat2,12,imBox_base);
-                    UtilOpenCV.drawPointsF(mat2, ps, 0, 255, 0);
+                    UtilOpenCV.drawPointsF(mat2, ps, 0, 255, 0,5);
                     //imBox_base.Image = im2;
                     imBox_base_1.Image = im1;
                     imBox_base_2.Image = mat2;

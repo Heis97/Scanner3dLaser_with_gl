@@ -46,16 +46,19 @@ namespace opengl3
             return pointCloud.addPointsLin(mat, linPos,  cameraCV, laserSurface,linearAxis);
         }
 
-        public bool addPointsLin(Mat[] mats, double[] linPos)
+        public int addPointsLin(Mat[] mats, double[] linPos)
         {
-            bool ret = false;
+            int ret = 0;
             if(mats.Length!=linPos.Length)
             {
-                return false;
+                return 0;
             }
             for(int i=0; i<mats.Length;i++)
             {
-                ret = addPointsLin(mats[i],linPos[i]) ;
+                if(addPointsLin(mats[i],linPos[i]))
+                {
+                    ret++;
+                }
             }
             return ret;
         }

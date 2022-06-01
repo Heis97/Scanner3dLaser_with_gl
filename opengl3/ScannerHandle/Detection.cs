@@ -137,45 +137,53 @@ namespace opengl3
             return ps;
         }
 
-        public static PointF[] detectLineDiff(Mat mat, int wind = 12,ImageBox imageBox = null)
+        public static PointF[] detectLineDiff(Mat mat, int wind = 3,ImageBox imageBox = null)
         {
             var ps = new PointF[mat.Width];
             var rgb = mat.Split();
-            var im1 = (rgb[0]+ rgb[1]+ rgb[2]);
+            var matAll = (0.3*rgb[0]+ 0.3 * rgb[1]+ 0.3 * rgb[2]);
             //CvInvoke.Normalize(im1, im1, 255, 0);
             var bin = new Mat();
             var sob = new Mat();
             var gray = new Mat();
             var erros = new Mat();
             //CvInvoke.Sobel(gray, sob, DepthType.Cv8U, 0, 1);
-            CvInvoke.Threshold(im1, bin, 80, 255, ThresholdType.Binary);
-            Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
-            CvInvoke.MorphologyEx(bin, erros, MorphOp.Erode, kernel5, new Point(-1, -1), 1, BorderType.Constant, new MCvScalar(0));
-            if(imageBox!=null)
+            //CvInvoke.Threshold(matAll, bin, 80, 255, ThresholdType.Binary);
+            //Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
+            //CvInvoke.MorphologyEx(bin, erros, MorphOp.Erode, kernel5, new Point(-1, -1), 1, BorderType.Constant, new MCvScalar(0));
+            if (imageBox!=null)
             {
                 imageBox.Image = erros;
             }
             var data_sob = (byte[,])sob.GetData();
-            var data = (byte[,])erros.GetData();
+            var data = (byte[,])matAll.GetData();
+            var br_max = int.MinValue;
             for (int i = 0; i < data.GetLength(1); i++)
             {
+                br_max = int.MinValue;
                 int j_max = 0;
                 for (int j = wind; j < data.GetLength(0) - wind; j++)
                 {
-                    if (data[j, i] > 150)
+                    int br_cur = 0;
+                    for(int i_w =0; i_w<wind-1; i_w++)
                     {
+                        br_cur += data[j + i_w, i ];
+                    }
+                    if (br_cur > br_max)
+                    {
+                        br_max = br_cur;
                         j_max = j;
                     }
                 }
-
-                if (j_max != 0)
+                ps[i] = new PointF(i, j_max);
+                /*if (j_max != 0)
                 {
                     ps[i] = new PointF(i, j_max);
                 }
                 else
                 {
                     ps[i] = PointF.notExistP();
-                }
+                }*/
             }
 
             var ps_med = medianFilter(ps);

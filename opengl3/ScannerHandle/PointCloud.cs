@@ -35,7 +35,7 @@ namespace opengl3
         public bool addPointsLin(Mat mat,double LinPos, CameraCV cameraCV, LaserSurface laserSurface,LinearAxis linearAxis )
         {
             //var points_im = Detection.detectLine(cameraCV.undist(mat));
-            var points_im = Detection.detectLine(mat);
+            var points_im = Detection.detectLineDiff(mat);
             var points_cam = fromLines(points_im, cameraCV, laserSurface);
             var matrixSC = linearAxis.getMatrixCamera(LinPos);
             points3d_cur = camToScene(points_cam, matrixSC);

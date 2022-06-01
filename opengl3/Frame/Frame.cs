@@ -80,7 +80,7 @@ namespace opengl3
             name = _name;
             size = _im.Size;
             frameType = _frameType;
-            if(frameType == FrameType.LasLin)
+            if(frameType == FrameType.LasLin || frameType == FrameType.LasDif)
             {
                 linPos = posLinFromName(name);
             }
@@ -113,7 +113,7 @@ namespace opengl3
             var linpos = new double[frames.Length];
             for (int i = 0; i < linpos.Length; i++)
             {
-                if (frames[i].frameType == FrameType.LasLin)
+                if (frames[i].frameType == FrameType.LasLin  || frames[i].frameType == FrameType.LasDif)
                 {
                     linpos[i] = frames[i].linPos;
                 }                
