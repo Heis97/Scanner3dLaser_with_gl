@@ -111,7 +111,8 @@ namespace opengl3
             init_vars();
             //loadScanner();
             //loadStereo();
-            loadScannerLin();
+            loadScannerLin(new string[] { @"cam1\calib_1_2505" }, @"cam1\las_cal_0106_1\1", @"cam1\lin_cal_0106_1", @"cam1\scan_0106_1\dif",new float[] { 0.9f,0.1f,0.1f });
+            loadScannerLin(new string[] { @"cam2\calib_2_2505" }, @"cam2\las_cal_0106_1\1", @"cam2\lin_cal_0106_1", @"cam2\scan_0106_1\dif", new float[] { 0.1f, 0.9f, 0.1f });
             GL1.buffersGl.sortObj();
         }
         void init_vars()
@@ -214,14 +215,8 @@ namespace opengl3
             }
         }
 
-        void loadScannerLin()
+        void loadScannerLin(string[] cam_cal_paths, string las_cal_path, string lin_cal_path, string scand_path,float[] normrgb)
         {
-            var cam_cal_paths = new string[] { @"cam1\calib_1_2505" };//, @"cam1\photo_10"
-           // var scan_path = @"cam1\scan_0106_1\def";
-            var scand_path = @"cam1\scan_0106_1\dif";
-            //var scan_path = @"cam1\las_cal_2002_1\test";
-            var las_cal_path = @"cam1\las_cal_0106_1\1";
-            var lin_cal_path = @"cam1\lin_cal_0106_1";
 
             var frms_lin_cal = FrameLoader.loadImages_diff(lin_cal_path, FrameType.LasLin, PatternType.Chess);
             var frms_las_cal = FrameLoader.loadImages_diff(las_cal_path, FrameType.LasLin, PatternType.Chess);
@@ -253,10 +248,11 @@ namespace opengl3
                         var p3d_scan_sc = scanner1.getPointsScene();
                         var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
 
-                        GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, 0.1f, 0.9f);
+                        //GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, normrgb[0], normrgb[1], normrgb[2]);
 
-                        //var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesScene());
-                        //GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, 0.9f);
+                        var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesScene());
+                        STLmodel.saveMesh(mesh_scan_stl, "test_" + normrgb[0] + "_" + normrgb[1] + "_" + normrgb[2]);
+                        GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
                     }
                     else
                     {
@@ -763,20 +759,21 @@ namespace opengl3
                     
                     var im1 = mat1.ToImage<Gray, Byte>();
                     
-                    CvInvoke.Sobel(im1, im1, DepthType.Cv8U, 0, 1);
-
-                    im1 = (0.3*rgb[0] + 0.3 * rgb[1] + 0.3 * rgb[2]).ToImage<Gray, Byte>();
-                    imBox_base_1.Image = im1;
+                    
 
                     var im1_r = im1.Clone();
                     CvInvoke.Rotate(im1_r, im1_r, RotateFlags.Rotate180);
                     CvInvoke.Sobel(im1_r, im1_r, DepthType.Cv8U, 0, 1);
                     CvInvoke.Rotate(im1_r, im1_r, RotateFlags.Rotate180);
 
+                    CvInvoke.Sobel(im1, im1, DepthType.Cv8U, 0, 1);
+
+                    im1 = (0.3 * rgb[0] + 0.3 * rgb[1] + 0.3 * rgb[2]).ToImage<Gray, Byte>();
+                    imBox_base_1.Image = im1;
                     //CvInvoke.Threshold(im1, im1, 80, 255, ThresholdType.Binary);
                     imageBox2.Image = mat2;
 
-                    imageBox1.Image = fr.im;
+                    imageBox1.Image = im1;
                     imBox_base.Image = mat3;
                     imBox_base_2.Image = im1_r;
                    //imBox_base.Image = im1_r - im1;
@@ -793,7 +790,7 @@ namespace opengl3
                     var im2 = im1.Clone();
                 
                     var ps = Detection.detectLineDiff(mat2,12,imBox_base);
-                    UtilOpenCV.drawPointsF(mat2, ps, 0, 255, 0,5);
+                    UtilOpenCV.drawPointsF(mat2, ps, 0, 255, 0,0);
                     //imBox_base.Image = im2;
                     imBox_base_1.Image = im1;
                     imBox_base_2.Image = mat2;

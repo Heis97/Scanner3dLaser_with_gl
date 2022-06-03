@@ -615,6 +615,7 @@ namespace opengl3
         {
             int ind = 0;
             var color = new MCvScalar(b, g, r);//bgr
+            
             if(points==null || im == null)
             {
                 return;

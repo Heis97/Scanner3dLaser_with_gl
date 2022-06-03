@@ -173,6 +173,46 @@ namespace opengl3
 
             return ret1;
         }
+
+       public static void saveMesh(float[] mesh, string name)
+        {
+            var sb = new StringBuilder();
+            //string text = "solid\n";
+            sb.Append("solid\n");
+            for (int i=0; i<mesh.Length;i+=9)
+            {
+                var text1 = "";
+                var p1 = new Point3d_GL(mesh[i], mesh[i + 1], mesh[i + 2]);
+                var p2 = new Point3d_GL(mesh[i + 3], mesh[i + 4], mesh[i + 5]);
+                var p3 = new Point3d_GL(mesh[i + 6], mesh[i + 7], mesh[i + 8]);
+                var U = p1 - p2;
+                var V = p1 - p3;
+                var Norm = new Point3d_GL(
+                    U.y * V.z - U.z * V.y,
+                    U.z * V.x - U.x * V.z,
+                    U.x * V.y - U.y * V.x);
+                var Norm1 = Norm.normalize();
+                text1 += "facet normal " + Norm1.x + " " + Norm1.y + " " + Norm1.z + "\n";
+                text1 += "outer loop\n";
+                text1 += "vertex " + mesh[i] + " " + mesh[i + 1] + " " + mesh[i + 2] + "\n";
+                text1 += "vertex " + mesh[i+3] + " " + mesh[i + 4] + " " + mesh[i + 5] + "\n";
+                text1 += "vertex " + mesh[i+6] + " " + mesh[i + 7] + " " + mesh[i + 8] + "\n";
+                text1 += "endloop\n";
+                text1 += "endfacet \n";
+                //text += text1;
+                sb.Append(text1);
+
+               
+            }
+
+            sb.Append("endsolid\n");
+
+            Console.WriteLine("startWRITE");
+            var wr = new StreamWriter(name + ".stl");
+            wr.Write(sb);
+            wr.Close();
+            
+        }
     }
 
 }

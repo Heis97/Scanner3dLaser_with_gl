@@ -74,7 +74,7 @@ namespace opengl3
         static PointF[] takePointsForFlat(PointF[] ps)
         {
             var psС = new PointF[2];
-            var quart = (int)(ps.Length / 2-10);
+            var quart = (int)(ps.Length / 3);
             psС[0] = ps[quart];
             psС[1] = ps[ps.Length - quart];
             return psС;

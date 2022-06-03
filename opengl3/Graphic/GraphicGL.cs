@@ -679,8 +679,8 @@ namespace opengl3
                     if (e.Button == MouseButtons.Left)
                     {
                         trz.xRot += dy;
-                        trz.yRot -= dx;
-                        trz.zRot += dz;
+                        //trz.yRot -= dx;
+                        trz.zRot += dx;
                         
                     }
                     else if (e.Button == MouseButtons.Right)

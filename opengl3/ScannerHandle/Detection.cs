@@ -141,12 +141,25 @@ namespace opengl3
         {
             var ps = new PointF[mat.Width];
             var rgb = mat.Split();
-            var matAll = (0.3*rgb[0]+ 0.3 * rgb[1]+ 0.3 * rgb[2]);
+            var fr = new Mat();
+            var fg = new Mat();
+            var fb = new Mat();
+            rgb[0].ConvertTo(fr, DepthType.Cv32F);
+            rgb[1].ConvertTo(fg, DepthType.Cv32F);
+            rgb[2].ConvertTo(fb, DepthType.Cv32F);
+
+
+            var matAll = (fr + fg + fb);
             //CvInvoke.Normalize(im1, im1, 255, 0);
             var bin = new Mat();
             var sob = new Mat();
             var gray = new Mat();
             var erros = new Mat();
+
+            var kern3 = new Matrix<float>(new float[,] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } });
+
+            var kern5 = new Matrix<float>(new float[,] { { 1, 1, 1, 1,1 }, { 1, 1, 1, 1,1 }, { 1, 1, 1,1,1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 } });
+            CvInvoke.Filter2D(matAll, matAll, kern5, new Point(-1, -1));
             //CvInvoke.Sobel(gray, sob, DepthType.Cv8U, 0, 1);
             //CvInvoke.Threshold(matAll, bin, 80, 255, ThresholdType.Binary);
             //Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
@@ -156,7 +169,7 @@ namespace opengl3
                 imageBox.Image = erros;
             }
             var data_sob = (byte[,])sob.GetData();
-            var data = (byte[,])matAll.GetData();
+            var data = (float[,])matAll.GetData();
             var br_max = int.MinValue;
             for (int i = 0; i < data.GetLength(1); i++)
             {
@@ -164,11 +177,11 @@ namespace opengl3
                 int j_max = 0;
                 for (int j = wind; j < data.GetLength(0) - wind; j++)
                 {
-                    int br_cur = 0;
-                    for(int i_w =0; i_w<wind-1; i_w++)
+                    int br_cur = (int)data[j, i];
+                    /*for(int i_w =0; i_w<wind-1; i_w++)
                     {
-                        br_cur += data[j + i_w, i ];
-                    }
+                        br_cur += (int)data[j + i_w, i ];
+                    }*/
                     if (br_cur > br_max)
                     {
                         br_max = br_cur;
@@ -176,18 +189,11 @@ namespace opengl3
                     }
                 }
                 ps[i] = new PointF(i, j_max);
-                /*if (j_max != 0)
-                {
-                    ps[i] = new PointF(i, j_max);
-                }
-                else
-                {
-                    ps[i] = PointF.notExistP();
-                }*/
             }
 
             var ps_med = medianFilter(ps);
-
+            gaussFilter(ps);
+            GC.Collect();
             return ps;
         }
 
@@ -246,6 +252,19 @@ namespace opengl3
             return ps1;
         }
 
+        static PointF[] gaussFilter(PointF[] ps1,  int wind = 3)
+        {
+            var ps1L = ps1.ToList();
+            for (int i = wind; i < ps1.Length - wind; i++)
+            {
+                if (i > 0)
+                {
+                    ps1[i] = new PointF(i, averageYps(ps1L.GetRange(i - wind, 2 * wind).ToArray()));
+                }               
+            }
+            return ps1;
+        }
+
         static float averageYps(PointF[] ps1)
         {
             float avY = 0;
@@ -255,6 +274,8 @@ namespace opengl3
             }
             return avY / ps1.Length;
         }
+
+
 
     }
 }
