@@ -111,8 +111,8 @@ namespace opengl3
             init_vars();
             //loadScanner();
             //loadStereo();
-            loadScannerLin(new string[] { @"cam1\calib_1_2505" }, @"cam1\las_cal_0106_1\1", @"cam1\lin_cal_0106_1", @"cam1\scan_0106_1\dif",new float[] { 0.9f,0.1f,0.1f });
-            loadScannerLin(new string[] { @"cam2\calib_2_2505" }, @"cam2\las_cal_0106_1\1", @"cam2\lin_cal_0106_1", @"cam2\scan_0106_1\dif", new float[] { 0.1f, 0.9f, 0.1f });
+            loadScannerLin(new string[] { @"cam1\calib_1_2505" }, @"cam1\las_cal_0106_1\1", @"cam1\lin_cal_0106_1", @"cam1\scan_0106_1\dif",new float[] { 0.5f,0.5f,0.5f });
+            //loadScannerLin(new string[] { @"cam2\calib_2_2505" }, @"cam2\las_cal_0106_1\1", @"cam2\lin_cal_0106_1", @"cam2\scan_0106_1\dif", new float[] { 0.1f, 0.9f, 0.1f });
             GL1.buffersGl.sortObj();
         }
         void init_vars()
@@ -743,9 +743,9 @@ namespace opengl3
                 {
                     FindMark.finPointFsFromIm(fr.im, bin_pos, imageBox1, imageBox4, maxArea, minArea);
                 }
-                else if (fr.frameType == FrameType.LasRob || fr.frameType == FrameType.LasLin)
+                else if (fr.frameType == FrameType.LasRob)
                 {
-                  //ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
+                   //ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
                     var mat1 = fr.im.Clone();
                     var mat2 = fr.im.Clone();
                     var mat3 = fr.im.Clone();
@@ -762,22 +762,17 @@ namespace opengl3
                     
 
                     var im1_r = im1.Clone();
-                    CvInvoke.Rotate(im1_r, im1_r, RotateFlags.Rotate180);
+                    /*CvInvoke.Rotate(im1_r, im1_r, RotateFlags.Rotate180);
                     CvInvoke.Sobel(im1_r, im1_r, DepthType.Cv8U, 0, 1);
                     CvInvoke.Rotate(im1_r, im1_r, RotateFlags.Rotate180);
 
-                    CvInvoke.Sobel(im1, im1, DepthType.Cv8U, 0, 1);
+                    CvInvoke.Sobel(im1, im1, DepthType.Cv8U, 0, 1);*/
 
                     im1 = (0.3 * rgb[0] + 0.3 * rgb[1] + 0.3 * rgb[2]).ToImage<Gray, Byte>();
                     imBox_base_1.Image = im1;
-                    //CvInvoke.Threshold(im1, im1, 80, 255, ThresholdType.Binary);
                     imageBox2.Image = mat2;
 
                     imageBox1.Image = im1;
-                    imBox_base.Image = mat3;
-                    imBox_base_2.Image = im1_r;
-                   //imBox_base.Image = im1_r - im1;
-                    //imageBox1.Image = mat1;
 
                 }
 
@@ -789,11 +784,11 @@ namespace opengl3
                     var im1 = (rgb[0] + rgb[1] + rgb[2]).ToImage<Gray, Byte>();
                     var im2 = im1.Clone();
                 
-                    var ps = Detection.detectLineDiff(mat2,12,imBox_base);
-                    UtilOpenCV.drawPointsF(mat2, ps, 0, 255, 0,0);
+                    var ps = Detection.detectLineDiff(mat2,3,imBox_base);
+                    UtilOpenCV.drawPointsF(mat2, ps, 0, 255, 0,2);
                     //imBox_base.Image = im2;
-                    imBox_base_1.Image = im1;
-                    imBox_base_2.Image = mat2;
+                    imageBox2.Image = im1;
+                    imageBox1.Image = mat2;
                 }
 
                 else if (fr.frameType == FrameType.LasHand)

@@ -58,8 +58,8 @@ namespace opengl3
             {
                 if(graphicGL!=null)
                 {
-                    graphicGL.addFrame_Cam(cameraCV);
-                    graphicGL.addCamArea(cameraCV, 500);
+                    //graphicGL.addFrame_Cam(cameraCV);
+                    //graphicGL.addCamArea(cameraCV, 500);
                 }
                 var lines = PointCloud.computeTracesCam(ps, cameraCV);
                 var ps3d = PointCloud.intersectWithFlat(lines, zeroFlatInCam(cameraCV.matrixSC));
