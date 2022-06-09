@@ -111,7 +111,7 @@ namespace opengl3
             init_vars();
             //loadScanner();
             //loadStereo();
-            loadScannerLin(new string[] { @"cam1\calib_1_2505" }, @"cam1\las_cal_0106_1\1", @"cam1\lin_cal_0106_1", @"cam1\scan_0106_1\dif",new float[] { 0.5f,0.5f,0.5f });
+            //loadScannerLin(new string[] { @"cam1\calib_1_2505" }, @"cam1\las_cal_0106_1\1", @"cam1\lin_cal_0106_1", @"cam1\scan_0106_1\dif",new float[] { 0.5f,0.5f,0.5f });
             //loadScannerLin(new string[] { @"cam2\calib_2_2505" }, @"cam2\las_cal_0106_1\1", @"cam2\lin_cal_0106_1", @"cam2\scan_0106_1\dif", new float[] { 0.1f, 0.9f, 0.1f });
             GL1.buffersGl.sortObj();
         }
@@ -271,12 +271,12 @@ namespace opengl3
         }
 
         #region laserScanner
-        public void startScanLaser()
+        public void startScanLaser(int typeScan)//0 - defolt, 1 - dif
         {
             try
             {
                 Thread robot_thread = new Thread(scan_resLaser);
-                robot_thread.Start();
+                robot_thread.Start(typeScan);
             }
             catch
             {
@@ -284,6 +284,7 @@ namespace opengl3
         }
         private void scan_resLaser(object obj)
         {
+            int typescan = (int)obj;
             int counts = Convert.ToInt32(boxN.Text);
 
             string folder_scan = box_scanFolder.Text;
@@ -295,11 +296,24 @@ namespace opengl3
 
             for (int i = 0; i < counts; i++)
             {
-                makeDoublePhotoLaser(
+
+                if (typescan==0)
+                {
+                    makePhotoLaser(
+                    new float[] { x },
+                    new string[] { "cam1\\" + folder_scan },//, "cam2\\" + folder_scan },
+                    new ImageBox[] { imageBox1 }// ,imageBox2 }
+                    );
+                }
+                else if(typescan == 1)
+                {
+                    makeDoublePhotoLaser(
                     new float[] { x },
                     new string[] { "cam1\\" + folder_scan, "cam2\\" + folder_scan },
                     new ImageBox[] { imageBox1, imageBox2 }
                     );
+                }
+                
                 x += delx;
             }
 
@@ -321,7 +335,7 @@ namespace opengl3
             }
             laserLine?.setShvpPos((int)pos[0]);
             Console.WriteLine("cur_pos: " + (int)pos[0]);
-            Thread.Sleep(200);
+            Thread.Sleep(300);
             if (folders.Length == imageBoxes.Length)
             {
                 for (int i = 0; i < folders.Length; i++)
@@ -382,6 +396,7 @@ namespace opengl3
         #region robot
         public void startScan(object sender, EventArgs e)
         {
+
             try
             {
                 Thread robot_thread = new Thread(scan_res);
@@ -2242,7 +2257,9 @@ namespace opengl3
 
         private void but_scan_start_laser_Click(object sender, EventArgs e)
         {
-            startScanLaser();
+            var but = (Button)sender;
+            var tpScan = Convert.ToInt32( but.AccessibleName);
+            startScanLaser(tpScan);
         }
     }
 

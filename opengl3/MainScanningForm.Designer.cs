@@ -141,6 +141,7 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_scan_def = new System.Windows.Forms.Button();
             this.but_scan_start_laser = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.combo_improc = new System.Windows.Forms.ComboBox();
@@ -1457,6 +1458,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.but_scan_def);
             this.tabMain.Controls.Add(this.but_scan_start_laser);
             this.tabMain.Controls.Add(this.label1);
             this.tabMain.Controls.Add(this.combo_improc);
@@ -1551,8 +1553,21 @@ namespace opengl3
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // but_scan_def
+            // 
+            this.but_scan_def.AccessibleName = "0";
+            this.but_scan_def.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_def.Location = new System.Drawing.Point(1407, 175);
+            this.but_scan_def.Name = "but_scan_def";
+            this.but_scan_def.Size = new System.Drawing.Size(148, 33);
+            this.but_scan_def.TabIndex = 126;
+            this.but_scan_def.Text = "Scan Laser def";
+            this.but_scan_def.UseVisualStyleBackColor = true;
+            this.but_scan_def.Click += new System.EventHandler(this.but_scan_start_laser_Click);
+            // 
             // but_scan_start_laser
             // 
+            this.but_scan_start_laser.AccessibleName = "1";
             this.but_scan_start_laser.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_start_laser.Location = new System.Drawing.Point(1407, 217);
             this.but_scan_start_laser.Name = "but_scan_start_laser";
@@ -2763,6 +2778,7 @@ namespace opengl3
         private System.Windows.Forms.ComboBox combo_improc;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button but_scan_start_laser;
+        private System.Windows.Forms.Button but_scan_def;
     }
 }
 
