@@ -109,6 +109,20 @@ namespace opengl3
         {
             return new Point3d_GL(p.x * k, p.y * k, p.z * k);
         }
+
+        public static Point3d_GL operator /(Point3d_GL p, double k)
+        {
+            return new Point3d_GL(p.x / k, p.y / k, p.z / k);
+        }
+
+        public static Point3d_GL operator *(Point3d_GL p1, Point3d_GL p2)
+        {
+            return new Point3d_GL(p1.x * p2.x, p1.y * p2.y, p1.z * p2.z);
+        }
+        public static Point3d_GL operator *(Point3d_GL p, Flat3d_GL f)
+        {
+            return new Point3d_GL(p.x * f.A, p.y * f.B, p.z * f.C);
+        }
         public static Point3d_GL operator *(double[,] matrixA, Point3d_GL p)
         {
             double[,] matrixB = new double[1, 1];
@@ -197,6 +211,11 @@ namespace opengl3
         public static Point3d_GL operator -(Point3d_GL p1, Point3d_GL p2)
         {
             return new Point3d_GL(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
+        }
+
+        public static Point3d_GL operator -(Point3d_GL p)
+        {
+            return new Point3d_GL(-p.x, -p.y, -p.z);
         }
         public override string ToString()
         {

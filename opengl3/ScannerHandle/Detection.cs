@@ -188,7 +188,9 @@ namespace opengl3
                         j_max = j;
                     }
                 }
+                
                 ps[i] = new PointF(i, j_max);
+
             }
 
             var ps_med = medianFilter(ps);

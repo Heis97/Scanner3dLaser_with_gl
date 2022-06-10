@@ -109,10 +109,15 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
+            var model = new STLmodel();
+            var mesh = model.parsingStl_GL4("cube_walls.STL");
+            mesh = GL1.scaleMesh(mesh, 4f);
+            mesh = GL1.translateMesh(mesh, -25, -70);
+            GL1.addGLMesh(mesh,PrimitiveType.Triangles);
             //loadScanner();
             //loadStereo();
-            //loadScannerLin(new string[] { @"cam1\calib_1_2505" }, @"cam1\las_cal_0106_1\1", @"cam1\lin_cal_0106_1", @"cam1\scan_0106_1\dif",new float[] { 0.5f,0.5f,0.5f });
-            //loadScannerLin(new string[] { @"cam2\calib_2_2505" }, @"cam2\las_cal_0106_1\1", @"cam2\lin_cal_0106_1", @"cam2\scan_0106_1\dif", new float[] { 0.1f, 0.9f, 0.1f });
+            loadScannerLin(new string[] { @"cam1\camera_cal_1006_1" }, @"cam1\las_cal_1006_1\1", @"cam1\lin_cal_3\1", @"cam1\scan_1006_pla\dif",new float[] { 0.1f,0.5f,0.5f });
+            //loadScannerLin(new string[] { @"cam2\camera_cal_1006_1" }, @"cam2\las_cal_1006_1\1", @"cam2\lin_cal_3\1", @"cam2\scan_1006_3\dif", new float[] { 0.1f, 0.9f, 0.1f });
             GL1.buffersGl.sortObj();
         }
         void init_vars()
@@ -156,15 +161,15 @@ namespace opengl3
         }
         void loadStereo()
         {
-            var cam_cal_1 = new string[] { @"cam1\calib_1_2505" };
-            var cam_cal_2 = new string[] { @"cam2\calib_2_2505" };
+            var cam_cal_1 = new string[] { @"cam1\camera_cal_1006_1" };
+            var cam_cal_2 = new string[] { @"cam2\camera_cal_1006_1" };
             
             var frms1 = FrameLoader.loadPathsDiff(cam_cal_1, FrameType.MarkBoard);
             var frms2 = FrameLoader.loadPathsDiff(cam_cal_2, FrameType.MarkBoard);
             var cam1 = new CameraCV(frms1, new Size(6, 7), markSize, null);
             var cam2 = new CameraCV(frms2, new Size(6, 7), markSize, null);
 
-            var cam_cal_stereo = new string[] { @"stereocalib_2505" };
+            var cam_cal_stereo = new string[] { @"camera_cal_1006_1" };
             var frms = FrameLoader.loadPathsDiffDouble(cam_cal_stereo, FrameType.MarkBoard);
 
             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 }, new Size(6, 7), markSize, frms);
@@ -301,8 +306,8 @@ namespace opengl3
                 {
                     makePhotoLaser(
                     new float[] { x },
-                    new string[] { "cam1\\" + folder_scan },//, "cam2\\" + folder_scan },
-                    new ImageBox[] { imageBox1 }// ,imageBox2 }
+                    new string[] { "cam1\\" + folder_scan , "cam2\\" + folder_scan },
+                    new ImageBox[] { imageBox1 ,imageBox2 }
                     );
                 }
                 else if(typescan == 1)
@@ -1818,9 +1823,16 @@ namespace opengl3
             }
             return vertex_buffer_data;
         }
-
-        float[] meshFromPoints(Point3d_GL[][] points3d)
+        Point3d_GL[][] orderPoints(Point3d_GL[][] ps)
         {
+            var ps_or = from p in ps
+                        orderby p[0].x
+                        select p;
+            return ps_or.ToArray();
+        }
+        float[] meshFromPoints(Point3d_GL[][] points3d_in)
+        {
+            var points3d = orderPoints(points3d_in);
             var mesh = new List<float>();
             for (int i = 0; i < points3d.Length - 1; i++)
             {
