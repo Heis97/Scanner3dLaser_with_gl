@@ -356,6 +356,7 @@ namespace opengl3
                 return new Point3d_GL(y, x, z);
             }           
         }
+
         private double calcRasst(Point3d_GL p1, Point3d_GL p2)
         {
             return Math.Sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z));

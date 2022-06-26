@@ -86,5 +86,15 @@ namespace opengl3
             return null;
         }
 
+        public Flat3d_GL getLaserSurf(double PositionLinear)
+        {
+            if (calibrated)
+            {
+                var delPos = PositionLinear - PositionsAxis[0];
+                var compMatr = MatrixesCamera[0] + oneMatrix * delPos;
+            }
+            return new Flat3d_GL();
+        }
+
     }
 }

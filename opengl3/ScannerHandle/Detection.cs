@@ -10,6 +10,7 @@ using Emgu.CV.Util;
 using Emgu.CV.UI;
 using System.Drawing;
 
+
 namespace opengl3
 {
     public static class Detection
@@ -32,7 +33,7 @@ namespace opengl3
                     //float sum = (float)Math.Max(data[j, i, 2], Math.Max(data[j, i, 1], data[j, i, 0]));
                     float br_cur = -512;
                     float bl_cur = -512;
-                    //br_cur = (float)data[j, i, 2]  - 0.5f*(float)data[j, i, 1] - 0.5f*(float)data[j, i, 0] ;
+                    //br_cur = (float)data[j, i, 2]  - 0.5f*(float)data[j, i, 1] - 0.5f*(float)data[j, i, 0];
                     var br_cur_y = (float)data[j, i, 2]/ (float)data[j-1, i, 2];
                     var br_cur_x = (float)data[j, i, 2] / (float)data[j, i, 1];
                     br_cur = br_cur_x* br_cur_x + br_cur_y* br_cur_y;
@@ -90,12 +91,9 @@ namespace opengl3
             }
 
             var ps_med = medianFilter(ps);
-
             return ps;
         }
         
-
-
         public static PointF[] detectLineSobel(Mat mat, int wind = 12,int thr = 10)
         {
             var ps = new PointF[mat.Width];

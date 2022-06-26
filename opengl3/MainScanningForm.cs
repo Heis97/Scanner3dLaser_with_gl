@@ -25,7 +25,6 @@ using System.IO.Ports;
 
 namespace opengl3
 {
-
     public partial class MainScanningForm : Form
     {
         #region var
@@ -109,17 +108,17 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-            var model = new STLmodel();
-            var mesh = model.parsingStl_GL4("cube_walls.STL");
-            mesh = GL1.scaleMesh(mesh, 4f);
-            mesh = GL1.translateMesh(mesh, -25, -70);
+            var mesh = STLmodel.parsingStl_GL4("half_sphere.STL");
+            mesh = GL1.scaleMesh(mesh, 8f);
+            mesh = GL1.translateMesh(mesh, -65.8f, -107.3f);
             GL1.addGLMesh(mesh,PrimitiveType.Triangles);
             //loadScanner();
             //loadStereo();
-            loadScannerLin(new string[] { @"cam1\camera_cal_1006_1" }, @"cam1\las_cal_1006_1\1", @"cam1\lin_cal_3\1", @"cam1\scan_1006_pla\dif",new float[] { 0.1f,0.5f,0.5f });
+            loadScannerLin(new string[] { @"cam1\camera_cal_1006_1" }, @"cam1\las_cal_2606_2\1", @"cam1\lin_cal_2606_1\1", @"cam1\scan_2606_1\dif",new float[] { 0.1f,0.5f,0.5f });
             //loadScannerLin(new string[] { @"cam2\camera_cal_1006_1" }, @"cam2\las_cal_1006_1\1", @"cam2\lin_cal_3\1", @"cam2\scan_1006_3\dif", new float[] { 0.1f, 0.9f, 0.1f });
             GL1.buffersGl.sortObj();
         }
+
         void init_vars()
         {
             #region important
@@ -252,11 +251,24 @@ namespace opengl3
                         Console.WriteLine("Load Points Done__" + lins+"_lins__________________");
                         var p3d_scan_sc = scanner1.getPointsScene();
                         var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
-
+                        var sph_points_xy = new Point3d_GL[]
+                        {
+                            new Point3d_GL(-25,-38,0),
+                            new Point3d_GL(-3,-81,0),
+                            new Point3d_GL(-49,-81,0),
+                            new Point3d_GL(-32,-58,0)
+                        };
+                        var sph_points = STLmodel.nearestPointsXY(p3d_scan_sc, sph_points_xy);
+                        var sphere = UtilMatr.findSphereFrom4Points(sph_points);
+                        prin.t("sph_points_xy");
+                        prin.t(sph_points_xy);
+                        prin.t("sph_points");
+                        prin.t(sph_points);
+                        Console.WriteLine(sphere[0] + "\n" + sphere[1]);
                         //GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, normrgb[0], normrgb[1], normrgb[2]);
 
                         var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesScene());
-                        STLmodel.saveMesh(mesh_scan_stl, "test_" + normrgb[0] + "_" + normrgb[1] + "_" + normrgb[2]);
+                        //STLmodel.saveMesh(mesh_scan_stl, "test_" + normrgb[0] + "_" + normrgb[1] + "_" + normrgb[2]);
                         GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
                     }
                     else
@@ -551,8 +563,8 @@ namespace opengl3
             GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
             GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
           // GL1.transRotZooms[1].xRot = 33;
-            GL1.transRotZooms[1].off_x = -25;
-            GL1.transRotZooms[1].off_y = 31;
+            //GL1.transRotZooms[1].off_x = -25;
+            //GL1.transRotZooms[1].off_y = 31;
            // GL1.transRotZooms[1].zoom = 2.6699;
             
             addButForMonitor(GL1, send.Size, send.Location);

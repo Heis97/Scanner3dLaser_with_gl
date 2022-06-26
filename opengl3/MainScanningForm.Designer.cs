@@ -1297,7 +1297,7 @@ namespace opengl3
             // lab_curCor
             // 
             this.lab_curCor.AutoSize = true;
-            this.lab_curCor.Location = new System.Drawing.Point(56, 850);
+            this.lab_curCor.Location = new System.Drawing.Point(122, 850);
             this.lab_curCor.Name = "lab_curCor";
             this.lab_curCor.Size = new System.Drawing.Size(38, 13);
             this.lab_curCor.TabIndex = 66;

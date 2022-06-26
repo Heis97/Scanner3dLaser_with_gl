@@ -66,14 +66,15 @@ namespace opengl3
         Vertex3f MaterialAmbient = new Vertex3f(0.1f, 0.1f, 0.1f);
         Vertex3f MaterialSpecular = new Vertex3f(0.1f, 0.1f, 0.1f);
         public modeGL modeGL = modeGL.View;
-        List<Point3d_GL> pointsPaint = new List<Point3d_GL>();
-        Point3d_GL curPointPaint = new Point3d_GL(0, 0, 0);
+        List<Vertex4f> pointsPaint = new List<Vertex4f>();
+        Vertex4f curPointPaint = new Vertex4f(0, 0, 0, 1);
         public List<TransRotZoom> transRotZooms = new List<TransRotZoom>();
         public List<TransRotZoom[]> trzForSave;
         public int[] monitorsForGenerate;
         public string pathForSave;
         public ImageBox[] imageBoxesForSave;
         public Size size = new Size(1,1);
+        Point locationBox = new Point(0, 0);
         #endregion
        
         public void glControl_Render(object sender, GlControlEventArgs e)
@@ -173,7 +174,9 @@ namespace opengl3
         }
         public void glControl_ContextCreated(object sender, GlControlEventArgs e)
         {
-            sizeControl = ((Control)sender).Size;
+            var contr = (Control)sender;
+            sizeControl = contr.Size;
+            locationBox = contr.Location;
             Gl.Initialize();
             Gl.Enable(EnableCap.Multisample);
             Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
@@ -203,7 +206,6 @@ namespace opengl3
                 text += File.ReadAllText(path);
             return new string[] { text };
         }
-        
         private void load_buff_gl(float[] vertex_buffer_dat, float[] color_buffer_dat, float[] normal_buffer_dat)
         {
             buff_pos = Gl.GenBuffer();
@@ -339,7 +341,7 @@ namespace opengl3
             //CvInvoke.Flip(data, data, Emgu.CV.CvEnum.FlipType.Vertical);
             return data;
         }
-        
+
         PointF toGLcord(PointF pf)
         {
             var sizeView = transRotZooms[0].rect;
@@ -348,6 +350,8 @@ namespace opengl3
             var y = -((sizeView.Width / 2) * pf.Y) + sizeView.Height / 2;
             return new PointF(x, y);
         }
+
+
         PointF toTRZcord(PointF pf)
         {
             var sizeView = transRotZooms[0].rect;
@@ -388,7 +392,7 @@ namespace opengl3
             }
             return -1;
         }
-         public Matrix4x4f[] compMVP_photo(string data)
+        public Matrix4x4f[] compMVP_photo(string data)
         {
             var trz = new TransRotZoom(data);
             var zoom = trz.zoom;
@@ -432,8 +436,8 @@ namespace opengl3
             }
             else if (trz.viewType_ == viewType.Ortho)
             {
-                var _Pm = OrthoF();
-                var _Vm = Transmatr((float)off_x, -(float)off_y, (float)zoom * (float)off_z) * RotXmatr(xRot) * RotYmatr(yRot) * RotZmatr(zRot);
+                var _Pm = OrthoF((float)zoom);
+                var _Vm = Transmatr((float)off_x, -(float)off_y,(float)off_z) * RotXmatr(xRot) * RotYmatr(yRot) * RotZmatr(zRot);
                 Pm = new Matrix4x4f((_Pm).data);
                 Vm = new Matrix4x4f((_Vm).data);
                 Mm = Matrix4x4f.Identity;
@@ -479,17 +483,22 @@ namespace opengl3
             return new Matr4x4f(data);
         }
 
-        static public Matr4x4f OrthoF(float fx = 1, float aspec = 1, float n = 0.1f, float f = 3000f)
+        static public Matr4x4f OrthoF(float dim = 20, float n = -2000f, float f = 2000f)
         {
-            var fy = fx / aspec;
+            float left = -dim;
+            float right = dim;
+            float bottom = -dim;
+            float top = dim;
+            var fx = 2 / (right - left);
+            var fy = 2 / (top - bottom);
             var a = (f + n) / (f - n);
-            var b = (-2 * f * n) / (f - n);
-            var cx = 1 / (float)Math.Tan(toRad(fx) / 2);
-            var cy = 1 / (float)Math.Tan(toRad(fy) / 2);
+            var b = 2  / (f - n);
+            var cx = (right+left)/(right-left);
+            var cy = (top + bottom) / (top - bottom);
             var data = new float[] {
-                 1, 0, 0, 0 ,
-                 0, 1, 0, 0 ,
-                 0, 0, 1,  0,
+                 fx, 0, 0, -cx ,
+                 0, fy, 0, -cy ,
+                 0, 0, -b, -a,
                  0, 0, 0, 1 };
             return new Matr4x4f(data);
         }
@@ -540,16 +549,15 @@ namespace opengl3
         /// <param name="mvp"></param>
         /// <returns></returns>
         public PointF calcPixel(Vertex4f point, int id)
-        {
-            var p2 =new  Matr4x4f( MVPs[id]) * new Vert4f(point);
+        {          
+            var p2 =new  Matr4x4f(MVPs[id]) * new Vert4f(point);
             p2.Norm();
-            var p3 = toTRZcord(new PointF(p2.data[0], p2.data[1]));
-            
+            var p3 = toTRZcord(new PointF(p2.data[0], p2.data[1]));      
             //Console.WriteLine("v: " + p3.X + " " + p3.Y + " " + p2.z + " " + p2.w + " mvp_len: " + MVPs[0].ToString());
             return p3;
         }
 
-         public PointF calcPixel_photo(Vertex4f point, string data,Size size_trz)
+        public PointF calcPixel_photo(Vertex4f point, string data,Size size_trz)
         {
             var p2 = new Matr4x4f(compMVP_photo(data)[3]) * new Vert4f(point);
             p2.Norm();
@@ -691,16 +699,23 @@ namespace opengl3
                     lastPos = e.Location;
                     break;
                 case modeGL.Paint:
-                    var p_XY = new Point3d_GL((double)e.Location.X/ (0.5*(double)w), (double)e.Location.Y/(0.5* (double)h), 0);
-                   // var p_YZ = new Point3d_GL(0,(double)e.Location.X / (0.5 * (double)w), (double)e.Location.Y / (0.5 * (double)h));
-                   // var p_ZX = new Point3d_GL((double)e.Location.X / (0.5 * (double)w),0, (double)e.Location.Y / (0.5 * (double)h));
+                    var p_XY = new Vertex4f((float)e.Location.X/ (0.5f* (float)w), (float)e.Location.Y/(0.5f* (float)h), 0,1f);
+
+                    var p_XY_1 = new Vertex4f(
+                         (float)trz.zoom*((float)(e.Location.X - trz.rect.X)/ (0.5f * (float)w)-1),
+                        (float)trz.zoom * ((float)(-e.Location.Y + sizeControl.Width - trz.rect.Y) / (0.5f * (float)h)-1),
+                        0, 1f);
+
+                    //var p_3d = calcPixel(p_XY_1, sel_trz);
+                   // Console.WriteLine(p_XY_1);
+
+
                     try
                     {
-                        var invM = Pm.Inverse;
-                        //var invM = MVPs[0].Inverse;
                         if (Label_cor != null)
                         {
-                            curPointPaint = invM * p_XY;
+
+                            curPointPaint = p_XY_1;
                             Label_cor.Text = curPointPaint.ToString() + "\n" + "\n";//;// + (invM * p_YZ).ToString() + "\n" + (invM * p_ZX).ToString();
                             if(pointsPaint.Count!=0)
                             {
@@ -712,7 +727,7 @@ namespace opengl3
 
                             if (pointsPaint.Count > 1)
                             {
-                                var dis = (pointsPaint[pointsPaint.Count - 1] - pointsPaint[pointsPaint.Count - 2]).magnitude();
+                                var dis = (pointsPaint[pointsPaint.Count - 1] - pointsPaint[pointsPaint.Count - 2]).Module();
                                 Label_cor.Text +="dist = "+ Math.Round(dis,4).ToString() + "\n";
                             }
                         }

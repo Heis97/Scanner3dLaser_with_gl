@@ -22,7 +22,7 @@ namespace opengl3
         {
             //var points_im = Detection.detectLine(cameraCV.undist(mat));
             var points_im = Detection.detectLine(mat);
-            var points_cam = fromLines(points_im, cameraCV, laserSurface);
+            var points_cam = fromLines(points_im, cameraCV, laserSurface.flat3D);
             cameraCV.compPos(mat, PatternType.Chess);
             points3d_cur = camToScene(points_cam, cameraCV.matrixSC);
             var ps_list = points3d.ToList();
@@ -36,9 +36,21 @@ namespace opengl3
         {
             //var points_im = Detection.detectLine(cameraCV.undist(mat));
             var points_im = Detection.detectLineDiff(mat);
-            var points_cam = fromLines(points_im, cameraCV, laserSurface);
+            var points_cam = fromLines(points_im, cameraCV, laserSurface.flat3D);
             var matrixSC = linearAxis.getMatrixCamera(LinPos);
             points3d_cur = camToScene(points_cam, matrixSC);
+            var ps_list = points3d.ToList();
+            ps_list.AddRange(points3d_cur);
+            points3d_lines.Add(points3d_cur);
+            points3d = ps_list.ToArray();
+            return true;
+        }
+
+        public bool addPointsLinLas(Mat mat, double LinPos, CameraCV cameraCV, LinearAxis linearAxis)
+        {
+            var points_im = Detection.detectLineDiff(mat);
+            var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));        
+            points3d_cur = camToScene(points_cam, cameraCV.matrixSC);
             var ps_list = points3d.ToList();
             ps_list.AddRange(points3d_cur);
             points3d_lines.Add(points3d_cur);
@@ -57,16 +69,16 @@ namespace opengl3
             }
             return points3d;
         }
-        static Point3d_GL[] fromLines(PointF[] points_im, CameraCV cameraCV, LaserSurface laserSurface)
+        static Point3d_GL[] fromLines(PointF[] points_im, CameraCV cameraCV, Flat3d_GL laserSurface)
         {
             var lines3d = computeTracesCam(points_im, cameraCV);
             var points_cam = intersectWithLaser(lines3d, laserSurface);
             return points_cam;
         }
 
-        static Point3d_GL[] intersectWithLaser(Line3d_GL[] lines3d, LaserSurface laserSurface)
+        static Point3d_GL[] intersectWithLaser(Line3d_GL[] lines3d, Flat3d_GL laserSurface)
         {
-            return intersectWithFlat(lines3d, laserSurface.flat3D);
+            return intersectWithFlat(lines3d, laserSurface);
         }
 
         public static Point3d_GL[] intersectWithFlat(Line3d_GL[] lines3d, Flat3d_GL flat)
@@ -91,8 +103,6 @@ namespace opengl3
 
             return lines3d;
         }
-
-        
 
         static Point3d_GL[] fromHomography(PointF[] points_im, CameraCV cameraCV, LaserSurface laserSurface)
         {

@@ -22,6 +22,45 @@ namespace opengl3
             return mx;
             
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ps"></param>
+        /// <returns>
+        /// Center sphere XYZ, radius RRR
+        /// </returns>
+        static public Point3d_GL[] findSphereFrom4Points(Point3d_GL[] ps)
+        {
+            var x1 = ps[0].x; var y1 = ps[0].y; var z1 = ps[0].z;
+            var x2 = ps[1].x; var y2 = ps[1].y; var z2 = ps[1].z;
+            var x3 = ps[2].x; var y3 = ps[2].y; var z3 = ps[2].z;
+            var x4 = ps[3].x; var y4 = ps[3].y; var z4 = ps[3].z;
+            var U = (z1 - z2) * (x3 * y4 - x4 * y3) - (z2 - z3) * (x4 * y1 - x1 * y4);
+            var V = (z3 - z4) * (x1 * y2 - x2 * y1) - (z4 - z1) * (x2 * y3 - x3 * y2);
+            var W = (z1 - z3) * (x4 * y2 - x2 * y4) - (z2 - z4) * (x1 * y3 - x3 * y1);
+
+            var Ax = (x1 * x1 + y1 * y1 + z1 * z1) * (y2 * (z3 - z4) + y3 * (z4 - z2) + y4 * (z2 - z3));
+            var Bx = (x2 * x2 + y2 * y2 + z2 * z2) * (y3 * (z4 - z1) + y4 * (z1 - z3) + y1 * (z3 - z4));
+            var Cx = (x3 * x3 + y3 * y3 + z3 * z3) * (y4 * (z1 - z2) + y1 * (z2 - z4) + y2 * (z4 - z1));
+            var Dx = (x4 * x4 + y4 * y4 + z4 * z4) * (y1 * (z2 - z3) + y2 * (z3 - z1) + y3 * (z1 - z2));
+
+            var Ay = (x1 * x1 + y1 * y1 + z1 * z1) * (x2 * (z3 - z4) + x3 * (z4 - z2) + x4 * (z2 - z3));
+            var By = (x2 * x2 + y2 * y2 + z2 * z2) * (x3 * (z4 - z1) + x4 * (z1 - z3) + x1 * (z3 - z4));
+            var Cy = (x3 * x3 + y3 * y3 + z3 * z3) * (x4 * (z1 - z2) + x1 * (z2 - z4) + x2 * (z4 - z1));
+            var Dy = (x4 * x4 + y4 * y4 + z4 * z4) * (x1 * (z2 - z3) + x2 * (z3 - z1) + x3 * (z1 - z2));
+
+            var Az = (x1 * x1 + y1 * y1 + z1 * z1) * (x2 * (y3 - y4) + x3 * (y4 - y2) + x4 * (y2 - y3));
+            var Bz = (x2 * x2 + y2 * y2 + z2 * z2) * (x3 * (y4 - y1) + x4 * (y1 - y3) + x1 * (y3 - y4));
+            var Cz = (x3 * x3 + y3 * y3 + z3 * z3) * (x4 * (y1 - y2) + x1 * (y2 - y4) + x2 * (y4 - y1));
+            var Dz = (x4 * x4 + y4 * y4 + z4 * z4) * (x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2));
+
+            var x0 = 0.5 * (Ax - Bx + Cx - Dx) / (U + V + W);
+            var y0 = -0.5 * (Ay - By + Cy - Dy) / (U + V + W);
+            var z0 = 0.5 * (Az - Bz + Cz - Dz) / (U + V + W);
+            var R = Math.Sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0) + (z1 - z0) * (z1 - z0));
+            return new Point3d_GL[] { new Point3d_GL(x0, y0, z0),new Point3d_GL(R,R,R) };
+
+        }
 
 
         static float PI = (float)Math.PI;

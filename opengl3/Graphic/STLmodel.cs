@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 namespace opengl3
 {
 
-    public struct STLmodel
+    public class STLmodel
     {
         public string path;
+        public Point3d_GL[] points;
         public STLmodel(string _path)
         {
             path = _path;
@@ -44,7 +45,7 @@ namespace opengl3
             return mesh;
         }
 
-        public double parseE(string num)
+        static public double parseE(string num)
         {
             if (num.Contains("e"))
             {
@@ -62,13 +63,13 @@ namespace opengl3
             }
 
         }
-        public float[] parsingStl_GL4(string path)
+        static public float[] parsingStl_GL4(string path)
         {
             // var offx = 200;
             // var offy = 500;
             //  var offz = 600;
             string file1;
-            using (StreamReader sr = new StreamReader(path, ASCIIEncoding.ASCII))
+            using (StreamReader sr = new StreamReader(path, Encoding.ASCII))
             {
                 file1 = sr.ReadToEnd();
             }
@@ -109,7 +110,7 @@ namespace opengl3
             }
             return ret1;
         }
-        public List<double[,]> parsingStl_GL2(string path)
+       static public List<double[,]> parsingStl_GL2(string path)
         {
             int i2 = 0;
             string file1;
@@ -174,7 +175,7 @@ namespace opengl3
             return ret1;
         }
 
-       public static void saveMesh(float[] mesh, string name)
+        public static void saveMesh(float[] mesh, string name)
         {
             var sb = new StringBuilder();
             //string text = "solid\n";
@@ -210,9 +211,39 @@ namespace opengl3
             Console.WriteLine("startWRITE");
             var wr = new StreamWriter(name + ".stl");
             wr.Write(sb);
+            Console.WriteLine("stopWRITE");
             wr.Close();
             
         }
+
+        public static Point3d_GL[] nearestPointsXY(Point3d_GL[] mesh,Point3d_GL[] points3D_xy)
+        {
+            var len = points3D_xy.Length;
+            double[] dist = new double[len];
+            Point3d_GL[] ps = new Point3d_GL[len];
+            for (int i = 0; i < len; i++)
+            {
+                dist[i] = double.MaxValue;
+                ps[i] = new Point3d_GL(0, 0, 0);
+            }
+
+            for (int j=0; j<mesh.Length;j++)
+            {
+                for (int i = 0; i < len; i++)
+                {
+                    var rasst = Math.Abs(points3D_xy[i].x - mesh[j].x) + Math.Abs(points3D_xy[i].y - mesh[j].y);
+                    if (rasst<dist[i])
+                    {
+                        dist[i] = rasst;
+                        ps[i] = mesh[j];
+                    }
+                }
+            }
+            return ps;
+        }
+
+
+
     }
 
 }
