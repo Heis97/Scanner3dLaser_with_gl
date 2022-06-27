@@ -71,5 +71,25 @@ namespace opengl3
             return A * p.x + B * p.y + C * p.z + D;
         }
 
+        public static Flat3d_GL operator *(Flat3d_GL f, double k)
+        {
+            return new Flat3d_GL(f.A * k, f.B * k, f.C * k,f.D * k);
+        }
+
+        public static Flat3d_GL operator /(Flat3d_GL f, double k)
+        {
+            return new Flat3d_GL(f.A / k, f.B / k, f.C / k, f.D / k);
+        }
+
+        public static Flat3d_GL operator +(Flat3d_GL f1, Flat3d_GL f2)
+        {
+            return new Flat3d_GL(f1.A +f2.A, f1.B + f2.B, f1.C + f2.C, f1.D + f2.D);
+        }
+
+        public static Flat3d_GL operator -(Flat3d_GL f1, Flat3d_GL f2)
+        {
+            return new Flat3d_GL(f1.A - f2.A, f1.B - f2.B, f1.C - f2.C, f1.D - f2.D);
+        }
+
     }
 }

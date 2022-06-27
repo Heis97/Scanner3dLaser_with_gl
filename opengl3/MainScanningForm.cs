@@ -113,8 +113,8 @@ namespace opengl3
             mesh = GL1.translateMesh(mesh, -65.8f, -107.3f);
             GL1.addGLMesh(mesh,PrimitiveType.Triangles);
             //loadScanner();
-            //loadStereo();
-            loadScannerLin(new string[] { @"cam1\camera_cal_1006_1" }, @"cam1\las_cal_2606_2\1", @"cam1\lin_cal_2606_1\1", @"cam1\scan_2606_1\dif",new float[] { 0.1f,0.5f,0.5f });
+            //loadStereo(); 
+            //loadScannerLin(new string[] { @"cam1\camera_cal_1006_1" }, @"cam1\las_cal_2606_2\1", @"cam1\lin_cal_2606_1\1", @"cam1\scan_2606_1\dif",new float[] { 0.1f,0.5f,0.5f });
             //loadScannerLin(new string[] { @"cam2\camera_cal_1006_1" }, @"cam2\las_cal_1006_1\1", @"cam2\lin_cal_3\1", @"cam2\scan_1006_3\dif", new float[] { 0.1f, 0.9f, 0.1f });
             GL1.buffersGl.sortObj();
         }
