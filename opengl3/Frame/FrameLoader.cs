@@ -1,4 +1,5 @@
 ﻿using Emgu.CV;
+using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -302,6 +303,14 @@ namespace opengl3
             return sortFiles.ToArray();
         }
 
+        static string[] sortByName(string[] files)
+        {
+            var sortFiles = from f in files
+                            orderby Path.GetFileName(f)
+                            select f;
+            return sortFiles.ToArray();
+        }
+        
         static public Frame[] loadImages_stereoCV(string path1, string path2,FrameType frameType)
         {
             Console.WriteLine(path1);
@@ -415,6 +424,42 @@ namespace opengl3
             }
             return null;
         }
+
+        static string[][] find_same_name(string[] files1, string[] files2)//MAKE THIS!!!
+        {
+            var files1_sort = sortByName(files1);
+            var files2_sort = sortByName(files2);
+
+            //var name = Path.GetFileName(files1)
+            return null;
+        }
+
+        static public Frame[][] loadImages_double_laser(string path1, string path2, FrameType frameType, PatternType patternType)
+        {
+            var files1 = Directory.GetFiles(path1);
+            var files2 = Directory.GetFiles(path2);
+            List<Frame[]> frames = new List<Frame[]>();
+            if (files1.Length!=files2.Length)
+            {
+                return null;
+            }
+            for (int i= 0; i<files1.Length;i++)
+            {
+                List<Frame> frames_sub = new List<Frame>();
+                if ( Path.GetFileName(files1[i]) == Path.GetFileName(files2[i]))
+                {
+                    var frame1 = loadImage_diff(files1[i], frameType, patternType); frames_sub.Add(frame1);
+                    var frame2 = loadImage_diff(files2[i], frameType, patternType); frames_sub.Add(frame2);
+                    frames.Add(frames_sub.ToArray());
+                }
+                    
+            }
+            if (frames.Count != 0)
+            {
+                return frames.ToArray();
+            }
+            return null;
+        }
         static public Frame[] loadImages_calib(string path)
         {
             var files = Directory.GetFiles(path);
@@ -434,6 +479,29 @@ namespace opengl3
             return null;
         }
 
-
+        static public void substractionImage(string path_many, string path_orig)
+        {
+            var im_many = Directory.GetFiles(path_many);
+            var im_or = Directory.GetFiles(path_orig);
+            if (im_or.Length > 0)
+            {
+                var im_orig = new Mat(im_or[0]);
+                foreach (string im_p in im_many)
+                {
+                    var im = new Mat(im_p);
+                    var im_sub = im - im_orig;
+                    var name = Path.GetFileName(im_p);
+                    if (name != string.Empty)
+                    {
+                        
+                        var path = Path.Combine(path_many, "differ", name);
+                        Console.WriteLine(path);
+                        Directory.CreateDirectory(Path.GetDirectoryName(path));
+                        //var im1 = im_sub.ToImage<Bgr, byte>();
+                        im_sub.Save(path);
+                    }
+                }
+            }
+        }
     }
 }

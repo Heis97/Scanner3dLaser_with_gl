@@ -14,9 +14,9 @@ namespace opengl3
         {
             flat3D = computeSurface(points);
         }
-        public LaserSurface(Mat[] mats, CameraCV cameraCV, PatternType patternType)
+        public LaserSurface(Mat[] mats, Mat[] origs, CameraCV cameraCV, PatternType patternType, bool compPos = true)
         {
-            calibrate(mats, cameraCV,patternType);
+            calibrate(mats, origs, cameraCV,patternType, null,compPos);
         }
         public LaserSurface()
         {
@@ -30,11 +30,15 @@ namespace opengl3
             var flat = new Flat3d_GL(points[0], points[1], points[2]);
             return flat;
         }
-        public bool calibrate(Mat[] mats,CameraCV cameraCV,PatternType patternType, GraphicGL graphicGL = null)
+        public bool calibrate(Mat[] mats, Mat[] origs, CameraCV cameraCV,PatternType patternType, GraphicGL graphicGL = null,bool compPos = true)
         {
             Console.WriteLine("LAS CALIB#######################################");
-            var ps1 = points3dInCam(mats[0], cameraCV, patternType, graphicGL);
-            var ps2 = points3dInCam(mats[1], cameraCV, patternType, graphicGL);
+            if(origs==null)
+            {
+                origs = new Mat[2];
+            }
+            var ps1 = points3dInCam(mats[0], origs[0], cameraCV, patternType, graphicGL, compPos);
+            var ps2 = points3dInCam(mats[1], origs[1], cameraCV, patternType, graphicGL, compPos);
             if(ps1==null || ps2==null)
             {
                 Console.WriteLine("ps1: " +ps1);
@@ -44,31 +48,30 @@ namespace opengl3
             var ps = ps1.ToList();
             ps.AddRange(ps2);
             flat3D = computeSurface(ps.ToArray());
-
+            Console.WriteLine(flat3D);
             return true;
         }
 
-        static Point3d_GL[] points3dInCam(Mat mat, CameraCV cameraCV,PatternType patternType,GraphicGL graphicGL = null)
+        static Point3d_GL[] points3dInCam(Mat mat, Mat orig, CameraCV cameraCV,PatternType patternType,GraphicGL graphicGL = null,bool compPos = true)
         {
             //var points = Detection.detectLine(cameraCV.undist(mat));
             var points = Detection.detectLineDiff(mat,5);
             var ps = takePointsForFlat(points);
-            
-            if (cameraCV.compPos(mat, patternType))
+            if(compPos)
             {
-                if(graphicGL!=null)
+                if(orig!=null)
                 {
-                    //graphicGL.addFrame_Cam(cameraCV);
-                    //graphicGL.addCamArea(cameraCV, 500);
+                    cameraCV.compPos(orig, patternType);
+                    prin.t(cameraCV.matrixSC);
                 }
-                var lines = PointCloud.computeTracesCam(ps, cameraCV);
-                var ps3d = PointCloud.intersectWithFlat(lines, zeroFlatInCam(cameraCV.matrixSC));
-                return ps3d;
+                else
+                {
+                    cameraCV.compPos(mat, patternType);
+                }
             }
-            else
-            {
-                return null;
-            }            
+            var lines = PointCloud.computeTracesCam(ps, cameraCV);
+            var ps3d = PointCloud.intersectWithFlat(lines, zeroFlatInCam(cameraCV.matrixSC));
+            return ps3d;          
         }
 
         static PointF[] takePointsForFlat(PointF[] ps)

@@ -29,12 +29,17 @@ namespace opengl3
 
         public bool calibrateLaser(Mat[] mats,PatternType patternType,GraphicGL graphicGL = null)
         {
-            return laserSurface.calibrate(mats, cameraCV, patternType, graphicGL);
+            return laserSurface.calibrate(mats,null, cameraCV, patternType, graphicGL);
         }
 
         public bool calibrateLinear(Mat[] mats, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
         {
             return linearAxis.calibrate(mats, positions, cameraCV, patternType, graphicGL);
+        }
+
+        public bool calibrateLinearLas(Mat[][] mats, Mat[] origs, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
+        {
+            return linearAxis.calibrateLas(mats, origs, positions, cameraCV, patternType, graphicGL);
         }
 
         public bool addPoints(Mat mat)

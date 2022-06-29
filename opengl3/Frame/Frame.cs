@@ -107,6 +107,16 @@ namespace opengl3
             return mats;
         }
 
+        static public Mat[][] getMats(Frame[][] frames)
+        {
+            var mats = new Mat[frames.Length][];
+            for (int i = 0; i < mats.Length; i++)
+            {
+                mats[i] = getMats(frames[i]);
+            }
+            return mats;
+        }
+
         static public double[] getLinPos(Frame[] frames)
         {
             

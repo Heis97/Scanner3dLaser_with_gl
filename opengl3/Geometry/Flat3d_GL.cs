@@ -91,5 +91,11 @@ namespace opengl3
             return new Flat3d_GL(f1.A - f2.A, f1.B - f2.B, f1.C - f2.C, f1.D - f2.D);
         }
 
+
+        public override string ToString()
+        {
+            return A + " " + B + " " + C + " " + D ;
+        }
+
     }
 }

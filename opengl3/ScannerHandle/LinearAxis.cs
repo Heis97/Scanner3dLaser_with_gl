@@ -36,9 +36,9 @@ namespace opengl3
             return false;
         }
 
-        public bool calibrateLas(Mat[][] mats, double[] positions, CameraCV cameraCV, PatternType patternType, GraphicGL graphicGL)
+        public bool calibrateLas(Mat[][] mats, Mat[] origs, double[] positions, CameraCV cameraCV, PatternType patternType, GraphicGL graphicGL)
         {
-            if (addLaserFlats(mats, positions, cameraCV, patternType))
+            if (addLaserFlats(mats, origs, positions, cameraCV, patternType))
             {
                 compOneFlat();
                 calibrated = true;
@@ -83,15 +83,16 @@ namespace opengl3
                 return false;
             }
         }
-        bool addLasFlat(Mat[] mats, double positions, CameraCV cameraCV, PatternType patternType)
+        bool addLasFlat(Mat[] mats, Mat[] origs, double position, CameraCV cameraCV, PatternType patternType)
         {
-            var las = new LaserSurface(mats, cameraCV, patternType);
-            MatrixesCamera.Add(cameraCV.matrixCS);
+            
+            var las = new LaserSurface(mats, origs, cameraCV, patternType);
+            PositionsAxis.Add(position);
             LasFlats.Add(las.flat3D);
             return true;
             
         }
-        bool addLaserFlats(Mat[][] mats, double[] positions,CameraCV cameraCV, PatternType patternType)
+        bool addLaserFlats(Mat[][] mats, Mat[] origs, double[] positions,CameraCV cameraCV, PatternType patternType)
         {
             LasFlats = new List<Flat3d_GL>();
             PositionsAxis = new List<double>();
@@ -100,7 +101,7 @@ namespace opengl3
                 int j = 0;
                 for (int i = 0; i < mats.Length; i++)
                 {
-                    if (addLasFlat(mats[i], positions[i], cameraCV, patternType))
+                    if (addLasFlat(mats[i], origs, positions[i], cameraCV, patternType))
                     {
                         j++;
                     }
@@ -122,7 +123,7 @@ namespace opengl3
         void compOneFlat()
         {
             oneLasFlat = (LasFlats[LasFlats.Count - 1] - LasFlats[0]) / (PositionsAxis[PositionsAxis.Count - 1] - PositionsAxis[0]);
-            prin.t(oneMatrix);
+            Console.WriteLine(oneLasFlat);
         }
 
         public Matrix<double> getMatrixCamera(double PositionLinear)
