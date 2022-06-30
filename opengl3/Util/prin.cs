@@ -215,6 +215,18 @@ namespace opengl3
                Console.WriteLine(" ");
             }
         }
+        public static void t(PointF[] matr)
+        {
+            if (matr == null)
+            {
+                return;
+            }
+            for (int i = 0; i < matr.Length; i++)
+            {
+                Console.Write(matr[i].X + " " + matr[i].Y + "; ");
+                Console.WriteLine(" ");
+            }
+        }
         public static void t(Point3d_GL[] matr)
         {
             if (matr == null)
@@ -225,6 +237,29 @@ namespace opengl3
             {
                 Console.WriteLine(matr[i].x + " " + matr[i].y + " " + matr[i].z+ ";");
 
+            }
+        }
+
+        public static void t(Flat3d_GL[] matr)
+        {
+            if (matr == null)
+            {
+                return;
+            }
+            for (int i = 0; i < matr.Length; i++)
+            {
+                Console.WriteLine(matr[i].ToString() + ";");
+            }
+        }
+        public static void t(Line3d_GL[] matr)
+        {
+            if (matr == null)
+            {
+                return;
+            }
+            for (int i = 0; i < matr.Length; i++)
+            {
+                Console.WriteLine(matr[i].ToString() + ";");
             }
         }
         public static void t(Matrix<double> matr)

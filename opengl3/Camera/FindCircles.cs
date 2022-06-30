@@ -73,8 +73,6 @@ namespace opengl3
 
             
         }
-
-
         static System.Drawing.PointF[] findCentres(VectorOfVectorOfPoint contours)
         {
             var ps = new System.Drawing.PointF[contours.Size];

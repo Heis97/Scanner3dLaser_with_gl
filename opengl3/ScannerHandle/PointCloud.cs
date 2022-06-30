@@ -46,11 +46,12 @@ namespace opengl3
             return true;
         }
 
-        public bool addPointsLinLas(Mat mat, double LinPos, CameraCV cameraCV, LinearAxis linearAxis)
+        public bool addPointsLinLas(Mat mat, double LinPos, CameraCV cameraCV, LinearAxis linearAxis,Mat orig,PatternType patternType)
         {
+            cameraCV.compPos(orig, patternType);
             var points_im = Detection.detectLineDiff(mat);
-            var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));        
-            points3d_cur = camToScene(points_cam, cameraCV.matrixSC);
+            var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
+            points3d_cur = camToScene(points_cam, cameraCV.matrixCS);
             var ps_list = points3d.ToList();
             ps_list.AddRange(points3d_cur);
             points3d_lines.Add(points3d_cur);

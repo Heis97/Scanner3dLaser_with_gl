@@ -51,11 +51,11 @@ namespace opengl3
             return pointCloud.addPointsLin(mat, linPos,  cameraCV, laserSurface,linearAxis);
         }
 
-        public bool addPointsLinLas(Mat mat, double linPos)
+        public bool addPointsLinLas(Mat mat, double linPos,Mat orig, PatternType patternType)
         {
-            return pointCloud.addPointsLinLas(mat, linPos, cameraCV, linearAxis);
+            return pointCloud.addPointsLinLas(mat, linPos, cameraCV, linearAxis,orig, patternType);
         }
-        public int addPointsLinLas(Mat[] mats, double[] linPos)
+        public int addPointsLinLas(Mat[] mats, double[] linPos,Mat orig, PatternType patternType)
         {
             int ret = 0;
             if (mats.Length != linPos.Length)
@@ -64,7 +64,7 @@ namespace opengl3
             }
             for (int i = 0; i < mats.Length; i++)
             {
-                if (addPointsLinLas(mats[i], linPos[i]))
+                if (addPointsLinLas(mats[i]- orig, linPos[i],orig,patternType))
                 {
                     ret++;
                 }

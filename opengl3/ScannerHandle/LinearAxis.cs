@@ -96,12 +96,12 @@ namespace opengl3
         {
             LasFlats = new List<Flat3d_GL>();
             PositionsAxis = new List<double>();
-            if (mats.Length == positions.Length)
+            if (mats[0].Length == positions.Length)
             {
                 int j = 0;
-                for (int i = 0; i < mats.Length; i++)
+                for (int i = 0; i < mats[0].Length; i++)
                 {
-                    if (addLasFlat(mats[i], origs, positions[i], cameraCV, patternType))
+                    if (addLasFlat(new Mat[] { mats[0][i], mats[1][i] }, origs, positions[i], cameraCV, patternType))
                     {
                         j++;
                     }
@@ -142,7 +142,8 @@ namespace opengl3
             if (calibrated)
             {
                 var delPos = PositionLinear - PositionsAxis[0];
-                var compMatr = LasFlats[0] + oneLasFlat * delPos;
+                var lasFlat = LasFlats[0] + oneLasFlat * delPos;
+                return lasFlat;
             }
             return new Flat3d_GL();
         }

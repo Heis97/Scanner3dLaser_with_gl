@@ -32,7 +32,7 @@ namespace opengl3
         }
         public bool calibrate(Mat[] mats, Mat[] origs, CameraCV cameraCV,PatternType patternType, GraphicGL graphicGL = null,bool compPos = true)
         {
-            Console.WriteLine("LAS CALIB#######################################");
+            //Console.WriteLine("LAS CALIB#######################################");
             if(origs==null)
             {
                 origs = new Mat[2];
@@ -48,7 +48,7 @@ namespace opengl3
             var ps = ps1.ToList();
             ps.AddRange(ps2);
             flat3D = computeSurface(ps.ToArray());
-            Console.WriteLine(flat3D);
+            //Console.WriteLine(flat3D);
             return true;
         }
 
@@ -62,7 +62,7 @@ namespace opengl3
                 if(orig!=null)
                 {
                     cameraCV.compPos(orig, patternType);
-                    prin.t(cameraCV.matrixSC);
+                   // prin.t(cameraCV.matrixSC);
                 }
                 else
                 {

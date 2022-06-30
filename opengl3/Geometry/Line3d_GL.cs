@@ -43,6 +43,10 @@ namespace opengl3
             
             
         }
+        public override string ToString()
+        {
+            return "k = " +k.ToString() + "; p = " + p.ToString()+";";
+        }
     }
 
 }

@@ -145,5 +145,21 @@ namespace opengl3
             koef.Reverse();
             return koef.ToArray();
         }
+
+        static public double[] regression_div(double[] inputs, double[] outputs, int degree)
+        {
+            var ls = new PolynomialLeastSquares()
+            {
+                Degree = degree
+            };
+            PolynomialRegression poly = ls.Learn(inputs, outputs);
+            double[] weights = poly.Weights;
+            double intercept = poly.Intercept;
+            var koef = new List<double>();
+            koef.AddRange(weights);
+            koef.Add(intercept);
+            koef.Reverse();
+            return koef.ToArray();
+        }
     }
 }

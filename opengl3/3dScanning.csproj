@@ -135,6 +135,7 @@
     <Compile Include="Geometry\Flat3d_GL.cs" />
     <Compile Include="Geometry\Flat_4P.cs" />
     <Compile Include="Geometry\Line3d_GL.cs" />
+    <Compile Include="ScannerHandle\GeometryAnalyse.cs" />
     <Compile Include="ScannerHandle\LaserSurface.cs" />
     <Compile Include="ScannerHandle\Detection.cs" />
     <Compile Include="ScannerHandle\LinearAxis.cs" />
