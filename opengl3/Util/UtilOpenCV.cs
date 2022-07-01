@@ -580,17 +580,17 @@ namespace opengl3
             }
         }
 
-        static public void drawLines(Mat im, System.Drawing.PointF[] points1, int r, int g, int b, int size = 1)
+        static public Mat drawLines(Mat im, System.Drawing.PointF[] points1, int r, int g, int b, int size = 1)
         {
-            drawLines(im, PointF.toPoint(points1), r, g, b, size);
+            return drawLines(im, PointF.toPoint(points1), r, g, b, size);
         }
-        static public void drawLines(Mat im, System.Drawing.Point[] points1, int r, int g, int b, int size = 1)
+        static public Mat drawLines(Mat im, System.Drawing.Point[] points1, int r, int g, int b, int size = 1)
         {
             int ind = 0;
             var color = new MCvScalar(b, g, r);//bgr
             if(points1 == null)
             {
-                return;
+                return im;
             }
             if (points1.Length != 0 )
             {
@@ -601,24 +601,23 @@ namespace opengl3
                     ind++;
                 }
             }
+            return im;
         }
 
         static public void drawPointsF(Mat im, System.Drawing.PointF[] points, int r, int g, int b, int size = 1)
         {
             drawPoints(im, PointF.toPoint(points), r, g, b, size);
         }
-        static public void drawPointsF(Mat im, PointF[] points, int r, int g, int b, int size = 1)
+        static public Mat drawPointsF(Mat im, PointF[] points, int r, int g, int b, int size = 1)
         {
-            drawPoints(im, PointF.toPoint(points), r, g, b, size);
+            return drawPoints(im, PointF.toPoint(points), r, g, b, size);
         }
-        static public void drawPoints(Mat im, Point[] points, int r, int g, int b, int size = 1)
+        static public Mat drawPoints(Mat im, Point[] points, int r, int g, int b, int size = 1)
         {
-            int ind = 0;
-            var color = new MCvScalar(b, g, r);//bgr
-            
+            var color = new MCvScalar(b, g, r);//bgr            
             if(points==null || im == null)
             {
-                return;
+                return im;
             }
             if (points.Length != 0)
             {
@@ -626,9 +625,9 @@ namespace opengl3
                 {
                     
                     CvInvoke.Circle(im, p, size, color, -1);
-                    ind++;
                 }
             }
+            return im;
         }
         static public void drawPoints(Mat im, PointF[] points, int r, int g, int b, int size = 1)
         {

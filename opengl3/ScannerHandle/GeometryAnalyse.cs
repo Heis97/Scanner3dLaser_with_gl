@@ -10,7 +10,7 @@ namespace opengl3
     {
         static double errLine(PointF[] line)
         {
-            
+            return 0;
         }
     }
 }

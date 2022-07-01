@@ -162,10 +162,7 @@ namespace opengl3
             //CvInvoke.Threshold(matAll, bin, 80, 255, ThresholdType.Binary);
             //Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
             //CvInvoke.MorphologyEx(bin, erros, MorphOp.Erode, kernel5, new Point(-1, -1), 1, BorderType.Constant, new MCvScalar(0));
-            if (imageBox!=null)
-            {
-                imageBox.Image = erros;
-            }
+            
             var data_sob = (byte[,])sob.GetData();
             var data = (float[,])matAll.GetData();
             var br_max = int.MinValue;
@@ -193,6 +190,10 @@ namespace opengl3
 
             var ps_med = medianFilter(ps);
             gaussFilter(ps);
+            if (imageBox != null)
+            {              
+                //imageBox.Image = UtilOpenCV.drawPointsF(mat.Clone(), ps, 255, 0, 0);
+            }
             GC.Collect();
             return ps;
         }

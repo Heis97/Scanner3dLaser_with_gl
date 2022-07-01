@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace opengl3
             Y = _y;
             plan = _plan;
         }
-        public LineF calcLine(PointF[] points, PlanType _plan = PlanType.X, int maxPoints = 1000)
+        static public LineF calcLine(PointF[] points, PlanType _plan = PlanType.X, int maxPoints = 1000)
         {
 
             int n = points.Length;
@@ -123,6 +124,60 @@ namespace opengl3
             {
                 return PointF.notExistP() ;
             }
+        }
+
+        public static Point[] find2Points(LineF ab, Size size)
+        {
+            if (ab == null)
+            {
+                return null;
+            }
+            int ind = 0;
+
+            var ret = new Point[4];
+            var a = ab.X;
+            var b = ab.Y;
+
+            var x0 = -b / a;
+            var xH = (size.Height - b) / a;
+
+            var y0 = b;
+            var yW = a * size.Width + b;
+
+            if (ab.plan == PlanType.Y)
+            {
+                y0 = -b / a;
+                yW = (size.Width - b) / a;
+
+                x0 = b;
+                xH = a * size.Height + b;
+            }
+            if (x0 >= 0 && x0 <= size.Width)
+            {
+
+                ret[ind] = new Point((int)x0, 0);
+                ind++;
+            }
+            if (xH >= 0 && xH <= size.Width)
+            {
+                ret[ind] = new Point((int)xH, size.Height - 1);
+                ind++;
+            }
+            if (y0 >= 0 && y0 <= size.Height)
+            {
+                ret[ind] = new Point(0, (int)y0);
+                ind++;
+            }
+            if (yW >= 0 && yW <= size.Height)
+            {
+                ret[ind] = new Point(size.Width - 1, (int)yW);
+                ind++;
+            }
+            if (ind == 2)
+            {
+                return ret;
+            }
+            return ret;
         }
 
     }

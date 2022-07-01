@@ -405,16 +405,25 @@ namespace opengl3
             }
             return null;
         }
-        static public Frame[] loadImages_diff(string path, FrameType frameType,PatternType patternType)
+        static public Frame[] loadImages_diff(string path, FrameType frameType,PatternType patternType,string path_orig=null)
         {
             var files = Directory.GetFiles(path);
+
+            
             List<Frame> frames = new List<Frame>();
             foreach (string file in files)
             {
                 //Console.WriteLine(file);
                 var frame = loadImage_diff(file, frameType, patternType);
+                
                 if (frame != null)
                 {
+                    if(path_orig != null)
+                    {
+                        var files_orig = Directory.GetFiles(path_orig);
+                        frame.im_sec = new Mat(files_orig[0]);
+                    }
+                   
                     frames.Add(frame);
                 }
             }

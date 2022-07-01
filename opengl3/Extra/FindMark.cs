@@ -439,6 +439,7 @@ namespace opengl3
                                 pos.Add(pointsD[gbs[2]]);
                                 pos.Add(pointsD[gbs[0]]);
                                 UtilOpenCV.drawTours(orig, pos.ToArray(), 255, 255, 0, 6);
+                             
                                // box.Image = orig;
                                 return pos.ToArray();
                             }
@@ -1209,7 +1210,6 @@ namespace opengl3
         static List<PointF[]> findOneLine_rotate(List<PointF[]> points, List<LineF> points_ret, int side, PlanType planType, Mat im)
         {
             //Console.WriteLine("LINE_________________________________________");
-            var l = new LineF(1, 1);
             var Xindecis = new List<int>();
             var points_cut = new List<PointF[]>();
             var points_rot = new PointF[points.Count];
@@ -1223,7 +1223,7 @@ namespace opengl3
             if (points.Count <= side)
             {
 
-                var appLine = l.calcLine(points_rot, planType);
+                var appLine = LineF.calcLine(points_rot, planType);
                 points_ret.Add(appLine);
 
                 return new List<PointF[]>();
@@ -1436,7 +1436,7 @@ namespace opengl3
                 points.Add(points_cut[i]);
             }
             // var points_cen_rev_rot = rotatePoints(points_cen, -rotate_angle);
-            var appLine1 = l.calcLine(points_cen.ToArray(), planType);
+            var appLine1 = LineF.calcLine(points_cen.ToArray(), planType);
             points_ret.Add(appLine1);
 
             return points;
