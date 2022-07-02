@@ -60,8 +60,7 @@ namespace opengl3
         }
         public static Mat[] warpPerspNorm(Mat[] mats, Matrix<double> matrixPers,Size size)
         {
-            var mat = mats[0];
-           
+            var mat = mats[0];           
             var p_control = matToPointF(mats[1]);
             var p_control_2 = matToPointF(mats[2]);
             var bord = new System.Drawing.PointF[4]
@@ -71,8 +70,6 @@ namespace opengl3
                     new System.Drawing.PointF(0,mat.Height),
                     new System.Drawing.PointF(mat.Width,mat.Height),
                 };
-
-
             
             var bord_warp = CvInvoke.PerspectiveTransform(bord, matrixPers);
             var rect = CvInvoke.BoundingRectangle(new VectorOfPointF( bord_warp));
@@ -544,6 +541,8 @@ namespace opengl3
             }
             return psPosit;
         }
+
+        #region draw_something
         static public void drawMatches(Mat im, MCvPoint3D32f[] points1, System.Drawing.PointF[] points2, int r, int g, int b, int size = 1)
         {
             drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);
@@ -572,11 +571,16 @@ namespace opengl3
                 for(int i=0; i<points1.Length;i++)
                 {
                     
-                    CvInvoke.Circle(im, points1[i], size, color, -1);
-                    CvInvoke.Circle(im, points2[i], size, color, -1);
-                    CvInvoke.Line(im, points1[i], points2[i], randomColor(), size);
+                    //CvInvoke.Circle(im, points1[i], size - 1, color, -1);
+                    //CvInvoke.Circle(im, points2[i], size - 1, color, -1);
+                    //CvInvoke.Line(im, points1[i], points2[i], randomColor(), size);
+                    CvInvoke.Line(im, points1[i], points2[i], color, size);
                     ind++;
                 }
+            }
+            else
+            {
+                Console.WriteLine("Cannot draw match " + points1.Length + " != " + points2.Length);
             }
         }
 
@@ -726,6 +730,8 @@ namespace opengl3
             }
             
         }
+
+        #endregion
         static public TransRotZoom[] readTrz(string path)
         {
             var trzs = new List<TransRotZoom>();
@@ -1119,8 +1125,7 @@ namespace opengl3
                 return null;
             }
             var corn = new VectorOfPointF();
-            var mat_ch = new Mat();
-            im.CopyTo(mat_ch);
+            var mat_ch = im.Clone();
             var gray = mat_ch.ToImage<Gray, byte>();
             
             if(blur)
@@ -1142,6 +1147,44 @@ namespace opengl3
             return mat_ch;
            // return gray.Mat;
         }
+
+        static public Mat drawInsideRectChessboard(Mat im, Size size, bool subpix = false, bool blur = false, CalibCbType calibCbType = CalibCbType.AdaptiveThresh)
+        {
+            if (im == null)
+            {
+                return null;
+            }
+            var corn = new VectorOfPointF();
+            var mat_ch = im.Clone();
+            var gray = mat_ch.ToImage<Gray, byte>();
+
+            if (blur)
+            {
+                CvInvoke.GaussianBlur(gray, gray, new Size(5, 5), 0);
+            }
+
+            var ret = CvInvoke.FindChessboardCorners(gray, size, corn, calibCbType);
+            if (subpix)
+            {
+                CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+            }
+
+            var gab = takeGabObp(corn.ToArray(), size);
+            var ps_ins = GeometryAnalyse.compPointsInsideRectWarp(gab, size);
+
+            //perspective2Dmatr(size, corn);
+
+            Console.WriteLine("chess: " + ret + " " + size.Width + " " + size.Height);
+
+            //CvInvoke.DrawChessboardCorners(mat_ch, size, corn, ret);
+            //drawPointsF(mat_ch, ps_ins, 255, 0, 0, 2);
+            //drawPointsF(mat_ch, gab, 0, 255, 0, 4);
+            drawMatches(mat_ch, ps_ins, corn.ToArray(), 255, 0, 0);
+            return mat_ch;
+            // return gray.Mat;
+        }
+
+
         static Mat perspective2Dmatr(Size size,VectorOfPointF corn)
         {
             var w = size.Width;
