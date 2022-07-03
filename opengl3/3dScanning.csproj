@@ -123,6 +123,7 @@
     <Compile Include="Camera\Features.cs" />
     <Compile Include="Camera\FindCircles.cs" />
     <Compile Include="Connection\DeviceArduino.cs" />
+    <Compile Include="Connection\DevicesArduino\DeviceMarlin.cs" />
     <Compile Include="Connection\DevicesArduino\LaserLine.cs" />
     <Compile Include="Extra\Magnetic.cs" />
     <Compile Include="Frame\FrameBuf.cs" />

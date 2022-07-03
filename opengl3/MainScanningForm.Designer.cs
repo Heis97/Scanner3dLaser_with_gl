@@ -141,12 +141,19 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_scan_marl = new System.Windows.Forms.Button();
             this.but_scan_def = new System.Windows.Forms.Button();
             this.but_scan_start_laser = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.combo_improc = new System.Windows.Forms.ComboBox();
             this.label56 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.but_marl_receav = new System.Windows.Forms.Button();
+            this.but_marl_close = new System.Windows.Forms.Button();
+            this.but_marl_open = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBox_marl_shcpPos = new System.Windows.Forms.TextBox();
+            this.but_marl_setShvpPos = new System.Windows.Forms.Button();
             this.but_setShvpPos = new System.Windows.Forms.Button();
             this.textBox_shvpPos = new System.Windows.Forms.TextBox();
             this.but_open = new System.Windows.Forms.Button();
@@ -1458,6 +1465,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.but_scan_marl);
             this.tabMain.Controls.Add(this.but_scan_def);
             this.tabMain.Controls.Add(this.but_scan_start_laser);
             this.tabMain.Controls.Add(this.label1);
@@ -1553,6 +1561,18 @@ namespace opengl3
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // but_scan_marl
+            // 
+            this.but_scan_marl.AccessibleName = "2";
+            this.but_scan_marl.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_marl.Location = new System.Drawing.Point(1407, 129);
+            this.but_scan_marl.Name = "but_scan_marl";
+            this.but_scan_marl.Size = new System.Drawing.Size(148, 33);
+            this.but_scan_marl.TabIndex = 127;
+            this.but_scan_marl.Text = "Scan Laser marl";
+            this.but_scan_marl.UseVisualStyleBackColor = true;
+            this.but_scan_marl.Click += new System.EventHandler(this.but_scan_marl_Click);
+            // 
             // but_scan_def
             // 
             this.but_scan_def.AccessibleName = "0";
@@ -1606,6 +1626,12 @@ namespace opengl3
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.but_marl_receav);
+            this.groupBox1.Controls.Add(this.but_marl_close);
+            this.groupBox1.Controls.Add(this.but_marl_open);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.textBox_marl_shcpPos);
+            this.groupBox1.Controls.Add(this.but_marl_setShvpPos);
             this.groupBox1.Controls.Add(this.but_setShvpPos);
             this.groupBox1.Controls.Add(this.textBox_shvpPos);
             this.groupBox1.Controls.Add(this.but_open);
@@ -1618,10 +1644,67 @@ namespace opengl3
             this.groupBox1.Controls.Add(this.textBox_powerLaser);
             this.groupBox1.Location = new System.Drawing.Point(1472, 617);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(404, 235);
+            this.groupBox1.Size = new System.Drawing.Size(404, 350);
             this.groupBox1.TabIndex = 121;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Scaner Manual Control";
+            // 
+            // but_marl_receav
+            // 
+            this.but_marl_receav.Location = new System.Drawing.Point(171, 297);
+            this.but_marl_receav.Name = "but_marl_receav";
+            this.but_marl_receav.Size = new System.Drawing.Size(143, 38);
+            this.but_marl_receav.TabIndex = 117;
+            this.but_marl_receav.Text = "Принять";
+            this.but_marl_receav.UseVisualStyleBackColor = true;
+            this.but_marl_receav.Click += new System.EventHandler(this.but_marl_receav_Click);
+            // 
+            // but_marl_close
+            // 
+            this.but_marl_close.Location = new System.Drawing.Point(22, 297);
+            this.but_marl_close.Name = "but_marl_close";
+            this.but_marl_close.Size = new System.Drawing.Size(143, 38);
+            this.but_marl_close.TabIndex = 116;
+            this.but_marl_close.Text = "Отключиться";
+            this.but_marl_close.UseVisualStyleBackColor = true;
+            this.but_marl_close.Click += new System.EventHandler(this.but_marl_close_Click);
+            // 
+            // but_marl_open
+            // 
+            this.but_marl_open.Location = new System.Drawing.Point(22, 244);
+            this.but_marl_open.Name = "but_marl_open";
+            this.but_marl_open.Size = new System.Drawing.Size(143, 38);
+            this.but_marl_open.TabIndex = 115;
+            this.but_marl_open.Text = "Подключиться";
+            this.but_marl_open.UseVisualStyleBackColor = true;
+            this.but_marl_open.Click += new System.EventHandler(this.but_marl_open_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(28, 215);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(51, 20);
+            this.label2.TabIndex = 114;
+            this.label2.Text = "Marlin";
+            // 
+            // textBox_marl_shcpPos
+            // 
+            this.textBox_marl_shcpPos.Location = new System.Drawing.Point(288, 250);
+            this.textBox_marl_shcpPos.Name = "textBox_marl_shcpPos";
+            this.textBox_marl_shcpPos.Size = new System.Drawing.Size(110, 26);
+            this.textBox_marl_shcpPos.TabIndex = 11;
+            this.textBox_marl_shcpPos.Text = "0";
+            // 
+            // but_marl_setShvpPos
+            // 
+            this.but_marl_setShvpPos.Location = new System.Drawing.Point(171, 236);
+            this.but_marl_setShvpPos.Name = "but_marl_setShvpPos";
+            this.but_marl_setShvpPos.Size = new System.Drawing.Size(110, 55);
+            this.but_marl_setShvpPos.TabIndex = 10;
+            this.but_marl_setShvpPos.Text = "Установить положение";
+            this.but_marl_setShvpPos.UseVisualStyleBackColor = true;
+            this.but_marl_setShvpPos.Click += new System.EventHandler(this.but_marl_setShvpPos_Click);
             // 
             // but_setShvpPos
             // 
@@ -2779,6 +2862,13 @@ namespace opengl3
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button but_scan_start_laser;
         private System.Windows.Forms.Button but_scan_def;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox textBox_marl_shcpPos;
+        private System.Windows.Forms.Button but_marl_setShvpPos;
+        private System.Windows.Forms.Button but_marl_close;
+        private System.Windows.Forms.Button but_marl_open;
+        private System.Windows.Forms.Button but_marl_receav;
+        private System.Windows.Forms.Button but_scan_marl;
     }
 }
 

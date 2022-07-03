@@ -127,7 +127,11 @@ namespace opengl3
             }
             sortObj();
         }
-       
+        public void clearObj()
+        {
+            objs = new List<openGlobj>();
+            objs_out = new List<openGlobj>();
+        }
 
     }
 

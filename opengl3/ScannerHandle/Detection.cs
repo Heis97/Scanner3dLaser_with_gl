@@ -135,9 +135,10 @@ namespace opengl3
             return ps;
         }
 
-        public static PointF[] detectLineDiff(Mat mat, int wind = 3,ImageBox imageBox = null)
+        public static PointF[] detectLineDiff(Mat mat, int wind = 3,float board = 0.05f)
         {
             var ps = new PointF[mat.Width];
+            var ps_list = new List<PointF>();
             var rgb = mat.Split();
             var fr = new Mat();
             var fg = new Mat();
@@ -166,7 +167,7 @@ namespace opengl3
             var data_sob = (byte[,])sob.GetData();
             var data = (float[,])matAll.GetData();
             var br_max = int.MinValue;
-            for (int i = 0; i < data.GetLength(1); i++)
+            for (int i = (int)(board* data.GetLength(1)); i < data.GetLength(1)- (int)(board * data.GetLength(1)); i++)
             {
                 br_max = int.MinValue;
                 int j_max = 0;
@@ -184,16 +185,14 @@ namespace opengl3
                     }
                 }
                 
-                ps[i] = new PointF(i, j_max);
+                //ps[i] = new PointF(i, j_max);
+                ps_list.Add(new PointF(i, j_max));
 
             }
+            ps = ps_list.ToArray();
+            //medianFilter(ps);
+            //gaussFilter(ps);
 
-            var ps_med = medianFilter(ps);
-            gaussFilter(ps);
-            if (imageBox != null)
-            {              
-                //imageBox.Image = UtilOpenCV.drawPointsF(mat.Clone(), ps, 255, 0, 0);
-            }
             GC.Collect();
             return ps;
         }

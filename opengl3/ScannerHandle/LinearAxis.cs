@@ -88,7 +88,12 @@ namespace opengl3
             
             var las = new LaserSurface(mats, origs, cameraCV, patternType);
             PositionsAxis.Add(position);
+            if (LasFlats.Count > 0)
+            {
+                Console.WriteLine(position);
+            }
             LasFlats.Add(las.flat3D);
+            
             return true;
             
         }

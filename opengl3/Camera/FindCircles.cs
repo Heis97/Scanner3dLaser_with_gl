@@ -174,7 +174,7 @@ namespace opengl3
             var h_1 = (int)((double)size.Height / (double)k1);
             return new Size(w_1, h_1);
         }
-        static Image<Gray, byte> sobel(Image<Gray, byte> im)
+        static public Image<Gray, byte> sobel(Image<Gray, byte> im)
         {
             var size_1 = calcSize(im.Size);
             var im_sob = new Image<Gray, byte>(im.Size);
@@ -194,7 +194,6 @@ namespace opengl3
                         im_sob.Data[y, x, 0] = 255;
                     }
                     else
-
                     {
                         im_sob.Data[y, x, 0] = (byte)sob;
                     }

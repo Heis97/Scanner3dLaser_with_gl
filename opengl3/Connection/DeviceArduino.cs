@@ -12,7 +12,7 @@ namespace opengl3
 {
     public class DeviceArduino
     {
-        SerialPort serialPort;
+        protected SerialPort serialPort;
         protected bool isConnected = false;
 
         protected DeviceArduino()
@@ -92,7 +92,10 @@ namespace opengl3
                 }
             }
         }
-    
+        public  string reseav()
+        {
+            return serialPort.ReadExisting();
+        }
         private async void func(int val,int var)
         {
             while (isConnected == true)

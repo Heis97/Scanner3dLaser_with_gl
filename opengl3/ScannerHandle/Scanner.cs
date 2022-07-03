@@ -26,7 +26,10 @@ namespace opengl3
             linearAxis = new LinearAxis();
 
         }
-
+        public void clearPoints()
+        {
+            pointCloud.clearPoints();
+        }
         public bool calibrateLaser(Mat[] mats,PatternType patternType,GraphicGL graphicGL = null)
         {
             return laserSurface.calibrate(mats,null, cameraCV, patternType, graphicGL);

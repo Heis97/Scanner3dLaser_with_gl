@@ -180,5 +180,9 @@ namespace opengl3
             return ret;
         }
 
+        public override string ToString()
+        {
+            return X + " " + Y;
+        }
     }
 }

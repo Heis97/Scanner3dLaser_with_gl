@@ -25,12 +25,12 @@ namespace opengl3
 
             return new Frame[][] { frm1.ToArray(), frm2.ToArray() };
         }
-        static public Frame[] loadPathsDiff(string[] paths, FrameType frameType)
+        static public Frame[] loadPathsDiff(string[] paths, FrameType frameType, PatternType patternType,CameraCV cameraCV = null, bool undist = false)
         {
             var frm1 = new List<Frame>();
             for (int i = 0; i < paths.Length; i++)
             {
-                frm1.AddRange(loadImages_diff(paths[i], frameType));
+                frm1.AddRange(loadImages_diff(paths[i], frameType, patternType,null,cameraCV,undist));
 
             }
 
@@ -266,14 +266,7 @@ namespace opengl3
             fr.dateTime = File.GetCreationTime(filepath);
             return fr;
         }
-        static public Frame loadImage_diff(string filepath, FrameType frameType,PatternType patternType)
-        {
-            string name = Path.GetFileName(filepath);
-            var im = new Mat(filepath);
-            var fr = new Frame(im, name, frameType,patternType);
-            fr.dateTime = File.GetCreationTime(filepath);
-            return fr;
-        }
+        
         static public Frame loadImage_chess(string filepath)
         {
             string name = Path.GetFileName(filepath);
@@ -405,7 +398,44 @@ namespace opengl3
             }
             return null;
         }
-        static public Frame[] loadImages_diff(string path, FrameType frameType,PatternType patternType,string path_orig=null)
+
+
+        static public Frame loadImage_diff(string filepath, FrameType frameType, PatternType patternType,
+            CameraCV cameraCV = null,
+            bool undist = false)
+        {
+            string name = Path.GetFileName(filepath);
+            var im = undistMat(new Mat(filepath),cameraCV,undist);
+            var fr = new Frame(im, name, frameType, patternType);
+            fr.dateTime = File.GetCreationTime(filepath);
+            return fr;
+        }
+        static Mat undistMat(Mat _mat, CameraCV cameraCV = null,bool undist = false)
+        {
+            if(cameraCV!=null)
+            {
+                if(undist)
+                {
+                    return cameraCV.undist(_mat);
+                }
+                else
+                {
+                    return _mat;
+                }
+            }
+            else
+            {
+                return _mat;
+            }
+           
+        }
+        static public Frame[] loadImages_diff(
+            string path,
+            FrameType frameType,
+            PatternType patternType,
+            string path_orig=null,
+            CameraCV cameraCV=null,
+            bool undist = false)
         {
             var files = Directory.GetFiles(path);
 
@@ -414,14 +444,14 @@ namespace opengl3
             foreach (string file in files)
             {
                 //Console.WriteLine(file);
-                var frame = loadImage_diff(file, frameType, patternType);
+                var frame = loadImage_diff(file, frameType, patternType,cameraCV,undist);
                 
                 if (frame != null)
                 {
                     if(path_orig != null)
                     {
                         var files_orig = Directory.GetFiles(path_orig);
-                        frame.im_sec = new Mat(files_orig[0]);
+                        frame.im_sec = undistMat(new Mat(files_orig[0]),cameraCV,undist);
                     }
                    
                     frames.Add(frame);

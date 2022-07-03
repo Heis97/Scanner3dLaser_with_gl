@@ -45,9 +45,9 @@ namespace opengl3
         int LightPowerID;
         int MaterialDiffuseID;
         int MaterialAmbientID;
-        int currentMonitor = 1;
+        int currentMonitor = 0;
         int MaterialSpecularID;
-        float LightPower = 500000.0f;
+        float LightPower = 1000000.0f;
         Label Label_cor;
         Label Label_cor_cur;
         Label Label_trz_cur;
@@ -77,6 +77,7 @@ namespace opengl3
         Point locationBox = new Point(0, 0);
         #endregion
        
+
         public void glControl_Render(object sender, GlControlEventArgs e)
         {
             MVPs = new Matrix4x4f[4];

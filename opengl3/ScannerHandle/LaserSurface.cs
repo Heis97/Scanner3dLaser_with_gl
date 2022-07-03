@@ -54,15 +54,14 @@ namespace opengl3
 
         static Point3d_GL[] points3dInCam(Mat mat, Mat orig, CameraCV cameraCV,PatternType patternType,GraphicGL graphicGL = null,bool compPos = true)
         {
-            //var points = Detection.detectLine(cameraCV.undist(mat));
             var points = Detection.detectLineDiff(mat,5);
             var ps = takePointsForFlat(points);
+            Console.Write(ps[0] + " " + ps[1]);
             if(compPos)
             {
                 if(orig!=null)
                 {
                     cameraCV.compPos(orig, patternType);
-                   // prin.t(cameraCV.matrixSC);
                 }
                 else
                 {

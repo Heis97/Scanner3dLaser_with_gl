@@ -1184,6 +1184,39 @@ namespace opengl3
             // return gray.Mat;
         }
 
+        static public Mat drawInsideRectCirc(Mat im, Size size,bool blur = false)
+        {
+            if (im == null)
+            {
+                return null;
+            }
+            var mat_ch = im.Clone();
+            var gray = mat_ch.ToImage<Gray, byte>();
+
+            if (blur)
+            {
+                CvInvoke.GaussianBlur(gray, gray, new Size(5, 5), 0);
+            }
+
+            var len = size.Width * size.Height;
+            var corn = new System.Drawing.PointF[len];
+            FindCircles.findCircles(im, corn, size);
+
+            var gab = takeGabObp(corn, size);
+            var ps_ins = GeometryAnalyse.compPointsInsideRectWarp(gab, size);
+
+            //perspective2Dmatr(size, corn);
+
+            Console.WriteLine("chess: "  + size.Width + " " + size.Height);
+
+            //CvInvoke.DrawChessboardCorners(mat_ch, size, corn, ret);
+            //drawPointsF(mat_ch, ps_ins, 255, 0, 0, 2);
+            //drawPointsF(mat_ch, gab, 0, 255, 0, 4);
+            drawMatches(mat_ch, ps_ins, corn, 255, 0, 0);
+            return mat_ch;
+            // return gray.Mat;
+        }
+
 
         static Mat perspective2Dmatr(Size size,VectorOfPointF corn)
         {

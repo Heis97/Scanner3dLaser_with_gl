@@ -353,8 +353,10 @@ namespace opengl3
             setPos();
             return pos;
         }
-        public bool compPos(Mat mat, PatternType patternType)
+        public bool compPos(Mat _mat, PatternType patternType)
         {
+            var mat = _mat.Clone();
+
             if (patternType == PatternType.Chess)
             {
                 Size size_patt = new Size(6, 7);
@@ -422,9 +424,9 @@ namespace opengl3
 
         public Mat undist(Mat mat)
         {
-            var mat_ret = new Mat();
-            CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
-            return mat_ret;
+            //var mat_ret = new Mat();
+            CvInvoke.Remap(mat, mat, mapx, mapy, Inter.Linear);
+            return mat;
         }
 
         void calibrateCam(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)

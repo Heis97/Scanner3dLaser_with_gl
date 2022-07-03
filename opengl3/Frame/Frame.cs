@@ -82,7 +82,7 @@ namespace opengl3
             frameType = _frameType;
             if(frameType == FrameType.LasLin || frameType == FrameType.LasDif)
             {
-                linPos = posLinFromName(name);
+                linPos = posLinFromNameDouble(name);
             }
             patternType = _patternType;
         }
@@ -151,6 +151,22 @@ namespace opengl3
             catch
             {
 
+            }
+            Console.WriteLine(val);
+            return val;
+        }
+
+        static double posLinFromNameDouble(string name)
+        {
+            double val = 0;
+            var names = name.Split('.');
+            if(names.Length==2)
+            {
+                val = Convert.ToDouble(names[0]);
+            }
+            if (names.Length == 3)
+            {
+                val = Convert.ToDouble(names[0]+'.'+ names[1]);
             }
             Console.WriteLine(val);
             return val;

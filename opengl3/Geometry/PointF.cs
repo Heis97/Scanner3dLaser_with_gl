@@ -210,7 +210,7 @@ namespace opengl3
         }
         public override string ToString()
         {
-            return X.ToString() + " " + Y.ToString() + ";";
+            return X.ToString() + " " + Y.ToString()+" ";
         }
 
     }

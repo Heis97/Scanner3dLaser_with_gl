@@ -18,6 +18,12 @@ namespace opengl3
             points3d = new Point3d_GL[0];
             points3d_lines = new  List<Point3d_GL[]>();
         }
+
+        public void clearPoints()
+        {
+            points3d = new Point3d_GL[0];
+            points3d_lines = new List<Point3d_GL[]>();
+        }
         public bool addPoints(Mat mat, CameraCV cameraCV,LaserSurface laserSurface)
         {
             //var points_im = Detection.detectLine(cameraCV.undist(mat));
@@ -48,8 +54,9 @@ namespace opengl3
 
         public bool addPointsLinLas(Mat mat, double LinPos, CameraCV cameraCV, LinearAxis linearAxis,Mat orig,PatternType patternType)
         {
-            cameraCV.compPos(orig, patternType);
-            var points_im = Detection.detectLineDiff(cameraCV.undist(mat));
+
+            cameraCV.compPos(orig, patternType);  
+            var points_im = Detection.detectLineDiff(mat);
             //var points_im = Detection.detectLineDiff(mat);
             var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
             points3d_cur = camToScene(points_cam, cameraCV.matrixCS);
