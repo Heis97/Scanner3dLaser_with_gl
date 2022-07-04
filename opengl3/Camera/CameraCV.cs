@@ -424,6 +424,7 @@ namespace opengl3
 
         public Mat undist(Mat mat)
         {
+            Console.WriteLine("undist");
             //var mat_ret = new Mat();
             CvInvoke.Remap(mat, mat, mapx, mapy, Inter.Linear);
             return mat;

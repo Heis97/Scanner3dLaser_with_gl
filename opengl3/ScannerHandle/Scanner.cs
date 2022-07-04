@@ -113,5 +113,9 @@ namespace opengl3
         {
             return Point3d_GL.multMatr(pointCloud.points3d,cameraCV.matrixSC);
         }
+        public Point3d_GL[][] getPointsLinesCam()
+        {
+            return Point3d_GL.multMatr(pointCloud.points3d_lines.ToArray(), cameraCV.matrixSC);
+        }
     }
 }

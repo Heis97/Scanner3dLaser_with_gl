@@ -28,13 +28,14 @@ namespace opengl3
             return sum;
         }
 
-        void sendCommand(string[] vars, object[] vals)
+
+        void sendCommand(string com,string[] vars, object[] vals)
         {
             if (vars.Length != vals.Length)
             {
                 return;
             }
-            var command = "N"+ cur_com.ToString()+ " G1";
+            var command = "N"+ cur_com.ToString()+ " "+ com;
             for(int i=0; i<vars.Length;i++)
             {
                 command += " " + vars[i] + vals[i].ToString();
@@ -69,8 +70,9 @@ namespace opengl3
         }
 
         void sendXpos(double pos)
-        {            
-            sendCommand(new string[] { "X","F" }, new object[] { pos,6 });
+        {
+            sendCommand("M92", new string[] { "X"}, new object[] { 1 });
+            sendCommand("G1",new string[] { "X","F" }, new object[] { pos,24000 });
         }
 
 

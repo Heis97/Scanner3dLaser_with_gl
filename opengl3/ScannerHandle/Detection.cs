@@ -122,6 +122,7 @@ namespace opengl3
 
                 if (j_max != 0)
                 {
+
                     ps[i] = new PointF(i, j_max);
                 }
                 else
@@ -184,9 +185,33 @@ namespace opengl3
                         j_max = j;
                     }
                 }
-                
+                if (j_max != 0)
+                {
+                    var _wind = 3 * wind;
+                    var col = new int[_wind, 2];
+                    for (int k = 0; k < _wind; k++)
+                    {
+                        var j = k + j_max - _wind / 2;
+                        if (j < 0)
+                        {
+                            j = 0;
+                        }
+                        if (j >= data.GetLength(0))
+                        {
+                            j = data.GetLength(0) - 1;
+                        }
+                        col[k, 0] = j;
+                        col[k, 1] = (int)data[j, i];
+                    }
+                    var j_max_2 = centerOfMass(col);
+                    //var j_max_2 = localMax(col);
+                    //ps[i] = new PointF(i, j_max_2);
+
+                    ps_list.Add(new PointF(i, j_max_2));
+
+                }
                 //ps[i] = new PointF(i, j_max);
-                ps_list.Add(new PointF(i, j_max));
+                
 
             }
             ps = ps_list.ToArray();

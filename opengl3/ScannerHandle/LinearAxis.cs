@@ -38,6 +38,7 @@ namespace opengl3
 
         public bool calibrateLas(Mat[][] mats, Mat[] origs, double[] positions, CameraCV cameraCV, PatternType patternType, GraphicGL graphicGL)
         {
+
             if (addLaserFlats(mats, origs, positions, cameraCV, patternType))
             {
                 compOneFlat();
@@ -90,10 +91,12 @@ namespace opengl3
             PositionsAxis.Add(position);
             if (LasFlats.Count > 0)
             {
-                Console.WriteLine(position);
+                //Console.WriteLine(position);
+
             }
             LasFlats.Add(las.flat3D);
-            
+            Console.WriteLine(las.flat3D + " " + position);
+
             return true;
             
         }
@@ -101,15 +104,29 @@ namespace opengl3
         {
             LasFlats = new List<Flat3d_GL>();
             PositionsAxis = new List<double>();
+           
+           var sob_im = FindCircles.sobel(origs[0].ToImage<Gray, byte>()).Convert<Bgr, byte>().Mat;
+            
             if (mats[0].Length == positions.Length)
             {
                 int j = 0;
                 for (int i = 0; i < mats[0].Length; i++)
                 {
-                    if (addLasFlat(new Mat[] { mats[0][i], mats[1][i] }, origs, positions[i], cameraCV, patternType))
+                    if(mats.Length==2)
                     {
-                        j++;
+                        if (addLasFlat(new Mat[] { mats[0][i], mats[1][i] }, origs, positions[i], cameraCV, patternType))
+                        {
+                            j++;
+                        }
                     }
+                    if(mats.Length == 1)
+                    {
+                        if (addLasFlat(new Mat[] { mats[0][i] - sob_im }, origs, positions[i], cameraCV, patternType))
+                        {
+                            j++;
+                        }
+                    }
+                    
                 }
                 if (j > 1)
                 {
@@ -127,7 +144,9 @@ namespace opengl3
 
         void compOneFlat()
         {
-            oneLasFlat = (LasFlats[LasFlats.Count - 1] - LasFlats[0]) / (PositionsAxis[PositionsAxis.Count - 1] - PositionsAxis[0]);
+            int next_val = (int)(LasFlats.Count / 2) - 1;
+            next_val = 10;
+            oneLasFlat = (LasFlats[next_val] - LasFlats[0]) / (PositionsAxis[next_val] - PositionsAxis[0]);
             Console.WriteLine(oneLasFlat);
         }
 
