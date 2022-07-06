@@ -39,6 +39,7 @@ namespace opengl3
         public Matrix<double> matrixCS;
         public Matrix<double> matrixSC;
         public Size image_size;
+        public float mark_size = 10f;
 
         #region monitCalib
         public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern, bool gen_board = false, bool affine = true)
@@ -350,6 +351,13 @@ namespace opengl3
             var matrs = assemblMatrix(cur_r, cur_t);
             matrixCS = matrs[0];
             matrixSC = matrs[1];
+
+            var points_cam = PointCloud.fromLines(PointF.toPointF( points2D), this, LaserSurface.zeroFlatInCam(this.matrixSC));
+            var points3d_cur = PointCloud.camToScene(points_cam, this.matrixCS);
+            prin.t(this.matrixSC);
+            prin.t(this.matrixCS);
+            Console.WriteLine("points3d_cur");
+            foreach (var p in points3d_cur) Console.WriteLine(p);
             setPos();
             return pos;
         }
@@ -363,7 +371,7 @@ namespace opengl3
                 var mat1 = mat.Clone();
                 var gray = mat.ToImage<Gray, byte>();
                 var corn = new VectorOfPointF();
-                float markSize = 10;
+                float markSize = this.mark_size;
                 var obp = new MCvPoint3D32f[size_patt.Width * size_patt.Height];
                 int ind = 0;
                 for (int j = 0; j < size_patt.Height; j++)
@@ -397,7 +405,7 @@ namespace opengl3
             else if (patternType == PatternType.Mesh)
             {
                 Size size_patt = new Size(7, 7);
-                float markSize = 30;
+                float markSize = this.mark_size;
                 var points3d = new MCvPoint3D32f[]
                 {
                     new MCvPoint3D32f(0,0,0),new MCvPoint3D32f(markSize,0,0),
@@ -433,7 +441,7 @@ namespace opengl3
         void calibrateCam(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
             this.frames = frames;
-
+            this.mark_size = markSize;
             Matrix<double> _cameramatrix = new Matrix<double>(3, 3);
             Matrix<double> _distortmatrix = new Matrix<double>(5, 1);
 
@@ -515,6 +523,7 @@ namespace opengl3
 
             var und_pic = new Mat();
             CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
+            //_cameramatrix[1, 2] = _cameramatrix[0, 2];
             cameramatrix = _cameramatrix;
             cameramatrix_inv = invMatrix(cameramatrix);
             distortmatrix = _distortmatrix;

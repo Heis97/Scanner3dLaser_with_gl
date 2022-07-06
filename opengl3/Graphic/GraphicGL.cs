@@ -1022,6 +1022,68 @@ namespace opengl3
             addFrame(cam.pos, cam.pos + cam.oX * frame_len, cam.pos + cam.oY * frame_len, cam.pos + cam.oZ * frame_len * 1.3);
         }
 
+        public void addFlat3d_XZ(Flat3d_GL flat3D_GL, Matrix<double> matrix=null)
+        {
+            var p0 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, -10))).calcCrossFlat(flat3D_GL);
+            var p1 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, -10))).calcCrossFlat(flat3D_GL);
+
+            var p2 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, 100))).calcCrossFlat(flat3D_GL);
+            var p3 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, 100))).calcCrossFlat(flat3D_GL);
+
+            if(matrix!=null)
+            {
+                p0 = matrix * p0;
+                p1 = matrix * p1;
+                p2 = matrix * p2;
+                p3 = matrix * p3;
+            }
+
+            var ps = new Point3d_GL[]
+            {
+                p1,p3,p2,
+                p2,p0,p1
+            };
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles);
+
+        }
+
+ 
+        
+        public void addFlat3d_XY_zero(double z = 0)
+        {
+            Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, z), new Point3d_GL(10, 10, z), new Point3d_GL(0, 10, z));
+            var p0 = (new Line3d_GL(new Vector3d_GL(0, 0, 10), new Point3d_GL(-50,  -10,0))).calcCrossFlat(flat3D_GL);
+            var p1 = (new Line3d_GL(new Vector3d_GL(0, 0, 10), new Point3d_GL(50,  -10,0))).calcCrossFlat(flat3D_GL);
+
+            var p2 = (new Line3d_GL(new Vector3d_GL(0, 0, 10), new Point3d_GL(-50,  100,0))).calcCrossFlat(flat3D_GL);
+            var p3 = (new Line3d_GL(new Vector3d_GL(0, 0, 10), new Point3d_GL(50, 100,0))).calcCrossFlat(flat3D_GL);
+
+            var ps = new Point3d_GL[]
+            {
+                p1,p3,p2,
+                p2,p0,p1
+            };
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles);
+
+        }
+
+        public void addFlat3d_XZ_zero()
+        {
+            Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, 0), new Point3d_GL(10, 0, 10), new Point3d_GL(0, 0, 10));
+            var p0 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, -10))).calcCrossFlat(flat3D_GL);
+            var p1 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, -10))).calcCrossFlat(flat3D_GL);
+
+            var p2 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, 100))).calcCrossFlat(flat3D_GL);
+            var p3 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, 100))).calcCrossFlat(flat3D_GL);
+
+            var ps = new Point3d_GL[]
+            {
+                p1,p3,p2,
+                p2,p0,p1
+            };
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles);
+
+        }
         public void addFrame_Cam(CameraCV cam, int frame_len = 15)
         {
             var posit = cam.matrixCS * new Point3d_GL(0, 0, 0);

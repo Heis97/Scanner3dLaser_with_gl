@@ -9,8 +9,8 @@ namespace opengl3
 
     public struct Line3d_GL
     {
-        public Point3d_GL k;
-        public Point3d_GL p;
+        public Point3d_GL k;//delt
+        public Point3d_GL p;//start_point
         public Line3d_GL(Vector3d_GL _k, Point3d_GL _p)
         {
             k = new Point3d_GL(_k.x, _k.y, _k.z);
@@ -18,9 +18,12 @@ namespace opengl3
         }
         public Line3d_GL(Point3d_GL _k, Point3d_GL _p)
         {
-            k = _k;
+            k = new Point3d_GL(_k.x-_p.x, _k.y - _p.y, _k.z - _p.z);
             p = _p;
         }
+
+
+
         public Point3d_GL calcCrossFlat(Flat3d_GL F)
         {
 

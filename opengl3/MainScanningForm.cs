@@ -39,8 +39,8 @@ namespace opengl3
         Matrix<double> persp_matr = new Matrix<double>(new double[3,3] { {1,0,0},{0,1,0 },{0,0,1 } });
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
-        float markSize = 10f;
-        Size chess_size = new Size(7, 8);
+        float markSize = 2.5f;
+        Size chess_size = new Size(6, 7);
         Size chess_size_real = new Size(6, 7);
         StereoCameraCV stereocam = new StereoCameraCV();
         CameraCV cameraCVcommon;
@@ -122,7 +122,7 @@ namespace opengl3
 
             //loadScanner();
             //loadStereo(); 
-            //loadScannerLin(new string[] { @"cam1\camera_cal_1006_1" }, @"cam1\las_cal_2606_2\1", @"cam1\lin_cal_2606_1\1", @"cam1\scan_2606_1\dif",new float[] { 0.1f,0.5f,0.5f });
+           // loadScannerLin(new string[] { @"cam1\camera_cal_1006_1" }, @"cam1\las_cal_2606_2\1", @"cam1\lin_cal_2606_1", @"cam1\scan_2606_1\dif",new float[] { 0.1f,0.5f,0.5f });
             //loadScannerLin(new string[] { @"cam2\camera_cal_1006_1" }, @"cam2\las_cal_1006_1\1", @"cam2\lin_cal_3\1", @"cam2\scan_1006_3\dif", new float[] { 0.1f, 0.9f, 0.1f });
 
            /* loadScannerLinLas(
@@ -133,12 +133,12 @@ namespace opengl3
                 new float[] { 0.5f, 0.5f, 0.1f }, true);*/
 
             loadScannerLinLas(
-                new string[] { @"cam1\cdwz0307" },
-                new string[] { @"cam1\las_cal_0407_4"},
+                new string[] { @"cam1\camera_cal_1006_1" },
+                new string[] { @"cam1\las_cal_0407_4\1"},
                 new string[] { @"cam1\las_cal_0407_4\orig" },
                 //@"cam1\las_cal_0407_1", @"cam1\las_cal_0407_1\orig",
 
-                @"cam1\las_cal_0407_4", @"cam1\las_cal_0407_4\orig",
+                @"cam1\las_cal_0407_4\1", @"cam1\las_cal_0407_4\orig",
                 new float[] { 0.5f, 0.5f, 0.1f }, false);
             GL1.buffersGl.sortObj();
         }
@@ -247,13 +247,14 @@ namespace opengl3
 
         void loadScannerLin(string[] cam_cal_paths, string las_cal_path, string lin_cal_path, string scand_path,float[] normrgb)
         {
-
+            Console.WriteLine("load frms lin cal");
             var frms_lin_cal = FrameLoader.loadImages_diff(lin_cal_path, FrameType.LasLin, PatternType.Chess);
+            Console.WriteLine("load frms las cal");
             var frms_las_cal = FrameLoader.loadImages_diff(las_cal_path, FrameType.LasLin, PatternType.Chess);
             //var frms_scan = FrameLoader.loadImages_diff(scan_path, FrameType.LasLin, PatternType.Chess);
-
+            Console.WriteLine("load frms scan");
             var frms_scan_diff = FrameLoader.loadImages_diff(scand_path, FrameType.LasDif, PatternType.Chess);
-
+            Console.WriteLine("load frms cam cal");
             var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.MarkBoard, PatternType.Chess);
             var cam1 = new CameraCV(frms, new Size(6, 7), markSize, null);
 
@@ -321,9 +322,11 @@ namespace opengl3
             float[] normrgb,bool undist)
         {
 
-            var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.Pattern, PatternType.Mesh);
-            var cam1 = new CameraCV(frms, new Size(7, 8), markSize, null);
+            var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.MarkBoard, PatternType.Mesh);
+            var cam1 = new CameraCV(frms, new Size(6, 7), markSize, null);
             cameraCVcommon = cam1;
+
+
             //var frms_scan_diff = FrameLoader.loadImages_diff(scand_path, FrameType.LasDif, PatternType.Chess, scand_orig_path, cam1, undist);
             //comboImages.Items.AddRange(frms_scan_diff);
 
@@ -333,21 +336,27 @@ namespace opengl3
 
              var orig = FrameLoader.loadPathsDiff(las_cal_orig_path, FrameType.MarkBoard, PatternType.Chess, cam1, undist);
              var orig_scan = FrameLoader.loadPathsDiff(new string[] { scand_orig_path }, FrameType.MarkBoard, PatternType.Chess, cam1, undist);
-
+            GL1.addFlat3d_XY_zero(0);
+            GL1.addFlat3d_XY_zero(4);
             var frms_las_cal_scan = FrameLoader.loadPathsDiff(new string[] { las_cal_orig_path[0] }, FrameType.MarkBoard, PatternType.Chess, cam1, undist);
             //comboImages.Items.AddRange(frms_las_cal_0);
             var scanner1 = new Scanner(cam1);
-
-            
+            scanner1.linearAxis.GraphicGL = GL1;
             //if (scanner1.calibrateLinearLas(new Mat[][] { Frame.getMats(frms_las_cal_0), Frame.getMats(frms_las_cal_1) }, Frame.getMats(orig), Frame.getLinPos(frms_las_cal_0), PatternType.Chess, GL1))
-            if (scanner1.calibrateLinearLas(new Mat[][] { Frame.getMats(frms_las_cal_0) }, Frame.getMats(orig), Frame.getLinPos(frms_las_cal_0), PatternType.Chess, GL1))
+            if (scanner1.calibrateLinearLas(
+                new Mat[][] { Frame.getMats(frms_las_cal_0) },
+                Frame.getMats(orig),
+                Frame.getLinPos(frms_las_cal_0),
+                PatternType.Chess, GL1))
             {
-                
-                
                 //frms_las_cal_1 = null;
                 Console.WriteLine("CalibLin Done________________________");
                 //var lins = scanner1.addPointsLinLas(Frame.getMats(frms_scan_diff), Frame.getLinPos(frms_scan_diff), Frame.getMats(orig_scan)[0], PatternType.Chess);
-                var lins = scanner1.addPointsLinLas(Frame.getMats(frms_las_cal_0), Frame.getLinPos(frms_las_cal_0), FrameLoader.loadImages_diff(las_cal_orig_path[0],FrameType.MarkBoard)[0].im, PatternType.Chess);
+                var lins = scanner1.addPointsLinLas(
+                    Frame.getMats(frms_las_cal_0),
+                    Frame.getLinPos(frms_las_cal_0),
+                    UtilOpenCV.resizeMat(FrameLoader.loadImages_diff(las_cal_orig_path[0],FrameType.MarkBoard)[0].im),
+                    PatternType.Chess);
                 frms_las_cal_0 = null;
                 GC.Collect();
                 //var lins = 0;
@@ -986,6 +995,9 @@ namespace opengl3
                 {
                     imBox_debug1.Image = UtilOpenCV.drawChessboard(fr.im, new Size(6, 7));
                     imageBox1.Image = UtilOpenCV.drawInsideRectChessboard(fr.im, new Size(6, 7));
+
+                    cameraCVcommon.compPos(fr.im, PatternType.Chess);
+
 
                 }
                 else if (fr.frameType == FrameType.Pattern)

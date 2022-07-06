@@ -126,6 +126,7 @@ namespace opengl3
             }
         }
 
+
         public static Point[] find2Points(LineF ab, Size size)
         {
             if (ab == null)

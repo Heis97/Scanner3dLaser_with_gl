@@ -94,17 +94,15 @@ namespace opengl3
             ps3d.AddRange( PointCloud.intersectWithFlat(new Line3d_GL[] { lines[0], lines[1] }, zeroFlatInCam(cameraCV.matrixSC,z)));
             if (oneMat)
             {
-                z = 16;
+                z = 4;
+                ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[2], lines[3] }, zeroFlatInCam(cameraCV.matrixSC, z)));
             }
-            ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[2], lines[3] }, zeroFlatInCam(cameraCV.matrixSC, z)));
+            
             return ps3d.ToArray();          
         }
 
         public static PointF[] takePointsForFlat(PointF[] ps,bool oneMat=false)
         {
-
-            
-            
             if(oneMat)
             {
                 var quart = (int)(ps.Length / 30);
@@ -128,7 +126,7 @@ namespace opengl3
            
         }
 
-        static Flat3d_GL zeroFlatInCam(Matrix<double> matrix,double z = 0)
+        public static Flat3d_GL zeroFlatInCam(Matrix<double> matrix,double z = 0)
         {
             if(matrix ==null)
             {

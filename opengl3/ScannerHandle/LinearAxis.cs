@@ -19,6 +19,8 @@ namespace opengl3
         Matrix<double> oneMatrix = new Matrix<double>(4, 4);
         Flat3d_GL oneLasFlat = new Flat3d_GL(1,0,0,0);
         bool calibrated = false;
+        public GraphicGL GraphicGL;
+        Matrix<double> cur_matrix_cam;
         public LinearAxis()
         {
             MatrixesCamera= new List<Matrix<double>>();
@@ -75,6 +77,7 @@ namespace opengl3
         {
             if (cameraCV.compPos(mat, patternType))
             {
+                Console.WriteLine(cameraCV.matrixCS[0,3]+" "+ cameraCV.matrixCS[1, 3]+" "+ cameraCV.matrixCS[2, 3]+" "+ position);
                 MatrixesCamera.Add(cameraCV.matrixCS);
                 PositionsAxis.Add(position);
                 return true;
@@ -88,6 +91,7 @@ namespace opengl3
         {
             
             var las = new LaserSurface(mats, origs, cameraCV, patternType);
+            cur_matrix_cam = cameraCV.matrixCS;
             PositionsAxis.Add(position);
             if (LasFlats.Count > 0)
             {
@@ -95,11 +99,13 @@ namespace opengl3
 
             }
             LasFlats.Add(las.flat3D);
+            //GraphicGL?.addFlat3d_XZ(las.flat3D);
             Console.WriteLine(las.flat3D + " " + position);
 
             return true;
             
         }
+
         bool addLaserFlats(Mat[][] mats, Mat[] origs, double[] positions,CameraCV cameraCV, PatternType patternType)
         {
             LasFlats = new List<Flat3d_GL>();
@@ -167,6 +173,7 @@ namespace opengl3
             {
                 var delPos = PositionLinear - PositionsAxis[0];
                 var lasFlat = LasFlats[0] + oneLasFlat * delPos;
+                GraphicGL?.addFlat3d_XZ(lasFlat,cur_matrix_cam);
                 return lasFlat;
             }
             return new Flat3d_GL();

@@ -104,7 +104,7 @@ namespace opengl3
             {
                 mats[i] = frames[i].im;
             }
-            return mats;
+            return UtilOpenCV.resizeMats( mats);
         }
 
         static public Mat[][] getMats(Frame[][] frames)
@@ -166,7 +166,16 @@ namespace opengl3
             }
             if (names.Length == 3)
             {
-                val = Convert.ToDouble(names[0]+'.'+ names[1]);
+                if(names[1]=="png")
+                {
+                    val = Convert.ToDouble(names[0]);
+                    
+                }
+                else
+                {
+                    val = Convert.ToDouble(names[0] + '.' + names[1]);
+                }
+                
             }
             Console.WriteLine(val);
             return val;

@@ -16,7 +16,7 @@ namespace opengl3
         LaserSurface laserSurface;
         PointCloud pointCloud;
         CameraCV cameraCV;
-        LinearAxis linearAxis;
+        public LinearAxis linearAxis;
 
         public Scanner(CameraCV cam)
         {
@@ -67,7 +67,7 @@ namespace opengl3
             }
             for (int i = 0; i < mats.Length; i++)
             {
-                if (addPointsLinLas(mats[i]- orig, linPos[i],orig,patternType))
+                if (addPointsLinLas(mats[i] - orig, linPos[i],orig,patternType))
                 {
                     ret++;
                 }

@@ -151,10 +151,10 @@ namespace opengl3
 
             var matAll = (fr + fg + fb);
             //CvInvoke.Normalize(im1, im1, 255, 0);
-            var bin = new Mat();
+            //var bin = new Mat();
             var sob = new Mat();
-            var gray = new Mat();
-            var erros = new Mat();
+           // var gray = new Mat();
+            //var erros = new Mat();
 
             var kern3 = new Matrix<float>(new float[,] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } });
 

@@ -33,7 +33,22 @@ namespace opengl3
     }
     static public class UtilOpenCV
     {
-        
+        public static Mat[] resizeMats(Mat[] mats)
+        {
+            for (int i=0; i<mats.Length;i++)
+            {
+                mats[i] = resizeMat(mats[i]);
+            }
+            return mats;
+        }
+
+        public static Mat resizeMat(Mat mat)
+        {         
+            //CvInvoke.Resize(mat, mat, new Size(640, 640));         
+            return mat;
+        }
+
+
         public static MCvPoint3D32f[] takeGabObp(MCvPoint3D32f[] obp, Size patt_size)
         {
             var ps3d = new MCvPoint3D32f[4];
