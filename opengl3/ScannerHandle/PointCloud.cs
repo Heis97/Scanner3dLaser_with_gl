@@ -54,7 +54,6 @@ namespace opengl3
 
         public bool addPointsLinLas(Mat mat, double LinPos, CameraCV cameraCV, LinearAxis linearAxis,Mat orig,PatternType patternType)
         {
-
             cameraCV.compPos(orig, patternType);  
             var points_im = Detection.detectLineDiff(mat);
             //var points_im = Detection.detectLineDiff(mat);

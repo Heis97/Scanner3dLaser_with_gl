@@ -132,14 +132,14 @@ namespace opengl3
                 @"cam2\las_cal_0307_2a", @"cam2\las_cal_0307_2a\orig",
                 new float[] { 0.5f, 0.5f, 0.1f }, true);*/
 
-            loadScannerLinLas(
-                new string[] { @"cam1\calib_1_2505" },
+            /*loadScannerLinLas(
+                new string[] { @"cam1\camera_cal_1006_1" },
                 new string[] { @"cam1\las_cal_0407_4"},
                 new string[] { @"cam1\las_cal_0407_4\orig" },
                 //@"cam1\las_cal_0407_1", @"cam1\las_cal_0407_1\orig",
 
                 @"cam1\las_cal_0407_4", @"cam1\las_cal_0407_4\orig",
-                new float[] { 0.5f, 0.5f, 0.1f }, false);
+                new float[] { 0.5f, 0.5f, 0.1f }, true);*/
             GL1.buffersGl.sortObj();
         }
 
