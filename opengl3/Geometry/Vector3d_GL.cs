@@ -42,7 +42,21 @@ namespace opengl3
                 z /= n;
             }
         }
+
+        public static Vector3d_GL operator |(Vector3d_GL p1, Vector3d_GL p2)//vector multiply
+        {
+            return new Vector3d_GL(
+                  p1.y * p2.z - p1.z * p2.y,
+                  p1.z * p2.x - p1.x * p2.z,
+                  p1.x * p2.y - p1.y * p2.x);
+        }
+
         public static double operator *(Vector3d_GL p, Vector3d_GL p1)
+        {
+            return p.x * p1.x + p.y * p1.y + p.z * p1.z;
+        }
+
+        public static double operator *(Vector3d_GL p, Point3d_GL p1)
         {
             return p.x * p1.x + p.y * p1.y + p.z * p1.z;
         }

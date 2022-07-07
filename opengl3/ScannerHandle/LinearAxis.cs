@@ -18,9 +18,13 @@ namespace opengl3
         List<double> PositionsAxis;
         Matrix<double> oneMatrix = new Matrix<double>(4, 4);
         Flat3d_GL oneLasFlat = new Flat3d_GL(1,0,0,0);
+        Flat3d_GL start_LasFlat = new Flat3d_GL(1, 0, 0, 0);
+        double start_pos = 0;
+
         bool calibrated = false;
         public GraphicGL GraphicGL;
         Matrix<double> cur_matrix_cam;
+        int count_flats = 0;
         public LinearAxis()
         {
             MatrixesCamera= new List<Matrix<double>>();
@@ -77,7 +81,8 @@ namespace opengl3
         {
             if (cameraCV.compPos(mat, patternType))
             {
-                Console.WriteLine(cameraCV.matrixCS[0,3]+" "+ cameraCV.matrixCS[1, 3]+" "+ cameraCV.matrixCS[2, 3]+" "+ position);
+               //prin.t(cameraCV.matrixCS);
+               // Console.WriteLine(cameraCV.matrixCS[0,2]+" "+ cameraCV.matrixCS[1, 2]+" "+ cameraCV.matrixCS[2, 2]+" "+ position);
                 MatrixesCamera.Add(cameraCV.matrixCS);
                 PositionsAxis.Add(position);
                 return true;
@@ -87,23 +92,21 @@ namespace opengl3
                 return false;
             }
         }
+
         bool addLasFlat(Mat[] mats, Mat[] origs, double position, CameraCV cameraCV, PatternType patternType)
-        {
+        {            
             
-            var las = new LaserSurface(mats, origs, cameraCV, patternType);
-            cur_matrix_cam = cameraCV.matrixCS;
-            PositionsAxis.Add(position);
-            if (LasFlats.Count > 0)
+            if (count_flats % 1 ==0)
             {
-                //Console.WriteLine(position);
+                var las = new LaserSurface(mats, origs, cameraCV, patternType, true, GraphicGL);
+                cur_matrix_cam = cameraCV.matrixCS;
+                PositionsAxis.Add(position);
+                LasFlats.Add(las.flat3D);
+                Console.WriteLine(position);
 
             }
-            LasFlats.Add(las.flat3D);
-            //GraphicGL?.addFlat3d_XZ(las.flat3D);
-            Console.WriteLine(las.flat3D + " " + position);
-
-            return true;
-            
+            count_flats++;            
+            return true;            
         }
 
         bool addLaserFlats(Mat[][] mats, Mat[] origs, double[] positions,CameraCV cameraCV, PatternType patternType)
@@ -150,10 +153,22 @@ namespace opengl3
 
         void compOneFlat()
         {
-            int next_val = (int)(LasFlats.Count / 2) - 1;
-            next_val = 10;
-            oneLasFlat = (LasFlats[next_val] - LasFlats[0]) / (PositionsAxis[next_val] - PositionsAxis[0]);
-            Console.WriteLine(oneLasFlat);
+           /* int start_ind = (int)(LasFlats.Count / 2) + 1;
+            int end_ind = (int)(LasFlats.Count / 2) - 1;*/
+
+            int start_ind = (int)(LasFlats.Count ) - 1;
+            int end_ind = 1;
+
+            oneLasFlat = (LasFlats[end_ind] - LasFlats[start_ind]) / (PositionsAxis[end_ind] - PositionsAxis[start_ind]);
+
+            start_LasFlat = LasFlats[start_ind];
+            start_pos = PositionsAxis[start_ind];
+
+            Console.WriteLine("comp_flat");
+            /*Console.WriteLine(PositionsAxis[next_val + 1]+" "+ PositionsAxis[next_val - 1]);
+            GraphicGL?.addFlat3d_XZ(LasFlats[next_val + 1],null,0.1f,0.9f);
+            GraphicGL?.addFlat3d_XZ(LasFlats[next_val - 1], null, 0.1f, 0.9f);*/
+            Console.WriteLine(oneLasFlat*400);//for 1 mm
         }
 
         public Matrix<double> getMatrixCamera(double PositionLinear)
@@ -171,9 +186,9 @@ namespace opengl3
         {
             if (calibrated)
             {
-                var delPos = PositionLinear - PositionsAxis[0];
-                var lasFlat = LasFlats[0] + oneLasFlat * delPos;
-                GraphicGL?.addFlat3d_XZ(lasFlat,cur_matrix_cam);
+                var delPos = PositionLinear - start_pos;
+                var lasFlat = start_LasFlat + oneLasFlat * delPos;
+                //GraphicGL?.addFlat3d_XZ(lasFlat,cur_matrix_cam);
                 return lasFlat;
             }
             return new Flat3d_GL();

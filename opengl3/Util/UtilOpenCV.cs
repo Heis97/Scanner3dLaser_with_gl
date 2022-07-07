@@ -683,7 +683,8 @@ namespace opengl3
                 }
             }
         }
-        static public void drawTours(Mat im, PointF[] d_points, int r, int g, int b, int size = 4)
+
+        static public Mat drawTours(Mat im, PointF[] d_points, int r, int g, int b, int size = 4)
         {
             if (d_points != null)
             {
@@ -699,7 +700,9 @@ namespace opengl3
                     }
                 }
             }
+            return im;
         }
+
         static public void drawTours(Mat im, PointF[][] d_points, int r, int g, int b, int size = 4)
         {
             int ind = 0;

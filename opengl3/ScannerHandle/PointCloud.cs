@@ -80,6 +80,8 @@ namespace opengl3
             return points3d;
         }
 
+
+
         public static Point3d_GL[] fromLines(PointF[] points_im, CameraCV cameraCV, Flat3d_GL laserSurface)
         {
             var lines3d = computeTracesCam(points_im, cameraCV);
@@ -102,7 +104,7 @@ namespace opengl3
             return points3d;
         }
 
-        public static Line3d_GL[] computeTracesCam(PointF[] points_im, CameraCV cameraCV)
+        public static Line3d_GL[] computeTracesCam(PointF[] points_im, CameraCV cameraCV,GraphicGL graphicGL=null)
         {
             var lines3d = new Line3d_GL[points_im.Length];
             for(int i=0; i<lines3d.Length;i++)
@@ -111,7 +113,6 @@ namespace opengl3
                     cameraCV.point3DfromCam(points_im[i]),
                     new Point3d_GL(0, 0, 0));
             }
-
             return lines3d;
         }
 

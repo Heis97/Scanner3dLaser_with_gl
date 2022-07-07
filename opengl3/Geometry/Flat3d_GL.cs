@@ -21,7 +21,7 @@ namespace opengl3
             D = _D;
             exist = true;
         }
-        public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3)
+        public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3, Point3d_GL P4)
         {
             var x1 = P1.x;
             var y1 = P1.y;
@@ -38,6 +38,21 @@ namespace opengl3
             D = x1 * y2 * z3 - x1 * y3 * z2 - x2 * y1 * z3 + x2 * y3 * z1 + x3 * y1 * z2 - x3 * y2 * z1;
             exist = true;
         }
+
+        public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3)
+        {
+            var v1 = new Vector3d_GL(P1,P2);
+            var v2 = new Vector3d_GL(P1, P3);
+            var v3 = v1 | v2;//vector multiply
+            v3.normalize();
+            D = -v3 * P1;
+            A = v3.x;
+            B = v3.y;
+            C = v3.z;
+
+            exist = true;
+        }
+
         public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Flat3d_GL F)//perpendic
         {
             var x1 = P1.x;
@@ -59,6 +74,8 @@ namespace opengl3
             exist = true;
 
         }
+
+        //public 
 
         static public Flat3d_GL notExistFlat()
         {

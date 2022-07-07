@@ -1022,13 +1022,13 @@ namespace opengl3
             addFrame(cam.pos, cam.pos + cam.oX * frame_len, cam.pos + cam.oY * frame_len, cam.pos + cam.oZ * frame_len * 1.3);
         }
 
-        public void addFlat3d_XZ(Flat3d_GL flat3D_GL, Matrix<double> matrix=null)
+        public void addFlat3d_XZ(Flat3d_GL flat3D_GL, Matrix<double> matrix=null,float r = 0.1f,float g = 0.1f, float b = 0.1f)
         {
-            var p0 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, -10))).calcCrossFlat(flat3D_GL);
-            var p1 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, -10))).calcCrossFlat(flat3D_GL);
+            var p0 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, -1000))).calcCrossFlat(flat3D_GL);
+            var p1 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, -1000))).calcCrossFlat(flat3D_GL);
 
-            var p2 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, 100))).calcCrossFlat(flat3D_GL);
-            var p3 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, 100))).calcCrossFlat(flat3D_GL);
+            var p2 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, 1000))).calcCrossFlat(flat3D_GL);
+            var p3 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, 1000))).calcCrossFlat(flat3D_GL);
 
             if(matrix!=null)
             {
@@ -1041,9 +1041,11 @@ namespace opengl3
             var ps = new Point3d_GL[]
             {
                 p1,p3,p2,
-                p2,p0,p1
+                p2,p0,p1,
+
+
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles);
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,r,g,b);
 
         }
 

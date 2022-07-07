@@ -14,20 +14,23 @@ namespace opengl3
         {
             flat3D = computeSurface(points);
         }
-        public LaserSurface(Mat[] mats, Mat[] origs, CameraCV cameraCV, PatternType patternType, bool compPos = true)
+        public LaserSurface(Mat[] mats, Mat[] origs, CameraCV cameraCV, PatternType patternType, bool compPos = true,GraphicGL graphicGL = null)
         {
-            calibrate(mats, origs, cameraCV,patternType, null,compPos);
+            calibrate(mats, origs, cameraCV,patternType, graphicGL, compPos);
         }
         public LaserSurface()
         {
         }
-        public Flat3d_GL computeSurface(Point3d_GL[] points)
+        public Flat3d_GL computeSurface(Point3d_GL[] points, GraphicGL graphicGL = null)
         {
             if (points.Length < 3)
             {
                 return Flat3d_GL.notExistFlat();
             }
-            var flat = new Flat3d_GL(points[0], points[1], points[2]);
+            var flat = new Flat3d_GL(points[2], points[0], points[1]);
+            var flat1 = new Flat3d_GL(points[3], points[0], points[1]);
+
+            Console.Write(flat + " " + flat1+" ");
             return flat;
         }
         public bool calibrate(Mat[] mats, Mat[] origs, CameraCV cameraCV,PatternType patternType, GraphicGL graphicGL = null,bool compPos = true)
@@ -58,8 +61,17 @@ namespace opengl3
             }
             var ps = ps1.ToList();
             ps.AddRange(ps2);
-            flat3D = computeSurface(ps.ToArray());
-            //Console.WriteLine(flat3D);
+
+            //graphicGL?.addMesh(Point3d_GL.toMesh(ps.ToArray()),OpenGL.PrimitiveType.Points, 0.9f);
+
+            flat3D = computeSurface(ps.ToArray(), graphicGL);
+
+            //var flat3D_in_scene = computeSurface(ps_in_scene.ToArray());
+
+            //graphicGL?.addFlat3d_XZ(flat3D);
+
+            
+           // Console.WriteLine(flat3D/flat3D.A);
             return true;
         }
 
@@ -89,17 +101,21 @@ namespace opengl3
                     cameraCV.compPos(mat, patternType);
                 }
             }
-            var lines = PointCloud.computeTracesCam(ps, cameraCV);
+            var lines = PointCloud.computeTracesCam(ps, cameraCV,graphicGL);
             var ps3d = new List<Point3d_GL>();
             ps3d.AddRange( PointCloud.intersectWithFlat(new Line3d_GL[] { lines[0], lines[1] }, zeroFlatInCam(cameraCV.matrixSC,z)));
+           // graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, z));
             if (oneMat)
             {
                 z = 4;
                 ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[2], lines[3] }, zeroFlatInCam(cameraCV.matrixSC, z)));
             }
-            
+           // graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, z));
+            //graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, 0)+(zeroFlatInCam(cameraCV.matrixSC, 4)- zeroFlatInCam(cameraCV.matrixSC, 0))/2);
+
             return ps3d.ToArray();          
         }
+
 
         public static PointF[] takePointsForFlat(PointF[] ps,bool oneMat=false)
         {

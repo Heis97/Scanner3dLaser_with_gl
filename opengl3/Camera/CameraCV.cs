@@ -346,7 +346,7 @@ namespace opengl3
         }
         public float[] compPos(MCvPoint3D32f[] points3D, System.Drawing.PointF[] points2D)
         {
-
+            distortmatrix = new Matrix<double>(new double[,]{ { 0,0,0,0,0} });
             CvInvoke.SolvePnP(points3D, points2D, cameramatrix, distortmatrix, cur_r, cur_t);
             var matrs = assemblMatrix(cur_r, cur_t);
             matrixCS = matrs[0];
@@ -354,10 +354,10 @@ namespace opengl3
 
             var points_cam = PointCloud.fromLines(PointF.toPointF( points2D), this, LaserSurface.zeroFlatInCam(this.matrixSC));
             var points3d_cur = PointCloud.camToScene(points_cam, this.matrixCS);
-            prin.t(this.matrixSC);
+            /*prin.t(this.matrixSC);
             prin.t(this.matrixCS);
             Console.WriteLine("points3d_cur");
-            foreach (var p in points3d_cur) Console.WriteLine(p);
+            foreach (var p in points3d_cur) Console.WriteLine(p);*/
             setPos();
             return pos;
         }

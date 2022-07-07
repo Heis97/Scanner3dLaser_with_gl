@@ -104,7 +104,7 @@ namespace opengl3
             {
                 mats[i] = frames[i].im;
             }
-            return UtilOpenCV.resizeMats( mats);
+            return  mats;
         }
 
         static public Mat[][] getMats(Frame[][] frames)

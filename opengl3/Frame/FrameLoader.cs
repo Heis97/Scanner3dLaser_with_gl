@@ -303,7 +303,15 @@ namespace opengl3
                             select f;
             return sortFiles.ToArray();
         }
-        
+
+        static Frame[] sortByPos(Frame[] files)
+        {
+            var sortFiles = from f in files
+                            orderby f.linPos
+                            select f;
+            return sortFiles.ToArray();
+        }
+
         static public Frame[] loadImages_stereoCV(string path1, string path2,FrameType frameType)
         {
             Console.WriteLine(path1);
@@ -439,7 +447,6 @@ namespace opengl3
         {
             var files = Directory.GetFiles(path);
 
-            
             List<Frame> frames = new List<Frame>();
             foreach (string file in files)
             {
@@ -459,7 +466,7 @@ namespace opengl3
             }
             if (frames.Count != 0)
             {
-                return frames.ToArray();
+                return sortByPos( frames.ToArray());
             }
             return null;
         }
