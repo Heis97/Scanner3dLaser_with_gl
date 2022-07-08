@@ -16,6 +16,9 @@ namespace opengl3
         LaserSurface laserSurface;
         PointCloud pointCloud;
         CameraCV cameraCV;
+        StereoCamera stereoCamera;
+
+
         public LinearAxis linearAxis;
 
         public Scanner(CameraCV cam)
@@ -24,8 +27,15 @@ namespace opengl3
             laserSurface = new LaserSurface();
             pointCloud = new PointCloud();
             linearAxis = new LinearAxis();
-
+            
         }
+
+        public void initStereo(CameraCV[] cameraCVs, Mat[] mats, PatternType patternType)
+        {
+            stereoCamera = new StereoCamera(cameraCVs);
+            stereoCamera.calibrate(mats, patternType);
+        }
+
         public void clearPoints()
         {
             pointCloud.clearPoints();
@@ -43,6 +53,24 @@ namespace opengl3
         public bool calibrateLinearLas(Mat[][] mats, Mat[] origs, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
         {
             return linearAxis.calibrateLas(mats, origs, positions, cameraCV, patternType, graphicGL);
+        }
+
+
+        /// <summary>
+        /// one line
+        /// </summary>
+        /// <param name="mats"></param>
+        public void addPointsStereoLas(Mat[] mats)
+        {
+            pointCloud.addPointsStereoLas(mats, stereoCamera);
+        }
+
+        public void addPointsStereoLas(Mat[][] mats)
+        {
+            for(int i=0;i<mats.Length;i++)
+            {
+                pointCloud.addPointsStereoLas(mats[i], stereoCamera);
+            }            
         }
 
         public bool addPoints(Mat mat)

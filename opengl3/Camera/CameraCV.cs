@@ -692,20 +692,17 @@ namespace opengl3
         }
 
 
-        public static System.Drawing.PointF[] findPoints(Frame frame, Size size_patt)
+        public  static System.Drawing.PointF[] findPoints(Mat mat, Size size_patt)
         {
-            if (frame.frameType == FrameType.MarkBoard)
+            var gray = mat.ToImage<Gray, byte>();
+            var corn = new VectorOfPointF();
+            var ret = CvInvoke.FindChessboardCorners(gray, size_patt, corn);
+            if (ret == true)
             {
-                var gray = frame.im.ToImage<Gray, byte>();
-                var corn = new VectorOfPointF();
-                var ret = CvInvoke.FindChessboardCorners(gray, size_patt, corn);
-                if (ret == true)
-                {
-                    CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
-                    var corn2 = corn.ToArray();
-                    return corn2;
-                    var mat1 = new Mat(frame.im, new Rectangle(new Point(0, 0), frame.im.Size));
-                    /*if(obp_inp!=null)
+                CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+                var corn2 = corn.ToArray();
+                return corn2;
+                /*if(obp_inp!=null)
                     {               
                         UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);                       
                     }
@@ -719,12 +716,21 @@ namespace opengl3
                      CvInvoke.WaitKey();*/
 
 
-                    //Console.WriteLine(frame.name);
-                }
-                else
-                {
-                    return null;
-                }
+                //Console.WriteLine(frame.name);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        public static System.Drawing.PointF[] findPoints(Frame frame, Size size_patt)
+        {
+            
+            if (frame.frameType == FrameType.MarkBoard)
+            {
+                return findPoints(frame.im, size_patt);
             }
             else if (frame.frameType == FrameType.Pattern)
             {

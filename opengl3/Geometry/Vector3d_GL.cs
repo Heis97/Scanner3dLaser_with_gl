@@ -26,6 +26,7 @@ namespace opengl3
             y = a.y - b.y;
             z = a.z - b.z;
         }
+
         public Vector3d_GL(Point p, double _z)
         {
             x = p.X;

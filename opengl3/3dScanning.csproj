@@ -122,11 +122,13 @@
   <ItemGroup>
     <Compile Include="Camera\Features.cs" />
     <Compile Include="Camera\FindCircles.cs" />
+    <Compile Include="Camera\StereoCamera.cs" />
     <Compile Include="Connection\DeviceArduino.cs" />
     <Compile Include="Connection\DevicesArduino\DeviceMarlin.cs" />
     <Compile Include="Connection\DevicesArduino\LaserLine.cs" />
     <Compile Include="Extra\Magnetic.cs" />
     <Compile Include="Frame\FrameBuf.cs" />
+    <Compile Include="Geometry\Polygon3d_GL.cs" />
     <Compile Include="Geometry\Matr4x4f.cs" />
     <Compile Include="Geometry\Matr3x3f_.cs" />
     <Compile Include="Graphic\BuffersGl.cs" />
