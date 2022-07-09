@@ -31,6 +31,14 @@ namespace opengl3
 
         void sendCommand(string com,string[] vars, object[] vals)
         {
+            if (serialPort==null)
+            {
+                return;
+            }
+            if (!serialPort.IsOpen)
+            {
+                return;
+            }
             if (vars.Length != vals.Length)
             {
                 return;
@@ -72,7 +80,7 @@ namespace opengl3
         void sendXpos(double pos)
         {
             sendCommand("M92", new string[] { "X"}, new object[] { 1 });
-            sendCommand("G1",new string[] { "X","F" }, new object[] { pos,24000 });
+            sendCommand("G1",new string[] { "X","F" }, new object[] { pos,4000 });
         }
 
 

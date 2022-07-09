@@ -88,7 +88,7 @@ namespace opengl3
         static VectorOfVectorOfPoint sameContours(VectorOfVectorOfPoint contours)
         {
             var clasters = new List<VectorOfVectorOfPoint>();
-            var err = 0.45;
+            var err = 0.65;
             for(int i=0; i< contours.Size;i++)
             {
                 var area_cur = CvInvoke.ContourArea(contours[i]);
