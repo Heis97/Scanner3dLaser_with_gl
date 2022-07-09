@@ -107,7 +107,7 @@ namespace opengl3
            // graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, z));
             if (oneMat)
             {
-                z = 4;
+                z = 10;
                 ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[2], lines[3] }, zeroFlatInCam(cameraCV.matrixSC, z)));
             }
            // graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, z));

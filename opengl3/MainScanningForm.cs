@@ -132,13 +132,13 @@ namespace opengl3
                 @"cam2\las_cal_0307_2a", @"cam2\las_cal_0307_2a\orig",
                 new float[] { 0.5f, 0.5f, 0.1f }, true);*/
 
-            /*loadScannerLinLas(
+          /*  loadScannerLinLas(
                 new string[] { @"cam1\camera_cal_1006_1" },
-                new string[] { @"cam1\las_cal_0407_4"},
-                new string[] { @"cam1\las_cal_0407_4\orig" },
-                //@"cam1\las_cal_0407_1", @"cam1\las_cal_0407_1\orig",
+                new string[] { @"cam1\las_cal_0707_1"},
+                new string[] { @"cam1\las_cal_0707_1\orig" },
+                //@"cam1\las_cal_0707_1", @"cam1\las_cal_0707_1\orig",
 
-                @"cam1\las_cal_0407_4", @"cam1\las_cal_0407_4\orig",
+                @"cam1\scan_0707_1", @"cam1\scan_0707_1\orig",
                 new float[] { 0.5f, 0.5f, 0.1f }, true);*/
             GL1.buffersGl.sortObj();
         }
@@ -169,7 +169,7 @@ namespace opengl3
                 textBoxK_6,textBoxK_7,textBoxK_8,
             };
 
-            patt = UtilOpenCV.generateImage_chessboard_circle(chess_size.Width, chess_size.Height, 220);
+            patt = UtilOpenCV.generateImage_chessboard_circle(chess_size.Width, chess_size.Height, 200);
             #endregion
             imb_base = new ImageBox[] { imBox_base_1, imBox_base_2 };
             minArea = 1.0 * k * k * 15;
@@ -186,6 +186,9 @@ namespace opengl3
 
             //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
         }
+
+
+
         void loadStereo()
         {
             var cam_cal_1 = new string[] { @"cam1\camera_cal_1006_1" };
@@ -201,10 +204,13 @@ namespace opengl3
 
             stereocam = new StereoCameraCV(new CameraCV[] { cam1, cam2 }, chess_size_real, markSize, frms);
 
-            var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + cam_cal_stereo[0], @"cam2\" + cam_cal_stereo[0], FrameType.Pattern);
+            var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + cam_cal_stereo[0], @"cam2\" + cam_cal_stereo[0], FrameType.MarkBoard);
             comboImages.Items.AddRange(frms3);
             
         }
+
+
+
         void oneCam()
         {
             var cam_cal_paths = new string[] { @"ref_model\test3"};
@@ -332,8 +338,8 @@ namespace opengl3
             cameraCVcommon = cam1;
 
 
-            //var frms_scan_diff = FrameLoader.loadImages_diff(scand_path, FrameType.LasDif, PatternType.Chess, scand_orig_path, cam1, undist);
-            //comboImages.Items.AddRange(frms_scan_diff);
+            var frms_scan_diff = FrameLoader.loadImages_diff(scand_path, FrameType.LasDif, PatternType.Chess, scand_orig_path, cam1, undist);
+            comboImages.Items.AddRange(frms_scan_diff);
 
             var frms_las_cal_0 = FrameLoader.loadImages_diff(las_cal_path[0], FrameType.LasLin, PatternType.Chess, las_cal_orig_path[0], cam1,undist);
             //var frms_las_cal_1 = FrameLoader.loadImages_diff(las_cal_path[1], FrameType.LasLin, PatternType.Chess, las_cal_orig_path[1], cam1, undist);
@@ -356,12 +362,12 @@ namespace opengl3
             {
                 //frms_las_cal_1 = null;
                 Console.WriteLine("CalibLin Done________________________");
-                //var lins = scanner1.addPointsLinLas(Frame.getMats(frms_scan_diff), Frame.getLinPos(frms_scan_diff), Frame.getMats(orig_scan)[0], PatternType.Chess);
-                var lins = scanner1.addPointsLinLas(
+                var lins = scanner1.addPointsLinLas(Frame.getMats(frms_scan_diff), Frame.getLinPos(frms_scan_diff), Frame.getMats(orig_scan)[0], PatternType.Chess);
+               /* var lins = scanner1.addPointsLinLas(
                     Frame.getMats(frms_las_cal_0),
                     Frame.getLinPos(frms_las_cal_0),
                     FrameLoader.loadImages_diff(las_cal_orig_path[0],FrameType.MarkBoard)[0].im,
-                    PatternType.Chess);
+                    PatternType.Chess);*/
                 frms_las_cal_0 = null;
                 GC.Collect();
                 //var lins = 0;
@@ -978,9 +984,9 @@ namespace opengl3
                 var mat2 = fr.im;
                 if (fr.frameType == FrameType.MarkBoard)
                 {
-
-                    imBox_debug1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
-                    imBox_debug2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));
+                    imBox_base_1.Image = stereocam.remapCam(fr.im, 1);
+                    imBox_base_2.Image = stereocam.remapCam(fr.im_sec, 2);
+                    imBox_base.Image = UtilOpenCV.drawMatches(fr.im, CameraCV.findPoints((Mat)imBox_base_1.Image, new Size(6,7)), CameraCV.findPoints((Mat)imBox_base_2.Image, new Size(6, 7)), 255, 0, 0);
                 }
                 else if (fr.frameType == FrameType.Pattern)
                 {
@@ -989,6 +995,8 @@ namespace opengl3
                     //imBox_debug1.Image = FindCircles.findCircles(mat1, null, new Size(6, 7));
                     //imBox_debug2.Image = FindCircles.findCircles(mat2, null, new Size(6, 7));
                 }
+
+
                 imageBox1.Image = mat1;
                 imageBox2.Image = mat2;
             }
@@ -1088,10 +1096,10 @@ namespace opengl3
             if (fr.frameType == FrameType.LasLin || fr.frameType == FrameType.LasDif)
             {
                 var sob_im = FindCircles.sobel(fr.im_sec.ToImage<Gray, byte>()).Convert<Bgr, byte>().Mat;
-                var ps =LaserSurface.takePointsForFlat(Detection.detectLineDiff(fr.im - fr.im_sec- sob_im, 5),true);
+                var ps =Detection.detectLineDiff(fr.im - fr.im_sec- sob_im, 5);
                 imageBox1.Image = UtilOpenCV.drawPointsF(fr.im.Clone(), ps, 0, 255, 0, 2);
 
-                imageBox2.Image = UtilOpenCV.drawTours(fr.im.Clone(), ps, 155, 255, 0, 2);
+                imageBox2.Image = fr.im.Clone();
                 /*var ps_list = ps.ToList().GetRange((int)(ps.Length / 10), ps.Length  - (int)(ps.Length / 5));
                 var ps_im = LineF.find2Points(LineF.calcLine(ps_list.ToArray()), imageBox1.Size).ToList().GetRange(0,2).ToArray();
 
@@ -1128,6 +1136,8 @@ namespace opengl3
 
             //imageBox2.Image = cameraCVcommon.undist(fr.im);
         }
+
+
         private void but_set_wind_Click(object sender, EventArgs e)
         {
             var but = (Button)sender;

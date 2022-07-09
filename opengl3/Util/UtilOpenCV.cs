@@ -558,13 +558,13 @@ namespace opengl3
         }
 
         #region draw_something
-        static public void drawMatches(Mat im, MCvPoint3D32f[] points1, System.Drawing.PointF[] points2, int r, int g, int b, int size = 1)
+        static public Mat drawMatches(Mat im, MCvPoint3D32f[] points1, System.Drawing.PointF[] points2, int r, int g, int b, int size = 1)
         {
-            drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);
+            return drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);
         }
-        static public void drawMatches(Mat im, System.Drawing.PointF[] points1, System.Drawing.PointF[] points2, int r, int g, int b, int size = 1)
+        static public Mat drawMatches(Mat im, System.Drawing.PointF[] points1, System.Drawing.PointF[] points2, int r, int g, int b, int size = 1)
         {
-            drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);
+            return drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);
         }
         static MCvScalar randomColor()
         {
@@ -575,7 +575,7 @@ namespace opengl3
             //Console.WriteLine(r + " " + g + " " + b);
             return new MCvScalar(b, g, r);
         }
-        static public void drawMatches(Mat im, System.Drawing.Point[] points1, System.Drawing.Point[] points2, int r, int g, int b, int size = 1)
+        static public Mat drawMatches(Mat im, System.Drawing.Point[] points1, System.Drawing.Point[] points2, int r, int g, int b, int size = 1)
         {
             int ind = 0;
             var color = new MCvScalar(b, g, r);//bgr
@@ -597,6 +597,7 @@ namespace opengl3
             {
                 Console.WriteLine("Cannot draw match " + points1.Length + " != " + points2.Length);
             }
+            return im;
         }
 
         static public Mat drawLines(Mat im, System.Drawing.PointF[] points1, int r, int g, int b, int size = 1)
@@ -1136,7 +1137,7 @@ namespace opengl3
             Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
             return mat3;
         }
-        static public Mat drawChessboard(Mat im, Size size, bool subpix = false,bool blur = false, CalibCbType calibCbType = CalibCbType.AdaptiveThresh)
+        static public Mat drawChessboard(Mat im, Size size, bool subpix = false,bool blur = false, CalibCbType calibCbType = CalibCbType.AdaptiveThresh, System.Drawing.PointF[] points = null)
         {
             if(im==null)
             {
@@ -1162,6 +1163,7 @@ namespace opengl3
             Console.WriteLine("chess: " + ret + " " + size.Width + " " + size.Height);
             
             CvInvoke.DrawChessboardCorners(mat_ch, size, corn, ret);
+
             return mat_ch;
            // return gray.Mat;
         }
@@ -1962,6 +1964,8 @@ namespace opengl3
             }
             return ps2d;
         }
+
+        #region gen_board
         public static Mat[] generateImage_chessboard(int n, int m,int side = 100)//!!!!!!!!!!remake
         {
   
@@ -2060,59 +2064,29 @@ namespace opengl3
             return new Mat[] { im_ret.Mat, new Matrix<float>(points_cv).Mat, new Matrix<float>(points_all).Mat } ;
         }
 
-        public static Mat[] generateImage_chessboard_circle(int n, int m, int side = 100)//!!!!!!!!!!remake
+        public static Mat[] generateImage_chessboard_circle(int n, int m, int q_side = 100)//!!!!!!!!!!remake
         {
-
-            int q_side = side / 2;
-            int im_side_w = q_side * (n + 2);
-            int im_side_h = q_side * (m + 2);
+            int im_side_w = q_side * (n + 1);
+            int im_side_h = q_side * (m + 1);
             var im_ret = new Image<Bgr, Byte>(im_side_w, im_side_h);
-            var pattern_s = new Size(side, side);
-
-            var quad_s = new Size(q_side, q_side);
-            /*Console.WriteLine(k + "k-");
-            Console.WriteLine(side + "s-");
-            Console.WriteLine(q_side + "q-");*/
-
-            var p_start = new List<Point>();
-            var offx = pattern_s.Width / 2;
-            var offy = pattern_s.Height / 2;
-            var w_cv = n - 1;
-            var h_cv = m - 1;
-            var points_cv = new float[w_cv * h_cv, 2];
+            var p_start = new List<Point>();     
             var points_all = new float[n * m , 2];
+
             int ind = 0;
 
-            ind = 0;
-            var n1 = (int)(n / 2);
-            var n2 = n - n1;
-            var m1 = (int)(m / 2);
-            var m2 = m - m1;
             for (int i = 0; i < n; i ++)
             {
                 for (int j = 0; j < m; j ++)
                 {
-                    var x = offx + i * q_side;
-                    var y = offy + j * q_side;
+                    var x =  (i+1) * q_side;
+                    var y =  (j+1) * q_side;
                     p_start.Add(new Point(x, y));
                     points_all[ind, 0] = x;
                     points_all[ind, 1] = y; ind++;
 
                 }
             }
-            /*for (int i = 0; i < n2; i++)
-            {
-                for (int j = 0; j < m2; j ++)
-                {
-                    var x = offx +q_side+ i * pattern_s.Width;
-                    var y = offy + q_side+ j * pattern_s.Height;
-                    p_start.Add(new Point(x, y));
-                    points_all[ind, 0] = x;
-                    points_all[ind, 1] = y; ind++;
 
-                }
-            }*/
-            points_cv = points_all;
             Console.WriteLine("point all len0: " + points_all.GetLength(0) + " ind : " + ind);
             Console.WriteLine(p_start.Count);
             for (int x = 0; x < im_ret.Width; x++)
@@ -2130,7 +2104,7 @@ namespace opengl3
                CvInvoke.Circle(im_ret, new Point(p_start[i].X, p_start[i].Y), q_side / 4, new MCvScalar(0, 0, 0),-1);       
             }
             im_ret.Save("black_br_" + n + "_" + m + ".png");
-            return new Mat[] { im_ret.Mat, new Matrix<float>(points_cv).Mat, new Matrix<float>(points_all).Mat };
+            return new Mat[] { im_ret.Mat, new Matrix<float>(points_all).Mat, new Matrix<float>(points_all).Mat };
         }
         static public float[][] generate_BOARDs(MCvPoint3D32f [][] point3D32Fs)
         {
@@ -2194,5 +2168,7 @@ namespace opengl3
             im_ret.Save("black_sq_" + n + "_" + k + ".png");
             return im_ret;
         }
+
+        #endregion
     }
 }
