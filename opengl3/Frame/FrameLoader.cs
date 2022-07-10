@@ -25,12 +25,12 @@ namespace opengl3
 
             return new Frame[][] { frm1.ToArray(), frm2.ToArray() };
         }
-        static public Frame[] loadPathsDiff(string[] paths, FrameType frameType, PatternType patternType,CameraCV cameraCV = null, bool undist = false)
+        static public Frame[] loadPathsDiff(string[] paths, FrameType frameType, PatternType patternType, CameraCV cameraCV = null, bool undist = false)
         {
             var frm1 = new List<Frame>();
             for (int i = 0; i < paths.Length; i++)
             {
-                frm1.AddRange(loadImages_diff(paths[i], frameType, patternType,null,cameraCV,undist));
+                frm1.AddRange(loadImages_diff(paths[i], frameType, patternType, null, cameraCV, undist));
 
             }
 
@@ -126,14 +126,14 @@ namespace opengl3
             var im = new Mat(filepath);
 
             //int koef = k;
-           //CvInvoke.Resize(im, im, new Size(im.Width * koef, im.Height * koef));
+            //CvInvoke.Resize(im, im, new Size(im.Width * koef, im.Height * koef));
 
 
-           //var ps = FindMark.finPointFsFromIm(im, bin, null, null, maxArea, minArea);
+            //var ps = FindMark.finPointFsFromIm(im, bin, null, null, maxArea, minArea);
 
             var ps = FindMark.finPointFsFromImPattern(im, bin, null, null, maxArea, minArea);
 
-            if(ps==null)
+            if (ps == null)
             {
                 Console.WriteLine("PS NULL");
             }
@@ -262,11 +262,11 @@ namespace opengl3
         {
             string name = Path.GetFileName(filepath);
             var im = new Mat(filepath);
-            var fr = new Frame(im, name,frameType);
+            var fr = new Frame(im, name, frameType);
             fr.dateTime = File.GetCreationTime(filepath);
             return fr;
         }
-        
+
         static public Frame loadImage_chess(string filepath)
         {
             string name = Path.GetFileName(filepath);
@@ -275,7 +275,7 @@ namespace opengl3
             fr.dateTime = File.GetCreationTime(filepath);
             return fr;
         }
-        static public Frame loadImage_stereoCV(string filepath1, string filepath2, FrameType frameType)
+        static public Frame loadImage_stereoCV(string filepath1, string filepath2, FrameType frameType,Mat[] origs = null)
         {
             string name1 = Path.GetFileName(filepath1);
             var im1 = new Mat(filepath1);
@@ -284,7 +284,14 @@ namespace opengl3
             //Console.WriteLine(name1);
             //Console.WriteLine(name2);
             //Console.WriteLine("------------");
-            var fr = new Frame(im1, im2, name1,frameType);
+            if (origs[0] != null)
+            {
+                im1 -= origs[0];
+                im2 -= origs[1];
+            }
+            var fr = new Frame(im1, im2, name1, frameType);
+
+
             fr.dateTime = File.GetCreationTime(filepath1);
             return fr;
         }
@@ -312,15 +319,32 @@ namespace opengl3
             return sortFiles.ToArray();
         }
 
+        static Mat getOrig(string path, FrameType frameType)
+        {
+            if (frameType == FrameType.LasDif)
+            {
+                var path_orig = path + @"/orig";
+                return new Mat(Directory.GetFiles(path_orig)[0]);
+            }
+            else
+            {
+                 return null;
+            }
+        }
+
+
         static public Frame[] loadImages_stereoCV(string path1, string path2,FrameType frameType)
         {
             Console.WriteLine(path1);
             var files1 = sortByDate(Directory.GetFiles(path1));
             var files2 = sortByDate(Directory.GetFiles(path2));
             List<Frame> frames = new List<Frame>();
+
+            
+
             for (int i = 0; i < files1.Length; i++)
             {
-                var frame = loadImage_stereoCV(files1[i], files2[i], frameType);
+                var frame = loadImage_stereoCV(files1[i], files2[i], frameType,new Mat[] { getOrig(path1,frameType), getOrig(path2, frameType) });
                 if (frame != null)
                 {
                     frames.Add(frame);

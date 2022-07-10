@@ -36,7 +36,7 @@ namespace opengl3
             CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
             
 
-            UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0, 2);
+            
             //prin.t(cents);
             //prin.t("____________");
             //CvInvoke.Imshow("fnd", mat);
@@ -52,6 +52,7 @@ namespace opengl3
                 if (corn != null && ps_ord != null)
                 {
                     ps_ord.CopyTo(corn, 0);
+                    UtilOpenCV.drawTours(orig, PointF.toPoint(corn), 255, 0, 0, 2);
                 }
                 else
                 {

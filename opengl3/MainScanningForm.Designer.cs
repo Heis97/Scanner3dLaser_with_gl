@@ -246,6 +246,7 @@ namespace opengl3
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.but_scan_stereolas = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1465,6 +1466,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.but_scan_stereolas);
             this.tabMain.Controls.Add(this.but_scan_marl);
             this.tabMain.Controls.Add(this.but_scan_def);
             this.tabMain.Controls.Add(this.but_scan_start_laser);
@@ -1593,7 +1595,7 @@ namespace opengl3
             this.but_scan_start_laser.Name = "but_scan_start_laser";
             this.but_scan_start_laser.Size = new System.Drawing.Size(148, 33);
             this.but_scan_start_laser.TabIndex = 125;
-            this.but_scan_start_laser.Text = "Start scan Laser";
+            this.but_scan_start_laser.Text = "Scan Laser";
             this.but_scan_start_laser.UseVisualStyleBackColor = true;
             this.but_scan_start_laser.Click += new System.EventHandler(this.but_scan_start_laser_Click);
             // 
@@ -1609,7 +1611,7 @@ namespace opengl3
             // combo_improc
             // 
             this.combo_improc.FormattingEnabled = true;
-            this.combo_improc.Location = new System.Drawing.Point(1407, 298);
+            this.combo_improc.Location = new System.Drawing.Point(1407, 372);
             this.combo_improc.Name = "combo_improc";
             this.combo_improc.Size = new System.Drawing.Size(121, 28);
             this.combo_improc.TabIndex = 123;
@@ -1618,7 +1620,7 @@ namespace opengl3
             // label56
             // 
             this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(1412, 274);
+            this.label56.Location = new System.Drawing.Point(1412, 348);
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(63, 20);
             this.label56.TabIndex = 122;
@@ -1807,7 +1809,7 @@ namespace opengl3
             // 
             this.label55.AutoSize = true;
             this.label55.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label55.Location = new System.Drawing.Point(1296, 469);
+            this.label55.Location = new System.Drawing.Point(1296, 543);
             this.label55.Name = "label55";
             this.label55.Size = new System.Drawing.Size(115, 20);
             this.label55.TabIndex = 120;
@@ -1815,7 +1817,7 @@ namespace opengl3
             // 
             // txBx_photoName
             // 
-            this.txBx_photoName.Location = new System.Drawing.Point(1425, 466);
+            this.txBx_photoName.Location = new System.Drawing.Point(1425, 540);
             this.txBx_photoName.Name = "txBx_photoName";
             this.txBx_photoName.Size = new System.Drawing.Size(103, 26);
             this.txBx_photoName.TabIndex = 119;
@@ -1952,7 +1954,7 @@ namespace opengl3
             // 
             // boxN
             // 
-            this.boxN.Location = new System.Drawing.Point(1425, 417);
+            this.boxN.Location = new System.Drawing.Point(1425, 491);
             this.boxN.Name = "boxN";
             this.boxN.Size = new System.Drawing.Size(69, 26);
             this.boxN.TabIndex = 31;
@@ -1984,7 +1986,7 @@ namespace opengl3
             // 
             // box_scanFolder
             // 
-            this.box_scanFolder.Location = new System.Drawing.Point(1425, 341);
+            this.box_scanFolder.Location = new System.Drawing.Point(1425, 415);
             this.box_scanFolder.Name = "box_scanFolder";
             this.box_scanFolder.Size = new System.Drawing.Size(130, 26);
             this.box_scanFolder.TabIndex = 57;
@@ -1992,7 +1994,7 @@ namespace opengl3
             // 
             // box_photoFolder
             // 
-            this.box_photoFolder.Location = new System.Drawing.Point(1425, 372);
+            this.box_photoFolder.Location = new System.Drawing.Point(1425, 446);
             this.box_photoFolder.Name = "box_photoFolder";
             this.box_photoFolder.Size = new System.Drawing.Size(130, 26);
             this.box_photoFolder.TabIndex = 59;
@@ -2025,7 +2027,7 @@ namespace opengl3
             // but_ph
             // 
             this.but_ph.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_ph.Location = new System.Drawing.Point(1295, 295);
+            this.but_ph.Location = new System.Drawing.Point(1295, 369);
             this.but_ph.Name = "but_ph";
             this.but_ph.Size = new System.Drawing.Size(106, 33);
             this.but_ph.TabIndex = 116;
@@ -2412,7 +2414,7 @@ namespace opengl3
             this.but_scan_start.Name = "but_scan_start";
             this.but_scan_start.Size = new System.Drawing.Size(106, 33);
             this.but_scan_start.TabIndex = 45;
-            this.but_scan_start.Text = "Start scan";
+            this.but_scan_start.Text = "Scan rob";
             this.but_scan_start.UseVisualStyleBackColor = true;
             this.but_scan_start.Click += new System.EventHandler(this.startScan);
             // 
@@ -2460,7 +2462,7 @@ namespace opengl3
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label16.Location = new System.Drawing.Point(1296, 420);
+            this.label16.Location = new System.Drawing.Point(1296, 494);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(123, 20);
             this.label16.TabIndex = 69;
@@ -2507,7 +2509,7 @@ namespace opengl3
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(1500, 420);
+            this.label8.Location = new System.Drawing.Point(1500, 494);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(20, 20);
             this.label8.TabIndex = 32;
@@ -2535,7 +2537,7 @@ namespace opengl3
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label10.Location = new System.Drawing.Point(1300, 375);
+            this.label10.Location = new System.Drawing.Point(1300, 449);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(118, 20);
             this.label10.TabIndex = 60;
@@ -2545,7 +2547,7 @@ namespace opengl3
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label9.Location = new System.Drawing.Point(1300, 344);
+            this.label9.Location = new System.Drawing.Point(1300, 418);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(113, 20);
             this.label9.TabIndex = 58;
@@ -2567,6 +2569,18 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
+            // 
+            // but_scan_stereolas
+            // 
+            this.but_scan_stereolas.AccessibleName = "1";
+            this.but_scan_stereolas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_stereolas.Location = new System.Drawing.Point(1407, 256);
+            this.but_scan_stereolas.Name = "but_scan_stereolas";
+            this.but_scan_stereolas.Size = new System.Drawing.Size(148, 33);
+            this.but_scan_stereolas.TabIndex = 128;
+            this.but_scan_stereolas.Text = "Scan StereoLaser";
+            this.but_scan_stereolas.UseVisualStyleBackColor = true;
+            this.but_scan_stereolas.Click += new System.EventHandler(this.but_scan_stereolas_Click);
             // 
             // MainScanningForm
             // 
@@ -2869,6 +2883,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_marl_open;
         private System.Windows.Forms.Button but_marl_receav;
         private System.Windows.Forms.Button but_scan_marl;
+        private System.Windows.Forms.Button but_scan_stereolas;
     }
 }
 

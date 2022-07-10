@@ -16,6 +16,7 @@ namespace opengl3
             k = new Point3d_GL(_k.x, _k.y, _k.z);
             p = _p;
         }
+
         public Line3d_GL(Point3d_GL _k, Point3d_GL _p)
         {
             k = new Point3d_GL(_k.x-_p.x, _k.y - _p.y, _k.z - _p.z);

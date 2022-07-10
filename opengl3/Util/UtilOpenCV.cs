@@ -66,7 +66,9 @@ namespace opengl3
             var ps2d = new System.Drawing.PointF[4];
             var w = patt_size.Width;
             var h = patt_size.Height;
-            var inds_1 = new int[4] { 0, w - 1, w * (h - 1), w * h - 1 };
+            var inds_1 = new int[4] {
+                0             ,          w - 1,
+                w * (h - 1)   ,        w * h - 1 };
             for (int i = 0; i < inds_1.Length; i++)
             {
                 ps2d[i] = obp[inds_1[i]];

@@ -13,7 +13,7 @@ namespace opengl3
         public List<Point3d_GL[]> points3d_lines;
         public Point3d_GL[] points3d_cur;
 
-
+        public GraphicGL graphicGL;
 
 
 
@@ -81,20 +81,16 @@ namespace opengl3
             
             var points_im1 = Detection.detectLineDiff(mat[0]);
             var points_im2 = Detection.detectLineDiff(mat[1]);
-
-            var points_cam = fromStereoLaser(points_im1, points_im2, stereocamera);
-
-            points3d_cur = camToScene(points_cam, stereocamera.cameraCVs[1].matrixCS);
+            
+            var points_cam = fromStereoLaser(points_im1, points_im2, stereocamera, graphicGL);
+            points3d_cur = points_cam;
+            //points3d_cur = camToScene(points_cam, stereocamera.cameraCVs[1].matrixCS);
             var ps_list = points3d.ToList();
             ps_list.AddRange(points3d_cur);
             points3d_lines.Add(points3d_cur);
             points3d = ps_list.ToArray();
             return true;
         }
-
-
-
-
 
         public static Point3d_GL[] camToScene(Point3d_GL[] points_cam, Matrix<double> MatrixSC)
         {
@@ -115,21 +111,24 @@ namespace opengl3
             return points_cam;
         }
 
-        public static Point3d_GL[] fromStereoLaser(PointF[] points_im1, PointF[] points_im2, StereoCamera stereocamera)
+        public static Point3d_GL[] fromStereoLaser(PointF[] points_im1, PointF[] points_im2, StereoCamera stereocamera,GraphicGL graphicGL=null)
         {
 
-            var points3d_1 = Point3d_GL.multMatr( computePointsCam(points_im1, stereocamera.cameraCVs[0]), stereocamera.R) ;
-            var lines3d_1 = computeTracesCam(points3d_1, stereocamera.cameraCVs[0]);
-            var polygons3d_1 = computePolygonsCam(points3d_1, stereocamera.cameraCVs[0]);
+            var points3d_1 = computePointsCam(points_im1, stereocamera.cameraCVs[0]) ;
+            var lines3d_1 = computeTracesCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);//stereocamera.R
+            var polygons3d_1 = computePolygonsCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);
 
             var points3d_2 = computePointsCam(points_im2, stereocamera.cameraCVs[1]);
 
-            var lines3d_2 = computeTracesCam(points3d_2, stereocamera.cameraCVs[1]);
-            var polygons3d_2 = computePolygonsCam(points3d_2, stereocamera.cameraCVs[1]);
+            var lines3d_2 = computeTracesCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
+            var polygons3d_2 = computePolygonsCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
 
-
+            
             var points_cam2a = Polygon3d_GL.createLightFlat(polygons3d_1, lines3d_2);
-            var points_cam2b = Polygon3d_GL.createLightFlat(polygons3d_2, lines3d_1);
+           // var points_cam2b = Polygon3d_GL.createLightFlat(polygons3d_2, lines3d_1);
+           // graphicGL?.addMesh(Polygon3d_GL.toMesh(polygons3d_1), OpenGL.PrimitiveType.Triangles);
+          //  graphicGL?.addMesh(Polygon3d_GL.toMesh(polygons3d_2), OpenGL.PrimitiveType.Lines);
+
 
             return points_cam2a;
         }
@@ -161,28 +160,50 @@ namespace opengl3
             return lines3d;
         }
 
-        public static Line3d_GL[] computeTracesCam(Point3d_GL[] points_im, CameraCV cameraCV, GraphicGL graphicGL = null)
+        public static Line3d_GL[] computeTracesCam(Point3d_GL[] points_im,Matrix<double> matrix=null)
         {
             var lines3d = new Line3d_GL[points_im.Length];
             for (int i = 0; i < lines3d.Length; i++)
             {
-                lines3d[i] = new Line3d_GL(
+                if(matrix!=null)
+                {
+                    lines3d[i] = new Line3d_GL(
+                   matrix * points_im[i],
+                   matrix * new Point3d_GL(0, 0, 0));
+                }
+                else
+                {
+                    lines3d[i] = new Line3d_GL(
                     points_im[i],
                     new Point3d_GL(0, 0, 0));
+                }
+                
             }
             return lines3d;
         }
 
-        public static Polygon3d_GL[] computePolygonsCam(Point3d_GL[] points_im, CameraCV cameraCV, GraphicGL graphicGL = null)
+        public static Polygon3d_GL[] computePolygonsCam(Point3d_GL[] points_im, Matrix<double> matrix = null)
         {
             var polygons3d = new Polygon3d_GL[points_im.Length-1];
-            for (int i = 1; i < polygons3d.Length; i++)
+            for (int i = 0; i < polygons3d.Length; i++)
             {
-                polygons3d[i] = new Polygon3d_GL(
-                    new Point3d_GL(0, 0, 0),
-                    points_im[i-1],
-                    points_im[i]
+                if (matrix != null)
+                {
+                    polygons3d[i] = new Polygon3d_GL(
+                    matrix * new Point3d_GL(0, 0, 0),
+                    matrix * points_im[i],
+                    matrix * points_im[i + 1]
                     );
+                }
+                else
+                {
+                    polygons3d[i] = new Polygon3d_GL(
+                    new Point3d_GL(0, 0, 0),
+                    points_im[i],
+                    points_im[i + 1]
+                    );
+                }
+                
             }
             return polygons3d;
         }
@@ -190,9 +211,11 @@ namespace opengl3
         public static Point3d_GL[] computePointsCam(PointF[] points_im, CameraCV cameraCV, GraphicGL graphicGL = null)
         {
             var points3d = new Point3d_GL[points_im.Length];
+            Console.WriteLine("points_im[i].X");
             for (int i = 0; i < points3d.Length; i++)
             {
                 points3d[i] = cameraCV.point3DfromCam(points_im[i]);
+                Console.WriteLine(points_im[i].X);
             }
             return points3d;
         }

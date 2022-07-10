@@ -1247,27 +1247,36 @@ namespace opengl3
             Point3d_GL p1,p2,p3,U,V,Norm1,Norm;
             for (int i = 0; i < normal_buffer_data.Length; i += 9)
             {
-                p1 = new Point3d_GL(gl_vertex_buffer_data[i], gl_vertex_buffer_data[i + 1], gl_vertex_buffer_data[i + 2]);
-                p2 = new Point3d_GL(gl_vertex_buffer_data[i + 3], gl_vertex_buffer_data[i + 4], gl_vertex_buffer_data[i + 5]);
-                p3 = new Point3d_GL(gl_vertex_buffer_data[i + 6], gl_vertex_buffer_data[i + 7], gl_vertex_buffer_data[i + 8]);
-                U = p1 - p2;
-                V = p1 - p3;
-                Norm = new Point3d_GL(
-                    U.y * V.z - U.z * V.y,
-                    U.z * V.x - U.x * V.z,
-                    U.x * V.y - U.y * V.x);
-                Norm1 = Norm.normalize();
-                normal_buffer_data[i] = (float)Norm1.x;
-                normal_buffer_data[i + 1] = (float)Norm1.y;
-                normal_buffer_data[i + 2] = (float)Norm1.z;
+                try
+                {
+                    p1 = new Point3d_GL(gl_vertex_buffer_data[i], gl_vertex_buffer_data[i + 1], gl_vertex_buffer_data[i + 2]);
+                    p2 = new Point3d_GL(gl_vertex_buffer_data[i + 3], gl_vertex_buffer_data[i + 4], gl_vertex_buffer_data[i + 5]);
+                    p3 = new Point3d_GL(gl_vertex_buffer_data[i + 6], gl_vertex_buffer_data[i + 7], gl_vertex_buffer_data[i + 8]);
+                    U = p1 - p2;
+                    V = p1 - p3;
+                    Norm = new Point3d_GL(
+                        U.y * V.z - U.z * V.y,
+                        U.z * V.x - U.x * V.z,
+                        U.x * V.y - U.y * V.x);
+                    Norm1 = Norm.normalize();
+                    normal_buffer_data[i] = (float)Norm1.x;
+                    normal_buffer_data[i + 1] = (float)Norm1.y;
+                    normal_buffer_data[i + 2] = (float)Norm1.z;
 
-                normal_buffer_data[i + 3] = (float)Norm1.x;
-                normal_buffer_data[i + 4] = (float)Norm1.y;
-                normal_buffer_data[i + 5] = (float)Norm1.z;
+                    normal_buffer_data[i + 3] = (float)Norm1.x;
+                    normal_buffer_data[i + 4] = (float)Norm1.y;
+                    normal_buffer_data[i + 5] = (float)Norm1.z;
 
-                normal_buffer_data[i + 6] = (float)Norm1.x;
-                normal_buffer_data[i + 7] = (float)Norm1.y;
-                normal_buffer_data[i + 8] = (float)Norm1.z;
+                    normal_buffer_data[i + 6] = (float)Norm1.x;
+                    normal_buffer_data[i + 7] = (float)Norm1.y;
+                    normal_buffer_data[i + 8] = (float)Norm1.z;
+                }
+                catch(System.IndexOutOfRangeException)
+                {
+                    Console.WriteLine("Mesh IndexOutOfRangeException: "+i +" from "+ gl_vertex_buffer_data.Length);
+                }
+                
+                
             }
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
             for (int i = 0; i < color_buffer_data.Length; i += 3)

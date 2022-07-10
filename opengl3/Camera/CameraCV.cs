@@ -16,7 +16,7 @@ using Accord.Math;
 
 namespace opengl3
 {
-
+    //public class Pa
    public enum PatternType { Chess,Mesh};
     public class CameraCV
     {
@@ -361,7 +361,7 @@ namespace opengl3
             setPos();
             return pos;
         }
-        public bool compPos(Mat _mat, PatternType patternType)
+        public bool compPos(Mat _mat, PatternType patternType,float mark = -1)
         {
             var mat = _mat.Clone();
 
@@ -371,7 +371,12 @@ namespace opengl3
                 var mat1 = mat.Clone();
                 var gray = mat.ToImage<Gray, byte>();
                 var corn = new VectorOfPointF();
+
                 float markSize = this.mark_size;
+                if (mark >0)
+                {
+                    markSize = mark;
+                }
                 var obp = new MCvPoint3D32f[size_patt.Width * size_patt.Height];
                 int ind = 0;
                 for (int j = 0; j < size_patt.Height; j++)
@@ -404,18 +409,25 @@ namespace opengl3
             }
             else if (patternType == PatternType.Mesh)
             {
-                Size size_patt = new Size(7, 7);
+                Size size_patt = new Size(6, 7);
                 float markSize = this.mark_size;
+                if (mark > 0)
+                {
+                    markSize = mark;
+                }
+
                 var points3d = new MCvPoint3D32f[]
                 {
-                    new MCvPoint3D32f(0,0,0),new MCvPoint3D32f(markSize,0,0),
-                    new MCvPoint3D32f(markSize,markSize,0),new MCvPoint3D32f(0,markSize,0)
+                    new MCvPoint3D32f(0,0,0),
+                    new MCvPoint3D32f(markSize*size_patt.Width,0,0),
+                    new MCvPoint3D32f(0,markSize*size_patt.Height,0),
+                    new MCvPoint3D32f(markSize*size_patt.Width,markSize*size_patt.Height,0)
                 };
 
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
                 var matDraw = FindCircles.findCircles(mat, cornF, size_patt);
-                var points2d = FindCircles.findGab(cornF);
+                var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
                 compPos(points3d, points2d);
                 return true;
             }
@@ -425,7 +437,7 @@ namespace opengl3
 
         public Point3d_GL point3DfromCam(PointF _p)
         {
-            var p = cameramatrix_inv * new Point3d_GL(_p.X, _p.Y, 1);
+            var p =  (cameramatrix_inv * new Point3d_GL(_p.X, _p.Y, 1))* 200;
             return p;
         }
 

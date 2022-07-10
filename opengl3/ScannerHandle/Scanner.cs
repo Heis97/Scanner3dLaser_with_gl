@@ -14,7 +14,7 @@ namespace opengl3
     public class Scanner
     {
         LaserSurface laserSurface;
-        PointCloud pointCloud;
+        public PointCloud pointCloud;
         CameraCV cameraCV;
         StereoCamera stereoCamera;
 
@@ -29,10 +29,16 @@ namespace opengl3
             linearAxis = new LinearAxis();
             
         }
-
-        public void initStereo(CameraCV[] cameraCVs, Mat[] mats, PatternType patternType)
+        public Scanner(CameraCV[] cameraCVs)
         {
+            laserSurface = new LaserSurface();
+            pointCloud = new PointCloud();
+            linearAxis = new LinearAxis();
             stereoCamera = new StereoCamera(cameraCVs);
+
+        }
+        public void initStereo(Mat[] mats, PatternType patternType)
+        {
             stereoCamera.calibrate(mats, patternType);
         }
 
@@ -139,6 +145,10 @@ namespace opengl3
 
         public Point3d_GL[] getPointsCam()
         {
+            if(stereoCamera!=null)
+            {
+                return Point3d_GL.multMatr(pointCloud.points3d, stereoCamera.cameraCVs[0].matrixSC);
+            }
             return Point3d_GL.multMatr(pointCloud.points3d,cameraCV.matrixSC);
         }
         public Point3d_GL[][] getPointsLinesCam()

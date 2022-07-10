@@ -136,8 +136,10 @@ namespace opengl3
             return ps;
         }
 
-        public static PointF[] detectLineDiff(Mat mat, int wind = 3,float board = 0.05f)
+        public static PointF[] detectLineDiff(Mat _mat, int wind = 3,float board = 0.05f)
         {
+            var mat = _mat.Clone();
+            CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90CounterClockwise);
             var ps = new PointF[mat.Width];
             var ps_list = new List<PointF>();
             var rgb = mat.Split();
@@ -219,7 +221,17 @@ namespace opengl3
             //gaussFilter(ps);
 
             GC.Collect();
-            return ps;
+            return rotatePoints(ps,_mat.Size);
+        }
+
+        static PointF[] rotatePoints(PointF[] ps,Size size)
+        {
+            var ps_rot = new PointF[ps.Length];
+            for(int i=0; i<ps_rot.Length;i++)
+            {
+                ps_rot[i] = new PointF(size.Width - ps[i].Y, ps[i].X);
+            }
+            return ps_rot;
         }
 
         static float centerOfMass(int[,] col)

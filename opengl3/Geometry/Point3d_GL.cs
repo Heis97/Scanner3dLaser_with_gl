@@ -184,7 +184,7 @@ namespace opengl3
 
         static double[,] Matrix4x4ToDouble(Matrix<double> matrixA)
         {
-
+           // prin.t(matrixA);
             var ret = new double[matrixA.Cols, matrixA.Rows];
             for (var i = 0; i < ret.GetLength(0); i++)
             {

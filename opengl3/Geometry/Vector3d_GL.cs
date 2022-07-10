@@ -20,6 +20,11 @@ namespace opengl3
             y = _y;
             z = _z;
         }
+        /// <summary>
+        /// start, end
+        /// </summary>
+        /// <param name="b">start</param>
+        /// <param name="a">end</param>
         public Vector3d_GL(Point3d_GL b, Point3d_GL a)//start,end
         {
             x = a.x - b.x;

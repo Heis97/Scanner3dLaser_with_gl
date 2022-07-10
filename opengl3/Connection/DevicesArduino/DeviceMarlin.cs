@@ -77,10 +77,10 @@ namespace opengl3
             
         }
 
-        void sendXpos(double pos)
+        void sendXpos(double pos, double vel_st_min = 4000)
         {
             sendCommand("M92", new string[] { "X"}, new object[] { 1 });
-            sendCommand("G1",new string[] { "X","F" }, new object[] { pos,4000 });
+            sendCommand("G1",new string[] { "X","F" }, new object[] { pos, vel_st_min });
         }
 
 
@@ -93,9 +93,9 @@ namespace opengl3
             close();
         }
 
-        public void setShvpPos(double _pos)
+        public void setShvpPos(double _pos,double _vel = 4000)
         {
-            sendXpos(_pos);
+            sendXpos(_pos,_vel);
         }
 
     }

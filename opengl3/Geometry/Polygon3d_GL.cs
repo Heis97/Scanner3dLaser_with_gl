@@ -22,6 +22,7 @@ namespace opengl3
             v3 = v1 | v2;//vector multiply
             v3.normalize();
             flat3D = new Flat3d_GL(v3.x, v3.y, v3.z, -v3 * P1);
+            
         }
 
         static public Flat3d_GL notExistFlat()
@@ -61,6 +62,7 @@ namespace opengl3
             var a1 = v1 ^ v_c;
             var a2 = v2 ^ v_c;
             var b1 = v1 ^ v2;
+            
             if (a1 <= b1 && a2 <= b1)
             {
                 return p_cross;
@@ -83,10 +85,33 @@ namespace opengl3
                     }
                 }
             }
-
+            Console.WriteLine("intersect " + polygons.Length +" polyg and " + lines.Length + " lines: " + ps_laser.Count + " points");
             return ps_laser.ToArray();
         }
 
+        static public float[] toMesh(Polygon3d_GL[] polygons)
+        {
+            var mesh =new  List<float>();   
+            for(int i=0; i<polygons.Length;i++)
+            {               
+                if(polygons[i].ps.Length>2)
+                {
+                    var mesh_sub = new float[9];
+                    mesh_sub[0] = (float)polygons[i].ps[0].x; 
+                    mesh_sub[1] = (float)polygons[i].ps[0].y; 
+                    mesh_sub[2] = (float)polygons[i].ps[0].z; 
 
+                    mesh_sub[3] = (float)polygons[i].ps[1].x;
+                    mesh_sub[4] = (float)polygons[i].ps[1].y; 
+                    mesh_sub[5] = (float)polygons[i].ps[1].z;
+
+                    mesh_sub[6] = (float)polygons[i].ps[2].x;
+                    mesh_sub[7] = (float)polygons[i].ps[2].y;
+                    mesh_sub[8] = (float)polygons[i].ps[2].z;
+                    mesh.AddRange(mesh_sub);
+                }              
+            }
+            return mesh.ToArray();
+        }        
     }
 }
