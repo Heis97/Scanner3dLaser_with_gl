@@ -151,7 +151,7 @@ namespace opengl3
                 new float[] { 0.5f, 0.5f, 0.1f }, true);*/
            
 
-            loadScannerStereoLas(
+           loadScannerStereoLas(
                 @"camera_cal_1006_1",
                 @"stereo_cal_0907_1",
                 @"scan_flat_0907_2",
@@ -418,7 +418,7 @@ namespace opengl3
             string scand_path,
             float[] normrgb, bool undist)
         {
-
+            #region calibrate
             var frms_1 = FrameLoader.loadImages_diff(@"cam1\" + cam_cal_path, FrameType.MarkBoard, PatternType.Chess);
             var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
             var frms_2 = FrameLoader.loadImages_diff(@"cam2\" + cam_cal_path, FrameType.MarkBoard, PatternType.Chess);
@@ -427,14 +427,21 @@ namespace opengl3
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_path, @"cam2\" + stereo_cal_path, FrameType.Pattern);
             comboImages.Items.AddRange(frms_stereo);
             cameraCVcommon = cam1;
-
+            #endregion
+            
+            
             var frms_scan_diff = FrameLoader.loadImages_stereoCV(@"cam1\" + scand_path, @"cam2\" + scand_path, FrameType.LasDif);
             comboImages.Items.AddRange(frms_scan_diff);
+
             var scanner = new Scanner(new CameraCV[] { cam1,cam2});
             scanner.pointCloud.graphicGL = GL1;
             Console.WriteLine("initStereo");
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);
             Console.WriteLine("addPointsStereoLas");
+
+            var vrf = loadVideo(scand_path);
+            
+
             scanner.addPointsStereoLas(Frame.getMats(frms_scan_diff, true));
 
             //var mesh_scan_stl = meshFromPoints(scanner.getPointsLinesScene());
@@ -444,7 +451,7 @@ namespace opengl3
         }
         
         #region laserScanner
-        public void startScanLaser(int typeScan)//0 - defolt, 1 - dif,2 - marl
+        public void startScanLaser(int typeScan)//0 - defolt, 1 - dif,2 - marl,3 - stereo
         {
             try
             {
@@ -472,7 +479,7 @@ namespace opengl3
                 initLaserFast();
                 Thread.Sleep(200);
             }
-            laserLine.laserOff();
+            laserLine?.laserOff();
             Thread.Sleep(300);
             makePhotoLaser(
                     new float[] { x },
@@ -481,14 +488,18 @@ namespace opengl3
                     );
             Thread.Sleep(200);
 
+            
+
             if (typescan == 3)
             {
-                laserLine.laserOn();
+                var t_video =(double)counts / 15;
+                var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
+                laserLine?.laserOn();
                 Thread.Sleep(200);
 
                 startWrite(1, counts);
                 startWrite(2, counts);
-                linearPlatf?.setShvpPos(counts, 4000);//!!!!!!!!!!!!!!
+                linearPlatf?.setShvpPos((float)p2_cur_scan.x, v_laser * 120);//!!!!!!!!!!!!!!
             }
 
             for (int i = 0; i < counts; i++)
@@ -546,7 +557,7 @@ namespace opengl3
         }
         void makePhotoLaser(float[] pos, string[] folders, ImageBox[] imageBoxes)
         {
-            laserLine.setShvpPos((int)pos[0]);
+            laserLine?.setShvpPos((int)pos[0]);
             Console.WriteLine("cur_pos: " + (int)pos[0]);
             Thread.Sleep(300);
             if (folders.Length == imageBoxes.Length)
@@ -1896,15 +1907,18 @@ namespace opengl3
             if (videoframe_counts[ind - 1] == 0)
             {
                 initWrite(ind);
+                videoframe_counts[ind - 1]++;
             }
 
             if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
             {
                 video_writer[ind - 1]?.Write(mat);
+                videoframe_counts[ind - 1]++;
             }
             else
             {
                 videoframe_counts[ind - 1] = -1;
+                
             }
 
         }
@@ -1913,13 +1927,14 @@ namespace opengl3
         {
             int fcc = VideoWriter.Fourcc('M', 'P', '4', 'V'); //'M', 'J', 'P', 'G'
             int fps = 15;
-            string name = box_scanFolder.Text + ".mp4";
-            video_writer[ind - 1] = new VideoWriter(name, fcc, fps, new Size(myCapture1.Width, myCapture1.Height), true);
+            string name ="cam"+ind.ToString()+"\\"+ box_scanFolder.Text + "\\1.mp4";
+            video_writer[ind - 1] = new VideoWriter(name, fcc, fps, new Size(cameraSize.Width, cameraSize.Height), true);
         }
 
         void startWrite(int ind,int count)
         {
-            videoframe_counts[ind - 1] = count;
+            videoframe_counts_stop[ind - 1] = count;
+            videoframe_counts[ind - 1] = 0;
         }
 
         Mat stereoProc(Mat mat1, Mat mat2)
@@ -2397,17 +2412,12 @@ namespace opengl3
             var capture = new VideoCapture(filepath);
             capture.ImageGrabbed += loadingVideo;
             capture.Start();
-            while (videoframe_count < 25)
+            while (videoframe_count < 450)
             {
             }
             capture.ImageGrabbed -= loadingVideo;
             capture.Stop();
             string name = Path.GetFileName(filepath);
-            var coords = name.Split(new char[] { ' ' });
-            var name_pos = new Point3d_GL(Convert.ToDouble(coords[0]),
-                                            Convert.ToDouble(coords[1]),
-                                            Convert.ToDouble(coords[2]));
-            Console.WriteLine(name);
 
             return new VideoFrame(cap_mats.ToArray(), name_pos, name);
 
@@ -2640,7 +2650,7 @@ namespace opengl3
 
         private void but_scan_stereolas_Click(object sender, EventArgs e)
         {
-
+            startScanLaser(3);
         }
 
 

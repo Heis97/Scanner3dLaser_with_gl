@@ -141,6 +141,7 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_scan_stereolas = new System.Windows.Forms.Button();
             this.but_scan_marl = new System.Windows.Forms.Button();
             this.but_scan_def = new System.Windows.Forms.Button();
             this.but_scan_start_laser = new System.Windows.Forms.Button();
@@ -246,7 +247,6 @@ namespace opengl3
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_scan_stereolas = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1563,6 +1563,18 @@ namespace opengl3
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // but_scan_stereolas
+            // 
+            this.but_scan_stereolas.AccessibleName = "1";
+            this.but_scan_stereolas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_stereolas.Location = new System.Drawing.Point(1407, 256);
+            this.but_scan_stereolas.Name = "but_scan_stereolas";
+            this.but_scan_stereolas.Size = new System.Drawing.Size(148, 33);
+            this.but_scan_stereolas.TabIndex = 128;
+            this.but_scan_stereolas.Text = "Scan StereoLaser";
+            this.but_scan_stereolas.UseVisualStyleBackColor = true;
+            this.but_scan_stereolas.Click += new System.EventHandler(this.but_scan_stereolas_Click);
+            // 
             // but_scan_marl
             // 
             this.but_scan_marl.AccessibleName = "2";
@@ -1862,7 +1874,7 @@ namespace opengl3
             this.nameX.Name = "nameX";
             this.nameX.Size = new System.Drawing.Size(69, 26);
             this.nameX.TabIndex = 11;
-            this.nameX.Text = "550";
+            this.nameX.Text = "0";
             // 
             // nameY
             // 
@@ -1910,7 +1922,7 @@ namespace opengl3
             this.nameX2.Name = "nameX2";
             this.nameX2.Size = new System.Drawing.Size(69, 26);
             this.nameX2.TabIndex = 25;
-            this.nameX2.Text = "550";
+            this.nameX2.Text = "1";
             // 
             // nameZ_in
             // 
@@ -2569,18 +2581,6 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
-            // 
-            // but_scan_stereolas
-            // 
-            this.but_scan_stereolas.AccessibleName = "1";
-            this.but_scan_stereolas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_scan_stereolas.Location = new System.Drawing.Point(1407, 256);
-            this.but_scan_stereolas.Name = "but_scan_stereolas";
-            this.but_scan_stereolas.Size = new System.Drawing.Size(148, 33);
-            this.but_scan_stereolas.TabIndex = 128;
-            this.but_scan_stereolas.Text = "Scan StereoLaser";
-            this.but_scan_stereolas.UseVisualStyleBackColor = true;
-            this.but_scan_stereolas.Click += new System.EventHandler(this.but_scan_stereolas_Click);
             // 
             // MainScanningForm
             // 

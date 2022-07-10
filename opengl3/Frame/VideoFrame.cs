@@ -11,12 +11,20 @@ namespace opengl3
     public class VideoFrame
     {
         public Mat[] im;
+        public Mat orig;
         public Point3d_GL pos_rob;
         public string name;
         public VideoFrame(Mat[] _im, Point3d_GL _pos_rob, string _name)
         {
             im = _im;
             pos_rob = _pos_rob;
+            name = _name;
+        }
+
+        public VideoFrame(Mat[] _im, Mat _orig, string _name)
+        {
+            im = _im;
+            orig = _orig;
             name = _name;
         }
         override public string ToString()
