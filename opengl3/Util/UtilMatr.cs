@@ -13,6 +13,7 @@ namespace opengl3
 {
     static public class UtilMatr
     {
+        
         static public Matrix4x4f matrixGLFromCam(CameraCV cam)
         {
             var rotateMatrix = new Matrix<double>(3, 3);

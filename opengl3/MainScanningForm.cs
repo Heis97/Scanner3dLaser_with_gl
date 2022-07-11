@@ -120,46 +120,13 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-           /* var mesh = STLmodel.parsingStl_GL4("half_sphere.STL");
-            mesh = GL1.scaleMesh(mesh, 8f);
-            mesh = GL1.translateMesh(mesh, -65.8f, -107.3f);*/
 
-            //GL1.addGLMesh(mesh,PrimitiveType.Triangles);
-            /*FrameLoader.substractionImage(@"cam1\las_cal_2706_1b", @"cam1\cam_orig_2706_1b");
-            FrameLoader.substractionImage(@"cam1\las_cal_2706_1a", @"cam1\cam_orig_2706_1a");
-            FrameLoader.substractionImage(@"cam1\scan_2706_1", @"cam1\cam_orig_2706_2\1");*/
-
-            //loadScanner();
-            //loadStereo(); 
-           // loadScannerLin(new string[] { @"cam1\camera_cal_1006_1" }, @"cam1\las_cal_2606_2\1", @"cam1\lin_cal_2606_1", @"cam1\scan_2606_1\dif",new float[] { 0.1f,0.5f,0.5f });
-            //loadScannerLin(new string[] { @"cam1\calib_1_2505" }, @"cam2\las_cal_1006_1\1", @"cam1\lin_cal_0106_1\def", @"cam2\scan_1006_3\dif", new float[] { 0.1f, 0.9f, 0.1f });
-
-           /* loadScannerLinLas(
-                new string[] { @"cam1\cdwz0307" },
-                new string[] { @"cam2\las_cal_0307_2a", @"cam2\las_cal_0307_2b" },
-                new string[] { @"cam2\las_cal_0307_2a\orig", @"cam2\las_cal_0307_2b\orig" },
-                @"cam2\las_cal_0307_2a", @"cam2\las_cal_0307_2a\orig",
-                new float[] { 0.5f, 0.5f, 0.1f }, true);*/
-
-          /*  loadScannerLinLas(
-                new string[] { @"cam1\camera_cal_1006_1" },
-                new string[] { @"cam1\las_cal_0707_1"},
-                new string[] { @"cam1\las_cal_0707_1\orig" },
-                //@"cam1\las_cal_0707_1", @"cam1\las_cal_0707_1\orig",
-
-                @"cam1\scan_0707_1", @"cam1\scan_0707_1\orig",
-                new float[] { 0.5f, 0.5f, 0.1f }, true);*/
-           
-
-           /*loadScannerStereoLas(
-                @"camera_cal_1006_1",
-                @"stereo_cal_0907_1",
-                @"test_1107_7",
-                new float[] { 0.1f, 0.5f, 0.1f }, true);*/
-
+            StereoCamera.calcSizesScanner(37, 30, 90);
+          // Console.WriteLine( StereoCamera.calcFov(640, 940));
+            //Console.WriteLine(StereoCamera.calcFov(640, 640));
             GL1.buffersGl.sortObj();
 
-            oneCam(new string[] { @"cam1\cam_cal_sven_1107_1" },10f);
+           // oneCam(new string[] { @"cam1\cam_cal_sven_1107_1" },10f);
         }
 
         
@@ -2680,7 +2647,42 @@ namespace opengl3
 }
 
 
+/* var mesh = STLmodel.parsingStl_GL4("half_sphere.STL");
+            mesh = GL1.scaleMesh(mesh, 8f);
+            mesh = GL1.translateMesh(mesh, -65.8f, -107.3f);*/
 
+//GL1.addGLMesh(mesh,PrimitiveType.Triangles);
+/*FrameLoader.substractionImage(@"cam1\las_cal_2706_1b", @"cam1\cam_orig_2706_1b");
+FrameLoader.substractionImage(@"cam1\las_cal_2706_1a", @"cam1\cam_orig_2706_1a");
+FrameLoader.substractionImage(@"cam1\scan_2706_1", @"cam1\cam_orig_2706_2\1");*/
+
+//loadScanner();
+//loadStereo(); 
+// loadScannerLin(new string[] { @"cam1\camera_cal_1006_1" }, @"cam1\las_cal_2606_2\1", @"cam1\lin_cal_2606_1", @"cam1\scan_2606_1\dif",new float[] { 0.1f,0.5f,0.5f });
+//loadScannerLin(new string[] { @"cam1\calib_1_2505" }, @"cam2\las_cal_1006_1\1", @"cam1\lin_cal_0106_1\def", @"cam2\scan_1006_3\dif", new float[] { 0.1f, 0.9f, 0.1f });
+
+/* loadScannerLinLas(
+     new string[] { @"cam1\cdwz0307" },
+     new string[] { @"cam2\las_cal_0307_2a", @"cam2\las_cal_0307_2b" },
+     new string[] { @"cam2\las_cal_0307_2a\orig", @"cam2\las_cal_0307_2b\orig" },
+     @"cam2\las_cal_0307_2a", @"cam2\las_cal_0307_2a\orig",
+     new float[] { 0.5f, 0.5f, 0.1f }, true);*/
+
+/*  loadScannerLinLas(
+      new string[] { @"cam1\camera_cal_1006_1" },
+      new string[] { @"cam1\las_cal_0707_1"},
+      new string[] { @"cam1\las_cal_0707_1\orig" },
+      //@"cam1\las_cal_0707_1", @"cam1\las_cal_0707_1\orig",
+
+      @"cam1\scan_0707_1", @"cam1\scan_0707_1\orig",
+      new float[] { 0.5f, 0.5f, 0.1f }, true);*/
+
+
+/*loadScannerStereoLas(
+     @"camera_cal_1006_1",
+     @"stereo_cal_0907_1",
+     @"test_1107_7",
+     new float[] { 0.1f, 0.5f, 0.1f }, true);*/
 
 
 /*addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(30, 0, 0), new Point3d_GL(0, 30, 0), new Point3d_GL(0, 0, 30));

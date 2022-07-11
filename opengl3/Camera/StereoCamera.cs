@@ -40,10 +40,54 @@ namespace opengl3
                 }
             }
         }
+        /// <summary>
+        /// For make housing
+        /// </summary>
+        /// <param name="alpha">fov x, degree</param>
+        /// <param name="beta">xy Norm ^ camera Norm ,degree</param>
+        /// <param name="L">size of scan, mm</param>
+        static public void calcSizesScanner(double alpha, double beta, double L)
+        {
+            var gamma = (180 - alpha) / 2;
+            var tetta = 180 - beta - gamma;
+            var m1 = (L * sin(tetta) )/ (2 * sin(gamma));
+            var m2 = m1 * tg(beta);
+            var k1 = m1 / cos(beta);
+            var k2 = m1 * (tg(gamma) - tg(beta));
+            var k = (tg(gamma) - tg(beta)) * cos(beta);
+            var y = k * m1;
+            var x = k * m2 + k1 - L / 2;
+            Console.WriteLine("X: "+x + "; Y: " + y);
+        }
+        public static double calcFov(double size, double f)
+        {
+            return 2 * arctg(size / (2 * f));
+        }
+        static double toRad(double degree)
+        {
+            return degree * Math.PI / 180;
+        }
+        static double toDegree(double rad)
+        {
+            return rad * 180 / Math.PI  ;
+        }
+        static double sin(double degree)
+        {
+            return Math.Sin(toRad(degree));
+        }
+        static double arctg(double val)
+        {
+            return  toDegree( Math.Atan(val));
+        }
+        static double cos(double degree)
+        {
+            return Math.Cos(toRad(degree));
+        }
 
-
-
-
+        static double tg(double degree)
+        {
+            return Math.Tan(toRad(degree));
+        }
 
     }   
 }
