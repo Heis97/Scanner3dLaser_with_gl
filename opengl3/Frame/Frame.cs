@@ -118,6 +118,21 @@ namespace opengl3
             return mats;
         }
 
+        static public Mat[][] reshapeMats(Mat[][] mats1)
+        {
+            var mats = new Mat[mats1[0].Length][];
+            for (int i = 0; i < mats.Length; i++)
+            {
+                var sub_mats = new List<Mat>();
+                for(int j = 0; j < mats1.Length; j++)
+                {
+                    sub_mats.Add(mats1[j][i]);
+                }
+                mats[i] = sub_mats.ToArray();
+            }
+            return mats;
+        }
+
         static public Mat[][] getMats(Frame[][] frames)
         {
             var mats = new Mat[frames.Length][];

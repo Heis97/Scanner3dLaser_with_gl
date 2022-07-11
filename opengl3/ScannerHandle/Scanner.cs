@@ -75,6 +75,7 @@ namespace opengl3
         {
             for(int i=0;i<mats.Length;i++)
             {
+                Console.WriteLine("loading...      "+i+"/"+mats.Length);
                 pointCloud.addPointsStereoLas(mats[i], stereoCamera);
             }            
         }

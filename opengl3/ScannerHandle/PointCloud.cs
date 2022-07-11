@@ -211,11 +211,9 @@ namespace opengl3
         public static Point3d_GL[] computePointsCam(PointF[] points_im, CameraCV cameraCV, GraphicGL graphicGL = null)
         {
             var points3d = new Point3d_GL[points_im.Length];
-            Console.WriteLine("points_im[i].X");
             for (int i = 0; i < points3d.Length; i++)
             {
                 points3d[i] = cameraCV.point3DfromCam(points_im[i]);
-                Console.WriteLine(points_im[i].X);
             }
             return points3d;
         }

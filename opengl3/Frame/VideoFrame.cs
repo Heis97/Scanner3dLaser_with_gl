@@ -59,5 +59,20 @@ namespace opengl3
             }
             return ret;
         }
+
+        public Mat[] getMatsLasDif(int count,int start_ind=0,int strip = 1)
+        {
+            if (start_ind + count  > im.Length)
+            {
+                Console.WriteLine("dont create las dif: " + count + ">" + im.Length);
+                return null;
+            }
+            var mats_ld = new List<Mat>();
+            for(int i= start_ind; i< start_ind+ count; i+= strip)
+            {
+                mats_ld.Add( im[i] - orig);
+            }
+            return mats_ld.ToArray();
+        }
     }
 }
