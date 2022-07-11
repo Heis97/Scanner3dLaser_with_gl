@@ -151,13 +151,15 @@ namespace opengl3
                 new float[] { 0.5f, 0.5f, 0.1f }, true);*/
            
 
-           loadScannerStereoLas(
+           /*loadScannerStereoLas(
                 @"camera_cal_1006_1",
                 @"stereo_cal_0907_1",
                 @"test_1107_7",
-                new float[] { 0.1f, 0.5f, 0.1f }, true);
+                new float[] { 0.1f, 0.5f, 0.1f }, true);*/
 
             GL1.buffersGl.sortObj();
+
+            oneCam(new string[] { @"cam1\cam_cal_sven_1107_1" },10f);
         }
 
         
@@ -228,12 +230,11 @@ namespace opengl3
 
 
 
-        void oneCam()
+        void oneCam(string[] cam_cal_paths, float mark_size)
         {
-            var cam_cal_paths = new string[] { @"ref_model\test3"};
-            var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.MarkBoard, PatternType.Chess);
-            var cam1 = new CameraCV(frms, chess_size_real, markSize, null);
-
+            var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.Pattern, PatternType.Mesh);
+            var cam1 = new CameraCV(frms, chess_size_real, mark_size, null);
+            cameraCVcommon = cam1;
             comboImages.Items.AddRange(frms);
           
         }
@@ -445,8 +446,8 @@ namespace opengl3
             var vrf_2 = loadVideo("cam2\\" + scand_path);
 
             var im_len = Math.Min(vrf_1.im.Length, vrf_2.im.Length);
-            var mats_1 = vrf_1.getMatsLasDif(im_len, 0, 4);
-            var mats_2 = vrf_2.getMatsLasDif(im_len, 0, 4);
+            var mats_1 = vrf_1.getMatsLasDif(im_len, 0, 3);
+            var mats_2 = vrf_2.getMatsLasDif(im_len, 0, 3);
             Console.WriteLine("addPointsStereoLas");
 
             scanner.addPointsStereoLas( Frame.reshapeMats(new Mat[][] { mats_2, mats_1 }));
@@ -1104,8 +1105,8 @@ namespace opengl3
                 else if (fr.frameType == FrameType.Pattern)
                 {
 
-                    imBox_debug1.Image = cameraCVcommon.undist(fr.im.Clone());
-                    imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, new Size(7, 8));
+                    imageBox2.Image = UtilOpenCV.drawInsideRectCirc(cameraCVcommon.undist(fr.im.Clone()), chess_size);
+                    imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
                 }
             }
             if (fr.frameType == FrameType.LasLin || fr.frameType == FrameType.LasDif)
