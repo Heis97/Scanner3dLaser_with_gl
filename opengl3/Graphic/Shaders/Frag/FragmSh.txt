@@ -28,6 +28,6 @@ void main() {
 	float cosAlpha = clamp( dot( E,R ), 0,1 );
 	MaterialDiffuseColor = fs_in.Color;
 	color.xyz = MaterialAmbientColor + MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
-	color.xyz = fs_in.Color;
+	//color.xyz = fs_in.Color;
 	color.w = 1.0;
 }

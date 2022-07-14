@@ -121,9 +121,14 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
-            StereoCamera.calcSizesScanner(37, 30, 90);
-          // Console.WriteLine( StereoCamera.calcFov(640, 940));
-            //Console.WriteLine(StereoCamera.calcFov(640, 640));
+            //loadVideo_stereo(@"test_1107_7");
+
+            loadScannerStereoLas(
+             @"camera_cal_1006_1",
+             @"stereo_cal_0907_1",
+             @"test_1107_7",
+             new float[] { 0.1f, 0.5f, 0.1f }, true);
+
             GL1.buffersGl.sortObj();
 
            // oneCam(new string[] { @"cam1\cam_cal_sven_1107_1" },10f);
@@ -398,32 +403,17 @@ namespace opengl3
             #endregion
             
             
-            //var frms_scan_diff = FrameLoader.loadImages_stereoCV(@"cam1\" + scand_path, @"cam2\" + scand_path, FrameType.LasDif);
-            //comboImages.Items.AddRange(frms_scan_diff);
-
             var scanner = new Scanner(new CameraCV[] { cam1,cam2});
-            scanner.pointCloud.graphicGL = GL1;
-            Console.WriteLine("initStereo");
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);
-            Console.WriteLine("addPointsStereoLas");
+            loadVideo_stereo(scand_path,scanner);
 
-
-
-            var vrf_1 = loadVideo("cam1\\" + scand_path);
-            var vrf_2 = loadVideo("cam2\\" + scand_path);
-
-            var im_len = Math.Min(vrf_1.im.Length, vrf_2.im.Length);
-            var mats_1 = vrf_1.getMatsLasDif(im_len, 0, 3);
-            var mats_2 = vrf_2.getMatsLasDif(im_len, 0, 3);
-            Console.WriteLine("addPointsStereoLas");
-
-            scanner.addPointsStereoLas( Frame.reshapeMats(new Mat[][] { mats_2, mats_1 }));
-
-            //var mesh_scan_stl = meshFromPoints(scanner.getPointsLinesScene());
-
-            var points_scan_stl = Point3d_GL.toMesh (scanner.getPointsScene());
-            GL1.addMesh(points_scan_stl, PrimitiveType.Points, normrgb[0], normrgb[1], normrgb[2]);
+            var lines_scan_stl = Polygon3d_GL.toMesh( Polygon3d_GL.triangulate_lines_xy( scanner.getPointsLinesScene()));
+            GL1.addMesh(lines_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
+            //var points_scan_stl = Point3d_GL.toMesh (scanner.getPointsScene());
+            //GL1.addMesh(points_scan_stl, PrimitiveType.Points, normrgb[0], normrgb[1], normrgb[2]);
         }
+
+
         
         #region laserScanner
         public void startScanLaser(int typeScan)//0 - defolt, 1 - dif,2 - marl,3 - stereo
@@ -2390,6 +2380,7 @@ namespace opengl3
             var all_frames = capture.GetCaptureProperty(CapProp.FrameCount);
             capture.ImageGrabbed += loadingVideo;
             capture.Start();
+           
 
             while (videoframe_count < all_frames)
             {
@@ -2402,6 +2393,53 @@ namespace opengl3
             return new VideoFrame(cap_mats.ToArray(), new Mat(orig_path), name);
         }
 
+        public void loadVideo_stereo(string filepath,Scanner scanner = null,int strip = 1)
+        {
+            videoframe_count = 0;
+            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
+            var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
+            var capture1 = new VideoCapture(Directory.GetFiles("cam1\\" + filepath)[0]);
+            var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
+            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames = Math.Min(all_frames1, all_frames2);
+            while (videoframe_count < all_frames)
+            {
+                
+                Mat im1 = new Mat();
+                Mat im2 = new Mat();
+                while (!capture1.Read(im1)) { }
+                while (!capture2.Read(im2)) { }
+                //Console.WriteLine("____________________");
+                 if (scanner != null)
+                    {
+                        if(videoframe_count % strip == 0)  scanner.addPointsStereoLas(new Mat[] { im2-orig2, im1-orig1 });
+                    }
+                videoframe_count++;
+                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+
+            }
+
+        }
+        Mat takeImage(VideoCapture capture)
+        {
+            Mat im = new Mat();
+            capture.Retrieve(im);
+            return im;
+        }
+
+        void loadingVideo(object sender, EventArgs e)
+        {
+            //Console.WriteLine(filepath + "   " + videoframe_count);
+            Mat im = new Mat();
+            var cap = (VideoCapture)sender;
+            cap.Retrieve(im);
+            var mat_c = new Mat();
+            im.CopyTo(mat_c);
+            cap_mats.Add(mat_c);
+            videoframe_count++;
+            Console.WriteLine("vframe: " + videoframe_count + "/" + cap.GetCaptureProperty(CapProp.FrameCount));
+        }
 
         void streaming(object sender, EventArgs e)
         {
@@ -2479,23 +2517,7 @@ namespace opengl3
             }
             return ret;
         }
-        void loadingVideo(object sender, EventArgs e)
-        {
-            //Console.WriteLine(filepath + "   " + videoframe_count);
-            Mat im = new Mat();
-            var cap = (VideoCapture)sender;
-            cap.Retrieve(im);
-            var mat_c = new Mat();
-            im.CopyTo(mat_c);
-            cap_mats.Add(mat_c);
-            videoframe_count++;
-            Console.WriteLine("vframe: "+videoframe_count+"/"+ cap.GetCaptureProperty(CapProp.FrameCount));
-            /*if(cap_mats.Count>0)
-            {
-                Console.Write((im - cap_mats[0]).GetValueRange().Max + " " );
-            }*/
-
-        }
+        
 
         Frame findZeroFrame(List<VideoFrame> videoframes)
         {

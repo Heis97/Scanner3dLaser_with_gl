@@ -85,9 +85,77 @@ namespace opengl3
                     }
                 }
             }
-            Console.WriteLine("intersect " + polygons.Length +" polyg and " + lines.Length + " lines: " + ps_laser.Count + " points");
+            //Console.WriteLine("intersect " + polygons.Length +" polyg and " + lines.Length + " lines: " + ps_laser.Count + " points");
             return ps_laser.ToArray();
         }
+
+        static Point3d_GL[] sortByX(Point3d_GL[] ps)
+        {
+            var ps_sort = from p in ps
+                            orderby p.x
+                            select p;
+            return ps_sort.ToArray();
+        }
+
+        static public Polygon3d_GL[] triangulate_two_lines_xy(Point3d_GL[] _ps1, Point3d_GL[] _ps2)
+        {
+            var ps1 = sortByX(_ps1).Reverse().ToArray();
+            var ps2 = sortByX(_ps2).Reverse().ToArray();
+            var polygons = new List<Polygon3d_GL>();
+            int ind_2 = 0;
+            List<int>[] ps1_connect = new List<int>[ps1.Length];
+            for(int i=1; i < ps1.Length; i++)
+            {
+                polygons.Add(new Polygon3d_GL(ps1[i-1],ps1[i],ps2[ind_2]));
+                if (ps1_connect[i-1] == null)
+                {
+                    ps1_connect[i-1] = new List<int>();
+                }
+                if (ps1_connect[i]==null)
+                {
+                    ps1_connect[i] = new List<int>();
+                }
+                ps1_connect[i-1].Add(ind_2);
+                ps1_connect[i].Add(ind_2);
+                if(i<ps1.Length-1)
+                {
+                  
+                    var dist1 = (ps1[i + 1] - ps2[ind_2]).magnitude_xy();
+                    var dist2 = (ps1[i] - ps2[ind_2]).magnitude_xy();
+                   // Console.WriteLine();
+                    if ((dist1 > dist2) && ind_2<ps2.Length-1)
+                    {
+                        //Console.WriteLine("ind_2: " + ind_2);
+                        ind_2++;
+                    }
+                }
+                
+            }
+
+            for(int i=0; i < ps1_connect.Length; i++)
+            {
+                if(ps1_connect[i]!=null)
+                {
+                    if(ps1_connect[i].Count>1)
+                    {
+                        polygons.Add(new Polygon3d_GL(ps2[ps1_connect[i][1]], ps2[ps1_connect[i][0]], ps1[i] ));
+                    }
+                }
+            }
+            
+            return polygons.ToArray();
+        }
+
+        static public Polygon3d_GL[] triangulate_lines_xy(Point3d_GL[][] ps)
+        {
+            List<Polygon3d_GL> polygons = new List<Polygon3d_GL>();
+            for(int i=1; i<ps.Length; i++)
+            {
+                polygons.AddRange(triangulate_two_lines_xy(ps[i - 1], ps[i]));
+            }
+            return polygons.ToArray();
+        }
+
 
         static public float[] toMesh(Polygon3d_GL[] polygons)
         {
