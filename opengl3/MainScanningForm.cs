@@ -127,9 +127,6 @@ namespace opengl3
 
            // oneCam(new string[] { @"cam1\cam_cal_sven_1107_1" },10f);
         }
-
-
-
         void init_vars()
         {
             #region important
@@ -171,8 +168,6 @@ namespace opengl3
             //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
         }
 
-
-
         void loadStereo()
         {
             var cam_cal_1 = new string[] { @"cam1\camera_cal_1006_1" };
@@ -193,8 +188,6 @@ namespace opengl3
             
         }
 
-
-
         void oneCam(string[] cam_cal_paths, float mark_size)
         {
             var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.Pattern, PatternType.Mesh);
@@ -203,19 +196,21 @@ namespace opengl3
             comboImages.Items.AddRange(frms);
           
         }
+
+        #region laserScanner
         void loadScanner()
         {
-            var cam_cal_paths = new string[] { @"cam1\photo_9" , @"cam1\photo_11", @"cam1\photo_13" };//, @"cam1\photo_10"
-            var scan_path = @"cam1\scan_2002_1"; 
+            var cam_cal_paths = new string[] { @"cam1\photo_9", @"cam1\photo_11", @"cam1\photo_13" };//, @"cam1\photo_10"
+            var scan_path = @"cam1\scan_2002_1";
             //var scan_path = @"cam1\las_cal_2002_1\test";
             var las_cal_path = @"cam1\las_cal_2002_1\test";
 
-            
 
-            var frms_las_cal = FrameLoader.loadImages_diff(las_cal_path, FrameType.LasHand,PatternType.Chess);
+
+            var frms_las_cal = FrameLoader.loadImages_diff(las_cal_path, FrameType.LasHand, PatternType.Chess);
             var frms_scan = FrameLoader.loadImages_diff(scan_path, FrameType.LasHand, PatternType.Chess);
 
-            var frms = FrameLoader.loadPathsDiff(cam_cal_paths,FrameType.Pattern, PatternType.Chess);
+            var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.Pattern, PatternType.Chess);
             var cam1 = new CameraCV(frms, chess_size_real, markSize, null);
             cameraCVcommon = cam1;
             //comboImages.Items.AddRange(frms_las_cal);
@@ -223,12 +218,12 @@ namespace opengl3
             //comboImages.Items.AddRange(frms);
 
             var scanner1 = new Scanner(cam1);
-            if (scanner1.calibrateLaser(Frame.getMats(frms_las_cal), PatternType.Chess,GL1))
+            if (scanner1.calibrateLaser(Frame.getMats(frms_las_cal), PatternType.Chess, GL1))
             {
                 scanner1.addPoints(Frame.getMats(frms_scan));
                 var p3d_scan_sc = scanner1.getPointsScene();
                 var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
-                GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points,0.9f);
+                GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, 0.9f);
             }
             else
             {
@@ -236,7 +231,7 @@ namespace opengl3
             }
         }
 
-        void loadScannerLin(string[] cam_cal_paths, string las_cal_path, string lin_cal_path, string scand_path,float[] normrgb)
+        void loadScannerLin(string[] cam_cal_paths, string las_cal_path, string lin_cal_path, string scand_path, float[] normrgb)
         {
             Console.WriteLine("load frms lin cal");
             var frms_lin_cal = FrameLoader.loadImages_diff(lin_cal_path, FrameType.LasLin, PatternType.Chess);
@@ -313,7 +308,7 @@ namespace opengl3
             string[] las_cal_path,
             string[] las_cal_orig_path,
             string scand_path, string scand_orig_path,
-            float[] normrgb,bool undist)
+            float[] normrgb, bool undist)
         {
 
             var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.MarkBoard, PatternType.Mesh);
@@ -324,13 +319,13 @@ namespace opengl3
             var frms_scan_diff = FrameLoader.loadImages_diff(scand_path, FrameType.LasDif, PatternType.Chess, scand_orig_path, cam1, undist);
             comboImages.Items.AddRange(frms_scan_diff);
 
-            var frms_las_cal_0 = FrameLoader.loadImages_diff(las_cal_path[0], FrameType.LasLin, PatternType.Chess, las_cal_orig_path[0], cam1,undist);
+            var frms_las_cal_0 = FrameLoader.loadImages_diff(las_cal_path[0], FrameType.LasLin, PatternType.Chess, las_cal_orig_path[0], cam1, undist);
             //var frms_las_cal_1 = FrameLoader.loadImages_diff(las_cal_path[1], FrameType.LasLin, PatternType.Chess, las_cal_orig_path[1], cam1, undist);
             comboImages.Items.AddRange(frms_las_cal_0);
 
             var orig = FrameLoader.loadPathsDiff(las_cal_orig_path, FrameType.MarkBoard, PatternType.Chess, cam1, undist);
-             var orig_scan = FrameLoader.loadPathsDiff(new string[] { scand_orig_path }, FrameType.MarkBoard, PatternType.Chess, cam1, undist);
-           // GL1.addFlat3d_XY_zero(0);
+            var orig_scan = FrameLoader.loadPathsDiff(new string[] { scand_orig_path }, FrameType.MarkBoard, PatternType.Chess, cam1, undist);
+            // GL1.addFlat3d_XY_zero(0);
             //GL1.addFlat3d_XY_zero(4);
             var frms_las_cal_scan = FrameLoader.loadPathsDiff(new string[] { las_cal_orig_path[0] }, FrameType.MarkBoard, PatternType.Chess, cam1, undist);
             //comboImages.Items.AddRange(frms_las_cal_0);
@@ -346,11 +341,11 @@ namespace opengl3
                 //frms_las_cal_1 = null;
                 Console.WriteLine("CalibLin Done________________________");
                 var lins = scanner1.addPointsLinLas(Frame.getMats(frms_scan_diff), Frame.getLinPos(frms_scan_diff), Frame.getMats(orig_scan)[0], PatternType.Chess);
-               /* var lins = scanner1.addPointsLinLas(
-                    Frame.getMats(frms_las_cal_0),
-                    Frame.getLinPos(frms_las_cal_0),
-                    FrameLoader.loadImages_diff(las_cal_orig_path[0],FrameType.MarkBoard)[0].im,
-                    PatternType.Chess);*/
+                /* var lins = scanner1.addPointsLinLas(
+                     Frame.getMats(frms_las_cal_0),
+                     Frame.getLinPos(frms_las_cal_0),
+                     FrameLoader.loadImages_diff(las_cal_orig_path[0],FrameType.MarkBoard)[0].im,
+                     PatternType.Chess);*/
                 frms_las_cal_0 = null;
                 GC.Collect();
                 //var lins = 0;
@@ -362,7 +357,7 @@ namespace opengl3
                     GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
                     mesh_scan_stl = null;
                     scanner1 = null;
-                   
+
                     GC.Collect();
                 }
                 else
@@ -395,27 +390,26 @@ namespace opengl3
             var frms_2 = FrameLoader.loadImages_diff(@"cam2\" + cam_cal_path[1], FrameType.Pattern, PatternType.Mesh);
             var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
 
-            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_path, @"cam2\" + stereo_cal_path, FrameType.Pattern,true);
+            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_path, @"cam2\" + stereo_cal_path, FrameType.Pattern, true);
             comboImages.Items.AddRange(frms_stereo);
             cameraCVcommon = cam1;
             #endregion
-            
-            
-            var scanner = new Scanner(new CameraCV[] { cam1,cam2});
+
+
+            var scanner = new Scanner(new CameraCV[] { cam1, cam2 });
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);
 
-            loadVideo_stereo(scand_path,scanner,1);
-            
-            var scan_stl = Polygon3d_GL.toMesh( Polygon3d_GL.triangulate_lines_xy( scanner.getPointsLinesScene()));
+            loadVideo_stereo(scand_path, scanner, 1);
+
+            var scan_stl = Polygon3d_GL.toMesh(Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene()));
             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
-           //GL1.addMesh(lines_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
+            //GL1.addMesh(lines_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
             //var points_scan_stl = Point3d_GL.toMesh (scanner.getPointsScene());
             //GL1.addMesh(points_scan_stl, PrimitiveType.Points, normrgb[0], normrgb[1], normrgb[2]);
         }
 
 
-        
-        #region laserScanner
+
         public void startScanLaser(int typeScan)//0 - defolt, 1 - dif,2 - marl,3 - stereo
         {
             try
@@ -2405,7 +2399,9 @@ namespace opengl3
             var all_frames = Math.Min(all_frames1, all_frames2);
             if(scanner!= null)
             {
-                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2.ToImage<Bgr, byte>() };
+                var orig2_im = orig2.ToImage<Bgr, byte>();
+                CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
+                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
             }
             while (videoframe_count < all_frames)
             {
@@ -2426,11 +2422,11 @@ namespace opengl3
                     }
                     
                 }
-                var ps1 = Detection.detectLineDiff(im1 - orig1, 3, 0.05f, false);
+               /* var ps1 = Detection.detectLineDiff(im1 - orig1, 3, 0.05f, false);
                 var ps2 = Detection.detectLineDiff(im2 - orig2, 3, 0.05f, true);
 
                 imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
-                imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);
+                imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
 
@@ -2610,7 +2606,7 @@ namespace opengl3
         }
         #endregion
 
-
+        #region scan_but
 
         private void but_setShvpPos_Click(object sender, EventArgs e)
         {
@@ -2681,12 +2677,14 @@ namespace opengl3
         {
             loadScannerStereoLas(
             new string[] { @"cam_cal_1607_2", @"cam_cal_1607_3" },
-             @"stereo_cal_1607_1",
-             @"scan_1607_2",
+             @"stereo_cal_1607_2",
+             @"scan_1607_11",
              new float[] { 0.1f, 0.5f, 0.1f }, true);
 
             GL1.buffersGl.sortObj();
         }
+
+        #endregion
     }
 
 }

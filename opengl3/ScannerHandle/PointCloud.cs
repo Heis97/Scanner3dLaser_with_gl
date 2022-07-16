@@ -81,8 +81,8 @@ namespace opengl3
         public bool addPointsStereoLas(Mat[] mat, StereoCamera stereocamera)
         {
             
-            var points_im1 = Detection.detectLineDiff(mat[0], 3, 0.05f, false);
-            var points_im2 = Detection.detectLineDiff(mat[1],3,0.05f,false);
+            var points_im1 = Detection.detectLineDiff(mat[0], 7);
+            var points_im2 = Detection.detectLineDiff(mat[1], 7);
             var points_cam = fromStereoLaser(points_im1, points_im2, stereocamera, graphicGL, color_im);
             points3d_cur = points_cam;
             //points3d_cur = camToScene(points_cam, stereocamera.cameraCVs[1].matrixCS);
@@ -119,19 +119,22 @@ namespace opengl3
             var lines3d_1 = computeTracesCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);//stereocamera.R
             var polygons3d_1 = computePolygonsCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);
 
+         //   CvInvoke.Rotate(color_im[1], color_im[1], Emgu.CV.CvEnum.RotateFlags.Rotate180);
             var points3d_2 = computePointsCam(points_im2, stereocamera.cameraCVs[1], color_im[1]);
 
             var lines3d_2 = computeTracesCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
             var polygons3d_2 = computePolygonsCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
 
             
-            var points_cam2a = Polygon3d_GL.createLightFlat(polygons3d_1, lines3d_2);
-           // var points_cam2b = Polygon3d_GL.createLightFlat(polygons3d_2, lines3d_1);
-           // graphicGL?.addMesh(Polygon3d_GL.toMesh(polygons3d_1), OpenGL.PrimitiveType.Triangles);
-          //  graphicGL?.addMesh(Polygon3d_GL.toMesh(polygons3d_2), OpenGL.PrimitiveType.Lines);
+            //var points_cam2a = Polygon3d_GL.createLightFlat(polygons3d_1, lines3d_2);
 
 
-            return points_cam2a;
+             var points_cam2b = Polygon3d_GL.createLightFlat(polygons3d_2, lines3d_1);
+            // graphicGL?.addMesh(Polygon3d_GL.toMesh(polygons3d_1), OpenGL.PrimitiveType.Triangles);
+            //  graphicGL?.addMesh(Polygon3d_GL.toMesh(polygons3d_2), OpenGL.PrimitiveType.Lines);
+
+
+            return points_cam2b;
         }
 
 
