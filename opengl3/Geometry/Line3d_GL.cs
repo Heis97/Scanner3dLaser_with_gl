@@ -11,16 +11,19 @@ namespace opengl3
     {
         public Point3d_GL k;//delt
         public Point3d_GL p;//start_point
-        public Line3d_GL(Vector3d_GL _k, Point3d_GL _p)
+        public Colo3d_GL color;
+        public Line3d_GL(Vector3d_GL _k, Point3d_GL _p, Colo3d_GL _color = null)
         {
             k = new Point3d_GL(_k.x, _k.y, _k.z);
             p = _p;
+            color = _color;
         }
 
         public Line3d_GL(Point3d_GL _k, Point3d_GL _p)
         {
             k = new Point3d_GL(_k.x-_p.x, _k.y - _p.y, _k.z - _p.z);
             p = _p;
+            color = _k.color;
         }
 
 
@@ -38,7 +41,7 @@ namespace opengl3
                 return new Point3d_GL(
                     k.x * t + p.x,
                         k.y * t + p.y,
-                        k.z * t + p.z);
+                        k.z * t + p.z, color);
             }
             else
             {

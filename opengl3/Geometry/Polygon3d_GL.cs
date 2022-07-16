@@ -157,10 +157,12 @@ namespace opengl3
         }
 
 
-        static public float[] toMesh(Polygon3d_GL[] polygons)
+        static public float[][] toMesh(Polygon3d_GL[] polygons)
         {
-            var mesh =new  List<float>();   
-            for(int i=0; i<polygons.Length;i++)
+            var mesh =new  List<float>();
+            var color = new List<float>();
+            var normal = new List<float>();
+            for (int i=0; i<polygons.Length;i++)
             {               
                 if(polygons[i].ps.Length>2)
                 {
@@ -177,9 +179,42 @@ namespace opengl3
                     mesh_sub[7] = (float)polygons[i].ps[2].y;
                     mesh_sub[8] = (float)polygons[i].ps[2].z;
                     mesh.AddRange(mesh_sub);
+
+
+                    var color_sub = new float[9];
+                    if (polygons[i].ps[0].color!= null && polygons[i].ps[1].color != null && polygons[i].ps[2].color != null)
+                    {
+                        color_sub[0] = (float)polygons[i].ps[0].color.r;
+                        color_sub[1] = (float)polygons[i].ps[0].color.g;
+                        color_sub[2] = (float)polygons[i].ps[0].color.b;
+
+                        color_sub[3] = (float)polygons[i].ps[1].color.r;
+                        color_sub[4] = (float)polygons[i].ps[1].color.g;
+                        color_sub[5] = (float)polygons[i].ps[1].color.b;
+
+                        color_sub[6] = (float)polygons[i].ps[2].color.r;
+                        color_sub[7] = (float)polygons[i].ps[2].color.g;
+                        color_sub[8] = (float)polygons[i].ps[2].color.b;
+                    }
+                        
+                    color.AddRange(color_sub);
+
+                    var normal_sub = new float[9];
+                    normal_sub[0] = (float)polygons[i].flat3D.A;
+                    normal_sub[1] = (float)polygons[i].flat3D.B;
+                    normal_sub[2] = (float)polygons[i].flat3D.C;
+
+                    normal_sub[3] = (float)polygons[i].flat3D.A;
+                    normal_sub[4] = (float)polygons[i].flat3D.B;
+                    normal_sub[5] = (float)polygons[i].flat3D.C;
+
+                    normal_sub[6] = (float)polygons[i].flat3D.A;
+                    normal_sub[7] = (float)polygons[i].flat3D.B;
+                    normal_sub[8] = (float)polygons[i].flat3D.C;
+                    normal.AddRange(normal_sub);
                 }              
             }
-            return mesh.ToArray();
+            return new float[][] { mesh.ToArray(), color.ToArray(), normal.ToArray() };
         }        
     }
 }

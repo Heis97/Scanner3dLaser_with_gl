@@ -136,10 +136,19 @@ namespace opengl3
             return ps;
         }
 
-        public static PointF[] detectLineDiff(Mat _mat, int wind = 3,float board = 0.05f)
+        public static PointF[] detectLineDiff(Mat _mat, int wind = 3,float board = 0.05f,bool reverse = false)
         {
             var mat = _mat.Clone();
-            CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90CounterClockwise);
+            
+            if(reverse)
+            {
+                CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90Clockwise);
+            }
+            else
+            {
+                CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90CounterClockwise);
+            }
+
             var ps = new PointF[mat.Width];
             var ps_list = new List<PointF>();
             var rgb = mat.Split();
@@ -217,19 +226,39 @@ namespace opengl3
 
             }
             ps = ps_list.ToArray();
-            //medianFilter(ps);
-            //gaussFilter(ps);
+            medianFilter(ps);
+            gaussFilter(ps);
 
             GC.Collect();
-            return rotatePoints(ps,_mat.Size);
+            if(reverse)
+            {
+                ps = rotatePointsCounterClockwise(ps, _mat.Size);
+            }
+            else
+            {
+                ps = rotatePointsClockwise(ps, _mat.Size);
+            }
+           
+
+            return ps;
         }
 
-        static PointF[] rotatePoints(PointF[] ps,Size size)
+        static PointF[] rotatePointsClockwise(PointF[] ps,Size size)
         {
             var ps_rot = new PointF[ps.Length];
             for(int i=0; i<ps_rot.Length;i++)
             {
                 ps_rot[i] = new PointF(size.Width - ps[i].Y, ps[i].X);
+            }
+            return ps_rot;
+        }
+
+        static PointF[] rotatePointsCounterClockwise(PointF[] ps, Size size)
+        {
+            var ps_rot = new PointF[ps.Length];
+            for (int i = 0; i < ps_rot.Length; i++)
+            {
+                ps_rot[i] = new PointF( ps[i].Y, size.Height - ps[i].X);
             }
             return ps_rot;
         }

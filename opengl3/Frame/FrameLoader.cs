@@ -275,7 +275,7 @@ namespace opengl3
             fr.dateTime = File.GetCreationTime(filepath);
             return fr;
         }
-        static public Frame loadImage_stereoCV(string filepath1, string filepath2, FrameType frameType,Mat[] origs = null)
+        static public Frame loadImage_stereoCV(string filepath1, string filepath2, FrameType frameType,Mat[] origs = null, bool reverse = false)
         {
             string name1 = Path.GetFileName(filepath1);
             var im1 = new Mat(filepath1);
@@ -288,6 +288,10 @@ namespace opengl3
             {
                 im1 -= origs[0];
                 im2 -= origs[1];
+            }
+            if (reverse)
+            {
+                CvInvoke.Rotate(im2, im2, Emgu.CV.CvEnum.RotateFlags.Rotate180);
             }
             var fr = new Frame(im1, im2, name1, frameType);
 
@@ -333,7 +337,7 @@ namespace opengl3
         }
 
 
-        static public Frame[] loadImages_stereoCV(string path1, string path2,FrameType frameType)
+        static public Frame[] loadImages_stereoCV(string path1, string path2,FrameType frameType, bool reverse = false)
         {
             Console.WriteLine(path1);
             var files1 = sortByDate(Directory.GetFiles(path1));
@@ -344,7 +348,7 @@ namespace opengl3
 
             for (int i = 0; i < files1.Length; i++)
             {
-                var frame = loadImage_stereoCV(files1[i], files2[i], frameType,new Mat[] { getOrig(path1,frameType), getOrig(path2, frameType) });
+                var frame = loadImage_stereoCV(files1[i], files2[i], frameType,new Mat[] { getOrig(path1,frameType), getOrig(path2, frameType) },reverse);
                 if (frame != null)
                 {
                     frames.Add(frame);

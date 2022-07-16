@@ -123,18 +123,11 @@ namespace opengl3
 
             //loadVideo_stereo(@"test_1107_7");
 
-            loadScannerStereoLas(
-             @"camera_cal_1006_1",
-             @"stereo_cal_0907_1",
-             @"test_1107_7",
-             new float[] { 0.1f, 0.5f, 0.1f }, true);
-
-            GL1.buffersGl.sortObj();
+            
 
            // oneCam(new string[] { @"cam1\cam_cal_sven_1107_1" },10f);
         }
 
-        
 
 
         void init_vars()
@@ -386,18 +379,23 @@ namespace opengl3
 
 
         void loadScannerStereoLas(
-            string cam_cal_path,
+            string[] cam_cal_path,
             string stereo_cal_path,
             string scand_path,
             float[] normrgb, bool undist)
         {
             #region calibrate
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\" + cam_cal_path, FrameType.MarkBoard, PatternType.Chess);
+            /*var frms_1 = FrameLoader.loadImages_diff(@"cam1\" + cam_cal_path, FrameType.MarkBoard, PatternType.Chess);
             var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
             var frms_2 = FrameLoader.loadImages_diff(@"cam2\" + cam_cal_path, FrameType.MarkBoard, PatternType.Chess);
+            var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);*/
+
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\" + cam_cal_path[0], FrameType.Pattern, PatternType.Mesh);
+            var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
+            var frms_2 = FrameLoader.loadImages_diff(@"cam2\" + cam_cal_path[1], FrameType.Pattern, PatternType.Mesh);
             var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
-            
-            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_path, @"cam2\" + stereo_cal_path, FrameType.Pattern);
+
+            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_path, @"cam2\" + stereo_cal_path, FrameType.Pattern,true);
             comboImages.Items.AddRange(frms_stereo);
             cameraCVcommon = cam1;
             #endregion
@@ -405,10 +403,12 @@ namespace opengl3
             
             var scanner = new Scanner(new CameraCV[] { cam1,cam2});
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);
-            loadVideo_stereo(scand_path,scanner);
 
-            var lines_scan_stl = Polygon3d_GL.toMesh( Polygon3d_GL.triangulate_lines_xy( scanner.getPointsLinesScene()));
-            GL1.addMesh(lines_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
+            loadVideo_stereo(scand_path,scanner,1);
+            
+            var scan_stl = Polygon3d_GL.toMesh( Polygon3d_GL.triangulate_lines_xy( scanner.getPointsLinesScene()));
+            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+           //GL1.addMesh(lines_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
             //var points_scan_stl = Point3d_GL.toMesh (scanner.getPointsScene());
             //GL1.addMesh(points_scan_stl, PrimitiveType.Points, normrgb[0], normrgb[1], normrgb[2]);
         }
@@ -2403,6 +2403,10 @@ namespace opengl3
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
             var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
             var all_frames = Math.Min(all_frames1, all_frames2);
+            if(scanner!= null)
+            {
+                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2.ToImage<Bgr, byte>() };
+            }
             while (videoframe_count < all_frames)
             {
                 
@@ -2411,15 +2415,26 @@ namespace opengl3
                 while (!capture1.Read(im1)) { }
                 while (!capture2.Read(im2)) { }
                 //Console.WriteLine("____________________");
-                 if (scanner != null)
+                if (scanner != null)
+                {
+                    if (videoframe_count % strip == 0)
                     {
-                        if(videoframe_count % strip == 0)  scanner.addPointsStereoLas(new Mat[] { im2-orig2, im1-orig1 });
+                        im1 -= orig1;
+                        im2 -= orig2;
+                        CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
+                        scanner.addPointsStereoLas(new Mat[] { im1, im2 });
                     }
+                    
+                }
+                var ps1 = Detection.detectLineDiff(im1 - orig1, 3, 0.05f, false);
+                var ps2 = Detection.detectLineDiff(im2 - orig2, 3, 0.05f, true);
+
+                imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
+                imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
 
             }
-
         }
         Mat takeImage(VideoCapture capture)
         {
@@ -2662,8 +2677,16 @@ namespace opengl3
             startScanLaser(3);
         }
 
+        private void but_load_scan_Click(object sender, EventArgs e)
+        {
+            loadScannerStereoLas(
+            new string[] { @"cam_cal_1607_2", @"cam_cal_1607_3" },
+             @"stereo_cal_1607_1",
+             @"scan_1607_2",
+             new float[] { 0.1f, 0.5f, 0.1f }, true);
 
-
+            GL1.buffersGl.sortObj();
+        }
     }
 
 }

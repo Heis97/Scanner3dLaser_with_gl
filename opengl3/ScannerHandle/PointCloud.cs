@@ -1,6 +1,8 @@
 ﻿using Emgu.CV;
+using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +14,7 @@ namespace opengl3
         public Point3d_GL[] points3d;
         public List<Point3d_GL[]> points3d_lines;
         public Point3d_GL[] points3d_cur;
-
+        public Image<Bgr,byte>[] color_im;
         public GraphicGL graphicGL;
 
 
@@ -79,10 +81,9 @@ namespace opengl3
         public bool addPointsStereoLas(Mat[] mat, StereoCamera stereocamera)
         {
             
-            var points_im1 = Detection.detectLineDiff(mat[0]);
-            var points_im2 = Detection.detectLineDiff(mat[1]);
-            
-            var points_cam = fromStereoLaser(points_im1, points_im2, stereocamera, graphicGL);
+            var points_im1 = Detection.detectLineDiff(mat[0], 3, 0.05f, false);
+            var points_im2 = Detection.detectLineDiff(mat[1],3,0.05f,false);
+            var points_cam = fromStereoLaser(points_im1, points_im2, stereocamera, graphicGL, color_im);
             points3d_cur = points_cam;
             //points3d_cur = camToScene(points_cam, stereocamera.cameraCVs[1].matrixCS);
             var ps_list = points3d.ToList();
@@ -111,14 +112,14 @@ namespace opengl3
             return points_cam;
         }
 
-        public static Point3d_GL[] fromStereoLaser(PointF[] points_im1, PointF[] points_im2, StereoCamera stereocamera,GraphicGL graphicGL=null)
+        public static Point3d_GL[] fromStereoLaser(PointF[] points_im1, PointF[] points_im2, StereoCamera stereocamera,GraphicGL graphicGL=null, Image<Bgr, byte>[] color_im = null)
         {
 
-            var points3d_1 = computePointsCam(points_im1, stereocamera.cameraCVs[0]) ;
+            var points3d_1 = computePointsCam(points_im1, stereocamera.cameraCVs[0],color_im[0]) ;
             var lines3d_1 = computeTracesCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);//stereocamera.R
             var polygons3d_1 = computePolygonsCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);
 
-            var points3d_2 = computePointsCam(points_im2, stereocamera.cameraCVs[1]);
+            var points3d_2 = computePointsCam(points_im2, stereocamera.cameraCVs[1], color_im[1]);
 
             var lines3d_2 = computeTracesCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
             var polygons3d_2 = computePolygonsCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
@@ -160,7 +161,7 @@ namespace opengl3
             return lines3d;
         }
 
-        public static Line3d_GL[] computeTracesCam(Point3d_GL[] points_im,Matrix<double> matrix=null)
+        public static Line3d_GL[] computeTracesCam(Point3d_GL[] points_im, Matrix<double> matrix = null)
         {
             var lines3d = new Line3d_GL[points_im.Length];
             for (int i = 0; i < lines3d.Length; i++)
@@ -208,12 +209,19 @@ namespace opengl3
             return polygons3d;
         }
 
-        public static Point3d_GL[] computePointsCam(PointF[] points_im, CameraCV cameraCV, GraphicGL graphicGL = null)
+        public static Point3d_GL[] computePointsCam(PointF[] points_im, CameraCV cameraCV, Image<Bgr, byte> image = null)
         {
             var points3d = new Point3d_GL[points_im.Length];
             for (int i = 0; i < points3d.Length; i++)
             {
                 points3d[i] = cameraCV.point3DfromCam(points_im[i]);
+                if(image != null)
+                {
+                    var color = image[(int)points_im[i].Y, (int)points_im[i].X];
+                    points3d[i].color = new Colo3d_GL(color.Red/255, color.Green / 255, color.Blue / 255);
+                }
+                
+
             }
             return points3d;
         }

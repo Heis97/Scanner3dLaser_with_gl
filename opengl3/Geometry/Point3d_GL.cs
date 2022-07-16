@@ -16,12 +16,14 @@ namespace opengl3
         public double y;
         public double z;
         public bool exist;
-        public Point3d_GL(double _x = 0, double _y = 0, double _z = 0)
+        public Colo3d_GL color;
+        public Point3d_GL(double _x = 0, double _y = 0, double _z = 0, Colo3d_GL _color = null)
         {
             x = _x;
             y = _y;
             z = _z;
             exist = true;
+            color = _color;
         }
 
         public Point3d_GL(Point p, double _z)
@@ -30,6 +32,7 @@ namespace opengl3
             y = p.Y;
             z = _z;
             exist = true;
+            color = null;
         }
         public Point3d_GL(PointF p, double _z)
         {
@@ -37,6 +40,7 @@ namespace opengl3
             y = p.Y;
             z = _z;
             exist = true;
+            color = null;
         }
         public Point3d_GL(Point3d_GL p1, Point3d_GL p2)
         {
@@ -44,13 +48,15 @@ namespace opengl3
             y = p1.y + (p2.y - p1.y) / 2;
             z = p1.z + (p2.z - p1.z) / 2;
             exist = true;
+            color = p1.color;
         }
-        public Point3d_GL(double[,] cor)
+        public Point3d_GL(double[,] cor, Colo3d_GL _color = null)
         {
             x = cor[0, 0];
             y = cor[1, 0];
             z = cor[2, 0];
             exist = true;
+            color = _color;
         }
         public Point3d_GL normalize()
         {
@@ -68,7 +74,7 @@ namespace opengl3
                 z = 0;
             }
 
-            return new Point3d_GL(x, y, z);
+            return new Point3d_GL(x, y, z,color);
         }
         public double magnitude()
         {
@@ -123,21 +129,21 @@ namespace opengl3
         }
         public static Point3d_GL operator *(Point3d_GL p, double k)
         {
-            return new Point3d_GL(p.x * k, p.y * k, p.z * k);
+            return new Point3d_GL(p.x * k, p.y * k, p.z * k,p.color);
         }
 
         public static Point3d_GL operator /(Point3d_GL p, double k)
         {
-            return new Point3d_GL(p.x / k, p.y / k, p.z / k);
+            return new Point3d_GL(p.x / k, p.y / k, p.z / k,p.color);
         }
 
         public static Point3d_GL operator *(Point3d_GL p1, Point3d_GL p2)
         {
-            return new Point3d_GL(p1.x * p2.x, p1.y * p2.y, p1.z * p2.z);
+            return new Point3d_GL(p1.x * p2.x, p1.y * p2.y, p1.z * p2.z,p1.color);
         }
         public static Point3d_GL operator *(Point3d_GL p, Flat3d_GL f)
         {
-            return new Point3d_GL(p.x * f.A, p.y * f.B, p.z * f.C);
+            return new Point3d_GL(p.x * f.A, p.y * f.B, p.z * f.C,p.color);
         }
         public static Point3d_GL operator *(double[,] matrixA, Point3d_GL p)
         {
@@ -171,7 +177,7 @@ namespace opengl3
                     }
                 }
             }
-            return new Point3d_GL(matrixC);
+            return new Point3d_GL(matrixC,p.color);
         }
         static double[,] Matrix4x4ToDouble(Matrix4x4f matrixA)
         {
@@ -217,21 +223,21 @@ namespace opengl3
 
         public static Point3d_GL operator +(Point3d_GL p, Vector3d_GL v1)
         {
-            return new Point3d_GL(p.x + v1.x, p.y + v1.y, p.z + v1.z);
+            return new Point3d_GL(p.x + v1.x, p.y + v1.y, p.z + v1.z,p.color);
         }
         public static Point3d_GL operator +(Point3d_GL p1, Point3d_GL p2)
         {
-            return new Point3d_GL(p1.x + p2.x, p1.y + p2.y, p1.z + p2.z);
+            return new Point3d_GL(p1.x + p2.x, p1.y + p2.y, p1.z + p2.z, p1.color);
         }
 
         public static Point3d_GL operator -(Point3d_GL p1, Point3d_GL p2)
         {
-            return new Point3d_GL(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
+            return new Point3d_GL(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z, p1.color);
         }
 
         public static Point3d_GL operator -(Point3d_GL p)
         {
-            return new Point3d_GL(-p.x, -p.y, -p.z);
+            return new Point3d_GL(-p.x, -p.y, -p.z,p.color);
         }
         public override string ToString()
         {

@@ -247,6 +247,7 @@ namespace opengl3
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.but_load_scan = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1466,6 +1467,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.but_load_scan);
             this.tabMain.Controls.Add(this.but_scan_stereolas);
             this.tabMain.Controls.Add(this.but_scan_marl);
             this.tabMain.Controls.Add(this.but_scan_def);
@@ -2297,7 +2299,7 @@ namespace opengl3
             // 
             // butStop
             // 
-            this.butStop.Location = new System.Drawing.Point(1801, 526);
+            this.butStop.Location = new System.Drawing.Point(996, 973);
             this.butStop.Name = "butStop";
             this.butStop.Size = new System.Drawing.Size(80, 42);
             this.butStop.TabIndex = 9;
@@ -2316,7 +2318,7 @@ namespace opengl3
             // 
             // butStart
             // 
-            this.butStart.Location = new System.Drawing.Point(1719, 525);
+            this.butStart.Location = new System.Drawing.Point(914, 973);
             this.butStart.Name = "butStart";
             this.butStart.Size = new System.Drawing.Size(76, 42);
             this.butStart.TabIndex = 8;
@@ -2334,7 +2336,7 @@ namespace opengl3
             // 
             // videoCapt
             // 
-            this.videoCapt.Location = new System.Drawing.Point(1660, 570);
+            this.videoCapt.Location = new System.Drawing.Point(802, 973);
             this.videoCapt.Name = "videoCapt";
             this.videoCapt.Size = new System.Drawing.Size(106, 38);
             this.videoCapt.TabIndex = 1;
@@ -2453,7 +2455,7 @@ namespace opengl3
             // 
             // butCalcIm
             // 
-            this.butCalcIm.Location = new System.Drawing.Point(1770, 573);
+            this.butCalcIm.Location = new System.Drawing.Point(1082, 977);
             this.butCalcIm.Name = "butCalcIm";
             this.butCalcIm.Size = new System.Drawing.Size(106, 38);
             this.butCalcIm.TabIndex = 35;
@@ -2581,6 +2583,16 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
+            // 
+            // but_load_scan
+            // 
+            this.but_load_scan.Location = new System.Drawing.Point(1773, 526);
+            this.but_load_scan.Name = "but_load_scan";
+            this.but_load_scan.Size = new System.Drawing.Size(106, 38);
+            this.but_load_scan.TabIndex = 129;
+            this.but_load_scan.Text = "Загрузить";
+            this.but_load_scan.UseVisualStyleBackColor = true;
+            this.but_load_scan.Click += new System.EventHandler(this.but_load_scan_Click);
             // 
             // MainScanningForm
             // 
@@ -2884,6 +2896,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_marl_receav;
         private System.Windows.Forms.Button but_scan_marl;
         private System.Windows.Forms.Button but_scan_stereolas;
+        private System.Windows.Forms.Button but_load_scan;
     }
 }
 
