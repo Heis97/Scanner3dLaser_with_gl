@@ -163,7 +163,7 @@ namespace opengl3
             var matAll = (fr + fg + fb);
             //CvInvoke.Normalize(im1, im1, 255, 0);
             //var bin = new Mat();
-            var sob = new Mat();
+           // var sob = new Mat();
            // var gray = new Mat();
             //var erros = new Mat();
 
@@ -176,7 +176,7 @@ namespace opengl3
             //Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
             //CvInvoke.MorphologyEx(bin, erros, MorphOp.Erode, kernel5, new Point(-1, -1), 1, BorderType.Constant, new MCvScalar(0));
             
-            var data_sob = (byte[,])sob.GetData();
+            //var data_sob = (byte[,])sob.GetData();
             var data = (float[,])matAll.GetData();
             var br_max = int.MinValue;
             for (int i = (int)(board* data.GetLength(1)); i < data.GetLength(1)- (int)(board * data.GetLength(1)); i++)
@@ -248,7 +248,8 @@ namespace opengl3
             var ps_rot = new PointF[ps.Length];
             for(int i=0; i<ps_rot.Length;i++)
             {
-                ps_rot[i] = new PointF(size.Width - ps[i].Y, ps[i].X);
+                //ps_rot[i] = new PointF(size.Width - ps[i].Y,size.Height- ps[i].X);
+                ps_rot[i] = new PointF(size.Width - ps[i].Y,  ps[i].X);
             }
             return ps_rot;
         }

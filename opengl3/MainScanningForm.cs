@@ -39,7 +39,7 @@ namespace opengl3
         Matrix<double> persp_matr = new Matrix<double>(new double[3,3] { {1,0,0},{0,1,0 },{0,0,1 } });
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
-        float markSize = 2.5f;
+        float markSize = 10f;
         Size chess_size = new Size(6, 7);
         Size chess_size_real = new Size(6, 7);
         StereoCameraCV stereocam = new StereoCameraCV();
@@ -47,7 +47,8 @@ namespace opengl3
         TCPclient con1;
         private const float PI = 3.14159265358979f;
         // private Size cameraSize = new Size(1280, 960);
-        private Size cameraSize = new Size(640, 480);
+        private Size cameraSize = new Size(1184, 656);
+       // private Size cameraSize = new Size(640, 480);
         private GraphicGL GL1 = new GraphicGL();
         private VideoCapture myCapture1 = null;
         VideoWriter writer = null;
@@ -377,7 +378,7 @@ namespace opengl3
             string[] cam_cal_path,
             string stereo_cal_path,
             string scand_path,
-            float[] normrgb, bool undist)
+            float[] normrgb, bool undist,int strip)
         {
             #region calibrate
             /*var frms_1 = FrameLoader.loadImages_diff(@"cam1\" + cam_cal_path, FrameType.MarkBoard, PatternType.Chess);
@@ -391,6 +392,8 @@ namespace opengl3
             var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
 
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_path, @"cam2\" + stereo_cal_path, FrameType.Pattern, true);
+            comboImages.Items.AddRange(frms_1);
+            comboImages.Items.AddRange(frms_2);
             comboImages.Items.AddRange(frms_stereo);
             cameraCVcommon = cam1;
             #endregion
@@ -399,7 +402,7 @@ namespace opengl3
             var scanner = new Scanner(new CameraCV[] { cam1, cam2 });
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);
 
-            loadVideo_stereo(scand_path, scanner, 1);
+            loadVideo_stereo(scand_path, scanner, strip);
 
             var scan_stl = Polygon3d_GL.toMesh(Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene()));
             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
@@ -455,10 +458,10 @@ namespace opengl3
                 var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
                 laserLine?.laserOn();
                 Thread.Sleep(200);
-
+               
                 startWrite(1, counts);
                 startWrite(2, counts);
-                linearPlatf?.setShvpPos((float)p2_cur_scan.x, v_laser * 120);//!!!!!!!!!!!!!!
+                linearPlatf?.setShvpPos((float)p2_cur_scan.x, v_laser * 60);//!!!!!!!!!!!!!!
             }
 
             for (int i = 0; i < counts; i++)
@@ -1876,6 +1879,7 @@ namespace opengl3
             }
             else
             {
+               
                 videoframe_counts[ind - 1] = -1;
                 
             }
@@ -1918,6 +1922,8 @@ namespace opengl3
             var capture = new VideoCapture(number);
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
             capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
+            capture.SetCaptureProperty(CapProp.Fps, 15);
+
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
             camera_ind.Add((int)capture.Ptr);
             capture.ImageGrabbed += capturingVideo;
@@ -2387,51 +2393,7 @@ namespace opengl3
             return new VideoFrame(cap_mats.ToArray(), new Mat(orig_path), name);
         }
 
-        public void loadVideo_stereo(string filepath,Scanner scanner = null,int strip = 1)
-        {
-            videoframe_count = 0;
-            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
-            var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
-            var capture1 = new VideoCapture(Directory.GetFiles("cam1\\" + filepath)[0]);
-            var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
-            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
-            var all_frames = Math.Min(all_frames1, all_frames2);
-            if(scanner!= null)
-            {
-                var orig2_im = orig2.ToImage<Bgr, byte>();
-                CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
-                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
-            }
-            while (videoframe_count < all_frames)
-            {
-                
-                Mat im1 = new Mat();
-                Mat im2 = new Mat();
-                while (!capture1.Read(im1)) { }
-                while (!capture2.Read(im2)) { }
-                //Console.WriteLine("____________________");
-                if (scanner != null)
-                {
-                    if (videoframe_count % strip == 0)
-                    {
-                        im1 -= orig1;
-                        im2 -= orig2;
-                        CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                        scanner.addPointsStereoLas(new Mat[] { im1, im2 });
-                    }
-                    
-                }
-               /* var ps1 = Detection.detectLineDiff(im1 - orig1, 3, 0.05f, false);
-                var ps2 = Detection.detectLineDiff(im2 - orig2, 3, 0.05f, true);
-
-                imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
-                imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
-                videoframe_count++;
-                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
-
-            }
-        }
+       
         Mat takeImage(VideoCapture capture)
         {
             Mat im = new Mat();
@@ -2676,14 +2638,62 @@ namespace opengl3
         private void but_load_scan_Click(object sender, EventArgs e)
         {
             loadScannerStereoLas(
-            new string[] { @"cam_cal_1607_2", @"cam_cal_1607_3" },
-             @"stereo_cal_1607_2",
-             @"scan_1607_11",
-             new float[] { 0.1f, 0.5f, 0.1f }, true);
+            new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
+             @"stereo_cal_1807_5",
+             @"scan_1907_6",
+             new float[] { 0.1f, 0.5f, 0.1f }, true,1);
 
             GL1.buffersGl.sortObj();
         }
+        public void loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
+        {
+            videoframe_count = 0;
+            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
+            var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
+            var capture1 = new VideoCapture(Directory.GetFiles("cam1\\" + filepath)[0]);
+            var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
+            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
+            
+            //Console.WriteLine(capture1.GetCaptureProperty(CapProp.Fps) + " " + capture2.GetCaptureProperty(CapProp.Fps));
+            var all_frames = Math.Min(all_frames1, all_frames2);
+            if (scanner != null)
+            {
+                var orig2_im = orig2.ToImage<Bgr, byte>();
+                CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
+                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
+            }
+            while (videoframe_count < all_frames)
+            {
 
+                Mat im1 = new Mat();
+                Mat im2 = new Mat();
+                while (!capture1.Read(im1)) { }
+                while (!capture2.Read(im2)) { }
+                //Console.WriteLine("____________________");
+                if (scanner != null)
+                {
+                    if (videoframe_count % strip == 0)
+                    {
+                        im1 -= orig1;
+                        im2 -= orig2;
+                        CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
+
+                        scanner.addPointsStereoLas(new Mat[] { im1, im2 });
+                        /*var ps1 = Detection.detectLineDiff(im1, 3);
+                        var ps2 = Detection.detectLineDiff(im2, 3);
+
+                        imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
+                        imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
+                    }
+
+                }
+                 
+                videoframe_count++;
+                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+
+            }
+        }
         #endregion
     }
 

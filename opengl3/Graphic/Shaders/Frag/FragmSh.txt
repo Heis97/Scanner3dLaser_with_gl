@@ -27,9 +27,9 @@ void main() {
 	vec3 R = reflect(-l,n);
 	float cosAlpha = clamp( dot( E,R ), 0,1 );
 	MaterialDiffuseColor = fs_in.Color;
-	MaterialDiffuseColor = vec3(0.5,0.5,0.5);
+	//MaterialDiffuseColor = vec3(0.5,0.5,0.5);
 	color.xyz = MaterialAmbientColor + MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
-	//color.xyz = fs_in.Color;
+	color.xyz = fs_in.Color;
 
 	color.w = 1.0;
 }
