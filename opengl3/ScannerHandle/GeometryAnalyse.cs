@@ -37,8 +37,36 @@ namespace opengl3
             };
             var persp_Norm = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(points3d), new VectorOfPointF(points2d));
 
-            return CvInvoke.PerspectiveTransform(generatePsInsideRect(gridSize), persp_Norm);
-           
+            return CvInvoke.PerspectiveTransform(generatePsInsideRect(gridSize), persp_Norm);           
+        }
+
+        public static System.Drawing.PointF[] findCirclesIter(Mat mat, Size size_patt, float markSize)
+        {
+
+            var points3d = new System.Drawing.PointF[]
+            {
+                    new System.Drawing.PointF(0,0),
+                    new System.Drawing.PointF(markSize*size_patt.Width,0),
+                    new System.Drawing.PointF(0,markSize*size_patt.Height),
+                    new System.Drawing.PointF(markSize*size_patt.Width,markSize*size_patt.Height)
+            };
+
+            var len = size_patt.Width * size_patt.Height;
+            var cornF = new System.Drawing.PointF[len];
+            var matDraw = FindCircles.findCircles(mat, cornF, size_patt);
+            var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
+
+
+            var persp_Norm = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(points3d), new VectorOfPointF(points2d));
+            var im_pers = mat.Clone();
+            CvInvoke.PerspectiveTransform(mat, im_pers, persp_Norm);
+            FindCircles.findCircles(im_pers, cornF, size_patt);
+            var persp_Norm_inv = new Mat();
+            CvInvoke.Invert(persp_Norm, persp_Norm_inv, DecompMethod.LU);
+
+            cornF = CvInvoke.PerspectiveTransform(cornF, persp_Norm_inv);
+
+            return cornF;
         }
 
         static System.Drawing.PointF[] generatePsInsideRect(Size _gridSize, Matrix<double> matr=null)

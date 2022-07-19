@@ -66,19 +66,19 @@ namespace opengl3
         /// one line
         /// </summary>
         /// <param name="mats"></param>
-        public void addPointsStereoLas(Mat[] mats)
+        public void addPointsStereoLas(Mat[] mats, bool undist = true)
         {
-            pointCloud.addPointsStereoLas(mats, stereoCamera);
+            pointCloud.addPointsStereoLas(mats, stereoCamera, undist);
         }
 
-        public void addPointsStereoLas(Mat[][] mats)
+       /* public void addPointsStereoLas(Mat[][] mats)
         {
             for(int i=0;i<mats.Length;i++)
             {
                 Console.WriteLine("loading...      "+i+"/"+mats.Length);
                 pointCloud.addPointsStereoLas(mats[i], stereoCamera);
             }            
-        }
+        }*/
 
         public bool addPoints(Mat mat)
         {

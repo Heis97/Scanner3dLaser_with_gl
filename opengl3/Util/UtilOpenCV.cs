@@ -584,7 +584,7 @@ namespace opengl3
 
             if (points1.Length != 0 && points2.Length != 0 && points1.Length == points2.Length)
             {
-
+                double delt = 0;
                 for(int i=0; i<points1.Length;i++)
                 {
                     
@@ -592,8 +592,10 @@ namespace opengl3
                     //CvInvoke.Circle(im, points2[i], size - 1, color, -1);
                     //CvInvoke.Line(im, points1[i], points2[i], randomColor(), size);
                     CvInvoke.Line(im, points1[i], points2[i], color, size);
+                    delt += Math.Sqrt(Math.Pow((points1[i].X - points2[i].X), 2) + Math.Pow((points1[i].Y - points2[i].Y), 2));
                     ind++;
                 }
+                Console.WriteLine("delt: " + delt);
             }
             else
             {
@@ -1222,8 +1224,8 @@ namespace opengl3
 
             var len = size.Width * size.Height;
             var corn = new System.Drawing.PointF[len];
-            FindCircles.findCircles(im, corn, size);
-
+            //FindCircles.findCircles(im, corn, size);
+            corn = GeometryAnalyse.findCirclesIter(im, size, 10f);
             var gab = takeGabObp(corn, size);
             var ps_ins = GeometryAnalyse.compPointsInsideRectWarp(gab, size);
 

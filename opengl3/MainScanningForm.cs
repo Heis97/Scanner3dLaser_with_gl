@@ -126,7 +126,7 @@ namespace opengl3
 
             
 
-           // oneCam(new string[] { @"cam1\cam_cal_sven_1107_1" },10f);
+            oneCam(new string[] { @"cam1\camera_cal_1807_1" },10f);
         }
         void init_vars()
         {
@@ -393,7 +393,7 @@ namespace opengl3
 
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_path, @"cam2\" + stereo_cal_path, FrameType.Pattern, true);
             comboImages.Items.AddRange(frms_1);
-            comboImages.Items.AddRange(frms_2);
+           // comboImages.Items.AddRange(frms_2);
             comboImages.Items.AddRange(frms_stereo);
             cameraCVcommon = cam1;
             #endregion
@@ -1058,7 +1058,7 @@ namespace opengl3
                 }
                 else if (fr.frameType == FrameType.Pattern)
                 {
-
+                    
                     imageBox2.Image = UtilOpenCV.drawInsideRectCirc(cameraCVcommon.undist(fr.im.Clone()), chess_size);
                     imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
                 }
@@ -2641,7 +2641,7 @@ namespace opengl3
             new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
              @"stereo_cal_1807_5",
              @"scan_1907_6",
-             new float[] { 0.1f, 0.5f, 0.1f }, true,1);
+             new float[] { 0.1f, 0.5f, 0.1f }, true,10);
 
             GL1.buffersGl.sortObj();
         }
@@ -2679,7 +2679,7 @@ namespace opengl3
                         im2 -= orig2;
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
 
-                        scanner.addPointsStereoLas(new Mat[] { im1, im2 });
+                        scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
                         /*var ps1 = Detection.detectLineDiff(im1, 3);
                         var ps2 = Detection.detectLineDiff(im2, 3);
 

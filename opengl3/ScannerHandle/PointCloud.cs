@@ -78,9 +78,13 @@ namespace opengl3
             return true;
         }
 
-        public bool addPointsStereoLas(Mat[] mat, StereoCamera stereocamera)
+        public bool addPointsStereoLas(Mat[] mat, StereoCamera stereocamera, bool undist)
         {
-            
+            if(undist)
+            {
+                mat[0] = stereocamera.cameraCVs[0].undist(mat[0]);
+                mat[1] = stereocamera.cameraCVs[1].undist(mat[1]);
+            }
             var points_im1 = Detection.detectLineDiff(mat[0], 7);
             var points_im2 = Detection.detectLineDiff(mat[1], 7);
             var points_cam = fromStereoLaser(points_im1, points_im2, stereocamera, graphicGL, color_im);

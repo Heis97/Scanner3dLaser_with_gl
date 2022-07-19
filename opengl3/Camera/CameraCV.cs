@@ -346,7 +346,7 @@ namespace opengl3
         }
         public float[] compPos(MCvPoint3D32f[] points3D, System.Drawing.PointF[] points2D)
         {
-            distortmatrix = new Matrix<double>(new double[,]{ { 0,0,0,0,0} });
+            //distortmatrix = new Matrix<double>(new double[,]{ { 0,0,0,0,0} });
             CvInvoke.SolvePnP(points3D, points2D, cameramatrix, distortmatrix, cur_r, cur_t);
             var matrs = assemblMatrix(cur_r, cur_t);
             matrixCS = matrs[0];
@@ -428,6 +428,7 @@ namespace opengl3
                 var cornF = new System.Drawing.PointF[len];
                 var matDraw = FindCircles.findCircles(mat, cornF, size_patt);
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
+
                 compPos(points3d, points2d);
                 return true;
             }
@@ -437,7 +438,7 @@ namespace opengl3
 
         public Point3d_GL point3DfromCam(PointF _p)
         {
-            var p =  (cameramatrix_inv * new Point3d_GL(_p.X, _p.Y, 1))* 200;
+            var p =  (cameramatrix_inv * new Point3d_GL(_p.X, _p.Y, 1));
             return p;
         }
 
@@ -535,7 +536,8 @@ namespace opengl3
 
             var und_pic = new Mat();
             CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
-            //_cameramatrix[1, 2] = _cameramatrix[0, 2];
+            //_cameramatrix[0, 0] *= 2.25;
+            //_cameramatrix[1, 1] *= 2.25;
             cameramatrix = _cameramatrix;
             cameramatrix_inv = invMatrix(cameramatrix);
             distortmatrix = _distortmatrix;
@@ -551,15 +553,83 @@ namespace opengl3
 
         }
 
-        void normalyseData(MCvPoint3D32f[][] points3d, System.Drawing.PointF[][] points2d,float k2d, float k3d, out MCvPoint3D32f[][] npoints3d,out System.Drawing.PointF[][] npoints2d)
+
+        public  static System.Drawing.PointF[] findPoints(Mat mat, Size size_patt)
+        {
+            var gray = mat.ToImage<Gray, byte>();
+            var corn = new VectorOfPointF();
+            var ret = CvInvoke.FindChessboardCorners(gray, size_patt, corn);
+            if (ret == true)
+            {
+                CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+                var corn2 = corn.ToArray();
+                return corn2;
+                /*if(obp_inp!=null)
+                    {               
+                        UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);                       
+                    }
+                    else
+                    {
+                        CvInvoke.DrawChessboardCorners(mat1, size, corn, ret);
+                        //UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp), 255, 0, 0, 3);
+                    }
+                    UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);
+                    CvInvoke.Imshow("asda", mat1);
+                     CvInvoke.WaitKey();*/
+
+
+                //Console.WriteLine(frame.name);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public static System.Drawing.PointF[] findPoints(Frame frame, Size size_patt)
+        {
+            
+            if (frame.frameType == FrameType.MarkBoard)
+            {
+                return findPoints(frame.im, size_patt);
+            }
+            else if (frame.frameType == FrameType.Pattern)
+            {
+                var len = size_patt.Width * size_patt.Height;
+                var cornF = new System.Drawing.PointF[len];
+                var mat = FindCircles.findCircles(frame.im, cornF, size_patt);
+                //CvInvoke.Imshow("calib",mat);
+                //CvInvoke.WaitKey();
+                if (cornF == null)
+                {
+                    return null;
+                }
+                if (cornF.Length != len)
+                {
+                    return null;
+                }
+                else
+                {
+                    return cornF;
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+
+
+        void normalyseData(MCvPoint3D32f[][] points3d, System.Drawing.PointF[][] points2d, float k2d, float k3d, out MCvPoint3D32f[][] npoints3d, out System.Drawing.PointF[][] npoints2d)
         {
             npoints3d = (MCvPoint3D32f[][])points3d.Clone();
-            for(int i=0; i<npoints3d.Length;i++)
+            for (int i = 0; i < npoints3d.Length; i++)
             {
                 npoints3d[i] = (MCvPoint3D32f[])points3d[i].Clone();
             }
             npoints2d = (System.Drawing.PointF[][])points2d.Clone();
-            for(int i=0; i<npoints3d.Length;i++)
+            for (int i = 0; i < npoints3d.Length; i++)
             {
                 for (int j = 0; j < npoints3d[i].Length; j++)
                 {
@@ -576,7 +646,7 @@ namespace opengl3
                 {
                     //Console.WriteLine("_____________________");
                     //Console.WriteLine(points2d[i][j].X + " " + points2d[i][j].Y);
-                    npoints2d[i][j] =new System.Drawing.PointF(npoints2d[i][j].X / k2d, npoints2d[i][j].Y / k2d);
+                    npoints2d[i][j] = new System.Drawing.PointF(npoints2d[i][j].X / k2d, npoints2d[i][j].Y / k2d);
                     //Console.WriteLine(npoints2d[i][j].X + " " + npoints2d[i][j].Y);
                 }
             }
@@ -704,72 +774,7 @@ namespace opengl3
         }
 
 
-        public  static System.Drawing.PointF[] findPoints(Mat mat, Size size_patt)
-        {
-            var gray = mat.ToImage<Gray, byte>();
-            var corn = new VectorOfPointF();
-            var ret = CvInvoke.FindChessboardCorners(gray, size_patt, corn);
-            if (ret == true)
-            {
-                CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
-                var corn2 = corn.ToArray();
-                return corn2;
-                /*if(obp_inp!=null)
-                    {               
-                        UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);                       
-                    }
-                    else
-                    {
-                        CvInvoke.DrawChessboardCorners(mat1, size, corn, ret);
-                        //UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp), 255, 0, 0, 3);
-                    }
-                    UtilOpenCV.drawMatches(mat1, corn2, UtilMatr.toPointF(obp_inp[ind_fr]), 255, 0, 0, 3);
-                    CvInvoke.Imshow("asda", mat1);
-                     CvInvoke.WaitKey();*/
-
-
-                //Console.WriteLine(frame.name);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        public static System.Drawing.PointF[] findPoints(Frame frame, Size size_patt)
-        {
-            
-            if (frame.frameType == FrameType.MarkBoard)
-            {
-                return findPoints(frame.im, size_patt);
-            }
-            else if (frame.frameType == FrameType.Pattern)
-            {
-                var len = size_patt.Width * size_patt.Height;
-                var cornF = new System.Drawing.PointF[len];
-                var mat = FindCircles.findCircles(frame.im, cornF, size_patt);
-                //CvInvoke.Imshow("calib",mat);
-                //CvInvoke.WaitKey();
-                if (cornF == null)
-                {
-                    return null;
-                }
-                if (cornF.Length != len)
-                {
-                    return null;
-                }
-                else
-                {
-                    return cornF;
-                }
-            }
-            else
-            {
-                return null;
-            }
-
-        }
+        #region test calib
         void EmguCVUndistortFisheye(string path, Size patternSize)
         {
             string[] fileNames = Directory.GetFiles(path, "*.png");
@@ -1559,5 +1564,6 @@ namespace opengl3
                 return true;
             }
         }
+        #endregion
     }
 }
