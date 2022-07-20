@@ -227,7 +227,7 @@ namespace opengl3
             }
             ps = ps_list.ToArray();
             medianFilter(ps);
-            gaussFilter(ps);
+           // gaussFilter(ps);
 
             GC.Collect();
             if(reverse)

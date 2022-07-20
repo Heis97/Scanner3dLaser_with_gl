@@ -141,6 +141,7 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_load_scan = new System.Windows.Forms.Button();
             this.but_scan_stereolas = new System.Windows.Forms.Button();
             this.but_scan_marl = new System.Windows.Forms.Button();
             this.but_scan_def = new System.Windows.Forms.Button();
@@ -247,7 +248,7 @@ namespace opengl3
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_load_scan = new System.Windows.Forms.Button();
+            this.but_text_vis = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -899,6 +900,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_text_vis);
             this.tabOpenGl.Controls.Add(this.lab_TRZ);
             this.tabOpenGl.Controls.Add(this.debugBox);
             this.tabOpenGl.Controls.Add(this.textBox_monitor_id);
@@ -1564,6 +1566,16 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // but_load_scan
+            // 
+            this.but_load_scan.Location = new System.Drawing.Point(1773, 526);
+            this.but_load_scan.Name = "but_load_scan";
+            this.but_load_scan.Size = new System.Drawing.Size(106, 38);
+            this.but_load_scan.TabIndex = 129;
+            this.but_load_scan.Text = "Загрузить";
+            this.but_load_scan.UseVisualStyleBackColor = true;
+            this.but_load_scan.Click += new System.EventHandler(this.but_load_scan_Click);
             // 
             // but_scan_stereolas
             // 
@@ -2584,15 +2596,15 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // but_load_scan
+            // but_text_vis
             // 
-            this.but_load_scan.Location = new System.Drawing.Point(1773, 526);
-            this.but_load_scan.Name = "but_load_scan";
-            this.but_load_scan.Size = new System.Drawing.Size(106, 38);
-            this.but_load_scan.TabIndex = 129;
-            this.but_load_scan.Text = "Загрузить";
-            this.but_load_scan.UseVisualStyleBackColor = true;
-            this.but_load_scan.Click += new System.EventHandler(this.but_load_scan_Click);
+            this.but_text_vis.Location = new System.Drawing.Point(667, 810);
+            this.but_text_vis.Name = "but_text_vis";
+            this.but_text_vis.Size = new System.Drawing.Size(96, 56);
+            this.but_text_vis.TabIndex = 100;
+            this.but_text_vis.Text = "Отобразить текстуру";
+            this.but_text_vis.UseVisualStyleBackColor = true;
+            this.but_text_vis.Click += new System.EventHandler(this.but_text_vis_Click);
             // 
             // MainScanningForm
             // 
@@ -2897,6 +2909,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_scan_marl;
         private System.Windows.Forms.Button but_scan_stereolas;
         private System.Windows.Forms.Button but_load_scan;
+        private System.Windows.Forms.Button but_text_vis;
     }
 }
 

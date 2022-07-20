@@ -34,10 +34,12 @@ namespace opengl3
         uint programID_ps;
         uint programID_trs;
         uint programID_lns;
+        public int texture_vis = 0;
         int[] LocationMVPs = new int[4];
         int[] LocationMs = new int[4];
         int[] LocationVs = new int[4];
         int[] LocationPs = new int[4];
+        int texture_visID;
         int LocationMVP;
         int LocationV;
         int LocationM;
@@ -75,6 +77,7 @@ namespace opengl3
         public ImageBox[] imageBoxesForSave;
         public Size size = new Size(1,1);
         Point locationBox = new Point(0, 0);
+        
         #endregion
        
 
@@ -256,8 +259,9 @@ namespace opengl3
             MaterialSpecularID = Gl.GetUniformLocation(prog, "MaterialSpecular");
             LightID = Gl.GetUniformLocation(prog, "LightPosition_world");
             LightPowerID = Gl.GetUniformLocation(prog, "lightPower");
+            texture_visID = Gl.GetUniformLocation(prog, "texture_vis");
 
-            
+
             for (int i = 0; i < 4; i++)
             {
                 Gl.UniformMatrix4f(LocationMVPs[i], 1, false, MVPs[i]);
@@ -276,7 +280,8 @@ namespace opengl3
             Gl.Uniform3f(MaterialSpecularID, 1, MaterialSpecular);
             Gl.Uniform3f(LightID, 1, lightPos);
             Gl.Uniform1f(LightPowerID, 1, LightPower);
-            
+            Gl.Uniform1i(texture_visID, 1, texture_vis);
+
         }
         
 

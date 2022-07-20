@@ -20,23 +20,31 @@ namespace opengl3
         {
             if(mats.Length == cameraCVs.Length)
             {
+                bool comp_pos = true;
                 for(int i = 0; i < mats.Length; i++)
                 {
-                    cameraCVs[i].compPos(mats[i], patternType, 10f);
+                    comp_pos &= cameraCVs[i].compPos(mats[i], patternType, 10f);
+                    //Console.WriteLine(comp_pos);
                 }
-                if(mats.Length>1)
+                if(mats.Length>1 && comp_pos)
                 {
                     var inv_cs1 = new Matrix<double>(4,4);
                     CvInvoke.Invert(cameraCVs[0].matrixCS, inv_cs1, DecompMethod.LU);
                     R = inv_cs1 * cameraCVs[1].matrixCS;
-                    prin.t("stereo calib R_cs:");
+                    /*prin.t("stereo calib R_cs:");
                     prin.t(R);
+                    R[0, 0] = 0.572; R[2, 2] = 0.572;
+                    R[0, 3] = 114.2;
+                    R[1, 3] = 4.8;
+                    R[2, 3] = 61.8;*/
 
-                    inv_cs1 = new Matrix<double>(4, 4);
+                    // Console.WriteLine(R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + R[0, 0] + " " + R[0, 1] + " " + R[0, 2]);
+
+                    /*inv_cs1 = new Matrix<double>(4, 4);
                     CvInvoke.Invert(cameraCVs[1].matrixSC, inv_cs1, DecompMethod.LU);
                     R = cameraCVs[0].matrixSC* inv_cs1  ;
                     prin.t("stereo calib R_sc:");
-                    prin.t(R);
+                    prin.t(R);*/
                 }
             }
         }

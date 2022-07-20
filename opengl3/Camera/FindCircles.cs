@@ -58,7 +58,8 @@ namespace opengl3
                 {
                     if (ps_ord == null)
                     {
-                        Console.WriteLine("ps_ord NULL");
+                        return null;
+                        //Console.WriteLine("ps_ord NULL");
                     }
                 }
                 UtilOpenCV.drawLines(orig, ps_ord, 0, 0, 255, 2);
@@ -219,7 +220,7 @@ namespace opengl3
             var ind_size = ordBySize(inds_ord, size_patt);
             if(ind_size == null)
             {
-                Console.WriteLine("ind_size NULL");
+               // Console.WriteLine("ind_size NULL");
                 return null;
             }
 
@@ -241,7 +242,7 @@ namespace opengl3
         {
             if(inds==null)
             {
-                Console.WriteLine("inds NULL");
+                //Console.WriteLine("inds NULL");
                 return null;
             }    
             if(inds.Length!=size.Height)
@@ -258,7 +259,7 @@ namespace opengl3
         {
             if(!checkTransp(inds))
             {
-                Console.WriteLine("TRANSP FALSE");
+               // Console.WriteLine("TRANSP FALSE");
                 return inds;
             }
             var inds_tr = new int[inds[0].Length][];
@@ -380,18 +381,18 @@ namespace opengl3
         {
             if (starts == null)
             {
-                Console.WriteLine("starts NULL");
+                //Console.WriteLine("starts NULL");
                 return null;
             }
             if (starts[0] == null || starts[1] == null)
             {
-                Console.WriteLine("starts[0] == null || starts[1] == null");
+                //Console.WriteLine("starts[0] == null || starts[1] == null");
                 return null;
             }
             if(starts[0].Length!=starts[1].Length)
             {
-                Console.WriteLine("starts[0].Length!=starts[1].Length");
-                Console.WriteLine(starts[0].Length+" "+starts[1].Length);
+                //Console.WriteLine("starts[0].Length!=starts[1].Length");
+                //Console.WriteLine(starts[0].Length+" "+starts[1].Length);
                 return null;
             }
             var inds_sort = new List<int[]>();

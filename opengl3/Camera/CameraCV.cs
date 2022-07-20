@@ -352,8 +352,8 @@ namespace opengl3
             matrixCS = matrs[0];
             matrixSC = matrs[1];
 
-            var points_cam = PointCloud.fromLines(PointF.toPointF( points2D), this, LaserSurface.zeroFlatInCam(this.matrixSC));
-            var points3d_cur = PointCloud.camToScene(points_cam, this.matrixCS);
+            //var points_cam = PointCloud.fromLines(PointF.toPointF( points2D), this, LaserSurface.zeroFlatInCam(this.matrixSC));
+            //var points3d_cur = PointCloud.camToScene(points_cam, this.matrixCS);
             /*prin.t(this.matrixSC);
             prin.t(this.matrixCS);
             Console.WriteLine("points3d_cur");
@@ -416,17 +416,24 @@ namespace opengl3
                     markSize = mark;
                 }
 
+                var x = markSize * (size_patt.Width - 1);
+                var y = markSize * (size_patt.Height - 1);
+
                 var points3d = new MCvPoint3D32f[]
                 {
                     new MCvPoint3D32f(0,0,0),
-                    new MCvPoint3D32f(markSize*size_patt.Width,0,0),
-                    new MCvPoint3D32f(0,markSize*size_patt.Height,0),
-                    new MCvPoint3D32f(markSize*size_patt.Width,markSize*size_patt.Height,0)
+                    new MCvPoint3D32f(x,0,0),
+                    new MCvPoint3D32f(0,y,0),
+                    new MCvPoint3D32f(x,y,0)
                 };
 
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
                 var matDraw = FindCircles.findCircles(mat, cornF, size_patt);
+                if(matDraw == null)
+                {
+                    return false;
+                }
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
 
                 compPos(points3d, points2d);

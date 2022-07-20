@@ -46,9 +46,9 @@ namespace opengl3
             var points3d = new System.Drawing.PointF[]
             {
                     new System.Drawing.PointF(0,0),
-                    new System.Drawing.PointF(markSize*size_patt.Width,0),
-                    new System.Drawing.PointF(0,markSize*size_patt.Height),
-                    new System.Drawing.PointF(markSize*size_patt.Width,markSize*size_patt.Height)
+                    new System.Drawing.PointF(100*size_patt.Width,0),
+                    new System.Drawing.PointF(0,100*size_patt.Height),
+                    new System.Drawing.PointF(100*size_patt.Width,100*size_patt.Height)
             };
 
             var len = size_patt.Width * size_patt.Height;
@@ -59,8 +59,12 @@ namespace opengl3
 
             var persp_Norm = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(points3d), new VectorOfPointF(points2d));
             var im_pers = mat.Clone();
-            CvInvoke.PerspectiveTransform(mat, im_pers, persp_Norm);
-            FindCircles.findCircles(im_pers, cornF, size_patt);
+            // CvInvoke.PerspectiveTransform(mat, im_pers, persp_Norm);
+            //prin.t(persp_Norm);
+            CvInvoke.WarpPerspective(mat, im_pers, persp_Norm,new Size(mat.Size.Width*2, mat.Size.Height * 2), Inter.Linear,Warp.Default,BorderType.Replicate);//,new MCvScalar(127,255,255)
+            //CvInvoke.Imshow("pers1", matDraw);
+            var matDraw_pers = FindCircles.findCircles(im_pers, cornF, size_patt);
+            //CvInvoke.Imshow("pers2", matDraw_pers);
             var persp_Norm_inv = new Mat();
             CvInvoke.Invert(persp_Norm, persp_Norm_inv, DecompMethod.LU);
 
