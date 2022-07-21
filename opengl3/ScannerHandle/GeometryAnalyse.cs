@@ -53,7 +53,7 @@ namespace opengl3
 
             var len = size_patt.Width * size_patt.Height;
             var cornF = new System.Drawing.PointF[len];
-            var matDraw = FindCircles.findCircles(mat, cornF, size_patt);
+            var matDraw = FindCircles.findCircles(mat,ref cornF, size_patt);
             var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
 
 
@@ -63,7 +63,7 @@ namespace opengl3
             //prin.t(persp_Norm);
             CvInvoke.WarpPerspective(mat, im_pers, persp_Norm,new Size(mat.Size.Width*2, mat.Size.Height * 2), Inter.Linear,Warp.Default,BorderType.Replicate);//,new MCvScalar(127,255,255)
             //CvInvoke.Imshow("pers1", matDraw);
-            var matDraw_pers = FindCircles.findCircles(im_pers, cornF, size_patt);
+            var matDraw_pers = FindCircles.findCircles(im_pers,ref cornF, size_patt);
             //CvInvoke.Imshow("pers2", matDraw_pers);
             var persp_Norm_inv = new Mat();
             CvInvoke.Invert(persp_Norm, persp_Norm_inv, DecompMethod.LU);

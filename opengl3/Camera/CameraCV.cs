@@ -429,7 +429,7 @@ namespace opengl3
 
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
-                var matDraw = FindCircles.findCircles(mat, cornF, size_patt);
+                var matDraw = FindCircles.findCircles(mat,ref cornF, size_patt);
                 if(matDraw == null)
                 {
                     return false;
@@ -603,7 +603,7 @@ namespace opengl3
             {
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
-                var mat = FindCircles.findCircles(frame.im, cornF, size_patt);
+                var mat = FindCircles.findCircles(frame.im,ref cornF, size_patt);
                 //CvInvoke.Imshow("calib",mat);
                 //CvInvoke.WaitKey();
                 if (cornF == null)

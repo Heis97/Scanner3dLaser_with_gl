@@ -15,7 +15,7 @@ namespace opengl3
     public static class FindCircles
     {
 
-        public static Mat findCircles(Mat mat, System.Drawing.PointF[]  corn,Size pattern_size,bool order = true)
+        public static Mat findCircles(Mat mat,ref System.Drawing.PointF[]  corn,Size pattern_size,bool order = true)
         {
             var rec = new Mat();
             var orig = new Mat();
@@ -32,6 +32,10 @@ namespace opengl3
             CvInvoke.FindContours(im_tr, contours, hier, RetrType.External, ChainApproxMethod.ChainApproxSimple);
             var conts = sameContours(contours);
             var cents = findCentres(conts);
+            if (cents == null)
+            {
+                return null;
+            }
             CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
             CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
             
@@ -49,7 +53,7 @@ namespace opengl3
                 var ps_ord = orderPoints(cents, pattern_size);
                 //ps_ord = ps_ord.Reverse().ToArray();
 
-                if (corn != null && ps_ord != null)
+                if (corn != null && ps_ord != null && ps_ord.Length<=corn.Length)
                 {
                     ps_ord.CopyTo(corn, 0);
                     UtilOpenCV.drawTours(orig, PointF.toPoint(corn), 255, 0, 0, 2);
@@ -77,6 +81,10 @@ namespace opengl3
         }
         static System.Drawing.PointF[] findCentres(VectorOfVectorOfPoint contours)
         {
+            if(contours==null)
+            {
+                return null;
+            }
             var ps = new System.Drawing.PointF[contours.Size];
             for (int i = 0; i < contours.Size; i++)
             {
@@ -141,6 +149,10 @@ namespace opengl3
                
             }
            // Console.WriteLine("clasters[i].Size");
+            if(clasters.Count==0)
+            {
+                return null;
+            }
             return clasters[i_max];
         }
         static double areaAver(VectorOfVectorOfPoint contours)

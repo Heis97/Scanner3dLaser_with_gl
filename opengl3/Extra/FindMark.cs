@@ -311,7 +311,7 @@ namespace opengl3
 
             var size_pat = new Size(7, 7);
             var pointsD_s = new System.Drawing.PointF[size_pat.Width * size_pat.Height];
-            FindCircles.findCircles(orig, pointsD_s, size_pat,false);
+            FindCircles.findCircles(orig,ref pointsD_s, size_pat,false);
             var pointsD = PointF.toPointF(pointsD_s);
 
             //prin.t(pointsD_s);
@@ -413,7 +413,7 @@ namespace opengl3
                     //var pointsD = findCrossingD_rotate(lines.ToArray(), image.Size, orig);
                     var size_pat = new Size(7, 7);
                     var pointsD_s = new System.Drawing.PointF[size_pat.Width* size_pat.Height];
-                    FindCircles.findCircles(orig, pointsD_s, size_pat);
+                    FindCircles.findCircles(orig,ref pointsD_s, size_pat);
                     var pointsD = PointF.toPointF(pointsD_s);
                     //drawTours(im, pointsD, 255, 255, 0, 3);
                     //box.Image = orig;

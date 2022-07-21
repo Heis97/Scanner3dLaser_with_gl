@@ -125,13 +125,14 @@ namespace opengl3
             init_vars();
 
             //loadVideo_stereo(@"test_1107_7");
-            loadScannerStereoLas(
-            new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
-             @"stereo_cal_2007_4",
-             @"scan_2007_11",
-             new float[] { 0.1f, 0.5f, 0.1f }, true, 10);
-            GL1.buffersGl.sortObj();
-            /* var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
+            /* loadScannerStereoLas(
+             new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
+              @"stereo_cal_2007_4",
+              @"scan_2007_9",
+              new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
+             GL1.buffersGl.sortObj();*/
+
+             /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
              comboImages.Items.AddRange(frms_stereo1);
 
              for(int i=0; i< frms_stereo1.Length;i++)
@@ -140,12 +141,13 @@ namespace opengl3
              }*/
 
             // oneCam(new string[] { @"cam1\camera_cal_1807_1" },10f);
+            GL1.buffersGl.sortObj();
         }
         void init_vars()
         {
             #region important
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн","Стерео Исп","Паттерн круги", "Ничего" });
-            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            //GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
 
             mat_global[0] = new Mat();
@@ -175,11 +177,11 @@ namespace opengl3
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
 
-             generateImage3D_BOARD(chess_size.Width+1, chess_size.Height + 1, markSize);
+             generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize,PatternType.Mesh);
             //oneCam();
             //var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
-
             //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
+
         }
 
         void loadStereo()
@@ -858,10 +860,14 @@ namespace opengl3
             imBox_mark1.Image = mat1;
             imBox_mark2.Image = UtilOpenCV.drawInsideRectChessboard(mat3, chess_size);*/
 
-
+            /*var mat1_or = GL1.matFromMonitor(0);
+            CvInvoke.Flip(mat1_or, mat1_or, FlipType.Vertical);
+            System.Drawing.PointF[] corn = null;
+            var err = UtilOpenCV.calcSubpixelPrec(chess_size, GL1, markSize, 0,PatternType.Mesh);
+            Console.WriteLine(err[0].X +" "+ err[0].Y);*/
             //imBox_mark2.Image = imBox_mark2.Image;
 
-            
+
 
             //GL1.printDebug(debugBox);
 
@@ -873,6 +879,8 @@ namespace opengl3
             //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
 
         }
+
+
         void load_subpix()
         {
             var folders = Directory.GetDirectories("subpix");
@@ -892,7 +900,7 @@ namespace opengl3
                 {
                     for(int k = 1; k<13;k++)
                     {
-                        var err = UtilOpenCV.calcSubpixelPrec(chess_size, GL1, markSize, 1, fr_ar[i][j].im, fr_ar[i][j].name,k);
+                        var err = UtilOpenCV.calcSubpixelPrec(chess_size, GL1, markSize, 1, PatternType.Chess, fr_ar[i][j].im, fr_ar[i][j].name,k);
                         if(err[0].X<100000000000)
                         {
                             Console.WriteLine(err[0] + " " + err[1].X + " " + k);
@@ -971,8 +979,9 @@ namespace opengl3
                 {
                     //imBox_debug1.Image = stereocam.cameraCVs[0].undist(mat1);
                     //imBox_debug2.Image = stereocam.cameraCVs[1].undist(mat2);
-                    imBox_base_1.Image = FindCircles.findCircles(mat1, null, new Size(6, 7));
-                    imBox_base_2.Image = FindCircles.findCircles(mat2, null, new Size(6, 7));
+                    System.Drawing.PointF[] corn = null;
+                    imBox_base_1.Image = FindCircles.findCircles(mat1,ref corn, new Size(6, 7));
+                    imBox_base_2.Image = FindCircles.findCircles(mat2,ref corn, new Size(6, 7));
                     
                 }
                 else if (fr.frameType == FrameType.LasDif)
@@ -1246,16 +1255,16 @@ namespace opengl3
         {
             // var mat1 = (Mat)imBox_mark1.Image;
             // var mat2 = (Mat)imBox_mark2.Image;
-           /* var im_name = "tsukuba";//"tsukuba";//"venus"
-            var mat1 = new Mat(@"datasets\" + im_name + @"\im2.png");
-            var mat2 = new Mat(@"datasets\" + im_name + @"\im6.png");
-            var disp = UtilOpenCV.PaintLines(mat1.ToImage<Gray, byte>(), mat2.ToImage<Gray, byte>(), mat1.Height / 2,features);
-            var depth = new Mat();
-  
-            var hist = UtilOpenCV.histogram(disp[1].Mat);
-            depth = UtilOpenCV.normalize(disp[1].Mat);
-            imBox_3dDebug.Image = UtilOpenCV.normalize(disp[1].Mat);
-            imBox_disparity.Image = UtilOpenCV.normalize(disp[2].Mat);*/
+            /* var im_name = "tsukuba";//"tsukuba";//"venus"
+             var mat1 = new Mat(@"datasets\" + im_name + @"\im2.png");
+             var mat2 = new Mat(@"datasets\" + im_name + @"\im6.png");
+             var disp = UtilOpenCV.PaintLines(mat1.ToImage<Gray, byte>(), mat2.ToImage<Gray, byte>(), mat1.Height / 2,features);
+             var depth = new Mat();
+
+             var hist = UtilOpenCV.histogram(disp[1].Mat);
+             depth = UtilOpenCV.normalize(disp[1].Mat);
+             imBox_3dDebug.Image = UtilOpenCV.normalize(disp[1].Mat);
+             imBox_disparity.Image = UtilOpenCV.normalize(disp[2].Mat);*/
 
             /*var disp = features.disparMap((Mat)imBox_mark1.Image, (Mat)imBox_mark2.Image, 30, 3);
             imBox_3dDebug.Image = disp[0];
@@ -1264,7 +1273,14 @@ namespace opengl3
             mesh = GL1.translateMesh(mesh, 200f);
             GL1.addMesh(mesh, PrimitiveType.Triangles, 0.9f);*/
 
-            calibr_make_photo();
+
+            var mat1_or = GL1.matFromMonitor(0);
+            CvInvoke.Flip(mat1_or, mat1_or, FlipType.Vertical);
+            System.Drawing.PointF[] corn = null;
+            var err = UtilOpenCV.calcSubpixelPrec(chess_size, GL1, markSize, 0, PatternType.Mesh);
+            Console.WriteLine(err[0].X + " " + err[0].Y);
+
+            //calibr_make_photo();
         }
         private void trB_SGBM_Scroll(object sender, EventArgs e)
         {
@@ -1878,7 +1894,8 @@ namespace opengl3
                     imb_base[ind - 1].Image = stereocam.remapCam(mat, ind);
                     break;
                 case FrameType.Pattern:
-                    imb_base[ind - 1].Image = FindCircles.findCircles(mat, null, new Size(6, 7));
+                    System.Drawing.PointF[] points = null;
+                    imb_base[ind - 1].Image = FindCircles.findCircles(mat,ref points, new Size(6, 7));
                     break;
                 default:
                     break;
@@ -2217,16 +2234,20 @@ namespace opengl3
 
         }
 
-        void generateImage3D_BOARD(int n, int k, float sidef)
+        void generateImage3D_BOARD(int n, int k, float sidef,PatternType patternType = PatternType.Chess)
         {
             float side = sidef * 2;
+            if (patternType == PatternType.Chess)
+            {
+                n++;k++;
+            }
 
-            float w = sidef * (float)n;
+                float w = sidef * (float)n;
             float h = sidef * (float)k;
             float offx = -sidef;
             float offy =  -sidef;
             float z = 0f;
-            float[] square_buf = {
+            float[] pattern_mesh = {
                             0.0f,0.0f,0.0f, // triangle 1 : begin
                             0.0f,sidef, 0.0f,
                            sidef,sidef, 0.0f, // triangle 1 : end
@@ -2234,11 +2255,22 @@ namespace opengl3
                            sidef,0.0f,0.0f,
                             0.0f, 0.0f,0.0f};
 
-            for (float x = 0; x < w; x += side)
+            if(patternType == PatternType.Mesh)
             {
-                for (float y = 0; y < h; y += side)
+                pattern_mesh = circle_mesh(sidef / 4, 50);
+                side = sidef;
+                w += side;
+                h += side;
+            }
+
+            if (patternType == PatternType.Chess)
+            {
+                for (float x = 0; x < w; x += side)
                 {
-                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, x + offx, y + offy, z);
+                    for (float y = 0; y < h; y += side)
+                    {
+                        GL1.addGLMesh(pattern_mesh, PrimitiveType.Triangles, x + offx, y + offy, z);
+                    }
                 }
             }
 
@@ -2246,12 +2278,33 @@ namespace opengl3
             {
                 for (float y = sidef; y < h; y += side)
                 {
-                    GL1.addGLMesh(square_buf, PrimitiveType.Triangles, x + offx, y + offy,z);
+                    GL1.addGLMesh(pattern_mesh, PrimitiveType.Triangles, x + offx, y + offy, z);
                 }
             }
+            
+            
 
         }
 
+        float[] circle_mesh(float rad,int count)
+        {
+            var mesh = new List<float>();
+            var angle = 2*Math.PI / count;
+            var cur_angle = 0d;
+            for(int i=0; i < count; i++)
+            {
+                var p1 = new float[] { (float)(rad * Math.Cos(cur_angle)), (float)(rad * Math.Sin(cur_angle)), 0 };              
+                cur_angle += angle;
+                var p2 = new float[] { (float)(rad * Math.Cos(cur_angle)), (float)(rad * Math.Sin(cur_angle)), 0 };
+                var p3 = new float[] { 0, 0, 0 };
+                mesh.AddRange(p1);
+                mesh.AddRange(p2);
+                mesh.AddRange(p3);
+
+
+            }
+            return mesh.ToArray();
+        }
         
 
         Image<Gray, float> MeshToIm(float[] mesh, int cols = 41, int rows = 91)

@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_text_vis = new System.Windows.Forms.Button();
             this.lab_TRZ = new System.Windows.Forms.Label();
             this.debugBox = new System.Windows.Forms.RichTextBox();
             this.textBox_monitor_id = new System.Windows.Forms.TextBox();
@@ -248,7 +249,6 @@ namespace opengl3
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_text_vis = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -960,6 +960,16 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // but_text_vis
+            // 
+            this.but_text_vis.Location = new System.Drawing.Point(667, 810);
+            this.but_text_vis.Name = "but_text_vis";
+            this.but_text_vis.Size = new System.Drawing.Size(96, 56);
+            this.but_text_vis.TabIndex = 100;
+            this.but_text_vis.Text = "Отобразить текстуру";
+            this.but_text_vis.UseVisualStyleBackColor = true;
+            this.but_text_vis.Click += new System.EventHandler(this.but_text_vis_Click);
+            // 
             // lab_TRZ
             // 
             this.lab_TRZ.AutoSize = true;
@@ -989,7 +999,7 @@ namespace opengl3
             // 
             this.glControl1.AccessibleName = "1";
             this.glControl1.Animation = true;
-            this.glControl1.AnimationTime = 60;
+            this.glControl1.AnimationTime = 600;
             this.glControl1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.glControl1.ColorBits = ((uint)(24u));
             this.glControl1.DepthBits = ((uint)(24u));
@@ -2595,16 +2605,6 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
-            // 
-            // but_text_vis
-            // 
-            this.but_text_vis.Location = new System.Drawing.Point(667, 810);
-            this.but_text_vis.Name = "but_text_vis";
-            this.but_text_vis.Size = new System.Drawing.Size(96, 56);
-            this.but_text_vis.TabIndex = 100;
-            this.but_text_vis.Text = "Отобразить текстуру";
-            this.but_text_vis.UseVisualStyleBackColor = true;
-            this.but_text_vis.Click += new System.EventHandler(this.but_text_vis_Click);
             // 
             // MainScanningForm
             // 

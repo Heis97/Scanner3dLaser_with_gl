@@ -293,8 +293,7 @@ namespace opengl3
             return new Image<Bgr,byte>(data).Mat;
         }
         public static Mat GLnoise(Mat mat, int val = 0, int range = 30, int kernel_size = 7)
-        {
-            
+        {            
             CvInvoke.GaussianBlur(mat, mat, new Size(kernel_size, kernel_size), 0);
             //CvInvoke.Randn(mat, new MCvScalar(val), new MCvScalar(range));
             mat = noise(mat, val, range);
@@ -403,7 +402,7 @@ namespace opengl3
         /// <param name="photo"></param>
         /// <param name="kernel"></param>
         /// <returns></returns>
-        static public System.Drawing.PointF[] calcSubpixelPrec(Size size, GraphicGL graphicGL, float markSize, int id_monit, Mat inpMat = null, string photo = null,int kernel=11)
+        static public System.Drawing.PointF[] calcSubpixelPrec(Size size, GraphicGL graphicGL, float markSize, int id_monit, PatternType patternType, Mat inpMat = null, string photo = null,int kernel=11)
         {
             Mat mat = new Mat();
             if(inpMat==null)
@@ -414,6 +413,7 @@ namespace opengl3
             {
                 mat = inpMat;
             }
+            mat = GLnoise(mat, 0, 10);
             var len = size.Width * size.Height;
             var obp = new MCvPoint3D32f[len];
             var cornF = new System.Drawing.PointF[len];
@@ -423,7 +423,7 @@ namespace opengl3
             var kvs = new System.Drawing.PointF(0, 0);
             var S = new System.Drawing.PointF(0, 0);
 
-            var ret = compChessCoords(mat, ref obp, ref cornF, size,kernel);
+            var ret = compPatternCoords(mat, ref obp, ref cornF, size,kernel,patternType);
             if (!ret)
             {
                 return new System.Drawing.PointF[] { new System.Drawing.PointF(float.MaxValue, float.MaxValue), new System.Drawing.PointF(float.MaxValue, float.MaxValue) };
@@ -465,16 +465,14 @@ namespace opengl3
                 S.X += Math.Abs(cornF_delt[i].X);
                 S.Y += Math.Abs(cornF_delt[i].Y);
 
-            }
-
-
-          
+            }          
             //Console.WriteLine(S);
             var matM = new Mat(mat, new Rectangle(0, 0, mat.Width, mat.Height));
-            //drawMatches(matM, cornF, cornF_GL, 0, 255, 0);
-            //CvInvoke.Imshow("2", matM);
-            //drawPointsF(mat, cornF, 255, 0, 0, 1);
-            //drawPointsF(mat, cornF_GL, 0, 0, 255, 1);
+            drawMatches(matM, cornF, cornF_GL, 0, 255, 0);
+            //drawPointsF(mat, cornF, 255, 0, 0, 3);
+            //drawPointsF(mat, cornF_GL, 0, 0, 255, 3);
+            CvInvoke.Imshow("2", matM);
+            
             return new System.Drawing.PointF[] { S,  new System.Drawing.PointF((float)dist,0) };
         }
 
@@ -488,7 +486,7 @@ namespace opengl3
             var sum = new System.Drawing.PointF(0, 0);
             var S = new System.Drawing.PointF(0, 0);
 
-            var mat_c = FindCircles.findCircles(mat[0],cornF, size);
+            var mat_c = FindCircles.findCircles(mat[0],ref cornF, size);
            // CvInvoke.Imshow("matC", mat_c);
            // prin.t(cornF);
             var corn_patt = matToPointF(mat[1]);
@@ -1277,7 +1275,7 @@ namespace opengl3
             return ps;
         }
 
-        static public bool compChessCoords(Mat mat, ref MCvPoint3D32f[] obp, ref System.Drawing.PointF[] cornF, Size size, int kernel = 11)
+        static public bool compPatternCoords(Mat mat, ref MCvPoint3D32f[] obp, ref System.Drawing.PointF[] cornF, Size size, int kernel = 11,PatternType patternType = PatternType.Mesh)
         {
             var corn = new VectorOfPointF(cornF);
             obp = new MCvPoint3D32f[size.Width * size.Height];
@@ -1290,19 +1288,32 @@ namespace opengl3
                     ind++;
                 }
             }
-
-            var gray = mat.ToImage<Gray, byte>();
-            var ret = CvInvoke.FindChessboardCorners(gray, size, corn,CalibCbType.FastCheck);
-            if (ret == true)
+            bool ret = false;
+            if(patternType==PatternType.Chess)
             {
-                CvInvoke.CornerSubPix(gray, corn, new Size(kernel, kernel), new Size(-1, -1), new MCvTermCriteria(100, 0.0001));
+                var gray = mat.ToImage<Gray, byte>();
+                ret = CvInvoke.FindChessboardCorners(gray, size, corn, CalibCbType.FastCheck);
+                if (ret)
+                {
+                    CvInvoke.CornerSubPix(gray, corn, new Size(kernel, kernel), new Size(-1, -1), new MCvTermCriteria(100, 0.0001));
+                    //CvInvoke.DrawChessboardCorners(mat, size, corn, ret);
+                    //CvInvoke.Imshow("2", mat);
+                    cornF = corn.ToArray();
+                }
             }
             else
             {
-                Console.WriteLine("NOT:");
-                //Console.WriteLine(frame.name);
+                mat = FindCircles.findCircles(mat,ref cornF, size);
+                //CvInvoke.Imshow("2", mat);
+                if (mat != null)
+                {
+                    ret = true;
+
+                }
             }
-            cornF = corn.ToArray();
+
+
+            
             return ret;
         }
 
