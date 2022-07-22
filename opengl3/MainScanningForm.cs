@@ -125,12 +125,12 @@ namespace opengl3
             init_vars();
 
             //loadVideo_stereo(@"test_1107_7");
-            /* loadScannerStereoLas(
+             loadScannerStereoLas(
              new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
               @"stereo_cal_2007_4",
-              @"scan_2007_9",
+              @"scan_2207_2",
               new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
-             GL1.buffersGl.sortObj();*/
+             GL1.buffersGl.sortObj();
 
              /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
              comboImages.Items.AddRange(frms_stereo1);
@@ -422,7 +422,7 @@ namespace opengl3
             loadVideo_stereo(scand_path, scanner, strip);
 
             var scan_stl = Polygon3d_GL.toMesh(Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene()));
-            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
             //GL1.addMesh(lines_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
             //var points_scan_stl = Point3d_GL.toMesh (scanner.getPointsScene());
             //GL1.addMesh(points_scan_stl, PrimitiveType.Points, normrgb[0], normrgb[1], normrgb[2]);
@@ -840,10 +840,10 @@ namespace opengl3
         {
 
             GL1.glControl_Render(sender, e);
-            if (GL1.rendercout == 0)
+           /* if (GL1.rendercout == 0)
             {
                 UtilOpenCV.SaveMonitor(GL1);
-            }
+            }*/
 
             /*var mat1_or = GL1.matFromMonitor(0);
             var mat2_or = GL1.matFromMonitor(1);
