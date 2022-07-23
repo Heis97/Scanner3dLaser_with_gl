@@ -249,6 +249,7 @@ namespace opengl3
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.but_point_type = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -900,6 +901,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_point_type);
             this.tabOpenGl.Controls.Add(this.but_text_vis);
             this.tabOpenGl.Controls.Add(this.lab_TRZ);
             this.tabOpenGl.Controls.Add(this.debugBox);
@@ -2606,6 +2608,16 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
+            // but_point_type
+            // 
+            this.but_point_type.Location = new System.Drawing.Point(667, 872);
+            this.but_point_type.Name = "but_point_type";
+            this.but_point_type.Size = new System.Drawing.Size(96, 34);
+            this.but_point_type.TabIndex = 101;
+            this.but_point_type.Text = "Включить точки";
+            this.but_point_type.UseVisualStyleBackColor = true;
+            this.but_point_type.Click += new System.EventHandler(this.but_point_type_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -2910,6 +2922,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_scan_stereolas;
         private System.Windows.Forms.Button but_load_scan;
         private System.Windows.Forms.Button but_text_vis;
+        private System.Windows.Forms.Button but_point_type;
     }
 }
 

@@ -128,9 +128,8 @@ namespace opengl3
              loadScannerStereoLas(
              new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
               @"stereo_cal_2007_4",
-              @"scan_2207_2",
-              new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
-             GL1.buffersGl.sortObj();
+              @"scan_2007_9",
+              new float[] { 0.1f, 0.5f, 0.1f }, true, 20);
 
              /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
              comboImages.Items.AddRange(frms_stereo1);
@@ -141,7 +140,7 @@ namespace opengl3
              }*/
 
             // oneCam(new string[] { @"cam1\camera_cal_1807_1" },10f);
-            GL1.buffersGl.sortObj();
+            
         }
         void init_vars()
         {
@@ -177,7 +176,7 @@ namespace opengl3
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
 
-             generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize,PatternType.Mesh);
+            // generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize,PatternType.Mesh);
             //oneCam();
             //var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
             //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
@@ -422,7 +421,7 @@ namespace opengl3
             loadVideo_stereo(scand_path, scanner, strip);
 
             var scan_stl = Polygon3d_GL.toMesh(Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene()));
-            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
+            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
             //GL1.addMesh(lines_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
             //var points_scan_stl = Point3d_GL.toMesh (scanner.getPointsScene());
             //GL1.addMesh(points_scan_stl, PrimitiveType.Points, normrgb[0], normrgb[1], normrgb[2]);
@@ -776,7 +775,7 @@ namespace opengl3
 
             // startGenerate();
             //trB_SGBM_Enter();
-
+            GL1.buffersGl.sortObj();
         }
         Mat toMat(Bitmap bitmap)
         {
@@ -2776,6 +2775,22 @@ namespace opengl3
             else
             {
                 GL1.texture_vis = 0;
+            }
+        }
+
+        private void but_point_type_Click(object sender, EventArgs e)
+        {
+            if(GL1.point_type==0)
+            {
+                GL1.point_type = 1;
+            }
+            else if(GL1.point_type == 1)
+            {
+                GL1.point_type = 2;
+            }
+            else if (GL1.point_type == 2)
+            {
+                GL1.point_type = 0;
             }
         }
     }

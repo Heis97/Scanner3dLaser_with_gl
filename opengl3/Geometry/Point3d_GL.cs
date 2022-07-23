@@ -83,7 +83,7 @@ namespace opengl3
 
         public double magnitude_xy()
         {
-            return Math.Sqrt(x * x + y * y);
+            return Math.Sqrt(x * x + y * y );
         }
         public static float[] toMesh(Point3d_GL[] point3Ds)
         {

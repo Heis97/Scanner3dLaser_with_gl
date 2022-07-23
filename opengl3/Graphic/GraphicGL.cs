@@ -19,6 +19,7 @@ namespace opengl3
     public class GraphicGL
     {
         #region vars
+        public int point_type = 0;
         static float PI = 3.1415926535f;
         public CameraCV cameraCV;
         public int startGen = 0;
@@ -138,21 +139,34 @@ namespace opengl3
                 try
                 {
                     uint prog = 0;
-                    if (opgl_obj.tp == PrimitiveType.Points)
+                    var dr_tp = opgl_obj.tp;
+                    if (point_type == 1)
+                    {
+                        dr_tp = PrimitiveType.Points;
+                    }
+                    else if (point_type == 2)
+                    {
+                        dr_tp = PrimitiveType.Lines;
+
+                    }
+                    if (dr_tp == PrimitiveType.Points)
                     {
                         prog = programID_ps;
                     }
-                    else if (opgl_obj.tp == PrimitiveType.Triangles)
+                    else if (dr_tp == PrimitiveType.Triangles)
                     {
                         prog = programID_trs;
                     }
-                    else if (opgl_obj.tp == PrimitiveType.Lines)
+                    else if (dr_tp == PrimitiveType.Lines)
                     {
                         prog = programID_lns;
                     }
                     load_vars_gl(prog);
                     load_buff_gl(opgl_obj.vertex_buffer_data, opgl_obj.color_buffer_data, opgl_obj.normal_buffer_data);
-                    Gl.DrawArrays(opgl_obj.tp, 0, (int)(opgl_obj.vertex_buffer_data.Length / 3));
+                    
+
+
+                    Gl.DrawArrays(dr_tp, 0, (int)(opgl_obj.vertex_buffer_data.Length / 3));
                     Gl.DeleteBuffers(buff_color);
                     Gl.DeleteBuffers(buff_pos);
                     Gl.DeleteBuffers(buff_normal);
