@@ -50,6 +50,11 @@ namespace opengl3
             exist = true;
             color = p1.color;
         }
+
+        public Point3d_GL Copy()
+        {
+            return new Point3d_GL(x, y, z, color);
+        }
         public Point3d_GL(double[,] cor, Colo3d_GL _color = null)
         {
             x = cor[0, 0];

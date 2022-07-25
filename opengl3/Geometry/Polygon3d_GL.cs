@@ -74,14 +74,16 @@ namespace opengl3
         static public Point3d_GL[] createLightFlat(Polygon3d_GL[] polygons, Line3d_GL[] lines)
         {
             var ps_laser = new List<Point3d_GL>();
+            int last_i = 0;
             for(int line_i=0; line_i < lines.Length; line_i++)
             {
-                for (int polygon_i = 0; polygon_i < polygons.Length; polygon_i++)
+                for (int polygon_i = last_i; polygon_i < polygons.Length; polygon_i++)
                 {
                     var p = polygons[polygon_i].crossLine(lines[line_i]);
                     if(p.exist)
                     {
                         ps_laser.Add(p);
+                      //  last_i = polygon_i;
                     }
                 }
             }
@@ -169,13 +171,13 @@ namespace opengl3
         }
         static public Point3d_GL[][] smooth_lines_xy(Point3d_GL[][] ps)
         {
-            double map_resol = 0.1;
+            double map_resol = 0.02;
             var p_minmax = lines_minmax(ps);
             var p_min = p_minmax[0]; var p_max = p_minmax[1];
             
             var p_len = (p_max - p_min)/map_resol;
-            var x_len = (int)p_len.x;
-            var y_len = (int)p_len.y;
+            var x_len = (int)p_len.x + 10;
+            var y_len = (int)p_len.y + 10;
 
             var map_xy = new int[x_len, y_len][][];
             for(int i=0; i< ps.Length; i++)
@@ -185,9 +187,11 @@ namespace opengl3
                     for (int j = 0; j < ps[i].Length; j++)
                     {
                         var p_cur = (ps[i][j] - p_min) / map_resol;
-                        Console.WriteLine(p_max + "  " + ps[i][j]);
+                        
                         var x = (int)p_cur.x;
                         var y = (int)p_cur.y;
+                        Console.WriteLine(x + "  "+y+" " + map_xy.GetLength(0)+" "+ map_xy.GetLength(1));
+                        Console.WriteLine(ps[i][j] + "  " + p_min + " " + p_max);
                         if (map_xy[x, y] == null)
                         {
                             map_xy[x, y] = new int[0][];
@@ -205,18 +209,18 @@ namespace opengl3
             {
                 ps_smooth[i] = (Point3d_GL[])ps[i].Clone();
             }
-            int smooth_rad =(int)(1d/map_resol);
+            int smooth_rad =(int)(0.3d/map_resol);
 
             for (int i = 0; i < ps.Length; i++)
             {
                 if (ps[i] != null)
                 {
-                    for (int j = 0; j < ps[j].Length; j++)
+                    for (int j = 0; j < ps[i].Length; j++)
                     {
                         var p_cur = (ps[i][j] - p_min) / map_resol;
                         var x = (int)p_cur.x;
                         var y = (int)p_cur.y;
-                        ps_smooth[i][j] = comp_map_in_rad(map_xy,smooth_rad,ps,x,y) ;
+                        ps_smooth[i][j] = comp_map_in_rad(map_xy,smooth_rad,ps,x,y, ps[i][j]) ;
                     }
                 }
             }
@@ -224,10 +228,14 @@ namespace opengl3
             return ps_smooth;
         }
 
-        static Point3d_GL comp_map_in_rad(int[,][][] map,int smooth_rad, Point3d_GL[][] ps,int x,int y)
+        static Point3d_GL comp_map_in_rad(int[,][][] map,int smooth_rad, Point3d_GL[][] ps,int x,int y,Point3d_GL p)
         {
-            var p_sm = new Point3d_GL(0, 0, 0);
-            int p_count = 0;
+            var p_sm = p.Copy();
+            int p_count = 1;
+            if(x< smooth_rad || y<smooth_rad)
+            {
+                return p_sm;
+            }
             for (int x_cur = -smooth_rad+x; x_cur < x+ smooth_rad; x_cur++)
             {
                 for (int y_cur = -smooth_rad + y; y_cur < y + smooth_rad; y_cur++)
@@ -243,6 +251,7 @@ namespace opengl3
                                     var i = map[x_cur, y_cur][k][0];
                                     var j = map[x_cur, y_cur][k][1];
                                     p_sm += ps[i][j];
+                                    p_count++;
                                 }
                             }
                             
@@ -250,7 +259,7 @@ namespace opengl3
                     }
                 }
             }
-            return p_sm / (p_count - 1);
+            return p_sm / p_count;
         }
 
         static Point3d_GL[] lines_minmax(Point3d_GL[][] ps)
@@ -261,7 +270,7 @@ namespace opengl3
             {
                 if(ps[i]!=null)
                 {
-                    for (int j = 0; j < ps.Length; j++)
+                    for (int j = 0; j < ps[i].Length; j++)
                     { 
                         if(p_min.x>ps[i][j].x)
                         {
@@ -298,10 +307,10 @@ namespace opengl3
 
 
 
-        static public Polygon3d_GL[] triangulate_lines_xy(Point3d_GL[][] _ps)
+        static public Polygon3d_GL[] triangulate_lines_xy(Point3d_GL[][] ps)
         {
             List<Polygon3d_GL> polygons = new List<Polygon3d_GL>();
-            var ps = smooth_lines_xy(_ps);
+            //var ps = smooth_lines_xy(_ps);
             for (int i=1; i<ps.Length; i++)
             {
                 polygons.AddRange(triangulate_two_lines_xy(ps[i - 1], ps[i]));

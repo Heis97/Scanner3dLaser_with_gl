@@ -129,7 +129,7 @@ namespace opengl3
              new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
               @"stereo_cal_2007_4",
               @"scan_2007_9",
-              new float[] { 0.1f, 0.5f, 0.1f }, true, 20);
+              new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
 
              /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
              comboImages.Items.AddRange(frms_stereo1);

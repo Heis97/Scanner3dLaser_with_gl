@@ -17,18 +17,11 @@ namespace opengl3
         public Image<Bgr,byte>[] color_im;
         public GraphicGL graphicGL;
 
-
-
-
         public PointCloud()
         {
             points3d = new Point3d_GL[0];
             points3d_lines = new  List<Point3d_GL[]>();
         }
-
-
-
-
 
         public void clearPoints()
         {
@@ -121,12 +114,12 @@ namespace opengl3
 
             var points3d_1 = computePointsCam(points_im1, stereocamera.cameraCVs[0],color_im[0]) ;
             var lines3d_1 = computeTracesCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);//stereocamera.R
-            var polygons3d_1 = computePolygonsCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);
+            //var polygons3d_1 = computePolygonsCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);
 
          //   CvInvoke.Rotate(color_im[1], color_im[1], Emgu.CV.CvEnum.RotateFlags.Rotate180);
             var points3d_2 = computePointsCam(points_im2, stereocamera.cameraCVs[1], color_im[1]);
 
-            var lines3d_2 = computeTracesCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
+           // var lines3d_2 = computeTracesCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
             var polygons3d_2 = computePolygonsCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
 
             
