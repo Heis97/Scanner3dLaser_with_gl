@@ -127,8 +127,8 @@ namespace opengl3
             //loadVideo_stereo(@"test_1107_7");
              loadScannerStereoLas(
              new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
-              @"stereo_cal_2007_4",
-              @"scan_2007_9",
+              @"stereocal_2607_1",
+              @"scan_2607_5",
               new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
 
              /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
