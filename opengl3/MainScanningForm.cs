@@ -128,7 +128,7 @@ namespace opengl3
              loadScannerStereoLas(
              new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
               @"stereocal_2607_1",
-              @"scan_2607_5",
+              @"scan_2607_4",
               new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
 
              /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
@@ -422,9 +422,7 @@ namespace opengl3
 
             var scan_stl = Polygon3d_GL.toMesh(Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene()));
             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
-            //GL1.addMesh(lines_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
-            //var points_scan_stl = Point3d_GL.toMesh (scanner.getPointsScene());
-            //GL1.addMesh(points_scan_stl, PrimitiveType.Points, normrgb[0], normrgb[1], normrgb[2]);
+            //STLmodel.saveMesh(scan_stl[0], scand_path);
         }
 
 
@@ -2723,7 +2721,9 @@ namespace opengl3
             var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
             var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
-            
+            var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
+            fr_st_vid.stereo = true;
+            comboImages.Items.Add(fr_st_vid);
             //Console.WriteLine(capture1.GetCaptureProperty(CapProp.Fps) + " " + capture2.GetCaptureProperty(CapProp.Fps));
             var all_frames = Math.Min(all_frames1, all_frames2);
             if (scanner != null)
