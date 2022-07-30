@@ -19,6 +19,7 @@ namespace opengl3
     public class GraphicGL
     {
         #region vars
+
         public int point_type = 0;
         static float PI = 3.1415926535f;
         public CameraCV cameraCV;
@@ -761,6 +762,16 @@ namespace opengl3
             }
             transRotZooms[sel_trz] = trz;
         }
+
+        public Point3d_GL[] get_contour()
+        {
+            if(pointsPaint.Count!=0)
+            {
+                pointsPaint.Add(pointsPaint[0]);
+                return Point3d_GL.toPoints(pointsPaint.ToArray());
+            }
+            return null;
+        }
         public void Form1_mousewheel(object sender, MouseEventArgs e)
         {
             //Console.WriteLine("P m = " + Pm);
@@ -1198,6 +1209,21 @@ namespace opengl3
                 mesh.Add((float)p.x);
                 mesh.Add((float)p.y);
                 mesh.Add((float)p.z);
+            }
+            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b);
+        }
+        public void addLineMeshTraj(Point3d_GL[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        {
+            var mesh = new List<float>();
+            for(int i=1; i<points.Length;i++)
+            {
+                mesh.Add((float)points[i - 1].x);
+                mesh.Add((float)points[i - 1].y);
+                mesh.Add((float)points[i - 1].z);
+
+                mesh.Add((float)points[i].x);
+                mesh.Add((float)points[i].y);
+                mesh.Add((float)points[i].z);
             }
             addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b);
         }

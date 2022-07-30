@@ -38,7 +38,7 @@ namespace opengl3
             y = p.Y;
             z = _z;
         }
-        public void normalize()
+        public Vector3d_GL normalize()
         {
             var n = Math.Sqrt(x * x + y * y + z * z);
             if (n != 0)
@@ -47,6 +47,7 @@ namespace opengl3
                 y /= n;
                 z /= n;
             }
+            return this;
         }
 
         public static Vector3d_GL operator |(Vector3d_GL p1, Vector3d_GL p2)//vector multiply

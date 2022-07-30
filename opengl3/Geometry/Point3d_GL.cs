@@ -25,7 +25,14 @@ namespace opengl3
             exist = true;
             color = _color;
         }
-
+        public Point3d_GL(Vertex4f vertex, Colo3d_GL _color = null)
+        {
+            x = vertex.x;
+            y = vertex.y;
+            z = vertex.z;
+            exist = true;
+            color = _color;
+        }
         public Point3d_GL(Point p, double _z)
         {
             x = p.X;
@@ -50,6 +57,7 @@ namespace opengl3
             exist = true;
             color = p1.color;
         }
+
 
         public Point3d_GL Copy()
         {
@@ -101,6 +109,16 @@ namespace opengl3
             }
             return mesh;
         }
+
+        public static Point3d_GL[] toPoints(Vertex4f[] vertexs)
+        {
+            var ps = new Point3d_GL[vertexs.Length];
+            for(int i=0; i<vertexs.Length;i++)
+            {
+                ps[i] = new Point3d_GL(vertexs[i]);
+            }
+            return ps;
+        }
         public static Point3d_GL notExistP()
         {
             var p = new Point3d_GL();
@@ -131,6 +149,10 @@ namespace opengl3
                 ps_ret[i] = multMatr(ps[i],matrix);
             }
             return ps_ret;
+        }
+        public static double operator *(Point3d_GL p, Vector3d_GL v1)
+        {
+            return p.x * v1.x + p.y * v1.y + p.z * v1.z;
         }
         public static Point3d_GL operator *(Point3d_GL p, double k)
         {
@@ -249,6 +271,8 @@ namespace opengl3
 
             return Math.Round(x, 4).ToString() + " " + Math.Round(y, 4).ToString() + " " + Math.Round(z, 4).ToString();
         }
+
+
     }
 
 }

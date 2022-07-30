@@ -206,9 +206,9 @@ namespace opengl3
                     }
                 }  
 
-                Console.WriteLine(x_max+ " "+y_max);
+                //Console.WriteLine(x_max+ " "+y_max);
             }
-            Console.WriteLine(map_xy.GetLength(0) + " " + map_xy.GetLength(1));
+           // Console.WriteLine(map_xy.GetLength(0) + " " + map_xy.GetLength(1));
 
             Point3d_GL[][] ps_smooth = (Point3d_GL[][])ps.Clone();
             for(int i=0; i<ps.Length;i++)
@@ -309,10 +309,6 @@ namespace opengl3
             return new Point3d_GL[] { p_min, p_max };
         }
 
-
-
-
-
         static public Polygon3d_GL[] triangulate_lines_xy(Point3d_GL[][] _ps)
         {
             List<Polygon3d_GL> polygons = new List<Polygon3d_GL>();
@@ -384,5 +380,48 @@ namespace opengl3
             }
             return new float[][] { mesh.ToArray(), color.ToArray(), normal.ToArray() };
         }        
+
+        public Point3d_GL[] get_dimens_minmax()
+        {
+            var p_min = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);
+            var p_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue);
+            for(int i=0; i<ps.Length; i++)
+            {
+                if (ps[i].x < p_min.x) p_min.x = ps[i].x;
+                if (ps[i].y < p_min.y) p_min.y = ps[i].y;
+                if (ps[i].z < p_min.z) p_min.z = ps[i].z;
+
+                if (ps[i].x > p_max.x) p_max.x = ps[i].x;
+                if (ps[i].y > p_max.y) p_max.y = ps[i].y;
+                if (ps[i].z > p_max.z) p_max.z = ps[i].z;
+            }
+            return new Point3d_GL[] { p_min, p_max };
+        }
+        static public Point3d_GL[] get_dimens_minmax_arr(Polygon3d_GL[] polygons)
+        {
+            var p_min = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);
+            var p_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue);
+            for (int i = 0; i < polygons.Length; i++)
+            {
+                if (polygons[i].ps[0].x < p_min.x) p_min.x = polygons[i].ps[0].x;
+                if (polygons[i].ps[0].y < p_min.y) p_min.y = polygons[i].ps[0].y;
+                if (polygons[i].ps[0].z < p_min.z) p_min.z = polygons[i].ps[0].z;
+
+                if (polygons[i].ps[0].x > p_max.x) p_max.x = polygons[i].ps[0].x;
+                if (polygons[i].ps[0].y > p_max.y) p_max.y = polygons[i].ps[0].y;
+                if (polygons[i].ps[0].z > p_max.z) p_max.z = polygons[i].ps[0].z;
+            }
+            return new Point3d_GL[] { p_min, p_max };
+        }
+
+        public Point3d_GL project_point_xy(Point3d_GL p)
+        {
+            if (flat3D.C == 0)
+            {
+                return new Point3d_GL(p.x, p.y, 0);
+            }
+            var z = (-flat3D.D - flat3D.A * p.x - flat3D.B * p.y) / flat3D.C;
+            return new Point3d_GL(p.x, p.y, z);
+        }
     }
 }

@@ -133,6 +133,7 @@
     <Compile Include="Geometry\Polygon3d_GL.cs" />
     <Compile Include="Geometry\Matr4x4f.cs" />
     <Compile Include="Geometry\Matr3x3f_.cs" />
+    <Compile Include="Geometry\RasterMap.cs" />
     <Compile Include="Graphic\BuffersGl.cs" />
     <Compile Include="Extra\Analyse.cs" />
     <Compile Include="Camera\CameraCV.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Geometry\Flat3d_GL.cs" />
     <Compile Include="Geometry\Flat_4P.cs" />
     <Compile Include="Geometry\Line3d_GL.cs" />
+    <Compile Include="PathPlanning\PathPlanner.cs" />
     <Compile Include="ScannerHandle\GeometryAnalyse.cs" />
     <Compile Include="ScannerHandle\LaserSurface.cs" />
     <Compile Include="ScannerHandle\Detection.cs" />

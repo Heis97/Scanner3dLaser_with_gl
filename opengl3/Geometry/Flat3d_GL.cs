@@ -13,12 +13,14 @@ namespace opengl3
         public double C;
         public double D;
         public bool exist;
+        public Vector3d_GL n;
         public Flat3d_GL(double _A, double _B, double _C, double _D)
         {
             A = _A;
             B = _B;
             C = _C;
             D = _D;
+            n = new Vector3d_GL(A, B, C);
             exist = true;
         }
         public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3, Point3d_GL P4)
@@ -36,6 +38,7 @@ namespace opengl3
             B = x1 * z2 - x2 * z1 - x1 * z3 + x3 * z1 + x2 * z3 - x3 * z2;
             C = -(x1 * y2 - x2 * y1 - x1 * y3 + x3 * y1 + x2 * y3 - x3 * y2);
             D = x1 * y2 * z3 - x1 * y3 * z2 - x2 * y1 * z3 + x2 * y3 * z1 + x3 * y1 * z2 - x3 * y2 * z1;
+            n = new Vector3d_GL(A, B, C);
             exist = true;
         }
 
@@ -49,7 +52,7 @@ namespace opengl3
             A = v3.x;
             B = v3.y;
             C = v3.z;
-
+            n = new Vector3d_GL(A, B, C);
             exist = true;
         }
 
@@ -71,6 +74,7 @@ namespace opengl3
             B = A2 * z1 - C2 * x1 - A2 * z2 + C2 * x2;
             C = -(A2 * y1 - B2 * x1 - A2 * y2 + B2 * x2);
             D = A2 * y1 * z2 - A2 * y2 * z1 - B2 * x1 * z2 + B2 * x2 * z1 + C2 * x1 * y2 - C2 * x2 * y1;
+            n = new Vector3d_GL(A, B, C);
             exist = true;
 
         }

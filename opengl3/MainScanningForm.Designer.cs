@@ -89,6 +89,8 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_end_cont = new System.Windows.Forms.Button();
+            this.but_point_type = new System.Windows.Forms.Button();
             this.but_text_vis = new System.Windows.Forms.Button();
             this.lab_TRZ = new System.Windows.Forms.Label();
             this.debugBox = new System.Windows.Forms.RichTextBox();
@@ -249,7 +251,7 @@ namespace opengl3
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_point_type = new System.Windows.Forms.Button();
+            this.but_send_traj = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -901,6 +903,8 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_send_traj);
+            this.tabOpenGl.Controls.Add(this.but_end_cont);
             this.tabOpenGl.Controls.Add(this.but_point_type);
             this.tabOpenGl.Controls.Add(this.but_text_vis);
             this.tabOpenGl.Controls.Add(this.lab_TRZ);
@@ -962,6 +966,26 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // but_end_cont
+            // 
+            this.but_end_cont.Location = new System.Drawing.Point(667, 915);
+            this.but_end_cont.Name = "but_end_cont";
+            this.but_end_cont.Size = new System.Drawing.Size(96, 34);
+            this.but_end_cont.TabIndex = 103;
+            this.but_end_cont.Text = "Сохранить контур";
+            this.but_end_cont.UseVisualStyleBackColor = true;
+            this.but_end_cont.Click += new System.EventHandler(this.but_end_cont_Click);
+            // 
+            // but_point_type
+            // 
+            this.but_point_type.Location = new System.Drawing.Point(667, 872);
+            this.but_point_type.Name = "but_point_type";
+            this.but_point_type.Size = new System.Drawing.Size(96, 34);
+            this.but_point_type.TabIndex = 101;
+            this.but_point_type.Text = "Точки";
+            this.but_point_type.UseVisualStyleBackColor = true;
+            this.but_point_type.Click += new System.EventHandler(this.but_point_type_Click);
+            // 
             // but_text_vis
             // 
             this.but_text_vis.Location = new System.Drawing.Point(667, 810);
@@ -1020,7 +1044,7 @@ namespace opengl3
             // 
             // but_gl_cam_calib
             // 
-            this.but_gl_cam_calib.Location = new System.Drawing.Point(579, 915);
+            this.but_gl_cam_calib.Location = new System.Drawing.Point(519, 922);
             this.but_gl_cam_calib.Name = "but_gl_cam_calib";
             this.but_gl_cam_calib.Size = new System.Drawing.Size(96, 56);
             this.but_gl_cam_calib.TabIndex = 98;
@@ -2608,15 +2632,15 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // but_point_type
+            // but_send_traj
             // 
-            this.but_point_type.Location = new System.Drawing.Point(667, 872);
-            this.but_point_type.Name = "but_point_type";
-            this.but_point_type.Size = new System.Drawing.Size(96, 34);
-            this.but_point_type.TabIndex = 101;
-            this.but_point_type.Text = "Включить точки";
-            this.but_point_type.UseVisualStyleBackColor = true;
-            this.but_point_type.Click += new System.EventHandler(this.but_point_type_Click);
+            this.but_send_traj.Location = new System.Drawing.Point(769, 915);
+            this.but_send_traj.Name = "but_send_traj";
+            this.but_send_traj.Size = new System.Drawing.Size(96, 34);
+            this.but_send_traj.TabIndex = 104;
+            this.but_send_traj.Text = "Отправить траекторию";
+            this.but_send_traj.UseVisualStyleBackColor = true;
+            this.but_send_traj.Click += new System.EventHandler(this.but_send_traj_Click);
             // 
             // MainScanningForm
             // 
@@ -2923,6 +2947,8 @@ namespace opengl3
         private System.Windows.Forms.Button but_load_scan;
         private System.Windows.Forms.Button but_text_vis;
         private System.Windows.Forms.Button but_point_type;
+        private System.Windows.Forms.Button but_end_cont;
+        private System.Windows.Forms.Button but_send_traj;
     }
 }
 

@@ -22,12 +22,16 @@ using Accord.Math;
 using Accord.Math.Optimization.Losses;
 using System.Threading;
 using System.IO.Ports;
+using PathPlanning;
 
 namespace opengl3
 {
     public partial class MainScanningForm : Form
     {
         #region var
+        Polygon3d_GL[] mesh = null;
+        List<Matrix<double>> rob_traj = null;
+        Point3d_GL[] cont_traj = null;
         ImageBox[] imb_base = null;
         FrameType imProcType = FrameType.Test;
         LaserLine laserLine;
@@ -124,29 +128,30 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
+            
             //loadVideo_stereo(@"test_1107_7");
-             loadScannerStereoLas(
-             new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
-              @"stereocal_2607_1",
-              @"scan_2607_4",
-              new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
+            loadScannerStereoLas(
+            new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
+             @"stereo_cal_2007_3",
+             @"scan_2007_6",
+             new float[] { 0.1f, 0.5f, 0.1f }, true, 20);
 
-             /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
-             comboImages.Items.AddRange(frms_stereo1);
+            /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
+            comboImages.Items.AddRange(frms_stereo1);
 
-             for(int i=0; i< frms_stereo1.Length;i++)
-             {
-                 scanner.initStereo(new Mat[] { frms_stereo1[i].im, frms_stereo1[i].im_sec }, PatternType.Mesh);
-             }*/
+            for(int i=0; i< frms_stereo1.Length;i++)
+            {
+                scanner.initStereo(new Mat[] { frms_stereo1[i].im, frms_stereo1[i].im_sec }, PatternType.Mesh);
+            }*/
 
             // oneCam(new string[] { @"cam1\camera_cal_1807_1" },10f);
-            
+
         }
         void init_vars()
         {
             #region important
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн","Стерео Исп","Паттерн круги", "Ничего" });
-            //GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
 
             mat_global[0] = new Mat();
@@ -419,9 +424,10 @@ namespace opengl3
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);
 
             loadVideo_stereo(scand_path, scanner, strip);
-
-            var scan_stl = Polygon3d_GL.toMesh(Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene()));
+            mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
+            var scan_stl = Polygon3d_GL.toMesh(mesh);
             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+
             //STLmodel.saveMesh(scan_stl[0], scand_path);
         }
 
@@ -2793,8 +2799,25 @@ namespace opengl3
                 GL1.point_type = 0;
             }
         }
-    }
 
+        private void but_end_cont_Click(object sender, EventArgs e)
+        {
+            cont_traj = GL1.get_contour();
+            if(mesh!=null && cont_traj!=null)
+            {
+                rob_traj = PathPlanner.test3dcont(mesh,cont_traj.ToList(), 4, 0.4);
+                var ps = PathPlanner.traj_to_matr(rob_traj);                
+                GL1.addLineMeshTraj(ps.ToArray());
+                GL1.buffersGl.sortObj();
+            }
+        }
+        
+        private void but_send_traj_Click(object sender, EventArgs e)
+        {
+            var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
+            con1?.send_mes(traj_rob);
+        }
+    }
 }
 
 
