@@ -99,17 +99,21 @@ namespace opengl3
             return ps_sort.ToArray();
         }
 
-        static public Polygon3d_GL[] triangulate_two_lines_xy(Point3d_GL[] ps1, Point3d_GL[] ps2)
+        static public Polygon3d_GL[] triangulate_two_lines_xy(Point3d_GL[] _ps1, Point3d_GL[] _ps2)
         {
-            //var ps1 = sortByX(_ps1).Reverse().ToArray();
-            //var ps2 = sortByX(_ps2).Reverse().ToArray();
+            var ps1 = sortByX(_ps1).Reverse().ToArray();
+            var ps2 = sortByX(_ps2).Reverse().ToArray();
             var polygons = new List<Polygon3d_GL>();
+            var polygons_ind = new List<int[]>();
             int ind_2 = 0;
+            int ind_2_last = ind_2;
             List<int>[] ps1_connect = new List<int>[ps1.Length];
             List<int>[] ps2_connect = new List<int>[ps2.Length];
             for (int i=1; i < ps1.Length; i++)
             {
+                
                 polygons.Add(new Polygon3d_GL(ps1[i-1],ps1[i],ps2[ind_2]));
+                polygons_ind.Add(new int[] { i - 1, i, ind_2,1 });
                 if (ps1_connect[i-1] == null)
                 {
                     ps1_connect[i-1] = new List<int>();
@@ -126,20 +130,26 @@ namespace opengl3
                 ps1_connect[i-1].Add(ind_2); ps1_connect[i].Add(ind_2);
 
                 ps2_connect[ind_2].Add(i-1); ps2_connect[ind_2].Add(i);
-                if (i<ps1.Length-1)
+
+                if (i < ps1.Length - 1)
                 {
                     var min_dist = double.MaxValue;
-                    for(int j=0; j< ps2.Length;j++)
+                    for (int j = 0; j < ps2.Length; j++)
                     {
-                        var dist = (ps1[i] - ps2[j]).magnitude_xy();
-                        if(dist<min_dist)
+                        var dist = (ps1[i] - ps2[j]).magnitude_x();
+                        if (dist < min_dist)
                         {
                             min_dist = dist;
                             ind_2 = j;
                         }
                     }
                 }
-                
+                if(ind_2<ind_2_last)
+                {
+                    Console.WriteLine("ind_2<ind_2_last");
+                    Console.WriteLine(ind_2);
+                }
+                ind_2_last = ind_2;
             }
 
             for (int i = 1; i < ps2_connect.Length; i++)
@@ -156,15 +166,17 @@ namespace opengl3
             {
                 for(int j = 0; j < ps1.Length; j++)
                 {
-                    if (ps2_connect[i - 1] != null && ps2_connect[i] != null)
+                    
+                    if (ps2_connect[i - 1].Contains(j) && ps2_connect[i].Contains(j))
                     {
-                        if (ps2_connect[i - 1].Contains(j) && ps2_connect[i].Contains(j))
-                        {
-                            polygons.Add(new Polygon3d_GL(ps2[i], ps2[i-1], ps1[j]));
-                        }
+                        polygons.Add(new Polygon3d_GL(ps2[i], ps2[i-1], ps1[j]));
+                        polygons_ind.Add(new int[] { i, i-1, j, 2 });
                     }
+                   
                 }
             }
+
+            //Console.WriteLine(polygons_ind);
             
             return polygons.ToArray();
         }

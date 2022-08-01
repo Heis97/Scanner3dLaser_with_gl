@@ -128,13 +128,13 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
-            
+
             //loadVideo_stereo(@"test_1107_7");
             loadScannerStereoLas(
             new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
-             @"stereo_cal_2007_3",
-             @"scan_2007_6",
-             new float[] { 0.1f, 0.5f, 0.1f }, true, 20);
+             @"stereocal_2607_1",
+             @"scan_2607_4",
+             new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
 
             /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
             comboImages.Items.AddRange(frms_stereo1);
@@ -426,11 +426,24 @@ namespace opengl3
             loadVideo_stereo(scand_path, scanner, strip);
             mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+            GL1.add_buff_gl(extract_delt(scan_stl[0]), scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
 
             //STLmodel.saveMesh(scan_stl[0], scand_path);
         }
 
+        public float[] extract_delt(float[] mesh)
+        {
+            for(int i=0; i<mesh.Length; i+=3)
+            {
+                mesh[i + 2] =3* comp_delt(mesh[i + 2]);
+            }
+            return mesh;
+        }
+
+        static float comp_delt(float val)
+        {
+            return val - ((float)Math.Round(val / 10))*10;
+        }
 
 
         public void startScanLaser(int typeScan)//0 - defolt, 1 - dif,2 - marl,3 - stereo
