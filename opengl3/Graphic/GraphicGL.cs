@@ -16,6 +16,96 @@ namespace opengl3
 {   
     public enum modeGL { Paint, View}
     public enum viewType { Perspective, Ortho }
+
+    public class TextureGL
+    {
+        public uint id;
+        public int binding;
+        public int w, h, ch;
+        public PixelFormat pixelFormat;
+        InternalFormat internalFormat;
+        public float[] data;
+        public TextureGL()
+        {
+        }
+        public TextureGL(int _binding, int _w, int _h = 1, PixelFormat _pixelFormat = PixelFormat.Red, float[] _data = null)
+        {
+            Console.WriteLine("genTexture");
+            if (_data != null)
+            {
+                data = (float[])_data.Clone();
+            }
+            else
+            {
+                data = null;
+            }
+            var buff = genTexture(_binding, _w, _h, _pixelFormat, data);
+            id = buff;
+            binding = _binding;
+            w = _w;
+            h = _h;
+            pixelFormat = _pixelFormat;
+            Console.WriteLine("bind " + binding + "; w " + w + " h " + h + " ch " + ch + "; " + pixelFormat);
+        }
+        public float[] getData()
+        {
+            Gl.BindTexture(TextureTarget.Texture2d, id);
+            float[] dataf = new float[w * h * ch];
+            Gl.GetTexImage(TextureTarget.Texture2d, 0, pixelFormat, PixelType.Float, dataf);
+            //Console.WriteLine(w+" "+h+" "+ch+" "+ dataf.Length);
+            return dataf;
+        }
+        public void setData(float[] data)
+        {
+            Gl.BindTexture(TextureTarget.Texture2d, id);
+            Gl.TexImage2D(TextureTarget.Texture2d, 0, internalFormat, w, h, 0, pixelFormat, PixelType.Float, data);
+        }
+        uint genTexture(int binding, int w, int h = 1, PixelFormat pixelFormat = PixelFormat.Red, float[] data = null)
+        {
+            if (pixelFormat == PixelFormat.Red)
+            {
+                ch = 1;
+            }
+            else if (pixelFormat == PixelFormat.Rg)
+            {
+                ch = 2;
+            }
+            else if (pixelFormat == PixelFormat.Rgb)
+            {
+                ch = 3;
+            }
+            else if (pixelFormat == PixelFormat.Rgba)
+            {
+                ch = 4;
+            }
+            else
+            {
+                ch = 1;
+            }
+            var buff_texture = Gl.GenTexture();
+            Gl.ActiveTexture(TextureUnit.Texture0 + binding);
+            Gl.BindTexture(TextureTarget.Texture2d, buff_texture);
+
+            Gl.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMagFilter, Gl.NEAREST);
+            Gl.TexParameteri(TextureTarget.Texture2d, TextureParameterName.TextureMinFilter, Gl.NEAREST);
+            internalFormat = InternalFormat.R32f;
+            if (pixelFormat == PixelFormat.Rgb || pixelFormat == PixelFormat.Rgba)
+            {
+                internalFormat = InternalFormat.Rgba32f;
+            }
+            Gl.TexImage2D(TextureTarget.Texture2d, 0, internalFormat, w, h, 0, pixelFormat, PixelType.Float, data);
+
+            Gl.BindImageTexture((uint)binding, buff_texture, 0, false, 0, BufferAccess.ReadWrite, internalFormat);
+            return buff_texture;
+        }
+
+        private void useTexture()
+        {
+            Gl.ActiveTexture(TextureUnit.Texture0 + binding);
+            Gl.BindTexture(TextureTarget.Texture2d, id);
+        }
+    }
+
     public class GraphicGL
     {
         #region vars
@@ -36,6 +126,7 @@ namespace opengl3
         uint programID_ps;
         uint programID_trs;
         uint programID_lns;
+        uint programID_comp;
         public int texture_vis = 0;
         int[] LocationMVPs = new int[4];
         int[] LocationMs = new int[4];
@@ -79,9 +170,11 @@ namespace opengl3
         public ImageBox[] imageBoxesForSave;
         public Size size = new Size(1,1);
         Point locationBox = new Point(0, 0);
-        
+
+       // TextureGL ps1, ps2,
+
         #endregion
-       
+
 
         public void glControl_Render(object sender, GlControlEventArgs e)
         {
@@ -207,9 +300,14 @@ namespace opengl3
             var GeometryShaderLinesGL = assembCode(new string[] { @"Graphic\Shaders\Geom_R\GeomShL_head.txt", @"Graphic\Shaders\Geom_R\GeomSh_body.txt" });
             var GeometryShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders\Geom_R\GeomShT_head.txt", @"Graphic\Shaders\Geom_R\GeomSh_body.txt" });
 
+            var CompShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo.glsl"});
+
+
             programID_lns = createShader(VertexSourceGL, GeometryShaderLinesGL, FragmentSourceGL);
             programID_ps = createShader(VertexSourceGL, GeometryShaderPointsGL, FragmentSourceGL);
             programID_trs = createShader(VertexSourceGL, GeometryShaderTrianglesGL , FragmentSourceGL);
+
+            programID_comp = createShaderCompute(CompShaderTrianglesGL);
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
@@ -217,13 +315,6 @@ namespace opengl3
             cameraCV.distortmatrix[0,0] = -0.1;
 
 
-        }
-        string[] assembCode(string[] paths)
-        {
-            var text = "";
-            foreach (var path in paths)
-                text += File.ReadAllText(path);
-            return new string[] { text };
         }
         private void load_buff_gl(float[] vertex_buffer_dat, float[] color_buffer_dat, float[] normal_buffer_dat)
         {
@@ -298,7 +389,26 @@ namespace opengl3
             Gl.Uniform1i(texture_visID, 1, texture_vis);
 
         }
-        
+
+
+        public  Point3d_GL[] cross_flat_gpu(float[] ps1, float[] ps2)
+        {
+
+            var ps1_t = new TextureGL(5, ps1.Length/4, 1, PixelFormat.Rgba, ps1);//lines
+            var ps2_t = new TextureGL(6, ps2.Length/4, 1, PixelFormat.Rgba, ps2);//triangles
+            var ps_cross_t = new TextureGL(7, ps1.Length/4, 1, PixelFormat.Rgba);//ans
+
+            //Console.WriteLine(toStringBuf(ps1_t.getData(), 4, 0, "ps1_t"));
+            /*Console.WriteLine(toStringBuf(ps2_t.getData(), 4, 0, "ps2_t"));
+            Console.WriteLine(toStringBuf(ps_cross_t.getData(), 4, 0, "ps_cross_t"));*/
+            Gl.UseProgram(programID_comp);
+            Gl.DispatchCompute((uint)ps1.Length / 4+1, 1, 1);
+            Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
+
+            //Console.WriteLine(toStringBuf(ps_cross_t.getData(), 4, 0, "ps_cross_t"));
+
+            return Point3d_GL.dataToPoints_ex(ps_cross_t.getData());
+        }
 
         #region util
         public Matr4x4f rightMatrMon(int ind_mon)
@@ -612,9 +722,33 @@ namespace opengl3
             }
             box.Text = txt;
         }
+        string toStringBuf(float[] buff, int strip, int substrip, string name)
+        {
+            if (buff == null)
+                return name + " null ";
+            StringBuilder txt = new StringBuilder();
+            txt.Append(name + " " + buff.Length);
+            for (int i = 0; i < buff.Length / strip; i++)
+            {
+                txt.Append("  | \n");
+                for (int j = 0; j < strip; j++)
+                {
+                    if (substrip != 0)
+                    {
+                        if (j % substrip == 0)
+                        {
+                            txt.Append("  | ");
+                        }
+                    }
+                    txt.Append(buff[i * strip + j].ToString() + ", ");
+                }
+            }
+            txt.Append(" |\n--------------------------------\n");
+            return txt.ToString();
+
+        }
         #endregion
 
-       
         #region mouse
         public void add_Label(Label label_list, Label label_cur, Label label_trz)
         {
@@ -1338,6 +1472,14 @@ namespace opengl3
 
 
         #region shader
+   
+        string[] assembCode(string[] paths)
+        {
+            var text = "";
+            foreach (var path in paths)
+                text += File.ReadAllText(path);
+            return new string[] { text };
+        }
         void debugShaderComp(uint ShaderName)
         {
             int compiled;
@@ -1345,7 +1487,7 @@ namespace opengl3
             Gl.GetShader(ShaderName, ShaderParameterName.CompileStatus, out compiled);
             if (compiled != 0)
             {
-                //Console.WriteLine("SHADER COMPILE");
+                Console.WriteLine("SHADER COMPILE");
                 return;
             }
 
@@ -1370,15 +1512,26 @@ namespace opengl3
         }
         private uint createShader(string[] VertexSourceGL, string[] GeometryShaderGL, string[] FragmentSourceGL)
         {
-
+            bool geom = false;
+            uint GeometryShaderID = 0;
+            if (GeometryShaderGL != null)
+            {
+                geom = true;
+            }
             var VertexShaderID = compileShader(VertexSourceGL, ShaderType.VertexShader);
-            var GeometryShaderID = compileShader(GeometryShaderGL, ShaderType.GeometryShader);
             var FragmentShaderID = compileShader(FragmentSourceGL, ShaderType.FragmentShader);
+            if (geom)
+            {
+                GeometryShaderID = compileShader(GeometryShaderGL, ShaderType.GeometryShader);
+            }
 
             uint ProgrammID = Gl.CreateProgram();
             Gl.AttachShader(ProgrammID, VertexShaderID);
-            Gl.AttachShader(ProgrammID, GeometryShaderID);
             Gl.AttachShader(ProgrammID, FragmentShaderID);
+            if (geom)
+            {
+                Gl.AttachShader(ProgrammID, GeometryShaderID);
+            }
             Gl.LinkProgram(ProgrammID);
 
             int linked;
@@ -1398,13 +1551,45 @@ namespace opengl3
             }
 
             Gl.DeleteShader(VertexShaderID);
-            Gl.DeleteShader(GeometryShaderID);
             Gl.DeleteShader(FragmentShaderID);
+            if (geom)
+            {
+                Gl.DeleteShader(GeometryShaderID);
+            }
+            return ProgrammID;
+        }
+        private uint createShaderCompute(string[] ComputeSourceGL)
+        {
+
+            var ComputeShaderID = compileShader(ComputeSourceGL, ShaderType.ComputeShader);
+
+            uint ProgrammID = Gl.CreateProgram();
+            Gl.AttachShader(ProgrammID, ComputeShaderID);
+            Gl.LinkProgram(ProgrammID);
+
+            int linked;
+
+            Gl.GetProgram(ProgrammID, ProgramProperty.LinkStatus, out linked);
+
+            if (linked == 0)
+            {
+                const int logMaxLength = 1024;
+
+                StringBuilder infolog = new StringBuilder(logMaxLength);
+                int infologLength;
+
+                Gl.GetProgramInfoLog(ProgrammID, 1024, out infologLength, infolog);
+
+                throw new InvalidOperationException($"unable to link program: {infolog}");
+            }
+
+            Gl.DeleteShader(ComputeShaderID);
             return ProgrammID;
         }
 
-        
         #endregion
+
+   
     }
 
     /*

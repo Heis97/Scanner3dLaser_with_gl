@@ -80,7 +80,7 @@ namespace opengl3
             }
             var points_im1 = Detection.detectLineDiff(mat[0], 7);
             var points_im2 = Detection.detectLineDiff(mat[1], 7);
-            var points_cam = fromStereoLaser(points_im1, points_im2, stereocamera, graphicGL, color_im);
+            var points_cam = fromStereoLaser_gpu(points_im1, points_im2, stereocamera, graphicGL, color_im);
             points3d_cur = points_cam;
             //points3d_cur = camToScene(points_cam, stereocamera.cameraCVs[1].matrixCS);
             var ps_list = points3d.ToList();
@@ -133,6 +133,31 @@ namespace opengl3
 
             return points_cam2b;
         }
+
+        public static Point3d_GL[] fromStereoLaser_gpu(PointF[] points_im1, PointF[] points_im2, StereoCamera stereocamera, GraphicGL graphicGL = null, Image<Bgr, byte>[] color_im = null)
+        {
+            var points3d_1 = computePointsCam(points_im1, stereocamera.cameraCVs[0], color_im[0]);         
+            var points3d_2 = computePointsCam(points_im2, stereocamera.cameraCVs[1], color_im[1]);
+
+            var ps1 = comp_points_for_gpu(points3d_1, stereocamera.cameraCVs[0].matrixCS);
+            var ps2 = comp_points_for_gpu(points3d_2, stereocamera.cameraCVs[1].matrixCS);
+            var points_cam2b = graphicGL.cross_flat_gpu(Point3d_GL.toData(ps1), Point3d_GL.toData(ps2));
+           
+
+
+            return points_cam2b;
+        }
+
+        public static Point3d_GL[] comp_points_for_gpu(Point3d_GL[] points_im, Matrix<double> matrix )
+        {
+            var ps3d = new Point3d_GL[points_im.Length+1];
+            ps3d[0] = matrix * new Point3d_GL(0, 0, 0);
+            for(int i = 0; i < points_im.Length; i++)
+            {
+                ps3d[i+1] = matrix * points_im[i];
+            }
+            return ps3d;
+         }
 
 
 

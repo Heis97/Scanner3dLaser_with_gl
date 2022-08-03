@@ -130,11 +130,11 @@ namespace opengl3
 
 
             //loadVideo_stereo(@"test_1107_7");
-            loadScannerStereoLas(
+            /*loadScannerStereoLas(
             new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
              @"stereocal_2607_1",
              @"scan_2607_4",
-             new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
+             new float[] { 0.1f, 0.5f, 0.1f }, true, 20);*/
 
             /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
             comboImages.Items.AddRange(frms_stereo1);
@@ -792,7 +792,7 @@ namespace opengl3
 
             // startGenerate();
             //trB_SGBM_Enter();
-            GL1.buffersGl.sortObj();
+            
         }
         Mat toMat(Bitmap bitmap)
         {
@@ -2724,12 +2724,12 @@ namespace opengl3
         private void but_load_scan_Click(object sender, EventArgs e)
         {
             loadScannerStereoLas(
-            new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
-             @"stereo_cal_1807_5",
-             @"scan_1907_6",
-             new float[] { 0.1f, 0.5f, 0.1f }, true,10);
-
+           new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
+            @"stereocal_2607_1",
+            @"scan_2607_4",
+            new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
             GL1.buffersGl.sortObj();
+
         }
         public void loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
         {
@@ -2750,10 +2750,10 @@ namespace opengl3
                 var orig2_im = orig2.ToImage<Bgr, byte>();
                 CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
                 scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
+                scanner.pointCloud.graphicGL = GL1;
             }
             while (videoframe_count < all_frames)
             {
-
                 Mat im1 = new Mat();
                 Mat im2 = new Mat();
                 while (!capture1.Read(im1)) { }
@@ -2774,9 +2774,7 @@ namespace opengl3
                         imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                     }
-
-                }
-                 
+                }                
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
 

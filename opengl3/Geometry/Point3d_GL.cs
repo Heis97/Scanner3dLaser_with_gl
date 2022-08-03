@@ -89,6 +89,42 @@ namespace opengl3
 
             return new Point3d_GL(x, y, z,color);
         }
+        public static float[] toData(Point3d_GL[] ps)
+        {
+            var data = new float[ps.Length * 4];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                data[4 * i] = (float)ps[i].x;
+                data[4 * i + 1] = (float)ps[i].y;
+                data[4 * i + 2] = (float)ps[i].z;
+            }
+            return data;
+        }
+
+        public static Point3d_GL[] dataToPoints(float[] data)
+        {
+            var ps = new Point3d_GL[data.Length / 4];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ps[i].x = data[4 * i];
+                ps[i].y = data[4 * i + 1];
+                ps[i].z = data[4 * i + 2];
+            }
+            return ps;
+        }
+
+        public static Point3d_GL[] dataToPoints_ex(float[] data)
+        {
+            var ps = new List<Point3d_GL>();
+            for (int i = 0; i < data.Length/4; i++)
+            {
+                if(data[4 * i + 3]>0)
+                {
+                    ps.Add(new Point3d_GL(data[4 * i], data[4 * i + 1], data[4 * i + 2]));
+                }
+            }
+            return ps.ToArray();
+        }
         public double magnitude()
         {
             return Math.Sqrt(x * x + y * y + z * z);

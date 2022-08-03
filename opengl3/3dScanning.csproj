@@ -192,6 +192,33 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Graphic\Shaders\Comp\CompSh.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders\Comp\CompSh_Aux_1.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders\Comp\CompSh_Aux_2d.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders\Comp\CompSh_Aux_2d_ret.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders\Comp\CompSh_N2_gravitation.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders\Comp\CompSh_cross_stereo.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders\Comp\CompSh_Test1.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders\GravitMap\Fragm.glsl" />
+    <None Include="Graphic\Shaders\GravitMap\Geom.glsl" />
+    <None Include="Graphic\Shaders\GravitMap\Vertex.glsl" />
+    <None Include="Graphic\Shaders\Orbite\FragmOrbite.glsl" />
+    <None Include="Graphic\Shaders\Orbite\GeomOrbite.glsl" />
+    <None Include="Graphic\Shaders\Orbite\VertexOrbite.glsl" />
     <None Include="Properties\DataSources\GraphicGL.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
