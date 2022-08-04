@@ -95,7 +95,7 @@ namespace opengl3
         }
         public override string ToString()
         {
-            return x.ToString() + " " + y.ToString() + " " + z.ToString();
+            return Math.Round(x,4) + " " + Math.Round(y, 4) + " " + Math.Round(z, 4);
         }
 
     }

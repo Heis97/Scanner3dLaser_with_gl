@@ -70,15 +70,23 @@ namespace opengl3
         {
             pointCloud.addPointsStereoLas(mats, stereoCamera, undist);
         }
-
-       /* public void addPointsStereoLas(Mat[][] mats)
+        public void addPointsStereoLas_2d(Mat[] mats, bool undist = true)
         {
-            for(int i=0;i<mats.Length;i++)
-            {
-                Console.WriteLine("loading...      "+i+"/"+mats.Length);
-                pointCloud.addPointsStereoLas(mats[i], stereoCamera);
-            }            
-        }*/
+            pointCloud.addPoints2dStereoLas(mats, stereoCamera, undist);
+        }
+
+        public void compPointsStereoLas_2d()
+        {
+            pointCloud.comp_cross(stereoCamera);
+        }
+        /* public void addPointsStereoLas(Mat[][] mats)
+         {
+             for(int i=0;i<mats.Length;i++)
+             {
+                 Console.WriteLine("loading...      "+i+"/"+mats.Length);
+                 pointCloud.addPointsStereoLas(mats[i], stereoCamera);
+             }            
+         }*/
 
         public bool addPoints(Mat mat)
         {

@@ -17,8 +17,8 @@ namespace opengl3
         {
             special_point_ind = _special_point_ind;
             ps = new Point3d_GL[] { P1, P2, P3};   
-            v1 = new Vector3d_GL(P1, P2);
-            v2 = new Vector3d_GL(P1, P3);
+            v1 = new Vector3d_GL(P1, P2).normalize();
+            v2 = new Vector3d_GL(P1, P3).normalize();
             v3 = v1 | v2;//vector multiply
             v3.normalize();
             flat3D = new Flat3d_GL(v3.x, v3.y, v3.z, -v3 * P1);
@@ -69,7 +69,20 @@ namespace opengl3
             }
             return Point3d_GL.notExistP();
         }
+        public Point3d_GL crossLine_deb(Line3d_GL p1)
+        {
+            var p_cross = p1.calcCrossFlat(flat3D);
+            var v_c = new Vector3d_GL(ps[special_point_ind], p_cross);
+            var a1 = v1 ^ v_c;
+            var a2 = v2 ^ v_c;
+            var b1 = v1 ^ v2;
 
+            if (a1 <= b1 && a2 <= b1)
+            {
+                return new Point3d_GL(v_c.x, v_c.y, v_c.z);
+            }
+            return new Point3d_GL(v_c.x, v_c.y, v_c.z);
+        }
 
         static public Point3d_GL[] createLightFlat(Polygon3d_GL[] polygons, Line3d_GL[] lines)
         {
@@ -321,10 +334,10 @@ namespace opengl3
             return new Point3d_GL[] { p_min, p_max };
         }
 
-        static public Polygon3d_GL[] triangulate_lines_xy(Point3d_GL[][] ps)
+        static public Polygon3d_GL[] triangulate_lines_xy(Point3d_GL[][] _ps)
         {
             List<Polygon3d_GL> polygons = new List<Polygon3d_GL>();
-            //var ps = smooth_lines_xy(_ps,1.3);
+            var ps = smooth_lines_xy(_ps,1.3);
             for (int i=1; i<ps.Length; i++)
             {
                 polygons.AddRange(triangulate_two_lines_xy(ps[i - 1], ps[i]));

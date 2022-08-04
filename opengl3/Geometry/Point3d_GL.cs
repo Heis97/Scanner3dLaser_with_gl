@@ -101,6 +101,16 @@ namespace opengl3
             return data;
         }
 
+        public static float[] toData(Point3d_GL[][] ps)
+        {
+            var data = new List<float>();
+            for (int i = 0; i < ps.Length; i++)
+            {
+                data.AddRange(toData(ps[i]));
+            }
+            return data.ToArray();
+        }
+
         public static Point3d_GL[] dataToPoints(float[] data)
         {
             var ps = new Point3d_GL[data.Length / 4];
@@ -112,6 +122,35 @@ namespace opengl3
             }
             return ps;
         }
+        public static Point3d_GL[][] dataToPoints2d(float[][] data)
+        {
+
+            var ps = new List< Point3d_GL[]>();
+            for (int i = 0; i < data.Length; i++)
+            {
+                ps.Add(dataToPoints_ex(data[i]));
+                
+            }
+            return ps.ToArray();
+        }
+
+        public static float[][] divide_data(float[] data, int w)
+        {
+            w *= 4;
+            int h = data.Length / w;
+            float[][] result = new float[h][];
+            for (int i = 0; i < h; i++)
+            {
+                result[i] = new float[w];
+                for (int j = 0; j < w; j++)
+                {
+                    result[i][j] = data[w*i + j];
+                }
+            }
+           
+            return result;
+        }
+
 
         public static Point3d_GL[] dataToPoints_ex(float[] data)
         {
@@ -122,8 +161,40 @@ namespace opengl3
                 {
                     ps.Add(new Point3d_GL(data[4 * i], data[4 * i + 1], data[4 * i + 2]));
                 }
+                else
+                {
+                    ps.Add(notExistP());
+                }
             }
             return ps.ToArray();
+        }
+
+        public static Point3d_GL[][] colorPoints2d(Point3d_GL[][] ps_color, Point3d_GL[][] ps)
+        {           
+            for (int i = 0; i < ps_color.Length; i++)
+            {
+                for (int j = 0; j < ps_color[0].Length; j++)
+                {
+                    ps[i][j].color = ps_color[i][j].color;
+                }
+            }
+            return ps;
+        }
+
+        public static Point3d_GL[][] filtrExistPoints2d(Point3d_GL[][] ps)
+        {
+            var ps_fil = new List<Point3d_GL[]>();
+            for (int i = 0; i < ps.Length; i++)
+            {
+                var list = new List<Point3d_GL>();
+                for (int j = 0; j < ps[0].Length; j++)
+                {
+                    if(ps[i][j].exist) list.Add(ps[i][j]);
+                }
+
+                ps_fil.Add(list.ToArray());
+            }
+            return ps_fil.ToArray();
         }
         public double magnitude()
         {

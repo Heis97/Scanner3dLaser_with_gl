@@ -30,7 +30,7 @@ namespace opengl3
         }
         public TextureGL(int _binding, int _w, int _h = 1, PixelFormat _pixelFormat = PixelFormat.Red, float[] _data = null)
         {
-            Console.WriteLine("genTexture");
+            //Console.WriteLine("genTexture");
             if (_data != null)
             {
                 data = (float[])_data.Clone();
@@ -45,7 +45,7 @@ namespace opengl3
             w = _w;
             h = _h;
             pixelFormat = _pixelFormat;
-            Console.WriteLine("bind " + binding + "; w " + w + " h " + h + " ch " + ch + "; " + pixelFormat);
+            //Console.WriteLine("bind " + binding + "; w " + w + " h " + h + " ch " + ch + "; " + pixelFormat);
         }
         public float[] getData()
         {
@@ -300,14 +300,14 @@ namespace opengl3
             var GeometryShaderLinesGL = assembCode(new string[] { @"Graphic\Shaders\Geom_R\GeomShL_head.txt", @"Graphic\Shaders\Geom_R\GeomSh_body.txt" });
             var GeometryShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders\Geom_R\GeomShT_head.txt", @"Graphic\Shaders\Geom_R\GeomSh_body.txt" });
 
-            var CompShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo.glsl"});
+            var CompShaderGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo_all_f.glsl"});
 
 
             programID_lns = createShader(VertexSourceGL, GeometryShaderLinesGL, FragmentSourceGL);
             programID_ps = createShader(VertexSourceGL, GeometryShaderPointsGL, FragmentSourceGL);
             programID_trs = createShader(VertexSourceGL, GeometryShaderTrianglesGL , FragmentSourceGL);
 
-            programID_comp = createShaderCompute(CompShaderTrianglesGL);
+            programID_comp = createShaderCompute(CompShaderGL);
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
@@ -393,22 +393,64 @@ namespace opengl3
 
         public  Point3d_GL[] cross_flat_gpu(float[] ps1, float[] ps2)
         {
-
+            //var debug_t = new TextureGL(4, ps1.Length/4, 6, PixelFormat.Rgba);//lines
             var ps1_t = new TextureGL(5, ps1.Length/4, 1, PixelFormat.Rgba, ps1);//lines
             var ps2_t = new TextureGL(6, ps2.Length/4, 1, PixelFormat.Rgba, ps2);//triangles
             var ps_cross_t = new TextureGL(7, ps1.Length/4, 1, PixelFormat.Rgba);//ans
 
-            //Console.WriteLine(toStringBuf(ps1_t.getData(), 4, 0, "ps1_t"));
-            /*Console.WriteLine(toStringBuf(ps2_t.getData(), 4, 0, "ps2_t"));
-            Console.WriteLine(toStringBuf(ps_cross_t.getData(), 4, 0, "ps_cross_t"));*/
+           //Console.WriteLine(toStringBuf(ps1_t.getData(), 4, 0, "ps1_t"));
+           //Console.WriteLine(toStringBuf(ps2_t.getData(), 4, 0, "ps2_t"));
+           //Console.WriteLine(toStringBuf(ps_cross_t.getData(), 4, 0, "ps_cross_t"));
             Gl.UseProgram(programID_comp);
-            Gl.DispatchCompute((uint)ps1.Length / 4+1, 1, 1);
+            Gl.DispatchCompute(((uint)ps1.Length / 4), 1, 1);
             Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
 
-            //Console.WriteLine(toStringBuf(ps_cross_t.getData(), 4, 0, "ps_cross_t"));
+            //Console.WriteLine(toStringBuf(debug_t.getData(),ps1.Length, 4, "ps_cross_t"));
+            //Console.WriteLine(toStringBuf(ps_cross_t.getData(), ps1.Length, 4, "ps_cross_t"));
 
             return Point3d_GL.dataToPoints_ex(ps_cross_t.getData());
         }
+
+        public Point3d_GL[][] cross_flat_gpu_all(Point3d_GL[][] ps1, Point3d_GL[][] ps2)
+        {
+            if(ps1 == null || ps2 == null)
+            {
+                return null;
+            }
+            if (ps1[0] == null || ps1[0] == null)
+            {
+                return null;
+            }
+            var ps1_data = Point3d_GL.toData(ps1);
+            var ps2_data = Point3d_GL.toData(ps2);
+
+            int h = ps1.Length;
+            int w = Math.Max( ps1[0].Length, ps2[0].Length) ;
+
+            var debug_t = new TextureGL(4, w, 6, PixelFormat.Rgba);//lines
+            var ps1_t = new TextureGL(5, w, h, PixelFormat.Rgba, ps1_data);//lines
+            var ps2_t = new TextureGL(6, w, h, PixelFormat.Rgba, ps2_data);//triangles
+            var ps_cross_t = new TextureGL(7, w, h, PixelFormat.Rgba);//ans
+
+            //Console.WriteLine(toStringBuf(ps1_t.getData(), 4, 0, "ps1_t"));
+            //Console.WriteLine(toStringBuf(ps2_t.getData(), 4, 0, "ps2_t"));
+            //Console.WriteLine(toStringBuf(ps_cross_t.getData(), 4, 0, "ps_cross_t"));
+
+            Gl.UseProgram(programID_comp);
+            Gl.DispatchCompute((uint)w, (uint)h, 1);
+            Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
+
+            var ps_cr = Point3d_GL.dataToPoints2d(Point3d_GL.divide_data(ps_cross_t.getData(), w));
+            Point3d_GL.colorPoints2d(ps1, ps_cr);
+
+            //Console.WriteLine(toStringBuf(debug_t.getData(),w * 4, 4, "debug_t"));
+            //Console.WriteLine(w + " " + h);
+            //Console.WriteLine(toStringBuf(ps_cross_t.getData(), w*4, 4, "ps_cross_t"));
+
+
+            return Point3d_GL.filtrExistPoints2d(ps_cr) ;
+        }
+
 
         #region util
         public Matr4x4f rightMatrMon(int ind_mon)
@@ -722,7 +764,7 @@ namespace opengl3
             }
             box.Text = txt;
         }
-        string toStringBuf(float[] buff, int strip, int substrip, string name)
+        static public string toStringBuf(float[] buff, int strip, int substrip, string name)
         {
             if (buff == null)
                 return name + " null ";
@@ -740,7 +782,7 @@ namespace opengl3
                             txt.Append("  | ");
                         }
                     }
-                    txt.Append(buff[i * strip + j].ToString() + ", ");
+                    txt.Append(Math.Round( buff[i * strip + j],4).ToString() + ", ");
                 }
             }
             txt.Append(" |\n--------------------------------\n");
@@ -1059,6 +1101,7 @@ namespace opengl3
             modeGL = mode;
         }
         #endregion
+
         #region mesh
  
         void addCamView(int id)
@@ -1469,7 +1512,6 @@ namespace opengl3
 
 
         #endregion
-
 
         #region shader
    

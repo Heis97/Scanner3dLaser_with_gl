@@ -426,8 +426,10 @@ namespace opengl3
             loadVideo_stereo(scand_path, scanner, strip);
             mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            GL1.add_buff_gl(extract_delt(scan_stl[0]), scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
 
+           // GL1.addPointMesh(scanner.getPointsScene());
+            //GL1.buffersGl.sortObj();
             //STLmodel.saveMesh(scan_stl[0], scand_path);
         }
 
@@ -2767,18 +2769,21 @@ namespace opengl3
                         im2 -= orig2;
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
 
-                        scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
-                        /*var ps1 = Detection.detectLineDiff(im1, 3);
+                        //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
+                         /*var ps1 = Detection.detectLineDiff(im1, 3);
                         var ps2 = Detection.detectLineDiff(im2, 3);
 
                         imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
+
+                        scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);
                     }
                 }                
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
-
             }
+            scanner.compPointsStereoLas_2d();
+
         }
         #endregion
 

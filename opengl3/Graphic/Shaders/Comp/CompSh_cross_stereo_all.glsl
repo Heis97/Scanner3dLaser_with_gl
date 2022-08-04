@@ -100,26 +100,29 @@ void main()
 	}
 
 	ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
-	dvec3 p1_0 = imageLoad(ps1,ivec2(0,0)).xyz;
+	dvec3 p1_0 = imageLoad(ps1,ivec2(0,gl_GlobalInvocationID.y)).xyz;
 	dvec3 p1_1 = imageLoad(ps1,pos).xyz;
 	dvec4 p_test = imageLoad(ps1,pos);
 	Line line = Line(p1_1-p1_0,p1_0);
 
-	dvec4 p2_0 = imageLoad(ps2,ivec2(0,0));
+	dvec4 p2_0 = imageLoad(ps2,ivec2(0,gl_GlobalInvocationID.y));
 
 	for(int i=2; i< imageSize(ps2).x;i++)
 	{
-		dvec4 p2_1 = imageLoad(ps2,ivec2(i-1,0));
-		dvec4 p2_2 = imageLoad(ps2,ivec2(i,0));
+		dvec4 p2_1 = imageLoad(ps2,ivec2(i-1,gl_GlobalInvocationID.y));
+		dvec4 p2_2 = imageLoad(ps2,ivec2(i,gl_GlobalInvocationID.y));
 		Polygon polygon = create_polygon(p2_0.xyz,p2_1.xyz,p2_2.xyz);
 		dvec4 crossl =  calc_cross_flat(line, polygon.flat3d);
 		dvec4 p_cross = cross_line(polygon, line);
-
 		if(p_cross.w>0)
 		{
 			imageStore(ps_cross, pos, vec4(p_cross));
 		}
+
+		
 	}	
 	
+	
+	//imageStore(ps_cross, pos, vec4(gl_GlobalInvocationID.xy,0,0));
 	//imageStore(ps_cross, pos, vec4(p_test.xyz,gl_GlobalInvocationID.x));
 }	

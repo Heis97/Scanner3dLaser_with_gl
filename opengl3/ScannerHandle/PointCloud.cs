@@ -17,6 +17,10 @@ namespace opengl3
         public Image<Bgr,byte>[] color_im;
         public GraphicGL graphicGL;
 
+
+
+
+
         public PointCloud()
         {
             points3d = new Point3d_GL[0];
@@ -80,7 +84,8 @@ namespace opengl3
             }
             var points_im1 = Detection.detectLineDiff(mat[0], 7);
             var points_im2 = Detection.detectLineDiff(mat[1], 7);
-            var points_cam = fromStereoLaser_gpu(points_im1, points_im2, stereocamera, graphicGL, color_im);
+            var points_cam = fromStereoLaser(points_im1, points_im2, stereocamera, graphicGL, color_im);
+            //var points_cam = fromStereoLaser_gpu(points_im1, points_im2, stereocamera, graphicGL, color_im);
             points3d_cur = points_cam;
             //points3d_cur = camToScene(points_cam, stereocamera.cameraCVs[1].matrixCS);
             var ps_list = points3d.ToList();
@@ -89,6 +94,49 @@ namespace opengl3
             points3d = ps_list.ToArray();
             return true;
         }
+
+        public bool addPoints2dStereoLas(Mat[] mat, StereoCamera stereocamera, bool undist)
+        {
+            if (undist)
+            {
+                mat[0] = stereocamera.cameraCVs[0].undist(mat[0]);
+                mat[1] = stereocamera.cameraCVs[1].undist(mat[1]);
+            }
+            var points_im1 = Detection.detectLineDiff(mat[0], 7);
+            var points_im2 = Detection.detectLineDiff(mat[1], 7);
+            stereocamera.cameraCVs[0].scan_points.Add(points_im1);
+            stereocamera.cameraCVs[1].scan_points.Add(points_im2);
+
+            return true;
+        }
+
+        public void comp_cross(StereoCamera stereocamera)
+        {
+            var points_cam = fromStereoLaser_gpu_all(
+               stereocamera.cameraCVs[0].scan_points.ToArray(),
+               stereocamera.cameraCVs[1].scan_points.ToArray(),
+               stereocamera, graphicGL, color_im);
+
+            for(int i= 0; i < points_cam.Length; i++)
+            {
+                points3d_cur = points_cam[i];
+                if(points3d_cur != null)
+                {
+                    if(points3d_cur.Length>0)
+                    {
+                        //points3d_cur = camToScene(points_cam, stereocamera.cameraCVs[1].matrixCS);
+                        var ps_list = points3d.ToList();
+                        ps_list.AddRange(points3d_cur);
+                        points3d_lines.Add(points3d_cur);
+                        points3d = ps_list.ToArray();
+                    }
+                }
+                
+            }
+            
+        }
+
+
 
         public static Point3d_GL[] camToScene(Point3d_GL[] points_cam, Matrix<double> MatrixSC)
         {
@@ -99,8 +147,6 @@ namespace opengl3
             }
             return points3d;
         }
-
-
 
         public static Point3d_GL[] fromLines(PointF[] points_im, CameraCV cameraCV, Flat3d_GL laserSurface)
         {
@@ -122,16 +168,37 @@ namespace opengl3
            // var lines3d_2 = computeTracesCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
             var polygons3d_2 = computePolygonsCam(points3d_2, stereocamera.cameraCVs[1].matrixCS);
 
-            
-            //var points_cam2a = Polygon3d_GL.createLightFlat(polygons3d_1, lines3d_2);
 
+            //var points_cam2a = Polygon3d_GL.createLightFlat(polygons3d_1, lines3d_2);
+             //Console.WriteLine(data_to_str(polygons3d_2, lines3d_1));
 
              var points_cam2b = Polygon3d_GL.createLightFlat(polygons3d_2, lines3d_1);
             // graphicGL?.addMesh(Polygon3d_GL.toMesh(polygons3d_1), OpenGL.PrimitiveType.Triangles);
             //  graphicGL?.addMesh(Polygon3d_GL.toMesh(polygons3d_2), OpenGL.PrimitiveType.Lines);
 
-
+            //Console.WriteLine(graphicGL.toStringBuf(Point3d_GL.toMesh(points_cam2b), points_cam2b.Length, 0, "orig ps"));
             return points_cam2b;
+        }
+         
+        static string data_to_str(Polygon3d_GL[] pols, Line3d_GL[] lns)
+        {
+            var str_data = new StringBuilder();
+            /*foreach (var ln in lns) str_data.Append(ln.p_end + " | "); str_data.Append(" \n");
+            foreach (var ln in lns) str_data.Append(ln.p + " | "); str_data.Append(" \n");
+            foreach (var pol in pols) str_data.Append(pol.ps[0]+ " | "); str_data.Append(" \n");
+            foreach (var pol in pols) str_data.Append(pol.ps[1] + " | "); str_data.Append(" \n");
+            foreach (var pol in pols) str_data.Append(pol.ps[2] + " | "); str_data.Append(" \n");
+            foreach (var pol in pols) str_data.Append(pol.flat3D + " | "); str_data.Append(" \n");*/
+            for (int i = 0; i < pols.Length; i++) str_data.Append(pols[i].crossLine_deb(lns[i]) + " | "); str_data.Append(" \n");
+            foreach (var ln in lns) str_data.Append(ln.k + " | "); str_data.Append(" \n");
+            //foreach (var ln in lns) str_data.Append(ln.p + " | "); str_data.Append(" \n");
+          
+            foreach (var pol in pols) str_data.Append(pol.v1 + " | "); str_data.Append(" \n");
+            foreach (var pol in pols) str_data.Append(pol.v2 + " | "); str_data.Append(" \n");
+            foreach (var pol in pols) str_data.Append(pol.v3 + " | "); str_data.Append(" \n");
+            foreach (var pol in pols) str_data.Append(pol.flat3D + " | "); str_data.Append(" \n");
+
+            return str_data.ToString();
         }
 
         public static Point3d_GL[] fromStereoLaser_gpu(PointF[] points_im1, PointF[] points_im2, StereoCamera stereocamera, GraphicGL graphicGL = null, Image<Bgr, byte>[] color_im = null)
@@ -142,12 +209,35 @@ namespace opengl3
             var ps1 = comp_points_for_gpu(points3d_1, stereocamera.cameraCVs[0].matrixCS);
             var ps2 = comp_points_for_gpu(points3d_2, stereocamera.cameraCVs[1].matrixCS);
             var points_cam2b = graphicGL.cross_flat_gpu(Point3d_GL.toData(ps1), Point3d_GL.toData(ps2));
-           
 
+            //Console.WriteLine(graphicGL.toStringBuf(Point3d_GL.toMesh(points_cam2b), 3, 0, "orig ps"));
 
             return points_cam2b;
         }
 
+        public static Point3d_GL[][] fromStereoLaser_gpu_all(PointF[][] points_im1, PointF[][] points_im2, StereoCamera stereocamera, GraphicGL graphicGL = null, Image<Bgr, byte>[] color_im = null)
+        {
+            var points3d_1 = computePointsCam_2d(points_im1, stereocamera.cameraCVs[0], color_im[0]);
+            var points3d_2 = computePointsCam_2d(points_im2, stereocamera.cameraCVs[1], color_im[1]);
+
+            var ps1 = comp_points_for_gpu_2d(points3d_1, stereocamera.cameraCVs[0]);
+            var ps2 = comp_points_for_gpu_2d(points3d_2, stereocamera.cameraCVs[1]);
+            var points_cam2b = graphicGL.cross_flat_gpu_all(ps1, ps2);
+
+            //Console.WriteLine(graphicGL.toStringBuf(Point3d_GL.toMesh(points_cam2b), 3, 0, "orig ps"));
+
+            return points_cam2b;
+        }
+
+        static Point3d_GL[][] comp_points_for_gpu_2d(Point3d_GL[][] ps_cam, CameraCV camera)
+        {
+            var ps_3d = new List<Point3d_GL[]>();
+            for(int i = 0; i < ps_cam.Length; i++)
+            {
+                ps_3d.Add(comp_points_for_gpu(ps_cam[i], camera.matrixCS));
+            }
+            return ps_3d.ToArray();
+        }
         public static Point3d_GL[] comp_points_for_gpu(Point3d_GL[] points_im, Matrix<double> matrix )
         {
             var ps3d = new Point3d_GL[points_im.Length+1];
@@ -244,14 +334,20 @@ namespace opengl3
                 {
                     var color = image[(int)points_im[i].Y, (int)points_im[i].X];
                     points3d[i].color = new Colo3d_GL(color.Red/255, color.Green / 255, color.Blue / 255);
-                }
-                
-
+                }               
             }
             return points3d;
         }
 
-
+        public static Point3d_GL[][] computePointsCam_2d(PointF[][] points_im, CameraCV cameraCV, Image<Bgr, byte> image = null)
+        {
+            var points3d = new Point3d_GL[points_im.Length][];
+            for (int i = 0; i < points_im.Length; i++)
+            {
+                points3d[i] = computePointsCam(points_im[i], cameraCV, image);
+            }
+            return points3d;
+        }
 
 
     }
