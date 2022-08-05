@@ -29,6 +29,8 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+
+        FormSettings formSettings = new FormSettings();
         Polygon3d_GL[] mesh = null;
         List<Matrix<double>> rob_traj = null;
         Point3d_GL[] cont_traj = null;
@@ -393,6 +395,29 @@ namespace opengl3
         }
 
 
+        void loadScanner_v2(string  conf1, string conf2, string stereo_cal)
+        {
+            var cam1 = CameraCV.load_camera(conf1);
+            var cam2 = CameraCV.load_camera(conf2);
+
+            scanner = new Scanner(new CameraCV[] { cam1, cam2 });
+            var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
+            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
+            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);           
+        }
+
+
+        void load_scan_v2(string scan_path)
+        {
+            var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
+            loadVideo_stereo(scan_path_1, scanner, 1);
+            mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
+            var scan_stl = Polygon3d_GL.toMesh(mesh);
+            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+            GL1.buffersGl.sortObj();
+        }
+
+
         void loadScannerStereoLas(
             string[] cam_cal_path,
             string stereo_cal_path,
@@ -406,11 +431,31 @@ namespace opengl3
             var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);*/
 
             var frms_1 = FrameLoader.loadImages_diff(@"cam1\" + cam_cal_path[0], FrameType.Pattern, PatternType.Mesh);
-            var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
+           // var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
             var frms_2 = FrameLoader.loadImages_diff(@"cam2\" + cam_cal_path[1], FrameType.Pattern, PatternType.Mesh);
-            var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
+            //var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
+            var size = frms_1[0].size;
+
+            var cam1 = new CameraCV(new Matrix<double>(new double[,]
+            {
+                { 1265.9413589664, 0, 522.784557645 },
+                { 0, 1243.0250932118, 306.9685870958 },
+                { 0, 0 ,1 } }), new Matrix<double>(new double[,]
+            {{ -0.109168496, -0.4567725913, -0.0013216245, 0.0031954698, 1.5318467875  }}), size);
+
+
+
+            var cam2 = new CameraCV(new Matrix<double>(new double[,]
+            {
+                { 1263.8882646257, 0, 592.877084689   },
+                { 0, 1240.0422808291, 328.1683916855  },
+                { 0, 0 ,1 } }), new Matrix<double>(new double[,]
+            {{ -0.1176432326, -0.6806742511, -0.0011129391, 0.0003074201, 2.4070663543  }}), size);
 
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_path, @"cam2\" + stereo_cal_path, FrameType.Pattern, true);
+
+            cam1.save_camera("cam1_conf_0408.txt");
+            cam2.save_camera("cam2_conf_0408.txt");
 
             comboImages.Items.AddRange(frms_1);
            // comboImages.Items.AddRange(frms_2);
@@ -1359,7 +1404,8 @@ namespace opengl3
 
         private void but_imGen_Click(object sender, EventArgs e)
         {
-            UtilOpenCV.generateImagesFromAnotherFolderStereo(new string[] { @"virtual_stereo\test1\monitor_0", @"virtual_stereo\test1\monitor_1" },GL1,new CameraCV(cameraMatrix_dist,cameraDistortionCoeffs_dist));
+            UtilOpenCV.generateImagesFromAnotherFolderStereo(new string[] { @"virtual_stereo\test1\monitor_0", @"virtual_stereo\test1\monitor_1" },GL1,
+                new CameraCV(cameraMatrix_dist,cameraDistortionCoeffs_dist,new Size(500,500)));//size not right!!!!!!!
      
         }
         private void but_swapMonit_Click(object sender, EventArgs e)
@@ -1755,6 +1801,7 @@ namespace opengl3
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
             if (con1 != null)
             {
                 con1.send_mes("q\n");
@@ -2832,6 +2879,81 @@ namespace opengl3
         {
             var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
             con1?.send_mes(traj_rob);
+        }
+
+        private void but_scan_load_ex_Click(object sender, EventArgs e)
+        {
+
+            var scan_path = textB_scan_path.Text;
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var stereo_cal_path = textB_stereo_cal_path.Text;
+
+
+
+            loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
+            load_scan_v2(scan_path);
+
+        }
+
+        string get_file_name(string init_direct)
+        {
+            var filePath = string.Empty;
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = init_direct;
+                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = openFileDialog.FileName;
+                }
+            }
+            return filePath;
+        }
+
+        string get_folder_name(string init_direct)
+        {
+            OpenFileDialog folderBrowser = new OpenFileDialog();
+            // Set validate names and check file exists to false otherwise windows will
+            // not let you select "Folder Selection."
+            folderBrowser.ValidateNames = false;
+            folderBrowser.CheckFileExists = false;
+            folderBrowser.CheckPathExists = true;
+            // Always default to Folder Selection.
+            folderBrowser.FileName = "Folder Selection.";
+            if (folderBrowser.ShowDialog() == DialogResult.OK)
+            {
+                return Path.GetDirectoryName(folderBrowser.FileName);
+            }
+            return "";
+        }
+
+        private void but_load_conf_cam1_Click(object sender, EventArgs e)
+        {
+            textB_cam1_conf.Text =  get_file_name(Directory.GetCurrentDirectory());
+        }
+
+        private void but_load_conf_cam2_Click(object sender, EventArgs e)
+        {
+            textB_cam2_conf.Text = get_file_name(Directory.GetCurrentDirectory());
+        }
+
+        private void but_stereo_cal_path_Click(object sender, EventArgs e)
+        {
+            textB_stereo_cal_path.Text = get_folder_name(Directory.GetCurrentDirectory());
+        }
+
+        private void but_scan_path_Click(object sender, EventArgs e)
+        {
+            textB_scan_path.Text = get_folder_name(Directory.GetCurrentDirectory());
+        }
+
+        private void MainScanningForm_Load(object sender, EventArgs e)
+        {
+            formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
         }
     }
 }

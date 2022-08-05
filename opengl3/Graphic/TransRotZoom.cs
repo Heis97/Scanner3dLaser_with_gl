@@ -44,7 +44,7 @@ namespace opengl3
             type = TRZtype.Master;
             viewType_ = viewType.Perspective;
             visible = false;
-            cameraCV =  new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), 53), new Matrix<double>(5, 1));
+            cameraCV =  new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), 53), new Matrix<double>(5, 1), new Size(rect.Width, rect.Height));
         }
 
         public TransRotZoom(Rectangle _rect, int _id, Vertex3d rotVer, Vertex3d transVer, int _idMast)
@@ -63,7 +63,7 @@ namespace opengl3
             consttransf = new TransRotZoom(rotVer, transVer);
             viewType_ = viewType.Perspective;
             visible = false;
-            cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), 53), new Matrix<double>(5, 1));
+            cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), 53), new Matrix<double>(5, 1), new Size(rect.Width, rect.Height));
         }
         public TransRotZoom(Vertex3d rotVer, Vertex3d transVer)
         {

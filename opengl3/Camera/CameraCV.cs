@@ -271,12 +271,20 @@ namespace opengl3
             cur_r = new Mat();
             matrixCS = new Matrix<double>(4, 4);
             matrixSC = new Matrix<double>(4, 4);
+            cameramatrix_inv = invMatrix(cameramatrix); 
+            mapx = new Mat();
+            mapy = new Mat();
+            var newRoI = new Rectangle();
+            var matr = CvInvoke.GetOptimalNewCameraMatrix(cameramatrix, distortmatrix, image_size, 1, image_size, ref newRoI);
+            CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F, mapx, mapy);
+
             pos = new float[3] { 0, 0, 0 };
         }
-        public CameraCV(Matrix<double> _cameramatrix, Matrix<double> _distortmatrix)
+        public CameraCV(Matrix<double> _cameramatrix, Matrix<double> _distortmatrix, Size im_size)
         {
             cameramatrix = _cameramatrix;
             distortmatrix = _distortmatrix;
+            image_size = im_size;
             init_vars();
         }
         public CameraCV(Frame[] _frames, Size _size, float markSize, MCvPoint3D32f[][] obp_inp)
@@ -285,6 +293,9 @@ namespace opengl3
             //calibrateCamFish(_frames, _size, markSize, obp_inp);
             init_vars();
         }
+
+        
+
         void setPos()
         {
             pos[0] = (float)matrixCS[0, 3];
@@ -443,15 +454,11 @@ namespace opengl3
             }
             return false;
         }
-
-
         public Point3d_GL point3DfromCam(PointF _p)
         {
             var p =  (cameramatrix_inv * new Point3d_GL(_p.X, _p.Y, 1));
             return p;
         }
-
-
         public Mat undist(Mat mat)
         {
             Console.WriteLine("undist");
@@ -459,7 +466,6 @@ namespace opengl3
             CvInvoke.Remap(mat, mat, mapx, mapy, Inter.Linear);
             return mat;
         }
-
         void calibrateCam(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
             this.frames = frames;
@@ -527,7 +533,7 @@ namespace opengl3
 
             Console.WriteLine("err: " + err);
             Console.WriteLine("t,r_len: " + tvecs.Length + " " + rvecs.Length);
-            var newRoI = new Rectangle();
+            
 
             this.tvecs = tvecs;
             this.rvecs = rvecs;
@@ -536,19 +542,16 @@ namespace opengl3
                 //prin.t(v);
             }
 
-            var matr = CvInvoke.GetOptimalNewCameraMatrix(_cameramatrix, _distortmatrix, frames[0].im.Size, 1, frames[0].im.Size, ref newRoI);
+            
 
             //computeDistortionMaps(ref mapx, ref mapy, _cameramatrix, _distortmatrix, frames[0].im.Size);
-            mapx = new Mat();
-            mapy = new Mat();
-            CvInvoke.InitUndistortRectifyMap(_cameramatrix, _distortmatrix, null, matr, frames[0].im.Size, DepthType.Cv32F, mapx, mapy);
-
-            var und_pic = new Mat();
-            CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
+            
+            //var und_pic = new Mat();
+            //CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);
             //_cameramatrix[0, 0] *= 2.25;
             //_cameramatrix[1, 1] *= 2.25;
             cameramatrix = _cameramatrix;
-            cameramatrix_inv = invMatrix(cameramatrix);
+            
             distortmatrix = _distortmatrix;
             
             var objpsn = new MCvPoint3D32f[0][];
@@ -627,6 +630,76 @@ namespace opengl3
             }
 
         }
+
+        static public CameraCV load_camera(string path)
+        {
+            string file;
+            using (StreamReader sr = new StreamReader(path))
+            {
+                file = sr.ReadToEnd();
+            }
+            string[] lines = file.Split(new char[] { '\n' });
+            var cameramatrix = matrix_load(lines[0]);
+            var distortionmatrix = matrix_load(lines[1]);
+            var size = size_load(lines[2]);
+            return new CameraCV(cameramatrix, distortionmatrix, size);
+        }
+
+        public void save_camera(string path)
+        {         
+            using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
+            {
+                sw.WriteLine(matrix_save(cameramatrix));
+                sw.WriteLine(matrix_save(distortmatrix));
+                sw.WriteLine(size_save(image_size));
+            }           
+        }
+
+        static string matrix_save(Matrix<double> matrix)
+        {
+            var txt = matrix.Size.Width + " " + matrix.Size.Height + " ";
+            for(int j = 0; j < matrix.Size.Height; j++)
+            {
+                for(int i = 0; i < matrix.Size.Width; i++)
+                {
+                    txt+= matrix[j,i] + " ";
+                }
+            }
+            return txt;
+        }
+
+        static Matrix<double> matrix_load(string matrix_txt)
+        {
+            var subline = matrix_txt.Trim().Split(' ');
+            var w = Convert.ToInt32(subline[0]);
+            var h = Convert.ToInt32(subline[1]);
+            int k = 2;
+            var matrix = new Matrix<double>(w,h);
+            for (int j = 0; j < matrix.Size.Height; j++)
+            {
+                for (int i = 0; i < matrix.Size.Width; i++)
+                {
+                    matrix[j, i]  = Convert.ToDouble(subline[k]);k++;
+                }
+            }
+            return matrix;
+        }
+
+        static string size_save(Size size)
+        {
+            var txt = size.Width + " " + size.Height + " ";
+            return txt;
+        }
+
+        static Size size_load(string size_txt)
+        {
+            var subline = size_txt.Trim().Split(' ');
+            var w = Convert.ToInt32(subline[0]);
+            var h = Convert.ToInt32(subline[1]);
+            return new Size(w,h);
+        }
+
+
 
 
 

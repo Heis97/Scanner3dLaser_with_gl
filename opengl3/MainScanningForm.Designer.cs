@@ -89,6 +89,20 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.label13 = new System.Windows.Forms.Label();
+            this.but_scan_path = new System.Windows.Forms.Button();
+            this.textB_scan_path = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.but_stereo_cal_path = new System.Windows.Forms.Button();
+            this.textB_stereo_cal_path = new System.Windows.Forms.TextBox();
+            this.but_load_conf_cam2 = new System.Windows.Forms.Button();
+            this.but_load_conf_cam1 = new System.Windows.Forms.Button();
+            this.textB_cam2_conf = new System.Windows.Forms.TextBox();
+            this.textB_cam1_conf = new System.Windows.Forms.TextBox();
+            this.but_scan_load_ex = new System.Windows.Forms.Button();
+            this.but_send_traj = new System.Windows.Forms.Button();
             this.but_end_cont = new System.Windows.Forms.Button();
             this.but_point_type = new System.Windows.Forms.Button();
             this.but_text_vis = new System.Windows.Forms.Button();
@@ -251,7 +265,6 @@ namespace opengl3
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_send_traj = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -903,6 +916,19 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.label13);
+            this.tabOpenGl.Controls.Add(this.but_scan_path);
+            this.tabOpenGl.Controls.Add(this.textB_scan_path);
+            this.tabOpenGl.Controls.Add(this.label12);
+            this.tabOpenGl.Controls.Add(this.label11);
+            this.tabOpenGl.Controls.Add(this.label3);
+            this.tabOpenGl.Controls.Add(this.but_stereo_cal_path);
+            this.tabOpenGl.Controls.Add(this.textB_stereo_cal_path);
+            this.tabOpenGl.Controls.Add(this.but_load_conf_cam2);
+            this.tabOpenGl.Controls.Add(this.but_load_conf_cam1);
+            this.tabOpenGl.Controls.Add(this.textB_cam2_conf);
+            this.tabOpenGl.Controls.Add(this.textB_cam1_conf);
+            this.tabOpenGl.Controls.Add(this.but_scan_load_ex);
             this.tabOpenGl.Controls.Add(this.but_send_traj);
             this.tabOpenGl.Controls.Add(this.but_end_cont);
             this.tabOpenGl.Controls.Add(this.but_point_type);
@@ -966,6 +992,134 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(929, 970);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(30, 13);
+            this.label13.TabIndex = 117;
+            this.label13.Text = "scan";
+            // 
+            // but_scan_path
+            // 
+            this.but_scan_path.Location = new System.Drawing.Point(1406, 967);
+            this.but_scan_path.Name = "but_scan_path";
+            this.but_scan_path.Size = new System.Drawing.Size(72, 20);
+            this.but_scan_path.TabIndex = 116;
+            this.but_scan_path.Text = "Выбрать";
+            this.but_scan_path.UseVisualStyleBackColor = true;
+            this.but_scan_path.Click += new System.EventHandler(this.but_scan_path_Click);
+            // 
+            // textB_scan_path
+            // 
+            this.textB_scan_path.Location = new System.Drawing.Point(965, 967);
+            this.textB_scan_path.Name = "textB_scan_path";
+            this.textB_scan_path.Size = new System.Drawing.Size(435, 20);
+            this.textB_scan_path.TabIndex = 115;
+            this.textB_scan_path.Text = "\"\"";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(903, 944);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(60, 13);
+            this.label12.TabIndex = 114;
+            this.label12.Text = "cam2_conf";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(903, 919);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(60, 13);
+            this.label11.TabIndex = 113;
+            this.label11.Text = "cam1_conf";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(903, 893);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(56, 13);
+            this.label3.TabIndex = 112;
+            this.label3.Text = "stereo_cal";
+            // 
+            // but_stereo_cal_path
+            // 
+            this.but_stereo_cal_path.Location = new System.Drawing.Point(1406, 890);
+            this.but_stereo_cal_path.Name = "but_stereo_cal_path";
+            this.but_stereo_cal_path.Size = new System.Drawing.Size(72, 20);
+            this.but_stereo_cal_path.TabIndex = 111;
+            this.but_stereo_cal_path.Text = "Выбрать";
+            this.but_stereo_cal_path.UseVisualStyleBackColor = true;
+            this.but_stereo_cal_path.Click += new System.EventHandler(this.but_stereo_cal_path_Click);
+            // 
+            // textB_stereo_cal_path
+            // 
+            this.textB_stereo_cal_path.Location = new System.Drawing.Point(965, 889);
+            this.textB_stereo_cal_path.Name = "textB_stereo_cal_path";
+            this.textB_stereo_cal_path.Size = new System.Drawing.Size(435, 20);
+            this.textB_stereo_cal_path.TabIndex = 110;
+            this.textB_stereo_cal_path.Text = "\"\"";
+            // 
+            // but_load_conf_cam2
+            // 
+            this.but_load_conf_cam2.Location = new System.Drawing.Point(1406, 941);
+            this.but_load_conf_cam2.Name = "but_load_conf_cam2";
+            this.but_load_conf_cam2.Size = new System.Drawing.Size(72, 20);
+            this.but_load_conf_cam2.TabIndex = 109;
+            this.but_load_conf_cam2.Text = "Выбрать";
+            this.but_load_conf_cam2.UseVisualStyleBackColor = true;
+            this.but_load_conf_cam2.Click += new System.EventHandler(this.but_load_conf_cam2_Click);
+            // 
+            // but_load_conf_cam1
+            // 
+            this.but_load_conf_cam1.Location = new System.Drawing.Point(1406, 916);
+            this.but_load_conf_cam1.Name = "but_load_conf_cam1";
+            this.but_load_conf_cam1.Size = new System.Drawing.Size(72, 20);
+            this.but_load_conf_cam1.TabIndex = 108;
+            this.but_load_conf_cam1.Text = "Выбрать";
+            this.but_load_conf_cam1.UseVisualStyleBackColor = true;
+            this.but_load_conf_cam1.Click += new System.EventHandler(this.but_load_conf_cam1_Click);
+            // 
+            // textB_cam2_conf
+            // 
+            this.textB_cam2_conf.Location = new System.Drawing.Point(965, 941);
+            this.textB_cam2_conf.Name = "textB_cam2_conf";
+            this.textB_cam2_conf.Size = new System.Drawing.Size(435, 20);
+            this.textB_cam2_conf.TabIndex = 107;
+            this.textB_cam2_conf.Text = "\"\"";
+            // 
+            // textB_cam1_conf
+            // 
+            this.textB_cam1_conf.Location = new System.Drawing.Point(965, 915);
+            this.textB_cam1_conf.Name = "textB_cam1_conf";
+            this.textB_cam1_conf.Size = new System.Drawing.Size(435, 20);
+            this.textB_cam1_conf.TabIndex = 106;
+            this.textB_cam1_conf.Text = "\"\"";
+            // 
+            // but_scan_load_ex
+            // 
+            this.but_scan_load_ex.Location = new System.Drawing.Point(1071, 850);
+            this.but_scan_load_ex.Name = "but_scan_load_ex";
+            this.but_scan_load_ex.Size = new System.Drawing.Size(96, 34);
+            this.but_scan_load_ex.TabIndex = 105;
+            this.but_scan_load_ex.Text = "Загрузить скан";
+            this.but_scan_load_ex.UseVisualStyleBackColor = true;
+            this.but_scan_load_ex.Click += new System.EventHandler(this.but_scan_load_ex_Click);
+            // 
+            // but_send_traj
+            // 
+            this.but_send_traj.Location = new System.Drawing.Point(769, 915);
+            this.but_send_traj.Name = "but_send_traj";
+            this.but_send_traj.Size = new System.Drawing.Size(96, 34);
+            this.but_send_traj.TabIndex = 104;
+            this.but_send_traj.Text = "Отправить траекторию";
+            this.but_send_traj.UseVisualStyleBackColor = true;
+            this.but_send_traj.Click += new System.EventHandler(this.but_send_traj_Click);
+            // 
             // but_end_cont
             // 
             this.but_end_cont.Location = new System.Drawing.Point(667, 915);
@@ -999,7 +1153,7 @@ namespace opengl3
             // lab_TRZ
             // 
             this.lab_TRZ.AutoSize = true;
-            this.lab_TRZ.Location = new System.Drawing.Point(195, 915);
+            this.lab_TRZ.Location = new System.Drawing.Point(156, 890);
             this.lab_TRZ.Name = "lab_TRZ";
             this.lab_TRZ.Size = new System.Drawing.Size(22, 13);
             this.lab_TRZ.TabIndex = 99;
@@ -1007,7 +1161,7 @@ namespace opengl3
             // 
             // debugBox
             // 
-            this.debugBox.Location = new System.Drawing.Point(898, 460);
+            this.debugBox.Location = new System.Drawing.Point(1325, 340);
             this.debugBox.Name = "debugBox";
             this.debugBox.Size = new System.Drawing.Size(512, 523);
             this.debugBox.TabIndex = 62;
@@ -1044,7 +1198,7 @@ namespace opengl3
             // 
             // but_gl_cam_calib
             // 
-            this.but_gl_cam_calib.Location = new System.Drawing.Point(519, 922);
+            this.but_gl_cam_calib.Location = new System.Drawing.Point(555, 872);
             this.but_gl_cam_calib.Name = "but_gl_cam_calib";
             this.but_gl_cam_calib.Size = new System.Drawing.Size(96, 56);
             this.but_gl_cam_calib.TabIndex = 98;
@@ -2632,16 +2786,6 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // but_send_traj
-            // 
-            this.but_send_traj.Location = new System.Drawing.Point(769, 915);
-            this.but_send_traj.Name = "but_send_traj";
-            this.but_send_traj.Size = new System.Drawing.Size(96, 34);
-            this.but_send_traj.TabIndex = 104;
-            this.but_send_traj.Text = "Отправить траекторию";
-            this.but_send_traj.UseVisualStyleBackColor = true;
-            this.but_send_traj.Click += new System.EventHandler(this.but_send_traj_Click);
-            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -2651,6 +2795,7 @@ namespace opengl3
             this.Text = "Form1";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.MainScanningForm_Load);
             this.tabCalibMonit.ResumeLayout(false);
             this.tabCalibMonit.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).EndInit();
@@ -2949,6 +3094,19 @@ namespace opengl3
         private System.Windows.Forms.Button but_point_type;
         private System.Windows.Forms.Button but_end_cont;
         private System.Windows.Forms.Button but_send_traj;
+        private System.Windows.Forms.Button but_scan_load_ex;
+        private System.Windows.Forms.Button but_load_conf_cam2;
+        private System.Windows.Forms.Button but_load_conf_cam1;
+        private System.Windows.Forms.TextBox textB_cam2_conf;
+        private System.Windows.Forms.TextBox textB_cam1_conf;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button but_scan_path;
+        private System.Windows.Forms.TextBox textB_scan_path;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button but_stereo_cal_path;
+        private System.Windows.Forms.TextBox textB_stereo_cal_path;
     }
 }
 

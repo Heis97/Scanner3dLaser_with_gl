@@ -159,6 +159,7 @@
     <Compile Include="Camera\StereoCameraCV.cs" />
     <Compile Include="Graphic\STLmodel.cs" />
     <Compile Include="Graphic\TransRotZoom.cs" />
+    <Compile Include="Util\FormSettings.cs" />
     <Compile Include="Util\prin.cs" />
     <Compile Include="ScannerRobot\Reconstruction.cs" />
     <Compile Include="ScannerRobot\Regression.cs" />
