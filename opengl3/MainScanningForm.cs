@@ -178,7 +178,7 @@ namespace opengl3
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
             red_c = 252;
-
+            //load_camers_v2();
             // 
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
@@ -394,7 +394,20 @@ namespace opengl3
             GC.Collect();
         }
 
+        void load_camers_v2()
+        {
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1_cal_0508_1\1", FrameType.Pattern, PatternType.Mesh);
+             var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
+            var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_0508_1", FrameType.Pattern, PatternType.Mesh);
 
+            var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
+
+
+            cam1.save_camera("cam1_conf_0508.txt");
+            cam2.save_camera("cam2_conf_0508.txt");
+            //comboImages.Items.AddRange(frms_1);
+            //comboImages.Items.AddRange(frms_2);
+        }
         void loadScanner_v2(string  conf1, string conf2, string stereo_cal)
         {
             var cam1 = CameraCV.load_camera(conf1);
@@ -1147,9 +1160,11 @@ namespace opengl3
                 }
                 else if (fr.frameType == FrameType.Pattern)
                 {
-                    
-                    imageBox2.Image = UtilOpenCV.drawInsideRectCirc(cameraCVcommon.undist(fr.im.Clone()), chess_size);
+
+                    //imageBox2.Image = UtilOpenCV.drawInsideRectCirc(cameraCVcommon.undist(fr.im.Clone()), chess_size);
+                    var corn = new System.Drawing.PointF[0];
                     imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
+                    imageBox2.Image = FindCircles.findCircles(fr.im,ref corn, chess_size);
                 }
             }
             if (fr.frameType == FrameType.LasLin || fr.frameType == FrameType.LasDif)
@@ -2919,6 +2934,7 @@ namespace opengl3
             OpenFileDialog folderBrowser = new OpenFileDialog();
             // Set validate names and check file exists to false otherwise windows will
             // not let you select "Folder Selection."
+            folderBrowser.InitialDirectory = init_direct;
             folderBrowser.ValidateNames = false;
             folderBrowser.CheckFileExists = false;
             folderBrowser.CheckPathExists = true;
