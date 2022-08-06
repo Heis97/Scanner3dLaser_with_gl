@@ -554,7 +554,10 @@ namespace opengl3
                
                 startWrite(1, counts);
                 startWrite(2, counts);
-                linearPlatf?.setShvpPos((float)p2_cur_scan.x, v_laser * 60);//!!!!!!!!!!!!!!
+                laserLine?.setShvpVel(v_laser);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                //linearPlatf?.setShvpPos((float)p2_cur_scan.x, v_laser * 60);//!!!!!!!!!!!!!!
+
             }
 
             for (int i = 0; i < counts; i++)
@@ -595,14 +598,13 @@ namespace opengl3
                     new string[] { "cam1\\" + folder_scan, "cam2\\" + folder_scan },
                     new ImageBox[] { imageBox1, imageBox2 }
                     );
-                }
-
-
-                
+                }               
                 x += delx;
             }
 
         }
+
+
 
         void initLaserFast()
         {
@@ -1461,7 +1463,7 @@ namespace opengl3
             {
                 con1 = new TCPclient();
             }
-            con1.Connection(30006, "172.31.1.147");
+            con1.Connection(30005, "172.31.1.147");
         }
         private void but_res_pos1_Click(object sender, EventArgs e)
         {
@@ -2719,7 +2721,10 @@ namespace opengl3
         #endregion
 
         #region scan_but
-
+        private void but_setShvpVel_Click(object sender, EventArgs e)
+        {
+            laserLine?.setShvpVel(Convert.ToInt32(textBox_shvpVel.Text));
+        }
         private void but_setShvpPos_Click(object sender, EventArgs e)
         {
             laserLine?.setShvpPos(Convert.ToInt32(textBox_shvpPos.Text));
@@ -2887,13 +2892,15 @@ namespace opengl3
                 var ps = PathPlanner.traj_to_matr(rob_traj);                
                 GL1.addLineMeshTraj(ps.ToArray());
                 GL1.buffersGl.sortObj();
+                var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
+                debugBox.Text = traj_rob;
             }
         }
         
         private void but_send_traj_Click(object sender, EventArgs e)
         {
-            var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
-            con1?.send_mes(traj_rob);
+            //var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
+            con1?.send_mes(debugBox.Text);
         }
 
         private void but_scan_load_ex_Click(object sender, EventArgs e)
@@ -2971,6 +2978,15 @@ namespace opengl3
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
         }
+
+        private void but_gl_clear_Click(object sender, EventArgs e)
+        {
+            GL1.buffersGl.clearObj();
+            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            GL1.buffersGl.sortObj();
+        }
+
+
     }
 }
 

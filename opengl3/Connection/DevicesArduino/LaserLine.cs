@@ -10,7 +10,7 @@ namespace opengl3
     {
         string port;
         int baudrate = 250000;
-        int laser = 1, power = 2, posit = 3, moveshvp = 4;
+        int laser = 1, power = 2, posit = 3, moveshvp = 4, shvp_vel = 5;
         int on = 1, off = 2;
         public LaserLine(string _port)
         {
@@ -40,8 +40,17 @@ namespace opengl3
 
         public void setShvpPos(int _pos)
         {
-            send(_pos, posit);
+            send(_pos+500, posit);
         }
 
+        public void setShvpVel(double _vel)
+        {
+            send(comp_vel_div(_vel), shvp_vel);
+        }
+
+        static int comp_vel_div(double vel)
+        {
+            return Math.Abs((int)(1000 / vel));
+        }
     }
 }

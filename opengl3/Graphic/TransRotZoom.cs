@@ -42,7 +42,7 @@ namespace opengl3
             rect = _rect;
             id = _id;
             type = TRZtype.Master;
-            viewType_ = viewType.Perspective;
+            viewType_ = viewType.Ortho;
             visible = false;
             cameraCV =  new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), 53), new Matrix<double>(5, 1), new Size(rect.Width, rect.Height));
         }

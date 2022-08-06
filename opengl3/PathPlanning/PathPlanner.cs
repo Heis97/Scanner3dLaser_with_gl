@@ -106,11 +106,11 @@ namespace PathPlanning
             }
             var param_tr = new TrajParams
             {
-                div_step = 0.3,
+                div_step = 1.3,
                 h_transf = 3,
                 layers = amount,
                 layers_angle = Math.PI / 2,
-                step = dz * 3,
+                step = dz * 4,
                 z = zs.ToArray()
             };
             var traj = Generate_multiLayer3d_mesh(surface,conts, param_tr);
@@ -328,7 +328,7 @@ namespace PathPlanning
 
         static Matrix<double> proj_point(Polygon3d_GL polyg, Point3d_GL point)
         {
-            var vec_x_dir = new Vector3d_GL(-1, 0, 0);
+            var vec_x_dir = new Vector3d_GL(0, -1, 0);
             var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
             var vec_x = (vec_y | polyg.flat3D.n).normalize();
             var vec_z = polyg.flat3D.n;
@@ -383,8 +383,21 @@ namespace PathPlanning
         }
 
 
-
         public static string generate_robot_traj(List<Matrix<double>> traj)
+        {
+            var traj_rob = new List<RobotFrame>();
+            double v = 20;
+            for (int i = 0; i < traj.Count; i++)
+            {
+                traj_rob.Add(new RobotFrame(traj[i], v));
+            }
+
+            traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
+            return RobotFrame.generate_string(traj_rob.ToArray());
+        }
+
+
+        public static string generate_robot_traj_old(List<Matrix<double>> traj)
         {
             var traj_rob = new StringBuilder();
             double v = 20;
@@ -408,8 +421,10 @@ namespace PathPlanning
                     ", A" + round(a) + ", B" + round(b) + ", C" + round(c) + 
                     ", V" + round(v) + ", D" + e+" \n"
                     );
-
+                
             }
+
+            traj_rob.Append("q\n");
             return traj_rob.ToString();
         }
 
