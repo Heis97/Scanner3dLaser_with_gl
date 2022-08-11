@@ -2121,7 +2121,7 @@ namespace opengl3
             im_ret.Save("black_br_" + n + "_" + m + ".png");
             return new Mat[] { im_ret.Mat, new Matrix<float>(points_all).Mat, new Matrix<float>(points_all).Mat };
         }
-        static public float[][] generate_BOARDs(MCvPoint3D32f [][] point3D32Fs)
+        static public float[][] generate_BOARDs(MCvPoint3D32f[][] point3D32Fs)
         {
             var boards = new float[point3D32Fs.Length][];
             for (int i = 0; i < point3D32Fs.Length; i++)
@@ -2183,7 +2183,6 @@ namespace opengl3
             im_ret.Save("black_sq_" + n + "_" + k + ".png");
             return im_ret;
         }
-
         #endregion
     }
 }

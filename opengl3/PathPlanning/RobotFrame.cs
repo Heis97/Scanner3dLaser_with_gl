@@ -28,12 +28,12 @@ namespace opengl3
             var x = matrix[0, 3];
             var y = matrix[1, 3];
             var z = matrix[2, 3];
-            double b = Math.Asin(matrix[2, 0]);
+            double b = Math.Asin(-matrix[2, 0]);
             double a = 0;
             double c = 0;
             if (Math.Cos(b) != 0)
             {
-                c = -Math.Asin(matrix[2, 1] / Math.Cos(b));
+                c = Math.Asin(matrix[2, 1] / Math.Cos(b));
                 a = Math.Asin(matrix[1, 0] / Math.Cos(b));
             }
             int d = (int)matrix[3, 3];
@@ -61,7 +61,7 @@ namespace opengl3
         public override string ToString()
         {
             return " X" + round(X) + ", Y" + round(Y) + ", Z" + round(Z) +
-                    ", A" + round(A) + ", B" + round(B) + ", C" + round(C) +
+                    ", A" + round(A) + ", B" + round(0.5*C) + ", C" + round(0.5 * B) +
                     ", V" + round(V) + ", D" + D + " \n";
         }
         static double round(double val)
@@ -69,7 +69,10 @@ namespace opengl3
             return Math.Round(val, 4);
         }
 
-
+        public RobotFrame Clone()
+        {
+            return new RobotFrame(X, Y, Z, A, B, C, V, D);
+        }
         //---------------------------------------------------------------------------------------
 
         static public  List<RobotFrame> smooth_angle(List<RobotFrame> frames, int w)
@@ -78,12 +81,12 @@ namespace opengl3
             for (int i = 0; i < frames.Count; i++)
             {
                 int start_i = i - w;
-                int count =  w;
+                int count =  2*w;
                 if(start_i < 0) start_i = 0;
                 if(start_i + count > frames.Count) count = frames.Count - 1 - start_i;
-                smooth_frames.Add(get_average_angle(frames.GetRange(start_i, count), frames[i]));
+                var wind = frames.GetRange(start_i, count);
+                smooth_frames.Add(get_average_angle(wind, frames[i].Clone()));
             }
-
             return smooth_frames;
         }
 

@@ -296,6 +296,7 @@ namespace opengl3
 
             var VertexSourceGL = assembCode(new string[] { @"Graphic\Shaders\Vert\VertexSh.txt" });
             var FragmentSourceGL = assembCode(new string[] { @"Graphic\Shaders\Frag\FragmSh.txt" });
+            var FragmentTriangSourceGL = assembCode(new string[] { @"Graphic\Shaders\Frag\FragmSh_triang.txt" });
             var GeometryShaderPointsGL = assembCode(new string[] { @"Graphic\Shaders\Geom_R\GeomShP_head.txt", @"Graphic\Shaders\Geom_R\GeomSh_body.txt" });
             var GeometryShaderLinesGL = assembCode(new string[] { @"Graphic\Shaders\Geom_R\GeomShL_head.txt", @"Graphic\Shaders\Geom_R\GeomSh_body.txt" });
             var GeometryShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders\Geom_R\GeomShT_head.txt", @"Graphic\Shaders\Geom_R\GeomSh_body.txt" });
@@ -305,7 +306,7 @@ namespace opengl3
 
             programID_lns = createShader(VertexSourceGL, GeometryShaderLinesGL, FragmentSourceGL);
             programID_ps = createShader(VertexSourceGL, GeometryShaderPointsGL, FragmentSourceGL);
-            programID_trs = createShader(VertexSourceGL, GeometryShaderTrianglesGL , FragmentSourceGL);
+            programID_trs = createShader(VertexSourceGL, GeometryShaderTrianglesGL , FragmentTriangSourceGL);
 
             programID_comp = createShaderCompute(CompShaderGL);
             //Gl.Enable(EnableCap.CullFace);

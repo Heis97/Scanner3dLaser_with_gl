@@ -30,7 +30,7 @@ namespace PathPlanning
             return traj_j;
         }
 
-        static List<Matrix<double>> join_traj(List<List<Matrix<double>>> traj)
+        public static List<Matrix<double>> join_traj(List<List<Matrix<double>>> traj)
         {
             var traj_j = new List<Matrix<double>>();
             for (int i = 0; i < traj.Count; i++)
@@ -255,8 +255,9 @@ namespace PathPlanning
         }
         public static List<List<Point3d_GL>> Generate_multiLayer2d_mesh(List<List<Point3d_GL>> contour, TrajParams trajParams)
         {
+
             var traj = new List<List<Point3d_GL>>();
-            for (int i=0;i < contour.Count; i++)
+            for (int i=0;i < trajParams.layers; i++)
             {
                 var alfa2 = trajParams.layers_angle;
                 if (i % 2 == 0)
@@ -369,6 +370,7 @@ namespace PathPlanning
         }
         public static List<List<Matrix<double>>> Generate_multiLayer3d_mesh(Polygon3d_GL[] surface, List<List<Point3d_GL>> contour, TrajParams trajParams)
         {
+            trajParams.comp_z();
             var traj_2d = Generate_multiLayer2d_mesh(contour, trajParams);
             var traj_3d = new List<List<Matrix<double>>>();
             double resolut = 0.2;
@@ -406,19 +408,19 @@ namespace PathPlanning
                 var x = traj[i][0, 3];
                 var y = traj[i][1, 3];
                 var z = traj[i][2, 3];
-                double b = Math.Asin(traj[i][2, 0]);
+                double b = Math.Asin(-traj[i][2, 0]);
                 double a = 0;
                 double c = 0;
                 if( Math.Cos(b)!=0)
                 {
-                    c = -Math.Asin(traj[i][2, 1] / Math.Cos(b));
+                    c =  Math.Asin(traj[i][2, 1] / Math.Cos(b));
                     a =  Math.Asin(traj[i][1, 0] / Math.Cos(b));
                 }
                 int e = (int)traj[i][3, 3];
 
                 traj_rob.Append(
                     " X" + round(x) + ", Y" + round(y) + ", Z" + round(z) +
-                    ", A" + round(a) + ", B" + round(b) + ", C" + round(c) + 
+                    ", A" + round(a) + ", B" + round(0.5*b) + ", C" + round(0.5 * c) + 
                     ", V" + round(v) + ", D" + e+" \n"
                     );
                 
@@ -437,13 +439,55 @@ namespace PathPlanning
 
     class TrajParams
     {
-        public double step;
-        public double layers;
-        public double div_step;
-        public double layers_angle;
+
         public double[] z;
+
+       public void comp_z()
+        {
+            if(layers<=0)
+            {
+                return;
+            }
+            z = new double[layers];
+            for(int i = 0; i < z.Length; i++)
+            {
+                z[i] = step*(i+1);
+            }
+        }
+
+        public int layers;
+        public int Layers
+        {
+            get { return layers; }
+            set { layers = value; comp_z(); }
+        }       
+        public double step;
+        public double Step
+        {
+            get { return step; }
+            set { step = value; comp_z(); }
+        }
+
+        //------------------------
+        public double div_step;
+        public double Div_step
+        {
+            get { return div_step; }
+            set { div_step = value; }
+        }
+        public double layers_angle;
+        public double Layers_angle
+        {
+            get { return layers_angle; }
+            set { layers_angle = value; }
+        }
         public double h_transf;
-        public TrajParams(double _step, double _layers, double _div_step, double _layers_angle, double[] _z, double _h_transf)
+        public double H_transf
+        {
+            get { return h_transf; }
+            set { h_transf = value; }
+        }
+        public TrajParams(double _step, int _layers, double _div_step, double _layers_angle, double[] _z, double _h_transf)
         {
             step = _step;
             layers = _layers;

@@ -29,7 +29,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
-
+        TrajParams param_tr = new TrajParams();
         FormSettings formSettings = new FormSettings();
         Polygon3d_GL[] mesh = null;
         List<Matrix<double>> rob_traj = null;
@@ -178,6 +178,19 @@ namespace opengl3
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
             red_c = 252;
+
+            var model_mesh = STLmodel.parsingStl_GL4(@"curve_test_asc.STL");
+            //GL1.addMesh(model_mesh, PrimitiveType.Triangles);
+            GL1.buffersGl.sortObj();
+            param_tr = new TrajParams
+            {
+                div_step = 1.3,
+                h_transf = 5,
+                layers = 2,
+                layers_angle = Math.PI / 2,
+                step = 0.4 * 4,
+            };
+            propGrid_traj.SelectedObject = param_tr;
             //load_camers_v2();
             // 
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
@@ -2800,6 +2813,13 @@ namespace opengl3
             GL1.buffersGl.sortObj();
 
         }
+
+        void show_frame(string filepath)
+        {
+            var capture1 = new VideoCapture(Directory.GetFiles("cam1\\" + filepath)[0]);
+            var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
+            //capture1.SetCaptureProperty(CapProp.);
+        }
         public void loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
         {
             videoframe_count = 0;
@@ -2810,6 +2830,7 @@ namespace opengl3
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
             var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
+            var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
             comboImages.Items.Add(fr_st_vid);
             //Console.WriteLine(capture1.GetCaptureProperty(CapProp.Fps) + " " + capture2.GetCaptureProperty(CapProp.Fps));
@@ -2835,20 +2856,23 @@ namespace opengl3
                         im1 -= orig1;
                         im2 -= orig2;
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-
+                        /*var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                        frame_d.stereo = true;
+                        frames_show.Add(frame_d);*/
                         //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
-                         /*var ps1 = Detection.detectLineDiff(im1, 3);
+                        /*var ps1 = Detection.detectLineDiff(im1, 3);
                         var ps2 = Detection.detectLineDiff(im2, 3);
 
                         imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
-
+                        //CvInvoke.Imshow("im2", im2);
                         scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);
                     }
                 }                
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
+            //comboImages.Items.AddRange(frames_show.ToArray());
             scanner.compPointsStereoLas_2d();
 
         }
@@ -2885,15 +2909,36 @@ namespace opengl3
 
         private void but_end_cont_Click(object sender, EventArgs e)
         {
-            cont_traj = GL1.get_contour();
-            if(mesh!=null && cont_traj!=null)
+            var dz = 0.4;
+            var amount = 2;
+            
+            var  cont = GL1.get_contour().ToList();
+            if(mesh!=null && cont!= null)
             {
-                rob_traj = PathPlanner.test3dcont(mesh,cont_traj.ToList(), 4, 0.4);
+                List<List<Point3d_GL>> conts = new List<List<Point3d_GL>>();
+                for (int i = 0; i < param_tr.layers; i++)
+                {
+                    conts.Add(cont);
+                }
+                /*param_tr = new TrajParams
+                {
+                    div_step = 1.3,
+                    h_transf = 5,
+                    layers = amount,
+                    layers_angle = Math.PI / 2,
+                    step = dz * 4,
+                    z = zs.ToArray()
+                };*/
+                
+                var _traj = PathPlanner.Generate_multiLayer3d_mesh(mesh, conts, param_tr);
+
+                rob_traj = PathPlanner.join_traj(_traj);
                 var ps = PathPlanner.traj_to_matr(rob_traj);                
-                GL1.addLineMeshTraj(ps.ToArray());
+                GL1.addLineMeshTraj(ps.ToArray(),0.9f);
                 GL1.buffersGl.sortObj();
                 var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
                 debugBox.Text = traj_rob;
+                
             }
         }
         
@@ -2957,21 +3002,25 @@ namespace opengl3
         private void but_load_conf_cam1_Click(object sender, EventArgs e)
         {
             textB_cam1_conf.Text =  get_file_name(Directory.GetCurrentDirectory());
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
         }
 
         private void but_load_conf_cam2_Click(object sender, EventArgs e)
         {
             textB_cam2_conf.Text = get_file_name(Directory.GetCurrentDirectory());
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
         }
 
         private void but_stereo_cal_path_Click(object sender, EventArgs e)
         {
             textB_stereo_cal_path.Text = get_folder_name(Directory.GetCurrentDirectory());
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
         }
 
         private void but_scan_path_Click(object sender, EventArgs e)
         {
             textB_scan_path.Text = get_folder_name(Directory.GetCurrentDirectory());
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
         }
 
         private void MainScanningForm_Load(object sender, EventArgs e)

@@ -268,6 +268,7 @@ namespace opengl3
             this.label9 = new System.Windows.Forms.Label();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.propGrid_traj = new System.Windows.Forms.PropertyGrid();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -919,6 +920,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.propGrid_traj);
             this.tabOpenGl.Controls.Add(this.but_gl_clear);
             this.tabOpenGl.Controls.Add(this.label13);
             this.tabOpenGl.Controls.Add(this.but_scan_path);
@@ -2820,6 +2822,13 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
+            // propGrid_traj
+            // 
+            this.propGrid_traj.Location = new System.Drawing.Point(813, 417);
+            this.propGrid_traj.Name = "propGrid_traj";
+            this.propGrid_traj.Size = new System.Drawing.Size(243, 343);
+            this.propGrid_traj.TabIndex = 119;
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -3144,6 +3153,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_setShvpVel;
         private System.Windows.Forms.TextBox textBox_shvpVel;
         private System.Windows.Forms.Button but_gl_clear;
+        private System.Windows.Forms.PropertyGrid propGrid_traj;
     }
 }
 

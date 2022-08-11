@@ -218,18 +218,31 @@ namespace opengl3
                     var j_max_2 = centerOfMass(col);
                     //var j_max_2 = localMax(col);
                     //ps[i] = new PointF(i, j_max_2);
+                    if((int)data[(int)j_max_2, i]>2300)
+                    {
 
-                    ps_list.Add(new PointF(i, j_max_2));
-
+                        ps_list.Add(new PointF(i, j_max_2));
+                    }
+                    else
+                    {
+                        if(ps_list.Count > 0)
+                        {
+                            ps_list.Add(ps_list[ps_list.Count-1]);
+                        }
+                    }
+                    
+                    
                 }
                 //ps[i] = new PointF(i, j_max);
                 
 
             }
             ps = ps_list.ToArray();
-            medianFilter(ps);
-           // gaussFilter(ps);
-
+            ps = medianFilter(ps,5,4);
+            //medianFilter(ps, 5, 5);
+            // gaussFilter(ps);
+            //ps = onesFilter(ps, 2);
+            //Console.WriteLine(ps.Length);
             GC.Collect();
             if(reverse)
             {
@@ -298,26 +311,25 @@ namespace opengl3
 
         static PointF[] medianFilter(PointF[] ps1, float delt = 5, int wind = 10)
         {
+            //var ps_med = (PointF[])ps1.Clone();
             var ps1L = ps1.ToList();
             for(int i= wind; i< ps1.Length - wind; i++)
             {
-                if( 
-                    Math.Abs
-                    (
+                if(Math.Abs
+                        (
                         ps1[i].Y - averageYps(ps1L.GetRange(i-wind,2* wind).ToArray())
-                        )>delt
-                    )
+                        )>delt)
                     
                 {
                     if(i>0)
                     {
 
-                        ps1[i] = ps1[i - 1].Clone();
+                        ps1L[i] = ps1[i - 1].Clone();
                     }
                     
                 }
             }
-            return ps1;
+            return ps1L.ToArray();
         }
 
         static PointF[] gaussFilter(PointF[] ps1,  int wind = 3)
@@ -343,7 +355,24 @@ namespace opengl3
             return avY / ps1.Length;
         }
 
-
+        static PointF[] onesFilter(PointF[] ps1,float dist)
+        {
+            var ps_fil = new List<PointF>();
+            ps_fil.Add(ps1[0]);
+            for (int i=1; i< ps1.Length-1; i++)
+            {
+                if ((ps1[i]- ps1[i-1]).norm < dist || (ps1[i] - ps1[i + 1]).norm < dist)
+                {
+                    //Console.WriteLine("(ps1[i] - ps1[i - 1]).norm");
+                    //Console.WriteLine(ps1[i]);
+                    //Console.WriteLine(ps1[i-1]);
+                    ps_fil.Add(ps1[i].Clone());
+                }
+                
+            }
+            ps_fil.Add(ps1[ps1.Length-1]);
+            return ps_fil.ToArray();
+        }
 
     }
 }
