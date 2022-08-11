@@ -61,7 +61,7 @@ namespace opengl3
         public override string ToString()
         {
             return " X" + round(X) + ", Y" + round(Y) + ", Z" + round(Z) +
-                    ", A" + round(A) + ", B" + round(0.5*C) + ", C" + round(0.5 * B) +
+                    ", A" + round(A) + ", B" + round(0.5*C) + ", C" + round(-0.5 * B) +
                     ", V" + round(V) + ", D" + D + " \n";
         }
         static double round(double val)
