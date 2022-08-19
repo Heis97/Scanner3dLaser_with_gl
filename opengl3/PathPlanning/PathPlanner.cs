@@ -331,9 +331,14 @@ namespace PathPlanning
         {
             var vec_x_dir = new Vector3d_GL(0, -1, 0);
             var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
+            //Console.WriteLine(vec_y);
             var vec_x = (vec_y | polyg.flat3D.n).normalize();
+            //Console.WriteLine(vec_x);
             var vec_z = polyg.flat3D.n;
+            //Console.WriteLine(vec_z);
+            //Console.WriteLine("_________________");
             var p_proj = polyg.project_point_xy(point);
+            
             //var p_proj = polyg.ps[0];
             return new Matrix<double>(new double[,]
             {
@@ -393,12 +398,28 @@ namespace PathPlanning
             {
                 traj_rob.Add(new RobotFrame(traj[i], v));
             }
-
             traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
+
+            var fr_b = new Matrix<double>(new double[,] {
+                 { 0  ,-1, 0   , 0 },
+                {  0.88, 0,0.46 , 0 },
+                {  -0.46, 0, 0.88, 0 },
+                 { 0  , 0, 0   , 1 }});
+            var fr_g = new Matrix<double>(new double[,] {
+                 { 1, 0  , 0   , 0 },
+                {  0, 0.88,0.46 , 0 },
+                {  0, -0.46, 0.88 , 0 },
+                 { 0, 0  , 0   , 1 }});
+
+
+            CvInvoke.Invert(fr_b, fr_b, Emgu.CV.CvEnum.DecompMethod.LU);
+            var bf = fr_b * fr_g;
+            prin.t(bf);
+            CvInvoke.Invert(bf, bf, Emgu.CV.CvEnum.DecompMethod.LU);
+            prin.t(bf);
+
             return RobotFrame.generate_string(traj_rob.ToArray());
         }
-
-
         public static string generate_robot_traj_old(List<Matrix<double>> traj)
         {
             var traj_rob = new StringBuilder();

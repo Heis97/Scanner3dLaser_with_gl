@@ -10,7 +10,7 @@ namespace opengl3
     class RobotFrame
     {
         public double X, Y, Z, A, B, C, V, D;
-
+        
         public RobotFrame(double x, double y, double z, double a, double b, double c, double v, double d)
         {
             X = x;
@@ -23,8 +23,26 @@ namespace opengl3
             D = d;
         }
 
-        public RobotFrame(Matrix<double> matrix, double v)
+        public RobotFrame(Matrix<double> _matrix, double v)
         {
+            Matrix<double> base_matrix = ABCmatr(531.56, 63.41, 55.55, 1.5, 0.01, -0.005);
+            var matrix =mult_frame(base_matrix, _matrix);
+
+            //prin.t(base_matrix);
+            /* 
+             var vecs = toVcs(_matrix);
+             prin.t(base_matrix);
+             prin.t(vecs);
+             var vecs_matr = vecs * base_matrix;
+             var matrix =toVcs(vecs_matr);*/
+            // prin.t(base_matrix);
+             prin.t(_matrix);
+
+            // prin.t(matrix);
+             prin.t("___________");
+            //var matrix = base_matrix * _matrix;
+            //CvInvoke.Invert(base_matrix, base_matrix, Emgu.CV.CvEnum.DecompMethod.LU);
+
             var x = matrix[0, 3];
             var y = matrix[1, 3];
             var z = matrix[2, 3];
@@ -61,9 +79,10 @@ namespace opengl3
         public override string ToString()
         {
             return " X" + round(X) + ", Y" + round(Y) + ", Z" + round(Z) +
-                    ", A" + round(A) + ", B" + round(0.5*C) + ", C" + round(-0.5 * B) +
+                    ", A" + round(A) + ", B" + round(B) + ", C" + round(C) +
                     ", V" + round(V) + ", D" + D + " \n";
         }
+
         static double round(double val)
         {
             return Math.Round(val, 4);
@@ -104,5 +123,87 @@ namespace opengl3
             target_frame.C = c / frames.Count;
             return target_frame;
         }
+
+        static public Matrix<double> RotZmatr(double alpha)
+        {
+            var matrix = new Matrix<double>(new double[,] {
+                { cos(alpha), -sin(alpha), 0,0 },
+                { sin(alpha), cos(alpha), 0, 0 },
+                { 0, 0, 1, 0 },
+                { 0, 0, 0, 1 } });
+            return matrix;
+        }
+        static public Matrix<double> RotYmatr(double alpha)
+        {
+            var matrix = new Matrix<double>(new double[,] {
+                 { cos(alpha),0, sin(alpha), 0 },
+                { 0,1,0 , 0 },
+                {  -sin(alpha), 0, cos(alpha), 0 },
+                 { 0, 0, 0, 1 }});
+            return matrix;
+        }
+        static public Matrix<double> RotXmatr(double alpha)
+        {
+            var matrix = new Matrix<double>(new double[,] {
+                { 1,0,0,0 },
+                { 0, cos(alpha), -sin(alpha), 0 },
+                { 0, sin(alpha), cos(alpha), 0 },
+                 { 0, 0, 0, 1 } });
+            return matrix;
+        }
+        static public Matrix<double> Translmatr(double x, double y, double z)
+        {
+            var matrix = new Matrix<double>(new double[,] {
+                { 1, 0, 0, x },
+                { 0, 1, 0, y },
+                { 0, 0, 1, z },
+                { 0, 0, 0, 1 } });
+            return matrix;
+        }
+        static public Matrix<double> ABCmatr(double X, double Y, double Z, double A, double B, double C)
+        {
+            var matrix = Translmatr(X, Y, Z)* RotZmatr(A) * RotYmatr(B) * RotXmatr(C);
+            return matrix;
+        }
+
+        static public double cos(double alpha)
+        {
+            return Math.Cos(alpha);
+        }
+        static public double sin(double alpha)
+        {
+            return Math.Sin(alpha);
+        }
+        static public Matrix<double> mult_frame(Matrix<double> rob_base, Matrix<double> frame)
+        {
+            var transl = rob_base * frame;
+            var frame_tr = frame.Transpose();
+            frame_tr[3, 0] = 0;
+            frame_tr[3, 1] = 0;
+            frame_tr[3, 2] = 0;
+
+            var rot = rob_base * frame_tr;
+
+            rot[0, 3] = transl[0, 3];
+            rot[1, 3] = transl[1, 3];
+            rot[2, 3] = transl[2, 3];
+
+            return rot;
+        }
+
+        static public Matrix<double> toVcs(Matrix<double> matr)
+        {
+            var vcs = matr.Transpose();
+            vcs[0, 3] = vcs[3, 0];
+            vcs[1, 3] = vcs[3, 1];
+            vcs[2, 3] = vcs[3, 2];
+            vcs[3, 0] = 0;
+            vcs[3, 1] = 0;
+            vcs[3, 2] = 0;
+            return vcs;
+        }
+
+
+
     }
 }

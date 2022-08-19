@@ -20,6 +20,12 @@ namespace opengl3
             v1 = new Vector3d_GL(P1, P2).normalize();
             v2 = new Vector3d_GL(P1, P3).normalize();
             v3 = v1 | v2;//vector multiply
+            
+            if(v3.z<0)
+            {
+                v3 = -v3;
+            }
+            //Console.WriteLine(v3);
             v3.normalize();
             flat3D = new Flat3d_GL(v3.x, v3.y, v3.z, -v3 * P1);
             

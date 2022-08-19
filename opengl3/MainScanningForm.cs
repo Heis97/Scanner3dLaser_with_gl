@@ -433,10 +433,10 @@ namespace opengl3
         }
 
 
-        void load_scan_v2(string scan_path)
+        void load_scan_v2(string scan_path, int strip = 1)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            loadVideo_stereo(scan_path_1, scanner, 1);
+            loadVideo_stereo(scan_path_1, scanner, strip);
             mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
@@ -2959,7 +2959,7 @@ namespace opengl3
 
 
             loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
-            load_scan_v2(scan_path);
+            load_scan_v2(scan_path,3);
 
         }
 
