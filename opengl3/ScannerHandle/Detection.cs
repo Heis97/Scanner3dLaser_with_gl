@@ -218,7 +218,7 @@ namespace opengl3
                     var j_max_2 = centerOfMass(col);
                     //var j_max_2 = localMax(col);
                     //ps[i] = new PointF(i, j_max_2);
-                    if((int)data[(int)j_max_2, i]>2300)
+                    if((int)data[(int)j_max_2, i]>1300 )
                     {
 
                         ps_list.Add(new PointF(i, j_max_2));
@@ -242,6 +242,7 @@ namespace opengl3
             //medianFilter(ps, 5, 5);
             // gaussFilter(ps);
             //ps = onesFilter(ps, 2);
+            //Console.WriteLine(ps.Length);
             //Console.WriteLine(ps.Length);
             GC.Collect();
             if(reverse)

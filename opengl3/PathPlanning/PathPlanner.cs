@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -400,7 +401,7 @@ namespace PathPlanning
             }
             traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
 
-            var fr_b = new Matrix<double>(new double[,] {
+           /* var fr_b = new Matrix<double>(new double[,] {
                  { 0  ,-1, 0   , 0 },
                 {  0.88, 0,0.46 , 0 },
                 {  -0.46, 0, 0.88, 0 },
@@ -416,7 +417,7 @@ namespace PathPlanning
             var bf = fr_b * fr_g;
             prin.t(bf);
             CvInvoke.Invert(bf, bf, Emgu.CV.CvEnum.DecompMethod.LU);
-            prin.t(bf);
+            prin.t(bf);*/
 
             return RobotFrame.generate_string(traj_rob.ToArray());
         }
@@ -460,9 +461,17 @@ namespace PathPlanning
 
     class TrajParams
     {
-
+        
         public double[] z;
-
+        public double dz;
+        [Description("Высота слоя")]
+        [Category("Параметры траектории")]
+        [DisplayName("dz")]
+        public double dZ
+        {
+            get { return dz; }
+            set { dz = value; comp_z(); }
+        }
        public void comp_z()
         {
             if(layers<=0)
@@ -472,7 +481,7 @@ namespace PathPlanning
             z = new double[layers];
             for(int i = 0; i < z.Length; i++)
             {
-                z[i] = step*(i+1);
+                z[i] = dz*(i+1);
             }
         }
 
@@ -486,7 +495,7 @@ namespace PathPlanning
         public double Step
         {
             get { return step; }
-            set { step = value; comp_z(); }
+            set { step = value; }
         }
 
         //------------------------

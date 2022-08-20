@@ -184,10 +184,11 @@ namespace opengl3
             GL1.buffersGl.sortObj();
             param_tr = new TrajParams
             {
+                dz = 0.4,
                 div_step = 1.3,
                 h_transf = 5,
                 layers = 2,
-                layers_angle = Math.PI / 2,
+                layers_angle = 0.47,// Math.PI / 4,
                 step = 0.4 * 4,
             };
             propGrid_traj.SelectedObject = param_tr;
@@ -2049,9 +2050,12 @@ namespace opengl3
         private void videoStart(int number)
         {
             var capture = new VideoCapture(number);
+           
+            //capture.SetCaptureProperty(CapProp.
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
-            capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
+            // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             capture.SetCaptureProperty(CapProp.Fps, 15);
+            Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
             camera_ind.Add((int)capture.Ptr);
@@ -2825,6 +2829,8 @@ namespace opengl3
             videoframe_count = 0;
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
             var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
+            Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
+            Console.WriteLine(Directory.GetFiles("cam2\\" + filepath)[0]);
             var capture1 = new VideoCapture(Directory.GetFiles("cam1\\" + filepath)[0]);
             var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
@@ -2833,7 +2839,7 @@ namespace opengl3
             var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
             comboImages.Items.Add(fr_st_vid);
-            //Console.WriteLine(capture1.GetCaptureProperty(CapProp.Fps) + " " + capture2.GetCaptureProperty(CapProp.Fps));
+            
             var all_frames = Math.Min(all_frames1, all_frames2);
             if (scanner != null)
             {
@@ -2959,7 +2965,7 @@ namespace opengl3
 
 
             loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
-            load_scan_v2(scan_path,3);
+            load_scan_v2(scan_path,2);
 
         }
 

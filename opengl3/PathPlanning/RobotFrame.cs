@@ -23,11 +23,19 @@ namespace opengl3
             D = d;
         }
 
-        public RobotFrame(Matrix<double> _matrix, double v)
+        public RobotFrame(Matrix<double> matrix, double v)
         {
-            Matrix<double> base_matrix = ABCmatr(531.56, 63.41, 55.55, 1.5, 0.01, -0.005);
-            var matrix =mult_frame(base_matrix, _matrix);
+            Matrix<double> base_matrix = ABCmatr(596.56, 87.9, 57.0, 1.9, 0.01, -0.005);
+            //var matrix = mult_frame(base_matrix, _matrix);
+            // CvInvoke.Invert(base_matrix, base_matrix, Emgu.CV.CvEnum.DecompMethod.LU);
+            // CvInvoke.Invert(_matrix, _matrix, Emgu.CV.CvEnum.DecompMethod.LU);
+           // var matrix = base_matrix*_matrix;
+           /* var trans = base_matrix * _matrix;
+            
 
+            matrix[0, 3] = trans[0, 3];
+            matrix[1, 3] = trans[1, 3];
+            matrix[2, 3] = trans[2, 3];*/
             //prin.t(base_matrix);
             /* 
              var vecs = toVcs(_matrix);
@@ -35,10 +43,10 @@ namespace opengl3
              prin.t(vecs);
              var vecs_matr = vecs * base_matrix;
              var matrix =toVcs(vecs_matr);*/
-            // prin.t(base_matrix);
-             prin.t(_matrix);
+             prin.t(base_matrix);
+             //prin.t(_matrix);
 
-            // prin.t(matrix);
+             prin.t(matrix);
              prin.t("___________");
             //var matrix = base_matrix * _matrix;
             //CvInvoke.Invert(base_matrix, base_matrix, Emgu.CV.CvEnum.DecompMethod.LU);
@@ -181,8 +189,25 @@ namespace opengl3
             frame_tr[3, 0] = 0;
             frame_tr[3, 1] = 0;
             frame_tr[3, 2] = 0;
-
+            //prin.t(frame_tr);
             var rot = rob_base * frame_tr;
+
+            rot[0, 3] = transl[0, 3];
+            rot[1, 3] = transl[1, 3];
+            rot[2, 3] = transl[2, 3];
+            
+            return rot;
+        }
+
+        static public Matrix<double> mult_frame_2(Matrix<double> rob_base, Matrix<double> frame)
+        {
+            var transl = rob_base * frame;
+           /* var frame_tr = frame.Transpose();
+            frame_tr[3, 0] = 0;
+            frame_tr[3, 1] = 0;
+            frame_tr[3, 2] = 0;*/
+            //prin.t(frame_tr);
+            var rot = frame * rob_base ;
 
             rot[0, 3] = transl[0, 3];
             rot[1, 3] = transl[1, 3];
