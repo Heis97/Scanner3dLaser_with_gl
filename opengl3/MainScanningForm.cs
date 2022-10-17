@@ -178,8 +178,8 @@ namespace opengl3
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
             red_c = 252;
-
-            var model_mesh = STLmodel.parsingStl_GL4(@"curve_test_asc.STL");
+            gen_aucs(5.89, 1.43, 2.03, 55.6);
+            //var model_mesh = STLmodel.parsingStl_GL4(@"curve_test_asc.STL");
             //GL1.addMesh(model_mesh, PrimitiveType.Triangles);
             GL1.buffersGl.sortObj();
             param_tr = new TrajParams
@@ -203,7 +203,193 @@ namespace opengl3
             //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
 
         }
+        double toRad(double ang)
+        {
+            return Math.PI*ang/180;
+        }
+        void gen_aucs(double h, double l, double t, double theta)
+        {
+            var hc45 = h * Math.Cos(Math.PI / 4);
+            var ps = new Point3d_GL[51];
 
+            ps[6] = new Point3d_GL(0, 0, hc45);
+            ps[7] = new Point3d_GL(0, 0, hc45+t);
+            ps[15] = new Point3d_GL(t, 0, hc45 + t);
+            ps[18] = new Point3d_GL(hc45 + t, 0, t);
+            ps[17] = new Point3d_GL(hc45 + t, 0, 0);
+            ps[26] = new Point3d_GL(hc45 , 0, 0);   
+            //--------------------------------------------------------
+            ps[4] = new Point3d_GL(0, t/2, hc45);
+            ps[8] = new Point3d_GL(0, t / 2, hc45 + t);
+            ps[0] = new Point3d_GL(t, t / 2, hc45 + t);
+            ps[1] = new Point3d_GL(hc45 + t, t / 2, t);
+            ps[34] = new Point3d_GL(hc45 + t, t / 2, 0);
+            ps[30] = new Point3d_GL(hc45, t / 2, 0);
+
+            ps[2] = new Point3d_GL(t, t / 2, hc45);
+            ps[3] = new Point3d_GL(hc45, t / 2,t);
+            //---------------------------------------------------
+            var lSt = l* Math.Sin(toRad(theta));
+            var lCt = l * Math.Cos(toRad(theta));
+            ps[9] = new Point3d_GL(0, t / 2+ lSt, hc45-lCt);
+            ps[10] = new Point3d_GL(0, t / 2 + lSt, hc45 + t - lCt);
+            ps[27] = new Point3d_GL(t, t / 2 + lSt, hc45 + t - lCt);
+            ps[32] = new Point3d_GL(hc45 + t - lCt, t / 2 + lSt, t);
+            ps[49] = new Point3d_GL(hc45 + t - lCt, t / 2 + lSt, 0);
+            ps[45] = new Point3d_GL(hc45 - lCt, t / 2 + lSt, 0);
+
+            ps[28] = new Point3d_GL(t, t / 2 + lSt, hc45 - lCt);
+            ps[29] = new Point3d_GL(hc45 - lCt, t / 2 + lSt, t);
+            var delt45 = new Point3d_GL(hc45/2, 0, hc45/2);
+            ps[37] = ps[10].Copy() + delt45;
+            ps[39] = ps[28].Copy() + delt45;
+            ps[42] = ps[29].Copy() + delt45;
+            ps[41] = ps[49].Copy() + delt45;
+            //-------------------------------------------
+            var deltz = new Point3d_GL(0, t/2, 0);
+            ps[11] = ps[9].Copy() + deltz;
+            ps[12] = ps[10].Copy() + deltz;
+            ps[50] = ps[49].Copy() + deltz;
+            ps[44] = ps[45].Copy() + deltz;
+            ps[35] = ps[28].Copy() + deltz;
+
+            ps[43] = ps[29].Copy() + deltz;
+            ps[36] = ps[37].Copy() + deltz;
+            ps[38] = ps[39].Copy() + deltz;
+            ps[46] = ps[42].Copy() + deltz;
+            ps[47] = ps[41].Copy() + deltz;
+            //-------------------------------------
+
+            ps[5] = ps[30].Copy();
+            ps[13] = ps[15].Copy();
+            ps[14] = ps[18].Copy();
+            ps[16] = ps[34].Copy();
+
+            ps[19] = ps[43].Copy();
+            ps[20] = ps[50].Copy();
+            ps[21] = ps[45].Copy();
+            ps[22] = ps[49].Copy();
+
+            ps[23] = ps[30].Copy();
+            ps[24] = ps[26].Copy();
+            ps[25] = ps[30].Copy();
+
+            ps[31] = ps[21].Copy();
+            ps[33] = ps[49].Copy();
+            ps[40] = ps[49].Copy();
+            ps[48] = ps[50].Copy();
+            int ind = 0;
+            foreach (var p in ps)
+            {
+                Console.WriteLine(ind+" "+p.ToString());
+                ind++;
+            }
+            
+            var ps_of = new Point3d_GL[52];
+            for(int i= 1; i < ps.Length+1; i++)
+            {
+                ps_of[i] = ps[i-1].Copy();
+            }
+
+            ps = ps_of.Copy();
+            var trls = new Polygon3d_GL[]
+            {
+                new Polygon3d_GL(ps[1],ps[2],ps[3]),
+                new Polygon3d_GL(ps[3],ps[2],ps[4]),
+                new Polygon3d_GL(ps[3],ps[4],ps[5]),
+
+                new Polygon3d_GL(ps[5],ps[4],ps[6]),
+                new Polygon3d_GL(ps[7],ps[8],ps[5]),
+                new Polygon3d_GL(ps[5],ps[8],ps[9]),
+
+                new Polygon3d_GL(ps[5],ps[9],ps[10]),
+                new Polygon3d_GL(ps[10],ps[9],ps[11]),
+                new Polygon3d_GL(ps[10],ps[11],ps[12]),
+
+                new Polygon3d_GL(ps[12],ps[11],ps[13]),
+                new Polygon3d_GL(ps[1],ps[9],ps[14]),
+                new Polygon3d_GL(ps[14],ps[9],ps[8]),
+
+                new Polygon3d_GL(ps[2],ps[1],ps[15]),
+                new Polygon3d_GL(ps[15],ps[1],ps[16]),
+                new Polygon3d_GL(ps[17],ps[2],ps[18]),
+
+                new Polygon3d_GL(ps[18],ps[2],ps[19]),
+                new Polygon3d_GL(ps[20],ps[21],ps[22]),
+                new Polygon3d_GL(ps[22],ps[21],ps[23]),
+
+                new Polygon3d_GL(ps[22],ps[23],ps[24]),
+                new Polygon3d_GL(ps[24],ps[23],ps[17]),
+                new Polygon3d_GL(ps[24],ps[17],ps[25]),
+
+                new Polygon3d_GL(ps[25],ps[17],ps[18]),
+                new Polygon3d_GL(ps[5],ps[26],ps[7]),
+                new Polygon3d_GL(ps[7],ps[26],ps[27]),
+
+                new Polygon3d_GL(ps[8],ps[7],ps[14]),
+                new Polygon3d_GL(ps[14],ps[7],ps[25]),
+                new Polygon3d_GL(ps[14],ps[25],ps[19]),
+
+                new Polygon3d_GL(ps[19],ps[25],ps[18]),
+                new Polygon3d_GL(ps[1],ps[28],ps[9]),
+                new Polygon3d_GL(ps[9],ps[28],ps[11]),
+
+                new Polygon3d_GL(ps[29],ps[3],ps[10]),
+                new Polygon3d_GL(ps[10],ps[3],ps[5]),
+                new Polygon3d_GL(ps[3],ps[29],ps[1]),
+
+                new Polygon3d_GL(ps[1],ps[29],ps[28]),
+                new Polygon3d_GL(ps[4],ps[30],ps[31]),
+                new Polygon3d_GL(ps[31],ps[30],ps[32]),
+
+                new Polygon3d_GL(ps[33],ps[2],ps[34]),
+                new Polygon3d_GL(ps[34],ps[2],ps[35]),
+                new Polygon3d_GL(ps[4],ps[2],ps[30]),
+
+                new Polygon3d_GL(ps[30],ps[2],ps[33]),
+                new Polygon3d_GL(ps[12],ps[36],ps[10]),
+                new Polygon3d_GL(ps[10],ps[36],ps[29]),
+
+                new Polygon3d_GL(ps[37],ps[13],ps[38]),
+                new Polygon3d_GL(ps[38],ps[13],ps[11]),
+                new Polygon3d_GL(ps[39],ps[37],ps[40]),
+
+                new Polygon3d_GL(ps[40],ps[37],ps[38]),
+                new Polygon3d_GL(ps[36],ps[39],ps[29]),
+                new Polygon3d_GL(ps[29],ps[39],ps[40]),
+
+                new Polygon3d_GL(ps[12],ps[13],ps[36]),
+                new Polygon3d_GL(ps[36],ps[13],ps[37]),
+                new Polygon3d_GL(ps[36],ps[37],ps[39]),
+
+                new Polygon3d_GL(ps[29],ps[40],ps[28]),
+                new Polygon3d_GL(ps[28],ps[40],ps[38]),
+                new Polygon3d_GL(ps[28],ps[38],ps[11]),
+
+                new Polygon3d_GL(ps[41],ps[42],ps[33]),
+                new Polygon3d_GL(ps[33],ps[42],ps[43]),
+                new Polygon3d_GL(ps[33],ps[43],ps[30]),
+
+                new Polygon3d_GL(ps[44],ps[45],ps[30]),
+                new Polygon3d_GL(ps[30],ps[45],ps[46]),
+                new Polygon3d_GL(ps[47],ps[44],ps[43]),
+
+                new Polygon3d_GL(ps[43],ps[44],ps[30]),
+                new Polygon3d_GL(ps[48],ps[47],ps[42]),
+                new Polygon3d_GL(ps[42],ps[47],ps[43]),
+
+                new Polygon3d_GL(ps[49],ps[48],ps[50]),
+                new Polygon3d_GL(ps[50],ps[48],ps[42]),
+                new Polygon3d_GL(ps[45],ps[44],ps[51]),
+
+                new Polygon3d_GL(ps[51],ps[44],ps[47]),
+                new Polygon3d_GL(ps[51],ps[47],ps[48])
+
+            };
+
+            var mesh = Polygon3d_GL.toMesh(trls);
+            STLmodel.saveMesh(mesh[0], "a45_" + h + "_" + l + "_" + t + "_" + theta);
+        }
         void loadStereo()
         {
             var cam_cal_1 = new string[] { @"cam1\camera_cal_1006_1" };
