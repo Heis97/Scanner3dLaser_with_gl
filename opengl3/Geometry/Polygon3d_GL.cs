@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Emgu.CV;
 
 namespace opengl3
 {
@@ -16,19 +17,30 @@ namespace opengl3
         public Polygon3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3, int _special_point_ind = 0)
         {
             special_point_ind = _special_point_ind;
-            ps = new Point3d_GL[] { P1, P2, P3};   
+            ps = new Point3d_GL[] { P1, P2, P3 };
             v1 = new Vector3d_GL(P1, P2).normalize();
             v2 = new Vector3d_GL(P1, P3).normalize();
             v3 = v1 | v2;//vector multiply
-            
-            if(v3.z<0)
-            {
-                v3 = -v3;
-            }
+
+            //if(v3.z<0)
+            //{
+            //v3 = -v3;
+            //}
             //Console.WriteLine(v3);
             v3.normalize();
             flat3D = new Flat3d_GL(v3.x, v3.y, v3.z, -v3 * P1);
-            
+      
+        }
+
+        static public Polygon3d_GL[] multMatr(Polygon3d_GL[] pols, Matrix<double> matrix)
+        {
+            var pols_mul = new Polygon3d_GL[pols.Length];
+            for(int i = 0; i < pols.Length; i++)
+            {
+                var ps = Point3d_GL.multMatr(pols[i].ps, matrix);
+                pols_mul[i]= new Polygon3d_GL(ps[0],ps[1],ps[2]);
+            }
+            return pols_mul;
         }
 
         static public Flat3d_GL notExistFlat()

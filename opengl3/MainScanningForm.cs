@@ -178,7 +178,7 @@ namespace opengl3
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
             red_c = 252;
-            gen_aucs(5.89, 1.43, 2.03, 55.6);
+            gen_aucs(5.89, 1.43, 2.03, 65.6);
             //var model_mesh = STLmodel.parsingStl_GL4(@"curve_test_asc.STL");
             //GL1.addMesh(model_mesh, PrimitiveType.Triangles);
             GL1.buffersGl.sortObj();
@@ -211,35 +211,40 @@ namespace opengl3
         {
             var hc45 = h * Math.Cos(Math.PI / 4);
             var ps = new Point3d_GL[51];
-
-            ps[6] = new Point3d_GL(0, 0, hc45);
-            ps[7] = new Point3d_GL(0, 0, hc45+t);
-            ps[15] = new Point3d_GL(t, 0, hc45 + t);
-            ps[18] = new Point3d_GL(hc45 + t, 0, t);
-            ps[17] = new Point3d_GL(hc45 + t, 0, 0);
-            ps[26] = new Point3d_GL(hc45 , 0, 0);   
-            //--------------------------------------------------------
-            ps[4] = new Point3d_GL(0, t/2, hc45);
-            ps[8] = new Point3d_GL(0, t / 2, hc45 + t);
-            ps[0] = new Point3d_GL(t, t / 2, hc45 + t);
-            ps[1] = new Point3d_GL(hc45 + t, t / 2, t);
-            ps[34] = new Point3d_GL(hc45 + t, t / 2, 0);
-            ps[30] = new Point3d_GL(hc45, t / 2, 0);
-
-            ps[2] = new Point3d_GL(t, t / 2, hc45);
-            ps[3] = new Point3d_GL(hc45, t / 2,t);
-            //---------------------------------------------------
-            var lSt = l* Math.Sin(toRad(theta));
+            var lSt = l * Math.Sin(toRad(theta));
             var lCt = l * Math.Cos(toRad(theta));
-            ps[9] = new Point3d_GL(0, t / 2+ lSt, hc45-lCt);
-            ps[10] = new Point3d_GL(0, t / 2 + lSt, hc45 + t - lCt);
-            ps[27] = new Point3d_GL(t, t / 2 + lSt, hc45 + t - lCt);
-            ps[32] = new Point3d_GL(hc45 + t - lCt, t / 2 + lSt, t);
-            ps[49] = new Point3d_GL(hc45 + t - lCt, t / 2 + lSt, 0);
-            ps[45] = new Point3d_GL(hc45 - lCt, t / 2 + lSt, 0);
+            var h_all = t  + lSt;
+            
 
-            ps[28] = new Point3d_GL(t, t / 2 + lSt, hc45 - lCt);
-            ps[29] = new Point3d_GL(hc45 - lCt, t / 2 + lSt, t);
+            ps[6] = new Point3d_GL(0, 0- h_all, hc45);
+            ps[7] = new Point3d_GL(0, 0 - h_all, hc45+t);
+            ps[15] = new Point3d_GL(t, 0 - h_all, hc45 + t);
+            ps[18] = new Point3d_GL(hc45 + t, 0 - h_all, t);
+            ps[17] = new Point3d_GL(hc45 + t, 0 - h_all, 0);
+            ps[26] = new Point3d_GL(hc45 , 0 - h_all, 0);   
+            //--------------------------------------------------------
+            ps[4] = new Point3d_GL(0, t/2 - h_all, hc45);
+            ps[8] = new Point3d_GL(0, t / 2 - h_all, hc45 + t);
+            ps[0] = new Point3d_GL(t, t / 2 - h_all, hc45 + t);
+            ps[1] = new Point3d_GL(hc45 + t, t / 2 - h_all, t);
+            ps[34] = new Point3d_GL(hc45 + t, t / 2 - h_all, 0);
+            ps[30] = new Point3d_GL(hc45, t / 2 - h_all, 0);
+
+            ps[2] = new Point3d_GL(t, t / 2 - h_all, hc45);
+            ps[3] = new Point3d_GL(hc45, t / 2 - h_all, t);
+            //---------------------------------------------------
+            
+
+            ps[9] = new Point3d_GL(0, t / 2+ lSt - h_all, hc45-lCt);
+            ps[10] = new Point3d_GL(0, t / 2 + lSt - h_all, hc45 + t - lCt);
+            ps[27] = new Point3d_GL(t, t / 2 + lSt - h_all, hc45 + t - lCt);
+            ps[32] = new Point3d_GL(hc45 + t - lCt, t / 2 + lSt - h_all, t);
+            ps[49] = new Point3d_GL(hc45 + t - lCt, t / 2 + lSt - h_all, 0);
+            ps[45] = new Point3d_GL(hc45 - lCt, t / 2 + lSt - h_all, 0);
+
+            ps[28] = new Point3d_GL(t, t / 2 + lSt - h_all, hc45 - lCt);
+            ps[29] = new Point3d_GL(hc45 - lCt, t / 2 + lSt - h_all, t);
+
             var delt45 = new Point3d_GL(hc45/2, 0, hc45/2);
             ps[37] = ps[10].Copy() + delt45;
             ps[39] = ps[28].Copy() + delt45;
@@ -265,7 +270,7 @@ namespace opengl3
             ps[14] = ps[18].Copy();
             ps[16] = ps[34].Copy();
 
-            ps[19] = ps[43].Copy();
+            ps[19] = ps[44].Copy();
             ps[20] = ps[50].Copy();
             ps[21] = ps[45].Copy();
             ps[22] = ps[49].Copy();
@@ -386,8 +391,70 @@ namespace opengl3
                 new Polygon3d_GL(ps[51],ps[47],ps[48])
 
             };
+            var p_xy_sim = new Point3d_GL(ps[47], ps[39]);
+            var trls_sim_xz = Polygon3d_GL.multMatr(trls,
+                new Matrix<double>(new double[,]
+                {
+                    {-1,0,0,2*p_xy_sim.x  },
+                    {0,1,0,0 },
+                    {0,0,-1,2*p_xy_sim.z },
+                    {0,0,0,1 },
+                }));
+            var trls_l = trls.ToList();
+            trls_l.AddRange(trls_sim_xz);
+            var trls_arr = trls_l.ToArray();
+
+            var trls_sim_y = Polygon3d_GL.multMatr(trls_arr,
+                new Matrix<double>(new double[,]
+                {
+                    {1,0,0,0 },
+                    {0,-1,0,0 },
+                    {0,0,1,0 },
+                    {0,0,0,1 },
+                }));
+            var trls_l_2 = trls_sim_y.ToList();
+            trls_l_2.AddRange(trls_arr);
+            var trls_arr_2 = trls_l_2.ToArray();
+
+            var trls_sim_x = Polygon3d_GL.multMatr(trls_arr_2,
+                new Matrix<double>(new double[,]
+                {
+                    {-1,0,0,0 },
+                    {0,1,0,0 },
+                    {0,0,1,0 },
+                    {0,0,0,1 },
+                }));
+            var trls_l_3 = trls_sim_x.ToList();
+            trls_l_3.AddRange(trls_arr_2);
+            var trls_arr_3 = trls_l_3.ToArray();
+
+            var trls_sim_z = Polygon3d_GL.multMatr(trls_arr_3,
+                new Matrix<double>(new double[,]
+                {
+                    {1,0,0,0 },
+                    {0,1,0,0 },
+                    {0,0,-1,0 },
+                    {0,0,0,1 },
+                }));
+            var trls_l_4 = trls_sim_z.ToList();
+            trls_l_4.AddRange(trls_arr_3);
+            var trls_arr_4 = trls_l_4.ToArray();
+
+            var trls_xyz = Polygon3d_GL.multMatr(trls_arr_4,
+                new Matrix<double>(new double[,]
+                {
+                    {1,0,0,0 },
+                    {0,0,1,0 },
+                    {0,1,0,0 },
+                    {0,0,0,1 },
+                }));
+            var trls_l_5 = trls_xyz.ToList();
+            trls_l_4.AddRange(trls_arr_4);
+            var trls_arr_5 = trls_l_5.ToArray();
 
             var mesh = Polygon3d_GL.toMesh(trls);
+            GL1.addMesh(mesh[0],PrimitiveType.Triangles);
+            
             STLmodel.saveMesh(mesh[0], "a45_" + h + "_" + l + "_" + t + "_" + theta);
         }
         void loadStereo()
