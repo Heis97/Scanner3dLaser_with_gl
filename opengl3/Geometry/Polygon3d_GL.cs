@@ -352,10 +352,10 @@ namespace opengl3
             return new Point3d_GL[] { p_min, p_max };
         }
 
-        static public Polygon3d_GL[] triangulate_lines_xy(Point3d_GL[][] _ps)
+        static public Polygon3d_GL[] triangulate_lines_xy(Point3d_GL[][] ps)
         {
             List<Polygon3d_GL> polygons = new List<Polygon3d_GL>();
-            var ps = smooth_lines_xy(_ps,1.5);
+           // var ps = smooth_lines_xy(_ps,1.5);
             for (int i=1; i<ps.Length; i++)
             {
                 polygons.AddRange(triangulate_two_lines_xy(ps[i - 1], ps[i]));

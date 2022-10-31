@@ -429,7 +429,11 @@ namespace opengl3
             scanner = new Scanner(new CameraCV[] { cam1, cam2 });
             var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
-            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);           
+            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);
+
+            comboImages.Items.AddRange(frms_stereo);
+
+
         }
 
 
@@ -441,6 +445,7 @@ namespace opengl3
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
             GL1.buffersGl.sortObj();
+            Console.WriteLine("Loading end.");
         }
 
 
@@ -2872,6 +2877,8 @@ namespace opengl3
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                         //CvInvoke.Imshow("im2", im2);
                         scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);
+                       // var fr_st_vi = new Frame(im1, im2, "sd1", FrameType.Pattern);
+                      //  comboImages.Items.Add(fr_st_vi);
                     }
                 }                
                 videoframe_count++;

@@ -418,7 +418,7 @@ namespace opengl3
             {
                 return null;
             }
-            if (ps1[0] == null || ps1[0] == null)
+            if (ps1[0] == null || ps2[0] == null)
             {
                 return null;
             }
