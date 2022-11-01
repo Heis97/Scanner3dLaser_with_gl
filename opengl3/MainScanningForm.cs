@@ -2866,25 +2866,24 @@ namespace opengl3
                         im1 -= orig1;
                         im2 -= orig2;
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                        /*var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                        var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                         frame_d.stereo = true;
-                        frames_show.Add(frame_d);*/
+                        frames_show.Add(frame_d);
                         //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
-                        /*var ps1 = Detection.detectLineDiff(im1, 3);
-                        var ps2 = Detection.detectLineDiff(im2, 3);
+                        /*var ps1 = Detection.detectLineDiff(im1, 7);
+                        var ps2 = Detection.detectLineDiff(im2, 7);
 
                         imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                         //CvInvoke.Imshow("im2", im2);
                         scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);
-                       // var fr_st_vi = new Frame(im1, im2, "sd1", FrameType.Pattern);
-                      //  comboImages.Items.Add(fr_st_vi);
+
                     }
                 }                
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
-            //comboImages.Items.AddRange(frames_show.ToArray());
+            comboImages.Items.AddRange(frames_show.ToArray());
             scanner.compPointsStereoLas_2d();
 
         }
