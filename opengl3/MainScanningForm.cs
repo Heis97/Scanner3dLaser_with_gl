@@ -124,13 +124,17 @@ namespace opengl3
             };
 
         Scanner scanner;
+        int shvp_pos = 0;
         #endregion
+
         public MainScanningForm()
         {
             InitializeComponent();
             init_vars();
 
-
+           // timer = new System.Timers.Timer(100);
+           // timer.Elapsed += drawTimeLabel;
+           // timer.Start();
             //loadVideo_stereo(@"test_1107_7");
             /*loadScannerStereoLas(
             new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
@@ -149,10 +153,15 @@ namespace opengl3
             // oneCam(new string[] { @"cam1\camera_cal_1807_1" },10f);
 
         }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            label_timer.Text = DateTime.Now.Second + " : "+DateTime.Now.Millisecond;
+        }
         void init_vars()
         {
             #region important
-            combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн","Стерео Исп","Паттерн круги", "Ничего" });
+            combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн","Стерео Исп","Паттерн круги","Датчик расст", "Ничего" });
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
 
@@ -565,7 +574,7 @@ namespace opengl3
 
             if (typescan == 3)
             {
-                var t_video =(double)counts / 15;
+                var t_video =(double)counts / 30;
                 var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
                 laserLine?.laserOn();
                 Thread.Sleep(200);
@@ -574,7 +583,6 @@ namespace opengl3
                 startWrite(2, counts);
                 laserLine?.setShvpVel(v_laser);
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
-                //linearPlatf?.setShvpPos((float)p2_cur_scan.x, v_laser * 60);//!!!!!!!!!!!!!!
 
             }
 
@@ -1993,6 +2001,16 @@ namespace opengl3
                 case FrameType.Undist:
                     imb_base[ind - 1].Image = stereocam.remapCam(mat, ind);
                     break;
+
+                case FrameType.LasLin://laser sensor
+                    var ps = Detection.detectLineSensor(mat);
+                    imb_base[ind - 1].Image = UtilOpenCV.drawPointsF(mat, ps,255,0,0);
+                    Console.WriteLine(ps[0].X);
+
+                    laserLine?.onLaserSensor();
+                    laserLine?.setLaserCur((int)ps[0].X);
+
+                    break;
                 case FrameType.Pattern:
                     System.Drawing.PointF[] points = null;
                     imb_base[ind - 1].Image = FindCircles.findCircles(mat,ref points, new Size(6, 7));
@@ -2056,9 +2074,9 @@ namespace opengl3
             var capture = new VideoCapture(number);
            
             //capture.SetCaptureProperty(CapProp.
-            capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
-            // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-            capture.SetCaptureProperty(CapProp.Fps, 15);
+            //capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
+             //capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
+          // capture.SetCaptureProperty(CapProp.Fps, 15);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
@@ -2753,7 +2771,7 @@ namespace opengl3
 
         private void combo_improc_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(combo_improc.SelectedIndex==0)
+            if(combo_improc.SelectedIndex == 0)
             {
                 imProcType = FrameType.MarkBoard;
             }
@@ -2765,11 +2783,14 @@ namespace opengl3
             {
                 imProcType = FrameType.Pattern;
             }
+            else if (combo_improc.SelectedIndex == 3)
+            {
+                imProcType = FrameType.LasLin;
+            }
             else
             {
                 imProcType = FrameType.Test;
             }
-
         }
 
         private void but_scan_start_laser_Click(object sender, EventArgs e)
@@ -2889,6 +2910,7 @@ namespace opengl3
         }
         #endregion
 
+        #region load_but
         private void but_text_vis_Click(object sender, EventArgs e)
         {
             if (GL1.texture_vis == 0)
@@ -3045,6 +3067,8 @@ namespace opengl3
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             GL1.buffersGl.sortObj();
         }
+
+        #endregion
 
 
     }

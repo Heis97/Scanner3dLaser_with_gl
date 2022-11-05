@@ -10,7 +10,14 @@ namespace opengl3
     {
         string port;
         int baudrate = 250000;
-        int laser = 1, power = 2, posit = 3, moveshvp = 4, shvp_vel = 5;
+        int laser = 1, 
+            power = 2,
+            posit = 3,
+            moveshvp = 4, 
+            shvp_vel = 5,
+            laser_cur = 6,
+            laser_dest = 7,
+            laser_sensor = 8;
         int on = 1, off = 2;
         public LaserLine(string _port)
         {
@@ -47,7 +54,18 @@ namespace opengl3
         {
             send(comp_vel_div(_vel), shvp_vel);
         }
-
+        public void setLaserCur(int _pos)
+        {
+            send(_pos, laser_cur);
+        }
+        public void onLaserSensor()
+        {
+            send(on, laser_sensor);
+        }
+        public void offLaserSensor()
+        {
+            send(off, laser_sensor);
+        }
         static int comp_vel_div(double vel)
         {
             return Math.Abs((int)(1000 / vel));

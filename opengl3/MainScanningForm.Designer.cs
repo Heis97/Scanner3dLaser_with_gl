@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.propGrid_traj = new System.Windows.Forms.PropertyGrid();
             this.but_gl_clear = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.but_scan_path = new System.Windows.Forms.Button();
@@ -159,6 +160,7 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.label_timer = new System.Windows.Forms.Label();
             this.but_load_scan = new System.Windows.Forms.Button();
             this.but_scan_stereolas = new System.Windows.Forms.Button();
             this.but_scan_marl = new System.Windows.Forms.Button();
@@ -212,7 +214,6 @@ namespace opengl3
             this.box_photoFolder = new System.Windows.Forms.TextBox();
             this.imBox_base_2 = new Emgu.CV.UI.ImageBox();
             this.imBox_base_1 = new Emgu.CV.UI.ImageBox();
-            this.imBox_base = new Emgu.CV.UI.ImageBox();
             this.but_ph = new System.Windows.Forms.Button();
             this.label45 = new System.Windows.Forms.Label();
             this.trackBar11 = new System.Windows.Forms.TrackBar();
@@ -266,9 +267,10 @@ namespace opengl3
             this.comboNumber = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.imBox_base = new Emgu.CV.UI.ImageBox();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.propGrid_traj = new System.Windows.Forms.PropertyGrid();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -320,7 +322,6 @@ namespace opengl3
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar11)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar12)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar13)).BeginInit();
@@ -333,6 +334,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.trackBar20)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).BeginInit();
             this.windowsTabs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -997,6 +999,13 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // propGrid_traj
+            // 
+            this.propGrid_traj.Location = new System.Drawing.Point(813, 417);
+            this.propGrid_traj.Name = "propGrid_traj";
+            this.propGrid_traj.Size = new System.Drawing.Size(243, 343);
+            this.propGrid_traj.TabIndex = 119;
             // 
             // but_gl_clear
             // 
@@ -1675,6 +1684,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.label_timer);
             this.tabMain.Controls.Add(this.but_load_scan);
             this.tabMain.Controls.Add(this.but_scan_stereolas);
             this.tabMain.Controls.Add(this.but_scan_marl);
@@ -1710,7 +1720,6 @@ namespace opengl3
             this.tabMain.Controls.Add(this.box_photoFolder);
             this.tabMain.Controls.Add(this.imBox_base_2);
             this.tabMain.Controls.Add(this.imBox_base_1);
-            this.tabMain.Controls.Add(this.imBox_base);
             this.tabMain.Controls.Add(this.but_ph);
             this.tabMain.Controls.Add(this.label45);
             this.tabMain.Controls.Add(this.trackBar11);
@@ -1764,6 +1773,7 @@ namespace opengl3
             this.tabMain.Controls.Add(this.comboNumber);
             this.tabMain.Controls.Add(this.label10);
             this.tabMain.Controls.Add(this.label9);
+            this.tabMain.Controls.Add(this.imBox_base);
             this.tabMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabMain.Location = new System.Drawing.Point(4, 22);
             this.tabMain.Name = "tabMain";
@@ -1772,6 +1782,16 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // label_timer
+            // 
+            this.label_timer.AutoSize = true;
+            this.label_timer.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
+            this.label_timer.Location = new System.Drawing.Point(96, 739);
+            this.label_timer.Name = "label_timer";
+            this.label_timer.Size = new System.Drawing.Size(118, 37);
+            this.label_timer.TabIndex = 131;
+            this.label_timer.Text = "label19";
             // 
             // but_load_scan
             // 
@@ -2267,14 +2287,6 @@ namespace opengl3
             this.imBox_base_1.Size = new System.Drawing.Size(480, 360);
             this.imBox_base_1.TabIndex = 117;
             this.imBox_base_1.TabStop = false;
-            // 
-            // imBox_base
-            // 
-            this.imBox_base.Location = new System.Drawing.Point(6, 607);
-            this.imBox_base.Name = "imBox_base";
-            this.imBox_base.Size = new System.Drawing.Size(480, 360);
-            this.imBox_base.TabIndex = 94;
-            this.imBox_base.TabStop = false;
             // 
             // but_ph
             // 
@@ -2805,6 +2817,14 @@ namespace opengl3
             this.label9.TabIndex = 58;
             this.label9.Text = "Scan Folder ->";
             // 
+            // imBox_base
+            // 
+            this.imBox_base.Location = new System.Drawing.Point(6, 607);
+            this.imBox_base.Name = "imBox_base";
+            this.imBox_base.Size = new System.Drawing.Size(480, 360);
+            this.imBox_base.TabIndex = 94;
+            this.imBox_base.TabStop = false;
+            // 
             // windowsTabs
             // 
             this.windowsTabs.Controls.Add(this.tabMain);
@@ -2822,12 +2842,11 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // propGrid_traj
+            // timer1
             // 
-            this.propGrid_traj.Location = new System.Drawing.Point(813, 417);
-            this.propGrid_traj.Name = "propGrid_traj";
-            this.propGrid_traj.Size = new System.Drawing.Size(243, 343);
-            this.propGrid_traj.TabIndex = 119;
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 10;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // MainScanningForm
             // 
@@ -2895,7 +2914,6 @@ namespace opengl3
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar11)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar12)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar13)).EndInit();
@@ -2908,6 +2926,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.trackBar20)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).EndInit();
             this.windowsTabs.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.ResumeLayout(false);
@@ -3154,6 +3173,8 @@ namespace opengl3
         private System.Windows.Forms.TextBox textBox_shvpVel;
         private System.Windows.Forms.Button but_gl_clear;
         private System.Windows.Forms.PropertyGrid propGrid_traj;
+        private System.Windows.Forms.Label label_timer;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

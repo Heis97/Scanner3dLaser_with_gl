@@ -15,6 +15,44 @@ namespace opengl3
 {
     public static class Detection
     {
+        public static PointF[] detectLineSensor(Mat mat, int wind = 20)
+        {
+            var mat_data = mat.Clone();
+            //CvInvoke.Threshold(mat_data, mat_data, 250, 255, ThresholdType.Binary);
+            var rgb = mat_data.Split();
+            var fr = new Mat();
+            var fg = new Mat();
+            var fb = new Mat();
+            rgb[0].ConvertTo(fr, DepthType.Cv32F);
+            rgb[1].ConvertTo(fg, DepthType.Cv32F);
+            rgb[2].ConvertTo(fb, DepthType.Cv32F);
+
+
+            var matAll = (fr + fg + fb);
+            var kern5 = new Matrix<float>(new float[,] { { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 } });
+            CvInvoke.Filter2D(matAll, matAll, kern5, new Point(-1, -1));
+            var data = (byte[,,])mat_data.GetData();
+            
+            int j = (int)(data.GetLength(0)/2);
+            int br = 0;
+            int i_m = 0;
+            for (int i = wind; i < data.GetLength(1)- wind; i++)
+            {
+               /* int br_cur = 0;
+               
+                for (int k = -wind; k<wind;k++)
+                {
+                    br_cur += data[j, i+k, 0] + data[j, i + k, 1] + data[j, i + k, 2];
+                }*/
+                int br_cur = data[j, i , 0] + data[j, i , 1] + data[j, i , 2];
+                if (br_cur > br)
+                {
+                    br = br_cur;
+                    i_m = i;
+                }
+            }
+            return new PointF[] { new PointF(i_m, j) };
+        }
         public static PointF[] detectLine(Mat mat, int wind=12)
         {
             var ps = new PointF[mat.Width];
