@@ -15,43 +15,78 @@ namespace opengl3
 {
     public static class Detection
     {
-        public static PointF[] detectLineSensor(Mat mat, int wind = 20)
+        public static PointF[] detectLineSensor(Mat mat, int wind = 5)
         {
             var mat_data = mat.Clone();
-            //CvInvoke.Threshold(mat_data, mat_data, 250, 255, ThresholdType.Binary);
-            var rgb = mat_data.Split();
-            var fr = new Mat();
-            var fg = new Mat();
-            var fb = new Mat();
-            rgb[0].ConvertTo(fr, DepthType.Cv32F);
-            rgb[1].ConvertTo(fg, DepthType.Cv32F);
-            rgb[2].ConvertTo(fb, DepthType.Cv32F);
-
-
-            var matAll = (fr + fg + fb);
-            var kern5 = new Matrix<float>(new float[,] { { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 } });
-            CvInvoke.Filter2D(matAll, matAll, kern5, new Point(-1, -1));
-            var data = (byte[,,])mat_data.GetData();
+            CvInvoke.CvtColor(mat_data, mat_data, ColorConversion.Bgr2Gray);
+            CvInvoke.GaussianBlur(mat_data, mat_data, new Size(5,5), -1);
+            var data = (byte[,])mat_data.GetData();
             
             int j = (int)(data.GetLength(0)/2);
-            int br = 0;
+            float br = 0;
             int i_m = 0;
-            for (int i = wind; i < data.GetLength(1)- wind; i++)
+            var ps_b = new List<PointF>();
+            for (int i = 0; i < data.GetLength(1); i++)
             {
-               /* int br_cur = 0;
-               
-                for (int k = -wind; k<wind;k++)
-                {
-                    br_cur += data[j, i+k, 0] + data[j, i + k, 1] + data[j, i + k, 2];
-                }*/
-                int br_cur = data[j, i , 0] + data[j, i , 1] + data[j, i , 2];
+                
+                int br_sum = 0;
+                for (int k = -wind; k < wind ; k++)
+                    br_sum += data[j + k, i];
+                float br_cur = br_sum/(wind*2);
+                ps_b.Add(new PointF(i, 480 - br_cur));
                 if (br_cur > br)
                 {
                     br = br_cur;
                     i_m = i;
                 }
             }
-            return new PointF[] { new PointF(i_m, j) };
+            var ps_imp = ps_b.GetRange(i_m - 3, 7).ToArray();
+            var vals_regr = new List<double[]>();
+            for (int i = 0; i < ps_imp.Length; i++)
+            {
+                vals_regr.Add(new double[] { ps_imp[i].X, ps_imp[i].Y });
+            }
+
+            var koef = Regression.regression(vals_regr.ToArray(), 2);
+            var a = koef[2];
+            var b = koef[1];
+            var x_cent = (-b / (2 * a));
+
+            var ps = new PointF[] { new PointF(x_cent, j)};
+
+            /*return Regression.paintRegression(mat, vals_regr.ToArray(),2);
+
+            var color = UtilOpenCV.drawPointsF(mat, ps_imp, 0, 0, 255);
+            color = UtilOpenCV.drawPointsF(color, ps, 255, 0, 0);
+            Console.WriteLine(ps[0].X);
+            return color;*/
+            return ps;
+        }
+
+        public static PointF[] detectLineSensor_old(Mat mat, int wind = 20)
+        {
+            var mat_data = mat.Clone();
+            var data = (byte[,,])mat_data.GetData();
+
+            int j = (int)(data.GetLength(0) / 2);
+            int br = 0;
+            int i_m = 0;
+            for (int i = wind; i < data.GetLength(1) - wind; i++)
+            {
+                /* int br_cur = 0;
+
+                 for (int k = -wind; k<wind;k++)
+                 {
+                     br_cur += data[j, i+k, 0] + data[j, i + k, 1] + data[j, i + k, 2];
+                 }*/
+                int br_cur = data[j, i, 0] + data[j, i , 1] + data[j, i , 2];
+                if (br_cur > br)
+                {
+                    br = br_cur;
+                    i_m = i;
+                }
+            }
+             return new PointF[] { new PointF(i_m, j) };
         }
         public static PointF[] detectLine(Mat mat, int wind=12)
         {
@@ -331,6 +366,22 @@ namespace opengl3
             var mc = (float)masX_sum / (float)mas_sum;
             //Console.WriteLine(mc+"   _________________");
             return mc;
+        }
+
+        static PointF centerOfMass(PointF[] col)
+        {
+            float mas_sum = 0;
+            float masX_sum = 0;
+            for (int i = 0; i < col.Length; i++)
+            {
+                mas_sum += col[i].Y;
+                masX_sum += (col[i].X * col[i].Y);
+                //Console.WriteLine(col[i, 0] + " "+col[i, 1]);
+            }
+
+            var mc = masX_sum / mas_sum;
+            //Console.WriteLine(mc+"   _________________");
+            return new PointF(mc, mas_sum/col.Length);
         }
 
         static float localMax(int[,] col)

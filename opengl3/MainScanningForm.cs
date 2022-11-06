@@ -1993,6 +1993,7 @@ namespace opengl3
             switch (imProcType)
             {
                 case FrameType.Test:
+                    laserLine?.offLaserSensor();
                     imb_base[ind-1].Image = mat;
                     break;
                 case FrameType.MarkBoard:
@@ -2003,13 +2004,23 @@ namespace opengl3
                     break;
 
                 case FrameType.LasLin://laser sensor
-                    var ps = Detection.detectLineSensor(mat);
-                    imb_base[ind - 1].Image = UtilOpenCV.drawPointsF(mat, ps,255,0,0);
-                    Console.WriteLine(ps[0].X);
+                    try
+                    {
+                        var ps = Detection.detectLineSensor(mat);
+                        Console.WriteLine(ps[0].X);
+                        laserLine?.setLaserCur((int)(10 * ps[0].X));
+                        Console.WriteLine((int)(10 * ps[0].X));
+                        CvInvoke.Line(mat, new Point(350, 0), new Point(350, mat.Width - 1), new MCvScalar(0, 255, 0));
+                        imb_base[ind - 1].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
+                        
+                        
+                        //imb_base[ind - 1].Image = Detection.detectLineSensor(mat);
+                    }
+                     catch
+                    {
 
-                    laserLine?.onLaserSensor();
-                    laserLine?.setLaserCur((int)ps[0].X);
-
+                    }
+                    //imb_base[ind - 1].Image = Detection.detectLineSensor(mat);
                     break;
                 case FrameType.Pattern:
                     System.Drawing.PointF[] points = null;
@@ -2527,7 +2538,7 @@ namespace opengl3
             im.CopyTo(mat_im);
 
             var stroka = ContourAnalyse.findContour(mat_im, box, bin);
-            var mat_out = Regression.paintRegression(mat_im, stroka);
+            var mat_out = Regression.paintRegression(mat_im, stroka,2);
             var points = Regression.regressionPoints(mat_im.Size, stroka);
             //drawTours(mat_out, points, 0, 255, 255);
             imageBox2.Image = im;
@@ -2786,6 +2797,7 @@ namespace opengl3
             else if (combo_improc.SelectedIndex == 3)
             {
                 imProcType = FrameType.LasLin;
+                laserLine?.onLaserSensor();
             }
             else
             {
@@ -3068,9 +3080,23 @@ namespace opengl3
             GL1.buffersGl.sortObj();
         }
 
+
         #endregion
 
+        private void but_laser_dest_Click(object sender, EventArgs e)
+        {
+            laserLine?.setLaserDest(Convert.ToInt32(textBox_laser_dest.Text));
+        }
 
+        private void but_set_kpp_Click(object sender, EventArgs e)
+        {
+            laserLine?.setK_p_p(Convert.ToInt32(textBox_set_kpp.Text));
+        }
+
+        private void butset_kvp_Click(object sender, EventArgs e)
+        {
+            laserLine?.setK_v_p(Convert.ToInt32(textBox_set_kvp.Text));
+        }
     }
 }
 

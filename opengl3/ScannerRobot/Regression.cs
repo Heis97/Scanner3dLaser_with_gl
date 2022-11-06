@@ -98,10 +98,13 @@ namespace opengl3
             }
             return points.ToArray();
         }
-        static public Mat paintRegression(Mat mat, double[][] values)
+        static public Mat paintRegression(Mat mat, double[][] values, int degree)
         {
-            var koef = regression(values, 4);
+            var koef = regression(values, degree);
             var im = mat.ToImage<Bgr, Byte>();
+            var a = koef[2];
+            var b = koef[1];
+            var x_cent =(int)(-b / (2 * a));
             for (int x = 0; x < im.Width; x++)
             {
                 int y = (int)calcPolynSolv(koef, x);
@@ -115,9 +118,19 @@ namespace opengl3
                 }
                 //Console.WriteLine(y + " " + im.Height);
                 im.Data[y, x, 1] = 255;
+                if(x==x_cent)
+                {
+                    for (int y1 = 0; y1 < im.Height; y1++)
+                    {
+                        im.Data[y1, x, 2] = 255;
+                    }
+                }
             }
+
             return im.Mat;
         }
+
+
         static public double calcPolynSolv(double[] k, double x)
         {
             double solv = 0;

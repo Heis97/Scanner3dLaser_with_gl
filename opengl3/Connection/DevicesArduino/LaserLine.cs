@@ -17,7 +17,9 @@ namespace opengl3
             shvp_vel = 5,
             laser_cur = 6,
             laser_dest = 7,
-            laser_sensor = 8;
+            laser_sensor = 8,
+            k_p_p = 9,
+            k_v_p = 10;
         int on = 1, off = 2;
         public LaserLine(string _port)
         {
@@ -58,6 +60,10 @@ namespace opengl3
         {
             send(_pos, laser_cur);
         }
+        public void setLaserDest(int _pos)
+        {
+            send(_pos, laser_dest);
+        }
         public void onLaserSensor()
         {
             send(on, laser_sensor);
@@ -65,6 +71,14 @@ namespace opengl3
         public void offLaserSensor()
         {
             send(off, laser_sensor);
+        }
+        public void setK_p_p(int _pos)
+        {
+            send(_pos, k_p_p);
+        }
+        public void setK_v_p(int _pos)
+        {
+            send(_pos, k_v_p);
         }
         static int comp_vel_div(double vel)
         {

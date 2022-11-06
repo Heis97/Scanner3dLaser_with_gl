@@ -60,12 +60,12 @@ namespace opengl3
                     {
                         Console.WriteLine("except convert");
                     }
-                    if (Mes1.Length <= 3 && Mes2.Length <= 2)
+                    if (Mes1.Length <= 4 && Mes2.Length <= 2)
                     {
 
 
 
-                        while (Mes1.Length < 3)
+                        while (Mes1.Length < 4)
                         {
                             Mes1 = "0" + Mes1;
                         }
@@ -78,6 +78,8 @@ namespace opengl3
                         {
                             Console.WriteLine("Out: " + Mes1);
                             this.serialPort.WriteLine(Mes1);
+                            //Thread.Sleep(5);
+                            //Console.WriteLine(reseav());
                         }
                         catch
                         {

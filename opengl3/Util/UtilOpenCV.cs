@@ -630,11 +630,11 @@ namespace opengl3
         {
             drawPoints(im, PointF.toPoint(points), r, g, b, size);
         }
-        static public Mat drawPointsF(Mat im, PointF[] points, int r, int g, int b, int size = 1)
+        static public Mat drawPointsF(Mat im, PointF[] points, int r, int g, int b, int size = 0)
         {
             return drawPoints(im, PointF.toPoint(points), r, g, b, size);
         }
-        static public Mat drawPoints(Mat im, Point[] points, int r, int g, int b, int size = 1)
+        static public Mat drawPoints(Mat im, Point[] points, int r, int g, int b, int size = 0)
         {
             var color = new MCvScalar(b, g, r);//bgr            
             if(points==null || im == null)
