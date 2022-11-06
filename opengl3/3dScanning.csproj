@@ -194,6 +194,18 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\.gitignore" />
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\examples\timer-api-2timers\timer-api-2timers.ino" />
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\examples\timer-api-counter\timer-api-counter.ino" />
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\examples\timer-api-custom-clock\timer-api-custom-clock.ino" />
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\examples\timer-api-start-stop\timer-api-start-stop.ino" />
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\examples\timer-api-stepper\timer-api-stepper.ino" />
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\examples\timer-api-test-max-freq\timer-api-test-max-freq.ino" />
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\examples\timer-api\timer-api.ino" />
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\library.properties" />
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\LICENSE" />
+    <None Include="Connection\DevicesArduino\arduino-timer-api-master\README.md" />
+    <None Include="Connection\DevicesArduino\LaserScanner070422_nano\LaserScanner070422_nano.ino" />
     <None Include="Graphic\Shaders\Comp\CompSh.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -319,6 +331,17 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Connection\DevicesArduino\arduino-timer-api-master\src\avr\timer_freq.c" />
+    <Content Include="Connection\DevicesArduino\arduino-timer-api-master\src\avr\timer_setup.c" />
+    <Content Include="Connection\DevicesArduino\arduino-timer-api-master\src\pic32\timer_freq.c" />
+    <Content Include="Connection\DevicesArduino\arduino-timer-api-master\src\pic32\timer_setup.c" />
+    <Content Include="Connection\DevicesArduino\arduino-timer-api-master\src\sam\timer_freq.c" />
+    <Content Include="Connection\DevicesArduino\arduino-timer-api-master\src\sam\timer_setup.c" />
+    <Content Include="Connection\DevicesArduino\arduino-timer-api-master\src\timer-api.h" />
+    <Content Include="Connection\DevicesArduino\arduino-timer-api-master\src\timer_setup.h" />
+    <Content Include="Connection\DevicesArduino\StepDirDriverPoz\keywords.txt" />
+    <Content Include="Connection\DevicesArduino\StepDirDriverPoz\StepDirDriverPoz.cpp" />
+    <Content Include="Connection\DevicesArduino\StepDirDriverPoz\StepDirDriverPoz.h" />
     <Content Include="Graphic\Shaders\Frag\FragmSh_triang.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
