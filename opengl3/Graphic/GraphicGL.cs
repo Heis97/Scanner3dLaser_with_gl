@@ -51,8 +51,9 @@ namespace opengl3
         {
             Gl.BindTexture(TextureTarget.Texture2d, id);
             float[] dataf = new float[w * h * ch];
+            Console.WriteLine("get text");
             Gl.GetTexImage(TextureTarget.Texture2d, 0, pixelFormat, PixelType.Float, dataf);
-            //Console.WriteLine(w+" "+h+" "+ch+" "+ dataf.Length);
+            Console.WriteLine(w+" "+h+" "+ch+" "+ dataf.Length);
             return dataf;
         }
         public void setData(float[] data)
@@ -432,7 +433,7 @@ namespace opengl3
             var ps1_t = new TextureGL(5, w, h, PixelFormat.Rgba, ps1_data);//lines
             var ps2_t = new TextureGL(6, w, h, PixelFormat.Rgba, ps2_data);//triangles
             var ps_cross_t = new TextureGL(7, w, h, PixelFormat.Rgba);//ans
-
+            Console.WriteLine("loaded on gpu.");
             //Console.WriteLine(toStringBuf(ps1_t.getData(), 4, 0, "ps1_t"));
             //Console.WriteLine(toStringBuf(ps2_t.getData(), 4, 0, "ps2_t"));
             //Console.WriteLine(toStringBuf(ps_cross_t.getData(), 4, 0, "ps_cross_t"));
@@ -440,9 +441,12 @@ namespace opengl3
             Gl.UseProgram(programID_comp);
             Gl.DispatchCompute((uint)w, (uint)h, 1);
             Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
+            Console.WriteLine("computed.");
 
             var ps_cr = Point3d_GL.dataToPoints2d(Point3d_GL.divide_data(ps_cross_t.getData(), w));
+            Console.WriteLine("loaded from gpu.");
             Point3d_GL.colorPoints2d(ps1, ps_cr);
+            Console.WriteLine("colored.");
 
             //Console.WriteLine(toStringBuf(debug_t.getData(),w * 4, 4, "debug_t"));
             //Console.WriteLine(w + " " + h);

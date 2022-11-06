@@ -209,7 +209,7 @@ namespace opengl3
             return ps;
         }
 
-        public static PointF[] detectLineDiff(Mat _mat, int wind = 3,float board = 0.05f,bool reverse = false)
+        public static PointF[] detectLineDiff_2(Mat _mat, int wind = 3,float board = 0.05f,bool reverse = false)
         {
             var mat = _mat.Clone();
             
@@ -253,10 +253,12 @@ namespace opengl3
             //var data_sob = (byte[,])sob.GetData();
             var data = (float[,])matAll.GetData();
             var br_max = int.MinValue;
+            int start_miss = 0;
             for (int i = (int)(board* data.GetLength(1)); i < data.GetLength(1)- (int)(board * data.GetLength(1)); i++)
             {
                 br_max = int.MinValue;
                 int j_max = 0;
+                bool p_add = false;
                 for (int j = wind; j < data.GetLength(0) - wind; j++)
                 {
                     int br_cur = (int)data[j, i];
@@ -295,20 +297,30 @@ namespace opengl3
                     {
 
                         ps_list.Add(new PointF(i, j_max_2));
+                        p_add = true;
+                    }               
+                }
+                if(!p_add)
+                {
+                    if (ps_list.Count > 0)
+                    {
+                        ps_list.Add(ps_list[ps_list.Count - 1]);
                     }
                     else
                     {
-                        if(ps_list.Count > 0)
-                        {
-                            ps_list.Add(ps_list[ps_list.Count-1]);
-                        }
+                        start_miss++;
                     }
-                    
-                    
                 }
-                //ps[i] = new PointF(i, j_max);
-                
 
+            }
+            if (start_miss > 0)
+            {
+                ps_list.Reverse();
+                for (int i = 0; i < start_miss; i++)
+                {
+                    ps_list.Add(ps_list[ps_list.Count - 1]);
+                }
+                ps_list.Reverse();
             }
             ps = ps_list.ToArray();
             ps = medianFilter(ps,5,4);
@@ -328,6 +340,134 @@ namespace opengl3
             }
            
 
+            return ps;
+        }
+
+        public static PointF[] detectLineDiff(Mat _mat, int wind = 5, float board = 0.05f, bool reverse = false)
+        {
+            var mat = _mat.Clone();
+
+            if (reverse)
+            {
+                CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90Clockwise);
+            }
+            else
+            {
+                CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90CounterClockwise);
+            }
+
+            var ps = new PointF[mat.Width];
+            var ps_list = new List<PointF>();
+
+            CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
+            CvInvoke.GaussianBlur(mat, mat, new Size(5, 5), -1);
+
+            var data = (byte[,])mat.GetData();
+            var ps_arr_j = new PointF[data.GetLength(0)];
+            int start_miss = 0;
+            for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();
+
+            for (int i = (int)(board * data.GetLength(1)); i < data.GetLength(1) - (int)(board * data.GetLength(1)); i++)
+            {
+                bool p_add = false;
+                var br_max = int.MinValue;
+                br_max = int.MinValue;
+                int j_max = 0;
+                for (int j = 0; j < data.GetLength(0); j++)
+                {
+                    int br_cur = (int)data[j, i];
+                    /*for(int i_w =0; i_w<wind-1; i_w++)
+                    {
+                        br_cur += (int)data[j + i_w, i ];
+                    }*/
+                    if (br_cur > br_max)
+                    {
+                        br_max = br_cur;
+                        j_max = j;
+                    }
+                    ps_arr_j[j] = new PointF(j, br_cur);
+                }
+
+                var ps_list_j = ps_arr_j.ToList();
+                
+                if (j_max < wind) j_max = wind;
+                if (j_max > data.GetLength(0) - wind - 1) j_max = data.GetLength(0) - wind - 1;
+
+                var ps_imp = ps_list_j.GetRange(j_max - wind, 2 * wind + 1).ToArray();
+                var vals_regr = new List<double[]>();
+                for (int k1 = 0; k1 < ps_imp.Length; k1++)
+                {
+                    vals_regr.Add(new double[] { ps_imp[k1].X, ps_imp[k1].Y });
+                }
+
+                var koef = Regression.regression(vals_regr.ToArray(), 2);
+                var a = koef[2];
+                var b = koef[1];
+                var j_max_2 = (-b / (2 * a));
+                if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
+                {
+                    if (data[(int)j_max_2, i] > 20)
+                    {
+                        ps_list.Add(new PointF(i, j_max_2));
+                        p_add = true;
+                    }
+                }
+
+                if(!p_add)
+                {
+                    ps_list.Add(PointF.notExistP());
+                   /* if (ps_list.Count > 0)
+                        ps_list.Add(ps_list[ps_list.Count - 1]);
+
+                    else
+                        start_miss++;  */                          
+                }
+
+                
+
+            }
+           /* if(start_miss>0)
+            {
+                ps_list.Reverse();
+                for(int i =0; i<start_miss;i++)
+                {
+                    ps_list.Add(ps_list[ps_list.Count - 1]);
+                }
+                ps_list.Reverse();
+            }*/
+            
+
+            ps = ps_list.ToArray();
+            int miss_coun = 0;
+            /*foreach(var v in ps)
+            {
+                if (!v.exist) miss_coun++;
+            }
+            Console.WriteLine("bef: "+miss_coun);*/
+            miss_coun = 0;
+            ps = connectPoints(ps);
+            foreach (var v in ps)
+            {
+                if (!v.exist) miss_coun++;
+            }
+            Console.WriteLine("aft: " + miss_coun);
+            ps = medianFilter(ps, 5, 4);
+            //medianFilter(ps, 5, 5);
+            // gaussFilter(ps);
+            //ps = onesFilter(ps, 2);
+
+            //Console.WriteLine(ps.Length);
+            GC.Collect();
+            if (reverse)
+            {
+                ps = rotatePointsCounterClockwise(ps, _mat.Size);
+            }
+            else
+            {
+                ps = rotatePointsClockwise(ps, _mat.Size);
+            }
+            
+            //CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(_mat, ps, 255, 0, 0));
             return ps;
         }
 
@@ -351,7 +491,63 @@ namespace opengl3
             }
             return ps_rot;
         }
+        static public double calcYbetween2Point(double x, PointF p1, PointF p2)
+        {
+            var dx = p2.X - p1.X;
+            var dy = p2.Y - p1.Y;
+            var a = dy / dx;
+            var b = p1.Y - a * p1.X;
+            return a * x + b;
+        }
+        static public PointF[] connectPoints(PointF[] inp)
+        {
+            PointF[] ret = new PointF[inp.Length];
+            List<int> indixes = new List<int>();
+            for (int i = 0; i < inp.Length; i++)
+            {
+                if (inp[i].exist)
+                {
+                    indixes.Add(i);
+                }
+            }
+            var indes = indixes.ToArray();
+            int next_p = 1;
+            for (int i = 0; i < inp.Length; i++)
+            {
+                double y = 0;
 
+                if (i < inp.Length - 1 && indes[next_p] <= i && next_p < indes.Length - 1)
+                {
+                    next_p++;
+                }
+                if (!inp[i].exist)
+                {
+                    var y1 = (float)inp[indes[next_p - 1]].Y;
+                    var y2 = (float)inp[indes[next_p]].Y;
+                    var y_prev = calcYbetween2Point(i, new PointF(indes[next_p - 1], y1), new PointF(indes[next_p], y2));
+                    var mx = Math.Max(y1, y2);
+                    var mn = Math.Min(y1, y2);
+                    if (y_prev > mx)
+                    {
+                        y = mx;
+                    }
+                    else if (y_prev < mn)
+                    {
+                        y = mn;
+                    }
+                    else
+                    {
+                        y = y_prev;
+                    }
+                }
+                else
+                {
+                    y = inp[i].Y;
+                }
+                ret[i] = new PointF(i, y);
+            }
+            return ret;
+        }
         static float centerOfMass(int[,] col)
         {
             int mas_sum = 0;

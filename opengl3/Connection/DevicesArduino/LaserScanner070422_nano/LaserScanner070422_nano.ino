@@ -11,8 +11,8 @@ volatile int laser_dest = 3500;
 volatile int laser_sensor = 0; 
 
 
-volatile float k_p_p = 20; 
-volatile float k_v_p = 100; 
+volatile float k_p_p = 4; 
+volatile float k_v_p = 50; 
 //settings for comp_vel
 const float nT = 1000;
 const float P = 8;

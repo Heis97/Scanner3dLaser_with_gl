@@ -102,8 +102,8 @@ namespace opengl3
                 mat[0] = stereocamera.cameraCVs[0].undist(mat[0]);
                 mat[1] = stereocamera.cameraCVs[1].undist(mat[1]);
             }
-            var points_im1 = Detection.detectLineDiff(mat[0], 7);
-            var points_im2 = Detection.detectLineDiff(mat[1], 7);
+            var points_im1 = Detection.detectLineDiff(mat[0]);
+            var points_im2 = Detection.detectLineDiff(mat[1]);
             if(points_im1.Length == points_im2.Length)
             {
                 stereocamera.cameraCVs[0].scan_points.Add(points_im1);
@@ -118,8 +118,8 @@ namespace opengl3
                stereocamera.cameraCVs[0].scan_points.ToArray(),
                stereocamera.cameraCVs[1].scan_points.ToArray(),
                stereocamera, graphicGL, color_im);
-
-            for(int i= 0; i < points_cam.Length; i++)
+            Console.WriteLine("gpu computed.");
+            for (int i= 0; i < points_cam.Length; i++)
             {
                 points3d_cur = points_cam[i];
                 if(points3d_cur != null)
@@ -224,6 +224,7 @@ namespace opengl3
 
             var ps1 = comp_points_for_gpu_2d(points3d_1, stereocamera.cameraCVs[0]);
             var ps2 = comp_points_for_gpu_2d(points3d_2, stereocamera.cameraCVs[1]);
+            Console.WriteLine("points prepared.");
             var points_cam2b = graphicGL.cross_flat_gpu_all(ps1, ps2);
 
             //Console.WriteLine(graphicGL.toStringBuf(Point3d_GL.toMesh(points_cam2b), 3, 0, "orig ps"));
@@ -334,8 +335,14 @@ namespace opengl3
                 points3d[i] = cameraCV.point3DfromCam(points_im[i]);
                 if(image != null)
                 {
-                    var color = image[(int)points_im[i].Y, (int)points_im[i].X];
-                    points3d[i].color = new Colo3d_GL(color.Red/255, color.Green / 255, color.Blue / 255);
+                    var y= (int)points_im[i].Y;
+                    var x = (int)points_im[i].X;
+                    if (x >= 0 && x < image.Width && y >= 0 && y < image.Height)
+                    {
+                        var color = image[y, x];
+                        points3d[i].color = new Colo3d_GL(color.Red / 255, color.Green / 255, color.Blue / 255);
+                    }
+                   
                 }               
             }
             return points3d;

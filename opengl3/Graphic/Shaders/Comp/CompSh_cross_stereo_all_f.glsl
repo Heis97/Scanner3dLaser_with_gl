@@ -113,20 +113,9 @@ void main()
 		Polygon polygon = create_polygon(p2_0.xyz,p2_1.xyz,p2_2.xyz);
 		vec4 crossl =  calc_cross_flat(line, polygon.flat3d);
 		vec4 p_cross = cross_line(polygon, line);
-		/*if(gl_GlobalInvocationID.y==0)
-		{
-			imageStore(debug, ivec2(i,0), vec4(p1_0,0));
-			imageStore(debug, ivec2(i,1), vec4(p1_1,0));
-			imageStore(debug, ivec2(i,2), p2_0);
-			imageStore(debug, ivec2(i,3), p2_1);
-			imageStore(debug, ivec2(i,4), p2_2);
-			//imageStore(ps_cross, ivec2(i,5), vec4(gl_GlobalInvocationID.x,5,0,0));
-		}*/
 		if(p_cross.w>0)
 		{
 			imageStore(ps_cross, pos, vec4(p_cross));
 		}
 	}	
-	//imageStore(ps_cross, pos, vec4(gl_GlobalInvocationID.xy,0,0));
-	//imageStore(ps_cross, pos, vec4(p_test.xyz,gl_GlobalInvocationID.x));
 }	

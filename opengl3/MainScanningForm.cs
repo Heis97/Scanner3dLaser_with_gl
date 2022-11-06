@@ -451,6 +451,7 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             loadVideo_stereo(scan_path_1, scanner, strip);
             mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
+            
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
             GL1.buffersGl.sortObj();
@@ -2764,6 +2765,20 @@ namespace opengl3
             laserLine?.setPower(Convert.ToInt32(textBox_powerLaser.Text));
         }
 
+        private void but_laser_dest_Click(object sender, EventArgs e)
+        {
+            laserLine?.setLaserDest(Convert.ToInt32(textBox_laser_dest.Text));
+        }
+
+        private void but_set_kpp_Click(object sender, EventArgs e)
+        {
+            laserLine?.setK_p_p(Convert.ToInt32(textBox_set_kpp.Text));
+        }
+
+        private void butset_kvp_Click(object sender, EventArgs e)
+        {
+            laserLine?.setK_v_p(Convert.ToInt32(textBox_set_kvp.Text));
+        }
         private void comboBox_portsArd_SelectedIndexChanged(object sender, EventArgs e)
         {
             portArd = (string)((ComboBox)sender).SelectedItem;
@@ -2899,9 +2914,13 @@ namespace opengl3
                         im1 -= orig1;
                         im2 -= orig2;
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                        var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
-                        frame_d.stereo = true;
-                        frames_show.Add(frame_d);
+                        if(strip>3)
+                        {
+                            var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                            frame_d.stereo = true;
+                            frames_show.Add(frame_d);
+                        }
+                        
                         //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
                         /*var ps1 = Detection.detectLineDiff(im1, 7);
                         var ps2 = Detection.detectLineDiff(im2, 7);
@@ -2918,7 +2937,7 @@ namespace opengl3
             }
             comboImages.Items.AddRange(frames_show.ToArray());
             scanner.compPointsStereoLas_2d();
-
+            Console.WriteLine("Points computed.");
         }
         #endregion
 
@@ -3004,7 +3023,7 @@ namespace opengl3
 
 
             loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
-            load_scan_v2(scan_path,2);
+            load_scan_v2(scan_path,1);
 
         }
 
@@ -3083,20 +3102,7 @@ namespace opengl3
 
         #endregion
 
-        private void but_laser_dest_Click(object sender, EventArgs e)
-        {
-            laserLine?.setLaserDest(Convert.ToInt32(textBox_laser_dest.Text));
-        }
-
-        private void but_set_kpp_Click(object sender, EventArgs e)
-        {
-            laserLine?.setK_p_p(Convert.ToInt32(textBox_set_kpp.Text));
-        }
-
-        private void butset_kvp_Click(object sender, EventArgs e)
-        {
-            laserLine?.setK_v_p(Convert.ToInt32(textBox_set_kvp.Text));
-        }
+        
     }
 }
 

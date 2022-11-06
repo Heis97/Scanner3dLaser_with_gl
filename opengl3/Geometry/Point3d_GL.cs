@@ -129,7 +129,6 @@ namespace opengl3
             for (int i = 0; i < data.Length; i++)
             {
                 ps.Add(dataToPoints_ex(data[i]));
-                
             }
             return ps.ToArray();
         }

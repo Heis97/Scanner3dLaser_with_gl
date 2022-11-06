@@ -9,7 +9,6 @@ double len_vec(dvec3 v)
 {
 	return (sqrt(v.x*v.x +v.y * v.y + v.z * v.z));
 }
-
 dvec3 norm(dvec3 v)
 {
 	double len = len_vec(v);
@@ -116,7 +115,11 @@ void main()
 		dvec4 p_cross = cross_line(polygon, line);
 		if(p_cross.w>0)
 		{
-			imageStore(ps_cross, pos, vec4(p_cross));
+			imageStore(ps_cross, pos, vec4(
+			float(p_cross.x),
+			float(p_cross.y),
+			float(p_cross.z),
+			float(p_cross.w)));
 		}
 
 		

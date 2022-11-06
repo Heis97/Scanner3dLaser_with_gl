@@ -360,6 +360,7 @@ namespace opengl3
             {
                 polygons.AddRange(triangulate_two_lines_xy(ps[i - 1], ps[i]));
             }
+            Console.WriteLine("triangulated.");
             return polygons.ToArray();
         }
 
