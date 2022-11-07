@@ -364,14 +364,12 @@ namespace opengl3
 
             var data = (byte[,])mat.GetData();
             var ps_arr_j = new PointF[data.GetLength(0)];
-            int start_miss = 0;
             for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();
 
             for (int i = (int)(board * data.GetLength(1)); i < data.GetLength(1) - (int)(board * data.GetLength(1)); i++)
             {
                 bool p_add = false;
                 var br_max = int.MinValue;
-                br_max = int.MinValue;
                 int j_max = 0;
                 for (int j = 0; j < data.GetLength(0); j++)
                 {
@@ -398,15 +396,6 @@ namespace opengl3
                 for (int k1 = 0; k1 < ps_imp.Length; k1++)
                 {
                     vals_regr.Add(new double[] { ps_imp[k1].X, ps_imp[k1].Y });
-                    }
-                    else
-                    {
-                        if(ps_list.Count > 0)
-                        {
-                            ps_list.Add(new PointF(i, ps_list[ps_list.Count - 1].Y));
-                        }
-                    }
-                    
                     
                 }
 
@@ -425,36 +414,17 @@ namespace opengl3
 
                 if(!p_add)
                 {
-                    ps_list.Add(PointF.notExistP());
-                   /* if (ps_list.Count > 0)
-                        ps_list.Add(ps_list[ps_list.Count - 1]);
-
-                    else
-                        start_miss++;  */                          
+                    ps_list.Add(PointF.notExistP());                     
                 }
 
                 
 
             }
-           /* if(start_miss>0)
-            {
-                ps_list.Reverse();
-                for(int i =0; i<start_miss;i++)
-                {
-                    ps_list.Add(ps_list[ps_list.Count - 1]);
-                }
-                ps_list.Reverse();
-            }*/
             
-
             ps = ps_list.ToArray();
-            ps = medianFilter(ps,5,4);
-            //medianFilter(ps, 5, 5);
-            //ps = gaussFilter(ps,60);
-            //ps = onesFilter(ps, 2);
+            ps = connectPoints(ps);
+            ps = medianFilter(ps,5,5);
 
-            //Console.WriteLine(ps.Length);
-            //Console.WriteLine(ps.Length);
             GC.Collect();
             if (reverse)
             {
