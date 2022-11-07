@@ -45,7 +45,7 @@ namespace opengl3
             w = _w;
             h = _h;
             pixelFormat = _pixelFormat;
-            //Console.WriteLine("bind " + binding + "; w " + w + " h " + h + " ch " + ch + "; " + pixelFormat);
+            Console.WriteLine("genTexture bind " + binding + "; w " + w + " h " + h + " ch " + ch + "; " + pixelFormat);
         }
         public float[] getData()
         {

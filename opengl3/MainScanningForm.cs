@@ -194,7 +194,7 @@ namespace opengl3
             {
                 dz = 0.4,
                 div_step = 1.3,
-                h_transf = 5,
+                h_transf = 10,
                 layers = 2,
                 layers_angle = 0.47,// Math.PI / 4,
                 step = 0.4 * 4,
@@ -450,10 +450,15 @@ namespace opengl3
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             loadVideo_stereo(scan_path_1, scanner, strip);
+
+           /* var scan_stl = Point3d_GL.toMesh(scanner.getPointsLinesScene());
+            GL1.addGLMesh(scan_stl, PrimitiveType.Points);*/
+
             mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
             
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+
             GL1.buffersGl.sortObj();
             Console.WriteLine("Loading end.");
         }
@@ -2914,13 +2919,9 @@ namespace opengl3
                         im1 -= orig1;
                         im2 -= orig2;
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                        if(strip>3)
-                        {
-                            var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
-                            frame_d.stereo = true;
-                            frames_show.Add(frame_d);
-                        }
-                        
+                        var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                        frame_d.stereo = true;
+                        frames_show.Add(frame_d);
                         //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
                         /*var ps1 = Detection.detectLineDiff(im1, 7);
                         var ps2 = Detection.detectLineDiff(im2, 7);

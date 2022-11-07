@@ -172,7 +172,7 @@ namespace opengl3
         {           
             for (int i = 0; i < ps_color.Length; i++)
             {
-                for (int j = 0; j < ps_color[0].Length; j++)
+                for (int j = 0; j < ps_color[i].Length; j++)
                 {
                     ps[i][j].color = ps_color[i][j].color;
                 }
@@ -221,6 +221,15 @@ namespace opengl3
             return mesh;
         }
 
+        public static float[] toMesh(Point3d_GL[][] point3Ds)
+        {
+            var mesh = new List<float>();
+            for (int i = 0; i < point3Ds.Length; i++)
+            {
+                mesh.AddRange(toMesh(point3Ds[i]));
+            }
+            return mesh.ToArray();
+        }
         public static Point3d_GL[] toPoints(Vertex4f[] vertexs)
         {
             var ps = new Point3d_GL[vertexs.Length];

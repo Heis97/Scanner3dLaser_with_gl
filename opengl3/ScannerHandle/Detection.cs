@@ -398,6 +398,16 @@ namespace opengl3
                 for (int k1 = 0; k1 < ps_imp.Length; k1++)
                 {
                     vals_regr.Add(new double[] { ps_imp[k1].X, ps_imp[k1].Y });
+                    }
+                    else
+                    {
+                        if(ps_list.Count > 0)
+                        {
+                            ps_list.Add(new PointF(i, ps_list[ps_list.Count - 1].Y));
+                        }
+                    }
+                    
+                    
                 }
 
                 var koef = Regression.regression(vals_regr.ToArray(), 2);
@@ -438,24 +448,12 @@ namespace opengl3
             
 
             ps = ps_list.ToArray();
-            int miss_coun = 0;
-            /*foreach(var v in ps)
-            {
-                if (!v.exist) miss_coun++;
-            }
-            Console.WriteLine("bef: "+miss_coun);*/
-            miss_coun = 0;
-            ps = connectPoints(ps);
-            foreach (var v in ps)
-            {
-                if (!v.exist) miss_coun++;
-            }
-            Console.WriteLine("aft: " + miss_coun);
-            ps = medianFilter(ps, 5, 4);
+            ps = medianFilter(ps,5,4);
             //medianFilter(ps, 5, 5);
-            // gaussFilter(ps);
+            //ps = gaussFilter(ps,60);
             //ps = onesFilter(ps, 2);
 
+            //Console.WriteLine(ps.Length);
             //Console.WriteLine(ps.Length);
             GC.Collect();
             if (reverse)
@@ -599,36 +597,33 @@ namespace opengl3
         {
             //var ps_med = (PointF[])ps1.Clone();
             var ps1L = ps1.ToList();
-            for(int i= wind; i< ps1.Length - wind; i++)
+            var ps1L_cop = ps1.ToList();
+            for (int i= wind; i< ps1.Length - wind; i++)
             {
-                if(Math.Abs
-                        (
-                        ps1[i].Y - averageYps(ps1L.GetRange(i-wind,2* wind).ToArray())
-                        )>delt)
-                    
+                if(Math.Abs( ps1[i].Y - averageYps(ps1L.GetRange(i-wind,2* wind).ToArray()))>delt)                   
                 {
                     if(i>0)
                     {
-
-                        ps1L[i] = ps1[i - 1].Clone();
+                        ps1L_cop[i] = ps1L_cop[i - 1].Clone();
                     }
                     
                 }
             }
-            return ps1L.ToArray();
+            return ps1L_cop.ToArray();
         }
 
         static PointF[] gaussFilter(PointF[] ps1,  int wind = 3)
         {
             var ps1L = ps1.ToList();
+            var ps1ret = (PointF[])ps1.Clone();
             for (int i = wind; i < ps1.Length - wind; i++)
             {
                 if (i > 0)
                 {
-                    ps1[i] = new PointF(i, averageYps(ps1L.GetRange(i - wind, 2 * wind).ToArray()));
+                    ps1ret[i]  = new PointF(i, averageYps(ps1L.GetRange(i - wind, 2 * wind).ToArray()));
                 }               
             }
-            return ps1;
+            return ps1ret;
         }
 
         static float averageYps(PointF[] ps1)
@@ -639,6 +634,16 @@ namespace opengl3
                 avY += ps1[i].Y;
             }
             return avY / ps1.Length;
+        }
+
+        static float averageXps(PointF[] ps1)
+        {
+            float avX = 0;
+            for (int i = 0; i < ps1.Length; i++)
+            {
+                avX += ps1[i].X;
+            }
+            return avX / ps1.Length;
         }
 
         static PointF[] onesFilter(PointF[] ps1,float dist)

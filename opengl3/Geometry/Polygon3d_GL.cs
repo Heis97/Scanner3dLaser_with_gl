@@ -22,10 +22,10 @@ namespace opengl3
             v2 = new Vector3d_GL(P1, P3).normalize();
             v3 = v1 | v2;//vector multiply
 
-            //if(v3.z<0)
-            //{
-            //v3 = -v3;
-            //}
+            if(v3.z<0)
+            {
+                v3 = -v3;
+            }
             //Console.WriteLine(v3);
             v3.normalize();
             flat3D = new Flat3d_GL(v3.x, v3.y, v3.z, -v3 * P1);
@@ -141,8 +141,7 @@ namespace opengl3
             List<int>[] ps1_connect = new List<int>[ps1.Length];
             List<int>[] ps2_connect = new List<int>[ps2.Length];
             for (int i=1; i < ps1.Length; i++)
-            {
-                
+            {                
                 polygons.Add(new Polygon3d_GL(ps1[i-1],ps1[i],ps2[ind_2]));
                 polygons_ind.Add(new int[] { i - 1, i, ind_2,1 });
                 if (ps1_connect[i-1] == null)

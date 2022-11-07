@@ -102,13 +102,16 @@ namespace opengl3
                 mat[0] = stereocamera.cameraCVs[0].undist(mat[0]);
                 mat[1] = stereocamera.cameraCVs[1].undist(mat[1]);
             }
-            var points_im1 = Detection.detectLineDiff(mat[0]);
-            var points_im2 = Detection.detectLineDiff(mat[1]);
+            var points_im1 = Detection.detectLineDiff(mat[0], 7);
+            var points_im2 = Detection.detectLineDiff(mat[1], 7);
             if(points_im1.Length == points_im2.Length)
             {
                 stereocamera.cameraCVs[0].scan_points.Add(points_im1);
                 stereocamera.cameraCVs[1].scan_points.Add(points_im2);
             }
+            
+            Console.WriteLine(points_im1.Length + " " + points_im2.Length);
+
             return true;
         }
 
