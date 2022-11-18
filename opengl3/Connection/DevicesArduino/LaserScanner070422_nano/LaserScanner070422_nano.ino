@@ -49,7 +49,7 @@ void timer_handle_interrupts(int timer)
   if (timer == _TIMER1)
   {
     shvp.control();
-    controlLaser(laser,power);
+   // controlLaser(laser,power);
   }
   if(timer == _TIMER2)
   {
@@ -93,12 +93,6 @@ void move_mot(float vel,int steps = 0)
   }
   int vel_div = comp_vel(vel); 
   shvp.setDivider(vel_div);
-  /*Serial.print("vel_div: ");
-  Serial.println(vel_div);
-
-  Serial.print("shvp.readSteps(): ");
-  Serial.println(shvp.readSteps());*/
-
 }
 
 void laser_sens_step(int cur, int dest)
@@ -124,8 +118,6 @@ int comp_vel(float vel)
 
 void controlMove()
 {    
-if(laser_sensor!=1)  
-{
   if(moveshvp == 1 && shvp.readSteps()==0)
   {
     
@@ -138,8 +130,7 @@ if(laser_sensor!=1)
   {
     shvp.step(0);
     moveshvp = 1;
-  }
-}  
+  } 
 }
 void decod_main()
 {
@@ -184,11 +175,9 @@ void decod_main()
           case 9: k_p_p =0.1* _val; break;
           case 10: k_v_p =0.1* _val; break;
         }
-        _var = 0;
-        _val = 0;
         Serial.print(_var);
         Serial.print(" ");
-        Serial.println(_var);
+        Serial.println(_val);
         //Serial.println(resp);
         
         if (Serial.available())
