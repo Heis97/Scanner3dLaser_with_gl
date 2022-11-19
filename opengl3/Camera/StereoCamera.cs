@@ -48,6 +48,34 @@ namespace opengl3
                 }
             }
         }
+
+        public Matrix<double> calibrateBfs(Frame[] pos)
+        {
+            for(int i=0; i<pos.Length; i++)
+            {
+                cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, 10f);
+                var Bsm = cameraCVs[0].matrixCS.Clone();
+                var Bbf = new RobotFrame(pos[i].name).getMatrix();
+                var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix();
+                /*prin.t("Bsm");
+                prin.t(Bsm);
+                prin.t("Bbf");
+                prin.t(Bbf);
+                prin.t("Bbm");
+                prin.t(Bbm);*/
+                var Bsm_1 = Bsm.Clone();
+                var Bbf_1 = Bbf.Clone();
+                var Bbm_1 = Bbm.Clone();
+                CvInvoke.Invert(Bsm,Bsm_1,DecompMethod.LU);
+                CvInvoke.Invert(Bbf, Bbf_1, DecompMethod.LU);
+                CvInvoke.Invert(Bbm, Bbm_1, DecompMethod.LU);
+                var Bfs = Bbf_1 * Bbm * Bsm;
+                prin.t(Bfs);
+                prin.t("--------------------------------");
+
+            }
+            return null;
+        }
         /// <summary>
         /// For make housing
         /// </summary>

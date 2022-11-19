@@ -277,6 +277,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.but_calibr_Bfs = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -928,6 +929,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_calibr_Bfs);
             this.tabOpenGl.Controls.Add(this.propGrid_traj);
             this.tabOpenGl.Controls.Add(this.but_gl_clear);
             this.tabOpenGl.Controls.Add(this.label13);
@@ -2914,6 +2916,16 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
+            // but_calibr_Bfs
+            // 
+            this.but_calibr_Bfs.Location = new System.Drawing.Point(1173, 850);
+            this.but_calibr_Bfs.Name = "but_calibr_Bfs";
+            this.but_calibr_Bfs.Size = new System.Drawing.Size(96, 34);
+            this.but_calibr_Bfs.TabIndex = 120;
+            this.but_calibr_Bfs.Text = "Калибровка относит фланца";
+            this.but_calibr_Bfs.UseVisualStyleBackColor = true;
+            this.but_calibr_Bfs.Click += new System.EventHandler(this.but_calibr_Bfs_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -3247,6 +3259,7 @@ namespace opengl3
         private System.Windows.Forms.TextBox textBox_set_kpp;
         private System.Windows.Forms.Button butset_kvp;
         private System.Windows.Forms.TextBox textBox_set_kvp;
+        private System.Windows.Forms.Button but_calibr_Bfs;
     }
 }
 

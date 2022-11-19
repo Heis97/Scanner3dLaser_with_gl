@@ -24,8 +24,8 @@ namespace opengl3
             var im = rec.ToImage<Gray, byte>();
             var im_blur = im.SmoothGaussian(3);
             var im_sob = sobel(im_blur);
-           // CvInvoke.Imshow("sob", im_sob);
-            var im_tr = im_sob.ThresholdBinary(new Gray(105), new Gray(255));
+            //CvInvoke.Imshow("sob", im_sob);
+            var im_tr = im_sob.ThresholdBinary(new Gray(65), new Gray(255));
             //CvInvoke.Imshow("bin", im_tr);
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();

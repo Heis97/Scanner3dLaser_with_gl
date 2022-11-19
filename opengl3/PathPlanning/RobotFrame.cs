@@ -23,6 +23,26 @@ namespace opengl3
             D = d;
         }
 
+        public RobotFrame(string coords)
+        {
+            var coords_s = coords.Split(' ');
+            if (coords_s.Length < 6)
+                return;
+            X = Convert.ToDouble(coords_s[0]);
+            Y = Convert.ToDouble(coords_s[1]);
+            Z = Convert.ToDouble(coords_s[2]);
+            A = Convert.ToDouble(coords_s[3]);
+            B = Convert.ToDouble(coords_s[4]);
+            C = Convert.ToDouble(coords_s[5]);
+            V = 0;
+            D = 0;
+        }
+
+        public Matrix<double>  getMatrix()
+        {
+            return ABCmatr(X, Y, Z, A, B, C);
+        }
+
         public RobotFrame(Matrix<double> matrix, double v)
         {
             Matrix<double> base_matrix = ABCmatr(596.56, 87.9, 57.0, 1.9, 0.01, -0.005);

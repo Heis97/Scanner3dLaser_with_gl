@@ -142,10 +142,10 @@ namespace opengl3
              @"scan_2607_4",
              new float[] { 0.1f, 0.5f, 0.1f }, true, 20);*/
 
-            /*var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\stereo_cal_2007_1", @"cam2\stereo_cal_2007_1", FrameType.Pattern, true);
-            comboImages.Items.AddRange(frms_stereo1);
+           
 
-            for(int i=0; i< frms_stereo1.Length;i++)
+           
+            /*for(int i=0; i< frms_stereo1.Length;i++)
             {
                 scanner.initStereo(new Mat[] { frms_stereo1[i].im, frms_stereo1[i].im_sec }, PatternType.Mesh);
             }*/
@@ -3031,6 +3031,8 @@ namespace opengl3
 
         }
 
+
+
         string get_file_name(string init_direct)
         {
             var filePath = string.Empty;
@@ -3104,9 +3106,22 @@ namespace opengl3
         }
 
 
+
         #endregion
 
-        
+        private void but_calibr_Bfs_Click(object sender, EventArgs e)
+        {
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var cam1 = CameraCV.load_camera(cam1_conf_path);
+            var cam2 = CameraCV.load_camera(cam2_conf_path);
+            var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
+
+            var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\photo_1811_2", @"cam2\photo_1811_2", FrameType.Pattern, false);
+            comboImages.Items.AddRange(frms_stereo1);
+
+            stereo.calibrateBfs(frms_stereo1);
+        }
     }
 }
 
