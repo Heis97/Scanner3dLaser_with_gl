@@ -3,6 +3,7 @@ using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,69 @@ namespace opengl3
 {
     static public class Analyse
     {
+        private static List<string> GetFilesList(string path)
+        {
+            List<string> filesList = new List<string>();
+            string[] dirs = Directory.GetDirectories(path);
+            filesList.AddRange(Directory.GetFiles(path));
+            foreach (string subdirectory in dirs)
+            {
+                try
+                {
+                    filesList.AddRange(GetFilesList(subdirectory));
+                }
+                catch { }
+            }
+            return filesList;
+        }
+        static void chang_ph()
+        {
+            var files = GetFilesList(@"C:\Users\1\Desktop\Polina");
+            int ind = 0;
+            foreach (var f in files)
+            {
+               change_to_green(f);
+
+                ind++;
+                Console.WriteLine(ind + " " + files.Count);
+
+            }
+            Console.WriteLine(files.Count);
+
+        }
+
+        static void change_to_green(string f)
+        {
+
+            try
+            {
+                Console.WriteLine(f);
+                var mat1 = CvInvoke.Imread(f);
+                Console.WriteLine(mat1.NumberOfChannels);
+                Console.WriteLine(mat1.Depth);
+                var im = mat1.ToImage<Gray, Byte>();
+                var im_gr = new Image<Bgr, Byte>(im.Width, im.Height);
+                for (int i = 0; i < im.Width; i++)
+                {
+                    for (int j = 0; j < im.Height; j++)
+                    {
+                        im_gr.Data[j, i, 1] = im.Data[j, i, 0];
+                        im_gr.Data[j, i, 0] = 0;
+                        im_gr.Data[j, i, 2] = 0;
+                    }
+                }
+                //CvInvoke.Imshow("fa",im_gr);
+                // f = Path.GetFileName(f);
+                GC.Collect();
+                im_gr.Save(f);
+
+            }
+            catch
+            {
+                Console.WriteLine("not save: " + f);
+            }
+
+        }
         static public void paint3dpointsRGB(List<Point3d_GL[]> inp_points)
         {
             //addPointMesh(inp_points[0], 1.0f,0.0f, 0.0f);
