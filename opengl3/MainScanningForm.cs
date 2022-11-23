@@ -132,19 +132,21 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
+            Analyse.comp_defor(new Mat("nodef_1.jpg"), new Mat("def_1.jpg"));
+
            // timer = new System.Timers.Timer(100);
            // timer.Elapsed += drawTimeLabel;
            // timer.Start();
-            //loadVideo_stereo(@"test_1107_7");
+           //loadVideo_stereo(@"test_1107_7");
             /*loadScannerStereoLas(
             new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
              @"stereocal_2607_1",
              @"scan_2607_4",
              new float[] { 0.1f, 0.5f, 0.1f }, true, 20);*/
 
-           
 
-           
+
+
             /*for(int i=0; i< frms_stereo1.Length;i++)
             {
                 scanner.initStereo(new Mat[] { frms_stereo1[i].im, frms_stereo1[i].im_sec }, PatternType.Mesh);
