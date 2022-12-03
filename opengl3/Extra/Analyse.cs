@@ -1,8 +1,11 @@
 ﻿using Emgu.CV;
+using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +14,103 @@ namespace opengl3
 {
     static public class Analyse
     {
+        public static void comp_defor(Mat nodef, Mat def)
+        {
+            var def_c = def - nodef;            
+            // def_c = FindCircles.sobel(def_c.ToImage<Gray, byte>()).Mat;
+            def_c = new Mat(def_c.Clone(),new Rectangle(200,0,500,def_c.Height));
+            var orig = def_c.Clone();
+            Mat hier = new Mat();
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            CvInvoke.Threshold(def_c.ToImage<Gray, byte>().Mat, def_c, 50, 255, ThresholdType.Binary);
+            CvInvoke.FindContours(def_c, contours, hier, RetrType.External, ChainApproxMethod.ChainApproxSimple);
+
+            var area = comp_defor(ref contours);
+            CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
+            CvInvoke.PutText(orig, "S: "+area.ToString(),new Point(10,70),FontFace.HersheyScriptSimplex,1,new MCvScalar(0, 255, 0));
+            CvInvoke.Imshow("Area comp", orig);
+        }
+        public static double comp_defor(ref VectorOfVectorOfPoint contours)
+        {
+            int i_max = 0;
+            double max_cont = 0;
+            for (int i = 0; i < contours.Size; i++)
+            {
+                var area_cur = CvInvoke.ContourArea(contours[i]);
+                if(area_cur > max_cont)
+                {
+                    i_max = i;
+                    max_cont = area_cur;
+                }               
+            }
+            var ret = new VectorOfVectorOfPoint();
+            ret.Push(contours[i_max]);
+            contours = ret;
+            return max_cont;
+        }
+        private static List<string> GetFilesList(string path)
+        {
+            List<string> filesList = new List<string>();
+            string[] dirs = Directory.GetDirectories(path);
+            filesList.AddRange(Directory.GetFiles(path));
+            foreach (string subdirectory in dirs)
+            {
+                try
+                {
+                    filesList.AddRange(GetFilesList(subdirectory));
+                }
+                catch { }
+            }
+            return filesList;
+        }
+        static void chang_ph()
+        {
+            var files = GetFilesList(@"C:\Users\1\Desktop\Polina");
+            int ind = 0;
+            foreach (var f in files)
+            {
+               change_to_green(f);
+
+                ind++;
+                Console.WriteLine(ind + " " + files.Count);
+
+            }
+            Console.WriteLine(files.Count);
+
+        }
+
+        static void change_to_green(string f)
+        {
+
+            try
+            {
+                Console.WriteLine(f);
+                var mat1 = CvInvoke.Imread(f);
+                Console.WriteLine(mat1.NumberOfChannels);
+                Console.WriteLine(mat1.Depth);
+                var im = mat1.ToImage<Gray, Byte>();
+                var im_gr = new Image<Bgr, Byte>(im.Width, im.Height);
+                for (int i = 0; i < im.Width; i++)
+                {
+                    for (int j = 0; j < im.Height; j++)
+                    {
+                        im_gr.Data[j, i, 1] = im.Data[j, i, 0];
+                        im_gr.Data[j, i, 0] = 0;
+                        im_gr.Data[j, i, 2] = 0;
+                    }
+                }
+                //CvInvoke.Imshow("fa",im_gr);
+                // f = Path.GetFileName(f);
+                GC.Collect();
+                im_gr.Save(f);
+
+            }
+            catch
+            {
+                Console.WriteLine("not save: " + f);
+            }
+
+        }
         static public void paint3dpointsRGB(List<Point3d_GL[]> inp_points)
         {
             //addPointMesh(inp_points[0], 1.0f,0.0f, 0.0f);
