@@ -1992,14 +1992,14 @@ namespace opengl3
                 }
             }
         }
-
+         
         void imProcess(Mat mat,int ind)
         {
 
             switch (imProcType)
             {
                 case FrameType.Test:
-                    laserLine?.offLaserSensor();
+                    //laserLine?.offLaserSensor();
                     imb_base[ind-1].Image = mat;
                     break;
                 case FrameType.MarkBoard:
@@ -2013,12 +2013,12 @@ namespace opengl3
                     try
                     {
                         var ps = Detection.detectLineSensor(mat);
-                        Console.WriteLine(ps[0].X);
+                        Console.Write(ps[0].X+ " ");
                         laserLine?.setLaserCur((int)(10 * ps[0].X));
-                        Console.WriteLine((int)(10 * ps[0].X));
+                       // Console.WriteLine((int)(10 * ps[0].X));
                         CvInvoke.Line(mat, new Point(350, 0), new Point(350, mat.Width - 1), new MCvScalar(0, 255, 0));
                         imb_base[ind - 1].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
-                        
+                        Console.Write(laserLine?.reseav());
                         
                         //imb_base[ind - 1].Image = Detection.detectLineSensor(mat);
                     }
@@ -2091,9 +2091,9 @@ namespace opengl3
             var capture = new VideoCapture(number);
            
             //capture.SetCaptureProperty(CapProp.
-            capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
+           // capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-           capture.SetCaptureProperty(CapProp.Fps, 15);
+         //  capture.SetCaptureProperty(CapProp.Fps, 15);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
