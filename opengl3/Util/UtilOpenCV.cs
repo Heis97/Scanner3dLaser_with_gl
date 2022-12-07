@@ -643,10 +643,12 @@ namespace opengl3
             }
             if (points.Length != 0)
             {
-                foreach (var p in points)
+                for (int i = 0; i < points.Length; i++)
                 {
                     
-                    CvInvoke.Circle(im, p, size, color, -1);
+                    CvInvoke.Circle(im, points[i], size, color, -1);
+                    CvInvoke.PutText(im,  "P"+i , points[i], FontFace.HersheyComplex, 0.5, new MCvScalar(r, g, b), size);
+
                 }
             }
             return im;
@@ -1223,10 +1225,10 @@ namespace opengl3
             var len = size.Width * size.Height;
             var corn = new System.Drawing.PointF[len];
             //FindCircles.findCircles(im, corn, size);
-            corn = GeometryAnalyse.findCirclesIter(im, size, 10f);
+            GeometryAnalyse.findCirclesIter(im,ref corn, size);
             var gab = takeGabObp(corn, size);
-            var ps_ins = GeometryAnalyse.compPointsInsideRectWarp(gab, size);
-
+            var ps_ins = GeometryAnalyse.compPointsInsideRectWarp(gab, size,im);
+            
             //perspective2Dmatr(size, corn);
 
             Console.WriteLine("chess: "  + size.Width + " " + size.Height);

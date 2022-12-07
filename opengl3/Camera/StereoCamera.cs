@@ -53,7 +53,7 @@ namespace opengl3
         {
             for(int i=0; i<pos.Length; i++)
             {
-                cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, 10f);
+                cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, 10f,true);
                 var Bsm = cameraCVs[0].matrixCS.Clone();
                 var Bbf = new RobotFrame(pos[i].name).getMatrix();
                 var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix();
@@ -70,8 +70,9 @@ namespace opengl3
                 CvInvoke.Invert(Bbf, Bbf_1, DecompMethod.LU);
                 CvInvoke.Invert(Bbm, Bbm_1, DecompMethod.LU);
                 var Bfs = Bbf_1 * Bbm * Bsm;
-                prin.t(Bfs);
-                prin.t("--------------------------------");
+                //prin.t(Bfs);
+                Console.WriteLine(Bfs[0, 3] + " " + Bfs[1, 3] + " " + Bfs[2, 3] + " " + Bfs[0, 0] + " " + Bfs[0, 1] + " " + Bfs[0, 2]);
+                //prin.t("--------------------------------");
 
             }
             return null;

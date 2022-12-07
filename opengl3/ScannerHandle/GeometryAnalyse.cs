@@ -26,51 +26,55 @@ namespace opengl3
             return generatePsInsideRect(gridSize, matr);
         }
 
-        public static System.Drawing.PointF[] compPointsInsideRectWarp(System.Drawing.PointF[] points2d, Size gridSize)
+        public static System.Drawing.PointF[] compPointsInsideRectWarp(System.Drawing.PointF[] points2d, Size gridSize,Mat orig = null)
         {
             System.Drawing.PointF[] points3d = new System.Drawing.PointF[]
             {
                 new System.Drawing.PointF(0,0),
-                new System.Drawing.PointF(0,1),
-                new System.Drawing.PointF(1,0),
-                new System.Drawing.PointF(1,1)
+                new System.Drawing.PointF(0,100),
+                new System.Drawing.PointF(100,0),
+                new System.Drawing.PointF(100,100)
             };
             var persp_Norm = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(points3d), new VectorOfPointF(points2d));
-
-            return CvInvoke.PerspectiveTransform(generatePsInsideRect(gridSize), persp_Norm);           
+            return CvInvoke.PerspectiveTransform(generatePsInsideRect(gridSize),persp_Norm);           
         }
 
-        public static System.Drawing.PointF[] findCirclesIter(Mat mat, Size size_patt, float markSize)
+        public static Mat findCirclesIter(Mat mat, ref System.Drawing.PointF[] corn, Size size_patt)
         {
-
+            int offset_xy = 50;
             var points3d = new System.Drawing.PointF[]
             {
-                    new System.Drawing.PointF(0,0),
-                    new System.Drawing.PointF(100*size_patt.Width,0),
-                    new System.Drawing.PointF(0,100*size_patt.Height),
-                    new System.Drawing.PointF(100*size_patt.Width,100*size_patt.Height)
+                    new System.Drawing.PointF(offset_xy,offset_xy),
+                    new System.Drawing.PointF(offset_xy*size_patt.Width+offset_xy,offset_xy),
+                    new System.Drawing.PointF(offset_xy,offset_xy*size_patt.Height+offset_xy),                    
+                    new System.Drawing.PointF(offset_xy*size_patt.Width+offset_xy,offset_xy*size_patt.Height+offset_xy)       
             };
 
-            var len = size_patt.Width * size_patt.Height;
-            var cornF = new System.Drawing.PointF[len];
-            var matDraw = FindCircles.findCircles(mat,ref cornF, size_patt);
-            var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
+            var matDraw = FindCircles.findCircles(mat,ref corn, size_patt);
+            if(matDraw == null)
+                return null;
+            //CvInvoke.Imshow("find1", matDraw);
 
 
+            var points2d = UtilOpenCV.takeGabObp(corn, size_patt);
+            var orig1 = mat.Clone();
+            UtilOpenCV.drawPointsF(orig1, points2d, 0, 255, 0);
             var persp_Norm = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(points3d), new VectorOfPointF(points2d));
             var im_pers = mat.Clone();
-            // CvInvoke.PerspectiveTransform(mat, im_pers, persp_Norm);
-            //prin.t(persp_Norm);
-            CvInvoke.WarpPerspective(mat, im_pers, persp_Norm,new Size(mat.Size.Width*2, mat.Size.Height * 2), Inter.Linear,Warp.Default,BorderType.Replicate);//,new MCvScalar(127,255,255)
-            //CvInvoke.Imshow("pers1", matDraw);
-            var matDraw_pers = FindCircles.findCircles(im_pers,ref cornF, size_patt);
-            //CvInvoke.Imshow("pers2", matDraw_pers);
             var persp_Norm_inv = new Mat();
             CvInvoke.Invert(persp_Norm, persp_Norm_inv, DecompMethod.LU);
+            CvInvoke.WarpPerspective(mat, im_pers, persp_Norm_inv, 
+                new Size(offset_xy * size_patt.Width + 2* offset_xy, offset_xy * size_patt.Height + 2*offset_xy),
+                Inter.Linear,Warp.Default,BorderType.Replicate);           
+            var matDraw_pers = FindCircles.findCircles(im_pers,ref corn, size_patt);
 
-            cornF = CvInvoke.PerspectiveTransform(cornF, persp_Norm_inv);
 
-            return cornF;
+            // CvInvoke.Imshow("pers2", matDraw_pers);
+            //CvInvoke.Imshow("pers1", matDraw_pers);
+
+            corn = CvInvoke.PerspectiveTransform(corn, persp_Norm);
+            UtilOpenCV.drawPoints(mat, corn, 255, 0, 0);
+            return mat;
         }
 
         static System.Drawing.PointF[] generatePsInsideRect(Size _gridSize, Matrix<double> matr=null)
@@ -87,7 +91,7 @@ namespace opengl3
                         p = matr * p;
                         
                     }
-                    ps.Add(new System.Drawing.PointF((float)p[0, 0], (float)p[1, 0]));
+                    ps.Add(new System.Drawing.PointF(-(float)p[0, 0], (float)p[1, 0]));
 
                 }
             }

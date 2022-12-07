@@ -374,10 +374,10 @@ namespace opengl3
             setPos();
             return pos;
         }
-        public bool compPos(Mat _mat, PatternType patternType,float mark = -1)
+        public bool compPos(Mat _mat, PatternType patternType,float mark = -1,bool distort = false)
         {
             var mat = _mat.Clone();
-
+            if (distort) mat = undist(mat);
             if (patternType == PatternType.Chess)
             {
                 Size size_patt = new Size(6, 7);
@@ -442,8 +442,12 @@ namespace opengl3
 
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
-                var matDraw = FindCircles.findCircles(mat,ref cornF, size_patt);
-                if(matDraw == null)
+                //CvInvoke.Imshow("mat", mat);
+                //CvInvoke.WaitKey(200);
+                //var matDraw = FindCircles.findCircles(mat,ref cornF, size_patt);
+                var matDraw = GeometryAnalyse.findCirclesIter(mat.Clone(), ref cornF, size_patt);
+
+                if (matDraw == null)
                 {
                     return false;
                 }
@@ -461,7 +465,7 @@ namespace opengl3
         }
         public Mat undist(Mat mat)
         {
-            Console.WriteLine("undist");
+            //Console.WriteLine("undist");
             //var mat_ret = new Mat();
             CvInvoke.Remap(mat, mat, mapx, mapy, Inter.Linear);
             return mat;
@@ -608,7 +612,8 @@ namespace opengl3
             {
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
-                var mat = FindCircles.findCircles(frame.im,ref cornF, size_patt);
+                //var mat = FindCircles.findCircles(frame.im,ref cornF, size_patt);
+                var mat = GeometryAnalyse.findCirclesIter(frame.im.Clone(), ref cornF, size_patt);
                 //CvInvoke.Imshow("calib",mat);
                 //CvInvoke.WaitKey();
                 if (cornF == null)

@@ -202,13 +202,24 @@ namespace opengl3
             Label_trz_cur.Text = txt;
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             addCams();
-            if (buffersGl.objs_out!=null)
+            if (buffersGl.objs_static != null)
             {
-                if (buffersGl.objs_out.Count!=0)
+                if (buffersGl.objs_static.Count != 0)
                 {
-                    foreach (var opgl_obj in buffersGl.objs_out)
+                    foreach (var opglObj in buffersGl.objs_static)
                     {
-                        renderGlobj(opgl_obj);  
+                        renderGlobj(opglObj);
+                    }
+                }
+            }
+
+            if (buffersGl.objs_dynamic != null)
+            {
+                if (buffersGl.objs_dynamic.Count != 0)
+                {
+                    foreach (var opglObj in buffersGl.objs_dynamic)
+                    {
+                        renderGlobj(opglObj);
                     }
                 }
             }
@@ -257,14 +268,17 @@ namespace opengl3
                         prog = programID_lns;
                     }
                     load_vars_gl(prog);
-                    load_buff_gl(opgl_obj.vertex_buffer_data, opgl_obj.color_buffer_data, opgl_obj.normal_buffer_data);
+                    /*load_buff_gl(opgl_obj.vertex_buffer_data, opgl_obj.color_buffer_data, opgl_obj.normal_buffer_data);
                     
 
 
                     Gl.DrawArrays(dr_tp, 0, (int)(opgl_obj.vertex_buffer_data.Length / 3));
                     Gl.DeleteBuffers(buff_color);
                     Gl.DeleteBuffers(buff_pos);
-                    Gl.DeleteBuffers(buff_normal);
+                    Gl.DeleteBuffers(buff_normal);*/
+                    opgl_obj.useBuffers();
+                    Gl.DrawArrays(opgl_obj.tp, 0, opgl_obj.vert_len);
+
                 }
                 catch
                 {
@@ -392,7 +406,20 @@ namespace opengl3
 
         }
 
-
+        public void SortObj()
+        {
+            buffersGl.sortObj();
+            if (buffersGl.objs_static != null)
+            {
+                if (buffersGl.objs_static.Count != 0)
+                {
+                    for (int i = 0; i < buffersGl.objs_static.Count; i++)
+                    {
+                        buffersGl.objs_static[i] = buffersGl.objs_static[i].setBuffers();
+                    }
+                }
+            }
+        }
         public  Point3d_GL[] cross_flat_gpu(float[] ps1, float[] ps2)
         {
             //var debug_t = new TextureGL(4, ps1.Length/4, 6, PixelFormat.Rgba);//lines
@@ -757,7 +784,7 @@ namespace opengl3
         public void printDebug(RichTextBox box)
         {
             string txt = "";
-            foreach(var ob in buffersGl.objs_out)
+            foreach(var ob in buffersGl.objs_static)
             {
                 for (int i = 0; i < ob.vertex_buffer_data.Length / 3; i++)
                 {
@@ -1203,19 +1230,19 @@ namespace opengl3
 
         public void add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp)
         {            
-            buffersGl.add_obj(new openGlobj(data_v, data_c, data_n, tp));
+            buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp));
         }
         public void add_buff_gl_id(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp,int id)
         {
-            buffersGl.add_obj(new openGlobj(data_v, data_c, data_n, tp,id));
+            buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp,id));
         }
         public void add_buff_gl_lines_id(float[] data_v, int id, bool visible)
         {
-            buffersGl.add_obj_id(data_v,id, visible, PrimitiveType.Lines);
+            //buffersGl.add_obj_id(data_v,id, visible, PrimitiveType.Lines);
         }
         public void add_buff_gl_mesh_id(float[] data_v, int id, bool visible)
         {
-            buffersGl.add_obj_id(data_v, id, visible, PrimitiveType.Triangles);
+            //buffersGl.add_obj_id(data_v, id, visible, PrimitiveType.Triangles);
         }
         public void remove_buff_gl_id(int id)
         {

@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_calibr_Bfs = new System.Windows.Forms.Button();
             this.propGrid_traj = new System.Windows.Forms.PropertyGrid();
             this.but_gl_clear = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
@@ -277,7 +278,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_calibr_Bfs = new System.Windows.Forms.Button();
+            this.but_im_to_3d_im1 = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -929,6 +930,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_im_to_3d_im1);
             this.tabOpenGl.Controls.Add(this.but_calibr_Bfs);
             this.tabOpenGl.Controls.Add(this.propGrid_traj);
             this.tabOpenGl.Controls.Add(this.but_gl_clear);
@@ -1007,6 +1009,16 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // but_calibr_Bfs
+            // 
+            this.but_calibr_Bfs.Location = new System.Drawing.Point(1173, 850);
+            this.but_calibr_Bfs.Name = "but_calibr_Bfs";
+            this.but_calibr_Bfs.Size = new System.Drawing.Size(96, 34);
+            this.but_calibr_Bfs.TabIndex = 120;
+            this.but_calibr_Bfs.Text = "Калибровка относит фланца";
+            this.but_calibr_Bfs.UseVisualStyleBackColor = true;
+            this.but_calibr_Bfs.Click += new System.EventHandler(this.but_calibr_Bfs_Click);
             // 
             // propGrid_traj
             // 
@@ -2916,15 +2928,15 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // but_calibr_Bfs
+            // but_im_to_3d_im1
             // 
-            this.but_calibr_Bfs.Location = new System.Drawing.Point(1173, 850);
-            this.but_calibr_Bfs.Name = "but_calibr_Bfs";
-            this.but_calibr_Bfs.Size = new System.Drawing.Size(96, 34);
-            this.but_calibr_Bfs.TabIndex = 120;
-            this.but_calibr_Bfs.Text = "Калибровка относит фланца";
-            this.but_calibr_Bfs.UseVisualStyleBackColor = true;
-            this.but_calibr_Bfs.Click += new System.EventHandler(this.but_calibr_Bfs_Click);
+            this.but_im_to_3d_im1.Location = new System.Drawing.Point(470, 869);
+            this.but_im_to_3d_im1.Name = "but_im_to_3d_im1";
+            this.but_im_to_3d_im1.Size = new System.Drawing.Size(96, 49);
+            this.but_im_to_3d_im1.TabIndex = 121;
+            this.but_im_to_3d_im1.Text = "3д модель изобр im1";
+            this.but_im_to_3d_im1.UseVisualStyleBackColor = true;
+            this.but_im_to_3d_im1.Click += new System.EventHandler(this.but_im_to_3d_im1_Click);
             // 
             // MainScanningForm
             // 
@@ -3260,6 +3272,7 @@ namespace opengl3
         private System.Windows.Forms.Button butset_kvp;
         private System.Windows.Forms.TextBox textBox_set_kvp;
         private System.Windows.Forms.Button but_calibr_Bfs;
+        private System.Windows.Forms.Button but_im_to_3d_im1;
     }
 }
 

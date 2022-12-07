@@ -48,7 +48,8 @@ namespace opengl3
         float markSize = 10f;
         Size chess_size = new Size(6, 7);
         Size chess_size_real = new Size(6, 7);
-        StereoCameraCV stereocam = new StereoCameraCV();
+        StereoCameraCV stereocam = null;
+        StereoCamera stereocam_scan = null;
         CameraCV cameraCVcommon;
         TCPclient con1;
         private const float PI = 3.14159265358979f;
@@ -131,9 +132,6 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-
-            Analyse.comp_defor(new Mat("nodef_1.jpg"), new Mat("def_1.jpg"));
-
            // timer = new System.Timers.Timer(100);
            // timer.Elapsed += drawTimeLabel;
            // timer.Start();
@@ -191,7 +189,7 @@ namespace opengl3
             red_c = 252;
             //var model_mesh = STLmodel.parsingStl_GL4(@"curve_test_asc.STL");
             //GL1.addMesh(model_mesh, PrimitiveType.Triangles);
-            GL1.buffersGl.sortObj();
+            GL1.SortObj();
             param_tr = new TrajParams
             {
                 dz = 0.4,
@@ -208,12 +206,16 @@ namespace opengl3
             //patt[0] = patt_ph;
 
             // generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize,PatternType.Mesh);
-            //oneCam();
+           // var frms = FrameLoader.loadPathsDiff(new string[] { 
+               // @"cam1\cam1_cal_0508_1\1", 
+              //  @"cam2\cam2_cal_0508_1" }, FrameType.Pattern, PatternType.Mesh);
+           // comboImages.Items.AddRange(frms);
+           // load_camers_v2();
             //var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
             //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
 
         }
-        
+
         void loadStereo()
         {
             var cam_cal_1 = new string[] { @"cam1\camera_cal_1006_1" };
@@ -427,8 +429,8 @@ namespace opengl3
             var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
 
 
-            cam1.save_camera("cam1_conf_0508.txt");
-            cam2.save_camera("cam2_conf_0508.txt");
+            cam1.save_camera("cam1_conf_0508_1.txt");
+            cam2.save_camera("cam2_conf_0508_1.txt");
             //comboImages.Items.AddRange(frms_1);
             //comboImages.Items.AddRange(frms_2);
         }
@@ -461,7 +463,7 @@ namespace opengl3
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
 
-            GL1.buffersGl.sortObj();
+            GL1.SortObj();
             Console.WriteLine("Loading end.");
         }
 
@@ -1089,13 +1091,23 @@ namespace opengl3
                 }
                 else if (fr.frameType == FrameType.Pattern)
                 {
-                    //imBox_debug1.Image = stereocam.cameraCVs[0].undist(mat1);
-                    //imBox_debug2.Image = stereocam.cameraCVs[1].undist(mat2);
                     System.Drawing.PointF[] corn = null;
-                    imBox_base_1.Image = FindCircles.findCircles(mat1,ref corn, new Size(6, 7));
-                    imBox_base_2.Image = FindCircles.findCircles(mat2,ref corn, new Size(6, 7));
-                    
+                    if (true)
+                    {
+                        //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im.Clone(), chess_size);
+                        //imageBox2.Image = UtilOpenCV.drawInsideRectCirc(fr.im_sec.Clone(), chess_size);
+                        imBox_base_1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
+                        imBox_base_2.Image = GeometryAnalyse.findCirclesIter(fr.im_sec.Clone(), ref corn, chess_size);
+                        //imBox_base_1.Image = FindCircles.findCircles(stereocam_scan.cameraCVs[0].undist(mat1.Clone()), ref corn, new Size(6, 7));
+                        //imBox_base_2.Image = FindCircles.findCircles(stereocam_scan.cameraCVs[1].undist(mat2.Clone()), ref corn, new Size(6, 7));
+                    }
+                    else
+                    {
+                        imBox_base_1.Image = FindCircles.findCircles(mat1, ref corn, new Size(6, 7));
+                        imBox_base_2.Image = FindCircles.findCircles(mat2, ref corn, new Size(6, 7));
+                    }                                                           
                 }
+
                 else if (fr.frameType == FrameType.LasDif)
                 {
                     var ps1 = Detection.detectLineDiff(fr.im);
@@ -1199,8 +1211,9 @@ namespace opengl3
 
                     //imageBox2.Image = UtilOpenCV.drawInsideRectCirc(cameraCVcommon.undist(fr.im.Clone()), chess_size);
                     var corn = new System.Drawing.PointF[0];
-                    imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
-                    imageBox2.Image = FindCircles.findCircles(fr.im,ref corn, chess_size);
+                    //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
+                    imageBox1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
+                    //imageBox2.Image = FindCircles.findCircles(fr.im,ref corn, chess_size);
                 }
             }
             if (fr.frameType == FrameType.LasLin || fr.frameType == FrameType.LasDif)
@@ -2873,7 +2886,7 @@ namespace opengl3
             @"stereocal_2607_1",
             @"scan_2607_4",
             new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
-            GL1.buffersGl.sortObj();
+            GL1.SortObj();
 
         }
 
@@ -3104,7 +3117,7 @@ namespace opengl3
         {
             GL1.buffersGl.clearObj();
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-            GL1.buffersGl.sortObj();
+            GL1.SortObj();
         }
 
 
@@ -3118,11 +3131,18 @@ namespace opengl3
             var cam1 = CameraCV.load_camera(cam1_conf_path);
             var cam2 = CameraCV.load_camera(cam2_conf_path);
             var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
-
+            stereocam_scan = stereo;
             var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\photo_1811_2", @"cam2\photo_1811_2", FrameType.Pattern, false);
             comboImages.Items.AddRange(frms_stereo1);
 
             stereo.calibrateBfs(frms_stereo1);
+        }
+
+        private void but_im_to_3d_im1_Click(object sender, EventArgs e)
+        {
+            var im = (Mat)imageBox1.Image;
+            send_buffer_img(im.ToImage<Gray, Byte>(), PrimitiveType.Triangles);
+            GL1.SortObj();
         }
     }
 }
