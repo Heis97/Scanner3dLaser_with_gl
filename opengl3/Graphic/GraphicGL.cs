@@ -332,34 +332,6 @@ namespace opengl3
 
 
         }
-        private void load_buff_gl(float[] vertex_buffer_dat, float[] color_buffer_dat, float[] normal_buffer_dat)
-        {
-            buff_pos = Gl.GenBuffer();
-            Gl.BindBuffer(BufferTarget.ArrayBuffer, buff_pos);
-            Gl.BufferData(BufferTarget.ArrayBuffer, (uint)(4 * vertex_buffer_dat.Length), vertex_buffer_dat, BufferUsage.StaticDraw);            
-
-            buff_color = Gl.GenBuffer();
-            Gl.BindBuffer(BufferTarget.ArrayBuffer, buff_color);
-            Gl.BufferData(BufferTarget.ArrayBuffer, (uint)(4 * color_buffer_dat.Length), color_buffer_dat, BufferUsage.StaticDraw);
-
-            buff_normal = Gl.GenBuffer();
-            Gl.BindBuffer(BufferTarget.ArrayBuffer, buff_normal);
-            Gl.BufferData(BufferTarget.ArrayBuffer, (uint)(4 * normal_buffer_dat.Length), normal_buffer_dat, BufferUsage.StaticDraw);
-
-
-            Gl.BindBuffer(BufferTarget.ArrayBuffer, buff_pos);
-            Gl.VertexAttribPointer(0, 3, VertexAttribType.Float, false, 0, IntPtr.Zero);
-            Gl.EnableVertexAttribArray(0);
-
-            Gl.BindBuffer(BufferTarget.ArrayBuffer , buff_color);
-            Gl.VertexAttribPointer(2, 3, VertexAttribType.Float, false, 0, IntPtr.Zero);
-            Gl.EnableVertexAttribArray(2);
-
-            Gl.BindBuffer(BufferTarget.ArrayBuffer, buff_normal);
-            Gl.VertexAttribPointer(1, 3, VertexAttribType.Float, false, 0, IntPtr.Zero);
-            Gl.EnableVertexAttribArray(1);
-            
-        }
         private void load_vars_gl(uint prog)
         {
 

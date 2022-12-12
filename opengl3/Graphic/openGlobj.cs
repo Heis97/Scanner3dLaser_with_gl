@@ -38,9 +38,9 @@ namespace opengl3
             if (v_buf.Length>1000000)
             {
                 vertex_buffer_data = v_buf;
-                normal_buffer_data = c_buf;
-                color_buffer_data = null;
-                texture_buffer_data = null;
+                normal_buffer_data = n_buf;
+                color_buffer_data = c_buf;
+                texture_buffer_data = t_buf;
             }
             else
             {
@@ -75,7 +75,7 @@ namespace opengl3
             }
 
             
-
+             
 
             Textureid = textureId;
             tp = type;
@@ -100,8 +100,8 @@ namespace opengl3
             buff_array = Gl.GenVertexArray();
             Gl.BindVertexArray(buff_array);
             bindBuffer(vertex_buffer_data, 0, 3);
-            bindBuffer(normal_buffer_data, 1, 3);
-            if(color_buffer_data!=null) bindBuffer(color_buffer_data, 2, 3);
+            if (normal_buffer_data != null) bindBuffer(normal_buffer_data, 1, 3);
+            if (color_buffer_data != null) bindBuffer(color_buffer_data, 2, 3);
             if (texture_buffer_data != null) bindBuffer(texture_buffer_data, 3, 2);
             return this;
         }

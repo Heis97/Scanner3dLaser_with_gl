@@ -217,6 +217,36 @@ namespace opengl3
             yRot = valuey;
             zRot = valuez;
         }
+
+        public Matrix4x4f[] getVPmatrix()
+        {
+
+            if (viewType_ == viewType.Perspective)
+            {
+                var _Pm = Matrix4x4f.Perspective(53f, (float)rect.Width / rect.Height, 0.01f, 1000f);
+                var _Vm = Matrix4x4f.Translated((float)off_x, -(float)off_y, (float)zoom * (float)off_z) *
+                    Matrix4x4f.RotatedX((float)xRot) *
+                    Matrix4x4f.RotatedY((float)yRot) *
+                    Matrix4x4f.RotatedZ((float)zRot);
+                //var _PVm
+                return new Matrix4x4f[] { _Pm, _Vm, _Pm * _Vm };
+            }
+            else if (viewType_ == viewType.Ortho)
+            {
+                float window = (float)zoom;
+                var _Pm = Matrix4x4f.Ortho(-window, window, -window, window, -1000f, 1000f);
+                var _Vm = Matrix4x4f.Translated((float)off_x, -(float)off_y, (float)zoom * (float)off_z) *
+                    Matrix4x4f.RotatedX((float)xRot) *
+                    Matrix4x4f.RotatedY((float)yRot) *
+                    Matrix4x4f.RotatedZ((float)zRot);
+                return new Matrix4x4f[] { _Pm, _Vm, _Pm * _Vm };
+            }
+            else
+            {
+                return new Matrix4x4f[] { Matrix4x4f.Identity, Matrix4x4f.Identity, Matrix4x4f.Identity };
+            }
+
+        }
     }
 
 }
