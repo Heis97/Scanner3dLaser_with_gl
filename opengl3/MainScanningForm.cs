@@ -1868,7 +1868,7 @@ namespace opengl3
             formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
             if (con1 != null)
             {
-                con1.send_mes("q\n");
+                con1.send_mes("q\n");//g
                 con1.close_con();
             }
         }
