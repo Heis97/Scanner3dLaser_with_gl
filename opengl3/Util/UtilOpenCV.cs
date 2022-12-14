@@ -626,15 +626,15 @@ namespace opengl3
             return im;
         }
 
-        static public void drawPointsF(Mat im, System.Drawing.PointF[] points, int r, int g, int b, int size = 1)
+        static public void drawPointsF(Mat im, System.Drawing.PointF[] points, int r, int g, int b, int size = 1, bool text = false)
         {
-            drawPoints(im, PointF.toPoint(points), r, g, b, size);
+            drawPoints(im, PointF.toPoint(points), r, g, b, size, text);
         }
-        static public Mat drawPointsF(Mat im, PointF[] points, int r, int g, int b, int size = 0)
+        static public Mat drawPointsF(Mat im, PointF[] points, int r, int g, int b, int size = 0, bool text = false)
         {
-            return drawPoints(im, PointF.toPoint(points), r, g, b, size);
+            return drawPoints(im, PointF.toPoint(points), r, g, b, size,text);
         }
-        static public Mat drawPoints(Mat im, Point[] points, int r, int g, int b, int size = 0)
+        static public Mat drawPoints(Mat im, Point[] points, int r, int g, int b, int size = 0,bool text = false)
         {
             var color = new MCvScalar(b, g, r);//bgr            
             if(points==null || im == null)
@@ -647,7 +647,11 @@ namespace opengl3
                 {
                     
                     CvInvoke.Circle(im, points[i], size, color, -1);
-                    CvInvoke.PutText(im,  "P"+i , points[i], FontFace.HersheyComplex, 0.5, new MCvScalar(r, g, b), size);
+                    if(text)
+                    {
+                        CvInvoke.PutText(im, "P" + i, points[i], FontFace.HersheyComplex, 0.5, new MCvScalar(r, g, b), size);
+                    }
+                    //
 
                 }
             }

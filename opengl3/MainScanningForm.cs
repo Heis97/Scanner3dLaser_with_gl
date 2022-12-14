@@ -2936,7 +2936,7 @@ namespace opengl3
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
                         var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                         frame_d.stereo = true;
-                        //frames_show.Add(frame_d);
+                        frames_show.Add(frame_d);
                         //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
                         /*var ps1 = Detection.detectLineDiff(im1, 7);
                         var ps2 = Detection.detectLineDiff(im2, 7);
@@ -2945,7 +2945,7 @@ namespace opengl3
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                         //CvInvoke.Imshow("im2", im2);
                        
-                            scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);
+                        scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);
                         
                         
 
