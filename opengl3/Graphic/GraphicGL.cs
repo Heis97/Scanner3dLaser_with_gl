@@ -1200,13 +1200,9 @@ namespace opengl3
             return fl;
         }
 
-        public void add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp)
+        public int add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp)
         {            
-            buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp));
-        }
-        public void add_buff_gl_id(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp,int id)
-        {
-            buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp,id));
+            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp));
         }
         public void add_buff_gl_lines_id(float[] data_v, int id, bool visible)
         {
@@ -1408,7 +1404,7 @@ namespace opengl3
             }
             addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b);
         }
-        public void addLineMesh(Vertex4f[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public int addLineMesh(Vertex4f[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
         {
             var mesh = new float[points.Length * 3];
             int ind = 0;
@@ -1418,9 +1414,9 @@ namespace opengl3
                 mesh[ind] = p.y; ind++;
                 mesh[ind] = p.z; ind++;
             }
-            addMeshWithoutNorm(mesh, PrimitiveType.Lines, r, g, b);
+            return addMeshWithoutNorm(mesh, PrimitiveType.Lines, r, g, b);
         }
-        public void addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public int addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
@@ -1434,7 +1430,7 @@ namespace opengl3
                 normal_buffer_data[i + 1] = 0.1f;
                 normal_buffer_data[i + 2] = 0.1f;
             }
-            add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
+            return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
         }
         public void addMeshColor(float[] gl_vertex_buffer_data, float[] gl_color_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
         {

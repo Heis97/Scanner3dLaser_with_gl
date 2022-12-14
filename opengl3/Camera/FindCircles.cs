@@ -53,7 +53,8 @@ namespace opengl3
             var im_sob = sobel(im_blur);
             //CvInvoke.Imshow("sob", im_sob);
             //CvInvoke.WaitKey(500);
-            var im_tr = im_sob.ThresholdBinary(new Gray(65), new Gray(255));
+           // var im_tr = im_blur.ThresholdBinary(new Gray(128), new Gray(255));
+            var im_tr = im_sob.ThresholdBinary(new Gray(85), new Gray(255));
 
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
@@ -106,6 +107,7 @@ namespace opengl3
                     }
                 }
                 UtilOpenCV.drawLines(orig, ps_ord, 0, 0, 255, 2);
+                //return im_sob.Mat;
                 return orig;
             }
             else

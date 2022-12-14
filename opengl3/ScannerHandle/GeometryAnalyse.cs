@@ -13,6 +13,7 @@ namespace opengl3
 {
     public static class GeometryAnalyse
     {
+        static int count_1 = 0;
         public static System.Drawing.PointF[] compPointsInsideRect(System.Drawing.PointF[] points2d, Size gridSize)
         {
             MCvPoint3D32f[] points3d = new MCvPoint3D32f[]
@@ -53,12 +54,12 @@ namespace opengl3
             var matDraw = FindCircles.findCircles(mat,ref corn, size_patt);
             if(matDraw == null)
                 return null;
-            //CvInvoke.Imshow("find1", matDraw);
+            //CvInvoke.Imshow("find1"+ count_1, matDraw);
 
-
+            count_1++;
             var points2d = UtilOpenCV.takeGabObp(corn, size_patt);
             var orig1 = mat.Clone();
-            UtilOpenCV.drawPointsF(orig1, points2d, 0, 255, 0);
+            UtilOpenCV.drawPointsF(orig1, points2d, 0, 255, 0,0,true);
             var persp_Norm = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(points3d), new VectorOfPointF(points2d));
             var im_pers = mat.Clone();
             var persp_Norm_inv = new Mat();
@@ -68,13 +69,14 @@ namespace opengl3
                 Inter.Linear,Warp.Default,BorderType.Replicate);           
             var matDraw_pers = FindCircles.findCircles(im_pers,ref corn, size_patt);
 
-
-            // CvInvoke.Imshow("pers2", matDraw_pers);
+            
+            //CvInvoke.Imshow("pers1" + count_1, matDraw_pers);
+            count_1++;
             //CvInvoke.Imshow("pers1", matDraw_pers);
 
             corn = CvInvoke.PerspectiveTransform(corn, persp_Norm);
-            UtilOpenCV.drawPoints(mat, corn, 255, 0, 0);
-            return mat;
+            UtilOpenCV.drawPointsF(mat, corn, 255, 0, 0, 2, true);
+            return matDraw;
         }
 
         static System.Drawing.PointF[] generatePsInsideRect(Size _gridSize, Matrix<double> matr=null)

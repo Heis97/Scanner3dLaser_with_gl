@@ -455,10 +455,7 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             loadVideo_stereo(scan_path_1, scanner, strip);
 
-           /* var scan_stl = Point3d_GL.toMesh(scanner.getPointsLinesScene());
-            GL1.addGLMesh(scan_stl, PrimitiveType.Points);*/
-
-            mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
+            mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(),0.8);
             
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
@@ -2186,6 +2183,7 @@ namespace opengl3
             int i = 0;
             Console.WriteLine(vertex_buffer_data.Length);
             Console.WriteLine("-----------------------------------");
+            z_mult_cam = 5;
             for (int x = 0; x < im2.Width - 1; x++)
             {
                 for (int y = 0; y < im2.Height - 1; y++)
@@ -2934,9 +2932,9 @@ namespace opengl3
                         im1 -= orig1;
                         im2 -= orig2;
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                        var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                        /*var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                         frame_d.stereo = true;
-                        frames_show.Add(frame_d);
+                        frames_show.Add(frame_d);*/
                         //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
                         /*var ps1 = Detection.detectLineDiff(im1, 7);
                         var ps2 = Detection.detectLineDiff(im2, 7);
@@ -2992,9 +2990,6 @@ namespace opengl3
 
         private void but_end_cont_Click(object sender, EventArgs e)
         {
-            var dz = 0.4;
-            var amount = 2;
-            
             var  cont = GL1.get_contour().ToList();
             if(mesh!=null && cont!= null)
             {
@@ -3003,16 +2998,6 @@ namespace opengl3
                 {
                     conts.Add(cont);
                 }
-                /*param_tr = new TrajParams
-                {
-                    div_step = 1.3,
-                    h_transf = 5,
-                    layers = amount,
-                    layers_angle = Math.PI / 2,
-                    step = dz * 4,
-                    z = zs.ToArray()
-                };*/
-                
                 var _traj = PathPlanner.Generate_multiLayer3d_mesh(mesh, conts, param_tr);
 
                 rob_traj = PathPlanner.join_traj(_traj);
@@ -3039,10 +3024,10 @@ namespace opengl3
             var cam2_conf_path = textB_cam2_conf.Text;
             var stereo_cal_path = textB_stereo_cal_path.Text;
 
-
+            int strip = Convert.ToInt32(tb_strip_scan.Text);
 
             loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
-            load_scan_v2(scan_path,1);
+            load_scan_v2(scan_path, strip);
 
         }
 
@@ -3140,9 +3125,15 @@ namespace opengl3
 
         private void but_im_to_3d_im1_Click(object sender, EventArgs e)
         {
-            var im = (Mat)imageBox1.Image;
+            //var im = (Mat)imageBox1.Image;
+            var im = (Mat)imBox_base_1.Image;
             send_buffer_img(im.ToImage<Gray, Byte>(), PrimitiveType.Triangles);
             GL1.SortObj();
+        }
+
+        private void but_load_fr_cal_Click(object sender, EventArgs e)
+        {
+            //var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\photo_1811_2", FrameType.Pattern, false);
         }
     }
 }
