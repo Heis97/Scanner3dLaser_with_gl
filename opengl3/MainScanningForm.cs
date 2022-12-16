@@ -2000,7 +2000,7 @@ namespace opengl3
                     imageBox2.Image = mat_global[1];
                     imProcess(mat_global[1],2);
 
-                    imBox_base.Image = stereoProc(mat_global[0], mat_global[1]);
+                    //imBox_base.Image = stereoProc(mat_global[0], mat_global[1]);
                 }
             }
         }
@@ -2103,7 +2103,7 @@ namespace opengl3
             var capture = new VideoCapture(number);
            
             //capture.SetCaptureProperty(CapProp.
-           // capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
+            capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
          //  capture.SetCaptureProperty(CapProp.Fps, 15);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
@@ -3133,7 +3133,10 @@ namespace opengl3
 
         private void but_load_fr_cal_Click(object sender, EventArgs e)
         {
-            //var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\photo_1811_2", FrameType.Pattern, false);
+            var stereo_cal_1 = textB_stereo_cal_path.Text.Split('\\').Reverse().ToArray()[0];
+            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
+            comboImages.Items.AddRange(frms_stereo);
+
         }
     }
 }

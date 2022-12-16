@@ -61,6 +61,9 @@ namespace opengl3
             CvInvoke.FindContours(im_tr, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
             //var conts = sameContours_cv(contours);
             var conts = sameContours(contours);
+            if(conts==null) return null;
+            if (conts.Size == 0) return null;
+
             conts = filter_same_centres(conts);
             var cents = findCentres(conts);
             CvInvoke.CvtColor(im_tr, im_tr, ColorConversion.Gray2Bgr);
