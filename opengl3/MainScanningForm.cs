@@ -3135,6 +3135,14 @@ namespace opengl3
         {
             var stereo_cal_1 = textB_stereo_cal_path.Text.Split('\\').Reverse().ToArray()[0];
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
+
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var cam1 = CameraCV.load_camera(cam1_conf_path);
+            var cam2 = CameraCV.load_camera(cam2_conf_path);
+            var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
+            stereocam_scan = stereo;
+            stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh);
             comboImages.Items.AddRange(frms_stereo);
 
         }

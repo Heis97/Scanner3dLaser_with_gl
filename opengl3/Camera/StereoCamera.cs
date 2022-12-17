@@ -48,7 +48,27 @@ namespace opengl3
                 }
             }
         }
+        public void calibrate_stereo(Frame[] frames, PatternType patternType)
+        {
+            if (cameraCVs.Length==2)
+            {
+                for (int i = 0; i < frames.Length; i++)
+                {
+                    var pos1  = cameraCVs[0].compPos(frames[i].im, patternType, 10f);
+                    var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, 10f);
+                    if(pos1&&pos2)
+                    {
+                        var inv_cs1 = new Matrix<double>(4, 4);
+                        CvInvoke.Invert(cameraCVs[0].matrixCS, inv_cs1, DecompMethod.LU);
+                        R = inv_cs1 * cameraCVs[1].matrixCS;
+                        Console.WriteLine(i + ": " + R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + R[0, 0] + " " + R[0, 1] + " " + R[0, 2]);
 
+                    }
+
+                    //Console.WriteLine(comp_pos);
+                }
+            }
+        }
         public Matrix<double> calibrateBfs(Frame[] pos)
         {
             for(int i=0; i<pos.Length; i++)
