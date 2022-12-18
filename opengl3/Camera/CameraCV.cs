@@ -444,8 +444,8 @@ namespace opengl3
                 var cornF = new System.Drawing.PointF[len];
                 //CvInvoke.Imshow("mat", mat);
                 //CvInvoke.WaitKey(200);
-                //var matDraw = FindCircles.findCircles(mat,ref cornF, size_patt);
-                var matDraw = GeometryAnalyse.findCirclesIter(mat.Clone(), ref cornF, size_patt);
+                var matDraw = FindCircles.findCircles(mat,ref cornF, size_patt);
+                //var matDraw = GeometryAnalyse.findCirclesIter(mat.Clone(), ref cornF, size_patt);
 
                 if (matDraw == null)
                 {
@@ -454,6 +454,10 @@ namespace opengl3
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
 
                 compPos(points3d, points2d);
+                mat = null;
+                matDraw = null;
+
+                GC.Collect();
                 return true;
             }
             return false;
@@ -495,20 +499,28 @@ namespace opengl3
 
             Console.WriteLine("fr len: " + frames.Length);
             int ind_fr = 0;
+            int i_c = 0;
             foreach (var frame in frames)
             {
-                var corn2 = findPoints(frame, size);
-                if (corn2 == null)
+                if(i_c%1==0)
                 {
-                    Console.WriteLine("NOT:");
+                    var corn2 = findPoints(frame, size);
+                    if (corn2 == null)
+                    {
+                        Console.WriteLine("NOT:");
+
+                    }
+                    else
+                    {
+                        objps.Add(obp);
+                        corners.Add(corn2);
+                    }
+                    ind_fr++;
                     Console.WriteLine(frame.name);
+
                 }
-                else
-                {
-                    objps.Add(obp);
-                    corners.Add(corn2);
-                }
-                ind_fr++;
+
+                i_c++;
             }
 
 
@@ -612,10 +624,13 @@ namespace opengl3
             {
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
-                //var mat = FindCircles.findCircles(frame.im,ref cornF, size_patt);
-                var mat = GeometryAnalyse.findCirclesIter(frame.im.Clone(), ref cornF, size_patt);
+                FindCircles.findCircles(frame.im,ref cornF, size_patt);
+               // var mat = GeometryAnalyse.findCirclesIter(frame.im.Clone(), ref cornF, size_patt);
                 //CvInvoke.Imshow("calib",mat);
                 //CvInvoke.WaitKey();
+                //mat = null;
+
+                GC.Collect();
                 if (cornF == null)
                 {
                     return null;

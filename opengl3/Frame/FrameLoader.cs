@@ -478,15 +478,14 @@ namespace opengl3
             List<Frame> frames = new List<Frame>();
             foreach (string file in files)
             {
-                //Console.WriteLine(file);
                 var frame = loadImage_diff(file, frameType, patternType,cameraCV,undist);
                 
                 if (frame != null)
                 {
                     if(path_orig != null)
                     {
-                        var files_orig = Directory.GetFiles(path_orig);
-                        frame.im_sec = undistMat(new Mat(files_orig[0]),cameraCV,undist);
+                        //var files_orig = Directory.GetFiles(path_orig);
+                        //frame.im_sec = undistMat(new Mat(files_orig[0]),cameraCV,undist);
                     }
                    
                     frames.Add(frame);

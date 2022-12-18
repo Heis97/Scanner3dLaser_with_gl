@@ -25,14 +25,14 @@ namespace opengl3
         {
             if (opgl_obj.animType == openGlobj.AnimType.Dynamic)
             {
-                objs_dynamic.Add(opgl_obj);
+                opgl_obj.id = countObj;
                 countObj++;
+                objs_dynamic.Add(opgl_obj);                
                 return countObj - 1;
             }
             else
             {
                 objs.Add(opgl_obj);
-
                 return -1;
             }
         }
@@ -72,6 +72,15 @@ namespace opengl3
             objs_dynamic[id] = new openGlobj();
         }
 
+        public void setObj(int id, openGlobj openGlobj)
+        {
+            objs_dynamic[id] = openGlobj;
+        }
+
+        public void setObjVdata(int id,float[] v_data, float[] n_data)
+        {
+            objs_dynamic[id].set_vert_data(v_data, n_data);
+        }
         public void clearObj()
         {
             objs = new List<openGlobj>();
@@ -79,6 +88,59 @@ namespace opengl3
             objs_static = new List<openGlobj>();
             countObj = 0;
         }
+
+        #region setters
+        public void setScale(int id, int i, float _scale)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setScale(i, _scale);
+        }
+        public void setTransfObj(int id, int i, Point3d_GL _transl, Point3d_GL _rotate)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setTransf(i, _transl, _rotate);
+        }
+        public void setXobj(int id, int i, double x)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setX(i, x);
+        }
+        public void setYobj(int id, int i, double y)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setY(i, y);
+        }
+        public void setZobj(int id, int i, double z)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setZ(i, z);
+        }
+
+        public void setRotXobj(int id, int i, double x)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setRotX(i, x);
+        }
+        public void setRotYobj(int id, int i, double y)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setRotY(i, y);
+        }
+        public void setRotZobj(int id, int i, double z)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setRotZ(i, z);
+        }
+        public void setMatrobj(int id, int i, Matrix4x4f matr)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setMatr(i, matr);
+        }
+        public void addMatrobj(int id, int i, Matrix4x4f matr)
+        {
+            objs_dynamic[id] = objs_dynamic[id].addMatr(i, matr);
+        }
+        public void setTranspobj(int id, float transp)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setTrasp(transp);
+        }
+        public void setVisibleobj(int id, bool visible)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setVisible(visible);
+        }
+
+        #endregion
 
     }
 

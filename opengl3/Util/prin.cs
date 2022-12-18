@@ -239,6 +239,18 @@ namespace opengl3
 
             }
         }
+        public static void t(Vertex4f[] matr)
+        {
+            if (matr == null)
+            {
+                return;
+            }
+            for (int i = 0; i < matr.Length; i++)
+            {
+                Console.WriteLine(matr[i].x + " " + matr[i].y + " " + matr[i].z + ";");
+
+            }
+        }
 
         public static void t(Flat3d_GL[] matr)
         {

@@ -386,6 +386,11 @@ namespace opengl3
         {
             return new Point3d_GL(-p.x, -p.y, -p.z,p.color);
         }
+
+        public Point3d_GL Clone()
+        {
+            return new Point3d_GL(x, y, z, color);
+        }
         public override string ToString()
         {
 

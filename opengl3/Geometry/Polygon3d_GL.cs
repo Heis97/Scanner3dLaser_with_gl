@@ -212,6 +212,9 @@ namespace opengl3
         }
         static public Point3d_GL[][] smooth_lines_xy(Point3d_GL[][] ps, double smooth)
         {
+            if (ps == null) return null;           
+            if(ps.Length==0 || ps.Length == 1) return null;
+            
             double map_resol = 0.02;
             var p_minmax = lines_minmax(ps);
             var p_min = p_minmax[0]; var p_max = p_minmax[1];
@@ -355,6 +358,8 @@ namespace opengl3
         {
             List<Polygon3d_GL> polygons = new List<Polygon3d_GL>();
             if(smooth > 0) ps = smooth_lines_xy(ps, smooth);
+            if (ps == null) return null;
+
             for (int i=1; i<ps.Length; i++)
             {
                 polygons.AddRange(triangulate_two_lines_xy(ps[i - 1], ps[i]));
@@ -366,6 +371,7 @@ namespace opengl3
 
         static public float[][] toMesh(Polygon3d_GL[] polygons)
         {
+            if (polygons == null) return null;
             var mesh =new  List<float>();
             var color = new List<float>();
             var normal = new List<float>();

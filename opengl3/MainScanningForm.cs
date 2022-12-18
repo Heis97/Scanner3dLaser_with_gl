@@ -162,7 +162,7 @@ namespace opengl3
         {
             #region important
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн","Стерео Исп","Паттерн круги","Датчик расст", "Ничего" });
-            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+           
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
 
             mat_global[0] = new Mat();
@@ -189,7 +189,7 @@ namespace opengl3
             red_c = 252;
             //var model_mesh = STLmodel.parsingStl_GL4(@"curve_test_asc.STL");
             //GL1.addMesh(model_mesh, PrimitiveType.Triangles);
-            GL1.SortObj();
+            
             param_tr = new TrajParams
             {
                 dz = 0.4,
@@ -205,7 +205,7 @@ namespace opengl3
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
 
-            // generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize,PatternType.Mesh);
+            
            // var frms = FrameLoader.loadPathsDiff(new string[] { 
                // @"cam1\cam1_cal_0508_1\1", 
               //  @"cam2\cam2_cal_0508_1" }, FrameType.Pattern, PatternType.Mesh);
@@ -422,17 +422,17 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1_cal_0508_1\1", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1_cal_1812", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
-            var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_0508_1", FrameType.Pattern, PatternType.Mesh);
+            var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_1812", FrameType.Pattern, PatternType.Mesh);
 
             var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
 
 
-            cam1.save_camera("cam1_conf_0508_1.txt");
-            cam2.save_camera("cam2_conf_0508_1.txt");
-            //comboImages.Items.AddRange(frms_1);
-            //comboImages.Items.AddRange(frms_2);
+            cam1.save_camera("cam1_conf_1812_1.txt");
+            cam2.save_camera("cam2_conf_1812_1.txt");
+            comboImages.Items.AddRange(frms_1);
+            comboImages.Items.AddRange(frms_2);
         }
         void loadScanner_v2(string  conf1, string conf2, string stereo_cal)
         {
@@ -458,8 +458,7 @@ namespace opengl3
             mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(),0.8);
             
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
-
+            if(scan_stl != null) GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
             GL1.SortObj();
             Console.WriteLine("Loading end.");
         }
@@ -869,11 +868,23 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            GL1.addMonitor(new Rectangle(0, 0, w , h ), 0);
-           /* GL1.addMonitor(new Rectangle(0, 0, w/2, h/2), 0, new Vertex3d(0, 0, 0), new Vertex3d(50, 0, 0), 1);
-            GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 1);
-            GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
-            GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);*/
+            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
+            GL1.SortObj();
+            int monitor_num = 4;
+            if(monitor_num==4)
+            {
+                GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
+                GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 0,0), new Vertex3d(100, 0, 0), 0);               
+                GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
+                GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
+            }
+            else
+            {
+                GL1.addMonitor(new Rectangle(0, 0, w, h), 0);
+            }
+            
+           /* */
           // GL1.transRotZooms[1].xRot = 33;
             //GL1.transRotZooms[1].off_x = -25;
             //GL1.transRotZooms[1].off_y = 31;
@@ -2393,7 +2404,7 @@ namespace opengl3
                 n++;k++;
             }
 
-                float w = sidef * (float)n;
+            float w = sidef * (float)n;
             float h = sidef * (float)k;
             float offx = -sidef;
             float offy =  -sidef;
@@ -2961,14 +2972,27 @@ namespace opengl3
         #region load_but
         private void but_text_vis_Click(object sender, EventArgs e)
         {
-            if (GL1.texture_vis == 0)
+            if (GL1.textureVis == 0)
             {
-                GL1.texture_vis = 1;
+                GL1.textureVis = 1;
             }
                
             else
             {
-                GL1.texture_vis = 0;
+                GL1.textureVis = 0;
+            }
+        }
+
+        private void but_gl_light_Click(object sender, EventArgs e)
+        {
+            if (GL1.lightVis == 0)
+            {
+                GL1.lightVis = 1;
+            }
+
+            else
+            {
+                GL1.lightVis = 0;
             }
         }
 
@@ -3146,6 +3170,9 @@ namespace opengl3
             comboImages.Items.AddRange(frms_stereo);
 
         }
+
+
+       
     }
 }
 

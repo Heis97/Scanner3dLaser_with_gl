@@ -233,12 +233,48 @@
     <None Include="Graphic\Shaders\Comp\CompSh_Test1.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Graphic\Shaders\GravitMap\Fragm.glsl" />
-    <None Include="Graphic\Shaders\GravitMap\Geom.glsl" />
-    <None Include="Graphic\Shaders\GravitMap\Vertex.glsl" />
-    <None Include="Graphic\Shaders\Orbite\FragmOrbite.glsl" />
-    <None Include="Graphic\Shaders\Orbite\GeomOrbite.glsl" />
-    <None Include="Graphic\Shaders\Orbite\VertexOrbite.glsl" />
+    <None Include="Graphic\Shaders_face\Comp\CompSh.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Comp\CompSh_N2_gravitation.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Comp\CompSh_Test1.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Frag\FragmSh.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Frag\FragmSh_Simple.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Frag\TestSh.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Geom\GeomSh_Lines.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Geom\GeomSh_Points.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Geom\GeomSh_Triangles.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Vert\TestSh.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Vert\VertexSh.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Vert\VertexSh_Models.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Vert\VertexSh_ModelsOne.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Vert\VertexSh_Static.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\DataSources\GraphicGL.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -374,6 +410,12 @@
     </Content>
     <Content Include="Graphic\Shaders\Vert\VertexSh.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders_face\Frag\FragmSh.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders_face\Vert\VertexSh.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

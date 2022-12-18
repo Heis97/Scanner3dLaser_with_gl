@@ -42,19 +42,37 @@ namespace opengl3
     public static class FindCircles
     {
         static int counter = 0;
+        static public Mat sobel_mat(Mat mat)
+        {
+            
+
+            var gray_x = new Mat();
+            var gray_y = new Mat();
+            CvInvoke.Sobel(mat, gray_x, DepthType.Cv32F, 1, 0, 3);
+            CvInvoke.Sobel(mat, gray_y, DepthType.Cv32F, 0, 1, 3);
+            CvInvoke.ConvertScaleAbs(gray_x, gray_x, 1, 0);
+            CvInvoke.ConvertScaleAbs(gray_y, gray_y, 1, 0);
+            return gray_x + gray_y;
+
+        }
         public static Mat findCircles(Mat mat,ref System.Drawing.PointF[]  corn,Size pattern_size,bool order = true)
         {
-            var rec = new Mat();
+            var im_tr = new Mat();
             var orig = new Mat();
-            mat.CopyTo(rec);
+
+
+            /*mat.CopyTo(rec);
             mat.CopyTo(orig);
             var im = rec.ToImage<Gray, byte>();
             var im_blur = im.SmoothGaussian(7);
             var im_sob = sobel(im_blur);
-            //CvInvoke.Imshow("sob", im_sob);
-            //CvInvoke.WaitKey(500);
-           // var im_tr = im_blur.ThresholdBinary(new Gray(128), new Gray(255));
-            var im_tr = im_sob.ThresholdBinary(new Gray(85), new Gray(255));
+            var im_tr = im_sob.ThresholdBinary(new Gray(85), new Gray(255));*/
+
+            CvInvoke.CvtColor(mat, im_tr, ColorConversion.Bgr2Gray);
+            CvInvoke.GaussianBlur(im_tr, im_tr, new Size(7, 7), 3);
+            im_tr = sobel_mat(im_tr);
+            CvInvoke.Threshold(im_tr, im_tr, 85, 255, ThresholdType.Binary);
+
 
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
@@ -69,10 +87,10 @@ namespace opengl3
             CvInvoke.CvtColor(im_tr, im_tr, ColorConversion.Gray2Bgr);
             if (conts!=null)
             {
-                CvInvoke.DrawContours(im_tr, conts, -1, new MCvScalar(255, 0, 0), 2, LineType.EightConnected);
+                //CvInvoke.DrawContours(im_tr, conts, -1, new MCvScalar(255, 0, 0), 2, LineType.EightConnected);
             }
            
-            CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
+           // CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
 
             //CvInvoke.Imshow("bin ", im_tr);
             counter++;
@@ -81,8 +99,8 @@ namespace opengl3
             {
                 return null;
             }
-            CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
-            CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
+           // CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
+          //  CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
             
 
             //prin.t(cents);
@@ -99,7 +117,7 @@ namespace opengl3
                 if (ps_ord != null && ps_ord.Length<=corn.Length)
                 {
                     ps_ord.CopyTo(corn, 0);
-                    UtilOpenCV.drawTours(orig, PointF.toPoint(corn), 255, 0, 0, 2);
+                    //UtilOpenCV.drawTours(orig, PointF.toPoint(corn), 255, 0, 0, 2);
                 }
                 else
                 {
@@ -109,9 +127,9 @@ namespace opengl3
                         //Console.WriteLine("ps_ord NULL");
                     }
                 }
-                UtilOpenCV.drawLines(orig, ps_ord, 0, 0, 255, 2);
-                //return im_sob.Mat;
-                return orig;
+               
+                UtilOpenCV.drawLines(im_tr, ps_ord, 0, 0, 255, 2);
+                return im_tr;
             }
             else
             {
@@ -397,7 +415,7 @@ namespace opengl3
         static public Image<Gray, byte> sobel(Image<Gray, byte> im)
         {
             var size_1 = calcSize(im.Size);
-            var im_sob = new Image<Gray, byte>(im.Size);
+            var im_sob =  new Image<Gray, byte>(im.Size);
             im.CopyTo(im_sob);
             //CvInvoke.Resize(im, im_sob, size_1);
             var gray_x = im_sob.Sobel(1, 0, 3);
@@ -420,9 +438,12 @@ namespace opengl3
 
                 }
             }
+            gray_x = null;
+            gray_y = null;
+            GC.Collect();
             return im_sob;
         }
-
+        
         static System.Drawing.PointF[] orderPoints(System.Drawing.PointF[] ps, Size size_patt)
         {
 

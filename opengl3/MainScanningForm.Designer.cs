@@ -89,6 +89,8 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_gl_light = new System.Windows.Forms.Button();
+            this.but_load_fr_cal = new System.Windows.Forms.Button();
             this.tb_strip_scan = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
             this.but_im_to_3d_im1 = new System.Windows.Forms.Button();
@@ -281,7 +283,6 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_load_fr_cal = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -933,6 +934,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_gl_light);
             this.tabOpenGl.Controls.Add(this.but_load_fr_cal);
             this.tabOpenGl.Controls.Add(this.tb_strip_scan);
             this.tabOpenGl.Controls.Add(this.label18);
@@ -1015,6 +1017,26 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // but_gl_light
+            // 
+            this.but_gl_light.Location = new System.Drawing.Point(572, 869);
+            this.but_gl_light.Name = "but_gl_light";
+            this.but_gl_light.Size = new System.Drawing.Size(96, 49);
+            this.but_gl_light.TabIndex = 125;
+            this.but_gl_light.Text = "Отобразить освещение";
+            this.but_gl_light.UseVisualStyleBackColor = true;
+            this.but_gl_light.Click += new System.EventHandler(this.but_gl_light_Click);
+            // 
+            // but_load_fr_cal
+            // 
+            this.but_load_fr_cal.Location = new System.Drawing.Point(1603, 888);
+            this.but_load_fr_cal.Name = "but_load_fr_cal";
+            this.but_load_fr_cal.Size = new System.Drawing.Size(72, 20);
+            this.but_load_fr_cal.TabIndex = 124;
+            this.but_load_fr_cal.Text = "Загрузить ";
+            this.but_load_fr_cal.UseVisualStyleBackColor = true;
+            this.but_load_fr_cal.Click += new System.EventHandler(this.but_load_fr_cal_Click);
             // 
             // tb_strip_scan
             // 
@@ -2961,16 +2983,6 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // but_load_fr_cal
-            // 
-            this.but_load_fr_cal.Location = new System.Drawing.Point(1603, 888);
-            this.but_load_fr_cal.Name = "but_load_fr_cal";
-            this.but_load_fr_cal.Size = new System.Drawing.Size(72, 20);
-            this.but_load_fr_cal.TabIndex = 124;
-            this.but_load_fr_cal.Text = "Загрузить ";
-            this.but_load_fr_cal.UseVisualStyleBackColor = true;
-            this.but_load_fr_cal.Click += new System.EventHandler(this.but_load_fr_cal_Click);
-            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -3309,6 +3321,7 @@ namespace opengl3
         private System.Windows.Forms.TextBox tb_strip_scan;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Button but_load_fr_cal;
+        private System.Windows.Forms.Button but_gl_light;
     }
 }
 

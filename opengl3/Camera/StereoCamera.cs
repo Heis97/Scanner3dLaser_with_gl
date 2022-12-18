@@ -60,9 +60,11 @@ namespace opengl3
                     {
                         var inv_cs1 = new Matrix<double>(4, 4);
                         CvInvoke.Invert(cameraCVs[0].matrixCS, inv_cs1, DecompMethod.LU);
-                        R = inv_cs1 * cameraCVs[1].matrixCS;
-                        Console.WriteLine(i + ": " + R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + R[0, 0] + " " + R[0, 1] + " " + R[0, 2]);
 
+                        R = inv_cs1 * cameraCVs[1].matrixCS;
+                        var c1 = cameraCVs[0].matrixCS;
+                        Console.WriteLine(i + " " + R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]);
+                        GC.Collect();
                     }
 
                     //Console.WriteLine(comp_pos);
