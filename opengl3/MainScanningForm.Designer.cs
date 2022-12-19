@@ -1077,7 +1077,7 @@ namespace opengl3
             // 
             // propGrid_traj
             // 
-            this.propGrid_traj.Location = new System.Drawing.Point(813, 417);
+            this.propGrid_traj.Location = new System.Drawing.Point(29, 17);
             this.propGrid_traj.Name = "propGrid_traj";
             this.propGrid_traj.Size = new System.Drawing.Size(243, 343);
             this.propGrid_traj.TabIndex = 119;
@@ -1261,9 +1261,9 @@ namespace opengl3
             // 
             // debugBox
             // 
-            this.debugBox.Location = new System.Drawing.Point(1062, 6);
+            this.debugBox.Location = new System.Drawing.Point(1064, 818);
             this.debugBox.Name = "debugBox";
-            this.debugBox.Size = new System.Drawing.Size(556, 741);
+            this.debugBox.Size = new System.Drawing.Size(556, 26);
             this.debugBox.TabIndex = 62;
             this.debugBox.Text = "";
             // 
@@ -1273,7 +1273,7 @@ namespace opengl3
             this.textBox_monitor_id.Name = "textBox_monitor_id";
             this.textBox_monitor_id.Size = new System.Drawing.Size(100, 20);
             this.textBox_monitor_id.TabIndex = 68;
-            this.textBox_monitor_id.Text = "0";
+            this.textBox_monitor_id.Text = "0 1";
             // 
             // glControl1
             // 

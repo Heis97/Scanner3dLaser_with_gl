@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Accord.Math.Decompositions;
 using Accord.Math;
+using Accord.Statistics.Distributions.Univariate;
 
 namespace opengl3
 {
@@ -446,7 +447,6 @@ namespace opengl3
                 //CvInvoke.WaitKey(200);
                 var matDraw = FindCircles.findCircles(mat,ref cornF, size_patt);
                 //var matDraw = GeometryAnalyse.findCirclesIter(mat.Clone(), ref cornF, size_patt);
-
                 if (matDraw == null)
                 {
                     return false;
@@ -505,6 +505,7 @@ namespace opengl3
                 if(i_c%1==0)
                 {
                     var corn2 = findPoints(frame, size);
+                    //corn2 = makeNoise(corn2,0.5f);
                     if (corn2 == null)
                     {
                         Console.WriteLine("NOT:");
@@ -581,7 +582,17 @@ namespace opengl3
 
         }
 
+        static System.Drawing.PointF[] makeNoise(System.Drawing.PointF[] ps, float ampl)
+        {
+            for(int i = 0; i < ps.Length; i++)
+            {
+                ps[i].X +=(float) NormalDistribution.Random(0, ampl);
+                ps[i].Y += (float)NormalDistribution.Random(0, ampl);
+            }
+            
 
+            return ps;
+        }
         public  static System.Drawing.PointF[] findPoints(Mat mat, Size size_patt)
         {
             var gray = mat.ToImage<Gray, byte>();

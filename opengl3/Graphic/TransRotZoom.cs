@@ -88,6 +88,7 @@ namespace opengl3
         public TransRotZoom consttransf;
         public CameraCV cameraCV;
         public int view_3d = -1;
+        public Matrix4x4f const_trz;
 
         public TransRotZoom(Rectangle _rect, int _id)
         {
@@ -122,6 +123,7 @@ namespace opengl3
             consttransf = new TransRotZoom(rotVer, transVer);
             viewType_ = viewType.Perspective;
             visible = false;
+            const_trz = new trsc(transVer.x, transVer.y, transVer.z, rotVer.x, rotVer.y, rotVer.z, 1).getModelMatrix();
             cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), fovx), new Matrix<double>(5, 1), new Size(rect.Width, rect.Height));
         }
         public TransRotZoom(Vertex3d rotVer, Vertex3d transVer)
@@ -148,17 +150,19 @@ namespace opengl3
                     var trz_m = transRotZooms[id_m];
                     var trz_info = new TransRotZoom();
                     trz_info.zoom = trz_m.zoom;
-                    trz_info.off_x = trz_m.off_x + consttransf.off_x;
-                    trz_info.off_y = trz_m.off_y + consttransf.off_y;
-                    trz_info.off_z = trz_m.off_z + consttransf.off_z;
-                    trz_info.xRot = trz_m.xRot + consttransf.xRot;
-                    trz_info.yRot = trz_m.yRot + consttransf.yRot;
-                    trz_info.zRot = trz_m.zRot + consttransf.zRot;
+                    trz_info.off_x = trz_m.off_x;// + consttransf.off_x;
+                    trz_info.off_y = trz_m.off_y;// + consttransf.off_y;
+                    trz_info.off_z = trz_m.off_z;// + consttransf.off_z;
+                    trz_info.xRot = trz_m.xRot;// + consttransf.xRot;
+                    trz_info.yRot = trz_m.yRot;// + consttransf.yRot;
+                    trz_info.zRot = trz_m.zRot;// + consttransf.zRot;
                     trz_info.viewType_ = trz_m.viewType_;
                     trz_info.rect = rect;
                     trz_info.visible = trz_m.visible;
                     trz_info.view_3d = view_3d;
                     trz_info.id = id;
+                    trz_info.const_trz = const_trz;
+                    trz_info.type = type;
                     return trz_info;
                 default:
                     return null;
@@ -280,15 +284,17 @@ namespace opengl3
 
         static public Matrix4x4f[] getVPmatrix(TransRotZoom trz)
         {
+            Matrix4x4f cam_delt = Matrix4x4f.Identity;
+            if (trz.type == TRZtype.Slave) cam_delt = trz.const_trz;
             if (trz.viewType_ == viewType.Perspective)
             {
-                var _Pm = Matrix4x4f.Perspective((float)trz.fovx, (float)trz.rect.Width / trz.rect.Height, 1f, 10000f);
+                var _Pm = Matrix4x4f.Perspective((float)trz.fovx, (float)trz.rect.Width / trz.rect.Height, 0.00001f, 10000f);
                 var _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.zoom * (float)trz.off_z) *
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
                     Matrix4x4f.RotatedZ((float)trz.zRot);
                 //var _PVm
-                return new Matrix4x4f[] { _Pm, _Vm, _Pm * _Vm };
+                return new Matrix4x4f[] { _Pm, cam_delt*_Vm , _Pm * cam_delt * _Vm  };
             }
             else if (trz.viewType_ == viewType.Ortho)
             {
@@ -300,14 +306,12 @@ namespace opengl3
                     Matrix4x4f.RotatedZ((float)trz.zRot);
                 //Console.WriteLine(trz.ToString());
                // Console.WriteLine(_Vm);
-                return new Matrix4x4f[] { _Pm, _Vm, _Pm * _Vm };
+                return new Matrix4x4f[] { _Pm, cam_delt * _Vm, _Pm * cam_delt * _Vm };
             }
             else
             {
                 return new Matrix4x4f[] { Matrix4x4f.Identity, Matrix4x4f.Identity, Matrix4x4f.Identity };
             }
-
         }
     }
-
 }
