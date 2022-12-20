@@ -10,10 +10,9 @@ namespace opengl3
     {
         public CameraCV[] cameraCVs;
         public Matrix<double> R;//1 * R -> 2
-
         public StereoCamera(CameraCV[] _cameraCVs)
         {
-            cameraCVs = _cameraCVs;
+            cameraCVs = _cameraCVs;          
         }
 
         public void calibrate(Mat[] mats,PatternType patternType)
@@ -50,11 +49,12 @@ namespace opengl3
         }
         public void calibrate_stereo(Frame[] frames, PatternType patternType)
         {
+            
             if (cameraCVs.Length==2)
             {
                 for (int i = 0; i < frames.Length; i++)
                 {
-                    var pos1  = cameraCVs[0].compPos(frames[i].im, patternType, 10f);
+                    var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, 10f);
                     var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, 10f);
                     if(pos1&&pos2)
                     {
@@ -75,7 +75,7 @@ namespace opengl3
         {
             for(int i=0; i<pos.Length; i++)
             {
-                cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, 10f,true);
+                cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, 10f);
                 var Bsm = cameraCVs[0].matrixCS.Clone();
                 var Bbf = new RobotFrame(pos[i].name).getMatrix();
                 var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix();

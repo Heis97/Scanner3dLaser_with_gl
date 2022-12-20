@@ -95,7 +95,7 @@ namespace opengl3
         double minArea = 1;
         double maxArea = 10;
         string name_scan = "test_1008_1";
-        string openGl_folder = @"virtual_stereo/test3";
+        string openGl_folder = @"virtual_stereo/test6";
         Point3d_GL p1_scan = new Point3d_GL(548.0, -60.0, 225.0);//(655.35, -73.21, 80.40);
         Point3d_GL p2_scan = new Point3d_GL(548.0, 60.0, 225.0);
         RobotModel RobotModel_1;
@@ -106,11 +106,7 @@ namespace opengl3
         Matrix<double> cameraDistortionCoeffs_dist = new Matrix<double>(5, 1);
         Matrix<double> cameraMatrix_dist = new Matrix<double>(3, 3);
 
-      
-
-        float[] reconst = new float[3];
-        float[] reconst_lines1 = new float[3];
-        float[] reconst_lines2 = new float[3];
+     
         int k = 1;
         bool writ = false;
         int bin_pos = 40;
@@ -126,7 +122,6 @@ namespace opengl3
             };
 
         Scanner scanner;
-        int shvp_pos = 0;
         #endregion
 
         public MainScanningForm()
@@ -211,7 +206,7 @@ namespace opengl3
             // @"cam1\cam1_cal_0508_1\1", 
             //  @"cam2\cam2_cal_0508_1" }, FrameType.Pattern, PatternType.Mesh);
             // comboImages.Items.AddRange(frms);
-           // load_camers_v2();
+            //load_camers_v2();
             //var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
             //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
 
@@ -423,15 +418,15 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            var frms_1 = FrameLoader.loadImages_diff(@"virtual_stereo\test3\monitor_0\distort", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"virtual_stereo\test6\monitor_0\distort", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
-            var frms_2 = FrameLoader.loadImages_diff(@"virtual_stereo\test3\monitor_1\distort", FrameType.Pattern, PatternType.Mesh);
+            var frms_2 = FrameLoader.loadImages_diff(@"virtual_stereo\test6\monitor_1\distort", FrameType.Pattern, PatternType.Mesh);
 
             var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
 
 
-            cam1.save_camera("cam1_conf_1912_2.txt");
-            cam2.save_camera("cam2_conf_1912_2.txt");
+            cam1.save_camera("cam1_conf_2012_1.txt");
+            cam2.save_camera("cam2_conf_2012_1.txt");
             comboImages.Items.AddRange(frms_1);
             comboImages.Items.AddRange(frms_2);
         }
@@ -894,8 +889,8 @@ namespace opengl3
             addButForMonitor(GL1, send.Size, send.Location);
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
 
-            //UtilOpenCV.distortFolder(@"virtual_stereo\test3\monitor_0", GL1.cameraCV);
-            //UtilOpenCV.distortFolder(@"virtual_stereo\test3\monitor_1", GL1.cameraCV);
+            //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
+            //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
 
             // startGenerate();
             //trB_SGBM_Enter();
@@ -3167,9 +3162,9 @@ namespace opengl3
         private void but_load_fr_cal_Click(object sender, EventArgs e)
         {
             var stereo_cal_1 = textB_stereo_cal_path.Text.Split('\\').Reverse().ToArray()[0];
-            var cams_path = new string[] { @"cam1\" , @"cam2\" }; var reverse = true;
-            //cams_path = new string[] { @"virtual_stereo\test3\monitor_0\", @"virtual_stereo\test3\monitor_1\" };  reverse = false;
-            var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0] + stereo_cal_1, cams_path[1] + stereo_cal_1, FrameType.Pattern, reverse);
+            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
+            //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
+            var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
 
             var cam1_conf_path = textB_cam1_conf.Text;
             var cam2_conf_path = textB_cam2_conf.Text;

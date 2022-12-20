@@ -284,34 +284,28 @@ namespace opengl3
 
         static public Matrix4x4f[] getVPmatrix(TransRotZoom trz)
         {
-            Matrix4x4f cam_delt = Matrix4x4f.Identity;
-            if (trz.type == TRZtype.Slave) cam_delt = trz.const_trz;
+            var _Pm = Matrix4x4f.Identity;
+            var _Vm = Matrix4x4f.Identity;
             if (trz.viewType_ == viewType.Perspective)
             {
-                var _Pm = Matrix4x4f.Perspective((float)trz.fovx, (float)trz.rect.Width / trz.rect.Height, 0.00001f, 10000f);
-                var _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.zoom * (float)trz.off_z) *
+                _Pm = Matrix4x4f.Perspective((float)trz.fovx, (float)trz.rect.Width / trz.rect.Height, 0.01f, 1000f);
+                _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.zoom * (float)trz.off_z) *
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
                     Matrix4x4f.RotatedZ((float)trz.zRot);
-                //var _PVm
-                return new Matrix4x4f[] { _Pm, cam_delt*_Vm , _Pm * cam_delt * _Vm  };
             }
             else if (trz.viewType_ == viewType.Ortho)
             {
                 float window = (float)trz.zoom;
-                var _Pm = Matrix4x4f.Ortho(-window, window, -window, window, -100f, 1000f);
-                var _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z) *
+                _Pm = Matrix4x4f.Ortho(-window, window, -window, window, -100f, 1000f);
+                _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z) *
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
-                    Matrix4x4f.RotatedZ((float)trz.zRot);
-                //Console.WriteLine(trz.ToString());
-               // Console.WriteLine(_Vm);
-                return new Matrix4x4f[] { _Pm, cam_delt * _Vm, _Pm * cam_delt * _Vm };
+                    Matrix4x4f.RotatedZ((float)trz.zRot); 
             }
-            else
-            {
-                return new Matrix4x4f[] { Matrix4x4f.Identity, Matrix4x4f.Identity, Matrix4x4f.Identity };
-            }
+
+            if (trz.type == TRZtype.Slave) _Vm = trz.const_trz * _Vm;
+            return new Matrix4x4f[] { _Pm, _Vm, _Pm * _Vm };
         }
     }
 }

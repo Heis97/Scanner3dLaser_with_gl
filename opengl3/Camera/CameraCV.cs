@@ -375,10 +375,9 @@ namespace opengl3
             setPos();
             return pos;
         }
-        public bool compPos(Mat _mat, PatternType patternType,float mark = -1,bool distort = false)
+        public bool compPos(Mat _mat, PatternType patternType,float mark = -1)
         {
             var mat = _mat.Clone();
-            if (distort) mat = undist(mat);
             if (patternType == PatternType.Chess)
             {
                 Size size_patt = new Size(6, 7);

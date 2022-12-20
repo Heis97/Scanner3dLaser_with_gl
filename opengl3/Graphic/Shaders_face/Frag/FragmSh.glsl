@@ -55,15 +55,16 @@ void main() {
 		MaterialSpecularColor = 0.2 * MaterialDiffuseColor;
 	}
 
-	color.xyz = comp_color(LightPosition_world, fs_in.Position_world,
+	if(lightVis == 1)
+	{		
+		color.xyz = comp_color(LightPosition_world, fs_in.Position_world,
 		fs_in.Normal_camera, fs_in.LightDirection_camera, fs_in.EyeDirection_camera,
 		MaterialAmbientColor, MaterialDiffuseColor,MaterialSpecularColor);
-	color.w = transparency;
-
-	if(lightVis == 1)
-	{
+	
+	}
+	else{
 		color.xyz = MaterialDiffuseColor;
 	}
-	
+	color.w = transparency;
 	//color.xyz += fs_in.Color;
 }

@@ -380,7 +380,7 @@ namespace opengl3
             init_vars_gl(idsLsOne);
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
-            Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
+            //Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(5, 1), new Size(400, 400));
             cameraCV.distortmatrix[0,0] = -0.1;
 
