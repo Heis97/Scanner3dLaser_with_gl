@@ -865,9 +865,9 @@ namespace opengl3
             var w = send.Width;
             var h = send.Height;
             //GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-            generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
+            //generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
             GL1.SortObj();
-            int monitor_num = 4;
+            int monitor_num = 1;
             if(monitor_num==4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);

@@ -357,7 +357,7 @@ namespace opengl3
         static public Polygon3d_GL[] triangulate_lines_xy(Point3d_GL[][] ps, double smooth=-1)
         {
             List<Polygon3d_GL> polygons = new List<Polygon3d_GL>();
-            if(smooth > 0) ps = smooth_lines_xy(ps, smooth);
+            //if(smooth > 0) ps = smooth_lines_xy(ps, smooth);
             if (ps == null) return null;
 
             for (int i=1; i<ps.Length; i++)
