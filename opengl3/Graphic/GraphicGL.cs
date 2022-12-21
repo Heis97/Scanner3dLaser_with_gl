@@ -222,6 +222,7 @@ namespace opengl3
 
         public void glControl_Render(object sender, GlControlEventArgs e)
         {
+            
             VPs = new Matrix4x4f[4];
             Vs = new Matrix4x4f[4];
             Ps = new Matrix4x4f[4];
@@ -263,15 +264,17 @@ namespace opengl3
                     foreach (var opglObj in buffersGl.objs_dynamic)
                     {
                         renderGlobj(opglObj);
+                        //Console.WriteLine(opglObj.id);
                     }
                 }
             }
-
+            //Console.WriteLine("_________");
             rendercout++;
             if(rendercout%renderdelim==0)
             {
                 rendercout = 0;
             }
+            
         }
         
         void renderGlobj(openGlobj opgl_obj)
@@ -1313,6 +1316,7 @@ namespace opengl3
         }
         public void addFrame(Point3d_GL pos, Point3d_GL x, Point3d_GL y, Point3d_GL z)
         {
+           
             addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 0, 0);
             addLineMesh(new Point3d_GL[] { pos, y }, 0, 1.0f, 0);
             addLineMesh(new Point3d_GL[] { pos, z }, 0, 0, 1.0f);
