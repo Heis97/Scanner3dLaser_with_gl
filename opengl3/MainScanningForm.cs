@@ -2934,7 +2934,8 @@ namespace opengl3
                 scanner.pointCloud.graphicGL = GL1;
             }
             while (videoframe_count < all_frames)
-            {
+              //while (videoframe_count < all_frames/2)
+                {
                 Mat im1 = new Mat();
                 Mat im2 = new Mat();
                 while (!capture1.Read(im1)) { }

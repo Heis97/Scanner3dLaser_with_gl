@@ -71,7 +71,7 @@ namespace opengl3
             CvInvoke.CvtColor(mat, im_tr, ColorConversion.Bgr2Gray);
             CvInvoke.GaussianBlur(im_tr, im_tr, new Size(7, 7), 3);
             im_tr = sobel_mat(im_tr);
-            CvInvoke.Threshold(im_tr, im_tr, 85, 255, ThresholdType.Binary);
+            CvInvoke.Threshold(im_tr, im_tr, 65, 255, ThresholdType.Binary);
 
 
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
