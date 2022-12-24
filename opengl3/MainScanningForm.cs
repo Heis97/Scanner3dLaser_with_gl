@@ -196,7 +196,7 @@ namespace opengl3
                 step = 0.4 * 4,
             };
             propGrid_traj.SelectedObject = param_tr;
-            // load_camers_v2();
+             //load_camers_v2();
             // 
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
@@ -418,15 +418,15 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            var frms_1 = FrameLoader.loadImages_diff(@"virtual_stereo\test6\monitor_0\distort", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1_cal_2412_1", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
-            var frms_2 = FrameLoader.loadImages_diff(@"virtual_stereo\test6\monitor_1\distort", FrameType.Pattern, PatternType.Mesh);
+            var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_2412_2", FrameType.Pattern, PatternType.Mesh);
 
             var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
 
 
-            cam1.save_camera("cam1_conf_2012_1.txt");
-            cam2.save_camera("cam2_conf_2012_1.txt");
+            cam1.save_camera("cam1_conf_2412_1.txt");
+            cam2.save_camera("cam2_conf_2412_1.txt");
             comboImages.Items.AddRange(frms_1);
             comboImages.Items.AddRange(frms_2);
         }
@@ -1101,12 +1101,13 @@ namespace opengl3
                     System.Drawing.PointF[] corn = null;
                     if (true)
                     {
+                        
                         //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im.Clone(), chess_size);
                         //imageBox2.Image = UtilOpenCV.drawInsideRectCirc(fr.im_sec.Clone(), chess_size);
-                        imBox_base_1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
-                        imBox_base_2.Image = GeometryAnalyse.findCirclesIter(fr.im_sec.Clone(), ref corn, chess_size);
-                        //imBox_base_1.Image = FindCircles.findCircles(stereocam_scan.cameraCVs[0].undist(mat1.Clone()), ref corn, new Size(6, 7));
-                        //imBox_base_2.Image = FindCircles.findCircles(stereocam_scan.cameraCVs[1].undist(mat2.Clone()), ref corn, new Size(6, 7));
+                        //imBox_base_1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
+                        //imBox_base_2.Image = GeometryAnalyse.findCirclesIter(fr.im_sec.Clone(), ref corn, chess_size);
+                        imBox_base_1.Image = GeometryAnalyse.findCirclesIter(stereocam_scan.cameraCVs[0].undist(mat1.Clone()), ref corn, new Size(6, 7));
+                        imBox_base_2.Image = GeometryAnalyse.findCirclesIter(stereocam_scan.cameraCVs[1].undist(mat2.Clone()), ref corn, new Size(6, 7));
                     }
                     else
                     {
