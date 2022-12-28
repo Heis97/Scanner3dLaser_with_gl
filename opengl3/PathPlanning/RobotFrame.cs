@@ -10,6 +10,7 @@ namespace opengl3
     class RobotFrame
     {
         public double X, Y, Z, A, B, C, V, D;
+        public enum RobotType { KUKA = 1, PULSE = 2};
         
         public RobotFrame(double x, double y, double z, double a, double b, double c, double v, double d)
         {
@@ -43,31 +44,97 @@ namespace opengl3
             return ABCmatr(X, Y, Z, A, B, C);
         }
 
+        public RobotFrame(Matrix<double> matrix, double v, RobotType type = RobotType.KUKA)
+        {
+            switch (type)
+            {
+                case RobotType.KUKA:
+                    { 
+                        Matrix<double> base_matrix = ABCmatr(596.56, 87.9, 57.0, 1.9, 0.01, -0.005);
+                        //var matrix = mult_frame(base_matrix, _matrix);
+                        // CvInvoke.Invert(base_matrix, base_matrix, Emgu.CV.CvEnum.DecompMethod.LU);
+                        // CvInvoke.Invert(_matrix, _matrix, Emgu.CV.CvEnum.DecompMethod.LU);
+                        // var matrix = base_matrix*_matrix;
+                        /* var trans = base_matrix * _matrix;
+
+
+                         matrix[0, 3] = trans[0, 3];
+                         matrix[1, 3] = trans[1, 3];
+                         matrix[2, 3] = trans[2, 3];*/
+                        //prin.t(base_matrix);
+                        /* 
+                         var vecs = toVcs(_matrix);
+                         prin.t(base_matrix);
+                         prin.t(vecs);
+                         var vecs_matr = vecs * base_matrix;
+                         var matrix =toVcs(vecs_matr);*/
+                        prin.t(base_matrix);
+                        //prin.t(_matrix);
+
+                        prin.t(matrix);
+                        prin.t("___________");
+                        //var matrix = base_matrix * _matrix;
+                        //CvInvoke.Invert(base_matrix, base_matrix, Emgu.CV.CvEnum.DecompMethod.LU);
+
+                        var x = matrix[0, 3];
+                        var y = matrix[1, 3];
+                        var z = matrix[2, 3];
+                        double b = Math.Asin(-matrix[2, 0]);
+                        double a = 0;
+                        double c = 0;
+                        if (Math.Cos(b) != 0)
+                        {
+                            c = Math.Asin(matrix[2, 1] / Math.Cos(b));
+                            a = Math.Asin(matrix[1, 0] / Math.Cos(b));
+                        }
+                        int d = (int)matrix[3, 3];
+                        X = x;
+                        Y = y;
+                        Z = z;
+                        A = a;
+                        B = b;
+                        C = c;
+                        V = v;
+                        D = d; 
+                    }
+                    break;
+                case RobotType.PULSE:
+                    {
+                        var x = matrix[0, 3];
+                        var y = matrix[1, 3];
+                        var z = matrix[2, 3];
+                        double b = Math.Asin(-matrix[2, 0]);
+                        double a = 0;
+                        double c = 0;
+                        if (Math.Cos(b) != 0)
+                        {
+                            a = Math.Asin(matrix[2, 1] / Math.Cos(b));
+                            c = Math.Asin(matrix[1, 0] / Math.Cos(b));
+                        }
+                        int d = (int)matrix[3, 3];
+                        X = x;
+                        Y = y;
+                        Z = z;
+                        A = a;
+                        B = b;
+                        C = c;
+                        V = v;
+                        D = d;
+                    }
+                    break;
+            }
+            
+        }
+
         public RobotFrame(Matrix<double> matrix, double v)
         {
             Matrix<double> base_matrix = ABCmatr(596.56, 87.9, 57.0, 1.9, 0.01, -0.005);
-            //var matrix = mult_frame(base_matrix, _matrix);
-            // CvInvoke.Invert(base_matrix, base_matrix, Emgu.CV.CvEnum.DecompMethod.LU);
-            // CvInvoke.Invert(_matrix, _matrix, Emgu.CV.CvEnum.DecompMethod.LU);
-           // var matrix = base_matrix*_matrix;
-           /* var trans = base_matrix * _matrix;
-            
 
-            matrix[0, 3] = trans[0, 3];
-            matrix[1, 3] = trans[1, 3];
-            matrix[2, 3] = trans[2, 3];*/
-            //prin.t(base_matrix);
-            /* 
-             var vecs = toVcs(_matrix);
-             prin.t(base_matrix);
-             prin.t(vecs);
-             var vecs_matr = vecs * base_matrix;
-             var matrix =toVcs(vecs_matr);*/
-             prin.t(base_matrix);
-             //prin.t(_matrix);
+            prin.t(base_matrix);
+            //prin.t(_matrix);
 
-             prin.t(matrix);
-             prin.t("___________");
+            prin.t(matrix);
+            prin.t("___________");
             //var matrix = base_matrix * _matrix;
             //CvInvoke.Invert(base_matrix, base_matrix, Emgu.CV.CvEnum.DecompMethod.LU);
 
@@ -92,6 +159,9 @@ namespace opengl3
             V = v;
             D = d;
         }
+
+
+
 
         static public string generate_string(RobotFrame[] frames)
         {
