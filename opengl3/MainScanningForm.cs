@@ -130,26 +130,12 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-           // timer = new System.Timers.Timer(100);
-           // timer.Elapsed += drawTimeLabel;
-           // timer.Start();
-           //loadVideo_stereo(@"test_1107_7");
-            /*loadScannerStereoLas(
-            new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
-             @"stereocal_2607_1",
-             @"scan_2607_4",
-             new float[] { 0.1f, 0.5f, 0.1f }, true, 20);*/
 
-
-
-
-            /*for(int i=0; i< frms_stereo1.Length;i++)
-            {
-                scanner.initStereo(new Mat[] { frms_stereo1[i].im, frms_stereo1[i].im_sec }, PatternType.Mesh);
-            }*/
-
-            // oneCam(new string[] { @"cam1\camera_cal_1807_1" },10f);
-
+            var eng = IronPython.Hosting.Python.CreateEngine();
+            var scope = eng.CreateScope();
+            eng.Execute(@"def greetings(name): return 'Hello ' + name.title() + '!'", scope);
+            dynamic greetings = scope.GetVariable("greetings");
+            System.Console.WriteLine(greetings("world"));
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -3315,3 +3301,22 @@ loadImages_basis(@"cam1\pos_cal_basis_1108",53, 30, 30);
 
 calcRob();*/
 
+// timer = new System.Timers.Timer(100);
+// timer.Elapsed += drawTimeLabel;
+// timer.Start();
+//loadVideo_stereo(@"test_1107_7");
+/*loadScannerStereoLas(
+new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
+ @"stereocal_2607_1",
+ @"scan_2607_4",
+ new float[] { 0.1f, 0.5f, 0.1f }, true, 20);*/
+
+
+
+
+/*for(int i=0; i< frms_stereo1.Length;i++)
+{
+    scanner.initStereo(new Mat[] { frms_stereo1[i].im, frms_stereo1[i].im_sec }, PatternType.Mesh);
+}*/
+
+// oneCam(new string[] { @"cam1\camera_cal_1807_1" },10f);
