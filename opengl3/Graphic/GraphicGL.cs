@@ -161,28 +161,11 @@ namespace opengl3
         public viewType typeProj = viewType.Perspective;
         Size sizeControl;
         Point lastPos;
-        uint buff_pos;
-        uint buff_color;
-        uint buff_normal;
-        uint programID_ps;
-        uint programID_trs;
-        uint programID_lns;
+
         uint programID_comp;
         public int texture_vis = 0;
-        int[] LocationMVPs = new int[4];
-        int[] LocationMs = new int[4];
-        int[] LocationVs = new int[4];
-        int[] LocationPs = new int[4];
-        int texture_visID;
-        int LocationMVP;
-        int LocationV;
-        int LocationM;
-        int LightID;
-        int LightPowerID;
-        int MaterialDiffuseID;
-        int MaterialAmbientID;
+
         int currentMonitor = 0;
-        int MaterialSpecularID;
         float LightPower = 1000000.0f;
         Label Label_cor;
         Label Label_cor_cur;
@@ -264,7 +247,7 @@ namespace opengl3
                     foreach (var opglObj in buffersGl.objs_dynamic)
                     {
                         renderGlobj(opglObj);
-                        //Console.WriteLine(opglObj.id);
+                        //Console.WriteLine(opglObj.vert_len);
                     }
                 }
             }
@@ -1262,7 +1245,7 @@ namespace opengl3
 
             if (trz.view_3d < 0)
             {
-                transRotZooms[i].view_3d = add_buff_gl(toFloat(verts), null, null, PrimitiveType.Lines);
+                transRotZooms[i].view_3d = add_buff_gl_dyn(toFloat(verts), null, null, PrimitiveType.Lines);
             }
             else
             {
@@ -1306,6 +1289,15 @@ namespace opengl3
             }
             return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp));
         }
+        public int add_buff_gl_dyn(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp)
+        {
+            if (data_v == null)
+            {
+                Console.WriteLine("date_v == NULL");
+                return -1;
+            }
+            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n, null, tp,1));
+        }
         public void add_buff_gl_mesh_id(float[] data_v, int id, bool visible)
         {
             //buffersGl.add_obj_id(data_v, id, visible, PrimitiveType.Triangles);
@@ -1316,7 +1308,9 @@ namespace opengl3
         }
         public void addFrame(Point3d_GL pos, Point3d_GL x, Point3d_GL y, Point3d_GL z)
         {
-           
+            //addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 1.0f, 0);
+            //addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 0, 0);
+            
             addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 0, 0);
             addLineMesh(new Point3d_GL[] { pos, y }, 0, 1.0f, 0);
             addLineMesh(new Point3d_GL[] { pos, z }, 0, 0, 1.0f);
@@ -1488,7 +1482,7 @@ namespace opengl3
             }
             addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b);
         }
-        public void addLineMeshTraj(Point3d_GL[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public int addLineMeshTraj(Point3d_GL[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
         {
             var mesh = new List<float>();
             for(int i=1; i<points.Length;i++)
@@ -1501,7 +1495,7 @@ namespace opengl3
                 mesh.Add((float)points[i].y);
                 mesh.Add((float)points[i].z);
             }
-            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b);
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b,true);
         }
         public int addLineMesh(Vertex4f[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
         {
@@ -1515,7 +1509,7 @@ namespace opengl3
             }
             return addMeshWithoutNorm(mesh, PrimitiveType.Lines, r, g, b);
         }
-        public int addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public int addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f,bool dyn = false)
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
@@ -1529,7 +1523,9 @@ namespace opengl3
                 normal_buffer_data[i + 1] = 0.1f;
                 normal_buffer_data[i + 2] = 0.1f;
             }
-            return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
+            if(dyn) return add_buff_gl_dyn(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
+            else return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
+
         }
         public void addMeshColor(float[] gl_vertex_buffer_data, float[] gl_color_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
         {

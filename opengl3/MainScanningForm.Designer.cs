@@ -89,6 +89,9 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_traj_clear = new System.Windows.Forms.Button();
+            this.tp_smooth_scan = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
             this.but_gl_light = new System.Windows.Forms.Button();
             this.but_load_fr_cal = new System.Windows.Forms.Button();
             this.tb_strip_scan = new System.Windows.Forms.TextBox();
@@ -934,6 +937,9 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_traj_clear);
+            this.tabOpenGl.Controls.Add(this.tp_smooth_scan);
+            this.tabOpenGl.Controls.Add(this.label19);
             this.tabOpenGl.Controls.Add(this.but_gl_light);
             this.tabOpenGl.Controls.Add(this.but_load_fr_cal);
             this.tabOpenGl.Controls.Add(this.tb_strip_scan);
@@ -1018,6 +1024,33 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // but_traj_clear
+            // 
+            this.but_traj_clear.Location = new System.Drawing.Point(470, 838);
+            this.but_traj_clear.Name = "but_traj_clear";
+            this.but_traj_clear.Size = new System.Drawing.Size(96, 24);
+            this.but_traj_clear.TabIndex = 128;
+            this.but_traj_clear.Text = "Очистить траек";
+            this.but_traj_clear.UseVisualStyleBackColor = true;
+            this.but_traj_clear.Click += new System.EventHandler(this.but_traj_clear_Click);
+            // 
+            // tp_smooth_scan
+            // 
+            this.tp_smooth_scan.Location = new System.Drawing.Point(1118, 864);
+            this.tp_smooth_scan.Name = "tp_smooth_scan";
+            this.tp_smooth_scan.Size = new System.Drawing.Size(68, 20);
+            this.tp_smooth_scan.TabIndex = 127;
+            this.tp_smooth_scan.Text = "0.8";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(1049, 867);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(63, 13);
+            this.label19.TabIndex = 126;
+            this.label19.Text = "smooth, mm";
+            // 
             // but_gl_light
             // 
             this.but_gl_light.Location = new System.Drawing.Point(572, 869);
@@ -1067,7 +1100,7 @@ namespace opengl3
             // 
             // but_calibr_Bfs
             // 
-            this.but_calibr_Bfs.Location = new System.Drawing.Point(1173, 850);
+            this.but_calibr_Bfs.Location = new System.Drawing.Point(1688, 915);
             this.but_calibr_Bfs.Name = "but_calibr_Bfs";
             this.but_calibr_Bfs.Size = new System.Drawing.Size(96, 34);
             this.but_calibr_Bfs.TabIndex = 120;
@@ -1086,7 +1119,7 @@ namespace opengl3
             // 
             this.but_gl_clear.Location = new System.Drawing.Point(470, 813);
             this.but_gl_clear.Name = "but_gl_clear";
-            this.but_gl_clear.Size = new System.Drawing.Size(96, 49);
+            this.but_gl_clear.Size = new System.Drawing.Size(96, 28);
             this.but_gl_clear.TabIndex = 118;
             this.but_gl_clear.Text = "Очистить";
             this.but_gl_clear.UseVisualStyleBackColor = true;
@@ -3322,6 +3355,9 @@ namespace opengl3
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Button but_load_fr_cal;
         private System.Windows.Forms.Button but_gl_light;
+        private System.Windows.Forms.TextBox tp_smooth_scan;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Button but_traj_clear;
     }
 }
 

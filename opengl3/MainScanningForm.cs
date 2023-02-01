@@ -30,6 +30,8 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        int scan_i = -1;
+        int traj_i = -1;
         TrajParams param_tr = new TrajParams();
         FormSettings formSettings = new FormSettings();
         Polygon3d_GL[] mesh = null;
@@ -446,15 +448,15 @@ namespace opengl3
         }
 
 
-        void load_scan_v2(string scan_path, int strip = 1)
+        void load_scan_v2(string scan_path, int strip = 1, double smooth = 0.8)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             loadVideo_stereo(scan_path_1, scanner, strip);
 
-            mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(),0.8);
+            mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(),smooth);
             
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            if(scan_stl != null) GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+            if(scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
             GL1.SortObj();
             Console.WriteLine("Loading end.");
         }
@@ -3003,18 +3005,19 @@ namespace opengl3
 
         private void but_point_type_Click(object sender, EventArgs e)
         {
-            if(GL1.point_type==0)
+            if(GL1.buffersGl.objs_dynamic[scan_i].tp == PrimitiveType.Points)
             {
-                GL1.point_type = 1;
+                GL1.buffersGl.setPrType(scan_i,PrimitiveType.Lines);
             }
-            else if(GL1.point_type == 1)
+            else if (GL1.buffersGl.objs_dynamic[scan_i].tp == PrimitiveType.Lines)
             {
-                GL1.point_type = 2;
+                GL1.buffersGl.setPrType(scan_i, PrimitiveType.Triangles);
             }
-            else if (GL1.point_type == 2)
+            else if (GL1.buffersGl.objs_dynamic[scan_i].tp == PrimitiveType.Triangles)
             {
-                GL1.point_type = 0;
+                GL1.buffersGl.setPrType(scan_i, PrimitiveType.Points);
             }
+
         }
 
         private void but_end_cont_Click(object sender, EventArgs e)
@@ -3030,8 +3033,9 @@ namespace opengl3
                 var _traj = PathPlanner.Generate_multiLayer3d_mesh(mesh, conts, param_tr);
 
                 rob_traj = PathPlanner.join_traj(_traj);
-                var ps = PathPlanner.traj_to_matr(rob_traj);                
-                GL1.addLineMeshTraj(ps.ToArray(),0.9f);
+                var ps = PathPlanner.traj_to_matr(rob_traj);        
+                if(traj_i>=0) GL1.buffersGl.removeObj(traj_i);
+                traj_i = GL1.addLineMeshTraj(ps.ToArray(),0.9f);
                 GL1.buffersGl.sortObj();
                 var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
                 debugBox.Text = traj_rob;
@@ -3054,9 +3058,10 @@ namespace opengl3
             var stereo_cal_path = textB_stereo_cal_path.Text;
 
             int strip = Convert.ToInt32(tb_strip_scan.Text);
+            double smooth = Convert.ToDouble(tp_smooth_scan.Text);
 
             loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
-            load_scan_v2(scan_path, strip);
+            load_scan_v2(scan_path, strip,smooth);
 
         }
 
@@ -3129,13 +3134,18 @@ namespace opengl3
 
         private void but_gl_clear_Click(object sender, EventArgs e)
         {
-            GL1.buffersGl.clearObj();
+            GL1.buffersGl.removeObj(scan_i);
+            GL1.buffersGl.removeObj(traj_i);
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             //GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-            //GL1.SortObj();
+            GL1.SortObj();
         }
 
-
+        private void but_traj_clear_Click(object sender, EventArgs e)
+        {
+            GL1.buffersGl.removeObj(traj_i);
+            //GL1.SortObj();
+        }
 
         #endregion
 
@@ -3177,7 +3187,9 @@ namespace opengl3
             stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh);
             comboImages.Items.AddRange(frms_stereo);
 
-        }       
+        }
+
+        
     }
 }
 

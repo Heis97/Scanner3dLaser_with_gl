@@ -365,12 +365,13 @@ namespace opengl3
             var data = (byte[,])mat.GetData();
             var ps_arr_j = new PointF[data.GetLength(0)];
             for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();
-
+            int add_count = 0;
             for (int i = (int)(board * data.GetLength(1)); i < data.GetLength(1) - (int)(board * data.GetLength(1)); i++)
             {
                 bool p_add = false;
                 var br_max = int.MinValue;
                 int j_max = 0;
+                
                 for (int j = 0; j < data.GetLength(0); j++)
                 {
                     int br_cur = (int)data[j, i];
@@ -405,10 +406,11 @@ namespace opengl3
                 var j_max_2 = (-b / (2 * a));
                 if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
                 {
-                    if (data[(int)j_max_2, i] > 20)
+                    if (data[(int)j_max_2, i] > 10)
                     {
                         ps_list.Add(new PointF(i, j_max_2));
                         p_add = true;
+                        add_count++;
                     }
                 }
 
@@ -420,6 +422,7 @@ namespace opengl3
                 
 
             }
+            if (add_count < 5) return null;
             
             ps = ps_list.ToArray();
             ps = connectPoints(ps);

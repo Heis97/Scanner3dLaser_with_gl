@@ -26,6 +26,7 @@ namespace opengl3
             if (opgl_obj.animType == openGlobj.AnimType.Dynamic)
             {
                 opgl_obj.id = countObj;
+
                 countObj++;
                 objs_dynamic.Add(opgl_obj);                
                 return countObj - 1;
@@ -69,7 +70,7 @@ namespace opengl3
 
         public void removeObj(int id)
         {
-            objs_dynamic[id] = new openGlobj();
+            if (id >=0)  objs_dynamic[id] = new openGlobj();
         }
 
         public void setObj(int id, openGlobj openGlobj)
@@ -90,6 +91,11 @@ namespace opengl3
         }
 
         #region setters
+
+        public void setPrType(int id, PrimitiveType ptype)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setType(ptype);
+        }
         public void setScale(int id, int i, float _scale)
         {
             objs_dynamic[id] = objs_dynamic[id].setScale(i, _scale);

@@ -102,8 +102,8 @@ namespace opengl3
             id = _id;
             if (_id == -1)
             {
-                //animType = AnimType.Static;
-                animType = AnimType.Dynamic;
+                animType = AnimType.Static;
+                //animType = AnimType.Dynamic;
                 
                 setBuffers();
             }
@@ -196,6 +196,11 @@ namespace opengl3
 
 
         #region setters
+        public openGlobj setType(PrimitiveType ptype)
+        {
+            tp = ptype;
+            return this;
+        }
         public openGlobj setVisible(bool _visible)
         {
             visible = _visible;
