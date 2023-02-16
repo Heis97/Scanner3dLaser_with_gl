@@ -184,6 +184,8 @@ namespace opengl3
                 step = 0.4 * 4,
             };
             propGrid_traj.SelectedObject = param_tr;
+
+            Manipulator.calcRob_pulse();
              //load_camers_v2();
             // 
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"

@@ -226,6 +226,60 @@ namespace opengl3
 			//print(AbcToMatrix(90f, 90f, 90f));
 			Console.WriteLine(pos1);
 		}
+
+
+		/*
+		//-71.0969009399414,
+        -88.66098022460938,
+        139.96719360351562,
+        -50.81295394897461,
+        112.73152160644531,
+        -223.31117248535156
+
+
+		"point": {
+            "x": -0.1968046387429365,
+            "y": 0.3157234605035095,
+            "z": 0.20865034899430465
+        },
+        "rotation": {
+            "roll": -1.5787544743183737,
+            "pitch": 0.06680544184390703,
+            "yaw": -0.7587056145763897
+        },
+
+	*/
+		public static void calcRob_pulse()
+		{
+			float[] q = new float[8]{ UtilMatr.toRad(-71.0969f),
+					UtilMatr.toRad(-88.6609f),
+					UtilMatr.toRad(139.96719f),
+				   UtilMatr.toRad(-50.8129f),
+					UtilMatr.toRad(112.7315f),
+				   UtilMatr.toRad(-223.31117f),
+					UtilMatr.toRad(0),
+					UtilMatr.toRad(0)};
+			//pos: 566.31 -30.62 220.70
+			//or : 94.43  12.03  132.04
+			float[] pos = { 0, 0, 0 };
+			Manipulator Kuka = new Manipulator();
+
+			float[] par = {  q[0], PI / 2, 0, 0.2325f,
+							 q[1],  0, -0.450f, 0,
+							 q[2],  0, -0.37f, 0,
+							 q[3], PI / 2, 0, 0.1205f,
+							 q[4], -PI / 2, 0, 0.1711f,
+							 q[5],  0, 0, 0.1226f,
+							 0, 0, 0,  0,
+							 0   ,       0, 0, 0 };
+
+			Vector3d_GL pos1 = Kuka.calcPoz(par);
+			Kuka.printMatrix(Kuka.flange_matr);
+			Console.WriteLine("--------------");
+			prin.t(UtilMatr.AbcToMatrix(94.43f, 12.03f, 132.04f));
+			//print(AbcToMatrix(90f, 90f, 90f));
+			Console.WriteLine(pos1);
+		}
 	};
 	
 }
