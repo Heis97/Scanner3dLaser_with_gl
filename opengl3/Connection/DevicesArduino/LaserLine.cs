@@ -49,7 +49,7 @@ namespace opengl3
 
         public void setShvpPos(int _pos)
         {
-            send(_pos+500, posit);
+            send(_pos+5000, posit);
         }
 
         public void setShvpVel(double _vel)
