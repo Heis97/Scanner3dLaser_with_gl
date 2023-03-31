@@ -1,8 +1,6 @@
 ﻿#version 430 core
 layout (triangles, invocations = 1) in;
-layout (triangle_strip, max_vertices = 3) out;
-layout(rgba32f, binding = 1) uniform  image2D landmark2d_data;
-layout(rgba32f, binding = 2) uniform  image2D landmark3d_data;
+
 layout(rgba32f, binding = 3) uniform  image2D isolines;
 
 uniform vec3 LightPosition_world;
@@ -37,7 +35,7 @@ vec3 LightDirection_camera;
 vec2 TextureUV;
 } fs_in;
 
-
+//-------------------------------------------------------------------------------------
 bool affil_segment(vec3 p_st, vec3 p_end, vec3 p_ch)
 {
 	float dist_0 = length((p_end - p_st));
@@ -99,45 +97,8 @@ void find_points_isoline(vec4 surf,int y)
 		}
 	}
 }
-/*void save_point(vec3 p, int x, int y)
-{
-	if (x < 4990)
-	{
-		if (y < 2)
-		{			
-			imageStore(isolines, ivec2(x, y), vec4(p, x));
-		}		
-	}	
-}
-void find_points_isoline(vec4 surf)
-{
-	int y = 0;
-	ivec2 ind_pos = ivec2(imageSize(isolines).x - 1, 0);
-	int x = int(imageLoad(isolines, ind_pos).x);
-	bool x_plus = false;
-	for (int i = 0; i < 3; i++)
-	{
-		vec3 p_aff = vec3(0);
-		int i1 = i + 1; if (i1 > 2) i1 = 0;
-		if (cross_affil(vs_out[i1].vertexPosition_world, vs_out[i].vertexPosition_world, surf, p_aff))
-		{
-			save_point(p_aff,x,y);
-			y++;
-			x_plus = true;
-		}
-	}
-	if (x_plus)
-	{
-		x++;
-		imageStore(isolines, ind_pos, vec4(x, 0, 0, 0));	
-		
-	}
-}*/
 
-
-
-
-
+//--------------------------------------------------------------------------------------------
 bool checkPointInTriangle(vec2 _A,vec2 _B,vec2 _C,vec2 _P)
 {
 	vec2 P = _P - _A;
