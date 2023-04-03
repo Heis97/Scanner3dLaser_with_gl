@@ -855,7 +855,7 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            //GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             //generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
             //GL1.SortObj();
             int monitor_num = 1;
@@ -881,9 +881,10 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-            var scan_stl = new Model3d(@"curve_test_1layer_cut.STL", false);
+            var scan_stl = new Model3d(@"curve_test2_c.STL", false);
             mesh = scan_stl.pols;
             scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);
+            
             GL1.SortObj();
             // startGenerate();
             //trB_SGBM_Enter();

@@ -330,7 +330,7 @@ namespace PathPlanning
 
         static Matrix<double> proj_point(Polygon3d_GL polyg, Point3d_GL point)
         {
-            var vec_x_dir = new Vector3d_GL(0, -1, 0);
+            var vec_x_dir = new Vector3d_GL(0, 1, 0);
             var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
             //Console.WriteLine(vec_y);
             var vec_x = (vec_y | polyg.flat3D.n).normalize();
@@ -398,7 +398,7 @@ namespace PathPlanning
             double v = 20;
             for (int i = 0; i < traj.Count; i++)
             {
-                traj_rob.Add(new RobotFrame(traj[i], v));
+                traj_rob.Add(new RobotFrame(traj[i], v,RobotFrame.RobotType.PULSE));
             }
             traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
 
