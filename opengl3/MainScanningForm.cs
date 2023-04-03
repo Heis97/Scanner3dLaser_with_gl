@@ -185,8 +185,8 @@ namespace opengl3
             };
             propGrid_traj.SelectedObject = param_tr;
 
-            Manipulator.calcRob_pulse();
-             //load_camers_v2();
+            //Manipulator.calcRob_pulse();
+            //load_camers_v2();
             // 
             //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
             //patt[0] = patt_ph;
@@ -200,6 +200,7 @@ namespace opengl3
             //var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
             //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
 
+            
         }
 
         void loadStereo()
@@ -880,7 +881,10 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-
+            var scan_stl = new Model3d(@"curve_test_1layer_cut.STL", false);
+            mesh = scan_stl.pols;
+            scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);
+            GL1.SortObj();
             // startGenerate();
             //trB_SGBM_Enter();
 

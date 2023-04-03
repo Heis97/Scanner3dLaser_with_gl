@@ -381,6 +381,7 @@ namespace PathPlanning
             var traj_3d = new List<List<Matrix<double>>>();
             double resolut = 0.2;
             var map_xy = new RasterMap(surface, resolut);
+
             for (int i=0; i<traj_2d.Count;i++)
             {
                 var traj_df = filter_traj(divide_traj(traj_2d[i], trajParams.div_step), trajParams.div_step / 2);

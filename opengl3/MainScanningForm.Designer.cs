@@ -1110,7 +1110,7 @@ namespace opengl3
             // 
             // propGrid_traj
             // 
-            this.propGrid_traj.Location = new System.Drawing.Point(29, 17);
+            this.propGrid_traj.Location = new System.Drawing.Point(563, 3);
             this.propGrid_traj.Name = "propGrid_traj";
             this.propGrid_traj.Size = new System.Drawing.Size(243, 343);
             this.propGrid_traj.TabIndex = 119;
@@ -1294,9 +1294,9 @@ namespace opengl3
             // 
             // debugBox
             // 
-            this.debugBox.Location = new System.Drawing.Point(1064, 818);
+            this.debugBox.Location = new System.Drawing.Point(1218, 409);
             this.debugBox.Name = "debugBox";
-            this.debugBox.Size = new System.Drawing.Size(556, 26);
+            this.debugBox.Size = new System.Drawing.Size(402, 435);
             this.debugBox.TabIndex = 62;
             this.debugBox.Text = "";
             // 
