@@ -881,7 +881,7 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-            var scan_stl = new Model3d(@"curve_test2_c.STL", false);
+            var scan_stl = new Model3d(@"defect_m3.STL", false);
             mesh = scan_stl.pols;
             scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);
             

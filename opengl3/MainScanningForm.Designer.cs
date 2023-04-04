@@ -1110,9 +1110,9 @@ namespace opengl3
             // 
             // propGrid_traj
             // 
-            this.propGrid_traj.Location = new System.Drawing.Point(563, 3);
+            this.propGrid_traj.Location = new System.Drawing.Point(6, 6);
             this.propGrid_traj.Name = "propGrid_traj";
-            this.propGrid_traj.Size = new System.Drawing.Size(243, 343);
+            this.propGrid_traj.Size = new System.Drawing.Size(183, 343);
             this.propGrid_traj.TabIndex = 119;
             // 
             // but_gl_clear
