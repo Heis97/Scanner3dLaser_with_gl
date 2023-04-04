@@ -121,8 +121,10 @@ namespace opengl3
                 int j = 0;
                 for (int i = 0; i < mats[0].Length; i++)
                 {
+                    //Console.WriteLine("mats.Length"+ mats.Length);
                     if(mats.Length==2)
                     {
+
                         if (addLasFlat(new Mat[] { mats[0][i], mats[1][i] }, origs, positions[i], cameraCV, patternType))
                         {
                             j++;

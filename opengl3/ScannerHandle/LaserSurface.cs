@@ -77,7 +77,10 @@ namespace opengl3
 
         static Point3d_GL[] points3dInCam(Mat mat, Mat orig, CameraCV cameraCV,PatternType patternType,GraphicGL graphicGL = null,bool compPos = true,bool oneMat = false)
         {
-            var points = Detection.detectLineDiff(mat,5);
+            var points = Detection.detectLineDiff(mat,5,0.05f,false,false);
+            /*var mat_p = UtilOpenCV.drawPointsF(mat,points,255,0,0);
+            CvInvoke.Imshow("asf", mat_p);
+            CvInvoke.WaitKey();*/
             var ps = new PointF[0];
             double z = 0;
             if(oneMat)

@@ -1558,7 +1558,7 @@ namespace opengl3
             // Console.WriteLine("vert len " + gl_vertex_buffer_data.Length);
             add_buff_gl(gl_vertex_buffer_data, gl_color_buffer_data, normal_buffer_data, primitiveType);
         }
-        public void addMesh(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public int addMesh(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             Point3d_GL p1,p2,p3,U,V,Norm1,Norm;
@@ -1603,7 +1603,7 @@ namespace opengl3
                 color_buffer_data[i + 2] = b;
             }
             //Console.WriteLine( gl_vertex_buffer_data.Length);
-            add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
+            return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
         }
 
 

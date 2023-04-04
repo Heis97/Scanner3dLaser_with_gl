@@ -343,18 +343,22 @@ namespace opengl3
             return ps;
         }
 
-        public static PointF[] detectLineDiff(Mat _mat, int wind = 5, float board = 0.05f, bool reverse = false)
+        public static PointF[] detectLineDiff(Mat _mat, int wind = 5, float board = 0.05f, bool reverse = false,bool rotate = true)
         {
             var mat = _mat.Clone();
 
-            if (reverse)
+            if (rotate)
             {
-                CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90Clockwise);
+                if (reverse)
+                {
+                    CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90Clockwise);
+                }
+                else
+                {
+                    CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90CounterClockwise);
+                }
             }
-            else
-            {
-                CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90CounterClockwise);
-            }
+            
 
             var ps = new PointF[mat.Width];
             var ps_list = new List<PointF>();
@@ -429,13 +433,16 @@ namespace opengl3
             ps = medianFilter(ps,5,5);
 
             GC.Collect();
-            if (reverse)
+            if (rotate)
             {
-                ps = rotatePointsCounterClockwise(ps, _mat.Size);
-            }
-            else
-            {
-                ps = rotatePointsClockwise(ps, _mat.Size);
+                if (reverse)
+                {
+                    ps = rotatePointsCounterClockwise(ps, _mat.Size);
+                }
+                else
+                {
+                    ps = rotatePointsClockwise(ps, _mat.Size);
+                }
             }
             
             //CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(_mat, ps, 255, 0, 0));

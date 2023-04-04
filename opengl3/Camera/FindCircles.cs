@@ -79,8 +79,16 @@ namespace opengl3
             CvInvoke.FindContours(im_tr, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
             //var conts = sameContours_cv(contours);
             var conts = sameContours(contours);
-            if(conts==null) return null;
-            if (conts.Size == 0) return null;
+            if (conts == null)
+            {
+                Console.WriteLine("find_circ ret null"); 
+                return null;
+            }
+            if (conts.Size == 0)
+            {
+                Console.WriteLine("find_circ ret null"); 
+                return null;
+            }
 
             conts = filter_same_centres(conts);
             var cents = findCentres(conts);
@@ -97,6 +105,7 @@ namespace opengl3
 
             if (cents == null)
             {
+                Console.WriteLine("find_circ ret null");
                 return null;
             }
            // CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
@@ -117,17 +126,21 @@ namespace opengl3
                 if (ps_ord != null && ps_ord.Length<=corn.Length)
                 {
                     ps_ord.CopyTo(corn, 0);
+                    
                     //UtilOpenCV.drawTours(orig, PointF.toPoint(corn), 255, 0, 0, 2);
                 }
                 else
                 {
                     if (ps_ord == null)
                     {
-                        return null;
-                        //Console.WriteLine("ps_ord NULL");
+                        Console.WriteLine("ps_ord NULL");
+                        return null;                     
                     }
                 }
-               
+
+                //Console.WriteLine(" corn______________________");
+                //Console.WriteLine(ps_ord.Length+" "+ corn.Length);
+                //prin.t(corn);
                 UtilOpenCV.drawLines(im_tr, ps_ord, 0, 0, 255, 2);
                 return im_tr;
             }
@@ -135,6 +148,7 @@ namespace opengl3
             {
                 cents.CopyTo(corn, 0);
                 UtilOpenCV.drawLines(orig, cents, 0, 255, 0, 2);
+                Console.WriteLine("cents");
                 return orig;
             }          
         }

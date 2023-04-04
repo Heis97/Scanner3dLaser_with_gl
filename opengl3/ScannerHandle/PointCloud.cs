@@ -63,7 +63,7 @@ namespace opengl3
         public bool addPointsLinLas(Mat mat, double LinPos, CameraCV cameraCV, LinearAxis linearAxis,Mat orig,PatternType patternType)
         {
             cameraCV.compPos(orig, patternType);  
-            var points_im = Detection.detectLineDiff(mat);
+            var points_im = Detection.detectLineDiff(mat,5,0.05f,false,false);
             //var points_im = Detection.detectLineDiff(mat);
             var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
             //points3d_cur = points_cam;

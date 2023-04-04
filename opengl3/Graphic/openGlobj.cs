@@ -47,7 +47,7 @@ namespace opengl3
             {
                 trsc[i] = new trsc(Matrix4x4f.Identity);
             }
-            if (v_buf.Length>1000000)
+            if (v_buf.Length>6000000)
             {
                 vertex_buffer_data = v_buf;
                 normal_buffer_data = n_buf;
@@ -88,11 +88,11 @@ namespace opengl3
                     color_buffer_data = new float[c_buf.Length];
                     c_buf.CopyTo(color_buffer_data, 0);
                 }
-                // Console.WriteLine(color_buffer_data[0] + " " + color_buffer_data[1] + " " + color_buffer_data[2]);
-
+                
                 v_buf.CopyTo(vertex_buffer_data, 0);
                 n_buf?.CopyTo(normal_buffer_data, 0);
             }
+            //Console.WriteLine(vertex_buffer_data.Length + " " + normal_buffer_data.Length + " " + color_buffer_data.Length + " " + texture_buffer_data.Length);
 
 
             Textureid = textureId;

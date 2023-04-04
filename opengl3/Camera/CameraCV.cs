@@ -504,6 +504,8 @@ namespace opengl3
                 if(i_c%1==0)
                 {
                     var corn2 = findPoints(frame, size);
+                    //prin.t(corn2);
+                    //Console.WriteLine("___________________");
                     //corn2 = makeNoise(corn2,0.5f);
                     if (corn2 == null)
                     {
@@ -634,12 +636,14 @@ namespace opengl3
             {
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
-                FindCircles.findCircles(frame.im,ref cornF, size_patt);
-               // var mat = GeometryAnalyse.findCirclesIter(frame.im.Clone(), ref cornF, size_patt);
-                //CvInvoke.Imshow("calib",mat);
-                //CvInvoke.WaitKey();
+                var f_c = FindCircles.findCircles(frame.im,ref cornF, size_patt);
+                //var mat = GeometryAnalyse.findCirclesIter(frame.im.Clone(), ref cornF, size_patt);
+                //CvInvoke.Imshow("calib", f_c);
+                // CvInvoke.WaitKey();
                 //mat = null;
-
+                //Console.WriteLine(" cornF");
+                //prin.t(cornF);
+                //Console.WriteLine(" corn2");
                 GC.Collect();
                 if (cornF == null)
                 {
@@ -651,6 +655,7 @@ namespace opengl3
                 }
                 else
                 {
+                    
                     return cornF;
                 }
             }
