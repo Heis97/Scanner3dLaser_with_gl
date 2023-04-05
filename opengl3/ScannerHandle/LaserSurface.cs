@@ -62,9 +62,10 @@ namespace opengl3
             var ps = ps1.ToList();
             ps.AddRange(ps2);
 
-            //graphicGL?.addMesh(Point3d_GL.toMesh(ps.ToArray()),OpenGL.PrimitiveType.Points, 0.9f);
+            graphicGL?.addMesh(Point3d_GL.toMesh(ps.ToArray()),OpenGL.PrimitiveType.Points, 0.9f);
 
             flat3D = computeSurface(ps.ToArray(), graphicGL);
+
 
             //var flat3D_in_scene = computeSurface(ps_in_scene.ToArray());
 
@@ -78,21 +79,22 @@ namespace opengl3
         static Point3d_GL[] points3dInCam(Mat mat, Mat orig, CameraCV cameraCV,PatternType patternType,GraphicGL graphicGL = null,bool compPos = true,bool oneMat = false)
         {
             var points = Detection.detectLineDiff(mat,5,0.05f,false,false);
-            /*var mat_p = UtilOpenCV.drawPointsF(mat,points,255,0,0);
-            CvInvoke.Imshow("asf", mat_p);
+            var mat_p = UtilOpenCV.drawPointsF(mat,points,255,0,0);
+           /* CvInvoke.Imshow("asf", mat_p);
             CvInvoke.WaitKey();*/
             var ps = new PointF[0];
             double z = 0;
             if(oneMat)
             {
                 ps = takePointsForFlat(points, oneMat);
+                Console.Write(ps[0] + " " + ps[1] + " " + ps[2] + " " + ps[3] + " ");
             }
             else
             {                
                 ps = takePointsForFlat(points);
             }
             
-            //Console.Write(ps[0] + " " + ps[1]);
+            
             if(compPos)
             {
                 if(orig!=null)
@@ -110,9 +112,11 @@ namespace opengl3
            // graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, z));
             if (oneMat)
             {
-                z = 10;
+                z = 40;
                 ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[2], lines[3] }, zeroFlatInCam(cameraCV.matrixSC, z)));
             }
+
+
            // graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, z));
             //graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, 0)+(zeroFlatInCam(cameraCV.matrixSC, 4)- zeroFlatInCam(cameraCV.matrixSC, 0))/2);
 

@@ -401,6 +401,9 @@ namespace opengl3
                     }
                 }
                 var ret = CvInvoke.FindChessboardCorners(gray, size_patt, corn, CalibCbType.AdaptiveThresh);
+               /* CvInvoke.Imshow("gray", gray);
+                CvInvoke.WaitKey();
+                Console.WriteLine(ret);*/
                 if (ret == true)
                 {
                     //Console.WriteLine("CHESS TRUE");
@@ -410,8 +413,8 @@ namespace opengl3
                     var points2d = UtilOpenCV.takeGabObp(corn2, size_patt);
                     var points3d = UtilOpenCV.takeGabObp(obp, size_patt);
                     compPos(points3d, points2d);
-                    //UtilOpenCV.drawPoints(mat1, points2d, points3d, 255, 0, 255, 2);
-                    //CvInvoke.Imshow("pos", mat1);
+                   /* UtilOpenCV.drawPoints(mat1, points2d, points3d, 255, 0, 255, 2);
+                    CvInvoke.Imshow("pos", mat1);*/
                     return true;
 
                 }

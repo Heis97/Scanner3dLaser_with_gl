@@ -209,9 +209,9 @@ namespace opengl3
 
             loadScannerLinLas(
                  new string[] { path_d + @"cam1\cdwz0307" },
-                 new string[] { path_d + @"cam2\las_cal_0307_2a" },
-                 new string[] { path_d + @"cam2\las_cal_0307_2a\orig" },
-                 path_d + @"cam2\las_cal_0307_2a", path_d + @"cam2\las_cal_0307_2a\orig",
+                 new string[] { path_d + @"cam1\las_cal_0707_1" },
+                 new string[] { path_d + @"cam1\las_cal_0707_1\orig" },
+                 path_d + @"cam1\las_cal_0707_1", path_d + @"cam1\las_cal_0707_1\orig",
                  new float[] { 0.5f, 0.5f, 0.1f }, true);
         }
 
@@ -403,7 +403,7 @@ namespace opengl3
                 {
                     //frms_scan_diff = null;
                     Console.WriteLine("Load Points Done__" + lins + "_lins__________________");
-                    var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesScene());
+                    var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesCam());
                     GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
                     mesh_scan_stl = null;
                     scanner1 = null;

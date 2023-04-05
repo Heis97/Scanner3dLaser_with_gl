@@ -444,6 +444,10 @@ namespace opengl3
                     ps = rotatePointsClockwise(ps, _mat.Size);
                 }
             }
+            else
+            {
+                //ps = (PointF[])ps.Reverse();
+            }
             
             //CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(_mat, ps, 255, 0, 0));
             return ps;
