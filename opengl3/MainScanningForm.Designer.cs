@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_cross_flat = new System.Windows.Forms.Button();
             this.but_traj_clear = new System.Windows.Forms.Button();
             this.tp_smooth_scan = new System.Windows.Forms.TextBox();
             this.label19 = new System.Windows.Forms.Label();
@@ -937,6 +938,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_cross_flat);
             this.tabOpenGl.Controls.Add(this.but_traj_clear);
             this.tabOpenGl.Controls.Add(this.tp_smooth_scan);
             this.tabOpenGl.Controls.Add(this.label19);
@@ -1023,6 +1025,16 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // but_cross_flat
+            // 
+            this.but_cross_flat.Location = new System.Drawing.Point(195, 15);
+            this.but_cross_flat.Name = "but_cross_flat";
+            this.but_cross_flat.Size = new System.Drawing.Size(75, 23);
+            this.but_cross_flat.TabIndex = 129;
+            this.but_cross_flat.Text = "Пересеч";
+            this.but_cross_flat.UseVisualStyleBackColor = true;
+            this.but_cross_flat.Click += new System.EventHandler(this.but_cross_flat_Click);
             // 
             // but_traj_clear
             // 
@@ -3018,7 +3030,7 @@ namespace opengl3
             // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.ClientSize = new System.Drawing.Size(1370, 749);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
             this.Name = "MainScanningForm";
@@ -3358,6 +3370,7 @@ namespace opengl3
         private System.Windows.Forms.TextBox tp_smooth_scan;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Button but_traj_clear;
+        private System.Windows.Forms.Button but_cross_flat;
     }
 }
 

@@ -1,8 +1,6 @@
 ﻿#version 430 core
 layout (triangles, invocations = 4) in;
 layout (triangle_strip, max_vertices = 3) out;
-layout(rgba32f, binding = 1) uniform  image2D landmark2d_data;
-layout(rgba32f, binding = 2) uniform  image2D landmark3d_data;
 layout(rgba32f, binding = 3) uniform  image2D isolines;
 
 uniform vec3 LightPosition_world;

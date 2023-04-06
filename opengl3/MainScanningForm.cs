@@ -207,12 +207,12 @@ namespace opengl3
                  path_d + @"cam2\las_cal_0307_2a", path_d + @"cam2\las_cal_0307_2a\orig",
                  new float[] { 0.5f, 0.5f, 0.1f }, true);*/
 
-            loadScannerLinLas(
+            /*loadScannerLinLas(
                  new string[] { path_d + @"cam1\cdwz0307" },
                  new string[] { path_d + @"cam1\las_cal_0707_1" },
                  new string[] { path_d + @"cam1\las_cal_0707_1\orig" },
                  path_d + @"cam1\las_cal_0707_1", path_d + @"cam1\las_cal_0707_1\orig",
-                 new float[] { 0.5f, 0.5f, 0.1f }, true);
+                 new float[] { 0.5f, 0.5f, 0.1f }, true);*/
         }
 
         void loadStereo()
@@ -896,15 +896,20 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-           /* var scan_stl = new Model3d(@"defect_m3.STL", false);
+            var scan_stl = new Model3d(@"cube_1_ascii.stl", false);
             mesh = scan_stl.pols;
-            scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);*/
+            scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);
             
             GL1.SortObj();
             // startGenerate();
             //trB_SGBM_Enter();
 
         }
+        private void but_cross_flat_Click(object sender, EventArgs e)
+        {
+            GL1.cross_flat(scan_i, new Flat3d_GL(0, 0, 1, 0));
+        }
+
         Mat toMat(Bitmap bitmap)
         {
             var data = new byte[bitmap.Height, bitmap.Width, 3];

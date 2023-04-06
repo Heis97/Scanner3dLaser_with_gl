@@ -135,6 +135,7 @@ namespace opengl3
         public int inv_norm_ID;
         public int[] surfs_cross_ID = new int[30];
         public int surfs_len_ID;
+        public int surf_crossID;
 
     }
     public class GraphicGL
@@ -144,13 +145,16 @@ namespace opengl3
         public int inv_norm = 0;
         public int show_faces = 0;
 
+
         IDs idsPs = new IDs();
         IDs idsLs = new IDs();
         IDs idsTs = new IDs();
         IDs idsTsOne = new IDs();
+        IDs idsTsOneSlice = new IDs();
         IDs idsPsOne = new IDs();
         IDs idsLsOne = new IDs();
         IDs idsCs = new IDs();
+        Vertex4f surf_cross = new Vertex4f();
         public int point_type = 0;
         static float PI = 3.1415926535f;
         public CameraCV cameraCV;
@@ -198,7 +202,8 @@ namespace opengl3
         public Vertex2f MouseLocGL;
         public int lightVis = 0;
         public int textureVis = 0;
-        // TextureGL ps1, ps2,
+        public TextureGL isolines_data;
+        
 
         #endregion
 
@@ -280,7 +285,16 @@ namespace opengl3
                         ids = idsTs;
                         if (opgl_obj.count == 1)
                         {
-                            ids = idsTsOne;
+                            if(opgl_obj.comp_flat == 1)
+                            {
+                                Console.WriteLine("comp_flat");
+                                ids = idsTsOneSlice;
+                            }
+                            else
+                            {
+                                ids = idsTsOne;
+                            }
+                            
                         }
                     }
                     else if (opgl_obj.tp == PrimitiveType.Lines)
@@ -310,19 +324,7 @@ namespace opengl3
             }
             
         }
-        string[] stringAdd(string[] st1, string[] st2)
-        {
-            var st_ret = new string[st1.Length+st2.Length];
-            for(int i=0; i<st1.Length;i++)
-            {
-                st_ret[i] = st1[i];
-            }
-            for (int i = 0; i < st2.Length; i++)
-            {
-                st_ret[st1.Length+i] = st2[i];
-            }
-            return st_ret;
-        }
+        
         public void glControl_ContextCreated(object sender, GlControlEventArgs e)
         {
             var contr = (Control)sender;
@@ -342,6 +344,7 @@ namespace opengl3
             var GeometryShaderPointsGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Points.glsl" });
             var GeometryShaderLinesGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Lines.glsl" });
             var GeometryShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Triangles.glsl" });
+            var GeometryShaderTrianglesSliceGL = assembCode(new string[] { @"Graphic\Shaders\Geom\slice_shader_one.glsl" });
 
             var CompShaderGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo_all_f.glsl" });
             programID_comp = createShaderCompute(CompShaderGL);
@@ -356,6 +359,8 @@ namespace opengl3
             idsTs.programID = createShader(VertexSourceGL, GeometryShaderTrianglesGL, FragmentSourceGL);
             idsTsOne.programID = createShader(VertexOneSourceGL, GeometryShaderTrianglesGL, FragmentSourceGL);
 
+            idsTsOneSlice.programID = createShader(VertexOneSourceGL, GeometryShaderTrianglesSliceGL, FragmentSourceGL);
+
             //idsCs.programID = createShaderCompute(ComputeSourceGL);
 
             init_vars_gl(idsLs);
@@ -364,11 +369,14 @@ namespace opengl3
             init_vars_gl(idsTsOne);
             init_vars_gl(idsPsOne);
             init_vars_gl(idsLsOne);
+            init_vars_gl(idsTsOneSlice);
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             //Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(5, 1), new Size(400, 400));
             cameraCV.distortmatrix[0,0] = -0.1;
+
+            
 
 
         }
@@ -403,6 +411,8 @@ namespace opengl3
             ids.inv_norm_ID = Gl.GetUniformLocation(ids.programID, "inv_norm");
             ids.surfs_len_ID = Gl.GetUniformLocation(ids.programID, "surfs_len");
 
+            ids.surf_crossID = Gl.GetUniformLocation(ids.programID, "surf_cross");
+
         }
         private void load_vars_gl(IDs ids, openGlobj openGlobj)
         {
@@ -430,8 +440,6 @@ namespace opengl3
             Gl.Uniform1f(ids.LightPowerID, 1, LightPower);
             Gl.Uniform2f(ids.MouseLocID, 1, MouseLoc);
             Gl.Uniform2f(ids.MouseLocGLID, 1, MouseLocGL);
-            Gl.Uniform2f(ids.MouseLocGLID, 1, MouseLocGL);
-
 
             Gl.Uniform1i(ids.textureVisID, 1, textureVis);
             Gl.Uniform1i(ids.lightVisID, 1, lightVis);
@@ -439,6 +447,8 @@ namespace opengl3
             Gl.Uniform1i(ids.show_faces_ID, 1, show_faces);
             Gl.Uniform1f(ids.transparency_ID, 1, openGlobj.transparency);
             Gl.Uniform1i(ids.inv_norm_ID, 1, inv_norm);
+
+            Gl.Uniform4f(ids.surf_crossID, 1, surf_cross);
 
         }
         public void SortObj()
@@ -455,6 +465,8 @@ namespace opengl3
                 }
             }
         }
+
+
         public  Point3d_GL[] cross_flat_gpu(float[] ps1, float[] ps2)
         {
             //var debug_t = new TextureGL(4, ps1.Length/4, 6, PixelFormat.Rgba);//lines
@@ -474,7 +486,6 @@ namespace opengl3
 
             return Point3d_GL.dataToPoints_ex(ps_cross_t.getData());
         }
-
         public Point3d_GL[][] cross_flat_gpu_all(Point3d_GL[][] ps1, Point3d_GL[][] ps2)
         {
             if(ps1 == null || ps2 == null)
@@ -519,6 +530,20 @@ namespace opengl3
             return Point3d_GL.filtrExistPoints2d(ps_cr) ;
         }
 
+        async public void cross_flat(int obj,Flat3d_GL flat)
+        {
+            int w = 3;
+            int h = 8;
+            Vertex4f flat_gl = new Vertex4f((float)flat.A, (float)flat.B, (float)flat.C, (float)flat.D);
+            isolines_data = new TextureGL(3, w, h, PixelFormat.Rgba);
+            buffersGl.set_cross_flat_obj(obj, flat_gl);
+            await Task.Delay(150);
+            var ps_data = isolines_data.getData();
+            var ps_data_div = Point3d_GL.divide_data(ps_data,w);
+            var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
+            prin.t(ps_cr);
+            buffersGl.set_comp_flat(obj, 0);
+        }
 
         #region util
         public Matr4x4f rightMatrMon(int ind_mon)
@@ -817,6 +842,19 @@ namespace opengl3
             return p3;
         }
 
+        string[] stringAdd(string[] st1, string[] st2)
+        {
+            var st_ret = new string[st1.Length + st2.Length];
+            for (int i = 0; i < st1.Length; i++)
+            {
+                st_ret[i] = st1[i];
+            }
+            for (int i = 0; i < st2.Length; i++)
+            {
+                st_ret[st1.Length + i] = st2[i];
+            }
+            return st_ret;
+        }
         public void printDebug(RichTextBox box)
         {
             string txt = "";
@@ -1642,7 +1680,7 @@ namespace opengl3
         }
         private uint compileShader(string[] shSource, ShaderType shaderType)
         {
-            uint ShaderID = Gl.CreateShader(shaderType);
+            uint ShaderID = Gl.CreateShader(shaderType);            
             Gl.ShaderSource(ShaderID, shSource);
             Gl.CompileShader(ShaderID);
             debugShaderComp(ShaderID);

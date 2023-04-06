@@ -145,7 +145,14 @@ namespace opengl3
         {
             objs_dynamic[id] = objs_dynamic[id].setVisible(visible);
         }
-
+        public void set_cross_flat_obj(int id, Vertex4f flat)
+        {
+            objs_dynamic[id] = objs_dynamic[id].crossFlat(flat);
+        }
+        public void set_comp_flat(int id,int comp)
+        {
+            objs_dynamic[id] = objs_dynamic[id].setComp_flat(comp);
+        }
         #endregion
 
     }

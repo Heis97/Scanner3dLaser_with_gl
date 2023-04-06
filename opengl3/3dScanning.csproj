@@ -207,6 +207,12 @@
     <None Include="Connection\DevicesArduino\arduino-timer-api-master\LICENSE" />
     <None Include="Connection\DevicesArduino\arduino-timer-api-master\README.md" />
     <None Include="Connection\DevicesArduino\LaserScanner070422_nano\LaserScanner070422_nano.ino" />
+    <None Include="Graphic\Shaders\Geom\slice_shader.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders\Geom\slice_shader_one.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Graphic\Shaders\Comp\face_geom_leg.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

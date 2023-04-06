@@ -29,13 +29,13 @@ namespace opengl3
 
         public trsc[] trsc;
         public int count;
-
-        
-
-
+        Vertex4f cross_flat;
+        public int comp_flat;
 
         public openGlobj(float[] v_buf, float[] c_buf, float[] n_buf, float[] t_buf=null, PrimitiveType type=PrimitiveType.Triangles, int _id = -1, int _count = 1, int textureId = -1)
         {
+            cross_flat = new Vertex4f();
+            comp_flat = 0;
             buff_array = uint.MaxValue;
             v_ubuf = uint.MaxValue;
             n_ubuf = uint.MaxValue;
@@ -269,6 +269,19 @@ namespace opengl3
             transparency = trans;
             return this;
         }
+        public openGlobj setComp_flat(int comp)
+        {
+            comp_flat = comp;
+            return this;
+        }
+
+        public openGlobj crossFlat(Vertex4f flat)
+        {
+            cross_flat = flat;
+            comp_flat = 1;
+            return this;
+        }
+
         #endregion
 
 
