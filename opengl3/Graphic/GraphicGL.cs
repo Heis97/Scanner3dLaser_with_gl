@@ -154,6 +154,7 @@ namespace opengl3
         IDs idsPsOne = new IDs();
         IDs idsLsOne = new IDs();
         IDs idsCs = new IDs();
+        IDs idsCsSlice = new IDs();
         Vertex4f surf_cross = new Vertex4f();
         public int point_type = 0;
         static float PI = 3.1415926535f;
@@ -287,7 +288,7 @@ namespace opengl3
                         {
                             if(opgl_obj.comp_flat == 1)
                             {
-                                Console.WriteLine("comp_flat");
+                                //Console.WriteLine("comp_flat");
                                 ids = idsTsOneSlice;
                             }
                             else
@@ -349,6 +350,9 @@ namespace opengl3
             var CompShaderGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo_all_f.glsl" });
             programID_comp = createShaderCompute(CompShaderGL);
 
+            var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one.glsl" });
+            idsCsSlice.programID = createShaderCompute(CompShaderSliceGL);
+
 
             idsLs.programID = createShader(VertexSourceGL, GeometryShaderLinesGL, FragmentSimpleSourceGL);
             idsLsOne.programID = createShader(VertexOneSourceGL, GeometryShaderLinesGL, FragmentSimpleSourceGL);
@@ -370,6 +374,7 @@ namespace opengl3
             init_vars_gl(idsPsOne);
             init_vars_gl(idsLsOne);
             init_vars_gl(idsTsOneSlice);
+            init_vars_gl(idsCsSlice);
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             //Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
@@ -528,6 +533,40 @@ namespace opengl3
 
 
             return Point3d_GL.filtrExistPoints2d(ps_cr) ;
+        }
+
+        public Point3d_GL[][] cross_flat_gpu_mesh(int obj, Flat3d_GL flat)
+        {
+            surf_cross = new Vertex4f((float)flat.A, (float)flat.B, (float)flat.C, (float)flat.D);
+            float[] mesh = Point3d_GL.mesh3to4(buffersGl.objs_dynamic[obj].vertex_buffer_data);
+            int verts_tr = 3;
+
+            int w = mesh.Length / verts_tr;
+            int h = 2;
+            var mesh_data = new TextureGL(2, mesh.Length/4, h, PixelFormat.Rgba,mesh);
+            isolines_data = new TextureGL(3, w, h, PixelFormat.Rgba);
+
+            Console.WriteLine("loaded on gpu.");
+            Console.WriteLine(toStringBuf(mesh_data.getData(), 4, 0, "mesh_data"));
+
+            //buffersGl.set_cross_flat_obj(obj, flat_gl);
+            load_vars_gl(idsCsSlice, new openGlobj());
+            //Gl.UseProgram(idsCsSlice.programID);
+            Gl.DispatchCompute((uint)(mesh.Length/12), 1, 1);
+            Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
+            Console.WriteLine("computed.");
+            var ps_data = isolines_data.getData();
+            var ps_data_div = Point3d_GL.divide_data(ps_data, w);
+            var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
+            Console.WriteLine("loaded from gpu.");
+            // prin.t(ps_cr);
+            //prin.t(ps_cr);
+            Console.WriteLine(toStringBuf(ps_data, ps_data.Length/h, 4, "ps_data"));
+            //Console.WriteLine(w + " " + h);
+            //Console.WriteLine(toStringBuf(ps_cross_t.getData(), w*4, 4, "ps_cross_t"));
+
+
+            return Point3d_GL.filtrExistPoints2d(ps_cr);
         }
 
         async public void cross_flat(int obj,Flat3d_GL flat)

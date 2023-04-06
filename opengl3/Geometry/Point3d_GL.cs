@@ -221,6 +221,18 @@ namespace opengl3
             return mesh;
         }
 
+        public static float[] mesh3to4(float[] mesh3)
+        {
+            var mesh = new float[mesh3.Length * 4/3];
+            for (int i = 0; i < mesh.Length/4; i++)
+            {
+                mesh[4 * i] = mesh3[3 * i];
+                mesh[4 * i + 1] = mesh3[3 * i + 1];
+                mesh[4 * i + 2] = mesh3[3 * i + 2];
+            }
+            return mesh;
+        }
+
         public static float[] toMesh(Point3d_GL[][] point3Ds)
         {
             var mesh = new List<float>();
