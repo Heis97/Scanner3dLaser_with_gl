@@ -896,7 +896,11 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-            var scan_stl = new Model3d(@"cube_walls.STL", false);
+            //var scan_stl = new Model3d(@"housing_down_v2_l.STL", false);
+            //var scan_stl = new Model3d(@"def_0704.STL", false);
+            var scan_stl = new Model3d(@"curve_test_1layer.stl", false);
+            //var scan_stl = new Model3d(@"cube_test.stl", false);
+            // var scan_stl = new Model3d(@"scan_2607_3.stl", false);
             mesh = scan_stl.pols;
             scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);
 
@@ -908,7 +912,23 @@ namespace opengl3
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
             //GL1.cross_flat(scan_i, new Flat3d_GL(0, 0, 1, 0));
-            GL1.cross_flat_gpu_mesh(scan_i, new Flat3d_GL(0, 0, 1, 4));
+            var flats = new List<Flat3d_GL>();
+            for (int i=-1; i < 1; i++)
+            {
+                flats.Add(new Flat3d_GL(0, 0, 1, i*0.1));
+            }
+            var ps = GL1.cross_flat_gpu_mesh(scan_i, flats.ToArray());
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if (ps[i] != null)
+                {
+                    if (ps[i].Length>0)
+                    {
+                        GL1.addLineMesh(ps[i], 1f);
+                    }
+                }               
+            }
+            GL1.SortObj();
         }
 
         Mat toMat(Bitmap bitmap)

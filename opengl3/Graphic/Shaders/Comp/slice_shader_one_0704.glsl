@@ -59,7 +59,7 @@ bool cross_affil(vec3 p1, vec3 p2,vec4 flat1, out vec3 p_aff)
 		return (false);
 	}
 }
-void save_point(vec3 p, ivec2 size , ivec2 ind_pos,int i)
+void save_point(vec3 p, ivec2 size , ivec2 ind_pos)
 {
 	ivec2 dim = ivec2(imageLoad(isolines, ind_pos).xy); 
 	if (dim.x > size.x-1)
@@ -67,33 +67,44 @@ void save_point(vec3 p, ivec2 size , ivec2 ind_pos,int i)
 		dim.x = 0;
 		dim.y++;
 	}
-	imageStore(isolines, ivec2(3*gl_GlobalInvocationID.x+i,0), vec4(p, 1));
+	imageStore(isolines, dim, vec4(p, 1));
 	dim.x++;
-	//imageStore(isolines, ind_pos, vec4(dim.xy, 0, 0));		
+	imageStore(isolines, ind_pos, vec4(dim.xy, 0, 0));		
 }
-
 void find_points_isoline(vec4 surf,vec3 vertexPosition_world[3])
 {
 	ivec2 size = imageSize(isolines);
 	ivec2 ind_pos = ivec2(size.x - 1, size.y - 1);
+
 	for (int i = 0; i < 3; i++)
 	{
 		vec3 p_aff = vec3(0);
 		int i1 = i + 1; if (i1 > 2) i1 = 0;
 		if (cross_affil(vertexPosition_world[i], vertexPosition_world[i1], surf, p_aff))
 		{
-			save_point(p_aff,size,ind_pos,i);
+			save_point(p_aff,size,ind_pos);
 		}
 	}
+
 }
+
+
 
 void main() 
 {
-	vec3 vertexPosition_world[3];
-	for (int i=0; i<3;i++)
+	ivec2 size = imageSize(isolines);
+	for(int j=0; j<size.x;j++)
 	{
-		vertexPosition_world[i] = imageLoad(mesh,ivec2(3*gl_GlobalInvocationID.x+i,0)).xyz;	
-	}
-	find_points_isoline(surf_cross,vertexPosition_world);	
+		vec3 vertexPosition_world[3];
 
+		for (int i=0; i<3;i++)
+		{
+			vertexPosition_world[i] = imageLoad(mesh,ivec2(3*j+i,0)).xyz;	
+		}
+		find_points_isoline(vec4(0,0,1,0.1),vertexPosition_world);
+	}
+	imageStore(isolines, ivec2(gl_GlobalInvocationID.x,0), vec4(2*gl_GlobalInvocationID.x,0, 0,1));
+	
+
+	
 }

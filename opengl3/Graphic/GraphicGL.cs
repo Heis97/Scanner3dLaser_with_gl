@@ -12,6 +12,7 @@ using Emgu.CV.UI;
 using Emgu.CV.Structure;
 using Emgu.Util;
 
+
 namespace opengl3
 {   
     public enum modeGL { Paint, View}
@@ -30,7 +31,7 @@ namespace opengl3
         }
         public TextureGL(int _binding, int _w, int _h = 1, PixelFormat _pixelFormat = PixelFormat.Red, float[] _data = null)
         {
-            //Console.WriteLine("genTexture");
+            Console.WriteLine("genTexture");
             if (_data != null)
             {
                 data = (float[])_data.Clone();
@@ -141,6 +142,8 @@ namespace opengl3
     public class GraphicGL
     {
         #region vars
+        
+
         public int surfs_len = 0;
         public int inv_norm = 0;
         public int show_faces = 0;
@@ -203,12 +206,12 @@ namespace opengl3
         public Vertex2f MouseLocGL;
         public int lightVis = 0;
         public int textureVis = 0;
-        public TextureGL isolines_data;
-        
+        public TextureGL isolines_data,mesh_data;
+
 
         #endregion
 
-
+        #region main
         public void glControl_Render(object sender, GlControlEventArgs e)
         {
             
@@ -351,7 +354,12 @@ namespace opengl3
             programID_comp = createShaderCompute(CompShaderGL);
 
             var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one.glsl" });
+            //var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one_0704.glsl" });
             idsCsSlice.programID = createShaderCompute(CompShaderSliceGL);
+
+            var CompShaderCsGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_test.glsl" });
+            //var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one_0704.glsl" });
+            idsCs.programID = createShaderCompute(CompShaderCsGL);
 
 
             idsLs.programID = createShader(VertexSourceGL, GeometryShaderLinesGL, FragmentSimpleSourceGL);
@@ -375,6 +383,7 @@ namespace opengl3
             init_vars_gl(idsLsOne);
             init_vars_gl(idsTsOneSlice);
             init_vars_gl(idsCsSlice);
+            init_vars_gl(idsCs);
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             //Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
@@ -470,9 +479,10 @@ namespace opengl3
                 }
             }
         }
-
-
-        public  Point3d_GL[] cross_flat_gpu(float[] ps1, float[] ps2)
+        #endregion
+       
+        #region comp_gpu
+        public Point3d_GL[] cross_flat_gpu(float[] ps1, float[] ps2)
         {
             //var debug_t = new TextureGL(4, ps1.Length/4, 6, PixelFormat.Rgba);//lines
             var ps1_t = new TextureGL(5, ps1.Length/4, 1, PixelFormat.Rgba, ps1);//lines
@@ -535,38 +545,121 @@ namespace opengl3
             return Point3d_GL.filtrExistPoints2d(ps_cr) ;
         }
 
-        public Point3d_GL[][] cross_flat_gpu_mesh(int obj, Flat3d_GL flat)
+        public Point3d_GL[][] cross_flat_gpu_mesh(int obj, Flat3d_GL[] flats)
         {
-            surf_cross = new Vertex4f((float)flat.A, (float)flat.B, (float)flat.C, (float)flat.D);
+            float[] mesh_m = Point3d_GL.mesh3to4(buffersGl.objs_dynamic[obj].vertex_buffer_data);
+            int verts_tr = 3;
+            const int max_w_tex = 1000;
+            const int max_w_tex_buf = 63000;
+
+            var mesh_m_l = mesh_m.ToList();
+            int h_buf = 1;
+            int w_buf = mesh_m.Length / 4;
+            if (mesh_m.Length > max_w_tex_buf)
+            {
+                h_buf = (int)(mesh_m.Length / max_w_tex_buf) + 1;
+            }
+            var pss = new List<Point3d_GL>[h_buf];
+            var pss_r = new Point3d_GL[h_buf][];
+            Console.WriteLine(h_buf + " h_buf "+ mesh_m.Length +" "+max_w_tex_buf+ " mesh_m.Length > max_w_tex_buf");
+            for (int j = 1; j <= h_buf; j++)
+            {
+                var stop = j * max_w_tex_buf;
+                if (stop >= mesh_m.Length) stop = mesh_m.Length - 1;
+                var mesh = mesh_m_l.GetRange((j-1) * max_w_tex_buf, stop).ToArray();
+                int h = 1;
+                int w = mesh.Length / 4;
+                if (w > max_w_tex)
+                {
+                    h = (int)(w / max_w_tex) + 1;
+                    w = max_w_tex;
+                }
+                Console.WriteLine(w + " " + h + " " + w * h * 4 + " " + mesh.Length);
+                var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba, mesh);
+                //var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba);
+                
+
+                for (int i = 0; i < flats.Length; i++)
+                {
+                    surf_cross = new Vertex4f((float)flats[i].A, (float)flats[i].B, (float)flats[i].C, (float)flats[i].D);
+
+                    isolines_data = new TextureGL(3, w, h, PixelFormat.Rgba);
+
+                    load_vars_gl(idsCsSlice, new openGlobj());
+                    Gl.DispatchCompute((uint)(w), (uint)(h), 1);
+                    Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
+                    var ps_data = isolines_data.getData();
+                    var ps_data_div = Point3d_GL.divide_data(ps_data, w);
+                    var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
+                    var ps = Point3d_GL.unifPoints2d(Point3d_GL.filtrExistPoints2d(ps_cr));
+                    if(pss[j]==null)
+                    {
+                        pss[j] = new List<Point3d_GL>();
+                    }
+                    pss[j].AddRange(ps);
+                    Console.WriteLine(toStringBuf(ps_data, ps_data.Length/w, 4, "isolines_data"));
+                }
+            }
+            for(int i = 0; i < pss.Length; i++)
+            {
+                if (pss[i] != null)
+                    pss_r[i] = pss[i].ToArray();
+            }
+
+            return pss_r;
+        }
+
+        public Point3d_GL[][] cross_flat_gpu_mesh_simple(int obj, Flat3d_GL[] flats)
+        {
             float[] mesh = Point3d_GL.mesh3to4(buffersGl.objs_dynamic[obj].vertex_buffer_data);
             int verts_tr = 3;
+            const int max_w_tex = 1200;
+            int h = 1;
+            int w = mesh.Length / 4;
+            if (w > max_w_tex)
+            {
+                h = (int)(w / max_w_tex) + 1;
+                w = max_w_tex;
+            }
+            Console.WriteLine(w + " " + h + " " + w * h * 4 + " " + mesh.Length);
+            var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba, mesh);
+            //Console.WriteLine(toStringBuf(mesh, mesh.Length / h, 4, "mesh"));
+            var pss = new List<Point3d_GL[]>();
+            for (int i = 0; i < flats.Length; i++)
+            {
+                surf_cross = new Vertex4f((float)flats[i].A, (float)flats[i].B, (float)flats[i].C, (float)flats[i].D);
 
-            int w = mesh.Length / verts_tr;
-            int h = 2;
-            var mesh_data = new TextureGL(2, mesh.Length/4, h, PixelFormat.Rgba,mesh);
-            isolines_data = new TextureGL(3, w, h, PixelFormat.Rgba);
+                isolines_data = new TextureGL(3, w, h, PixelFormat.Rgba);
 
-            Console.WriteLine("loaded on gpu.");
-            Console.WriteLine(toStringBuf(mesh_data.getData(), 4, 0, "mesh_data"));
+                load_vars_gl(idsCsSlice, new openGlobj());
+                Gl.DispatchCompute((uint)(w), 1, 1);
+                Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
+                var ps_data = isolines_data.getData();
+                
+                var ps_data_div = Point3d_GL.divide_data(ps_data, w);
+                var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
+                var ps = Point3d_GL.unifPoints2d(Point3d_GL.filtrExistPoints2d(ps_cr));
+                pss.Add(ps);
+                Console.WriteLine(toStringBuf(ps_data, ps_data.Length / h, 4, "isolines_data"));
+            }
 
-            //buffersGl.set_cross_flat_obj(obj, flat_gl);
-            load_vars_gl(idsCsSlice, new openGlobj());
-            //Gl.UseProgram(idsCsSlice.programID);
-            Gl.DispatchCompute((uint)(mesh.Length/12), 1, 1);
+            
+            return pss.ToArray();
+        }
+
+
+        public void comp_test()
+        {
+
+            isolines_data = new TextureGL(1, 100, 10, PixelFormat.Rgba);
+
+            Gl.UseProgram(idsCs.programID);
+            Gl.DispatchCompute(1, 1, 1);
             Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
-            Console.WriteLine("computed.");
+
             var ps_data = isolines_data.getData();
-            var ps_data_div = Point3d_GL.divide_data(ps_data, w);
-            var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
-            Console.WriteLine("loaded from gpu.");
-            // prin.t(ps_cr);
-            //prin.t(ps_cr);
-            Console.WriteLine(toStringBuf(ps_data, ps_data.Length/h, 4, "ps_data"));
-            //Console.WriteLine(w + " " + h);
-            //Console.WriteLine(toStringBuf(ps_cross_t.getData(), w*4, 4, "ps_cross_t"));
+            Console.WriteLine(toStringBuf(ps_data, ps_data.Length / 10, 4, "isolines_data"));
 
-
-            return Point3d_GL.filtrExistPoints2d(ps_cr);
         }
 
         async public void cross_flat(int obj,Flat3d_GL flat)
@@ -583,6 +676,7 @@ namespace opengl3
             prin.t(ps_cr);
             buffersGl.set_comp_flat(obj, 0);
         }
+        #endregion
 
         #region util
         public Matr4x4f rightMatrMon(int ind_mon)
@@ -917,22 +1011,33 @@ namespace opengl3
             txt.Append(name + " " + buff.Length);
             for (int i = 0; i < buff.Length / strip; i++)
             {
-                txt.Append("  | \n");
+                txt.Append("| \n");
                 for (int j = 0; j < strip; j++)
                 {
                     if (substrip != 0)
                     {
                         if (j % substrip == 0)
                         {
-                            txt.Append("  | ");
+                            txt.Append("|");
                         }
                     }
-                    txt.Append(Math.Round( buff[i * strip + j],4).ToString() + ", ");
+                    txt.Append(str_to_same_len(Math.Round( buff[i * strip + j],4)) + ",");
                 }
             }
             txt.Append(" |\n--------------------------------\n");
             return txt.ToString();
 
+        }
+        static string str_to_same_len(object var, int len = 6)
+        {
+            string str = var.ToString();
+            if (str.Length > len) return str;
+            while(str.Length<len)
+            {
+                str += " ";
+            }
+            //str+=str.Length.ToString();
+            return str;
         }
         #endregion
 
