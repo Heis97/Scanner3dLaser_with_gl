@@ -45,10 +45,10 @@ namespace opengl3
         }
         protected void send(int val, int var)
         {
-            if (isConnected)
+            //Console.WriteLine("send: "+val+" " + var);
+            if (serialPort.IsOpen)
             {
-                if (val != 0 && var != 0)
-                {
+                
                     string Mes1 = "0";
                     string Mes2 = "0";
                     try
@@ -60,6 +60,7 @@ namespace opengl3
                     {
                         Console.WriteLine("except convert");
                     }
+                    //Console.WriteLine("Mes12.Length: " + Mes1.Length + " " + Mes2.Length);
                     if (Mes1.Length <= 4 && Mes2.Length <= 2)
                     {
 
@@ -76,10 +77,10 @@ namespace opengl3
                         Mes1 = "b" + Mes1 + Mes2;
                         try
                         {
-                           // Console.WriteLine("Out: " + Mes1);
+                            Console.WriteLine("Out: " + Mes1);
                             this.serialPort.WriteLine(Mes1);
-                           // Thread.Sleep(5);
-                           // Console.WriteLine(reseav());
+                            //Thread.Sleep(5);
+                            //Console.WriteLine(reseav());
                         }
                         catch
                         {
@@ -91,12 +92,19 @@ namespace opengl3
                     {
                         Console.WriteLine("message lengh too long");
                     }
-                }
+                
             }
         }
         public  string reseav()
         {
+            /*var res = "";
+            while(serialPort.BytesToRead>0)
+            {
+                res += serialPort.ReadLine();
+            }*/
+            //return res;
             return serialPort.ReadExisting();
+            
         }
         private async void func(int val,int var)
         {

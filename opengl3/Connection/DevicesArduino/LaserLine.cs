@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace opengl3
 {
@@ -19,7 +20,8 @@ namespace opengl3
             laser_dest = 7,
             laser_sensor = 8,
             k_p_p = 9,
-            k_v_p = 10;
+            k_v_p = 10,
+            send_pos_las = 11;
         int on = 1, off = 2;
         public LaserLine(string _port)
         {
@@ -79,6 +81,48 @@ namespace opengl3
         public void setK_v_p(int _pos)
         {
             send(_pos, k_v_p);
+        }
+
+        public void get_las_pos_send()
+        {
+            send(0, send_pos_las);
+        }
+
+        public int get_las_pos_res()
+        {
+
+            var res= reseav().Split('\n');
+
+            for(int k=res.Length-1;k>=0;k--)
+            {
+                //Console.WriteLine("k"+k+":"+res[k]);
+                for (int i = 0; i < res[k].Length; i++)
+                {
+                    if (res[k].Contains( "lp"))
+                    {
+                        
+                        var res_sp = res[k].Split(' ');
+                        //Console.WriteLine(res_sp);
+                        try
+                        {
+                            //Console.WriteLine(res_sp[1]);
+                            return Convert.ToInt32(res_sp[1]);
+                        }
+                        catch
+                        {
+                            return 0;
+                        }
+                    }
+                }
+            }
+            
+            return 0;
+        }
+        public int get_las_pos()
+        {
+            get_las_pos_send();
+            Thread.Sleep(1);
+            return get_las_pos_res();
         }
         static int comp_vel_div(double vel)
         {

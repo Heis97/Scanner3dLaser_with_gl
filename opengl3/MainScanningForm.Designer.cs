@@ -287,6 +287,8 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label20 = new System.Windows.Forms.Label();
+            this.but_las_enc = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2000,6 +2002,8 @@ namespace opengl3
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.but_las_enc);
+            this.groupBox1.Controls.Add(this.label20);
             this.groupBox1.Controls.Add(this.butset_kvp);
             this.groupBox1.Controls.Add(this.textBox_set_kvp);
             this.groupBox1.Controls.Add(this.but_set_kpp);
@@ -2200,9 +2204,9 @@ namespace opengl3
             // 
             // but_laserOn
             // 
-            this.but_laserOn.Location = new System.Drawing.Point(171, 26);
+            this.but_laserOn.Location = new System.Drawing.Point(287, 26);
             this.but_laserOn.Name = "but_laserOn";
-            this.but_laserOn.Size = new System.Drawing.Size(110, 55);
+            this.but_laserOn.Size = new System.Drawing.Size(110, 26);
             this.but_laserOn.TabIndex = 2;
             this.but_laserOn.Text = "Включить лазер";
             this.but_laserOn.UseVisualStyleBackColor = true;
@@ -2210,9 +2214,9 @@ namespace opengl3
             // 
             // but_laserOff
             // 
-            this.but_laserOff.Location = new System.Drawing.Point(287, 26);
+            this.but_laserOff.Location = new System.Drawing.Point(287, 55);
             this.but_laserOff.Name = "but_laserOff";
-            this.but_laserOff.Size = new System.Drawing.Size(110, 55);
+            this.but_laserOff.Size = new System.Drawing.Size(110, 26);
             this.but_laserOff.TabIndex = 3;
             this.but_laserOff.Text = "Выключить лазер";
             this.but_laserOff.UseVisualStyleBackColor = true;
@@ -3028,9 +3032,28 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(295, 3);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(49, 20);
+            this.label20.TabIndex = 132;
+            this.label20.Text = "Laser";
+            // 
+            // but_las_enc
+            // 
+            this.but_las_enc.Location = new System.Drawing.Point(171, 29);
+            this.but_las_enc.Name = "but_las_enc";
+            this.but_las_enc.Size = new System.Drawing.Size(110, 46);
+            this.but_las_enc.TabIndex = 133;
+            this.but_las_enc.Text = "Позиция";
+            this.but_las_enc.UseVisualStyleBackColor = true;
+            this.but_las_enc.Click += new System.EventHandler(this.but_las_enc_Click);
+            // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1370, 749);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
             this.Name = "MainScanningForm";
@@ -3371,6 +3394,8 @@ namespace opengl3
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Button but_traj_clear;
         private System.Windows.Forms.Button but_cross_flat;
+        private System.Windows.Forms.Button but_las_enc;
+        private System.Windows.Forms.Label label20;
     }
 }
 
