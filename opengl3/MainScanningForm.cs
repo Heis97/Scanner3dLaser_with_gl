@@ -896,28 +896,31 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-            //var scan_stl = new Model3d(@"housing_down_v2_l.STL", false);
-            //var scan_stl = new Model3d(@"def_0704.STL", false);
-          /*  var scan_stl = new Model3d(@"curve_test_1layer.stl", false);
-            //var scan_stl = new Model3d(@"cube_test.stl", false);
-            // var scan_stl = new Model3d(@"scan_2607_3.stl", false);
-            mesh = scan_stl.pols;
-            scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);*/
-
-            GL1.SortObj();
+            
             // startGenerate();
             //trB_SGBM_Enter();
+
 
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
+            //var scan_stl = new Model3d(@"housing_down_v2_l.STL", false);
+            //var scan_stl = new Model3d(@"def_0704.STL", false);
+            //var scan_stl = new Model3d(@"curve_test_1layer.stl", false);
+           // var scan_stl = new Model3d(@"cube_test.stl", false);
+             var scan_stl = new Model3d(@"scan_2607_2.stl", false);
+             mesh = scan_stl.pols;
+            scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);
+
+            //GL1.SortObj();
+
             //GL1.cross_flat(scan_i, new Flat3d_GL(0, 0, 1, 0));
             var flats = new List<Flat3d_GL>();
-            for (int i=-1; i < 1; i++)
+            for (int i=-100; i < 0; i++)
             {
-                flats.Add(new Flat3d_GL(0, 0, 1, i*0.1));
+                flats.Add(new Flat3d_GL(1, 0, 0, i*1));
             }
-            var ps = GL1.cross_flat_gpu_mesh(scan_i, flats.ToArray());
+            var ps = GL1.cross_flat_gpu_mesh(scan_stl.mesh, flats.ToArray());
             for (int i = 0; i < ps.Length; i++)
             {
                 if (ps[i] != null)
@@ -925,6 +928,7 @@ namespace opengl3
                     if (ps[i].Length>0)
                     {
                         GL1.addLineMesh(ps[i], 1f);
+                        //GL1.addPointMesh(ps[i], 1f);
                     }
                 }               
             }

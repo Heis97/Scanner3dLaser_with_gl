@@ -31,10 +31,20 @@ namespace opengl3
         }
         public TextureGL(int _binding, int _w, int _h = 1, PixelFormat _pixelFormat = PixelFormat.Red, float[] _data = null)
         {
-            Console.WriteLine("genTexture");
+            ch = ch_from_format(_pixelFormat);
+            
+            binding = _binding;
+            w = _w;
+            h = _h;
+            pixelFormat = _pixelFormat;
+            //Console.WriteLine("genTexture");
+            //Console.WriteLine("st_genTexture bind " + _binding + "; w " + _w + " h " + _h + " ch " + ch + "; " + _pixelFormat);
             if (_data != null)
             {
-                data = (float[])_data.Clone();
+                data = new float[w * h * ch];
+                _data.CopyTo(data, 0);
+                //data = (float[])_data.Clone();
+
             }
             else
             {
@@ -42,19 +52,15 @@ namespace opengl3
             }
             var buff = genTexture(_binding, _w, _h, _pixelFormat, data);
             id = buff;
-            binding = _binding;
-            w = _w;
-            h = _h;
-            pixelFormat = _pixelFormat;
-            Console.WriteLine("genTexture bind " + binding + "; w " + w + " h " + h + " ch " + ch + "; " + pixelFormat);
+            //Console.WriteLine("genTexture bind " + binding + "; w " + w + " h " + h + " ch " + ch + "; " + pixelFormat);
         }
         public float[] getData()
         {
             Gl.BindTexture(TextureTarget.Texture2d, id);
             float[] dataf = new float[w * h * ch];
-            Console.WriteLine("get text");
+            //Console.WriteLine("get text");
             Gl.GetTexImage(TextureTarget.Texture2d, 0, pixelFormat, PixelType.Float, dataf);
-            Console.WriteLine(w+" "+h+" "+ch+" "+ dataf.Length);
+            //Console.WriteLine(w+" "+h+" "+ch+" "+ dataf.Length);
             return dataf;
         }
         public void setData(float[] data)
@@ -62,28 +68,32 @@ namespace opengl3
             Gl.BindTexture(TextureTarget.Texture2d, id);
             Gl.TexImage2D(TextureTarget.Texture2d, 0, internalFormat, w, h, 0, pixelFormat, PixelType.Float, data);
         }
-        uint genTexture(int binding, int w, int h = 1, PixelFormat pixelFormat = PixelFormat.Red, float[] data = null)
+        static int  ch_from_format(PixelFormat pixelFormat)
         {
             if (pixelFormat == PixelFormat.Red)
             {
-                ch = 1;
+                return 1;
             }
             else if (pixelFormat == PixelFormat.Rg)
             {
-                ch = 2;
+                return 2;
             }
             else if (pixelFormat == PixelFormat.Rgb)
             {
-                ch = 3;
+                return 3;
             }
             else if (pixelFormat == PixelFormat.Rgba)
             {
-                ch = 4;
+                return 4;
             }
             else
             {
-                ch = 1;
+                return 1;
             }
+        }
+        uint genTexture(int binding, int w, int h = 1, PixelFormat pixelFormat = PixelFormat.Red, float[] data = null)
+        {
+            ch = ch_from_format(pixelFormat);
             var buff_texture = Gl.GenTexture();
             Gl.ActiveTexture(TextureUnit.Texture0 + binding);
             Gl.BindTexture(TextureTarget.Texture2d, buff_texture);
@@ -95,17 +105,17 @@ namespace opengl3
             {
                 internalFormat = InternalFormat.Rgba32f;
             }
+
+            var len = data?.Length ?? 0;
+            Console.WriteLine("genTexture bind " + binding + "; w " + w + " h " + h + " ch " + ch + "; " + pixelFormat+" "+ internalFormat+" data.len "+len+" from "+ w * h * 4);
+           
             Gl.TexImage2D(TextureTarget.Texture2d, 0, internalFormat, w, h, 0, pixelFormat, PixelType.Float, data);
 
             Gl.BindImageTexture((uint)binding, buff_texture, 0, false, 0, BufferAccess.ReadWrite, internalFormat);
             return buff_texture;
         }
+        
 
-        private void useTexture()
-        {
-            Gl.ActiveTexture(TextureUnit.Texture0 + binding);
-            Gl.BindTexture(TextureTarget.Texture2d, id);
-        }
     }
     public class IDs
     {
@@ -545,13 +555,15 @@ namespace opengl3
             return Point3d_GL.filtrExistPoints2d(ps_cr) ;
         }
 
-        public Point3d_GL[][] cross_flat_gpu_mesh(int obj, Flat3d_GL[] flats)
+        public Point3d_GL[][] cross_flat_gpu_mesh(float[] mesh_m, Flat3d_GL[] flats)
         {
-            float[] mesh_m = Point3d_GL.mesh3to4(buffersGl.objs_dynamic[obj].vertex_buffer_data);
+            //float[] mesh_m = Point3d_GL.mesh3to4(buffersGl.objs_dynamic[obj].vertex_buffer_data);
+            mesh_m = Point3d_GL.mesh3to4(mesh_m);
             int verts_tr = 3;
-            const int max_w_tex = 1000;
-            const int max_w_tex_buf = 63000;
-
+            int max_w_tex = 8000;
+            int max_w_tex_buf = 952000;
+            max_w_tex = 1200;
+            max_w_tex_buf = 480000;
             var mesh_m_l = mesh_m.ToList();
             int h_buf = 1;
             int w_buf = mesh_m.Length / 4;
@@ -559,24 +571,50 @@ namespace opengl3
             {
                 h_buf = (int)(mesh_m.Length / max_w_tex_buf) + 1;
             }
+
+
+            /* for (int i = 0; i < mesh_m_l.Count; i++)
+             {
+                 mesh_m_l[i] = i;
+                 if (i % 2 == 0)
+                 {
+                     // mesh2[i] *= -1;
+                 }
+                 if ((i+1) % 4 == 0)
+                 {
+                     mesh_m_l[i] = 0;
+                 }
+             }
+             */
+
+            //Console.WriteLine(toStringBuf(mesh_m_l.ToArray(), 4, 4, "mesh_data"));
             var pss = new List<Point3d_GL>[h_buf];
             var pss_r = new Point3d_GL[h_buf][];
-            Console.WriteLine(h_buf + " h_buf "+ mesh_m.Length +" "+max_w_tex_buf+ " mesh_m.Length > max_w_tex_buf");
+
+            //Console.WriteLine(h_buf + " h_buf "+ mesh_m.Length +" "+max_w_tex_buf+ " mesh_m.Length > max_w_tex_buf");
             for (int j = 1; j <= h_buf; j++)
             {
                 var stop = j * max_w_tex_buf;
+                var start = (j - 1) * max_w_tex_buf;
+                if (start >= mesh_m.Length) break;
                 if (stop >= mesh_m.Length) stop = mesh_m.Length - 1;
-                var mesh = mesh_m_l.GetRange((j-1) * max_w_tex_buf, stop).ToArray();
+                var mesh = mesh_m_l.GetRange(start, stop-start).ToArray();
+               
                 int h = 1;
                 int w = mesh.Length / 4;
+                if (((double)mesh.Length / 4) % 1 > 0) w++;
+
                 if (w > max_w_tex)
                 {
                     h = (int)(w / max_w_tex) + 1;
                     w = max_w_tex;
                 }
+                
+               // Console.WriteLine(toStringBuf(mesh, 4, 4, "mesh_data"));
                 Console.WriteLine(w + " " + h + " " + w * h * 4 + " " + mesh.Length);
                 var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba, mesh);
                 //var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba);
+
                 
 
                 for (int i = 0; i < flats.Length; i++)
@@ -592,12 +630,12 @@ namespace opengl3
                     var ps_data_div = Point3d_GL.divide_data(ps_data, w);
                     var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
                     var ps = Point3d_GL.unifPoints2d(Point3d_GL.filtrExistPoints2d(ps_cr));
-                    if(pss[j]==null)
+                    if(pss[j-1]==null)
                     {
-                        pss[j] = new List<Point3d_GL>();
+                        pss[j-1] = new List<Point3d_GL>();
                     }
-                    pss[j].AddRange(ps);
-                    Console.WriteLine(toStringBuf(ps_data, ps_data.Length/w, 4, "isolines_data"));
+                    pss[j-1].AddRange(ps);
+                    //Console.WriteLine(toStringBuf(ps_data, ps_data.Length/w, 4, "isolines_data"));
                 }
             }
             for(int i = 0; i < pss.Length; i++)
@@ -609,11 +647,12 @@ namespace opengl3
             return pss_r;
         }
 
-        public Point3d_GL[][] cross_flat_gpu_mesh_simple(int obj, Flat3d_GL[] flats)
+        public Point3d_GL[][] cross_flat_gpu_mesh_simple(float[] mesh, Flat3d_GL[] flats)
         {
-            float[] mesh = Point3d_GL.mesh3to4(buffersGl.objs_dynamic[obj].vertex_buffer_data);
             int verts_tr = 3;
-            const int max_w_tex = 1200;
+            const int max_w_tex = 8000;//
+
+            mesh = Point3d_GL.mesh3to4(mesh);
             int h = 1;
             int w = mesh.Length / 4;
             if (w > max_w_tex)
@@ -622,9 +661,31 @@ namespace opengl3
                 w = max_w_tex;
             }
             Console.WriteLine(w + " " + h + " " + w * h * 4 + " " + mesh.Length);
+
+           /* var len = w * h * 4;//341000;//w*h*4;//946000
+            var mesh2 = new float[len];
+            for (int i = 0; i < mesh.Length; i++)
+            {
+                mesh2[i] = mesh[i];
+                if (i % 2 == 0)
+                {
+                    mesh2[i] *=-1;
+                }
+                if (i%4==0)
+                {
+                    mesh2[i] = 0;
+                }
+            }
+           
+            */
             var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba, mesh);
-            //Console.WriteLine(toStringBuf(mesh, mesh.Length / h, 4, "mesh"));
+
+            //var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba, mesh);
+
+
+            //var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba);
             var pss = new List<Point3d_GL[]>();
+
             for (int i = 0; i < flats.Length; i++)
             {
                 surf_cross = new Vertex4f((float)flats[i].A, (float)flats[i].B, (float)flats[i].C, (float)flats[i].D);
@@ -632,18 +693,15 @@ namespace opengl3
                 isolines_data = new TextureGL(3, w, h, PixelFormat.Rgba);
 
                 load_vars_gl(idsCsSlice, new openGlobj());
-                Gl.DispatchCompute((uint)(w), 1, 1);
+                Gl.DispatchCompute((uint)(w), (uint)(h), 1);
                 Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
                 var ps_data = isolines_data.getData();
-                
                 var ps_data_div = Point3d_GL.divide_data(ps_data, w);
                 var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
                 var ps = Point3d_GL.unifPoints2d(Point3d_GL.filtrExistPoints2d(ps_cr));
                 pss.Add(ps);
-                Console.WriteLine(toStringBuf(ps_data, ps_data.Length / h, 4, "isolines_data"));
             }
 
-            
             return pss.ToArray();
         }
 
@@ -1009,7 +1067,7 @@ namespace opengl3
                 return name + " null ";
             StringBuilder txt = new StringBuilder();
             txt.Append(name + " " + buff.Length);
-            for (int i = 0; i < buff.Length / strip; i++)
+            for (int i = 0; i < buff.Length / strip+1; i++)
             {
                 txt.Append("| \n");
                 for (int j = 0; j < strip; j++)
@@ -1021,7 +1079,9 @@ namespace opengl3
                             txt.Append("|");
                         }
                     }
-                    txt.Append(str_to_same_len(Math.Round( buff[i * strip + j],4)) + ",");
+                    int ind = i * strip + j;
+                    if (ind >= buff.Length) break;
+                    txt.Append(str_to_same_len(Math.Round( buff[ind],4)) + ",");
                 }
             }
             txt.Append(" |\n--------------------------------\n");

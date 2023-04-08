@@ -67,7 +67,7 @@ void save_point(vec3 p, ivec2 size , ivec2 ind_pos,int i)
 		dim.x = 0;
 		dim.y++;
 	}
-	imageStore(isolines, ivec2(3*gl_GlobalInvocationID.x+i,0), vec4(p, 1));
+	imageStore(isolines, ivec2(3*gl_GlobalInvocationID.x+i,gl_GlobalInvocationID.y), vec4(p, 1));
 	dim.x++;
 	//imageStore(isolines, ind_pos, vec4(dim.xy, 0, 0));		
 }
@@ -92,7 +92,7 @@ void main()
 	vec3 vertexPosition_world[3];
 	for (int i=0; i<3;i++)
 	{
-		vertexPosition_world[i] = imageLoad(mesh,ivec2(3*gl_GlobalInvocationID.x+i,0)).xyz;	
+		vertexPosition_world[i] = imageLoad(mesh,ivec2(3*gl_GlobalInvocationID.x+i,gl_GlobalInvocationID.y)).xyz;	
 	}
 	find_points_isoline(surf_cross,vertexPosition_world);	
 
