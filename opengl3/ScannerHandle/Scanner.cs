@@ -75,6 +75,11 @@ namespace opengl3
             pointCloud.addPoints2dStereoLas(mats, stereoCamera, undist);
         }
 
+        public void addPointsSingLas_2d(Mat mat, bool undist = true)
+        {
+            pointCloud.addPoints2dSingLas(mat, cameraCV, undist);
+        }
+
         public void compPointsStereoLas_2d()
         {
             pointCloud.comp_cross(stereoCamera);
@@ -163,6 +168,56 @@ namespace opengl3
         public Point3d_GL[][] getPointsLinesCam()
         {
             return Point3d_GL.multMatr(pointCloud.points3d_lines.ToArray(), cameraCV.matrixSC);
+        }
+
+        public void calibrate_pos_from_parall_part(int layers,double deltz)
+        {
+            if(cameraCV.scan_points!=null)
+            {
+                if (cameraCV.scan_points.Count != 0)
+                {
+
+                }
+            }
+        }
+
+
+
+        public int[] enc_pos(string enc,int size)
+        {
+            var enc_pos = new int[size];
+            var lines = enc.Split('\n');
+            foreach(var line in lines)
+            {
+                if (line.Length>1)
+                {
+                    var vals = enc.Split(' ');
+                    if(vals.Length==2)
+                    {
+                        var ind = try_int32(vals[1]);
+                        var var = try_int32(vals[0]);
+                        if(ind>0 && var>0)
+                        {
+                            enc_pos[ind] = var;
+                        }
+                    }
+                    
+                }
+            }
+            return enc_pos;
+        }
+
+        int try_int32(string val)
+        {
+            try
+            {
+                return Convert.ToInt32(val);
+            }
+            catch(FormatException e)
+            {
+                return -1;
+            }
+            
         }
     }
 }

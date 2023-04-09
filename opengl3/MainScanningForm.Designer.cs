@@ -89,6 +89,10 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_load_sing_calib = new System.Windows.Forms.Button();
+            this.but_scan_load_sing = new System.Windows.Forms.Button();
+            this.but_load_stl = new System.Windows.Forms.Button();
+            this.but_save_stl = new System.Windows.Forms.Button();
             this.but_cross_flat = new System.Windows.Forms.Button();
             this.but_traj_clear = new System.Windows.Forms.Button();
             this.tp_smooth_scan = new System.Windows.Forms.TextBox();
@@ -170,6 +174,7 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_scan_sing_las = new System.Windows.Forms.Button();
             this.label_timer = new System.Windows.Forms.Label();
             this.but_load_scan = new System.Windows.Forms.Button();
             this.but_scan_stereolas = new System.Windows.Forms.Button();
@@ -180,6 +185,8 @@ namespace opengl3
             this.combo_improc = new System.Windows.Forms.ComboBox();
             this.label56 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.but_las_enc = new System.Windows.Forms.Button();
+            this.label20 = new System.Windows.Forms.Label();
             this.butset_kvp = new System.Windows.Forms.Button();
             this.textBox_set_kvp = new System.Windows.Forms.TextBox();
             this.but_set_kpp = new System.Windows.Forms.Button();
@@ -287,8 +294,8 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.label20 = new System.Windows.Forms.Label();
-            this.but_las_enc = new System.Windows.Forms.Button();
+            this.tB_fps_scan = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -940,6 +947,10 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_load_sing_calib);
+            this.tabOpenGl.Controls.Add(this.but_scan_load_sing);
+            this.tabOpenGl.Controls.Add(this.but_load_stl);
+            this.tabOpenGl.Controls.Add(this.but_save_stl);
             this.tabOpenGl.Controls.Add(this.but_cross_flat);
             this.tabOpenGl.Controls.Add(this.but_traj_clear);
             this.tabOpenGl.Controls.Add(this.tp_smooth_scan);
@@ -1028,6 +1039,46 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // but_load_sing_calib
+            // 
+            this.but_load_sing_calib.Location = new System.Drawing.Point(1721, 945);
+            this.but_load_sing_calib.Name = "but_load_sing_calib";
+            this.but_load_sing_calib.Size = new System.Drawing.Size(111, 42);
+            this.but_load_sing_calib.TabIndex = 133;
+            this.but_load_sing_calib.Text = "Загрузить калиб одиноч";
+            this.but_load_sing_calib.UseVisualStyleBackColor = true;
+            this.but_load_sing_calib.Click += new System.EventHandler(this.but_load_sing_calib_Click);
+            // 
+            // but_scan_load_sing
+            // 
+            this.but_scan_load_sing.Location = new System.Drawing.Point(1604, 944);
+            this.but_scan_load_sing.Name = "but_scan_load_sing";
+            this.but_scan_load_sing.Size = new System.Drawing.Size(111, 42);
+            this.but_scan_load_sing.TabIndex = 132;
+            this.but_scan_load_sing.Text = "Загрузить скан одиноч";
+            this.but_scan_load_sing.UseVisualStyleBackColor = true;
+            this.but_scan_load_sing.Click += new System.EventHandler(this.but_scan_load_sing_Click);
+            // 
+            // but_load_stl
+            // 
+            this.but_load_stl.Location = new System.Drawing.Point(755, 908);
+            this.but_load_stl.Name = "but_load_stl";
+            this.but_load_stl.Size = new System.Drawing.Size(132, 24);
+            this.but_load_stl.TabIndex = 131;
+            this.but_load_stl.Text = "Загрузить модель";
+            this.but_load_stl.UseVisualStyleBackColor = true;
+            this.but_load_stl.Click += new System.EventHandler(this.but_load_stl_Click);
+            // 
+            // but_save_stl
+            // 
+            this.but_save_stl.Location = new System.Drawing.Point(755, 881);
+            this.but_save_stl.Name = "but_save_stl";
+            this.but_save_stl.Size = new System.Drawing.Size(132, 24);
+            this.but_save_stl.TabIndex = 130;
+            this.but_save_stl.Text = "Сохранить модель";
+            this.but_save_stl.UseVisualStyleBackColor = true;
+            this.but_save_stl.Click += new System.EventHandler(this.but_save_stl_Click);
+            // 
             // but_cross_flat
             // 
             this.but_cross_flat.Location = new System.Drawing.Point(195, 15);
@@ -1077,11 +1128,11 @@ namespace opengl3
             // 
             // but_load_fr_cal
             // 
-            this.but_load_fr_cal.Location = new System.Drawing.Point(1603, 888);
+            this.but_load_fr_cal.Location = new System.Drawing.Point(1526, 864);
             this.but_load_fr_cal.Name = "but_load_fr_cal";
-            this.but_load_fr_cal.Size = new System.Drawing.Size(72, 20);
+            this.but_load_fr_cal.Size = new System.Drawing.Size(149, 20);
             this.but_load_fr_cal.TabIndex = 124;
-            this.but_load_fr_cal.Text = "Загрузить ";
+            this.but_load_fr_cal.Text = "Загрузить калиборовку";
             this.but_load_fr_cal.UseVisualStyleBackColor = true;
             this.but_load_fr_cal.Click += new System.EventHandler(this.but_load_fr_cal_Click);
             // 
@@ -1114,7 +1165,7 @@ namespace opengl3
             // 
             // but_calibr_Bfs
             // 
-            this.but_calibr_Bfs.Location = new System.Drawing.Point(1688, 915);
+            this.but_calibr_Bfs.Location = new System.Drawing.Point(1424, 849);
             this.but_calibr_Bfs.Name = "but_calibr_Bfs";
             this.but_calibr_Bfs.Size = new System.Drawing.Size(96, 34);
             this.but_calibr_Bfs.TabIndex = 120;
@@ -1249,17 +1300,17 @@ namespace opengl3
             // 
             // but_scan_load_ex
             // 
-            this.but_scan_load_ex.Location = new System.Drawing.Point(1688, 953);
+            this.but_scan_load_ex.Location = new System.Drawing.Point(1604, 896);
             this.but_scan_load_ex.Name = "but_scan_load_ex";
-            this.but_scan_load_ex.Size = new System.Drawing.Size(96, 34);
+            this.but_scan_load_ex.Size = new System.Drawing.Size(111, 42);
             this.but_scan_load_ex.TabIndex = 105;
-            this.but_scan_load_ex.Text = "Загрузить скан";
+            this.but_scan_load_ex.Text = "Загрузить скан стерео";
             this.but_scan_load_ex.UseVisualStyleBackColor = true;
             this.but_scan_load_ex.Click += new System.EventHandler(this.but_scan_load_ex_Click);
             // 
             // but_send_traj
             // 
-            this.but_send_traj.Location = new System.Drawing.Point(768, 937);
+            this.but_send_traj.Location = new System.Drawing.Point(572, 958);
             this.but_send_traj.Name = "but_send_traj";
             this.but_send_traj.Size = new System.Drawing.Size(96, 34);
             this.but_send_traj.TabIndex = 104;
@@ -1269,7 +1320,7 @@ namespace opengl3
             // 
             // but_end_cont
             // 
-            this.but_end_cont.Location = new System.Drawing.Point(768, 897);
+            this.but_end_cont.Location = new System.Drawing.Point(572, 920);
             this.but_end_cont.Name = "but_end_cont";
             this.but_end_cont.Size = new System.Drawing.Size(96, 34);
             this.but_end_cont.TabIndex = 103;
@@ -1345,7 +1396,7 @@ namespace opengl3
             // 
             // but_gl_cam_calib
             // 
-            this.but_gl_cam_calib.Location = new System.Drawing.Point(545, 941);
+            this.but_gl_cam_calib.Location = new System.Drawing.Point(390, 951);
             this.but_gl_cam_calib.Name = "but_gl_cam_calib";
             this.but_gl_cam_calib.Size = new System.Drawing.Size(96, 56);
             this.but_gl_cam_calib.TabIndex = 98;
@@ -1394,7 +1445,7 @@ namespace opengl3
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(1790, 922);
+            this.label43.Location = new System.Drawing.Point(1809, 922);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(70, 13);
             this.label43.TabIndex = 93;
@@ -1590,7 +1641,7 @@ namespace opengl3
             // 
             // but_imGen
             // 
-            this.but_imGen.Location = new System.Drawing.Point(443, 941);
+            this.but_imGen.Location = new System.Drawing.Point(349, 947);
             this.but_imGen.Name = "but_imGen";
             this.but_imGen.Size = new System.Drawing.Size(96, 56);
             this.but_imGen.TabIndex = 72;
@@ -1634,7 +1685,7 @@ namespace opengl3
             // 
             // but_swapMonit
             // 
-            this.but_swapMonit.Location = new System.Drawing.Point(341, 941);
+            this.but_swapMonit.Location = new System.Drawing.Point(309, 944);
             this.but_swapMonit.Name = "but_swapMonit";
             this.but_swapMonit.Size = new System.Drawing.Size(96, 56);
             this.but_swapMonit.TabIndex = 67;
@@ -1703,7 +1754,7 @@ namespace opengl3
             // 
             // but_ProjV
             // 
-            this.but_ProjV.Location = new System.Drawing.Point(239, 941);
+            this.but_ProjV.Location = new System.Drawing.Point(141, 931);
             this.but_ProjV.Name = "but_ProjV";
             this.but_ProjV.Size = new System.Drawing.Size(96, 56);
             this.but_ProjV.TabIndex = 58;
@@ -1806,6 +1857,9 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.tB_fps_scan);
+            this.tabMain.Controls.Add(this.label21);
+            this.tabMain.Controls.Add(this.but_scan_sing_las);
             this.tabMain.Controls.Add(this.label_timer);
             this.tabMain.Controls.Add(this.but_load_scan);
             this.tabMain.Controls.Add(this.but_scan_stereolas);
@@ -1905,6 +1959,18 @@ namespace opengl3
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // but_scan_sing_las
+            // 
+            this.but_scan_sing_las.AccessibleName = "1";
+            this.but_scan_sing_las.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_sing_las.Location = new System.Drawing.Point(1407, 214);
+            this.but_scan_sing_las.Name = "but_scan_sing_las";
+            this.but_scan_sing_las.Size = new System.Drawing.Size(148, 33);
+            this.but_scan_sing_las.TabIndex = 132;
+            this.but_scan_sing_las.Text = "Scan SingLaser";
+            this.but_scan_sing_las.UseVisualStyleBackColor = true;
+            this.but_scan_sing_las.Click += new System.EventHandler(this.but_scan_sing_las_Click);
+            // 
             // label_timer
             // 
             this.label_timer.AutoSize = true;
@@ -1929,7 +1995,7 @@ namespace opengl3
             // 
             this.but_scan_stereolas.AccessibleName = "1";
             this.but_scan_stereolas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_scan_stereolas.Location = new System.Drawing.Point(1407, 256);
+            this.but_scan_stereolas.Location = new System.Drawing.Point(1407, 175);
             this.but_scan_stereolas.Name = "but_scan_stereolas";
             this.but_scan_stereolas.Size = new System.Drawing.Size(148, 33);
             this.but_scan_stereolas.TabIndex = 128;
@@ -1941,7 +2007,7 @@ namespace opengl3
             // 
             this.but_scan_marl.AccessibleName = "2";
             this.but_scan_marl.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_scan_marl.Location = new System.Drawing.Point(1407, 129);
+            this.but_scan_marl.Location = new System.Drawing.Point(1407, 41);
             this.but_scan_marl.Name = "but_scan_marl";
             this.but_scan_marl.Size = new System.Drawing.Size(148, 33);
             this.but_scan_marl.TabIndex = 127;
@@ -1953,7 +2019,7 @@ namespace opengl3
             // 
             this.but_scan_def.AccessibleName = "0";
             this.but_scan_def.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_scan_def.Location = new System.Drawing.Point(1407, 175);
+            this.but_scan_def.Location = new System.Drawing.Point(1407, 85);
             this.but_scan_def.Name = "but_scan_def";
             this.but_scan_def.Size = new System.Drawing.Size(148, 33);
             this.but_scan_def.TabIndex = 126;
@@ -1965,7 +2031,7 @@ namespace opengl3
             // 
             this.but_scan_start_laser.AccessibleName = "1";
             this.but_scan_start_laser.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_scan_start_laser.Location = new System.Drawing.Point(1407, 217);
+            this.but_scan_start_laser.Location = new System.Drawing.Point(1407, 129);
             this.but_scan_start_laser.Name = "but_scan_start_laser";
             this.but_scan_start_laser.Size = new System.Drawing.Size(148, 33);
             this.but_scan_start_laser.TabIndex = 125;
@@ -2034,6 +2100,25 @@ namespace opengl3
             this.groupBox1.TabIndex = 121;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Scaner Manual Control";
+            // 
+            // but_las_enc
+            // 
+            this.but_las_enc.Location = new System.Drawing.Point(171, 29);
+            this.but_las_enc.Name = "but_las_enc";
+            this.but_las_enc.Size = new System.Drawing.Size(110, 46);
+            this.but_las_enc.TabIndex = 133;
+            this.but_las_enc.Text = "Позиция";
+            this.but_las_enc.UseVisualStyleBackColor = true;
+            this.but_las_enc.Click += new System.EventHandler(this.but_las_enc_Click);
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(295, 3);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(49, 20);
+            this.label20.TabIndex = 132;
+            this.label20.Text = "Laser";
             // 
             // butset_kvp
             // 
@@ -2265,7 +2350,7 @@ namespace opengl3
             // 
             this.label55.AutoSize = true;
             this.label55.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label55.Location = new System.Drawing.Point(1296, 500);
+            this.label55.Location = new System.Drawing.Point(1296, 504);
             this.label55.Name = "label55";
             this.label55.Size = new System.Drawing.Size(115, 20);
             this.label55.TabIndex = 120;
@@ -2273,7 +2358,7 @@ namespace opengl3
             // 
             // txBx_photoName
             // 
-            this.txBx_photoName.Location = new System.Drawing.Point(1425, 497);
+            this.txBx_photoName.Location = new System.Drawing.Point(1425, 501);
             this.txBx_photoName.Name = "txBx_photoName";
             this.txBx_photoName.Size = new System.Drawing.Size(103, 26);
             this.txBx_photoName.TabIndex = 119;
@@ -2686,7 +2771,7 @@ namespace opengl3
             // but_addBufRob
             // 
             this.but_addBufRob.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_addBufRob.Location = new System.Drawing.Point(1481, 80);
+            this.but_addBufRob.Location = new System.Drawing.Point(1550, 67);
             this.but_addBufRob.Name = "but_addBufRob";
             this.but_addBufRob.Size = new System.Drawing.Size(106, 33);
             this.but_addBufRob.TabIndex = 93;
@@ -2697,7 +2782,7 @@ namespace opengl3
             // but_robMod
             // 
             this.but_robMod.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_robMod.Location = new System.Drawing.Point(1481, 41);
+            this.but_robMod.Location = new System.Drawing.Point(1550, 27);
             this.but_robMod.Name = "but_robMod";
             this.but_robMod.Size = new System.Drawing.Size(106, 33);
             this.but_robMod.TabIndex = 92;
@@ -3032,24 +3117,23 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // label20
+            // tB_fps_scan
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(295, 3);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(49, 20);
-            this.label20.TabIndex = 132;
-            this.label20.Text = "Laser";
+            this.tB_fps_scan.Location = new System.Drawing.Point(1425, 475);
+            this.tB_fps_scan.Name = "tB_fps_scan";
+            this.tB_fps_scan.Size = new System.Drawing.Size(69, 26);
+            this.tB_fps_scan.TabIndex = 133;
+            this.tB_fps_scan.Text = "30";
             // 
-            // but_las_enc
+            // label21
             // 
-            this.but_las_enc.Location = new System.Drawing.Point(171, 29);
-            this.but_las_enc.Name = "but_las_enc";
-            this.but_las_enc.Size = new System.Drawing.Size(110, 46);
-            this.but_las_enc.TabIndex = 133;
-            this.but_las_enc.Text = "Позиция";
-            this.but_las_enc.UseVisualStyleBackColor = true;
-            this.but_las_enc.Click += new System.EventHandler(this.but_las_enc_Click);
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label21.Location = new System.Drawing.Point(1364, 478);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(54, 20);
+            this.label21.TabIndex = 135;
+            this.label21.Text = "Fps ->";
             // 
             // MainScanningForm
             // 
@@ -3396,6 +3480,13 @@ namespace opengl3
         private System.Windows.Forms.Button but_cross_flat;
         private System.Windows.Forms.Button but_las_enc;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Button but_save_stl;
+        private System.Windows.Forms.Button but_load_stl;
+        private System.Windows.Forms.Button but_scan_load_sing;
+        private System.Windows.Forms.Button but_load_sing_calib;
+        private System.Windows.Forms.Button but_scan_sing_las;
+        private System.Windows.Forms.TextBox tB_fps_scan;
+        private System.Windows.Forms.Label label21;
     }
 }
 

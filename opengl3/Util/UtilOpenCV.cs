@@ -566,7 +566,7 @@ namespace opengl3
         {
             return drawMatches(im, PointF.toPoint(points1), PointF.toPoint(points2), r, g, b, size);
         }
-        static MCvScalar randomColor()
+        static public MCvScalar randomColor()
         {
             var rand = Accord.Math.Random.Generator.Random;
             int r = rand.Next(0, 255);

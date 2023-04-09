@@ -364,12 +364,12 @@ namespace opengl3
             programID_comp = createShaderCompute(CompShaderGL);
 
             var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one.glsl" });
-            //var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one_0704.glsl" });
             idsCsSlice.programID = createShaderCompute(CompShaderSliceGL);
 
             var CompShaderCsGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_test.glsl" });
-            //var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one_0704.glsl" });
             idsCs.programID = createShaderCompute(CompShaderCsGL);
+
+            
 
 
             idsLs.programID = createShader(VertexSourceGL, GeometryShaderLinesGL, FragmentSimpleSourceGL);
@@ -381,9 +381,6 @@ namespace opengl3
             idsTs.programID = createShader(VertexSourceGL, GeometryShaderTrianglesGL, FragmentSourceGL);
             idsTsOne.programID = createShader(VertexOneSourceGL, GeometryShaderTrianglesGL, FragmentSourceGL);
 
-            idsTsOneSlice.programID = createShader(VertexOneSourceGL, GeometryShaderTrianglesSliceGL, FragmentSourceGL);
-
-            //idsCs.programID = createShaderCompute(ComputeSourceGL);
 
             init_vars_gl(idsLs);
             init_vars_gl(idsPs);
@@ -391,7 +388,6 @@ namespace opengl3
             init_vars_gl(idsTsOne);
             init_vars_gl(idsPsOne);
             init_vars_gl(idsLsOne);
-            init_vars_gl(idsTsOneSlice);
             init_vars_gl(idsCsSlice);
             init_vars_gl(idsCs);
             //Gl.Enable(EnableCap.CullFace);

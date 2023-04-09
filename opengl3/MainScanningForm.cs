@@ -30,6 +30,9 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+
+        StringBuilder sb_enc =null;
+
         int scan_i = -1;
         int traj_i = -1;
         TrajParams param_tr = new TrajParams();
@@ -450,8 +453,6 @@ namespace opengl3
 
 
         }
-
-
         void load_scan_v2(string scan_path, int strip = 1, double smooth = 0.8)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
@@ -464,8 +465,44 @@ namespace opengl3
             GL1.SortObj();
             Console.WriteLine("Loading end.");
         }
+        //----------------------------------------------------------------------------------------------------------
+        void loadScanner_sing(string conf1)
+        {
+            var cam1 = CameraCV.load_camera(conf1);
+            scanner = new Scanner( cam1 );
+            //var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
+            //var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
+            //scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);
+            //comboImages.Items.AddRange(frms_stereo);
+        }
+        void load_scan_sing(string scan_path, int strip = 1, double smooth = 0.8)
+        {
+            var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
+            loadVideo_sing_cam(scan_path_1, scanner, strip);
+
+            /*mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
+
+            var scan_stl = Polygon3d_GL.toMesh(mesh);
+            if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+            GL1.SortObj();
+            Console.WriteLine("Loading end.");*/
+        }
+
+        void load_calib_sing(string scan_path, int strip = 1, double smooth = 0.8)
+        {
+            var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
+            loadVideo_sing_cam(scan_path_1, scanner, strip);
+
+            /*mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
+
+            var scan_stl = Polygon3d_GL.toMesh(mesh);
+            if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+            GL1.SortObj();
+            Console.WriteLine("Loading end.");*/
+        }
 
 
+        //-------------------------------------------------------------------------------------------
         void loadScannerStereoLas(
             string[] cam_cal_path,
             string stereo_cal_path,
@@ -541,7 +578,7 @@ namespace opengl3
         }
 
 
-        public void startScanLaser(int typeScan)//0 - defolt, 1 - dif,2 - marl,3 - stereo
+        public void startScanLaser(int typeScan)//0 - defolt, 1 - dif,2 - marl,3 - stereo, 4 - sing
         {
             try
             {
@@ -561,6 +598,7 @@ namespace opengl3
             string folder_scan = box_scanFolder.Text;
             var p1_cur_scan = robFrameFromTextBox(nameX, nameY, nameZ, nameA, nameB, nameC);
             var p2_cur_scan = robFrameFromTextBox(nameX2, nameY2, nameZ2, nameA, nameB, nameC);
+            var fps = Convert.ToInt32(tB_fps_scan.Text);
             float x = (float)p1_cur_scan.x;
 
             var delx = (float)(p2_cur_scan.x - p1_cur_scan.x) / (float)counts;
@@ -582,13 +620,30 @@ namespace opengl3
 
             if (typescan == 3)
             {
-                var t_video =(double)counts / 30;
+                var t_video =(double)counts / fps;
                 var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
                 laserLine?.laserOn();
                 Thread.Sleep(200);
                
                 startWrite(1, counts);
                 startWrite(2, counts);
+                laserLine?.setShvpVel(v_laser);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+
+            }
+
+            if (typescan == 4)
+            {
+                
+
+                var t_video = (double)counts / fps;
+                var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
+                laserLine?.laserOn();
+                Thread.Sleep(200);
+
+                
+                startWrite(1, counts);
+                sb_enc = new StringBuilder();
                 laserLine?.setShvpVel(v_laser);
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
 
@@ -908,19 +963,19 @@ namespace opengl3
             //var scan_stl = new Model3d(@"def_0704.STL", false);
             //var scan_stl = new Model3d(@"curve_test_1layer.stl", false);
            // var scan_stl = new Model3d(@"cube_test.stl", false);
-             var scan_stl = new Model3d(@"scan_2607_2.stl", false);
+            /* var scan_stl = new Model3d(@"test_0.5_0.5_0.7.stl", false);
              mesh = scan_stl.pols;
-            scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);
+            scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);*/
 
             //GL1.SortObj();
 
             //GL1.cross_flat(scan_i, new Flat3d_GL(0, 0, 1, 0));
             var flats = new List<Flat3d_GL>();
-            for (int i=-100; i < 0; i++)
+            for (int i=-10; i < 0; i++)
             {
-                flats.Add(new Flat3d_GL(1, 0, 0, i*1));
+                flats.Add(new Flat3d_GL(-1, 1, 0, i*1));
             }
-            var ps = GL1.cross_flat_gpu_mesh(scan_stl.mesh, flats.ToArray());
+            var ps = GL1.cross_flat_gpu_mesh(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, flats.ToArray());
             for (int i = 0; i < ps.Length; i++)
             {
                 if (ps[i] != null)
@@ -1208,17 +1263,48 @@ namespace opengl3
 
                 else if (fr.frameType == FrameType.LasDif)
                 {
-                    var mat1 = fr.im.Clone();
-                    var mat2 = fr.im.Clone();
-                    var rgb = mat1.Split();
-                    var im1 = (rgb[0] + rgb[1] + rgb[2]).ToImage<Gray, Byte>();
-                    var im2 = im1.Clone();
-                
-                    var ps = Detection.detectLineDiff(mat2,3);
-                    UtilOpenCV.drawPointsF(mat2, ps, 0, 255, 0,2);
+                    /* var mat1 = fr.im.Clone();
+                     var mat2 = fr.im.Clone();
+                     var rgb = mat1.Split();
+                     var im1 = (rgb[0] + rgb[1] + rgb[2]).ToImage<Gray, Byte>();
+                     var im2 = im1.Clone();
+                 */
+                    var mat = fr.im.Clone();
+                    var ps = Detection.detectLineDiff(mat,7);
+
+                    var ps_t = new List<PointF>();
+                    for(int i=0; i<500;i++)
+                    {
+                        var p = new PointF(500 + i * 0.1, i);
+                        if (i>100 && i < 300)
+                        {
+                            if (i > 130 && i < 270)
+                            {
+                                if (i > 160 && i < 230)
+                                {
+                                    p.X -= 60;
+                                }
+                                p.X -= 60;
+                            }
+                            p.X -= 60;
+                        }
+                        else
+                        {
+                            p.X -= 200;
+                        }
+                        ps_t.Add(p);
+
+                    }
+
+                    
+
+                    var ps_xy = Detection.x_max_claster(ps, 4);
+                    UtilOpenCV.drawPointsF(mat, ps_xy, 255, 255, 0, 2);
+
+                    UtilOpenCV.drawPointsF(mat, ps, 0, 255, 0,2);
                     //imBox_base.Image = im2;
-                    imageBox2.Image = im1;
-                    imageBox1.Image = mat2;
+                    imageBox2.Image = fr.im;
+                    imageBox1.Image = mat;
                 }
 
                 else if (fr.frameType == FrameType.LasHand)
@@ -2110,14 +2196,26 @@ namespace opengl3
 
             if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
             {
+                sb_enc?.AppendLine( laserLine?.get_las_pos()+" "+ videoframe_counts[ind - 1]);
                 video_writer[ind - 1]?.Write(mat);
+                sb_enc?.AppendLine(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1]);
+
                 videoframe_counts[ind - 1]++;
             }
             else
             {
-               
-                videoframe_counts[ind - 1] = -1;
-                
+                if (sb_enc!=null)
+                {
+                    string path = "cam" + ind.ToString() + "\\" + box_scanFolder.Text + "\\enc.txt";
+                    using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
+                    {
+                        sw.Write(sb_enc.ToString());
+                    }
+                    sb_enc = null;
+                }
+
+
+                video_writer[ind - 1]?.Dispose();
             }
 
         }
@@ -2125,7 +2223,7 @@ namespace opengl3
         void initWrite(int ind)
         {
             int fcc = VideoWriter.Fourcc('M', 'P', '4', 'V'); //'M', 'J', 'P', 'G'
-            int fps = 15;
+            int fps = 30;
             string name ="cam"+ind.ToString()+"\\"+ box_scanFolder.Text + "\\1.mp4";
             video_writer[ind - 1] = new VideoWriter(name, fcc, fps, new Size(cameraSize.Width, cameraSize.Height), true);
         }
@@ -2935,16 +3033,9 @@ namespace opengl3
         {
             startScanLaser(3);
         }
-
-        private void but_load_scan_Click(object sender, EventArgs e)
+        private void but_scan_sing_las_Click(object sender, EventArgs e)
         {
-            loadScannerStereoLas(
-           new string[] { @"camera_cal_1807_1", @"camera_cal_1807_2" },
-            @"stereocal_2607_1",
-            @"scan_2607_4",
-            new float[] { 0.1f, 0.5f, 0.1f }, true, 1);
-            GL1.SortObj();
-
+            startScanLaser(4);
         }
 
         void show_frame(string filepath)
@@ -3001,12 +3092,8 @@ namespace opengl3
 
                         imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
-                        //CvInvoke.Imshow("im2", im2);
-                       
-                        scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);
-                        
-                        
-
+                        //CvInvoke.Imshow("im2", im2);                       
+                        scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);//true???
                     }
                 }                
                 videoframe_count++;
@@ -3014,6 +3101,80 @@ namespace opengl3
             }
             comboImages.Items.AddRange(frames_show.ToArray());
             scanner.compPointsStereoLas_2d();
+            Console.WriteLine("Points computed.");
+        }
+
+        public void loadVideo_sing_cam(string filepath, Scanner scanner = null, int strip = 1)
+        {
+            videoframe_count = 0;
+            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
+            Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
+            //var capture1 = new VideoCapture(Directory.GetFiles("cam1\\" + filepath)[0]);
+            var files = Directory.GetFiles("cam1\\" + filepath);
+            string video_path = "";
+            string enc_path = "";
+            foreach(var path in files)
+            {
+                var ext = path.Split('.').Reverse().ToArray();
+
+                if(ext[0]=="txt")
+                {
+                    enc_path = path;
+                }
+                if (ext[0] == "mp4")
+                {
+                    video_path = path;
+                }
+            }
+            var capture1 = new VideoCapture(video_path);
+            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
+            var fr_st_vid = new Frame(orig1, "sd", FrameType.Test);
+            var frames_show = new List<Frame>();
+            comboImages.Items.Add(fr_st_vid);
+
+            var all_frames = all_frames1;
+            if (scanner != null)
+            {
+                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>()};
+                scanner.pointCloud.graphicGL = GL1;
+            }
+            var enc_file = "";
+            using (StreamReader sr = new StreamReader(enc_path))
+            {
+                enc_file = sr.ReadToEnd();
+            }
+            scanner.enc_pos(enc_file, (int)all_frames);
+
+            while (videoframe_count < all_frames)
+            {
+                Mat im1 = new Mat();
+                while (!capture1.Read(im1)) { }
+                //Console.WriteLine("____________________");
+                if (scanner != null)
+                {
+                    if (videoframe_count % strip == 0)
+                    {
+                        im1 -= orig1;
+                        var frame_d = new Frame(im1,  videoframe_count.ToString(), FrameType.LasDif);
+                        frames_show.Add(frame_d);
+                        //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
+                        /*var ps1 = Detection.detectLineDiff(im1, 7);
+                        var ps2 = Detection.detectLineDiff(im2, 7);
+
+                        imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
+                        imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
+                        //CvInvoke.Imshow("im2", im2);
+
+                        scanner.addPointsSingLas_2d(im1, false);
+
+                    }
+                }
+                videoframe_count++;
+                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+            }
+            comboImages.Items.AddRange(frames_show.ToArray());
+
+            //scanner.compPointsSingLas_2d();
             Console.WriteLine("Points computed.");
         }
         #endregion
@@ -3107,15 +3268,56 @@ namespace opengl3
 
         }
 
+        private void but_scan_load_sing_Click(object sender, EventArgs e)
+        {
+            var scan_path = textB_scan_path.Text;
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var laser_line_path = textB_cam2_conf.Text;
 
+            int strip = Convert.ToInt32(tb_strip_scan.Text);
+            double smooth = Convert.ToDouble(tp_smooth_scan.Text);
 
-        string get_file_name(string init_direct)
+            loadScanner_sing(cam1_conf_path);//laser_line_path
+            load_scan_sing(scan_path, strip, smooth);
+        }
+        private void but_load_sing_calib_Click(object sender, EventArgs e)
+        {
+            var scan_path = textB_scan_path.Text;
+            var cam1_conf_path = textB_cam1_conf.Text;
+
+            int strip = Convert.ToInt32(tb_strip_scan.Text);
+            double smooth = Convert.ToDouble(tp_smooth_scan.Text);
+
+            loadScanner_sing(cam1_conf_path);
+            load_calib_sing(scan_path, strip, smooth);
+        }
+
+        string save_file_name(string init_direct, string extns)
         {
             var filePath = string.Empty;
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            using (SaveFileDialog openFileDialog = new SaveFileDialog())
             {
                 openFileDialog.InitialDirectory = init_direct;
-                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+                //openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+                openFileDialog.Filter = extns + " files (*." + extns + ")|*." + extns;
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = openFileDialog.FileName;
+                }
+            }
+            return filePath;
+        }
+        string get_file_name(string init_direct,string extns)
+        {
+            var filePath = string.Empty;
+            using (  OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = init_direct;
+                //openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+                openFileDialog.Filter = extns+" files (*."+ extns + ")|*." + extns ;
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
 
@@ -3147,13 +3349,13 @@ namespace opengl3
 
         private void but_load_conf_cam1_Click(object sender, EventArgs e)
         {
-            textB_cam1_conf.Text =  get_file_name(Directory.GetCurrentDirectory());
+            textB_cam1_conf.Text =  get_file_name(Directory.GetCurrentDirectory(),"txt");
             formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
         }
 
         private void but_load_conf_cam2_Click(object sender, EventArgs e)
         {
-            textB_cam2_conf.Text = get_file_name(Directory.GetCurrentDirectory());
+            textB_cam2_conf.Text = get_file_name(Directory.GetCurrentDirectory(), "txt");
             formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
         }
 
@@ -3189,7 +3391,6 @@ namespace opengl3
             //GL1.SortObj();
         }
 
-        #endregion
 
         private void but_calibr_Bfs_Click(object sender, EventArgs e)
         {
@@ -3231,7 +3432,26 @@ namespace opengl3
 
         }
 
-        
+        private void but_save_stl_Click(object sender, EventArgs e)
+        {
+            var stl_name = save_file_name(Directory.GetCurrentDirectory(), "stl");
+            var scan_stl = Polygon3d_GL.toMesh(mesh);
+            STLmodel.saveMesh(scan_stl[0], stl_name);
+        }
+        private void but_load_stl_Click(object sender, EventArgs e)
+        {
+            var stl_name = get_file_name(Directory.GetCurrentDirectory(), "stl");
+            var scan_stl = new Model3d(stl_name, false);
+            mesh = scan_stl.pols;
+            scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);
+        }
+
+
+
+
+        #endregion
+
+       
     }
 }
 

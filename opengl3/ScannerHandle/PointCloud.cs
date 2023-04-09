@@ -117,6 +117,21 @@ namespace opengl3
             return true;
         }
 
+        public bool addPoints2dSingLas(Mat mat, CameraCV cameraCV, bool undist)
+        {
+            if (undist)
+            {
+                mat = cameraCV.undist(mat);
+            }
+            var points_im = Detection.detectLineDiff(mat, 7);
+            if (points_im != null)
+            {
+                cameraCV.scan_points.Add(points_im);
+                Console.WriteLine(points_im.Length);
+            }
+            return true;
+        }
+
         public void comp_cross(StereoCamera stereocamera)
         {
             var points_cam = fromStereoLaser_gpu_all(

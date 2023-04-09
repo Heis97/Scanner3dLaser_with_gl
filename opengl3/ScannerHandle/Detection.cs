@@ -343,7 +343,7 @@ namespace opengl3
             return ps;
         }
 
-        public static PointF[] detectLineDiff(Mat _mat, int wind = 5, float board = 0.05f, bool reverse = false,bool rotate = true)
+        public static PointF[] detectLineDiff(Mat _mat, int wind = 5, float board = 0.05f, bool reverse = false,bool rotate = true,bool connect = true)
         {
             var mat = _mat.Clone();
 
@@ -429,7 +429,7 @@ namespace opengl3
             if (add_count < 5) return null;
             
             ps = ps_list.ToArray();
-            ps = connectPoints(ps);
+            if(connect) ps = connectPoints(ps);
             ps = medianFilter(ps,5,5);
 
             GC.Collect();
@@ -450,7 +450,7 @@ namespace opengl3
             }
             
             //CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(_mat, ps, 255, 0, 0));
-            return ps;
+            return ps; 
         }
 
         static PointF[] rotatePointsClockwise(PointF[] ps,Size size)
@@ -530,6 +530,133 @@ namespace opengl3
             }
             return ret;
         }
+      
+        static public PointF[] parall_Points(PointF[] inp)
+        {
+            /* var ps = (from p in inp
+                            orderby p.Y
+                            select p).ToArray();*/
+            var ps = (PointF[])inp.Clone();
+
+            var dx = ps[0].X - ps[ps.Length - 1].X;
+            var dy = ps[0].Y - ps[ps.Length - 1].Y;
+            var k = dx / dy;
+
+            for(int i=0; i<ps.Length;i++)
+            {
+                var delt = ps[i].Y*k;
+                ps[i].X -= delt;
+                //ps[i].X *= -1;
+            }
+
+            var ps2 = (from p in ps
+                  orderby p.X
+                  select p).ToArray();
+            var x_min = ps2[0].X;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ps[i].X -= x_min;
+            }
+            return ps;
+        }
+
+        static public PointF[] claster_Points(PointF[] inp,int clast)
+        {
+            var ps = (from p in inp
+                      orderby p.X
+                  select p).ToArray();
+            var x_min = ps[0].X;
+            var x_max = ps[ps.Length-1].X;
+
+            var clasters = new List<List<PointF>>();
+
+            var err = 0.7*(x_max-x_min)/(clast-1);
+
+
+            for (int i = 0; i < inp.Length; i++)
+            {
+
+                if (i == 0)
+                {
+                    var cl = new List<PointF>();
+                    cl.Add(inp[i]);
+                    clasters.Add(cl);
+                }
+                else
+                {
+                    bool added = false;
+                    for (int j = 0; j < clasters.Count; j++)
+                    {
+                        var area_cur = inp[i].X;
+
+                        var area_clast = averageXps(clasters[j].ToArray());
+                        //Console.WriteLine(" i: " + i + " j: " + j + " area_clast: " + area_clast + " perim_clast: " + perim_clast + " area_cur: " + area_cur + " perim_cur: " + perim_cur);
+                        if ( Math.Abs(area_cur - area_clast) <  err)
+                        {
+                            clasters[j].Add(inp[i]);
+                            added = true;
+                            break;
+                        }
+                    }
+                    if (!added)
+                    {
+                        var cl = new List<PointF>();
+                        cl.Add(inp[i]);
+                        clasters.Add(cl);
+                    }
+                }
+            }
+            var clasters_a = new List<PointF[]>();
+            for (int i=0; i<clasters.Count; i++)
+            {
+                clasters_a.Add(clasters[i].ToArray());
+            }
+
+            var clasters_count = (from c in clasters_a
+                                  orderby c.Length descending
+                                  select c).ToList();
+            if(clasters_count.Count<clast)
+            {
+                clast = clasters_count.Count;
+            }
+            var big_clasters = clasters_count.GetRange(0, clast);
+
+            var clasters_x_max = (from c in clasters_a
+                                  orderby averageXps(c.ToArray()) descending
+                                  select c).ToArray();
+
+            return clasters_x_max[0];
+        }
+        static public PointF[] same_y_Points(PointF[] orig, PointF[] ps2)
+        {
+            var ps3 = new List<PointF>();
+            
+            for (int j = 0; j < ps2.Length; j++)
+            {
+                var add = false;
+                for (int i = 0; i < orig.Length && !add; i++)
+                {
+                    if (Math.Abs(orig[i].Y - ps2[j].Y) < 0.01)
+                    {
+                        ps3.Add(orig[i]);
+                        add = true;
+                    }
+                }
+            }
+            
+
+            return ps3.ToArray();
+        }
+
+        static public PointF[]  x_max_claster(PointF[] ps,int clast_count)
+        {
+            var paral = parall_Points(ps);
+            var ps_max = claster_Points(paral, clast_count);
+            return same_y_Points(ps, ps_max);
+        }
+
+
+
         static float centerOfMass(int[,] col)
         {
             int mas_sum = 0;

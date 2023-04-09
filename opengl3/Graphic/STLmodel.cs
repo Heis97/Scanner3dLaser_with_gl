@@ -209,7 +209,11 @@ namespace opengl3
             sb.Append("endsolid\n");
 
             Console.WriteLine("startWRITE");
-            var wr = new StreamWriter(name + ".stl");
+            if (!name.Contains('.'))
+            {
+                name += ".stl";
+            }
+            var wr = new StreamWriter(name);
             wr.Write(sb);
             Console.WriteLine("stopWRITE");
             wr.Close();
