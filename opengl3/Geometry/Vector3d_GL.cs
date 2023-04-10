@@ -72,6 +72,10 @@ namespace opengl3
         {
             return Math.Acos((p * p1) / (p.norm * p1.norm));
         }
+        public static double cos(Vector3d_GL p, Vector3d_GL p1)
+        {
+            return (p * p1) / (p.norm * p1.norm);
+        }
 
         public static Vector3d_GL operator *(Vector3d_GL p, double k)
         {

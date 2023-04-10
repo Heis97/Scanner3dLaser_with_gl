@@ -290,7 +290,7 @@ namespace PathPlanning
             return traj;
         }
 
-        static List<Point3d_GL> filter_traj(List<Point3d_GL> layer, double fil_step)
+        public static List<Point3d_GL> filter_traj(List<Point3d_GL> layer, double fil_step)
         {
             var traj_fil = new List<Point3d_GL>();
             traj_fil.Add(layer[0]);

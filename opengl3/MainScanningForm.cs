@@ -959,35 +959,99 @@ namespace opengl3
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
-            //var scan_stl = new Model3d(@"housing_down_v2_l.STL", false);
-            //var scan_stl = new Model3d(@"def_0704.STL", false);
-            //var scan_stl = new Model3d(@"curve_test_1layer.stl", false);
-           // var scan_stl = new Model3d(@"cube_test.stl", false);
-            /* var scan_stl = new Model3d(@"test_0.5_0.5_0.7.stl", false);
-             mesh = scan_stl.pols;
-            scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);*/
+            cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 10);
 
-            //GL1.SortObj();
-
-            //GL1.cross_flat(scan_i, new Flat3d_GL(0, 0, 1, 0));
-            var flats = new List<Flat3d_GL>();
-            for (int i=-10; i < 0; i++)
+           /* var ps = new List<Point3d_GL>();
+            for (double i=-10; i < 10; i+=0.1)
             {
-                flats.Add(new Flat3d_GL(-1, 1, 0, i*1));
+                if(Math.Abs(i)>4)
+                {
+                    ps.Add(new Point3d_GL(i,0, 0.1 * i * i));
+                }
+                
             }
-            var ps = GL1.cross_flat_gpu_mesh(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, flats.ToArray());
+
+            var ps_re =  Regression.regress3DLine_ax(ps.ToArray());
+            GL1.addLineMeshTraj(Point3d_GL.order_points(ps.ToArray()), 1);
+            GL1.addLineMeshTraj(ps_re, 0,1);*/
+        }
+
+        void cross_obj_flats(float[] mesh,double dx)
+        {
+            var p_min = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);
+            var p_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue);
+            for(int i = 0; i < mesh.Length; i+=3)
+            {
+                if (mesh[i] > p_max.x) p_max.x = mesh[i];
+                if (mesh[i] < p_min.x) p_min.x = mesh[i];
+
+                if (mesh[i+1] > p_max.y) p_max.y = mesh[i + 1];
+                if (mesh[i+1] < p_min.y) p_min.y = mesh[i + 1];
+
+                if (mesh[i + 2] > p_max.z) p_max.z = mesh[i + 2];
+                if (mesh[i + 2] < p_min.z) p_min.z = mesh[i + 2];
+            }
+            //var ps_x = cross_obj_flats_ax(mesh, dx, p_min.x, p_max.x, Ax.X);
+            var ps_y = cross_obj_flats_ax(mesh, dx, p_min.y, p_max.y, Ax.Y);
+            //GL1.addLinesMeshTraj(ps_x, 1);
+            //GL1.addLinesMeshTraj(ps_y, 0, 1);
+
+            GL1.SortObj();
+        }
+        Point3d_GL[][] cross_obj_flats_ax_2(float[] mesh, double dx,double min, double max, Ax ax)
+        {
+            var flats = new List<Flat3d_GL>();
+            for (double i = min; i < max; i+=dx)
+            {
+                if (ax == Ax.Y) flats.Add(new Flat3d_GL(0, 1, 0, -i));
+                if (ax == Ax.X) flats.Add(new Flat3d_GL(1, 0, 0, -i));
+            }
+            var ps = GL1.cross_flat_gpu_mesh(mesh, flats.ToArray());
+            var ps_rec = new List<Point3d_GL[]>();
             for (int i = 0; i < ps.Length; i++)
             {
                 if (ps[i] != null)
                 {
-                    if (ps[i].Length>0)
+                    if (ps[i].Length > 0)
                     {
-                        GL1.addLineMesh(ps[i], 1f);
-                        //GL1.addPointMesh(ps[i], 1f);
+                        if (ax == Ax.Y) ps_rec.Add(SurfaceReconstraction.reconstruct(ps[i], Ax.X, Ax.Z, Ax.Y, 1));
+                        if (ax == Ax.X) ps_rec.Add(SurfaceReconstraction.reconstruct(ps[i], Ax.Y, Ax.Z, Ax.X, 1));
                     }
-                }               
+                }
             }
-            GL1.SortObj();
+            return ps_rec.ToArray();
+        }
+
+        Point3d_GL[][] cross_obj_flats_ax(float[] mesh, double dx, double min, double max, Ax ax)
+        {
+            var flats = new List<Flat3d_GL>();
+            for (double i = min; i < max; i += dx)
+            {
+                if (ax == Ax.Y) flats.Add(new Flat3d_GL(0, 1, 0, -i));
+                if (ax == Ax.X) flats.Add(new Flat3d_GL(1, 0, 0, -i));
+            }
+            var ps = GL1.cross_flat_gpu_mesh(mesh, flats.ToArray());
+
+
+
+            var ps_rec = new List<Point3d_GL[]>();
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if (ps[i] != null)
+                {
+                    if (ps[i].Length > 0)
+                    {
+
+                        ps[i] = Point3d_GL.order_points(ps[i]);
+                        ps_rec.Add(Regression.regress3DLine_ax(ps[i]));
+                    }
+                }
+            }
+
+            GL1.addLinesMeshTraj(ps, 1);
+            GL1.addLinesMeshTraj(ps_rec.ToArray(), 0, 1);
+
+            return ps_rec.ToArray();
         }
 
         Mat toMat(Bitmap bitmap)

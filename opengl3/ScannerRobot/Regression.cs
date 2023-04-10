@@ -76,6 +76,47 @@ namespace opengl3
             }
             return ret.ToArray();
         }
+
+        static public Point3d_GL[] regress3DLine_ax(Point3d_GL[] points,  int grad = 2)
+        {
+            List<Point3d_GL> ret = new List<Point3d_GL>();
+            points = (from p in points
+                      orderby p.x
+                      select p).ToArray();
+            var xval = new double[points.Length][];
+            var yval = new double[points.Length][];
+            var zval = new double[points.Length][];
+            //var tval = new double[points.Length];
+            double t = 0;
+            var vec_main = new Vector3d_GL(points[0], points[points.Length-1]);
+            //Console.WriteLine("_________________");
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (i > 0)
+                {
+                    var alph = Vector3d_GL.cos( new Vector3d_GL(points[i-1], points[i]) , vec_main);
+                    var dist = (points[i] - points[i - 1]).magnitude();
+                    var dt1 = dist;//*alph
+                    t += dt1;
+                    
+                    //Console.WriteLine("t " + t +"; dt1 "+dt1+"; dist "+dist+"; alph " + alph);
+                }                
+                xval[i] = new double[] { t, points[i].x };
+                yval[i] = new double[] { t, points[i].y };
+                zval[i] = new double[] { t, points[i].z };                
+            }
+
+            var xkoef = regression(xval, grad);
+            var ykoef = regression(yval, grad);
+            var zkoef = regression(zval, grad);
+            var dt = t/points.Length;
+
+            for (double ti = 0; ti < t; ti += dt)
+            {
+                ret.Add(new Point3d_GL(calcPolynSolv(xkoef, ti), calcPolynSolv(ykoef, ti), calcPolynSolv(zkoef, ti)));
+            }
+            return ret.ToArray();
+        }
         static public PointF[] regressionPoints(Size size, double[][] values, int delim = 80, int grad = 2, int board = 10)
         {
             var points = new List<PointF>();
@@ -129,7 +170,29 @@ namespace opengl3
 
             return im.Mat;
         }
+        static public Mat paintRegression(double[][] values_x, double[][] values_y, double[][] values_z)
+        {
+            var im = new Image<Bgr, Byte>(1000,1000);
 
+            for (int i = 1; i < values_x.Length; i++)
+            {
+                
+                var x = (uint)values_x[i][0]; if (x > 999) x = 999;
+                var y = (uint)values_x[i][1]; if (y > 999) y = 999;
+                im.Data[y, x, 0] = 255;
+
+                x = (uint)values_y[i][0]; if (x > 999) x = 999;
+                y = (uint)values_y[i][1]; if (y > 999) y = 999;
+                im.Data[y, x, 1] = 255;
+
+                x = (uint)values_z[i][0]; if (x > 999) x = 999;
+                y = (uint)values_z[i][1]; if (y > 999) y = 999;
+                im.Data[y, x, 2] = 255;
+
+            }
+
+            return im.Mat;
+        }
 
         static public double calcPolynSolv(double[] k, double x)
         {

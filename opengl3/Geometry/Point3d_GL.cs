@@ -425,6 +425,74 @@ namespace opengl3
             return Math.Round(x, 4).ToString() + " " + Math.Round(y, 4).ToString() + " " + Math.Round(z, 4).ToString();
         }
 
+        public static Point3d_GL[] order_points(Point3d_GL[] ps)
+        {
+            ps = (from p in ps
+                      orderby p.z
+                      select p).ToArray();
+
+            
+            var ps_or = new List<Point3d_GL>();
+            ps_or.Add(ps[0]);
+            ps = remove_element(ps, 0);
+
+            for (int j = 0; j < ps_or.Count && ps.Length > 0; j++)
+            {
+                int i_min = 0;
+                double min = double.MaxValue;
+                for (int i = 0; i < ps.Length; i++)
+                {
+
+                    var d = (ps_or[j] - ps[i]).magnitude();
+                    if (d < min)
+                    {
+                        min = d;
+                        i_min = i;
+                    }
+                }                   
+                ps_or.Add(ps[i_min]);
+                ps = remove_element(ps, i_min);
+                //Console.WriteLine(ps.Length);
+            }
+
+            return ps_or.ToArray();
+        }
+
+        public static Point3d_GL[] remove_element(Point3d_GL[] ps,int ind)
+        {
+            var ps_l = new List<Point3d_GL>();
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if(i!=ind) ps_l.Add(ps[i]);
+            }
+
+            return ps_l.ToArray();
+        }
+
+        /*
+                def find_contour(self, ps:"list[Point3D]")->"list[Point3D]":
+                if len(ps)==0:
+                    return []
+                cont= [ps[0]]
+                ps_cut = self.remove_element(ps,0)
+                while(len(ps_cut)>0):
+                    min_d = 1000000000000
+                    min_ind = 0
+                    for j in range(len(ps_cut)) :
+                        dist = (cont[-1]-ps_cut[j]).magnitude()
+                        if dist<min_d:
+                            min_d = dist
+                            min_ind = j
+                    #print(min_ind)
+                    cont.append(ps_cut[min_ind])
+                    ps_cut = self.remove_element(ps_cut, min_ind)
+                return cont
+
+            def remove_element(self, list_in:list, ind:int) :
+                list_r = list_in.copy()
+                del list_r[ind]
+                return list_r
+                    */
 
     }
 

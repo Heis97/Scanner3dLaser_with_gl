@@ -630,6 +630,24 @@ namespace opengl3
         {
             drawPoints(im, PointF.toPoint(points), r, g, b, size, text);
         }
+        static public Mat draw_point_data(Mat im, double[][] data, int r, int g, int b, int size = 1, bool text = false)
+        {
+            return drawPoints(im, PointF.toPoint(data_to_pf(data)), r, g, b, size, text);
+        }
+        static public Mat draw_line_data(Mat im, double[][] data, int r, int g, int b, int size = 1, bool text = false)
+        {
+            return drawLines(im, PointF.toPoint(data_to_pf(data)), r, g, b, size);
+        }
+        static public PointF[] data_to_pf(double[][] data)
+        {
+            var pf = new PointF[data.Length];
+            for (int i = 0; i < data.Length; i++)
+            {
+                pf[i] = new PointF(data[i][0], data[i][1]);
+            }
+            return pf;
+        }
+
         static public Mat drawPointsF(Mat im, PointF[] points, int r, int g, int b, int size = 0, bool text = false)
         {
             return drawPoints(im, PointF.toPoint(points), r, g, b, size,text);
@@ -657,6 +675,8 @@ namespace opengl3
             }
             return im;
         }
+
+
         static public void drawPoints(Mat im, PointF[] points, int r, int g, int b, int size = 1)
         {
             drawPoints(im, PointF.toPoint(points), r, g, b, size);
