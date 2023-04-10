@@ -429,8 +429,8 @@ namespace opengl3
             if (add_count < 5) return null;
             
             ps = ps_list.ToArray();
-            if(connect) ps = connectPoints(ps);
-            ps = medianFilter(ps,5,5);
+           // if(connect) ps = connectPoints(ps);
+           // ps = medianFilter(ps,5,5);
 
             GC.Collect();
             if (rotate)
@@ -570,7 +570,7 @@ namespace opengl3
 
             var clasters = new List<List<PointF>>();
 
-            var err = 0.7*(x_max-x_min)/(clast-1);
+            var err = 0.3*(x_max-x_min)/(clast-1);
 
 
             for (int i = 0; i < inp.Length; i++)
@@ -650,11 +650,55 @@ namespace opengl3
 
         static public PointF[]  x_max_claster(PointF[] ps,int clast_count)
         {
-            var paral = parall_Points(ps);
+            var paral = parall_Points(filtr_y0_Points(ps));
             var ps_max = claster_Points(paral, clast_count);
             return same_y_Points(ps, ps_max);
         }
 
+        static public PointF[] filtr_y0_Points(PointF[] ps)
+        {
+            var ps_f = new List<PointF>();
+
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if(ps[i].Y!=0)
+                {
+                    ps_f.Add(ps[i]);
+                }
+            }
+            return ps_f.ToArray();
+        }
+
+        static public PointF[][] max_claster_im(PointF[][] ps, int clast_count)
+        {
+            var dxs = new double[ps.Length];
+            for (int i=0; i<ps.Length;i++)
+            {
+                var ps1 = filtr_y0_Points(ps[i]);
+                var paral = parall_Points(ps1);
+                var ps_or = (from p in paral
+                                      orderby p.X
+                                      select p).ToArray();
+                dxs[i] = Math.Abs(ps_or[0].X - ps_or[ps_or.Length - 1].X);
+
+            }
+
+            var dx_or = dxs[(int)(ps.Length / 2)];
+            var ps_cl = new List<PointF[]>();
+            for (int i = 0; i < ps.Length; i++)
+            {
+                //Console.WriteLine(dxs[i] + " " + dx_or);
+                if(dxs[i] > dx_or*0.8)
+                {
+                    var ps_cl_o = x_max_claster(ps[i], clast_count);
+                    ps_cl.Add(ps_cl_o);
+                }
+                
+
+            }
+
+            return ps_cl.ToArray();
+        }
 
 
         static float centerOfMass(int[,] col)

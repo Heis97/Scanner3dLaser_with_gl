@@ -16,7 +16,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Accord.Statistics.Models.Regression;
-
 using Accord.Statistics.Models.Regression.Linear;
 using Accord.Math;
 using Accord.Math.Optimization.Losses;
@@ -491,8 +490,15 @@ namespace opengl3
         void load_calib_sing(string scan_path, int strip = 1, double smooth = 0.8)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            loadVideo_sing_cam(scan_path_1, scanner, strip);
+            var orig = loadVideo_sing_cam(scan_path_1, scanner, strip);
 
+            var ps = scanner.calibrate_pos_from_parall_part(0, 0);
+
+            foreach(var p in ps)
+            {
+                UtilOpenCV.drawPointsF(orig, p, 255, 255, 0);
+            }
+            CvInvoke.Imshow("clast", orig);
             /*mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
 
             var scan_stl = Polygon3d_GL.toMesh(mesh);
@@ -1336,36 +1342,39 @@ namespace opengl3
                     var mat = fr.im.Clone();
                     var ps = Detection.detectLineDiff(mat,7);
 
-                    var ps_t = new List<PointF>();
-                    for(int i=0; i<500;i++)
-                    {
-                        var p = new PointF(500 + i * 0.1, i);
-                        if (i>100 && i < 300)
-                        {
-                            if (i > 130 && i < 270)
-                            {
-                                if (i > 160 && i < 230)
-                                {
-                                    p.X -= 60;
-                                }
-                                p.X -= 60;
-                            }
-                            p.X -= 60;
-                        }
-                        else
-                        {
-                            p.X -= 200;
-                        }
-                        ps_t.Add(p);
+                    /* var ps_t = new List<PointF>();
+                     for(int i=0; i<500;i++)
+                     {
+                         var p = new PointF(500 + i * 0.1, i);
+                         if (i>100 && i < 300)
+                         {
+                             if (i > 130 && i < 270)
+                             {
+                                 if (i > 160 && i < 230)
+                                 {
+                                     p.X -= 60;
+                                 }
+                                 p.X -= 60;
+                             }
+                             p.X -= 60;
+                         }
+                         else
+                         {
+                             p.X -= 200;
+                         }
+                         ps_t.Add(p);
 
-                    }
+                     }
 
-                    
 
-                    var ps_xy = Detection.x_max_claster(ps, 4);
-                    UtilOpenCV.drawPointsF(mat, ps_xy, 255, 255, 0, 2);
+                     */
+                   // prin.t(ps);
+                    //Console.WriteLine("___________");
+                    var ps_xy = Detection.x_max_claster(ps, 2);
+                   // prin.t(ps_xy);
 
                     UtilOpenCV.drawPointsF(mat, ps, 0, 255, 0,2);
+                    UtilOpenCV.drawPointsF(mat, ps_xy, 255, 255, 0, 2);
                     //imBox_base.Image = im2;
                     imageBox2.Image = fr.im;
                     imageBox1.Image = mat;
@@ -3168,10 +3177,15 @@ namespace opengl3
             Console.WriteLine("Points computed.");
         }
 
-        public void loadVideo_sing_cam(string filepath, Scanner scanner = null, int strip = 1)
+        public Mat loadVideo_sing_cam(string filepath, Scanner scanner = null, int strip = 1)
         {
             videoframe_count = 0;
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
+            //var mat_or_tr = new Mat();
+            //CvInvoke.AdaptiveThreshold(orig1, mat_or_tr,  255, ThresholdType.);
+
+            //CvInvoke.Imshow("thr", mat_or_tr);
+
             Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
             //var capture1 = new VideoCapture(Directory.GetFiles("cam1\\" + filepath)[0]);
             var files = Directory.GetFiles("cam1\\" + filepath);
@@ -3240,6 +3254,7 @@ namespace opengl3
 
             //scanner.compPointsSingLas_2d();
             Console.WriteLine("Points computed.");
+            return orig1;
         }
         #endregion
 

@@ -170,15 +170,17 @@ namespace opengl3
             return Point3d_GL.multMatr(pointCloud.points3d_lines.ToArray(), cameraCV.matrixSC);
         }
 
-        public void calibrate_pos_from_parall_part(int layers,double deltz)
+        public PointF[][] calibrate_pos_from_parall_part(int layers,double deltz)
         {
             if(cameraCV.scan_points!=null)
             {
                 if (cameraCV.scan_points.Count != 0)
                 {
+                    return Detection.max_claster_im(cameraCV.scan_points.ToArray(), 4);
 
                 }
             }
+            return null;
         }
 
 
