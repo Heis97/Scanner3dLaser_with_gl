@@ -1,3 +1,3 @@
-# opengl3
+# Scanner
 Software for work with cameras and scanner
 </p>
