@@ -983,16 +983,24 @@ namespace opengl3
             //cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 10);
 
             var ps = new List<Point3d_GL>();
-            for (double i=-10; i < 10; i+=1)
+            /*for (double i=-10; i < 10; i+=1)
             {
                 if(Math.Abs(i)>4)
                 {
                     ps.Add(new Point3d_GL(i,0, 0.1 * i * i));
                 }
                 
-            }
+            }*/
+            for (double i = -Math.PI; i < Math.PI; i += Math.PI/6)
+            {
+                var r = 10d;
+                if (Math.Abs(i) > Math.PI / 5)
+                {
+                    ps.Add(new Point3d_GL(Math.Cos(i)*r, 0, Math.Sin(i)*r));
+                }
 
-            var ps_re =  Regression.spline3DLine(ps.ToArray(),ps.Count-1);
+            }
+            var ps_re =  Regression.spline3DLine(ps.ToArray(),2);
             GL1.addLineMeshTraj(ps.ToArray(), 1);
             GL1.addLineMeshTraj(ps_re, 0,1);
         }

@@ -9,6 +9,7 @@ using Accord.Statistics.Models.Regression.Linear;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Accord.MachineLearning.VectorMachines.Learning;
+using PathPlanning;
 
 namespace opengl3
 {
@@ -222,12 +223,12 @@ namespace opengl3
             koef.Reverse();
             return koef.ToArray();
         }
-        static public CubicSpline spline(double[][] data,int grad)
+        static public CubicSpline spline(double[][] data)
         {
             double[] inputs = data.GetColumn(0);
             double[] outputs = data.GetColumn(1);
             var spline = new CubicSpline();
-            spline.BuildSpline(inputs, outputs, grad);
+            spline.BuildSpline(inputs, outputs, inputs.Length);
             return spline;
         }
         static public double[] regression_div(double[] inputs, double[] outputs, int degree)
@@ -246,12 +247,14 @@ namespace opengl3
             return koef.ToArray();
         }
 
-        static public Point3d_GL[] spline3DLine(Point3d_GL[] points,int grad = 2)
+        static public Point3d_GL[] spline3DLine(Point3d_GL[] points,double d)
         {
             List<Point3d_GL> ret = new List<Point3d_GL>();
-            points = (from p in points
+            //points = Point3d_GL.order_points(points);
+            points = PathPlanner.filter_traj(points.ToList(), d).ToArray();
+           /* points = (from p in points
                       orderby p.x
-                      select p).ToArray();
+                      select p).ToArray();*/
             var xval = new double[points.Length][];
             var yval = new double[points.Length][];
             var zval = new double[points.Length][];
@@ -275,9 +278,9 @@ namespace opengl3
                 zval[i] = new double[] { t, points[i].z };
             }
 
-            var xkoef = spline(xval, grad);
-            var ykoef = spline(yval, grad);
-            var zkoef = spline(zval, grad);
+            var xkoef = spline(xval);
+            var ykoef = spline(yval);
+            var zkoef = spline(zval);
             var dt = t / points.Length;
 
             for (double ti = 0; ti < t; ti += dt/10)
