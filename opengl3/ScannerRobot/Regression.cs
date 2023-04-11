@@ -8,6 +8,7 @@ using Accord.Math;
 using Accord.Statistics.Models.Regression.Linear;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Accord.MachineLearning.VectorMachines.Learning;
 
 namespace opengl3
 {
@@ -221,7 +222,14 @@ namespace opengl3
             koef.Reverse();
             return koef.ToArray();
         }
-
+        static public CubicSpline spline(double[][] data,int grad)
+        {
+            double[] inputs = data.GetColumn(0);
+            double[] outputs = data.GetColumn(1);
+            var spline = new CubicSpline();
+            spline.BuildSpline(inputs, outputs, grad);
+            return spline;
+        }
         static public double[] regression_div(double[] inputs, double[] outputs, int degree)
         {
             var ls = new PolynomialLeastSquares()
@@ -237,5 +245,48 @@ namespace opengl3
             koef.Reverse();
             return koef.ToArray();
         }
+
+        static public Point3d_GL[] spline3DLine(Point3d_GL[] points,int grad = 2)
+        {
+            List<Point3d_GL> ret = new List<Point3d_GL>();
+            points = (from p in points
+                      orderby p.x
+                      select p).ToArray();
+            var xval = new double[points.Length][];
+            var yval = new double[points.Length][];
+            var zval = new double[points.Length][];
+            //var tval = new double[points.Length];
+            double t = 0;
+            var vec_main = new Vector3d_GL(points[0], points[points.Length - 1]);
+            //Console.WriteLine("_________________");
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (i > 0)
+                {
+                    var alph = Vector3d_GL.cos(new Vector3d_GL(points[i - 1], points[i]), vec_main);
+                    var dist = (points[i] - points[i - 1]).magnitude();
+                    var dt1 = dist;//*alph
+                    t += dt1;
+
+                    //Console.WriteLine("t " + t +"; dt1 "+dt1+"; dist "+dist+"; alph " + alph);
+                }
+                xval[i] = new double[] { t, points[i].x };
+                yval[i] = new double[] { t, points[i].y };
+                zval[i] = new double[] { t, points[i].z };
+            }
+
+            var xkoef = spline(xval, grad);
+            var ykoef = spline(yval, grad);
+            var zkoef = spline(zval, grad);
+            var dt = t / points.Length;
+
+            for (double ti = 0; ti < t; ti += dt/10)
+            {
+                ret.Add(new Point3d_GL(xkoef.Interpolate( ti), ykoef.Interpolate(ti),zkoef.Interpolate(ti)));
+            }
+            return ret.ToArray();
+        }
+
+
     }
 }

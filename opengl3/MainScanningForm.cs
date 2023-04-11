@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Accord.Statistics.Models.Regression;
 using Accord.Statistics.Models.Regression.Linear;
+
 using Accord.Math;
 using Accord.Math.Optimization.Losses;
 using System.Threading;
@@ -215,6 +216,16 @@ namespace opengl3
                  new string[] { path_d + @"cam1\las_cal_0707_1\orig" },
                  path_d + @"cam1\las_cal_0707_1", path_d + @"cam1\las_cal_0707_1\orig",
                  new float[] { 0.5f, 0.5f, 0.1f }, true);*/
+
+
+            /*var scan_path = @"C:\Users\ASUS PC\source\repos\Heis97\opengl3\opengl3\bin\x86\Debug\cam1\las_cal_1004_1";
+            var cam1_conf_path = @"C:\Users\ASUS PC\source\repos\Heis97\opengl3\opengl3\bin\x86\Debug\cam1_conf_0508_1.txt";
+
+            int strip = 10;
+            double smooth = Convert.ToDouble(tp_smooth_scan.Text);
+
+            loadScanner_sing(cam1_conf_path);
+            load_calib_sing(scan_path, strip, smooth);*/
         }
 
         void loadStereo()
@@ -494,11 +505,15 @@ namespace opengl3
 
             var ps = scanner.calibrate_pos_from_parall_part(0, 0);
 
-            foreach(var p in ps)
+            if(ps!=null)
             {
-                UtilOpenCV.drawPointsF(orig, p, 255, 255, 0);
+                foreach (var p in ps)
+                {
+                    UtilOpenCV.drawPointsF(orig, p, 255, 255, 0);
+                }
+                CvInvoke.Imshow("clast", orig);
             }
-            CvInvoke.Imshow("clast", orig);
+           
             /*mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
 
             var scan_stl = Polygon3d_GL.toMesh(mesh);
@@ -965,10 +980,10 @@ namespace opengl3
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
-            cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 10);
+            //cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 10);
 
-           /* var ps = new List<Point3d_GL>();
-            for (double i=-10; i < 10; i+=0.1)
+            var ps = new List<Point3d_GL>();
+            for (double i=-10; i < 10; i+=1)
             {
                 if(Math.Abs(i)>4)
                 {
@@ -977,9 +992,9 @@ namespace opengl3
                 
             }
 
-            var ps_re =  Regression.regress3DLine_ax(ps.ToArray());
-            GL1.addLineMeshTraj(Point3d_GL.order_points(ps.ToArray()), 1);
-            GL1.addLineMeshTraj(ps_re, 0,1);*/
+            var ps_re =  Regression.spline3DLine(ps.ToArray(),ps.Count-1);
+            GL1.addLineMeshTraj(ps.ToArray(), 1);
+            GL1.addLineMeshTraj(ps_re, 0,1);
         }
 
         void cross_obj_flats(float[] mesh,double dx)
@@ -1370,10 +1385,13 @@ namespace opengl3
                      */
                    // prin.t(ps);
                     //Console.WriteLine("___________");
+
                     var ps_xy = Detection.x_max_claster(ps, 2);
+
                    // prin.t(ps_xy);
 
                     UtilOpenCV.drawPointsF(mat, ps, 0, 255, 0,2);
+
                     UtilOpenCV.drawPointsF(mat, ps_xy, 255, 255, 0, 2);
                     //imBox_base.Image = im2;
                     imageBox2.Image = fr.im;
@@ -3177,7 +3195,7 @@ namespace opengl3
             Console.WriteLine("Points computed.");
         }
 
-        public Mat loadVideo_sing_cam(string filepath, Scanner scanner = null, int strip = 1)
+        public Mat loadVideo_sing_cam(string filepath, Scanner scanner = null, int strip = 1,bool calib = false)
         {
             videoframe_count = 0;
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
@@ -3243,7 +3261,7 @@ namespace opengl3
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                         //CvInvoke.Imshow("im2", im2);
 
-                        scanner.addPointsSingLas_2d(im1, false);
+                        scanner.addPointsSingLas_2d(im1, false,calib);//calib = orig
 
                     }
                 }

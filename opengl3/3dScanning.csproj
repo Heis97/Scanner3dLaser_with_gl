@@ -160,6 +160,8 @@
     <Compile Include="Camera\StereoCameraCV.cs" />
     <Compile Include="Graphic\STLmodel.cs" />
     <Compile Include="Graphic\TransRotZoom.cs" />
+    <Compile Include="Surface\CubicSpline.cs" />
+    <Compile Include="Surface\Polar2d.cs" />
     <Compile Include="Surface\SurfaceReconstraction.cs" />
     <Compile Include="Util\FormSettings.cs" />
     <Compile Include="Util\Model3D.cs" />

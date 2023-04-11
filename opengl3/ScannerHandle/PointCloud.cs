@@ -117,13 +117,16 @@ namespace opengl3
             return true;
         }
 
-        public bool addPoints2dSingLas(Mat mat, CameraCV cameraCV, bool undist)
+        public bool addPoints2dSingLas(Mat mat, CameraCV cameraCV, bool undist,bool orig = false)
         {
             if (undist)
             {
                 mat = cameraCV.undist(mat);
             }
-            var points_im = Detection.detectLineDiff(mat, 7);
+            PointF[] points_im;
+            if (orig) points_im = Detection.detectLineDiff(mat, 7,0.05f,false,true,true);
+            else points_im = Detection.detectLineDiff(mat, 7);
+          
             if (points_im != null)
             {
                 cameraCV.scan_points.Add(points_im);

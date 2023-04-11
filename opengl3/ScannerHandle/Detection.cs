@@ -343,7 +343,10 @@ namespace opengl3
             return ps;
         }
 
-        public static PointF[] detectLineDiff(Mat _mat, int wind = 5, float board = 0.05f, bool reverse = false,bool rotate = true,bool connect = true)
+        public static PointF[] detectLineDiff(Mat _mat,
+            int wind = 5, float board = 0.05f,
+            bool reverse = false, bool rotate = true,
+            bool orig = false)
         {
             var mat = _mat.Clone();
 
@@ -370,26 +373,56 @@ namespace opengl3
             var ps_arr_j = new PointF[data.GetLength(0)];
             for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();
             int add_count = 0;
+
+           
+
+
+
             for (int i = (int)(board * data.GetLength(1)); i < data.GetLength(1) - (int)(board * data.GetLength(1)); i++)
+            //for (int i = start; i < stop; i+=di)
             {
                 bool p_add = false;
                 var br_max = int.MinValue;
                 int j_max = 0;
-                
-                for (int j = 0; j < data.GetLength(0); j++)
+
+                bool reverse_direct = false;
+
+                if (reverse_direct)
                 {
-                    int br_cur = (int)data[j, i];
-                    /*for(int i_w =0; i_w<wind-1; i_w++)
+                    for (int j = data.GetLength(0)-1; j >= 0; j--)
                     {
-                        br_cur += (int)data[j + i_w, i ];
-                    }*/
-                    if (br_cur > br_max)
-                    {
-                        br_max = br_cur;
-                        j_max = j;
+                        int br_cur = (int)data[j, i];
+                        /*for(int i_w =0; i_w<wind-1; i_w++)
+                        {
+                            br_cur += (int)data[j + i_w, i ];
+                        }*/
+                        if (br_cur > br_max)
+                        {
+                            br_max = br_cur;
+                            j_max = j;
+                        }
+                        ps_arr_j[j] = new PointF(j, br_cur);
                     }
-                    ps_arr_j[j] = new PointF(j, br_cur);
+
                 }
+                else
+                {
+                    for (int j = 0; j < data.GetLength(0); j++)
+                    {
+                        int br_cur = (int)data[j, i];
+                        /*for(int i_w =0; i_w<wind-1; i_w++)
+                        {
+                            br_cur += (int)data[j + i_w, i ];
+                        }*/
+                        if (br_cur > br_max)
+                        {
+                            br_max = br_cur;
+                            j_max = j;
+                        }
+                        ps_arr_j[j] = new PointF(j, br_cur);
+                    }
+                }
+               
 
                 var ps_list_j = ps_arr_j.ToList();
                 
@@ -404,10 +437,16 @@ namespace opengl3
                     
                 }
 
+                /*for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
+                {
+                    vals_regr.Add(new double[] { data[k1, i],k1 });
+                }*/
+
                 var koef = Regression.regression(vals_regr.ToArray(), 2);
                 var a = koef[2];
                 var b = koef[1];
                 var j_max_2 = (-b / (2 * a));
+                j_max_2 = j_max;
                 if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
                 {
                     if (data[(int)j_max_2, i] > 10)
@@ -429,10 +468,15 @@ namespace opengl3
             if (add_count < 5) return null;
             
             ps = ps_list.ToArray();
-           // if(connect) ps = connectPoints(ps);
-           // ps = medianFilter(ps,5,5);
+            if(!orig)
+            {
+                ps = connectPoints(ps);
+                ps = medianFilter(ps, 5, 5);
+            }
+           
 
             GC.Collect();
+            //CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255, 255));
             if (rotate)
             {
                 if (reverse)
@@ -449,8 +493,80 @@ namespace opengl3
                 //ps = (PointF[])ps.Reverse();
             }
             
-            //CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(_mat, ps, 255, 0, 0));
+           // CvInvoke.Imshow("ds_rot", UtilOpenCV.drawPointsF(_mat, ps, 0, 255, 0));
             return ps; 
+        }
+
+        public static PointF[] detectLineDiff_X(Mat _mat,
+           int wind = 5, float board = 0.05f,
+           bool reverse = false, bool rotate = true,
+           bool orig = false)
+        {
+            var mat = _mat.Clone();
+            var ps_list = new List<PointF>();
+
+            CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
+            CvInvoke.GaussianBlur(mat, mat, new Size(5, 5), -1);
+
+            var data = (byte[,])mat.GetData();
+            var ps_arr_j = new PointF[data.GetLength(0)];
+            for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();
+            int add_count = 0;
+  
+            for (int j = data.GetLength(0)-1; j >= 0; j--)
+            {
+                bool p_add = false;
+                var br_max = int.MinValue;
+                int i_max = 0;
+                var board_i = (int)(board * data.GetLength(1));
+                for (int i = wind; i < data.GetLength(1) - wind; i++)
+                {
+                    int br_cur = (int)data[j, i];
+
+                    if (br_cur > br_max)
+                    {
+                        br_max = br_cur;
+                        i_max = i;
+                    }
+                   
+                }
+                var vals_regr = new List<double[]>();
+
+                for (int k1 = i_max-wind; k1 < i_max+wind; k1++)
+                {
+                    vals_regr.Add(new double[] { k1, data[j, k1] });
+                }
+
+                 var koef = Regression.regression(vals_regr.ToArray(), 2);
+                 var a = koef[2];
+                 var b = koef[1];
+                var i_max_2 = (-b / (2 * a));
+                if (i_max_2 > 0 && i_max_2 < data.GetLength(1))
+                {
+                    if (data[j,(int)i_max_2] > 10)
+                    {
+                        ps_list.Add(new PointF(i_max_2, j));
+                        p_add = true;
+                        add_count++;
+                    }
+                }
+
+                if (!p_add)
+                {
+                    ps_list.Add(PointF.notExistP());
+                }
+            }
+            if (add_count < 5) return null;
+
+            var ps = ps_list.ToArray();
+           /* if (!orig)
+            {
+                ps = connectPoints(ps);
+                ps = medianFilter(ps, 5, 5);
+            }*/
+            GC.Collect();
+           
+            return ps;
         }
 
         static PointF[] rotatePointsClockwise(PointF[] ps,Size size)
@@ -460,6 +576,7 @@ namespace opengl3
             {
                 //ps_rot[i] = new PointF(size.Width - ps[i].Y,size.Height- ps[i].X);
                 ps_rot[i] = new PointF(size.Width - ps[i].Y,  ps[i].X);
+                //ps_rot[i] = new PointF( ps[i].Y, ps[i].X);
             }
             return ps_rot;
         }
@@ -469,7 +586,8 @@ namespace opengl3
             var ps_rot = new PointF[ps.Length];
             for (int i = 0; i < ps_rot.Length; i++)
             {
-                ps_rot[i] = new PointF( ps[i].Y, size.Height - ps[i].X);
+               // ps_rot[i] = new PointF( ps[i].Y,  ps[i].X);
+                ps_rot[i] = new PointF(ps[i].Y, size.Height - ps[i].X);
             }
             return ps_rot;
         }
@@ -526,7 +644,7 @@ namespace opengl3
                 {
                     y = inp[i].Y;
                 }
-                ret[i] = new PointF(i, y);
+                ret[i] = new PointF(inp[0].X+i, y);
             }
             return ret;
         }
@@ -650,6 +768,7 @@ namespace opengl3
 
         static public PointF[]  x_max_claster(PointF[] ps,int clast_count)
         {
+            if (ps == null) return null;
             var paral = parall_Points(filtr_y0_Points(ps));
             var ps_max = claster_Points(paral, clast_count);
             return same_y_Points(ps, ps_max);
@@ -658,7 +777,7 @@ namespace opengl3
         static public PointF[] filtr_y0_Points(PointF[] ps)
         {
             var ps_f = new List<PointF>();
-
+            if (ps == null) return null;
             for (int i = 0; i < ps.Length; i++)
             {
                 if(ps[i].Y!=0)
@@ -674,12 +793,16 @@ namespace opengl3
             var dxs = new double[ps.Length];
             for (int i=0; i<ps.Length;i++)
             {
-                var ps1 = filtr_y0_Points(ps[i]);
-                var paral = parall_Points(ps1);
-                var ps_or = (from p in paral
-                                      orderby p.X
-                                      select p).ToArray();
-                dxs[i] = Math.Abs(ps_or[0].X - ps_or[ps_or.Length - 1].X);
+                if (ps[i]!=null)
+                {
+                    var ps1 = filtr_y0_Points(ps[i]);
+                    var paral = parall_Points(ps1);
+                    var ps_or = (from p in paral
+                                 orderby p.X
+                                 select p).ToArray();
+                    dxs[i] = Math.Abs(ps_or[0].X - ps_or[ps_or.Length - 1].X);
+
+                }
 
             }
 
@@ -691,12 +814,12 @@ namespace opengl3
                 if(dxs[i] > dx_or*0.8)
                 {
                     var ps_cl_o = x_max_claster(ps[i], clast_count);
-                    ps_cl.Add(ps_cl_o);
-                }
-                
-
+                    if(ps_cl_o!=null)
+                    {
+                        ps_cl.Add(ps_cl_o);
+                    }                   
+                }               
             }
-
             return ps_cl.ToArray();
         }
 

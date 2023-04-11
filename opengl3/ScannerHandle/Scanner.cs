@@ -75,9 +75,9 @@ namespace opengl3
             pointCloud.addPoints2dStereoLas(mats, stereoCamera, undist);
         }
 
-        public void addPointsSingLas_2d(Mat mat, bool undist = true)
+        public void addPointsSingLas_2d(Mat mat, bool undist = true, bool orig =false)
         {
-            pointCloud.addPoints2dSingLas(mat, cameraCV, undist);
+            pointCloud.addPoints2dSingLas(mat, cameraCV, undist,orig);
         }
 
         public void compPointsStereoLas_2d()
