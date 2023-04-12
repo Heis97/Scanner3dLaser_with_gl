@@ -18,6 +18,7 @@ namespace opengl3
         // n - количество узлов сетки
         public void BuildSpline(double[] x, double[] y, int n)
         {
+            if (n < 2) return;
             // Инициализация массива сплайнов
             splines = new SplineTuple[n];
             for (int i = 0; i < n; ++i)
@@ -65,7 +66,7 @@ namespace opengl3
         {
             if (splines == null)
             {
-                return double.NaN; // Если сплайны ещё не построены - возвращаем NaN
+                return 0; // Если сплайны ещё не построены - возвращаем NaN
             }
 
             int n = splines.Length;

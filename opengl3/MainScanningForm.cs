@@ -134,6 +134,10 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
+            
+        }
+        void python_c_sh()
+        {
             var eng = IronPython.Hosting.Python.CreateEngine();
             var scope = eng.CreateScope();
             eng.Execute(@"def greetings(name): return 'Hello ' + name.title() + '!'", scope);
@@ -980,7 +984,7 @@ namespace opengl3
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
-            //cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 10);
+            cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 1);
 
             var ps = new List<Point3d_GL>();
             /*for (double i=-10; i < 10; i+=1)
@@ -991,7 +995,7 @@ namespace opengl3
                 }
                 
             }*/
-            for (double i = -Math.PI; i < Math.PI; i += Math.PI/6)
+           /* for (double i = -Math.PI; i < Math.PI; i += Math.PI/6)
             {
                 var r = 10d;
                 if (Math.Abs(i) > Math.PI / 5)
@@ -1002,7 +1006,7 @@ namespace opengl3
             }
             var ps_re =  Regression.spline3DLine(ps.ToArray(),2);
             GL1.addLineMeshTraj(ps.ToArray(), 1);
-            GL1.addLineMeshTraj(ps_re, 0,1);
+            GL1.addLineMeshTraj(ps_re, 0,1);*/
         }
 
         void cross_obj_flats(float[] mesh,double dx)
@@ -1022,8 +1026,8 @@ namespace opengl3
             }
             //var ps_x = cross_obj_flats_ax(mesh, dx, p_min.x, p_max.x, Ax.X);
             var ps_y = cross_obj_flats_ax(mesh, dx, p_min.y, p_max.y, Ax.Y);
-            //GL1.addLinesMeshTraj(ps_x, 1);
-            //GL1.addLinesMeshTraj(ps_y, 0, 1);
+           // GL1.addLinesMeshTraj(ps_x, 1);
+            GL1.addLinesMeshTraj(ps_y, 0, 1);
 
             GL1.SortObj();
         }
@@ -1061,8 +1065,6 @@ namespace opengl3
             }
             var ps = GL1.cross_flat_gpu_mesh(mesh, flats.ToArray());
 
-
-
             var ps_rec = new List<Point3d_GL[]>();
             for (int i = 0; i < ps.Length; i++)
             {
@@ -1070,15 +1072,14 @@ namespace opengl3
                 {
                     if (ps[i].Length > 0)
                     {
-
                         ps[i] = Point3d_GL.order_points(ps[i]);
-                        ps_rec.Add(Regression.regress3DLine_ax(ps[i]));
+                        ps_rec.Add(Regression.spline3DLine(ps[i], dx));
                     }
                 }
             }
 
-            GL1.addLinesMeshTraj(ps, 1);
-            GL1.addLinesMeshTraj(ps_rec.ToArray(), 0, 1);
+            //GL1.addLinesMeshTraj(ps, 1);
+            //GL1.addLinesMeshTraj(ps_rec.ToArray(), 0, 1);
 
             return ps_rec.ToArray();
         }

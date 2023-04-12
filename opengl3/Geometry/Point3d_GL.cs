@@ -427,14 +427,16 @@ namespace opengl3
 
         public static Point3d_GL[] order_points(Point3d_GL[] ps)
         {
-            ps = (from p in ps
+            /*ps = (from p in ps
                       orderby p.z
-                      select p).ToArray();
+                      select p).ToArray();*/
+
+            var inds_rem = remote_element(ps);
 
             
             var ps_or = new List<Point3d_GL>();
-            ps_or.Add(ps[0]);
-            ps = remove_element(ps, 0);
+            ps_or.Add(ps[inds_rem[0]]);
+            ps = remove_element(ps, inds_rem[0]);
 
             for (int j = 0; j < ps_or.Count && ps.Length > 0; j++)
             {
@@ -457,7 +459,32 @@ namespace opengl3
 
             return ps_or.ToArray();
         }
-
+        public static int[] remote_element(Point3d_GL[] ps)
+        {
+            var max = double.MinValue;
+            var min = double.MaxValue;
+            int ind1 = 0;
+            int ind2 = 0;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                for (int j = i + 1; j < ps.Length; j++)
+                {
+                    var dist = (ps[i]- ps[j]).magnitude();
+                    if (dist > max)
+                    {
+                        max = dist;
+                        ind1 = i;
+                        ind2 = j;
+                    }
+                    if (dist < min)
+                    {
+                        min = dist;
+                        //  Console.WriteLine("min: "+min);
+                    }
+                }
+            }
+            return new int[] { ind1, ind2, (int)min };
+        }
         public static Point3d_GL[] remove_element(Point3d_GL[] ps,int ind)
         {
             var ps_l = new List<Point3d_GL>();

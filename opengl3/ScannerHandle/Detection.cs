@@ -18,6 +18,7 @@ namespace opengl3
         public static PointF[] detectLineSensor(Mat mat, int wind = 5)
         {
             var mat_data = mat.Clone();
+
             CvInvoke.CvtColor(mat_data, mat_data, ColorConversion.Bgr2Gray);
             CvInvoke.GaussianBlur(mat_data, mat_data, new Size(5,5), -1);
             var data = (byte[,])mat_data.GetData();
@@ -349,7 +350,7 @@ namespace opengl3
             bool orig = false)
         {
             var mat = _mat.Clone();
-
+            //var mat = _mat;
             if (rotate)
             {
                 if (reverse)
