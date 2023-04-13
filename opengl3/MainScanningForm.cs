@@ -984,32 +984,37 @@ namespace opengl3
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
-            cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 1);
+            cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 1,0.5);
 
+           // test_cross();
+        }
+
+        void test_cross()
+        {
             var ps = new List<Point3d_GL>();
-            /*for (double i=-10; i < 10; i+=1)
+            for (double i=-10; i < 10; i+=1)
             {
                 if(Math.Abs(i)>4)
                 {
                     ps.Add(new Point3d_GL(i,0, 0.1 * i * i));
                 }
                 
-            }*/
-           /* for (double i = -Math.PI; i < Math.PI; i += Math.PI/6)
-            {
-                var r = 10d;
-                if (Math.Abs(i) > Math.PI / 5)
-                {
-                    ps.Add(new Point3d_GL(Math.Cos(i)*r, 0, Math.Sin(i)*r));
-                }
-
             }
-            var ps_re =  Regression.spline3DLine(ps.ToArray(),2);
-            GL1.addLineMeshTraj(ps.ToArray(), 1);
-            GL1.addLineMeshTraj(ps_re, 0,1);*/
+             for (double i = -Math.PI; i < Math.PI; i += Math.PI/6)
+             {
+                 var r = 10d;
+                 if (Math.Abs(i) > Math.PI / 5)
+                 {
+                     ps.Add(new Point3d_GL(Math.Cos(i)*r, 0, Math.Sin(i)*r));
+                 }
+
+             }
+             var ps_re =  Regression.spline3DLine(ps.ToArray(),2);
+             GL1.addLineMeshTraj(ps.ToArray(), 1);
+             GL1.addLineMeshTraj(ps_re, 0,1);
         }
 
-        void cross_obj_flats(float[] mesh,double dx)
+        Point3d_GL[][] cross_obj_flats(float[] mesh,double dx, double ds,double fi = -1)
         {
             var p_min = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);
             var p_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue);
@@ -1025,11 +1030,14 @@ namespace opengl3
                 if (mesh[i + 2] < p_min.z) p_min.z = mesh[i + 2];
             }
             //var ps_x = cross_obj_flats_ax(mesh, dx, p_min.x, p_max.x, Ax.X);
-            var ps_y = cross_obj_flats_ax(mesh, dx, p_min.y, p_max.y, Ax.Y);
-           // GL1.addLinesMeshTraj(ps_x, 1);
-            GL1.addLinesMeshTraj(ps_y, 0, 1);
-
-            GL1.SortObj();
+            if (fi>0)
+            {
+                return cross_obj_flats_ax(mesh, dx, ds, p_min.y, p_max.y, Ax.Y,fi);
+            }
+            else
+            {
+                return cross_obj_flats_ax(mesh, dx, ds, p_min.y, p_max.y, Ax.Y);
+            }
         }
         Point3d_GL[][] cross_obj_flats_ax_2(float[] mesh, double dx,double min, double max, Ax ax)
         {
@@ -1055,13 +1063,15 @@ namespace opengl3
             return ps_rec.ToArray();
         }
 
-        Point3d_GL[][] cross_obj_flats_ax(float[] mesh, double dx, double min, double max, Ax ax)
+        Point3d_GL[][] cross_obj_flats_ax(float[] mesh, double dx, double ds, double min, double max, Ax ax,double fi = 0)
         {
             var flats = new List<Flat3d_GL>();
             for (double i = min; i < max; i += dx)
             {
-                if (ax == Ax.Y) flats.Add(new Flat3d_GL(0, 1, 0, -i));
-                if (ax == Ax.X) flats.Add(new Flat3d_GL(1, 0, 0, -i));
+                if (ax == Ax.Y) fi = Math.PI/2;
+                if (ax == Ax.X) fi = 0;
+
+                flats.Add(new Flat3d_GL(Math.Cos(fi), Math.Sin(fi), 0, -i));
             }
             var ps = GL1.cross_flat_gpu_mesh(mesh, flats.ToArray());
 
@@ -1073,7 +1083,7 @@ namespace opengl3
                     if (ps[i].Length > 0)
                     {
                         ps[i] = Point3d_GL.order_points(ps[i]);
-                        ps_rec.Add(Regression.spline3DLine(ps[i], dx));
+                        ps_rec.Add(Regression.spline3DLine(ps[i], ds));
                     }
                 }
             }
@@ -1082,6 +1092,43 @@ namespace opengl3
             //GL1.addLinesMeshTraj(ps_rec.ToArray(), 0, 1);
 
             return ps_rec.ToArray();
+        }
+
+        double cross_obj_flats_find_ang_z(float[] mesh, int num,int ds)
+        {
+            var flats = new List<Flat3d_GL>();
+            var dfi = 0.5*Math.PI / num;
+            for (int i=0;i<num;i++)
+            {
+                var fi = i * dfi;
+                flats.Add(new Flat3d_GL(Math.Cos(fi), Math.Sin(fi), 0, 0));
+                Console.WriteLine(fi);
+            }
+            var ps = GL1.cross_flat_gpu_mesh(mesh, flats.ToArray());
+
+            var i_max = 0d;
+            var cur_max = 0d;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if (ps[i] != null)
+                {
+                    if (ps[i].Length > 0)
+                    {
+                        Console.WriteLine("ps[i]1 " + ps[i].Length);
+                        ps[i] = Point3d_GL.order_points(ps[i]);
+                        Console.WriteLine("ps[i]2 " + ps[i].Length);
+                        var curve = Point3d_GL.calc_curve_cm(Regression.spline3DLine(ps[i], ds));
+                        Console.WriteLine(curve);
+                        if(curve >cur_max)
+                        {
+                            cur_max = curve;
+                            i_max = i;
+                        }
+                    }
+                }
+            }
+
+            return i_max * dfi;
         }
 
         Mat toMat(Bitmap bitmap)
@@ -3351,7 +3398,51 @@ namespace opengl3
                 
             }
         }
-        
+
+        void cut_area(RasterMap.type_out type_cut)
+        {
+            var cont = GL1.get_contour();
+            if (mesh != null && cont != null)
+            {
+                double resolut = 0.2;
+                var map_xy = new RasterMap(mesh, resolut, RasterMap.type_map.XY);
+                var cut_surf = map_xy.get_polyg_contour_xy(cont, mesh, type_cut);
+
+                GL1.buffersGl.removeObj(scan_i);
+                GL1.SortObj();
+
+                var scan_stl = Polygon3d_GL.toMesh(cut_surf);
+                if (scan_stl != null)
+                {
+                    scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+                }
+                GL1.SortObj();
+            }
+
+        }
+        private void but_reconstruc_area_Click(object sender, EventArgs e)
+        {
+            
+            cut_area(RasterMap.type_out.outside);
+            var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
+            var ps = cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 1,0.5,fi);
+            var pols = Polygon3d_GL.triangulate_lines_xy(ps);
+            var scan_stl = Polygon3d_GL.toMesh(pols);
+            var rec = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+            GL1.SortObj();
+
+        }
+
+        private void but_delete_area_Click(object sender, EventArgs e)
+        {
+            cut_area(RasterMap.type_out.outside);
+        }
+
+        private void but_keep_area_Click(object sender, EventArgs e)
+        {
+            cut_area(RasterMap.type_out.inside);
+        }
+
         private void but_send_traj_Click(object sender, EventArgs e)
         {
             //var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
@@ -3551,6 +3642,8 @@ namespace opengl3
             mesh = scan_stl.pols;
             scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);
         }
+
+
 
 
 

@@ -89,6 +89,8 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_keep_area = new System.Windows.Forms.Button();
+            this.but_delete_area = new System.Windows.Forms.Button();
             this.but_load_sing_calib = new System.Windows.Forms.Button();
             this.but_scan_load_sing = new System.Windows.Forms.Button();
             this.but_load_stl = new System.Windows.Forms.Button();
@@ -174,6 +176,8 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.tB_fps_scan = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.but_scan_sing_las = new System.Windows.Forms.Button();
             this.label_timer = new System.Windows.Forms.Label();
             this.but_load_scan = new System.Windows.Forms.Button();
@@ -294,8 +298,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tB_fps_scan = new System.Windows.Forms.TextBox();
-            this.label21 = new System.Windows.Forms.Label();
+            this.but_reconstruc_area = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -947,6 +950,9 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_reconstruc_area);
+            this.tabOpenGl.Controls.Add(this.but_keep_area);
+            this.tabOpenGl.Controls.Add(this.but_delete_area);
             this.tabOpenGl.Controls.Add(this.but_load_sing_calib);
             this.tabOpenGl.Controls.Add(this.but_scan_load_sing);
             this.tabOpenGl.Controls.Add(this.but_load_stl);
@@ -1039,6 +1045,26 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // but_keep_area
+            // 
+            this.but_keep_area.Location = new System.Drawing.Point(776, 920);
+            this.but_keep_area.Name = "but_keep_area";
+            this.but_keep_area.Size = new System.Drawing.Size(96, 34);
+            this.but_keep_area.TabIndex = 135;
+            this.but_keep_area.Text = "Оставить область";
+            this.but_keep_area.UseVisualStyleBackColor = true;
+            this.but_keep_area.Click += new System.EventHandler(this.but_keep_area_Click);
+            // 
+            // but_delete_area
+            // 
+            this.but_delete_area.Location = new System.Drawing.Point(674, 920);
+            this.but_delete_area.Name = "but_delete_area";
+            this.but_delete_area.Size = new System.Drawing.Size(96, 34);
+            this.but_delete_area.TabIndex = 134;
+            this.but_delete_area.Text = "Удалить область";
+            this.but_delete_area.UseVisualStyleBackColor = true;
+            this.but_delete_area.Click += new System.EventHandler(this.but_delete_area_Click);
+            // 
             // but_load_sing_calib
             // 
             this.but_load_sing_calib.Location = new System.Drawing.Point(1721, 945);
@@ -1061,7 +1087,7 @@ namespace opengl3
             // 
             // but_load_stl
             // 
-            this.but_load_stl.Location = new System.Drawing.Point(755, 908);
+            this.but_load_stl.Location = new System.Drawing.Point(776, 884);
             this.but_load_stl.Name = "but_load_stl";
             this.but_load_stl.Size = new System.Drawing.Size(132, 24);
             this.but_load_stl.TabIndex = 131;
@@ -1071,7 +1097,7 @@ namespace opengl3
             // 
             // but_save_stl
             // 
-            this.but_save_stl.Location = new System.Drawing.Point(755, 881);
+            this.but_save_stl.Location = new System.Drawing.Point(776, 854);
             this.but_save_stl.Name = "but_save_stl";
             this.but_save_stl.Size = new System.Drawing.Size(132, 24);
             this.but_save_stl.TabIndex = 130;
@@ -1958,6 +1984,24 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // tB_fps_scan
+            // 
+            this.tB_fps_scan.Location = new System.Drawing.Point(1425, 475);
+            this.tB_fps_scan.Name = "tB_fps_scan";
+            this.tB_fps_scan.Size = new System.Drawing.Size(69, 26);
+            this.tB_fps_scan.TabIndex = 133;
+            this.tB_fps_scan.Text = "30";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label21.Location = new System.Drawing.Point(1364, 478);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(54, 20);
+            this.label21.TabIndex = 135;
+            this.label21.Text = "Fps ->";
             // 
             // but_scan_sing_las
             // 
@@ -3117,23 +3161,15 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // tB_fps_scan
+            // but_reconstruc_area
             // 
-            this.tB_fps_scan.Location = new System.Drawing.Point(1425, 475);
-            this.tB_fps_scan.Name = "tB_fps_scan";
-            this.tB_fps_scan.Size = new System.Drawing.Size(69, 26);
-            this.tB_fps_scan.TabIndex = 133;
-            this.tB_fps_scan.Text = "30";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label21.Location = new System.Drawing.Point(1364, 478);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(54, 20);
-            this.label21.TabIndex = 135;
-            this.label21.Text = "Fps ->";
+            this.but_reconstruc_area.Location = new System.Drawing.Point(674, 958);
+            this.but_reconstruc_area.Name = "but_reconstruc_area";
+            this.but_reconstruc_area.Size = new System.Drawing.Size(96, 34);
+            this.but_reconstruc_area.TabIndex = 136;
+            this.but_reconstruc_area.Text = "Восстановить область";
+            this.but_reconstruc_area.UseVisualStyleBackColor = true;
+            this.but_reconstruc_area.Click += new System.EventHandler(this.but_reconstruc_area_Click);
             // 
             // MainScanningForm
             // 
@@ -3487,6 +3523,9 @@ namespace opengl3
         private System.Windows.Forms.Button but_scan_sing_las;
         private System.Windows.Forms.TextBox tB_fps_scan;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Button but_keep_area;
+        private System.Windows.Forms.Button but_delete_area;
+        private System.Windows.Forms.Button but_reconstruc_area;
     }
 }
 

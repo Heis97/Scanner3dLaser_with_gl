@@ -430,7 +430,7 @@ namespace opengl3
             /*ps = (from p in ps
                       orderby p.z
                       select p).ToArray();*/
-
+            if (ps == null) return null;
             var inds_rem = remote_element(ps);
 
             
@@ -496,31 +496,30 @@ namespace opengl3
             return ps_l.ToArray();
         }
 
-        /*
-                def find_contour(self, ps:"list[Point3D]")->"list[Point3D]":
-                if len(ps)==0:
-                    return []
-                cont= [ps[0]]
-                ps_cut = self.remove_element(ps,0)
-                while(len(ps_cut)>0):
-                    min_d = 1000000000000
-                    min_ind = 0
-                    for j in range(len(ps_cut)) :
-                        dist = (cont[-1]-ps_cut[j]).magnitude()
-                        if dist<min_d:
-                            min_d = dist
-                            min_ind = j
-                    #print(min_ind)
-                    cont.append(ps_cut[min_ind])
-                    ps_cut = self.remove_element(ps_cut, min_ind)
-                return cont
+        public static Point3d_GL centr_mass(Point3d_GL[] ps)
+        {
+            var cm = new Point3d_GL(0,0,0);
+            foreach(var p in ps)
+            {
+                cm += p;
+            }
+            return cm/ps.Length;
+        }
 
-            def remove_element(self, list_in:list, ind:int) :
-                list_r = list_in.copy()
-                del list_r[ind]
-                return list_r
-                    */
-
+        public static double calc_curve_cm_2(Point3d_GL[] ps)
+        {
+            var cm = centr_mass(ps);
+            var v1 = new Vector3d_GL(cm , ps[0]);
+            var v2 = new Vector3d_GL(cm, ps[ps.Length-1]);
+            var cos = Vector3d_GL.cos(v1,v2);
+            return Math.Abs( cos);
+        }
+        public static double calc_curve_cm(Point3d_GL[] ps)
+        {
+            var cm = centr_mass(ps);
+            var r = (ps[ps.Length / 2] - cm).magnitude();
+            return r;
+        }
     }
 
 }

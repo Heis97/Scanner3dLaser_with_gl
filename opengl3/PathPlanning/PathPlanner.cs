@@ -354,7 +354,7 @@ namespace PathPlanning
             var layer_3d = new List<Matrix<double>>();
             for (int i = 0; i < layer.Count; i++)
             {
-                var polyg_ind = map_xy.get_polyg_ind_prec(layer[i], surface);
+                var polyg_ind = map_xy.get_polyg_ind_prec_xy(layer[i], surface);
                 var polyg = surface[polyg_ind];
                 layer_3d.Add(proj_point(polyg, layer[i]));
             }
@@ -380,7 +380,7 @@ namespace PathPlanning
             var traj_2d = Generate_multiLayer2d_mesh(contour, trajParams);
             var traj_3d = new List<List<Matrix<double>>>();
             double resolut = 0.2;
-            var map_xy = new RasterMap(surface, resolut);
+            var map_xy = new RasterMap(surface, resolut,RasterMap.type_map.XY);
 
             for (int i=0; i<traj_2d.Count;i++)
             {

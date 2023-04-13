@@ -2209,6 +2209,39 @@ namespace opengl3
             im_ret.Save("black_sq_" + n + "_" + k + ".png");
             return im_ret;
         }
+
+        public static void showMap(int[,] map)
+        {
+            var im = new Image<Gray, Byte>(map.GetLength(0), map.GetLength(1));
+            for (int x = 0; x < im.Width; x++)
+                for (int y = 0; y < im.Height; y++)
+                {
+                    if(map[x, y] > 0 )
+                    {
+                        im.Data[y, x, 0] = 255;
+                    }
+                    
+                }
+            var k = 10;
+            //CvInvoke.Resize(im,im,new Size((int)(k*im.Height), (int)(k*im.Width)));
+            CvInvoke.Imshow("map", im);
+        }
+
+        public static void showInds(int[][] map)
+        {
+            var im = new Image<Gray, Byte>(1000,1000);
+
+
+
+            for (int i = 0; i < map.Length; i++)
+            { 
+
+                im.Data[map[i][1], map[i][0], 0] = 255;
+            }
+            var k = 10;
+            //CvInvoke.Resize(im,im,new Size((int)(k*im.Height), (int)(k*im.Width)));
+            CvInvoke.Imshow("map_inds", im);
+        }
         #endregion
     }
 }

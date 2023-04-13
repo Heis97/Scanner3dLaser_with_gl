@@ -360,6 +360,12 @@ namespace opengl3
             if(smooth > 0) ps = smooth_lines_xy(ps, smooth);
             if (ps == null) return null;
 
+            var ps_f = new List<Point3d_GL[]>();
+            for (int i = 1; i < ps.Length; i++)
+            {
+                if(ps[i].Length>0) ps_f.Add(ps[i]);
+            }
+            ps = ps_f.ToArray();
             for (int i=1; i<ps.Length; i++)
             {
                 polygons.AddRange(triangulate_two_lines_xy(ps[i - 1], ps[i]));
