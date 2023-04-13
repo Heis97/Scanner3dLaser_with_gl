@@ -441,17 +441,15 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1_cal_2412_1", FrameType.Pattern, PatternType.Mesh);
-             var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
-            var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_2412_2", FrameType.Pattern, PatternType.Mesh);
-
-            var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
-
-
-            cam1.save_camera("cam1_conf_2412_1.txt");
-            cam2.save_camera("cam2_conf_2412_1.txt");
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_cal_130423", FrameType.Pattern, PatternType.Mesh);
+             var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);       
+            cam1.save_camera("cam1_conf_130423.txt");            
             comboImages.Items.AddRange(frms_1);
-            comboImages.Items.AddRange(frms_2);
+            cameraCVcommon = cam1;
+           /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_2412_2", FrameType.Pattern, PatternType.Mesh);
+            var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
+            cam2.save_camera("cam2_conf_2412_1.txt");
+            comboImages.Items.AddRange(frms_2);*/
         }
         void loadScanner_v2(string  conf1, string conf2, string stereo_cal)
         {
@@ -1490,7 +1488,7 @@ namespace opengl3
                 else if (fr.frameType == FrameType.Pattern)
                 {
 
-                    //imageBox2.Image = UtilOpenCV.drawInsideRectCirc(cameraCVcommon.undist(fr.im.Clone()), chess_size);
+                    imageBox2.Image = cameraCVcommon.undist(fr.im.Clone());
                     var corn = new System.Drawing.PointF[0];
                     //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
                     imageBox1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
