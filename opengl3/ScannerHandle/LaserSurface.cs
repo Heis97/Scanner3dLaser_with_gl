@@ -18,6 +18,10 @@ namespace opengl3
         {
             calibrate(mats, origs, cameraCV,patternType, graphicGL, compPos);
         }
+        public LaserSurface(Mat mats,  CameraCV cameraCV, PatternType patternType)
+        {
+            calibrate_step(mats,  cameraCV, patternType);
+        }
         public LaserSurface()
         {
         }
@@ -30,7 +34,9 @@ namespace opengl3
             var flat = new Flat3d_GL(points[2], points[0], points[1]);
             var flat1 = new Flat3d_GL(points[3], points[0], points[1]);
 
-            Console.Write(flat + " " + flat1+" ");
+            Console.WriteLine(flat);
+            Console.WriteLine(flat1);
+            Console.WriteLine("_____________");
             return flat;
         }
         public bool calibrate(Mat[] mats, Mat[] origs, CameraCV cameraCV,PatternType patternType, GraphicGL graphicGL = null,bool compPos = true)
@@ -62,7 +68,7 @@ namespace opengl3
             var ps = ps1.ToList();
             ps.AddRange(ps2);
 
-            graphicGL?.addMesh(Point3d_GL.toMesh(ps.ToArray()),OpenGL.PrimitiveType.Points, 0.9f);
+            //graphicGL?.addMesh(Point3d_GL.toMesh(ps.ToArray()),OpenGL.PrimitiveType.Points, 0.9f);
 
             flat3D = computeSurface(ps.ToArray(), graphicGL);
 
@@ -76,7 +82,26 @@ namespace opengl3
             return true;
         }
 
-        static Point3d_GL[] points3dInCam(Mat mat, Mat orig, CameraCV cameraCV,PatternType patternType,GraphicGL graphicGL = null,bool compPos = true,bool oneMat = false)
+        public bool calibrate_step(Mat mat, CameraCV cameraCV, PatternType patternType)
+        {
+
+            var ps = points3dInCam_step(mat, cameraCV, patternType,5);
+
+            //graphicGL?.addMesh(Point3d_GL.toMesh(ps.ToArray()),OpenGL.PrimitiveType.Points, 0.9f);
+
+            flat3D = computeSurface(ps.ToArray());
+
+
+            //var flat3D_in_scene = computeSurface(ps_in_scene.ToArray());
+
+            //graphicGL?.addFlat3d_XZ(flat3D);
+
+
+            // Console.WriteLine(flat3D/flat3D.A);
+            return true;
+        }
+
+        static Point3d_GL[] points3dInCam(Mat mat, Mat orig, CameraCV cameraCV,PatternType patternType,GraphicGL graphicGL = null,bool compPos = true,bool oneMat = false,int div=-1)
         {
             var points = Detection.detectLineDiff(mat,5,0.05f,false,false);
             var mat_p = UtilOpenCV.drawPointsF(mat,points,255,0,0);
@@ -84,15 +109,23 @@ namespace opengl3
             CvInvoke.WaitKey();*/
             var ps = new PointF[0];
             double z = 0;
-            if(oneMat)
+            if(div>0)
             {
-                ps = takePointsForFlat(points, oneMat);
-                Console.Write(ps[0] + " " + ps[1] + " " + ps[2] + " " + ps[3] + " ");
+                ps = takePointsForFlat(points, oneMat,div);
             }
             else
-            {                
-                ps = takePointsForFlat(points);
+            {
+                if (oneMat)
+                {
+                    ps = takePointsForFlat(points, oneMat);
+                    Console.Write(ps[0] + " " + ps[1] + " " + ps[2] + " " + ps[3] + " ");
+                }
+                else
+                {
+                    ps = takePointsForFlat(points);
+                }
             }
+            
             
             
             if(compPos)
@@ -123,9 +156,81 @@ namespace opengl3
             return ps3d.ToArray();          
         }
 
-
-        public static PointF[] takePointsForFlat(PointF[] ps,bool oneMat=false)
+        static PointF[] order_y(PointF[] ps)
         {
+            return (from p in ps
+                    orderby p.Y
+                    select p).ToArray();
+        }
+
+        static int ind_y(PointF[] ps,float y)
+        {
+            var i_y = 0;
+            for(int i = 0; i < ps.Length; i++)
+            {
+                if (Math.Abs(ps[i].Y-y)<0.01)
+                {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
+        static Point3d_GL[] points3dInCam_step(Mat mat, CameraCV cameraCV, PatternType patternType, int div = -1)
+        {
+            
+
+            var points =order_y(Detection.detectLineDiff(mat, 5));
+            var ps_m = order_y(Detection.x_max_claster(points,3));
+
+
+
+            var p_mm = new PointF(ps_m[0].Y, ps_m[ps_m.Length-1].Y);
+            var start = ind_y(points, p_mm.X);
+            var len  = ind_y(points, p_mm.Y) - start;
+            ps_m = points.ToList().GetRange(start, len).ToArray();
+            //var mat_p = UtilOpenCV.drawPointsF(mat, points, 255, 0, 0);
+            /* CvInvoke.Imshow("asf", mat_p);
+             CvInvoke.WaitKey();*/
+
+            var ps = takePointsForFlat(ps_m,false, div);
+
+            var orig_c = mat.Clone();
+            /*UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
+            UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
+            CvInvoke.Imshow("corn", orig_c);
+            CvInvoke.WaitKey();*/
+
+            var lines = PointCloud.computeTracesCam(ps, cameraCV);
+            var ps3d = new List<Point3d_GL>();
+
+
+            double z = 0;
+            ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[0], lines[1] }, zeroFlatInCam(cameraCV.matrixSC, z)));
+            z = -10;
+            ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[3], lines[4] }, zeroFlatInCam(cameraCV.matrixSC, z)));
+            z = -20;
+            ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[2] }, zeroFlatInCam(cameraCV.matrixSC, z)));
+
+            // graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, z));
+            //graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, 0)+(zeroFlatInCam(cameraCV.matrixSC, 4)- zeroFlatInCam(cameraCV.matrixSC, 0))/2);
+
+            return ps3d.ToArray();
+        }
+
+        //half--div--half
+        public static PointF[] takePointsForFlat(PointF[] ps,bool oneMat=false,int div = -1)
+        {
+            if(div>0)
+            {
+                var quart = (int)(ps.Length / ((double)div));
+                var psС = new PointF[div];
+                for(int i=0; i<div;i++)
+                {
+                    psС[i] = ps[quart * i + quart / 2];
+                }
+                return psС;
+            }
             if(oneMat)
             {
                 var quart = (int)(ps.Length / 30);

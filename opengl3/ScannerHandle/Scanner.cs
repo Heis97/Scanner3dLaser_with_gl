@@ -56,6 +56,11 @@ namespace opengl3
             return linearAxis.calibrate(mats, positions, cameraCV, patternType, graphicGL);
         }
 
+        public bool calibrateLinearStep(Mat[] mats,Mat orig, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
+        {
+            return linearAxis.calibrateLas_step(mats, orig,positions, cameraCV, patternType);
+        }
+        
         public bool calibrateLinearLas(Mat[][] mats, Mat[] origs, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
         {
             return linearAxis.calibrateLas(mats, origs, positions, cameraCV, patternType, graphicGL);
@@ -105,6 +110,11 @@ namespace opengl3
         public bool addPointsLinLas(Mat mat, double linPos,Mat orig, PatternType patternType)
         {
             return pointCloud.addPointsLinLas(mat, linPos, cameraCV, linearAxis,orig, patternType);
+        }
+
+        public bool addPointsLinLas_step(Mat mat, double linPos, PatternType patternType)
+        {
+            return pointCloud.addPointsLinLas_step(mat, linPos, cameraCV, linearAxis, patternType);
         }
         public int addPointsLinLas(Mat[] mats, double[] linPos,Mat orig, PatternType patternType)
         {
@@ -170,30 +180,17 @@ namespace opengl3
             return Point3d_GL.multMatr(pointCloud.points3d_lines.ToArray(), cameraCV.matrixSC);
         }
 
-        public PointF[][] calibrate_pos_from_parall_part(int layers,double deltz)
+
+        public double[] enc_pos(string enc,int size)
         {
-            if(cameraCV.scan_points!=null)
-            {
-                if (cameraCV.scan_points.Count != 0)
-                {
-                    return Detection.max_claster_im(cameraCV.scan_points.ToArray(), 4);
-
-                }
-            }
-            return null;
-        }
-
-
-
-        public int[] enc_pos(string enc,int size)
-        {
-            var enc_pos = new int[size];
+            var enc_pos = new double[size+10];
+            enc = enc.Replace("\r", "");
             var lines = enc.Split('\n');
             foreach(var line in lines)
             {
                 if (line.Length>1)
                 {
-                    var vals = enc.Split(' ');
+                    var vals = line.Split(' ');
                     if(vals.Length==2)
                     {
                         var ind = try_int32(vals[1]);

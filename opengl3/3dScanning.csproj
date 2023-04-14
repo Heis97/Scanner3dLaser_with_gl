@@ -210,6 +210,9 @@
     <None Include="Connection\DevicesArduino\arduino-timer-api-master\LICENSE" />
     <None Include="Connection\DevicesArduino\arduino-timer-api-master\README.md" />
     <None Include="Connection\DevicesArduino\LaserScanner070422_nano\LaserScanner070422_nano.ino" />
+    <None Include="Graphic\Shaders\Comp\CompSh_cross_mesh.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Graphic\Shaders\Comp\slice_test.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

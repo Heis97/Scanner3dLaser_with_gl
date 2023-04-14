@@ -54,6 +54,67 @@ namespace opengl3
             return false;
         }
 
+        public bool calibrateLas_step(Mat[] mats, Mat orig, double[] positions, CameraCV cameraCV, PatternType patternType, GraphicGL graphicGL=null)
+        {
+            var inds_part = Detection.max_claster_im(cameraCV.scan_points.ToArray(), 4);
+
+            /*CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4]]);
+            CvInvoke.Imshow("im2", mats[inds_part[inds_part.Length* 2/ 4]]);
+            CvInvoke.Imshow("im3", mats[inds_part[inds_part.Length*3 / 4]]);
+
+            CvInvoke.WaitKey();*/
+
+            var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
+            positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
+
+            var x_dim = 60;
+            var y_dim = 50;
+
+            var corners = corner_step(orig);
+
+            var orig_c = orig.Clone();
+            //UtilOpenCV.drawPointsF(orig_c, corners,255,0,0,2,true);
+            //CvInvoke.Imshow("corn", orig_c);
+            //CvInvoke.WaitKey();
+            cameraCV.compPos(new MCvPoint3D32f[] {
+                new MCvPoint3D32f(0,0,0),
+            new MCvPoint3D32f(0,y_dim,0),
+            new MCvPoint3D32f(x_dim,y_dim,0),
+            new MCvPoint3D32f(x_dim,0,0)},corners);
+
+
+
+            cur_matrix_cam = cameraCV.matrixCS;
+            Console.WriteLine("cur_matrix_cam");
+            prin.t(cur_matrix_cam);
+            for (int i=0;i< mats_calib.Length;i++)
+            {
+                var las = new LaserSurface(mats_calib[i], cameraCV, patternType);                
+                PositionsAxis.Add(positions[i]);
+                LasFlats.Add(las.flat3D);
+            }
+            compOneFlat();
+            calibrated = true;
+            return true;
+        }
+
+        System.Drawing.PointF[] corner_step(Mat orig)
+        {
+            var orig1= orig.Clone();
+            orig1 = FindCircles.sobel_mat(orig1);
+            CvInvoke.CvtColor(orig1, orig1, ColorConversion.Rgb2Gray);
+            CvInvoke.MedianBlur(orig1, orig1, 5);
+            CvInvoke.Threshold(orig1, orig1, 70, 255, ThresholdType.Binary);
+            var cont = FindCircles.find_max_contour(orig1);
+            var c_f = PointF.from_contour(cont);
+            var corn = FindCircles.findGab(PointF.toSystemPoint(c_f));
+          //  UtilOpenCV.drawPointsF(orig, corn, 255, 0, 0, 2, true);
+           // CvInvoke.Imshow("corns", orig);
+
+
+            return corn;
+        }
+
 
         bool addPositions(Mat[] mats, double[] positions, CameraCV cameraCV, PatternType patternType)
         {
@@ -98,6 +159,7 @@ namespace opengl3
             
             if (count_flats % 1 ==0)
             {
+
                 var las = new LaserSurface(mats, origs, cameraCV, patternType, true, GraphicGL);
                 cur_matrix_cam = cameraCV.matrixCS;
                 PositionsAxis.Add(position);
@@ -159,7 +221,7 @@ namespace opengl3
             int end_ind = (int)(LasFlats.Count / 2) - 1;*/
 
             int start_ind = (int)(LasFlats.Count ) - 1;
-            int end_ind = 1;
+            int end_ind = 0;
 
             oneLasFlat = (LasFlats[end_ind] - LasFlats[start_ind]) / (PositionsAxis[end_ind] - PositionsAxis[start_ind]);
 
@@ -170,7 +232,7 @@ namespace opengl3
             /*Console.WriteLine(PositionsAxis[next_val + 1]+" "+ PositionsAxis[next_val - 1]);
             GraphicGL?.addFlat3d_XZ(LasFlats[next_val + 1],null,0.1f,0.9f);
             GraphicGL?.addFlat3d_XZ(LasFlats[next_val - 1], null, 0.1f, 0.9f);*/
-            Console.WriteLine(oneLasFlat*400);//for 1 mm
+            Console.WriteLine(oneLasFlat);
         }
 
         public Matrix<double> getMatrixCamera(double PositionLinear)

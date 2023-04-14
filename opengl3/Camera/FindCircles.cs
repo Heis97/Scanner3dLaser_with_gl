@@ -55,6 +55,26 @@ namespace opengl3
             return gray_x + gray_y;
 
         }
+
+        public static VectorOfPoint find_max_contour(Mat mat)
+        {
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            Mat hier = new Mat();
+            CvInvoke.FindContours(mat, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
+
+            var size_m = 0d;
+            var int_m = 0;
+            for(int i=0;i<contours.Size;i++)
+            {
+                var size = CvInvoke.ContourArea(contours[i]);
+                if (size>size_m)
+                {
+                    size_m = size;
+                    int_m = i;
+                }
+            }
+            return contours[int_m];
+        }
         public static Mat findCircles(Mat mat,ref System.Drawing.PointF[]  corn,Size pattern_size,bool order = true)
         {
             var im_tr = new Mat();

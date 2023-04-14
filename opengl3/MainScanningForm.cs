@@ -132,10 +132,29 @@ namespace opengl3
         public MainScanningForm()
         {
             InitializeComponent();
-            init_vars();
-
-            
+            init_vars();         
         }
+        void load_sing()
+        {
+            var scan_path = @"C:\Users\ASUS PC\source\repos\Heis97\opengl3\opengl3\bin\x86\Debug\cam1\las_cal_1004_1";
+            var cam1_conf_path = @"C:\Users\ASUS PC\source\repos\Heis97\opengl3\opengl3\bin\x86\Debug\cam1_conf_0508_1.txt";
+
+            int strip = 1;
+            double smooth = -1;// Convert.ToDouble(tp_smooth_scan.Text);
+
+            loadScanner_sing(cam1_conf_path);
+            load_calib_sing(scan_path, strip, smooth);
+
+            load_scan_sing(scan_path, 5, smooth);
+            var ps = scanner.getPointsScene();
+            GL1.addPointMesh(ps);
+
+            /*var mesh = Polygon3d_GL.triangulate_lines_xy(ps, -1);
+            var scan_stl = Polygon3d_GL.toMesh(mesh);
+            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);*/
+            GL1.SortObj();
+        }
+
         void python_c_sh()
         {
             var eng = IronPython.Hosting.Python.CreateEngine();
@@ -192,44 +211,7 @@ namespace opengl3
             };
             propGrid_traj.SelectedObject = param_tr;
 
-            //Manipulator.calcRob_pulse();
-            //load_camers_v2();
-            // 
-            //var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
-            //patt[0] = patt_ph;
-
-
-            // var frms = FrameLoader.loadPathsDiff(new string[] { 
-            // @"cam1\cam1_cal_0508_1\1", 
-            //  @"cam2\cam2_cal_0508_1" }, FrameType.Pattern, PatternType.Mesh);
-            // comboImages.Items.AddRange(frms);
-            //load_camers_v2();
-            //var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
-            //var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
-            var path_d = @"D:\reposD\kuka\bin_0110\";
-            /*loadScannerLinLas(
-                 new string[] { path_d+ @"cam1\cdwz0307" },
-                 new string[] { path_d + @"cam2\las_cal_0307_2a", path_d + @"cam2\las_cal_0307_2b" },
-                 new string[] { path_d + @"cam2\las_cal_0307_2a\orig", path_d + @"cam2\las_cal_0307_2b\orig" },
-                 path_d + @"cam2\las_cal_0307_2a", path_d + @"cam2\las_cal_0307_2a\orig",
-                 new float[] { 0.5f, 0.5f, 0.1f }, true);*/
-
-            /*loadScannerLinLas(
-                 new string[] { path_d + @"cam1\cdwz0307" },
-                 new string[] { path_d + @"cam1\las_cal_0707_1" },
-                 new string[] { path_d + @"cam1\las_cal_0707_1\orig" },
-                 path_d + @"cam1\las_cal_0707_1", path_d + @"cam1\las_cal_0707_1\orig",
-                 new float[] { 0.5f, 0.5f, 0.1f }, true);*/
-
-
-            /*var scan_path = @"C:\Users\ASUS PC\source\repos\Heis97\opengl3\opengl3\bin\x86\Debug\cam1\las_cal_1004_1";
-            var cam1_conf_path = @"C:\Users\ASUS PC\source\repos\Heis97\opengl3\opengl3\bin\x86\Debug\cam1_conf_0508_1.txt";
-
-            int strip = 10;
-            double smooth = Convert.ToDouble(tp_smooth_scan.Text);
-
-            loadScanner_sing(cam1_conf_path);
-            load_calib_sing(scan_path, strip, smooth);*/
+            
         }
 
         void loadStereo()
@@ -503,19 +485,8 @@ namespace opengl3
         void load_calib_sing(string scan_path, int strip = 1, double smooth = 0.8)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            var orig = loadVideo_sing_cam(scan_path_1, scanner, strip);
+            var orig = loadVideo_sing_cam(scan_path_1, scanner, strip,true);
 
-            var ps = scanner.calibrate_pos_from_parall_part(0, 0);
-
-            if(ps!=null)
-            {
-                foreach (var p in ps)
-                {
-                    UtilOpenCV.drawPointsF(orig, p, 255, 255, 0);
-                }
-                CvInvoke.Imshow("clast", orig);
-            }
-           
             /*mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
 
             var scan_stl = Polygon3d_GL.toMesh(mesh);
@@ -974,11 +945,11 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-            
+
             // startGenerate();
             //trB_SGBM_Enter();
 
-
+            load_sing();
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
@@ -3249,7 +3220,7 @@ namespace opengl3
             Console.WriteLine("Points computed.");
         }
 
-        public Mat loadVideo_sing_cam(string filepath, Scanner scanner = null, int strip = 1,bool calib = false)
+        public Scanner loadVideo_sing_cam(string filepath, Scanner scanner = null, int strip = 1,bool calib = false)
         {
             videoframe_count = 0;
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
@@ -3293,13 +3264,12 @@ namespace opengl3
             {
                 enc_file = sr.ReadToEnd();
             }
-            scanner.enc_pos(enc_file, (int)all_frames);
+            var inc_pos = scanner.enc_pos(enc_file, (int)all_frames);
 
             while (videoframe_count < all_frames)
             {
                 Mat im1 = new Mat();
                 while (!capture1.Read(im1)) { }
-                //Console.WriteLine("____________________");
                 if (scanner != null)
                 {
                     if (videoframe_count % strip == 0)
@@ -3307,15 +3277,9 @@ namespace opengl3
                         im1 -= orig1;
                         var frame_d = new Frame(im1,  videoframe_count.ToString(), FrameType.LasDif);
                         frames_show.Add(frame_d);
-                        //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
-                        /*var ps1 = Detection.detectLineDiff(im1, 7);
-                        var ps2 = Detection.detectLineDiff(im2, 7);
 
-                        imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
-                        imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
-                        //CvInvoke.Imshow("im2", im2);
-
-                        scanner.addPointsSingLas_2d(im1, false,calib);//calib = orig
+                        if (calib) scanner.addPointsSingLas_2d(im1, false,calib);//calib = orig
+                        else scanner.addPointsLinLas_step(im1, inc_pos[videoframe_count], PatternType.Mesh);
 
                     }
                 }
@@ -3324,9 +3288,14 @@ namespace opengl3
             }
             comboImages.Items.AddRange(frames_show.ToArray());
 
-            //scanner.compPointsSingLas_2d();
-            Console.WriteLine("Points computed.");
-            return orig1;
+            if(calib) scanner.calibrateLinearStep(Frame.getMats(frames_show.ToArray()), orig1,inc_pos, PatternType.Mesh);
+
+            //var mats = Frame.getMats(frames_show.ToArray());
+            //var corn = Detection.detectLineDiff_corn_calibr(mats);
+
+            //UtilOpenCV.drawPointsF(orig1, corn, 255, 0, 0, 2, true);
+            //CvInvoke.Imshow("corn", orig1);
+            return scanner;
         }
         #endregion
 
@@ -3651,6 +3620,45 @@ namespace opengl3
        
     }
 }
+
+//Manipulator.calcRob_pulse();
+//load_camers_v2();
+// 
+//var patt_ph = new Mat("old_patt.png");//"old_patt.png" || @"cam2\test_circle\1_2.png"
+//patt[0] = patt_ph;
+
+
+// var frms = FrameLoader.loadPathsDiff(new string[] { 
+// @"cam1\cam1_cal_0508_1\1", 
+//  @"cam2\cam2_cal_0508_1" }, FrameType.Pattern, PatternType.Mesh);
+// comboImages.Items.AddRange(frms);
+//load_camers_v2();
+//var scan = Reconstruction.loadScan(@"cam1\pos_cal_Z_2609_2\test", @"cam1\las_cal_2609_3", @"cam1\table_scanl_2609_3", @"cam1\pos_basis_2609_2", 52.5, 30,40, SolveType.Complex, 0.1f, 0.1f, 0.8f,comboImages);
+//var scan = Reconstruction.loadScan(@"cam2\pos_cal_1906_1\test", @"cam2\las_cal_2", @"cam2\mouse_scan_1906_3", @"cam1\pos_basis_2609_2", 52.5, 30, 40, SolveType.Complex, 0.1f, 0.1f, 0.8f, comboImages);   
+//var path_d = @"D:\reposD\kuka\bin_0110\";
+/*loadScannerLinLas(
+     new string[] { path_d+ @"cam1\cdwz0307" },
+     new string[] { path_d + @"cam2\las_cal_0307_2a", path_d + @"cam2\las_cal_0307_2b" },
+     new string[] { path_d + @"cam2\las_cal_0307_2a\orig", path_d + @"cam2\las_cal_0307_2b\orig" },
+     path_d + @"cam2\las_cal_0307_2a", path_d + @"cam2\las_cal_0307_2a\orig",
+     new float[] { 0.5f, 0.5f, 0.1f }, true);*/
+
+/*loadScannerLinLas(
+     new string[] { path_d + @"cam1\cdwz0307" },
+     new string[] { path_d + @"cam1\las_cal_0707_1" },
+     new string[] { path_d + @"cam1\las_cal_0707_1\orig" },
+     path_d + @"cam1\las_cal_0707_1", path_d + @"cam1\las_cal_0707_1\orig",
+     new float[] { 0.5f, 0.5f, 0.1f }, true);*/
+
+
+/*var scan_path = @"C:\Users\ASUS PC\source\repos\Heis97\opengl3\opengl3\bin\x86\Debug\cam1\las_cal_1004_1";
+var cam1_conf_path = @"C:\Users\ASUS PC\source\repos\Heis97\opengl3\opengl3\bin\x86\Debug\cam1_conf_0508_1.txt";
+
+int strip = 10;
+double smooth = Convert.ToDouble(tp_smooth_scan.Text);
+
+loadScanner_sing(cam1_conf_path);
+load_calib_sing(scan_path, strip, smooth);*/
 
 
 /* var mesh = STLmodel.parsingStl_GL4("half_sphere.STL");

@@ -213,5 +213,21 @@ namespace opengl3
             return X.ToString() + " " + Y.ToString()+" ";
         }
 
+        public static PointF[] operator +(PointF[] ps, PointF p1)
+        {
+            if (ps == null) return null;
+            var ps_p = new PointF[ps.Length];
+            for (int i = 0; i < ps.Length; i++) ps_p[i] = ps[i] + p1;
+            return ps_p;
+        }
+
+        public static PointF[] from_contour(VectorOfPoint ps)
+        {
+            if (ps == null) return null;
+            var ps_p = new PointF[ps.Size];
+            for (int i = 0; i < ps.Size; i++) ps_p[i] =new PointF(ps[i].X, ps[i].Y);
+            return ps_p;
+        }
+
     }
 }

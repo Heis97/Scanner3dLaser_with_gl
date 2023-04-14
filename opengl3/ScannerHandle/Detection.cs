@@ -498,6 +498,35 @@ namespace opengl3
             return ps; 
         }
 
+
+        static PointF[] detectLineDiff_up_line(Mat mat)
+        {
+            var ps = detectLineDiff(mat,5,0.05f,false,true,true);
+            var dx =(int) Math.Max(ps[0].X, ps[ps.Length-1].X) + 5;
+            var mat_cut = new Mat(mat, new Rectangle(dx, 0, mat.Width - dx, mat.Height));
+            var ps_cut = detectLineDiff(mat_cut, 5, 0.05f, false, true, true);
+            var clast_cut = x_max_claster(ps_cut, 2);
+            var ps_up = clast_cut + new PointF(dx,0);
+            //UtilOpenCV.drawPointsF(mat, ps_up, 0, 255, 0);
+            //UtilOpenCV.drawPointsF(mat_cut, clast_cut, 0, 255, 0);
+            //CvInvoke.Imshow("ps_cut", mat);
+           // CvInvoke.Imshow("mat_cut", mat_cut);
+           // CvInvoke.WaitKey();
+            
+            return ps_up;
+        }
+        public static System.Drawing.PointF[] detectLineDiff_corn_calibr(Mat[] mats)
+        {
+            var ps = new List<PointF>();
+            foreach(var mat in mats)
+            {
+                var psi = detectLineDiff_up_line(mat);
+                if(psi!=null) ps.AddRange(psi);
+            }
+            var corn = FindCircles.findGab(PointF.toSystemPoint( ps.ToArray()));
+            return corn;
+        }
+
         public static PointF[] detectLineDiff_X(Mat _mat,
            int wind = 5, float board = 0.05f,
            bool reverse = false, bool rotate = true,
@@ -789,7 +818,7 @@ namespace opengl3
             return ps_f.ToArray();
         }
 
-        static public PointF[][] max_claster_im(PointF[][] ps, int clast_count)
+        static public int[] max_claster_im(PointF[][] ps, int clast_count)
         {
             var dxs = new double[ps.Length];
             for (int i=0; i<ps.Length;i++)
@@ -808,17 +837,13 @@ namespace opengl3
             }
 
             var dx_or = dxs[(int)(ps.Length / 2)];
-            var ps_cl = new List<PointF[]>();
+            var ps_cl = new List<int>();
             for (int i = 0; i < ps.Length; i++)
             {
                 //Console.WriteLine(dxs[i] + " " + dx_or);
                 if(dxs[i] > dx_or*0.8)
-                {
-                    var ps_cl_o = x_max_claster(ps[i], clast_count);
-                    if(ps_cl_o!=null)
-                    {
-                        ps_cl.Add(ps_cl_o);
-                    }                   
+                {                   
+                     ps_cl.Add(i);                                       
                 }               
             }
             return ps_cl.ToArray();

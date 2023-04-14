@@ -520,6 +520,8 @@ namespace opengl3
             var r = (ps[ps.Length / 2] - cm).magnitude();
             return r;
         }
+
+
     }
 
 }

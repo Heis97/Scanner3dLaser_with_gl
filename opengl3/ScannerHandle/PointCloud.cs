@@ -74,7 +74,19 @@ namespace opengl3
             points3d = ps_list.ToArray();
             return true;
         }
-
+        public bool addPointsLinLas_step(Mat mat, double LinPos, CameraCV cameraCV, LinearAxis linearAxis, PatternType patternType)
+        {
+            var points_im = Detection.detectLineDiff(mat, 5, 0.05f, false, false);
+            //var points_im = Detection.detectLineDiff(mat);
+            var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
+            //points3d_cur = points_cam;
+            points3d_cur = camToScene(points_cam, cameraCV.matrixCS);
+            var ps_list = points3d.ToList();
+            ps_list.AddRange(points3d_cur);
+            points3d_lines.Add(points3d_cur);
+            points3d = ps_list.ToArray();
+            return true;
+        }
         public bool addPointsStereoLas(Mat[] mat, StereoCamera stereocamera, bool undist)
         {
             if(undist)
