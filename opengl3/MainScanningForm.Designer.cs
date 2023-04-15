@@ -89,6 +89,16 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_rob_start_sc = new System.Windows.Forms.Button();
+            this.but_rob_clear_sc = new System.Windows.Forms.Button();
+            this.but_rob_manual_sc = new System.Windows.Forms.Button();
+            this.but_rob_auto_sc = new System.Windows.Forms.Button();
+            this.tb_rob_pos_sc = new System.Windows.Forms.TextBox();
+            this.but_rob_res_sc = new System.Windows.Forms.Button();
+            this.but_rob_con_sc = new System.Windows.Forms.Button();
+            this.but_rob_discon_sc = new System.Windows.Forms.Button();
+            this.but_rob_send_sc = new System.Windows.Forms.Button();
+            this.but_reconstruc_area = new System.Windows.Forms.Button();
             this.but_keep_area = new System.Windows.Forms.Button();
             this.but_delete_area = new System.Windows.Forms.Button();
             this.but_load_sing_calib = new System.Windows.Forms.Button();
@@ -298,7 +308,8 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_reconstruc_area = new System.Windows.Forms.Button();
+            this.but_rob_traj_kuka = new System.Windows.Forms.Button();
+            this.but_rob_traj_pulse = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -950,6 +961,17 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_rob_traj_pulse);
+            this.tabOpenGl.Controls.Add(this.but_rob_traj_kuka);
+            this.tabOpenGl.Controls.Add(this.but_rob_start_sc);
+            this.tabOpenGl.Controls.Add(this.but_rob_clear_sc);
+            this.tabOpenGl.Controls.Add(this.but_rob_manual_sc);
+            this.tabOpenGl.Controls.Add(this.but_rob_auto_sc);
+            this.tabOpenGl.Controls.Add(this.tb_rob_pos_sc);
+            this.tabOpenGl.Controls.Add(this.but_rob_res_sc);
+            this.tabOpenGl.Controls.Add(this.but_rob_con_sc);
+            this.tabOpenGl.Controls.Add(this.but_rob_discon_sc);
+            this.tabOpenGl.Controls.Add(this.but_rob_send_sc);
             this.tabOpenGl.Controls.Add(this.but_reconstruc_area);
             this.tabOpenGl.Controls.Add(this.but_keep_area);
             this.tabOpenGl.Controls.Add(this.but_delete_area);
@@ -1044,6 +1066,112 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // but_rob_start_sc
+            // 
+            this.but_rob_start_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_start_sc.Location = new System.Drawing.Point(1000, 551);
+            this.but_rob_start_sc.Name = "but_rob_start_sc";
+            this.but_rob_start_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_start_sc.TabIndex = 145;
+            this.but_rob_start_sc.Text = "Start";
+            this.but_rob_start_sc.UseVisualStyleBackColor = true;
+            this.but_rob_start_sc.Click += new System.EventHandler(this.but_rob_start_sc_Click);
+            // 
+            // but_rob_clear_sc
+            // 
+            this.but_rob_clear_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_clear_sc.Location = new System.Drawing.Point(1000, 507);
+            this.but_rob_clear_sc.Name = "but_rob_clear_sc";
+            this.but_rob_clear_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_clear_sc.TabIndex = 144;
+            this.but_rob_clear_sc.Text = "Clear buf";
+            this.but_rob_clear_sc.UseVisualStyleBackColor = true;
+            this.but_rob_clear_sc.Click += new System.EventHandler(this.but_rob_clear_sc_Click);
+            // 
+            // but_rob_manual_sc
+            // 
+            this.but_rob_manual_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_manual_sc.Location = new System.Drawing.Point(1000, 463);
+            this.but_rob_manual_sc.Name = "but_rob_manual_sc";
+            this.but_rob_manual_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_manual_sc.TabIndex = 143;
+            this.but_rob_manual_sc.Text = "Manual";
+            this.but_rob_manual_sc.UseVisualStyleBackColor = true;
+            this.but_rob_manual_sc.Click += new System.EventHandler(this.but_rob_manual_sc_Click);
+            // 
+            // but_rob_auto_sc
+            // 
+            this.but_rob_auto_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_auto_sc.Location = new System.Drawing.Point(1000, 419);
+            this.but_rob_auto_sc.Name = "but_rob_auto_sc";
+            this.but_rob_auto_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_auto_sc.TabIndex = 142;
+            this.but_rob_auto_sc.Text = "Auto";
+            this.but_rob_auto_sc.UseVisualStyleBackColor = true;
+            this.but_rob_auto_sc.Click += new System.EventHandler(this.but_rob_auto_sc_Click);
+            // 
+            // tb_rob_pos_sc
+            // 
+            this.tb_rob_pos_sc.Location = new System.Drawing.Point(965, 838);
+            this.tb_rob_pos_sc.Name = "tb_rob_pos_sc";
+            this.tb_rob_pos_sc.Size = new System.Drawing.Size(247, 20);
+            this.tb_rob_pos_sc.TabIndex = 141;
+            this.tb_rob_pos_sc.Text = "0";
+            // 
+            // but_rob_res_sc
+            // 
+            this.but_rob_res_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_res_sc.Location = new System.Drawing.Point(888, 551);
+            this.but_rob_res_sc.Name = "but_rob_res_sc";
+            this.but_rob_res_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_res_sc.TabIndex = 140;
+            this.but_rob_res_sc.Text = "Reseive robot";
+            this.but_rob_res_sc.UseVisualStyleBackColor = true;
+            this.but_rob_res_sc.Click += new System.EventHandler(this.but_rob_res_sc_Click);
+            // 
+            // but_rob_con_sc
+            // 
+            this.but_rob_con_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_con_sc.Location = new System.Drawing.Point(888, 419);
+            this.but_rob_con_sc.Name = "but_rob_con_sc";
+            this.but_rob_con_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_con_sc.TabIndex = 137;
+            this.but_rob_con_sc.Text = "Connect robot";
+            this.but_rob_con_sc.UseVisualStyleBackColor = true;
+            this.but_rob_con_sc.Click += new System.EventHandler(this.but_rob_con_sc_Click);
+            // 
+            // but_rob_discon_sc
+            // 
+            this.but_rob_discon_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_discon_sc.Location = new System.Drawing.Point(888, 463);
+            this.but_rob_discon_sc.Name = "but_rob_discon_sc";
+            this.but_rob_discon_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_discon_sc.TabIndex = 138;
+            this.but_rob_discon_sc.Text = "Disconnect robot";
+            this.but_rob_discon_sc.UseVisualStyleBackColor = true;
+            this.but_rob_discon_sc.Click += new System.EventHandler(this.but_rob_discon_sc_Click);
+            // 
+            // but_rob_send_sc
+            // 
+            this.but_rob_send_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_send_sc.Location = new System.Drawing.Point(888, 507);
+            this.but_rob_send_sc.Name = "but_rob_send_sc";
+            this.but_rob_send_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_send_sc.TabIndex = 139;
+            this.but_rob_send_sc.Text = "Send robot";
+            this.but_rob_send_sc.UseVisualStyleBackColor = true;
+            this.but_rob_send_sc.Click += new System.EventHandler(this.but_rob_send_sc_Click);
+            // 
+            // but_reconstruc_area
+            // 
+            this.but_reconstruc_area.Location = new System.Drawing.Point(674, 958);
+            this.but_reconstruc_area.Name = "but_reconstruc_area";
+            this.but_reconstruc_area.Size = new System.Drawing.Size(96, 34);
+            this.but_reconstruc_area.TabIndex = 136;
+            this.but_reconstruc_area.Text = "Восстановить область";
+            this.but_reconstruc_area.UseVisualStyleBackColor = true;
+            this.but_reconstruc_area.Click += new System.EventHandler(this.but_reconstruc_area_Click);
             // 
             // but_keep_area
             // 
@@ -1385,9 +1513,9 @@ namespace opengl3
             // 
             // debugBox
             // 
-            this.debugBox.Location = new System.Drawing.Point(1218, 409);
+            this.debugBox.Location = new System.Drawing.Point(1218, 6);
             this.debugBox.Name = "debugBox";
-            this.debugBox.Size = new System.Drawing.Size(402, 435);
+            this.debugBox.Size = new System.Drawing.Size(402, 838);
             this.debugBox.TabIndex = 62;
             this.debugBox.Text = "";
             // 
@@ -3161,15 +3289,25 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // but_reconstruc_area
+            // but_rob_traj_kuka
             // 
-            this.but_reconstruc_area.Location = new System.Drawing.Point(674, 958);
-            this.but_reconstruc_area.Name = "but_reconstruc_area";
-            this.but_reconstruc_area.Size = new System.Drawing.Size(96, 34);
-            this.but_reconstruc_area.TabIndex = 136;
-            this.but_reconstruc_area.Text = "Восстановить область";
-            this.but_reconstruc_area.UseVisualStyleBackColor = true;
-            this.but_reconstruc_area.Click += new System.EventHandler(this.but_reconstruc_area_Click);
+            this.but_rob_traj_kuka.Location = new System.Drawing.Point(1000, 590);
+            this.but_rob_traj_kuka.Name = "but_rob_traj_kuka";
+            this.but_rob_traj_kuka.Size = new System.Drawing.Size(106, 34);
+            this.but_rob_traj_kuka.TabIndex = 146;
+            this.but_rob_traj_kuka.Text = "Траектория Kuka";
+            this.but_rob_traj_kuka.UseVisualStyleBackColor = true;
+            this.but_rob_traj_kuka.Click += new System.EventHandler(this.but_rob_traj_kuka_Click);
+            // 
+            // but_rob_traj_pulse
+            // 
+            this.but_rob_traj_pulse.Location = new System.Drawing.Point(888, 590);
+            this.but_rob_traj_pulse.Name = "but_rob_traj_pulse";
+            this.but_rob_traj_pulse.Size = new System.Drawing.Size(106, 34);
+            this.but_rob_traj_pulse.TabIndex = 147;
+            this.but_rob_traj_pulse.Text = "Траектория Pulse";
+            this.but_rob_traj_pulse.UseVisualStyleBackColor = true;
+            this.but_rob_traj_pulse.Click += new System.EventHandler(this.but_rob_traj_pulse_Click);
             // 
             // MainScanningForm
             // 
@@ -3526,6 +3664,17 @@ namespace opengl3
         private System.Windows.Forms.Button but_keep_area;
         private System.Windows.Forms.Button but_delete_area;
         private System.Windows.Forms.Button but_reconstruc_area;
+        private System.Windows.Forms.Button but_rob_res_sc;
+        private System.Windows.Forms.Button but_rob_con_sc;
+        private System.Windows.Forms.Button but_rob_discon_sc;
+        private System.Windows.Forms.Button but_rob_send_sc;
+        private System.Windows.Forms.TextBox tb_rob_pos_sc;
+        private System.Windows.Forms.Button but_rob_clear_sc;
+        private System.Windows.Forms.Button but_rob_manual_sc;
+        private System.Windows.Forms.Button but_rob_auto_sc;
+        private System.Windows.Forms.Button but_rob_start_sc;
+        private System.Windows.Forms.Button but_rob_traj_kuka;
+        private System.Windows.Forms.Button but_rob_traj_pulse;
     }
 }
 

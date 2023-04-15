@@ -49,8 +49,34 @@ namespace opengl3
             switch (type)
             {
                 case RobotType.KUKA:
-                    { 
+                    {
+                        var x = m[0, 3];
+                        var y = m[1, 3];
+                        var z = m[2, 3];
 
+                        var sRy = m[0, 2];
+                        var cRy = Math.Pow((1-sRy*sRy), 0.5);
+
+                        var sRz = -m[0, 1] / cRy;
+                        var cRz = m[0, 0] / cRy;
+
+                        var sRx = -m[1, 2] / cRy;
+                        var cRx = m[2, 2] / cRy;
+
+                        //Console.WriteLine(cRx + " "+ sRx+" "+arccos(cRx));
+                        var Rx = Math.Sign(sRx) * arccos(cRx);
+                        var Ry = Math.Asin(m[0, 2]);
+                        var Rz = Math.Sign(sRz) * arccos(cRz);
+
+                        int d = (int)m[3, 3];
+                        X = x;
+                        Y = y;
+                        Z = z;
+                        A = Rz;
+                        B = Ry;
+                        C = Rx;
+                        V = v;
+                        D = d;
                     }
                     break;
                 case RobotType.PULSE:
@@ -137,7 +163,6 @@ namespace opengl3
             {
                 traj_rob.Append("G1"+frames[i].ToStr());
             }
-            traj_rob.Append("q\n");
             return traj_rob.ToString();
         }
 

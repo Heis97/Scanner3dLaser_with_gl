@@ -64,7 +64,7 @@ namespace opengl3
         {
             
             byte[] send = System.Text.Encoding.UTF8.GetBytes(send_prog);
-            _stream.Write(send, 0, send.Length);
+            _stream?.Write(send, 0, send.Length);
         }
         public void close_con()
         {

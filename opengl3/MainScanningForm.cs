@@ -949,7 +949,7 @@ namespace opengl3
             // startGenerate();
             //trB_SGBM_Enter();
 
-            load_sing();
+            //load_sing();
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
@@ -3345,8 +3345,13 @@ namespace opengl3
 
         private void but_end_cont_Click(object sender, EventArgs e)
         {
-            var  cont = GL1.get_contour().ToList();
-            if(mesh!=null && cont!= null)
+            debugBox.Text = gen_traj_rob(RobotFrame.RobotType.KUKA);
+        }
+
+        string gen_traj_rob(RobotFrame.RobotType robotType)
+        {
+            var cont = GL1.get_contour().ToList();
+            if (mesh != null && cont != null)
             {
                 List<List<Point3d_GL>> conts = new List<List<Point3d_GL>>();
                 for (int i = 0; i < param_tr.layers; i++)
@@ -3356,15 +3361,18 @@ namespace opengl3
                 var _traj = PathPlanner.Generate_multiLayer3d_mesh(mesh, conts, param_tr);
 
                 rob_traj = PathPlanner.join_traj(_traj);
-                var ps = PathPlanner.traj_to_matr(rob_traj);        
-                if(traj_i>=0) GL1.buffersGl.removeObj(traj_i);
-                traj_i = GL1.addLineMeshTraj(ps.ToArray(),0.9f);
+                var ps = PathPlanner.traj_to_matr(rob_traj);
+                if (traj_i >= 0) GL1.buffersGl.removeObj(traj_i);
+                traj_i = GL1.addLineMeshTraj(ps.ToArray(), 0.9f);
                 GL1.buffersGl.sortObj();
-                var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
-                debugBox.Text = traj_rob;
-                
+                var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType);
+                return traj_rob;
+
             }
+            return "";
         }
+
+
 
         void cut_area(RasterMap.type_out type_cut)
         {
@@ -3615,9 +3623,83 @@ namespace opengl3
 
 
 
+
         #endregion
 
-       
+        private void but_rob_con_sc_Click(object sender, EventArgs e)
+        {
+            if (con1 == null)
+            {
+                con1 = new TCPclient();
+            }
+            con1.Connection(30002, "172.31.1.147");
+        }
+
+        private void but_rob_discon_sc_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                con1.send_mes("q\n");
+                con1.close_con();
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void but_rob_send_sc_Click(object sender, EventArgs e)
+        {
+                con1?.send_mes(debugBox.Text + "\n");
+
+        }
+
+        private void but_rob_res_sc_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void but_rob_auto_sc_Click(object sender, EventArgs e)
+        {
+            try_send_rob("a\n");           
+        }
+
+        private void but_rob_manual_sc_Click(object sender, EventArgs e)
+        {
+            try_send_rob("m\n");
+        }
+
+        private void but_rob_clear_sc_Click(object sender, EventArgs e)
+        {
+            try_send_rob("c\n");
+        }
+
+        void try_send_rob(string mes)
+        {
+            try
+            {
+                con1.send_mes(mes);
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void but_rob_start_sc_Click(object sender, EventArgs e)
+        {
+            try_send_rob("s\n");
+        }
+
+        private void but_rob_traj_pulse_Click(object sender, EventArgs e)
+        {
+            debugBox.Text = gen_traj_rob(RobotFrame.RobotType.PULSE);
+        }
+
+        private void but_rob_traj_kuka_Click(object sender, EventArgs e)
+        {
+            debugBox.Text = gen_traj_rob(RobotFrame.RobotType.KUKA);
+        }
     }
 }
 
