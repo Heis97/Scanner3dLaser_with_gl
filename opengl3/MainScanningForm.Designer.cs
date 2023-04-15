@@ -89,6 +89,8 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_rob_traj_pulse = new System.Windows.Forms.Button();
+            this.but_rob_traj_kuka = new System.Windows.Forms.Button();
             this.but_rob_start_sc = new System.Windows.Forms.Button();
             this.but_rob_clear_sc = new System.Windows.Forms.Button();
             this.but_rob_manual_sc = new System.Windows.Forms.Button();
@@ -186,6 +188,7 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_resize = new System.Windows.Forms.Button();
             this.tB_fps_scan = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
             this.but_scan_sing_las = new System.Windows.Forms.Button();
@@ -308,8 +311,6 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_rob_traj_kuka = new System.Windows.Forms.Button();
-            this.but_rob_traj_pulse = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1066,6 +1067,26 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // but_rob_traj_pulse
+            // 
+            this.but_rob_traj_pulse.Location = new System.Drawing.Point(888, 590);
+            this.but_rob_traj_pulse.Name = "but_rob_traj_pulse";
+            this.but_rob_traj_pulse.Size = new System.Drawing.Size(106, 34);
+            this.but_rob_traj_pulse.TabIndex = 147;
+            this.but_rob_traj_pulse.Text = "Траектория Pulse";
+            this.but_rob_traj_pulse.UseVisualStyleBackColor = true;
+            this.but_rob_traj_pulse.Click += new System.EventHandler(this.but_rob_traj_pulse_Click);
+            // 
+            // but_rob_traj_kuka
+            // 
+            this.but_rob_traj_kuka.Location = new System.Drawing.Point(1000, 590);
+            this.but_rob_traj_kuka.Name = "but_rob_traj_kuka";
+            this.but_rob_traj_kuka.Size = new System.Drawing.Size(106, 34);
+            this.but_rob_traj_kuka.TabIndex = 146;
+            this.but_rob_traj_kuka.Text = "Траектория Kuka";
+            this.but_rob_traj_kuka.UseVisualStyleBackColor = true;
+            this.but_rob_traj_kuka.Click += new System.EventHandler(this.but_rob_traj_kuka_Click);
             // 
             // but_rob_start_sc
             // 
@@ -2011,6 +2032,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.but_resize);
             this.tabMain.Controls.Add(this.tB_fps_scan);
             this.tabMain.Controls.Add(this.label21);
             this.tabMain.Controls.Add(this.but_scan_sing_las);
@@ -2112,6 +2134,17 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // but_resize
+            // 
+            this.but_resize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_resize.Location = new System.Drawing.Point(537, 3);
+            this.but_resize.Name = "but_resize";
+            this.but_resize.Size = new System.Drawing.Size(106, 33);
+            this.but_resize.TabIndex = 136;
+            this.but_resize.Text = "Resize";
+            this.but_resize.UseVisualStyleBackColor = true;
+            this.but_resize.Click += new System.EventHandler(this.but_resize_Click);
             // 
             // tB_fps_scan
             // 
@@ -2982,9 +3015,10 @@ namespace opengl3
             // 
             // imageBox1
             // 
+            this.imageBox1.Dock = System.Windows.Forms.DockStyle.Left;
             this.imageBox1.Location = new System.Drawing.Point(3, 3);
             this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(640, 480);
+            this.imageBox1.Size = new System.Drawing.Size(640, 997);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
             // 
@@ -3288,26 +3322,6 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
-            // 
-            // but_rob_traj_kuka
-            // 
-            this.but_rob_traj_kuka.Location = new System.Drawing.Point(1000, 590);
-            this.but_rob_traj_kuka.Name = "but_rob_traj_kuka";
-            this.but_rob_traj_kuka.Size = new System.Drawing.Size(106, 34);
-            this.but_rob_traj_kuka.TabIndex = 146;
-            this.but_rob_traj_kuka.Text = "Траектория Kuka";
-            this.but_rob_traj_kuka.UseVisualStyleBackColor = true;
-            this.but_rob_traj_kuka.Click += new System.EventHandler(this.but_rob_traj_kuka_Click);
-            // 
-            // but_rob_traj_pulse
-            // 
-            this.but_rob_traj_pulse.Location = new System.Drawing.Point(888, 590);
-            this.but_rob_traj_pulse.Name = "but_rob_traj_pulse";
-            this.but_rob_traj_pulse.Size = new System.Drawing.Size(106, 34);
-            this.but_rob_traj_pulse.TabIndex = 147;
-            this.but_rob_traj_pulse.Text = "Траектория Pulse";
-            this.but_rob_traj_pulse.UseVisualStyleBackColor = true;
-            this.but_rob_traj_pulse.Click += new System.EventHandler(this.but_rob_traj_pulse_Click);
             // 
             // MainScanningForm
             // 
@@ -3675,6 +3689,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_rob_start_sc;
         private System.Windows.Forms.Button but_rob_traj_kuka;
         private System.Windows.Forms.Button but_rob_traj_pulse;
+        private System.Windows.Forms.Button but_resize;
     }
 }
 

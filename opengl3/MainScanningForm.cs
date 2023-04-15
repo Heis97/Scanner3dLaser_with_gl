@@ -3700,6 +3700,28 @@ namespace opengl3
         {
             debugBox.Text = gen_traj_rob(RobotFrame.RobotType.KUKA);
         }
+
+        private void but_resize_Click(object sender, EventArgs e)
+        {
+
+            var cur_size = this.Size;
+            var target_size = new Size(1300, 700);
+
+            var kx = target_size.Width / (double)cur_size.Width;
+            var ky = target_size.Height / (double)cur_size.Height;
+
+            for (int j = 0; j < windowsTabs.Controls.Count; j++)
+            {
+                var tab = (TabPage)windowsTabs.Controls[j];
+                for (int i = 0; i < tab.Controls.Count; i++)
+                {
+                    tab.Controls[i].Location = new Point((int)(tab.Controls[i].Location.X*kx), (int)(tab.Controls[i].Location.Y * ky));
+                    tab.Controls[i].Size = new Size((int)(tab.Controls[i].Size.Width * kx), (int)(tab.Controls[i].Size.Height * ky));
+                    tab.Controls[i].Font= new Font(tab.Controls[i].Font.Name,(float)(tab.Controls[i].Font.Size * kx));
+                }
+            }
+
+        }
     }
 }
 
