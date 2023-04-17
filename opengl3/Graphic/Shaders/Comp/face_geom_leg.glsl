@@ -1,7 +1,9 @@
 ﻿#version 430 core
 layout (triangles, invocations = 1) in;
 
-layout(rgba32f, binding = 3) uniform  image2D isolines;
+layout(rgba32f, binding = 2) uniform  image2D isolines;
+layout(rgba32f, binding = 3) uniform  image2D landmark2d_data;
+layout(rgba32f, binding = 4) uniform  image2D landmark3d_data;
 
 uniform vec3 LightPosition_world;
 uniform mat4 VPs[4];

@@ -961,7 +961,7 @@ namespace opengl3
 
             // startGenerate();
             //trB_SGBM_Enter();
-
+            GL1.SortObj();
             //load_sing();
         }
         private void but_cross_flat_Click(object sender, EventArgs e)

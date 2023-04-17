@@ -1060,6 +1060,18 @@ namespace opengl3
             Label_cor_cur.Text = e.X + " " + e.Y;
             int w = trz.rect.Width;
             int h = trz.rect.Height;
+            var proj_xy = new Vertex4f(0, 0, 0, 0);
+            if (Vs!=null)
+            {
+                var vm = Vs[sel_trz];
+
+                proj_xy = vm.Inverse * new Vertex4f(
+                    (float)trz.zoom * ((float)e.X / (0.5f * (float)sizeControl.Width) - 1f),
+                    -((float)trz.zoom * ((float)e.Y / (0.5f * (float)sizeControl.Height) - 1f)), 0, 1);
+
+            }
+            
+
             switch (modeGL)
             {
                 case modeGL.View:
@@ -1093,24 +1105,25 @@ namespace opengl3
                     }
                     lastPos = e.Location;
                     break;
+                    
+
+
                 case modeGL.Paint:
-                    var p_XY = new Vertex4f((float)e.Location.X/ (0.5f* (float)w), (float)e.Location.Y/(0.5f* (float)h), 0,1f);
+                    /*var p_XY = new Vertex4f((float)e.Location.X/ (0.5f* (float)w), (float)e.Location.Y/(0.5f* (float)h), 0,1f);
 
                     var p_XY_1 = new Vertex4f(
                          (float)trz.zoom*((float)(e.Location.X - trz.rect.X)/ (0.5f * (float)w)-1),
                         (float)trz.zoom * ((float)(-e.Location.Y + sizeControl.Width - trz.rect.Y) / (0.5f * (float)h)-1),
                         0, 1f);
 
-                    //var p_3d = calcPixel(p_XY_1, sel_trz);
-                   // Console.WriteLine(p_XY_1);
-
+                    */
 
                     try
                     {
                         if (Label_cor != null)
                         {
 
-                            curPointPaint = p_XY_1;
+                            curPointPaint = proj_xy;
                             Label_cor.Text = curPointPaint.ToString() + "\n" + "\n";//;// + (invM * p_YZ).ToString() + "\n" + (invM * p_ZX).ToString();
                             if(pointsPaint.Count!=0)
                             {
