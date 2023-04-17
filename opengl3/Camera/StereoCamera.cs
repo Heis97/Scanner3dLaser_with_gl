@@ -3,17 +3,38 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using System;
+using System.IO;
+using System.Text;
 
 namespace opengl3
 {
+    
     public class StereoCamera
     {
+        //base = world, flange, scanner = cam1, model = local cord
+        public enum mode {model,world,camera };
         public CameraCV[] cameraCVs;
         public Matrix<double> R;//1 * R -> 2
-        public StereoCamera(CameraCV[] _cameraCVs)
+        public Matrix<double> Bfs;//Flange->scaner
+        public Matrix<double> Bbf;//Base->Flange
+        public mode scan_coord_sys;
+        public StereoCamera(CameraCV[] _cameraCVs,string bfs_file = null)
         {
-            cameraCVs = _cameraCVs;          
+            cameraCVs = _cameraCVs;  
+            if(bfs_file != null)
+            {
+                string file;
+                using (StreamReader sr = new StreamReader(bfs_file))
+                {
+                    file = sr.ReadToEnd();
+                }
+                string[] lines = file.Split(new char[] { '\n' });
+                Bfs = CameraCV.matrix_load(lines[0]);
+            }
         }
+
+        
+
 
         public void calibrate(Mat[] mats,PatternType patternType)
         {
@@ -71,7 +92,7 @@ namespace opengl3
                 }
             }
         }
-        public Matrix<double> calibrateBfs(Frame[] pos)
+        public Matrix<double> calibrateBfs(Frame[] pos,string file_name = "bfs_cal.txt")
         {
             for(int i=0; i<pos.Length; i++)
             {
@@ -93,6 +114,10 @@ namespace opengl3
                 CvInvoke.Invert(Bbm, Bbm_1, DecompMethod.LU);
                 var Bfs = Bbf_1 * Bbm * Bsm;
                 //prin.t(Bfs);
+                using (StreamWriter sw = new StreamWriter(file_name, false, Encoding.UTF8))
+                {
+                    sw.WriteLine(CameraCV.matrix_save(Bfs));
+                }
                 Console.WriteLine(Bfs[0, 3] + " " + Bfs[1, 3] + " " + Bfs[2, 3] + " " + Bfs[0, 0] + " " + Bfs[0, 1] + " " + Bfs[0, 2]);
                 //prin.t("--------------------------------");
 

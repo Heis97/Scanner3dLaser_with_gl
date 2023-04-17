@@ -37,11 +37,29 @@ namespace opengl3
             stereoCamera = new StereoCamera(cameraCVs);
 
         }
+        public Scanner(StereoCamera stereoCamera)
+        {
+            laserSurface = new LaserSurface();
+            pointCloud = new PointCloud();
+            linearAxis = new LinearAxis();
+            this.stereoCamera = stereoCamera;
+
+        }
         public void initStereo(Mat[] mats, PatternType patternType)
         {
             stereoCamera.calibrate(mats, patternType);
         }
 
+        public Scanner set_coord_sys(StereoCamera.mode mode)
+        {
+            stereoCamera.scan_coord_sys = mode;
+            return this;
+        }
+        public Scanner set_rob_pos(string pos)
+        {
+            stereoCamera.Bbf = new RobotFrame(pos).getMatrix();
+            return this;
+        }
         public void clearPoints()
         {
             pointCloud.clearPoints();

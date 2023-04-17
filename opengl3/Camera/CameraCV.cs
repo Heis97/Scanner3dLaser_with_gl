@@ -693,7 +693,7 @@ namespace opengl3
             }           
         }
 
-        static string matrix_save(Matrix<double> matrix)
+        public static string matrix_save(Matrix<double> matrix)
         {
             var txt = matrix.Size.Width + " " + matrix.Size.Height + " ";
             for(int j = 0; j < matrix.Size.Height; j++)
@@ -706,7 +706,7 @@ namespace opengl3
             return txt;
         }
 
-        static Matrix<double> matrix_load(string matrix_txt)
+        public static Matrix<double> matrix_load(string matrix_txt)
         {
             var subline = matrix_txt.Trim().Split(' ');
             var w = Convert.ToInt32(subline[0]);

@@ -387,5 +387,19 @@ namespace opengl3
             //print(rotX);
             return rotX * rotY * rotZ;
         }
+
+        static public Matrix<double> eye_matr(int s)
+        {
+            var matr = new Matrix<double>(s, s);
+            for(int i=0; i<s; i++)
+            {
+                for (int j = 0; j < s; j++)
+                {
+                    if(i == j) matr[i, j] = 1;
+                    else matr[i, j] = 0;
+                }
+            }
+            return matr;
+        }
     }
 }

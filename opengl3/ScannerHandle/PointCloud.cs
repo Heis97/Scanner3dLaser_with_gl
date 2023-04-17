@@ -257,8 +257,26 @@ namespace opengl3
             var points3d_1 = computePointsCam_2d(points_im1, stereocamera.cameraCVs[0], color_im[0]);
             var points3d_2 = computePointsCam_2d(points_im2, stereocamera.cameraCVs[1], color_im[1]);
 
-            var ps1 = comp_points_for_gpu_2d(points3d_1, stereocamera.cameraCVs[0]);
-            var ps2 = comp_points_for_gpu_2d(points3d_2, stereocamera.cameraCVs[1]);
+
+            var m1 = stereocamera.cameraCVs[0].matrixCS;
+            if(stereocamera.scan_coord_sys == StereoCamera.mode.camera)
+            {
+                m1 = UtilMatr.eye_matr(4);
+            }
+            if (stereocamera.scan_coord_sys == StereoCamera.mode.world)
+            {
+                Console.WriteLine("Bbf:");
+                prin.t(stereocamera.Bbf);
+                Console.WriteLine("Bfs:");
+                prin.t(stereocamera.Bfs);
+                Console.WriteLine("_______________________");
+                
+                if (stereocamera.Bbf!= null && stereocamera.Bfs!= null)
+                    m1 = stereocamera.Bbf * stereocamera.Bfs;//or inverse                
+            }
+            var m2 = m1 * stereocamera.R;
+            var ps1 = comp_points_for_gpu_2d(points3d_1, m1);
+            var ps2 = comp_points_for_gpu_2d(points3d_2, m2);
             Console.WriteLine("points prepared.");
             var points_cam2b = graphicGL.cross_flat_gpu_all(ps1, ps2);
 
@@ -267,16 +285,16 @@ namespace opengl3
             return points_cam2b;
         }
 
-        static Point3d_GL[][] comp_points_for_gpu_2d(Point3d_GL[][] ps_cam, CameraCV camera)
+        static Point3d_GL[][] comp_points_for_gpu_2d(Point3d_GL[][] ps_cam, Matrix<double> matrix)
         {
             var ps_3d = new List<Point3d_GL[]>();
             for(int i = 0; i < ps_cam.Length; i++)
             {
-                ps_3d.Add(comp_points_for_gpu(ps_cam[i], camera.matrixCS));
+                ps_3d.Add(comp_points_for_gpu(ps_cam[i], matrix));
             }
             return ps_3d.ToArray();
         }
-        public static Point3d_GL[] comp_points_for_gpu(Point3d_GL[] points_im, Matrix<double> matrix )
+        public static Point3d_GL[] comp_points_for_gpu(Point3d_GL[] points_im, Matrix<double> matrix)
         {
             var ps3d = new Point3d_GL[points_im.Length+1];
             ps3d[0] = matrix * new Point3d_GL(0, 0, 0);

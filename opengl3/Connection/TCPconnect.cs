@@ -68,8 +68,11 @@ namespace opengl3
         }
         public void close_con()
         {
-            _stream.Close();
-            _client.Close();
+            if(_client.Connected)
+            {
+                _stream.Close();
+                _client.Close();
+            }            
         }
 
 

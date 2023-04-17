@@ -32,7 +32,7 @@ namespace opengl3
         #region var
 
         StringBuilder sb_enc =null;
-
+        string video_scan_name = "1";
         int scan_i = -1;
         int traj_i = -1;
         TrajParams param_tr = new TrajParams();
@@ -433,29 +433,42 @@ namespace opengl3
             cam2.save_camera("cam2_conf_2412_1.txt");
             comboImages.Items.AddRange(frms_2);*/
         }
-        void loadScanner_v2(string  conf1, string conf2, string stereo_cal)
+        Scanner loadScanner_v2(string  conf1, string conf2, string stereo_cal, string bfs_file = null)
         {
             var cam1 = CameraCV.load_camera(conf1);
             var cam2 = CameraCV.load_camera(conf2);
+            Scanner scanner;
+            if(bfs_file==null)
+            {
+                scanner = new Scanner(new CameraCV[] { cam1, cam2 });
+            }
+            else
+            {
 
-            scanner = new Scanner(new CameraCV[] { cam1, cam2 });
+                var stereo_cam = new StereoCamera(new CameraCV[] { cam1, cam2 },bfs_file);
+                scanner = new Scanner(stereo_cam);
+            }
+            
             var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);
 
             comboImages.Items.AddRange(frms_stereo);
 
-
+            return scanner;
         }
-        void load_scan_v2(string scan_path, int strip = 1, double smooth = 0.8)
+        void load_scan_v2(Scanner scanner,string scan_path, int strip = 1, double smooth = 0.8)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            loadVideo_stereo(scan_path_1, scanner, strip);
+            scanner = loadVideo_stereo(scan_path_1, scanner, strip);
 
-            mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(),smooth);
-            
+            mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
+
+
+
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             if(scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+           // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
             GL1.SortObj();
             Console.WriteLine("Loading end.");
         }
@@ -2122,6 +2135,7 @@ namespace opengl3
             formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
             if (con1 != null)
             {
+                
                 con1.send_mes("q\n");//g
                 con1.close_con();
             }
@@ -2340,7 +2354,7 @@ namespace opengl3
         {
             int fcc = VideoWriter.Fourcc('M', 'P', '4', 'V'); //'M', 'J', 'P', 'G'
             int fps = 30;
-            string name ="cam"+ind.ToString()+"\\"+ box_scanFolder.Text + "\\1.mp4";
+            string name ="cam"+ind.ToString()+"\\"+ box_scanFolder.Text + "\\"+video_scan_name+".mp4";
             video_writer[ind - 1] = new VideoWriter(name, fcc, fps, new Size(cameraSize.Width, cameraSize.Height), true);
         }
 
@@ -3147,6 +3161,11 @@ namespace opengl3
 
         private void but_scan_stereolas_Click(object sender, EventArgs e)
         {
+            var pos_rob = positionFromRobot(con1);
+            if(pos_rob != null)
+            {
+                video_scan_name = pos_rob.ToString();
+            }
             startScanLaser(3);
         }
         private void but_scan_sing_las_Click(object sender, EventArgs e)
@@ -3160,15 +3179,36 @@ namespace opengl3
             var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
             //capture1.SetCaptureProperty(CapProp.);
         }
-        public void loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
         {
+
             videoframe_count = 0;
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
             var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
             Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
             Console.WriteLine(Directory.GetFiles("cam2\\" + filepath)[0]);
-            var capture1 = new VideoCapture(Directory.GetFiles("cam1\\" + filepath)[0]);
-            var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
+
+            var ve_paths1 = get_video_path(1,filepath);
+            string video_path1 = ve_paths1[0];
+           // string enc_path1 = ve_paths1[1];
+
+            var ve_paths2 = get_video_path(2, filepath);
+            string video_path2 = ve_paths2[0];
+            // string enc_path2 = ve_paths2[1];
+
+            scanner.set_coord_sys(StereoCamera.mode.model);
+            var name_v1 = Path.GetFileNameWithoutExtension(video_path1);
+            var name_v2 = Path.GetFileNameWithoutExtension(video_path2);
+            if (name_v1.Length > 1 && name_v2.Length > 1)
+            {
+                scanner.set_rob_pos(name_v1);
+                scanner.set_coord_sys(StereoCamera.mode.world);
+            }
+                
+
+
+            var capture1 = new VideoCapture(video_path1);
+            var capture2 = new VideoCapture(video_path2);
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
             var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
@@ -3218,8 +3258,28 @@ namespace opengl3
             comboImages.Items.AddRange(frames_show.ToArray());
             scanner.compPointsStereoLas_2d();
             Console.WriteLine("Points computed.");
+            return scanner;
         }
+        string[] get_video_path(int ind,string filepath)//0 - video, 1 - enc
+        {
+            var files = Directory.GetFiles("cam"+ind+"\\" + filepath);
+            string video_path = "";
+            string enc_path = "";
+            foreach (var path in files)
+            {
+                var ext = path.Split('.').Reverse().ToArray();
 
+                if (ext[0] == "txt")
+                {
+                    enc_path = path;
+                }
+                if (ext[0] == "mp4")
+                {
+                    video_path = path;
+                }
+            }
+            return new string[] { video_path, enc_path };
+        }
         public Scanner loadVideo_sing_cam(string filepath, Scanner scanner = null, int strip = 1,bool calib = false)
         {
             videoframe_count = 0;
@@ -3230,23 +3290,10 @@ namespace opengl3
             //CvInvoke.Imshow("thr", mat_or_tr);
 
             Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
-            //var capture1 = new VideoCapture(Directory.GetFiles("cam1\\" + filepath)[0]);
-            var files = Directory.GetFiles("cam1\\" + filepath);
-            string video_path = "";
-            string enc_path = "";
-            foreach(var path in files)
-            {
-                var ext = path.Split('.').Reverse().ToArray();
+            var ve_paths = get_video_path(1,filepath);
+            string video_path = ve_paths[0];
+            string enc_path = ve_paths[1];
 
-                if(ext[0]=="txt")
-                {
-                    enc_path = path;
-                }
-                if (ext[0] == "mp4")
-                {
-                    video_path = path;
-                }
-            }
             var capture1 = new VideoCapture(video_path);
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
             var fr_st_vid = new Frame(orig1, "sd", FrameType.Test);
@@ -3435,9 +3482,24 @@ namespace opengl3
             int strip = Convert.ToInt32(tb_strip_scan.Text);
             double smooth = Convert.ToDouble(tp_smooth_scan.Text);
 
-            loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
-            load_scan_v2(scan_path, strip,smooth);
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
+            load_scan_v2(scanner,scan_path, strip,smooth);
 
+        }
+
+        private void but_scan_stereo_rob_Click(object sender, EventArgs e)
+        {
+            var scan_path = textB_scan_path.Text;
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var stereo_cal_path = textB_stereo_cal_path.Text;
+
+            int strip = Convert.ToInt32(tb_strip_scan.Text);
+            double smooth = Convert.ToDouble(tp_smooth_scan.Text);
+            string bfs_path = "bfs_cal.txt";
+
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path);
+            load_scan_v2(scanner, scan_path, strip, smooth);
         }
 
         private void but_scan_load_sing_Click(object sender, EventArgs e)
@@ -3722,6 +3784,8 @@ namespace opengl3
             }
 
         }
+
+        
     }
 }
 

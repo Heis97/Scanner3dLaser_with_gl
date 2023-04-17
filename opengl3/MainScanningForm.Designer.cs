@@ -311,6 +311,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.but_scan_stereo_rob = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -962,6 +963,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_scan_stereo_rob);
             this.tabOpenGl.Controls.Add(this.but_rob_traj_pulse);
             this.tabOpenGl.Controls.Add(this.but_rob_traj_kuka);
             this.tabOpenGl.Controls.Add(this.but_rob_start_sc);
@@ -3323,6 +3325,16 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
+            // but_scan_stereo_rob
+            // 
+            this.but_scan_stereo_rob.Location = new System.Drawing.Point(1720, 897);
+            this.but_scan_stereo_rob.Name = "but_scan_stereo_rob";
+            this.but_scan_stereo_rob.Size = new System.Drawing.Size(111, 42);
+            this.but_scan_stereo_rob.TabIndex = 148;
+            this.but_scan_stereo_rob.Text = "Загрузить скан стерео робот";
+            this.but_scan_stereo_rob.UseVisualStyleBackColor = true;
+            this.but_scan_stereo_rob.Click += new System.EventHandler(this.but_scan_stereo_rob_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -3690,6 +3702,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_rob_traj_kuka;
         private System.Windows.Forms.Button but_rob_traj_pulse;
         private System.Windows.Forms.Button but_resize;
+        private System.Windows.Forms.Button but_scan_stereo_rob;
     }
 }
 
