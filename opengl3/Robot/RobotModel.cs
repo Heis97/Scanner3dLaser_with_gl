@@ -177,7 +177,7 @@ namespace opengl3
         }
         public Vector3d_GL compCoord(double t_cur)
         {
-            Vector3d_GL rasst = new Vector3d_GL();
+            Vector3d_GL rasst = new Vector3d_GL(0,0,0);
             foreach (var seg in shapeSegments)
             {
                 var ras = seg.compSegment(t_cur);
@@ -262,7 +262,7 @@ namespace opengl3
                     //Console.WriteLine("UNI: " + compDistUni(_t_cur));
                     return vector* compDistUni(_t_cur);
                 default:
-                    return new Vector3d_GL();
+                    return new Vector3d_GL(0,0,0);
             }
         }
         double compDistAcs(double t_cur)

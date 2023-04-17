@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.Design;
 using Emgu.CV;
 using opengl3;
 
@@ -328,9 +331,9 @@ namespace PathPlanning
         }
 
 
-        static Matrix<double> proj_point(Polygon3d_GL polyg, Point3d_GL point)
+        static Matrix<double> proj_point(Polygon3d_GL polyg, Point3d_GL point,Vector3d_GL vec_x_dir)
         {
-            var vec_x_dir = new Vector3d_GL(0, 1, 0);//(0,1,0) for pulse
+            
             var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
             //Console.WriteLine(vec_y);
             var vec_x = (vec_y | polyg.flat3D.n).normalize();
@@ -349,14 +352,14 @@ namespace PathPlanning
                    { 0,0,0,1}
             });
         }
-        static List<Matrix<double>> project_layer(Polygon3d_GL[] surface, List<Point3d_GL> layer, RasterMap map_xy)
+        static List<Matrix<double>> project_layer(Polygon3d_GL[] surface, List<Point3d_GL> layer, RasterMap map_xy, Vector3d_GL vec_x_dir)
         {
             var layer_3d = new List<Matrix<double>>();
             for (int i = 0; i < layer.Count; i++)
             {
                 var polyg_ind = map_xy.get_polyg_ind_prec_xy(layer[i], surface);
                 var polyg = surface[polyg_ind];
-                layer_3d.Add(proj_point(polyg, layer[i]));
+                layer_3d.Add(proj_point(polyg, layer[i],vec_x_dir));
             }
             return layer_3d;
         }
@@ -381,11 +384,12 @@ namespace PathPlanning
             var traj_3d = new List<List<Matrix<double>>>();
             double resolut = 0.2;
             var map_xy = new RasterMap(surface, resolut,RasterMap.type_map.XY);
-
+            var ang_x = trajParams.ang_x;
+            var vec_x = new Vector3d_GL(Math.Cos(ang_x), Math.Sin(ang_x), 0);
             for (int i=0; i<traj_2d.Count;i++)
             {
                 var traj_df = filter_traj(divide_traj(traj_2d[i], trajParams.div_step), trajParams.div_step / 2);
-                traj_3d.Add(project_layer(surface, traj_df, map_xy));
+                traj_3d.Add(project_layer(surface, traj_df, map_xy, vec_x));
             }
             traj_3d = add_transit(traj_3d, trajParams.h_transf);
             return traj_3d;
@@ -442,76 +446,8 @@ namespace PathPlanning
     }
 
 
-    class TrajParams
-    {
-        
-        public double[] z;
-        public double dz;
-        [Description("Высота слоя")]
-        [Category("Параметры траектории")]
-        [DisplayName("dz")]
-        public double dZ
-        {
-            get { return dz; }
-            set { dz = value; comp_z(); }
-        }
-       public void comp_z()
-        {
-            if(layers<=0)
-            {
-                return;
-            }
-            z = new double[layers];
-            for(int i = 0; i < z.Length; i++)
-            {
-                z[i] = dz*(i+1);
-            }
-        }
 
-        public int layers;
-        public int Layers
-        {
-            get { return layers; }
-            set { layers = value; comp_z(); }
-        }       
-        public double step;
-        public double Step
-        {
-            get { return step; }
-            set { step = value; }
-        }
 
-        //------------------------
-        public double div_step;
-        public double Div_step
-        {
-            get { return div_step; }
-            set { div_step = value; }
-        }
-        public double layers_angle;
-        public double Layers_angle
-        {
-            get { return layers_angle; }
-            set { layers_angle = value; }
-        }
-        public double h_transf;
-        public double H_transf
-        {
-            get { return h_transf; }
-            set { h_transf = value; }
-        }
-        public TrajParams(double _step, int _layers, double _div_step, double _layers_angle, double[] _z, double _h_transf)
-        {
-            step = _step;
-            layers = _layers;
-            div_step = _div_step;
-            layers_angle = _layers_angle;
-            z = _z;
-            h_transf = _h_transf;
-        }
-        public TrajParams()
-        {
 
-        }
-    }
+
 }

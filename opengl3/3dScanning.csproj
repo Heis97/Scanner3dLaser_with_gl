@@ -143,6 +143,7 @@
     <Compile Include="Geometry\Line3d_GL.cs" />
     <Compile Include="PathPlanning\PathPlanner.cs" />
     <Compile Include="PathPlanning\RobotFrame.cs" />
+    <Compile Include="PathPlanning\TrajParams.cs" />
     <Compile Include="ScannerHandle\GeometryAnalyse.cs" />
     <Compile Include="ScannerHandle\LaserSurface.cs" />
     <Compile Include="ScannerHandle\Detection.cs" />

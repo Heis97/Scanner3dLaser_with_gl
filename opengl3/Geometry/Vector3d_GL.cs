@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,13 @@ namespace opengl3
 
     public struct Vector3d_GL
     {
-        public double x;
-        public double y;
-        public double z;
+
+        public double x { get; set; }
+        public double y { get; set; }
+        public double z { get; set; }
+
+       
+
         public double norm { get { return Math.Sqrt(x * x + y * y + z * z); } }
         public Vector3d_GL(double _x, double _y, double _z)
         {
