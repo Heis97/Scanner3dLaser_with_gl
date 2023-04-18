@@ -129,6 +129,7 @@
     <Compile Include="Connection\DevicesArduino\LaserLine.cs" />
     <Compile Include="Extra\Magnetic.cs" />
     <Compile Include="Frame\FrameBuf.cs" />
+    <Compile Include="Frame\Settings_loader.cs" />
     <Compile Include="Geometry\Color3d_GL.cs" />
     <Compile Include="Geometry\Polygon3d_GL.cs" />
     <Compile Include="Geometry\Matr4x4f.cs" />

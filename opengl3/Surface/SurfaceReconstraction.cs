@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace opengl3
 {
-    enum Ax { X,Y,Z};
+    public enum Ax { X,Y,Z};
     static class SurfaceReconstraction
     {
         

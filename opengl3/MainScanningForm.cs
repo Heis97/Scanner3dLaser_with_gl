@@ -134,27 +134,6 @@ namespace opengl3
             InitializeComponent();
             init_vars();         
         }
-        void load_sing()
-        {
-            var scan_path = @"C:\Users\ASUS PC\source\repos\Heis97\opengl3\opengl3\bin\x86\Debug\cam1\las_cal_1004_1";
-            var cam1_conf_path = @"C:\Users\ASUS PC\source\repos\Heis97\opengl3\opengl3\bin\x86\Debug\cam1_conf_0508_1.txt";
-
-            int strip = 1;
-            double smooth = -1;// Convert.ToDouble(tp_smooth_scan.Text);
-
-            loadScanner_sing(cam1_conf_path);
-            load_calib_sing(scan_path, strip, smooth);
-
-            load_scan_sing(scan_path, 5, smooth);
-            var ps = scanner.getPointsScene();
-            GL1.addPointMesh(ps);
-
-            /*var mesh = Polygon3d_GL.triangulate_lines_xy(ps, -1);
-            var scan_stl = Polygon3d_GL.toMesh(mesh);
-            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);*/
-            GL1.SortObj();
-        }
-
         void python_c_sh()
         {
             var eng = IronPython.Hosting.Python.CreateEngine();
@@ -473,41 +452,35 @@ namespace opengl3
             Console.WriteLine("Loading end.");
         }
         //----------------------------------------------------------------------------------------------------------
-        void loadScanner_sing(string conf1)
+        Scanner loadScanner_sing(string conf1, string laser_line = null)
         {
             var cam1 = CameraCV.load_camera(conf1);
-            scanner = new Scanner( cam1 );
-            //var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
-            //var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
-            //scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh);
-            //comboImages.Items.AddRange(frms_stereo);
+            LinearAxis line = null;
+            if(laser_line != null)  line = LinearAxis.load(laser_line);
+            var scanner = new Scanner( cam1,line);
+
+            return scanner;
         }
-        void load_scan_sing(string scan_path, int strip = 1, double smooth = 0.8)
+        void load_scan_sing(Scanner scanner,string scan_path, int strip = 1, double smooth = 0.8)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            loadVideo_sing_cam(scan_path_1, scanner, strip);
-
-            /*mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
-
+            scanner = loadVideo_sing_cam(scan_path_1, scanner,strip);
+            var ps = scanner.getPointsLinesScene();
+            var mesh = Polygon3d_GL.triangulate_lines_xy(ps, -1);
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+            scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
             GL1.SortObj();
-            Console.WriteLine("Loading end.");*/
+
         }
 
-        void load_calib_sing(string scan_path, int strip = 1, double smooth = 0.8)
+        void load_calib_sing(Scanner scanner, string scan_path, int strip = 1, double smooth = 0.8)
         {
+
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            var orig = loadVideo_sing_cam(scan_path_1, scanner, strip,true);
+            scanner = loadVideo_sing_cam(scan_path_1, scanner, strip, true);
+            scanner.linearAxis.save("linear.txt");
 
-            /*mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
-
-            var scan_stl = Polygon3d_GL.toMesh(mesh);
-            if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
-            GL1.SortObj();
-            Console.WriteLine("Loading end.");*/
         }
-
 
         //-------------------------------------------------------------------------------------------
         void loadScannerStereoLas(
@@ -962,7 +935,9 @@ namespace opengl3
             // startGenerate();
             //trB_SGBM_Enter();
             GL1.SortObj();
-            //load_sing();
+            // load_sing();
+            var matr = (Matrix<double>)Settings_loader.load_data("bfs_test.txt")[0];
+            prin.t(matr);
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
@@ -1487,6 +1462,27 @@ namespace opengl3
             }
 
             //imageBox2.Image = cameraCVcommon.undist(fr.im);
+        }
+        private void but_resize_Click(object sender, EventArgs e)
+        {
+
+            var cur_size = this.Size;
+            var target_size = new Size(1000, 500);
+
+            var kx = target_size.Width / (double)cur_size.Width;
+            var ky = target_size.Height / (double)cur_size.Height;
+
+            for (int j = 0; j < windowsTabs.Controls.Count; j++)
+            {
+                var tab = (TabPage)windowsTabs.Controls[j];
+                for (int i = 0; i < tab.Controls.Count; i++)
+                {
+                    tab.Controls[i].Location = new Point((int)(tab.Controls[i].Location.X * kx), (int)(tab.Controls[i].Location.Y * ky));
+                    tab.Controls[i].Size = new Size((int)(tab.Controls[i].Size.Width * kx), (int)(tab.Controls[i].Size.Height * ky));
+                    tab.Controls[i].Font = new Font(tab.Controls[i].Font.Name, (float)(tab.Controls[i].Font.Size * ky));
+                }
+            }
+
         }
 
         void chekLines()
@@ -3298,6 +3294,7 @@ namespace opengl3
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
             var fr_st_vid = new Frame(orig1, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
+            var pos_inc_cal = new List<double>();
             comboImages.Items.Add(fr_st_vid);
 
             var all_frames = all_frames1;
@@ -3322,10 +3319,15 @@ namespace opengl3
                     if (videoframe_count % strip == 0)
                     {
                         im1 -= orig1;
-                        var frame_d = new Frame(im1,  videoframe_count.ToString(), FrameType.LasDif);
-                        frames_show.Add(frame_d);
+                        
+                        if(calib)
+                        {
+                            var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
+                            frames_show.Add(frame_d);
+                            pos_inc_cal.Add(inc_pos[videoframe_count]);
 
-                        if (calib) scanner.addPointsSingLas_2d(im1, false,calib);//calib = orig
+                            scanner.addPointsSingLas_2d(im1, false, calib);
+                        }
                         else scanner.addPointsLinLas_step(im1, inc_pos[videoframe_count], PatternType.Mesh);
 
                     }
@@ -3335,7 +3337,8 @@ namespace opengl3
             }
             comboImages.Items.AddRange(frames_show.ToArray());
 
-            if(calib) scanner.calibrateLinearStep(Frame.getMats(frames_show.ToArray()), orig1,inc_pos, PatternType.Mesh);
+
+            if(calib) scanner.calibrateLinearStep(Frame.getMats(frames_show.ToArray()), orig1,pos_inc_cal.ToArray(), PatternType.Mesh,GL1);
 
             //var mats = Frame.getMats(frames_show.ToArray());
             //var corn = Detection.detectLineDiff_corn_calibr(mats);
@@ -3511,8 +3514,8 @@ namespace opengl3
             int strip = Convert.ToInt32(tb_strip_scan.Text);
             double smooth = Convert.ToDouble(tp_smooth_scan.Text);
 
-            loadScanner_sing(cam1_conf_path);//laser_line_path
-            load_scan_sing(scan_path, strip, smooth);
+            var scanner = loadScanner_sing(cam1_conf_path,laser_line_path);
+            load_scan_sing(scanner, scan_path, strip, smooth);
         }
         private void but_load_sing_calib_Click(object sender, EventArgs e)
         {
@@ -3522,8 +3525,8 @@ namespace opengl3
             int strip = Convert.ToInt32(tb_strip_scan.Text);
             double smooth = Convert.ToDouble(tp_smooth_scan.Text);
 
-            loadScanner_sing(cam1_conf_path);
-            load_calib_sing(scan_path, strip, smooth);
+            var scanner = loadScanner_sing(cam1_conf_path);
+            load_calib_sing(scanner,scan_path, strip, smooth);
         }
 
         string save_file_name(string init_direct, string extns)
@@ -3681,12 +3684,9 @@ namespace opengl3
         }
 
 
-
-
-
-
-
         #endregion
+
+        #region rob_sc_but
 
         private void but_rob_con_sc_Click(object sender, EventArgs e)
         {
@@ -3763,28 +3763,8 @@ namespace opengl3
             debugBox.Text = gen_traj_rob(RobotFrame.RobotType.KUKA);
         }
 
-        private void but_resize_Click(object sender, EventArgs e)
-        {
-
-            var cur_size = this.Size;
-            var target_size = new Size(1300, 700);
-
-            var kx = target_size.Width / (double)cur_size.Width;
-            var ky = target_size.Height / (double)cur_size.Height;
-
-            for (int j = 0; j < windowsTabs.Controls.Count; j++)
-            {
-                var tab = (TabPage)windowsTabs.Controls[j];
-                for (int i = 0; i < tab.Controls.Count; i++)
-                {
-                    tab.Controls[i].Location = new Point((int)(tab.Controls[i].Location.X*kx), (int)(tab.Controls[i].Location.Y * ky));
-                    tab.Controls[i].Size = new Size((int)(tab.Controls[i].Size.Width * kx), (int)(tab.Controls[i].Size.Height * ky));
-                    tab.Controls[i].Font= new Font(tab.Controls[i].Font.Name,(float)(tab.Controls[i].Font.Size * kx));
-                }
-            }
-
-        }
-
+        #endregion
+      
         
     }
 }

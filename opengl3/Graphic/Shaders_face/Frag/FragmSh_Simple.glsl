@@ -28,5 +28,6 @@ void main() {
 	    
 	}*/
 	color.xyz = fs_in.Color;
+
 	color.w = 1.0;
 }

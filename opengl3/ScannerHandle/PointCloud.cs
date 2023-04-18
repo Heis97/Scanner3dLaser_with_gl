@@ -66,6 +66,8 @@ namespace opengl3
             var points_im = Detection.detectLineDiff(mat,5,0.05f,false,false);
             //var points_im = Detection.detectLineDiff(mat);
             var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
+
+           
             //points3d_cur = points_cam;
             points3d_cur = camToScene(points_cam, cameraCV.matrixCS);
             var ps_list = points3d.ToList();
@@ -76,11 +78,17 @@ namespace opengl3
         }
         public bool addPointsLinLas_step(Mat mat, double LinPos, CameraCV cameraCV, LinearAxis linearAxis, PatternType patternType)
         {
-            var points_im = Detection.detectLineDiff(mat, 5, 0.05f, false, false);
+            var points_im = Detection.detectLineDiff(mat, 5, 0.05f, false, true);
             //var points_im = Detection.detectLineDiff(mat);
+            Console.WriteLine(points_im.Length);
+          /*var orig = mat.Clone();
+            UtilOpenCV.drawPoints(orig, points_im, 0, 255, 0);
+            CvInvoke.Imshow("ps", orig);
+            CvInvoke.WaitKey();*/
             var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
-            //points3d_cur = points_cam;
-            points3d_cur = camToScene(points_cam, cameraCV.matrixCS);
+            //graphicGL.addFlat3d_YZ(linearAxis.getLaserSurf(LinPos),null,0.1f,0.1f,0.4f);
+            points3d_cur = points_cam;
+            //points3d_cur = camToScene(points_cam, cameraCV.matrixCS);
             var ps_list = points3d.ToList();
             ps_list.AddRange(points3d_cur);
             points3d_lines.Add(points3d_cur);

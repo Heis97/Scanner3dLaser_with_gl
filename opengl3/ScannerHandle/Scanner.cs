@@ -21,12 +21,20 @@ namespace opengl3
 
         public LinearAxis linearAxis;
 
-        public Scanner(CameraCV cam)
+        public Scanner(CameraCV cam,LinearAxis linear=null)
         {
             cameraCV = cam;
             laserSurface = new LaserSurface();
             pointCloud = new PointCloud();
-            linearAxis = new LinearAxis();
+            if(linear==null)
+            {
+                linearAxis = new LinearAxis();
+            }
+            else
+            {
+                linearAxis = linear;
+            }
+            
             
         }
         public Scanner(CameraCV[] cameraCVs)
@@ -76,7 +84,7 @@ namespace opengl3
 
         public bool calibrateLinearStep(Mat[] mats,Mat orig, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
         {
-            return linearAxis.calibrateLas_step(mats, orig,positions, cameraCV, patternType);
+            return linearAxis.calibrateLas_step(mats, orig,positions, cameraCV, patternType,graphicGL);
         }
         
         public bool calibrateLinearLas(Mat[][] mats, Mat[] origs, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
@@ -236,5 +244,10 @@ namespace opengl3
             }
             
         }
+   
+    
+    
+    
     }
+
 }

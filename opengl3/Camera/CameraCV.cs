@@ -361,10 +361,24 @@ namespace opengl3
         public float[] compPos(MCvPoint3D32f[] points3D, System.Drawing.PointF[] points2D)
         {
             //distortmatrix = new Matrix<double>(new double[,]{ { 0,0,0,0,0} });
+           // prin.t(points3D);
+           // prin.t(points2D);
             CvInvoke.SolvePnP(points3D, points2D, cameramatrix, distortmatrix, cur_r, cur_t);
             var matrs = assemblMatrix(cur_r, cur_t);
             matrixCS = matrs[0];
             matrixSC = matrs[1];
+
+            /*prin.t(matrixCS);
+            prin.t(matrixSC);
+            var data_mx = new double[4, 4]
+            {
+                {0 ,1,0,100 },
+                {1 ,0,0,26},
+                {0 ,0,-1,154},
+                {0,0,0,1 }
+            };
+            matrixCS = new Matrix<double>(data_mx);
+            CvInvoke.Invert(matrixCS, matrixSC, DecompMethod.LU);*/
 
             //var points_cam = PointCloud.fromLines(PointF.toPointF( points2D), this, LaserSurface.zeroFlatInCam(this.matrixSC));
             //var points3d_cur = PointCloud.camToScene(points_cam, this.matrixCS);
@@ -671,72 +685,18 @@ namespace opengl3
 
         static public CameraCV load_camera(string path)
         {
-            string file;
-            using (StreamReader sr = new StreamReader(path))
-            {
-                file = sr.ReadToEnd();
-            }
-            string[] lines = file.Split(new char[] { '\n' });
-            var cameramatrix = matrix_load(lines[0]);
-            var distortionmatrix = matrix_load(lines[1]);
-            var size = size_load(lines[2]);
+            var settings = Settings_loader.load_data(path);
+
+            var cameramatrix = (Matrix<double>)settings[0];
+            var distortionmatrix = (Matrix<double>)settings[1];
+            var size = (Size)settings[2];
             return new CameraCV(cameramatrix, distortionmatrix, size);
         }
 
         public void save_camera(string path)
-        {         
-            using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
-            {
-                sw.WriteLine(matrix_save(cameramatrix));
-                sw.WriteLine(matrix_save(distortmatrix));
-                sw.WriteLine(size_save(image_size));
-            }           
-        }
-
-        public static string matrix_save(Matrix<double> matrix)
         {
-            var txt = matrix.Size.Width + " " + matrix.Size.Height + " ";
-            for(int j = 0; j < matrix.Size.Height; j++)
-            {
-                for(int i = 0; i < matrix.Size.Width; i++)
-                {
-                    txt+= matrix[j,i] + " ";
-                }
-            }
-            return txt;
+            Settings_loader.save_file(path, new object[] { cameramatrix, distortmatrix, image_size });
         }
-
-        public static Matrix<double> matrix_load(string matrix_txt)
-        {
-            var subline = matrix_txt.Trim().Split(' ');
-            var w = Convert.ToInt32(subline[0]);
-            var h = Convert.ToInt32(subline[1]);
-            int k = 2;
-            var matrix = new Matrix<double>(w,h);
-            for (int j = 0; j < matrix.Size.Height; j++)
-            {
-                for (int i = 0; i < matrix.Size.Width; i++)
-                {
-                    matrix[j, i]  = Convert.ToDouble(subline[k]);k++;
-                }
-            }
-            return matrix;
-        }
-
-        static string size_save(Size size)
-        {
-            var txt = size.Width + " " + size.Height + " ";
-            return txt;
-        }
-
-        static Size size_load(string size_txt)
-        {
-            var subline = size_txt.Trim().Split(' ');
-            var w = Convert.ToInt32(subline[0]);
-            var h = Convert.ToInt32(subline[1]);
-            return new Size(w,h);
-        }
-
 
 
 

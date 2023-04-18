@@ -65,6 +65,8 @@ void main() {
 	else{
 		color.xyz = MaterialDiffuseColor;
 	}
+
 	color.w = transparency;
+	color.w = 0.2;
 	//color.xyz += fs_in.Color;
 }

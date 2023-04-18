@@ -192,6 +192,13 @@ namespace opengl3
                 Console.WriteLine(" ");
             }
         }
+        public static void t(MCvPoint3D32f[] matr)
+        {
+            for (int i = 0; i < matr.Length; i++)
+            {               
+                 Console.WriteLine(matr[i].X + " " + matr[i].Y + " " + matr[i].Z + "; ");
+            }
+        }
         public static void t(System.Drawing.PointF[][] matr)
         {
             for (int i = 0; i < matr.GetColumn(0).Length; i++)

@@ -136,10 +136,24 @@ namespace opengl3
                           select p;
             return ps_sort.ToArray();
         }
-        static public Polygon3d_GL[] triangulate_two_lines_xy(Point3d_GL[] _ps1, Point3d_GL[] _ps2)
+        static public Polygon3d_GL[] triangulate_two_lines_xy(Point3d_GL[] ps1, Point3d_GL[] ps2)
         {
-            var ps1 = sortByX(_ps1);
-            var ps2 = sortByX(_ps2);
+            var ps_or = Point3d_GL.order_points(ps1);
+            var dp = ps_or[ps_or.Length - 1] - ps_or[0];
+            Ax ax;
+            if (Math.Abs(dp.x) > Math.Abs(dp.y)) ax = Ax.X;
+            else ax = Ax.Y;
+
+            if(ax==Ax.X)
+            {
+                ps1 = sortByX(ps1);
+                ps2 = sortByX(ps2);
+            }
+            else
+            {
+                ps1 = sortByY(ps1);
+                ps2 = sortByY(ps2);
+            }
 
             var polygons = new List<Polygon3d_GL>();
             var polygons_ind = new List<int[]>();
@@ -173,7 +187,7 @@ namespace opengl3
                     var min_dist = double.MaxValue;
                     for (int j = 0; j < ps2.Length; j++)
                     {
-                        var dist = (ps1[i] - ps2[j]).magnitude_x();
+                        var dist = (ps1[i] - ps2[j]).magnitude_ax(ax);
                         if (dist < min_dist)
                         {
                             min_dist = dist;
@@ -218,89 +232,7 @@ namespace opengl3
             return polygons.ToArray();
         }
 
-        static public Polygon3d_GL[] triangulate_two_lines_in_cam(Point3d_GL[] _ps1, Point3d_GL[] _ps2)
-        {
-            //var ps1 = sortByX(_ps1).Reverse().ToArray();
-            //var ps2 = sortByX(_ps2).Reverse().ToArray();
-            var ps1 = sortByY(_ps1);
-            var ps2 = sortByY(_ps2);
-
-            var polygons = new List<Polygon3d_GL>();
-            var polygons_ind = new List<int[]>();
-            int ind_2 = 0;
-            int ind_2_last = ind_2;
-            List<int>[] ps1_connect = new List<int>[ps1.Length];
-            List<int>[] ps2_connect = new List<int>[ps2.Length];
-            for (int i = 1; i < ps1.Length; i++)
-            {
-                polygons.Add(new Polygon3d_GL(ps1[i - 1], ps1[i], ps2[ind_2]));
-                polygons_ind.Add(new int[] { i - 1, i, ind_2, 1 });
-                if (ps1_connect[i - 1] == null)
-                {
-                    ps1_connect[i - 1] = new List<int>();
-                }
-                if (ps1_connect[i] == null)
-                {
-                    ps1_connect[i] = new List<int>();
-                }
-
-                if (ps2_connect[ind_2] == null)
-                {
-                    ps2_connect[ind_2] = new List<int>();
-                }
-                ps1_connect[i - 1].Add(ind_2); ps1_connect[i].Add(ind_2);
-
-                ps2_connect[ind_2].Add(i - 1); ps2_connect[ind_2].Add(i);
-
-                if (i < ps1.Length - 1)
-                {
-                    var min_dist = double.MaxValue;
-                    for (int j = 0; j < ps2.Length; j++)
-                    {
-                        var dist = (ps1[i] - ps2[j]).magnitude_y();
-                        if (dist < min_dist)
-                        {
-                            min_dist = dist;
-                            ind_2 = j;
-                        }
-                    }
-                }
-                if (ind_2 < ind_2_last)
-                {
-                    Console.WriteLine("ind_2<ind_2_last");
-                    Console.WriteLine(ind_2);
-                }
-                ind_2_last = ind_2;
-            }
-
-            for (int i = 1; i < ps2_connect.Length; i++)
-            {
-                if (ps2_connect[i] == null)
-                {
-                    ps2_connect[i] = new List<int>();
-                    ps2_connect[i].Add(ps2_connect[i - 1][ps2_connect[i - 1].Count - 1]);
-
-                }
-            }
-
-            for (int i = 1; i < ps2_connect.Length; i++)
-            {
-                for (int j = 0; j < ps1.Length; j++)
-                {
-
-                    if (ps2_connect[i - 1].Contains(j) && ps2_connect[i].Contains(j))
-                    {
-                        polygons.Add(new Polygon3d_GL(ps2[i], ps2[i - 1], ps1[j]));
-                        polygons_ind.Add(new int[] { i, i - 1, j, 2 });
-                    }
-
-                }
-            }
-
-            //Console.WriteLine(polygons_ind);
-
-            return polygons.ToArray();
-        }
+        
 
         static public Point3d_GL[][] smooth_lines_xy(Point3d_GL[][] ps, double smooth)
         {
@@ -460,7 +392,7 @@ namespace opengl3
             ps = ps_f.ToArray();
             for (int i=1; i<ps.Length; i++)
             {
-                polygons.AddRange(triangulate_two_lines_in_cam(ps[i - 1], ps[i]));//cam-ord y ; model - ord x; world - calc ord
+                polygons.AddRange(triangulate_two_lines_xy(ps[i - 1], ps[i]));
             }
             Console.WriteLine("triangulated.");
             return polygons.ToArray();

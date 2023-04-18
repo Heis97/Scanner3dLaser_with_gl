@@ -28,7 +28,8 @@ namespace opengl3
                 opgl_obj.id = countObj;
 
                 countObj++;
-                objs_dynamic.Add(opgl_obj);                
+                objs_dynamic.Add(opgl_obj);
+                //Console.WriteLine("countObj - 1: " + (countObj - 1));
                 return countObj - 1;
             }
             else

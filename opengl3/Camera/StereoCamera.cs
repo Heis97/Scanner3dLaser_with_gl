@@ -29,7 +29,7 @@ namespace opengl3
                     file = sr.ReadToEnd();
                 }
                 string[] lines = file.Split(new char[] { '\n' });
-                Bfs = CameraCV.matrix_load(lines[0]);
+                Bfs = Settings_loader.matrix_load(lines[0]);
             }
         }
 
@@ -113,14 +113,16 @@ namespace opengl3
                 CvInvoke.Invert(Bbf, Bbf_1, DecompMethod.LU);
                 CvInvoke.Invert(Bbm, Bbm_1, DecompMethod.LU);
                 var Bfs = Bbf_1 * Bbm * Bsm;
+                //Settings_loader.save_file("bfs_test.txt",new object[] {Bfs});
+                /*
                 //prin.t(Bfs);
                 using (StreamWriter sw = new StreamWriter(file_name, false, Encoding.UTF8))
                 {
-                    sw.WriteLine(CameraCV.matrix_save(Bfs));
+                    sw.WriteLine(Settings_loader.matrix_save(Bfs));
                 }
                 Console.WriteLine(Bfs[0, 3] + " " + Bfs[1, 3] + " " + Bfs[2, 3] + " " + Bfs[0, 0] + " " + Bfs[0, 1] + " " + Bfs[0, 2]);
                 //prin.t("--------------------------------");
-
+                */
             }
             return null;
         }

@@ -221,13 +221,11 @@ namespace opengl3
             return Math.Sqrt(x * x + y * y );
         }
 
-        public double magnitude_x()
+        public double magnitude_ax(Ax ax)
         {
-            return Math.Abs(x);
-        }
-        public double magnitude_y()
-        {
-            return Math.Abs(y);
+            if(ax==Ax.X) return Math.Abs(x);
+            if (ax == Ax.Y) return Math.Abs(y);
+            else return Math.Abs(z);
         }
         public static float[] toMesh(Point3d_GL[] point3Ds)
         {
