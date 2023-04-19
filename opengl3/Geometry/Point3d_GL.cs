@@ -524,6 +524,16 @@ namespace opengl3
         }
 
 
+        public static Point3d_GL Max(Point3d_GL p1, Point3d_GL p2)
+        {
+            var x = Math.Max(p1.x, p2.x);
+            var y = Math.Max(p1.y, p2.y);
+            var z = Math.Max(p1.z, p2.z);
+
+            return new Point3d_GL(x,y,z);
+        }
+
+
     }
 
 }

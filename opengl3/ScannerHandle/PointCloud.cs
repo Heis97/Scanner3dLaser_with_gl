@@ -273,11 +273,6 @@ namespace opengl3
             }
             if (stereocamera.scan_coord_sys == StereoCamera.mode.world)
             {
-                Console.WriteLine("Bbf:");
-                prin.t(stereocamera.Bbf);
-                Console.WriteLine("Bfs:");
-                prin.t(stereocamera.Bfs);
-                Console.WriteLine("_______________________");
                 
                 if (stereocamera.Bbf!= null && stereocamera.Bfs!= null)
                     m1 = stereocamera.Bbf * stereocamera.Bfs;//or inverse                

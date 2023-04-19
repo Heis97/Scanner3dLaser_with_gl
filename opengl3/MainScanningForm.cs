@@ -132,7 +132,7 @@ namespace opengl3
         public MainScanningForm()
         {
             InitializeComponent();
-            init_vars();         
+            init_vars();
         }
         void python_c_sh()
         {
@@ -1297,8 +1297,12 @@ namespace opengl3
                         //imageBox2.Image = UtilOpenCV.drawInsideRectCirc(fr.im_sec.Clone(), chess_size);
                         //imBox_base_1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
                         //imBox_base_2.Image = GeometryAnalyse.findCirclesIter(fr.im_sec.Clone(), ref corn, chess_size);
-                        imBox_base_1.Image = GeometryAnalyse.findCirclesIter(stereocam_scan.cameraCVs[0].undist(mat1.Clone()), ref corn, new Size(6, 7));
-                        imBox_base_2.Image = GeometryAnalyse.findCirclesIter(stereocam_scan.cameraCVs[1].undist(mat2.Clone()), ref corn, new Size(6, 7));
+                        if(stereocam_scan!=null)
+                        {
+                            imBox_base_1.Image = GeometryAnalyse.findCirclesIter(stereocam_scan.cameraCVs[0].undist(mat1.Clone()), ref corn, new Size(6, 7));
+                            imBox_base_2.Image = GeometryAnalyse.findCirclesIter(stereocam_scan.cameraCVs[1].undist(mat2.Clone()), ref corn, new Size(6, 7));
+                        }
+                        
                     }
                     else
                     {
@@ -3160,6 +3164,10 @@ namespace opengl3
             {
                 video_scan_name = pos_rob.ToString();
             }
+            else
+            {
+                video_scan_name = "1";
+            }
             startScanLaser(3);
         }
         private void but_scan_sing_las_Click(object sender, EventArgs e)
@@ -3233,6 +3241,7 @@ namespace opengl3
                         im1 -= orig1;
                         im2 -= orig2;
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
+
                         /*var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                         frame_d.stereo = true;
                         frames_show.Add(frame_d);*/
@@ -3243,6 +3252,7 @@ namespace opengl3
                         imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                         //CvInvoke.Imshow("im2", im2);                       
+                        
                         scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);//true???
                     }
                 }                

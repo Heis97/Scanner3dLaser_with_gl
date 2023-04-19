@@ -621,7 +621,12 @@ namespace opengl3
             return pss_r;
         }
 
+        public Point3d_GL[] intersect_two_mesh(Polygon3d_GL[] pols1, Polygon3d_GL[] pols2)
+        {
 
+
+            return null;
+        }
 
         #endregion
 

@@ -301,7 +301,12 @@ namespace opengl3
                 _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z) *
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
-                    Matrix4x4f.RotatedZ((float)trz.zRot); 
+                    Matrix4x4f.RotatedZ((float)trz.zRot);
+
+              /*  _Vm = 
+                    Matrix4x4f.RotatedX((float)trz.xRot) *
+                    Matrix4x4f.RotatedY((float)trz.yRot) *
+                    Matrix4x4f.RotatedZ((float)trz.zRot) * Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z);*/
             }
 
             if (trz.type == TRZtype.Slave) _Vm = trz.const_trz * _Vm;
