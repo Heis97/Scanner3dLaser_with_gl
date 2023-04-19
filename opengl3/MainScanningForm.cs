@@ -935,9 +935,7 @@ namespace opengl3
             // startGenerate();
             //trB_SGBM_Enter();
             GL1.SortObj();
-            // load_sing();
-            var matr = (Matrix<double>)Settings_loader.load_data("bfs_test.txt")[0];
-            prin.t(matr);
+
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {

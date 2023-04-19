@@ -3,6 +3,7 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -23,14 +24,17 @@ namespace opengl3
             cameraCVs = _cameraCVs;  
             if(bfs_file != null)
             {
-                string file;
+                /*string file;
                 using (StreamReader sr = new StreamReader(bfs_file))
                 {
                     file = sr.ReadToEnd();
                 }
                 string[] lines = file.Split(new char[] { '\n' });
-                Bfs = Settings_loader.matrix_load(lines[0]);
+                Bfs = Settings_loader.matrix_load(lines[0]);*/
+                Bfs = (Matrix<double>)Settings_loader.load_data(bfs_file)[0];
             }
+
+           
         }
 
         
@@ -94,6 +98,7 @@ namespace opengl3
         }
         public Matrix<double> calibrateBfs(Frame[] pos,string file_name = "bfs_cal.txt")
         {
+            var Bfs_l = new List<Matrix<double>>();
             for(int i=0; i<pos.Length; i++)
             {
                 cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, 10f);
@@ -113,7 +118,8 @@ namespace opengl3
                 CvInvoke.Invert(Bbf, Bbf_1, DecompMethod.LU);
                 CvInvoke.Invert(Bbm, Bbm_1, DecompMethod.LU);
                 var Bfs = Bbf_1 * Bbm * Bsm;
-                //Settings_loader.save_file("bfs_test.txt",new object[] {Bfs});
+                Bfs_l.Add(Bfs);
+                
                 /*
                 //prin.t(Bfs);
                 using (StreamWriter sw = new StreamWriter(file_name, false, Encoding.UTF8))
@@ -124,7 +130,14 @@ namespace opengl3
                 //prin.t("--------------------------------");
                 */
             }
-            return null;
+            var Bfs_med = new Matrix<double>(new double[4,4]);
+            for(int i=0; i<Bfs_l.Count;i++)
+            {
+                Bfs_med+=Bfs_l[i];
+            }
+            Bfs_med /= Bfs_l.Count;
+            Settings_loader.save_file("bfs_cal.txt", new object[] { Bfs_med });
+            return Bfs_med;
         }
         /// <summary>
         /// For make housing
