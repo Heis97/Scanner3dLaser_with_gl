@@ -67,6 +67,6 @@ void main() {
 	}
 
 	color.w = transparency;
-	color.w = 0.2;
+	//color.w = 0.2;
 	//color.xyz += fs_in.Color;
 }

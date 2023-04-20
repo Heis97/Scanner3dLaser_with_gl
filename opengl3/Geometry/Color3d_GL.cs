@@ -8,13 +8,17 @@ namespace opengl3
 {
     public class Colo3d_GL
     {
-        public double r, g, b;
+        public float r { get; set; }
+        public float g { get; set; }
+        public float b { get; set; }
+        public float a { get; set; }
 
-        public Colo3d_GL(double _r, double _g, double _b)
+        public Colo3d_GL(float r = 0.1f, float g = 0.1f, float b = 0.1f, float a = 1f)
         {
-            r = _r;
-            g = _g;
-            b = _b;
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
         }
         
     }

@@ -8,155 +8,126 @@ using System.Threading.Tasks;
 
 namespace opengl3
 {
-
-    public class BuffersGl
+    public class Buffers
     {
         public int countObj = 0;
-        List<openGlobj> objs;
-        public List<openGlobj> objs_dynamic;
-        public List<openGlobj> objs_static;
-        public BuffersGl()
+        public Dictionary<string, openGlobj> objs;
+
+        public Buffers()
         {
-            objs = new List<openGlobj>();
-            objs_dynamic = new List<openGlobj>();
-            objs_static = new List<openGlobj>();
+            objs = new Dictionary<string, openGlobj>();
         }
-        public int add_obj(openGlobj opgl_obj)
+        public string add_obj(openGlobj opgl_obj, string name)
         {
-            if (opgl_obj.animType == openGlobj.AnimType.Dynamic)
+            string name_obj =gen_name( name);
+            
+            objs.Add(name_obj, opgl_obj);
+            return name_obj;
+        }
+
+        string gen_name(string name)
+        {
+            string name_obj = name;
+            int i = 0;
+            while (objs.ContainsKey(name_obj))
             {
-                opgl_obj.id = countObj;
-
-                countObj++;
-                objs_dynamic.Add(opgl_obj);
-                //Console.WriteLine("countObj - 1: " + (countObj - 1));
-                return countObj - 1;
+                name_obj = name.Trim() + "_" + i;
+                i++;
             }
-            else
-            {
-                objs.Add(opgl_obj);
-                return -1;
-            }
+
+            return name_obj;
         }
-        public void sortObj()
+
+        public void removeObj(string name)
         {
-            objs_static = new List<openGlobj>();
-            foreach (PrimitiveType val_tp in Enum.GetValues(typeof(PrimitiveType)))
-            {
-                var vertex_buffer_data = new List<float>();
-                var color_buffer_data = new List<float>();
-                var normal_buffer_data = new List<float>();
-                var texture_buffer_data = new List<float>();
-
-                for (int i = 0; i < objs.Count; i++)
-                {
-                    if (objs[i].tp == val_tp && objs[i].animType == openGlobj.AnimType.Static)
-                    {
-                        vertex_buffer_data.AddRange(objs[i].vertex_buffer_data);
-                        color_buffer_data.AddRange(objs[i].color_buffer_data);
-                        normal_buffer_data.AddRange(objs[i].normal_buffer_data);
-                        texture_buffer_data.AddRange(objs[i].texture_buffer_data);
-
-                    }
-                }
-
-                if (vertex_buffer_data.Count > 2)
-                {
-
-                    objs_static.Add(new openGlobj(vertex_buffer_data.ToArray(), color_buffer_data.ToArray(), normal_buffer_data.ToArray(), texture_buffer_data.ToArray(), val_tp));
-                }
-
-            }
+            if(objs.ContainsKey(name))
+                objs.Remove(name);
         }
 
-        public void removeObj(int id)
+        public void setObj(string name, openGlobj openGlobj)
         {
-            if (id >=0)  objs_dynamic[id] = new openGlobj();
+            objs[name] = openGlobj;
         }
 
-        public void setObj(int id, openGlobj openGlobj)
+        public void setObjVdata(string name, float[] v_data, float[] n_data)
         {
-            objs_dynamic[id] = openGlobj;
+            objs[name].set_vert_data(v_data, n_data);
         }
 
-        public void setObjVdata(int id,float[] v_data, float[] n_data)
-        {
-            objs_dynamic[id].set_vert_data(v_data, n_data);
-        }
+
+
         public void clearObj()
         {
-            objs = new List<openGlobj>();
-            objs_dynamic = new List<openGlobj>();
-            objs_static = new List<openGlobj>();
-            countObj = 0;
+            objs = new Dictionary<string, openGlobj>();
         }
 
         #region setters
 
-        public void setPrType(int id, PrimitiveType ptype)
+        public void setPrType(string name, PrimitiveType ptype)
         {
-            objs_dynamic[id] = objs_dynamic[id].setType(ptype);
+            objs[name] = objs[name].setType(ptype);
         }
-        public void setScale(int id, int i, float _scale)
+        public void setScale(string name, int i, float _scale)
         {
-            objs_dynamic[id] = objs_dynamic[id].setScale(i, _scale);
+            objs[name] = objs[name].setScale(i, _scale);
         }
-        public void setTransfObj(int id, int i, Point3d_GL _transl, Point3d_GL _rotate)
+        public void setTransfObj(string name, int i, Point3d_GL _transl, Point3d_GL _rotate)
         {
-            objs_dynamic[id] = objs_dynamic[id].setTransf(i, _transl, _rotate);
+            objs[name] = objs[name].setTransf(i, _transl, _rotate);
         }
-        public void setXobj(int id, int i, double x)
+        public void setXobj(string name, int i, double x)
         {
-            objs_dynamic[id] = objs_dynamic[id].setX(i, x);
+            objs[name] = objs[name].setX(i, x);
         }
-        public void setYobj(int id, int i, double y)
+        public void setYobj(string name, int i, double y)
         {
-            objs_dynamic[id] = objs_dynamic[id].setY(i, y);
+            objs[name] = objs[name].setY(i, y);
         }
-        public void setZobj(int id, int i, double z)
+        public void setZobj(string name, int i, double z)
         {
-            objs_dynamic[id] = objs_dynamic[id].setZ(i, z);
+            objs[name] = objs[name].setZ(i, z);
         }
 
-        public void setRotXobj(int id, int i, double x)
+        public void setRotXobj(string name, int i, double x)
         {
-            objs_dynamic[id] = objs_dynamic[id].setRotX(i, x);
+            objs[name] = objs[name].setRotX(i, x);
         }
-        public void setRotYobj(int id, int i, double y)
+        public void setRotYobj(string name, int i, double y)
         {
-            objs_dynamic[id] = objs_dynamic[id].setRotY(i, y);
+            objs[name] = objs[name].setRotY(i, y);
         }
-        public void setRotZobj(int id, int i, double z)
+        public void setRotZobj(string name, int i, double z)
         {
-            objs_dynamic[id] = objs_dynamic[id].setRotZ(i, z);
+            objs[name] = objs[name].setRotZ(i, z);
         }
-        public void setMatrobj(int id, int i, Matrix4x4f matr)
+        public void setMatrobj(string name, int i, Matrix4x4f matr)
         {
-            objs_dynamic[id] = objs_dynamic[id].setMatr(i, matr);
+            objs[name] = objs[name].setMatr(i, matr);
         }
-        public void addMatrobj(int id, int i, Matrix4x4f matr)
+        public void addMatrobj(string name, int i, Matrix4x4f matr)
         {
-            objs_dynamic[id] = objs_dynamic[id].addMatr(i, matr);
+            objs[name] = objs[name].addMatr(i, matr);
         }
-        public void setTranspobj(int id, float transp)
+        public void setTranspobj(string name, float transp)
         {
-            objs_dynamic[id] = objs_dynamic[id].setTrasp(transp);
+            objs[name] = objs[name].setTrasp(transp);
         }
-        public void setVisibleobj(int id, bool visible)
+        public void setVisibleobj(string name, bool visible)
         {
-            objs_dynamic[id] = objs_dynamic[id].setVisible(visible);
+            objs[name] = objs[name].setVisible(visible);
         }
-        public void set_cross_flat_obj(int id, Vertex4f flat)
+        public void set_cross_flat_obj(string name, Vertex4f flat)
         {
-            objs_dynamic[id] = objs_dynamic[id].crossFlat(flat);
+            objs[name] = objs[name].crossFlat(flat);
         }
-        public void set_comp_flat(int id,int comp)
+        public void set_comp_flat(string name, int comp)
         {
-            objs_dynamic[id] = objs_dynamic[id].setComp_flat(comp);
+            objs[name] = objs[name].setComp_flat(comp);
         }
         #endregion
 
     }
+   
 
 
 }

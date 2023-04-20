@@ -33,8 +33,8 @@ namespace opengl3
 
         StringBuilder sb_enc =null;
         string video_scan_name = "1";
-        int scan_i = -1;
-        int traj_i = -1;
+        string scan_i = "emp";
+        string traj_i = "emp";
         TrajParams param_tr = new TrajParams();
         FormSettings formSettings = new FormSettings();
         Polygon3d_GL[] mesh = null;
@@ -190,7 +190,8 @@ namespace opengl3
             };
             propGrid_traj.SelectedObject = param_tr;
 
-            
+            debugBox.Text = "0.3 0.3 1";
+
         }
 
         void loadStereo()
@@ -248,7 +249,7 @@ namespace opengl3
                 scanner1.addPoints(Frame.getMats(frms_scan));
                 var p3d_scan_sc = scanner1.getPointsScene();
                 var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
-                GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, 0.9f);
+                GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, new Colo3d_GL(0.9f));
             }
             else
             {
@@ -382,7 +383,7 @@ namespace opengl3
                     //frms_scan_diff = null;
                     Console.WriteLine("Load Points Done__" + lins + "_lins__________________");
                     var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesCam());
-                    GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, normrgb[0], normrgb[1], normrgb[2]);
+                    GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, new Colo3d_GL( normrgb[0], normrgb[1], normrgb[2]));
                     mesh_scan_stl = null;
                     scanner1 = null;
 
@@ -446,9 +447,9 @@ namespace opengl3
 
 
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            if(scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+            if(scan_stl != null) scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"scan_stereo");
            // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
-            GL1.SortObj();
+            
             Console.WriteLine("Loading end.");
         }
         //----------------------------------------------------------------------------------------------------------
@@ -468,8 +469,8 @@ namespace opengl3
             var ps = scanner.getPointsLinesScene();
             var mesh = Polygon3d_GL.triangulate_lines_xy(ps, -1);
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
-            GL1.SortObj();
+            scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"scan_sing");
+            
 
         }
 
@@ -848,12 +849,15 @@ namespace opengl3
 
         }
 
-        
+
         #endregion
 
 
         #region events
-
+        private void glControl1_Resize(object sender, EventArgs e)
+        {
+            GL1.resize(sender, e);
+        }
         Button addButton(TransRotZoom trz, string name, int ind, Size sizeControl, Point locatControl, Size offset)
         {
             var recGL = new Rectangle(trz.rect.X, sizeControl.Height - trz.rect.Y - trz.rect.Height, trz.rect.Width, sizeControl.Height - trz.rect.Y);
@@ -929,45 +933,31 @@ namespace opengl3
             
             addButForMonitor(GL1, send.Size, send.Location);
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
+
+            GL1.add_TreeView(tree_models);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
 
             // startGenerate();
             //trB_SGBM_Enter();
-            GL1.SortObj();
+            
 
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
-            cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 1,0.5);
 
-           // test_cross();
-        }
-
-        void test_cross()
-        {
-            var ps = new List<Point3d_GL>();
-            for (double i=-10; i < 10; i+=1)
+            var v = debugBox.Text.Trim().Split(' ');
+            var f = new List<double>();
+            for(int i = 0; i < v.Length; i++)
             {
-                if(Math.Abs(i)>4)
-                {
-                    ps.Add(new Point3d_GL(i,0, 0.1 * i * i));
-                }
-                
+                f.Add(Convert.ToDouble(v[i]));
             }
-             for (double i = -Math.PI; i < Math.PI; i += Math.PI/6)
-             {
-                 var r = 10d;
-                 if (Math.Abs(i) > Math.PI / 5)
-                 {
-                     ps.Add(new Point3d_GL(Math.Cos(i)*r, 0, Math.Sin(i)*r));
-                 }
 
-             }
-             var ps_re =  Regression.spline3DLine(ps.ToArray(),2);
-             GL1.addLineMeshTraj(ps.ToArray(), 1);
-             GL1.addLineMeshTraj(ps_re, 0,1);
+            
+            cross_obj_flats(GL1.buffersGl.objs[scan_i].vertex_buffer_data, f[0], f[1], f[2]);
+
         }
+
 
         Point3d_GL[][] cross_obj_flats(float[] mesh,double dx, double ds,double fi = -1)
         {
@@ -1023,12 +1013,19 @@ namespace opengl3
             var flats = new List<Flat3d_GL>();
             for (double i = min; i < max; i += dx)
             {
-                if (ax == Ax.Y) fi = Math.PI/2;
-                if (ax == Ax.X) fi = 0;
-
+                if(fi<0)
+                {
+                    if (ax == Ax.Y) fi = Math.PI / 2;
+                    if (ax == Ax.X) fi = 0;
+                }
                 flats.Add(new Flat3d_GL(Math.Cos(fi), Math.Sin(fi), 0, -i));
             }
             var ps = GL1.cross_flat_gpu_mesh(mesh, flats.ToArray());
+
+            var colors = new float[,]
+            {
+                {1,0,0 },{0,1,0 },{0,0,1 },{1,1,0 },{1,0,1 },{0,1,1 }
+            };
 
             var ps_rec = new List<Point3d_GL[]>();
             for (int i = 0; i < ps.Length; i++)
@@ -1038,14 +1035,18 @@ namespace opengl3
                     if (ps[i].Length > 0)
                     {
                         ps[i] = Point3d_GL.order_points(ps[i]);
+                       // var i_c = i % (colors.GetLength(0));
+                       // GL1.addLineMeshTraj(ps[i], colors[i_c,0], colors[i_c, 1], colors[i_c, 2]);
                         ps_rec.Add(Regression.spline3DLine(ps[i], ds));
                     }
                 }
             }
 
-            //GL1.addLinesMeshTraj(ps, 1);
-            //GL1.addLinesMeshTraj(ps_rec.ToArray(), 0, 1);
 
+
+            //traj_i = GL1.addLinesMeshTraj(ps, 1);
+            //GL1.addLinesMeshTraj(ps_rec.ToArray(), 0, 1);
+            //GL1.SortObj();
             return ps_rec.ToArray();
         }
 
@@ -1468,20 +1469,22 @@ namespace opengl3
         private void but_resize_Click(object sender, EventArgs e)
         {
 
-            var cur_size = this.Size;
-            var target_size = new Size(1000, 500);
+            var cur_size = new Size(1920, 1080);
+            var target_size = new Size(1300, 700);
 
             var kx = target_size.Width / (double)cur_size.Width;
             var ky = target_size.Height / (double)cur_size.Height;
+
+            var k = Math.Min(kx, ky);
 
             for (int j = 0; j < windowsTabs.Controls.Count; j++)
             {
                 var tab = (TabPage)windowsTabs.Controls[j];
                 for (int i = 0; i < tab.Controls.Count; i++)
                 {
-                    tab.Controls[i].Location = new Point((int)(tab.Controls[i].Location.X * kx), (int)(tab.Controls[i].Location.Y * ky));
-                    tab.Controls[i].Size = new Size((int)(tab.Controls[i].Size.Width * kx), (int)(tab.Controls[i].Size.Height * ky));
-                    tab.Controls[i].Font = new Font(tab.Controls[i].Font.Name, (float)(tab.Controls[i].Font.Size * ky));
+                    tab.Controls[i].Location = new Point((int)(tab.Controls[i].Location.X * k), (int)(tab.Controls[i].Location.Y * k));
+                    tab.Controls[i].Size = new Size((int)(tab.Controls[i].Size.Width * k), (int)(tab.Controls[i].Size.Height * k));
+                    tab.Controls[i].Font = new Font(tab.Controls[i].Font.Name, (float)(tab.Controls[i].Font.Size * k));
                 }
             }
 
@@ -3357,7 +3360,7 @@ namespace opengl3
         }
         #endregion
 
-        #region load_but
+        #region graphic_util
         private void but_text_vis_Click(object sender, EventArgs e)
         {
             if (GL1.textureVis == 0)
@@ -3386,15 +3389,15 @@ namespace opengl3
 
         private void but_point_type_Click(object sender, EventArgs e)
         {
-            if(GL1.buffersGl.objs_dynamic[scan_i].tp == PrimitiveType.Points)
+            if(GL1.buffersGl.objs[scan_i].tp == PrimitiveType.Points)
             {
                 GL1.buffersGl.setPrType(scan_i,PrimitiveType.Lines);
             }
-            else if (GL1.buffersGl.objs_dynamic[scan_i].tp == PrimitiveType.Lines)
+            else if (GL1.buffersGl.objs[scan_i].tp == PrimitiveType.Lines)
             {
                 GL1.buffersGl.setPrType(scan_i, PrimitiveType.Triangles);
             }
-            else if (GL1.buffersGl.objs_dynamic[scan_i].tp == PrimitiveType.Triangles)
+            else if (GL1.buffersGl.objs[scan_i].tp == PrimitiveType.Triangles)
             {
                 GL1.buffersGl.setPrType(scan_i, PrimitiveType.Points);
             }
@@ -3420,9 +3423,9 @@ namespace opengl3
 
                 rob_traj = PathPlanner.join_traj(_traj);
                 var ps = PathPlanner.traj_to_matr(rob_traj);
-                if (traj_i >= 0) GL1.buffersGl.removeObj(traj_i);
-                traj_i = GL1.addLineMeshTraj(ps.ToArray(), 0.9f);
-                GL1.buffersGl.sortObj();
+                if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
+
+                traj_i = GL1.addLineMeshTraj(ps.ToArray(),new Colo3d_GL(0.9f),"gen_traj");
                 var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType);
                 return traj_rob;
 
@@ -3442,14 +3445,14 @@ namespace opengl3
                 var cut_surf = map_xy.get_polyg_contour_xy(cont, mesh, type_cut);
 
                 GL1.buffersGl.removeObj(scan_i);
-                GL1.SortObj();
+                
 
                 var scan_stl = Polygon3d_GL.toMesh(cut_surf);
                 if (scan_stl != null)
                 {
-                    scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+                    scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_i);
                 }
-                GL1.SortObj();
+                
             }
 
         }
@@ -3457,12 +3460,19 @@ namespace opengl3
         {
             
             cut_area(RasterMap.type_out.outside);
-            var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
-            var ps = cross_obj_flats(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 1,0.5,fi);
+            //var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
+            var fi = 0.1;
+            var df = 1;
+            var ds = 1;
+            var ps = cross_obj_flats(GL1.buffersGl.objs[scan_i].vertex_buffer_data, df,ds,fi);
             var pols = Polygon3d_GL.triangulate_lines_xy(ps);
+            for(int i=0; i<ps.Length;i++)
+            {
+              //  GL1.addPointMesh(ps[i], 0.1f, 0.5f);
+            }
             var scan_stl = Polygon3d_GL.toMesh(pols);
-            var rec = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
-            GL1.SortObj();
+            var rec = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"reconstruct");
+            
 
         }
 
@@ -3482,6 +3492,8 @@ namespace opengl3
             con1?.send_mes(debugBox.Text);
         }
 
+        #endregion
+        #region load_but
         private void but_scan_load_ex_Click(object sender, EventArgs e)
         {
 
@@ -3627,7 +3639,7 @@ namespace opengl3
             GL1.buffersGl.removeObj(traj_i);
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             //GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-            GL1.SortObj();
+            
         }
 
         private void but_traj_clear_Click(object sender, EventArgs e)
@@ -3656,7 +3668,7 @@ namespace opengl3
             //var im = (Mat)imageBox1.Image;
             var im = (Mat)imBox_base_1.Image;
             send_buffer_img(im.ToImage<Gray, Byte>(), PrimitiveType.Triangles);
-            GL1.SortObj();
+            
         }
 
         private void but_load_fr_cal_Click(object sender, EventArgs e)
@@ -3688,7 +3700,7 @@ namespace opengl3
             var stl_name = get_file_name(Directory.GetCurrentDirectory(), "stl");
             var scan_stl = new Model3d(stl_name, false);
             mesh = scan_stl.pols;
-            scan_i = GL1.add_buff_gl_dyn(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles);
+            scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles,stl_name);
         }
 
 
@@ -3771,9 +3783,25 @@ namespace opengl3
             debugBox.Text = gen_traj_rob(RobotFrame.RobotType.KUKA);
         }
 
+
+
         #endregion
-      
-        
+
+        private void tree_models_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            try
+            {
+                prop_grid_model.SelectedObject = GL1.buffersGl.objs[e.Node.Text];
+                prop_grid_model.Text = e.Node.Text;
+            }
+            catch
+            {
+
+            }
+            
+        }
+
+
     }
 }
 

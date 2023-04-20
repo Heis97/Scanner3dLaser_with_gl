@@ -8,32 +8,35 @@ using System.Threading.Tasks;
 namespace opengl3
 {
 
-    public struct openGlobj
+    public class openGlobj
     {
-        public enum AnimType { Static, Dynamic }
-        public float[] vertex_buffer_data;
-        public float[] color_buffer_data;
-        public float[] normal_buffer_data;
+        public float[] vertex_buffer_data { get; set; }
+        public float[] color_buffer_data { get; set; }
+        public float[] normal_buffer_data { get; set; }
         public float[] texture_buffer_data;
-        public int vert_len;
+        public int vert_len { get; set; }
         public PrimitiveType tp;
-        public AnimType animType;
-        public int id;
         public int Textureid;
-        public bool visible;
-        public float transparency;
+        public bool visible { get; set; }
+        public bool text_vis { get; set; }
+        public bool light_vis { get; set; }
+        public float transparency { get; set; }
         uint buff_array;
 
         uint v_ubuf;
         uint n_ubuf;
 
-        public trsc[] trsc;
+
+
+        public trsc[] trsc { get; set; }
         public int count;
         Vertex4f cross_flat;
         public int comp_flat;
 
-        public openGlobj(float[] v_buf, float[] c_buf, float[] n_buf, float[] t_buf=null, PrimitiveType type=PrimitiveType.Triangles, int _id = -1, int _count = 1, int textureId = -1)
+        public openGlobj(float[] v_buf, float[] c_buf, float[] n_buf, float[] t_buf=null, PrimitiveType type=PrimitiveType.Triangles, int _count = 1, int textureId = -1)
         {
+            text_vis = false;
+            light_vis = false;
             cross_flat = new Vertex4f();
             comp_flat = 0;
             buff_array = uint.MaxValue;
@@ -98,22 +101,11 @@ namespace opengl3
             Textureid = textureId;
             tp = type;
             visible = true;
-            
-            id = _id;
-            if (_id == -1)
-            {
-                animType = AnimType.Static;
-                //animType = AnimType.Dynamic;
-                
-                setBuffers();
-            }
-            else
-            {
-                animType = AnimType.Dynamic;
-                setBuffers();
-            }
+
+            setBuffers();
 
         }
+        public openGlobj() { }
         public void set_vert_data(float[] v_buf, float[] n_buf)
         {
             if (n_buf == null) normal_buffer_data = new float[v_buf.Length];
@@ -225,32 +217,44 @@ namespace opengl3
         }
         public openGlobj setX(int i, double x)
         {
-            trsc[i].transl.x = x;
+            trsc[i].transl.setx(x);
             return this;
         }
         public openGlobj setY(int i, double y)
         {
-            trsc[i].transl.y = y;
+            trsc[i].transl.sety(y);
             return this;
         }
         public openGlobj setZ(int i, double z)
         {
-            trsc[i].transl.z = z;
+            trsc[i].transl.setz(z);
             return this;
         }
         public openGlobj setRotX(int i, double x)
         {
-            trsc[i].rotate.x = x;
+            trsc[i].rotate.setx(x);
             return this;
         }
         public openGlobj setRotY(int i, double y)
         {
-            trsc[i].rotate.y = y;
+            trsc[i].rotate.sety(y);
             return this;
         }
         public openGlobj setRotZ(int i, double z)
         {
-            trsc[i].rotate.z = z;
+            trsc[i].rotate.setz(z);
+            return this;
+        }
+
+        public openGlobj setlight_vis(int i,bool vis)
+        {
+            light_vis = vis;
+            return this;
+        }
+
+        public openGlobj settext_vis(int i, bool vis)
+        {
+            text_vis = vis;
             return this;
         }
 

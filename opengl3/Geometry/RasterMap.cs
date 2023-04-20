@@ -295,10 +295,13 @@ namespace opengl3
             var inds = inds_xy(map_board);
             //UtilOpenCV.showInds(inds);
             var  s_ind = new List<int>();
+            var w = map.GetLength(0);
+            var h = map.GetLength(1);
             foreach (var ind_xy in inds)
             {
-                if(map[ind_xy[0], ind_xy[1]]!=null)
-                    s_ind.AddRange(map[ind_xy[0], ind_xy[1]]);
+                if(ind_xy[0]<w  && ind_xy[1] <h)
+                    if(map[ind_xy[0], ind_xy[1]]!=null)
+                        s_ind.AddRange(map[ind_xy[0], ind_xy[1]]);
             }
             var pols = new List<Polygon3d_GL>();
 

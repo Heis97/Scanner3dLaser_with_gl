@@ -89,6 +89,9 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.prop_grid_model = new System.Windows.Forms.PropertyGrid();
+            this.tree_models = new System.Windows.Forms.TreeView();
+            this.but_scan_stereo_rob = new System.Windows.Forms.Button();
             this.but_rob_traj_pulse = new System.Windows.Forms.Button();
             this.but_rob_traj_kuka = new System.Windows.Forms.Button();
             this.but_rob_start_sc = new System.Windows.Forms.Button();
@@ -188,7 +191,6 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
-            this.but_resize = new System.Windows.Forms.Button();
             this.tB_fps_scan = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
             this.but_scan_sing_las = new System.Windows.Forms.Button();
@@ -308,10 +310,10 @@ namespace opengl3
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.imBox_base = new Emgu.CV.UI.ImageBox();
+            this.but_resize = new System.Windows.Forms.Button();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_scan_stereo_rob = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -963,6 +965,8 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.prop_grid_model);
+            this.tabOpenGl.Controls.Add(this.tree_models);
             this.tabOpenGl.Controls.Add(this.but_scan_stereo_rob);
             this.tabOpenGl.Controls.Add(this.but_rob_traj_pulse);
             this.tabOpenGl.Controls.Add(this.but_rob_traj_kuka);
@@ -1069,6 +1073,32 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // prop_grid_model
+            // 
+            this.prop_grid_model.Location = new System.Drawing.Point(619, 292);
+            this.prop_grid_model.Name = "prop_grid_model";
+            this.prop_grid_model.Size = new System.Drawing.Size(183, 343);
+            this.prop_grid_model.TabIndex = 150;
+            // 
+            // tree_models
+            // 
+            this.tree_models.BackColor = System.Drawing.SystemColors.Window;
+            this.tree_models.Location = new System.Drawing.Point(619, 15);
+            this.tree_models.Name = "tree_models";
+            this.tree_models.Size = new System.Drawing.Size(177, 271);
+            this.tree_models.TabIndex = 149;
+            this.tree_models.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tree_models_AfterSelect);
+            // 
+            // but_scan_stereo_rob
+            // 
+            this.but_scan_stereo_rob.Location = new System.Drawing.Point(1720, 897);
+            this.but_scan_stereo_rob.Name = "but_scan_stereo_rob";
+            this.but_scan_stereo_rob.Size = new System.Drawing.Size(111, 42);
+            this.but_scan_stereo_rob.TabIndex = 148;
+            this.but_scan_stereo_rob.Text = "Загрузить скан стерео робот";
+            this.but_scan_stereo_rob.UseVisualStyleBackColor = true;
+            this.but_scan_stereo_rob.Click += new System.EventHandler(this.but_scan_stereo_rob_Click);
             // 
             // but_rob_traj_pulse
             // 
@@ -1570,6 +1600,7 @@ namespace opengl3
             this.glControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControl1_MouseDown);
             this.glControl1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControl1_MouseMove);
             this.glControl1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Form1_mousewheel);
+            this.glControl1.Resize += new System.EventHandler(this.glControl1_Resize);
             // 
             // but_gl_cam_calib
             // 
@@ -2034,7 +2065,6 @@ namespace opengl3
             // 
             // tabMain
             // 
-            this.tabMain.Controls.Add(this.but_resize);
             this.tabMain.Controls.Add(this.tB_fps_scan);
             this.tabMain.Controls.Add(this.label21);
             this.tabMain.Controls.Add(this.but_scan_sing_las);
@@ -2136,17 +2166,6 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
-            // 
-            // but_resize
-            // 
-            this.but_resize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_resize.Location = new System.Drawing.Point(537, 3);
-            this.but_resize.Name = "but_resize";
-            this.but_resize.Size = new System.Drawing.Size(106, 33);
-            this.but_resize.TabIndex = 136;
-            this.but_resize.Text = "Resize";
-            this.but_resize.UseVisualStyleBackColor = true;
-            this.but_resize.Click += new System.EventHandler(this.but_resize_Click);
             // 
             // tB_fps_scan
             // 
@@ -3302,6 +3321,17 @@ namespace opengl3
             this.imBox_base.TabIndex = 94;
             this.imBox_base.TabStop = false;
             // 
+            // but_resize
+            // 
+            this.but_resize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_resize.Location = new System.Drawing.Point(508, -11);
+            this.but_resize.Name = "but_resize";
+            this.but_resize.Size = new System.Drawing.Size(106, 33);
+            this.but_resize.TabIndex = 136;
+            this.but_resize.Text = "Resize";
+            this.but_resize.UseVisualStyleBackColor = true;
+            this.but_resize.Click += new System.EventHandler(this.but_resize_Click);
+            // 
             // windowsTabs
             // 
             this.windowsTabs.Controls.Add(this.tabMain);
@@ -3325,19 +3355,10 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // but_scan_stereo_rob
-            // 
-            this.but_scan_stereo_rob.Location = new System.Drawing.Point(1720, 897);
-            this.but_scan_stereo_rob.Name = "but_scan_stereo_rob";
-            this.but_scan_stereo_rob.Size = new System.Drawing.Size(111, 42);
-            this.but_scan_stereo_rob.TabIndex = 148;
-            this.but_scan_stereo_rob.Text = "Загрузить скан стерео робот";
-            this.but_scan_stereo_rob.UseVisualStyleBackColor = true;
-            this.but_scan_stereo_rob.Click += new System.EventHandler(this.but_scan_stereo_rob_Click);
-            // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.ClientSize = new System.Drawing.Size(1370, 749);
+            this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
             this.Name = "MainScanningForm";
@@ -3703,6 +3724,8 @@ namespace opengl3
         private System.Windows.Forms.Button but_rob_traj_pulse;
         private System.Windows.Forms.Button but_resize;
         private System.Windows.Forms.Button but_scan_stereo_rob;
+        private System.Windows.Forms.TreeView tree_models;
+        private System.Windows.Forms.PropertyGrid prop_grid_model;
     }
 }
 

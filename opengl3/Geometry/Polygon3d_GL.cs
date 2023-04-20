@@ -29,6 +29,7 @@ namespace opengl3
             //Console.WriteLine(v3);
             v3.normalize();
             flat3D = new Flat3d_GL(v3.x, v3.y, v3.z, -v3 * P1);
+
       
         }
 
@@ -195,11 +196,11 @@ namespace opengl3
                         }
                     }
                 }
-                if(ind_2<ind_2_last)
+               /* if(ind_2<ind_2_last)
                 {
                     Console.WriteLine("ind_2<ind_2_last");
                     Console.WriteLine(ind_2);
-                }
+                }*/
                 ind_2_last = ind_2;
             }
 
@@ -459,6 +460,20 @@ namespace opengl3
             }
             return new float[][] { mesh.ToArray(), color.ToArray(), normal.ToArray() };
         }        
+
+        static public Polygon3d_GL[] triangulate_two_same_conts(Point3d_GL[] ps1, Point3d_GL[] ps2)
+        {
+            if (ps1.Length != ps2.Length) return null;
+            var pols = new List<Polygon3d_GL>();
+            for(int i=0; i<ps1.Length;i++)
+            {
+                var ind = i-1;
+                if(i==0) ind = ps1.Length-1;
+                pols.Add(new Polygon3d_GL(ps1[ind], ps2[i], ps2[ind]));
+                pols.Add(new Polygon3d_GL(ps1[ind],  ps1[i],ps2[i]));
+            }
+            return pols.ToArray();
+        }
 
         public Point3d_GL[] get_dimens_minmax()
         {

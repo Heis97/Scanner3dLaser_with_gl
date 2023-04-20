@@ -11,10 +11,10 @@ namespace opengl3
 {
     public struct trsc
     {
-        public Point3d_GL transl;
-        public Point3d_GL rotate;
-        public float scale;
-        public Matrix4x4f matr;
+        public Point3d_GL transl { get; set; }
+        public Point3d_GL rotate { get; set; }
+        public float scale { get; set; }
+        public Matrix4x4f matr { get; set; }
 
 
         public trsc(Point3d_GL _transl, Point3d_GL _rotate, float _scale)
@@ -66,6 +66,7 @@ namespace opengl3
             }
             return matrixGL;
         }
+
     }
     public class TransRotZoom
     {
@@ -87,7 +88,7 @@ namespace opengl3
         public DateTime dateTime;
         public TransRotZoom consttransf;
         public CameraCV cameraCV;
-        public int view_3d = -1;
+        public string view_3d = "-1";
         public Matrix4x4f const_trz;
 
         public TransRotZoom(Rectangle _rect, int _id)

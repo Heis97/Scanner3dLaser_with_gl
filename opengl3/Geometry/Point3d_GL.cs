@@ -12,11 +12,11 @@ namespace opengl3
 
     public struct Point3d_GL
     {
-        public double x;
-        public double y;
-        public double z;
-        public bool exist;
-        public Colo3d_GL color;
+        public double x { get; set; }
+        public double y { get; set; }
+        public double z { get; set; }
+        public bool exist { get; set; }
+        public Colo3d_GL color { get; set; }
         public Point3d_GL(double _x = 0, double _y = 0, double _z = 0, Colo3d_GL _color = null)
         {
             x = _x;
@@ -533,7 +533,19 @@ namespace opengl3
             return new Point3d_GL(x,y,z);
         }
 
+        public void setx(double x) { this.x = x; }
+        public void sety(double y) { this.y = y; }
+        public void setz(double z) { this.z = z; }
 
+        public static Point3d_GL[] add_arr(Point3d_GL[] ps, Point3d_GL p)
+        {
+            var ret = new Point3d_GL[ps.Length];
+            for(int i=0; i<ps.Length;i++)
+            {
+                ret[i] = ps[i] + p;
+            }
+            return ret;
+        }
     }
 
 }

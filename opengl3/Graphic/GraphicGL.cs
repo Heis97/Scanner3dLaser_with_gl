@@ -189,9 +189,10 @@ namespace opengl3
         Label Label_cor_cur;
         Label Label_trz_cur;
         RichTextBox debug_box;
+        TreeView tree_mod;
         Matrix4x4f Pm;
         Matrix4x4f Vm;
-        public BuffersGl buffersGl = new BuffersGl();
+        public Buffers buffersGl= new Buffers();
         Matrix4x4f Mm;
         Matrix4x4f MVP;
 
@@ -222,6 +223,42 @@ namespace opengl3
         #endregion
 
         #region main
+
+        public void resize(object sender, EventArgs e)
+        {
+            var contr = (Control)sender;
+
+            sizeControl = contr.Size;
+
+            Gl.Viewport(0, 0, sizeControl.Width, sizeControl.Height);
+        }
+
+        public void update_tree()
+        {
+            if (tree_mod == null) return;          
+            foreach (var name in buffersGl.objs.Keys)
+            {
+                if(!check_obj_in_tree(name))
+                {
+                    tree_mod.Nodes.Add(name);
+                }  
+            }
+        }
+
+        public bool check_obj_in_tree(string obj)
+        {
+            bool check = false;
+            for (int i = 0; i < tree_mod.Nodes.Count; i++)
+                if (tree_mod.Nodes[i].Text == obj)
+                    check = true;
+            return check;
+        }
+        
+        void draw_cont()
+        {
+
+        }
+
         public void glControl_Render(object sender, GlControlEventArgs e)
         {
             
@@ -248,35 +285,26 @@ namespace opengl3
             Label_trz_cur.Text = txt;
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             addCams();
-            if (buffersGl.objs_static != null)
-            {
-                if (buffersGl.objs_static.Count != 0)
-                {
-                    foreach (var opglObj in buffersGl.objs_static)
-                    {
-                        renderGlobj(opglObj);
-                    }
-                }
-            }
 
-            if (buffersGl.objs_dynamic != null)
+            if (buffersGl.objs != null)
             {
-                if (buffersGl.objs_dynamic.Count != 0)
+                if (buffersGl.objs.Count != 0)
                 {
-                    foreach (var opglObj in buffersGl.objs_dynamic)
+                    foreach (var opglObj in buffersGl.objs.Values)
                     {
                         renderGlobj(opglObj);
-                        //Console.WriteLine(opglObj.vert_len);
                     }
                 }
             }
-            //Console.WriteLine("_________");
+            //Console.WriteLine(sizeControl.Width+" "+sizeControl.Height);
             rendercout++;
             if(rendercout%renderdelim==0)
             {
                 rendercout = 0;
             }
-            
+            update_tree();
+
+
         }
         
         void renderGlobj(openGlobj opgl_obj)
@@ -348,7 +376,7 @@ namespace opengl3
             Gl.Enable(EnableCap.Multisample);
             Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
             Gl.PointSize(2f);
-
+            
             var VertexSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Vert\VertexSh_Models.glsl" });
             var VertexOneSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Vert\VertexSh_ModelsOne.glsl" });
 
@@ -392,8 +420,8 @@ namespace opengl3
             init_vars_gl(idsCs);
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
-            //Gl.Enable(EnableCap.Blend);
-            //Gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            Gl.Enable(EnableCap.Blend);
+            Gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             //Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(5, 1), new Size(400, 400));
             cameraCV.distortmatrix[0,0] = -0.1;
@@ -463,8 +491,15 @@ namespace opengl3
             Gl.Uniform2f(ids.MouseLocID, 1, MouseLoc);
             Gl.Uniform2f(ids.MouseLocGLID, 1, MouseLocGL);
 
-            Gl.Uniform1i(ids.textureVisID, 1, textureVis);
-            Gl.Uniform1i(ids.lightVisID, 1, lightVis);
+            // Gl.Uniform1i(ids.textureVisID, 1, textureVis);
+            //Gl.Uniform1i(ids.lightVisID, 1, lightVis);
+            int text_vis = 0;
+            int light_vis = 0;
+            if (openGlobj.light_vis) light_vis = 1;
+            if (openGlobj.text_vis) text_vis = 1;
+
+            Gl.Uniform1i(ids.textureVisID, 1, text_vis);
+            Gl.Uniform1i(ids.lightVisID, 1, light_vis);
 
             Gl.Uniform1i(ids.show_faces_ID, 1, show_faces);
             Gl.Uniform1f(ids.transparency_ID, 1, openGlobj.transparency);
@@ -473,20 +508,7 @@ namespace opengl3
             Gl.Uniform4f(ids.surf_crossID, 1, surf_cross);
 
         }
-        public void SortObj()
-        {
-            buffersGl.sortObj();
-            if (buffersGl.objs_static != null)
-            {
-                if (buffersGl.objs_static.Count != 0)
-                {
-                    for (int i = 0; i < buffersGl.objs_static.Count; i++)
-                    {
-                        buffersGl.objs_static[i].setBuffers();
-                    }
-                }
-            }
-        }
+
         #endregion
        
         #region comp_gpu
@@ -558,8 +580,8 @@ namespace opengl3
             int verts_tr = 3;
             int max_w_tex = 8000;
             int max_w_tex_buf = 952000;
-            max_w_tex = 1200;
-            max_w_tex_buf = 480000;
+            max_w_tex = 1200;//1200
+            max_w_tex_buf = 480000;//480000
             var mesh_m_l = mesh_m.ToList();
             int h_buf = 1;
             int w_buf = mesh_m.Length / 4;
@@ -943,7 +965,7 @@ namespace opengl3
         public void printDebug(RichTextBox box)
         {
             string txt = "";
-            foreach(var ob in buffersGl.objs_static)
+            foreach(var ob in buffersGl.objs.Values)
             {
                 for (int i = 0; i < ob.vertex_buffer_data.Length / 3; i++)
                 {
@@ -1007,6 +1029,10 @@ namespace opengl3
             }
             
         }
+        public void add_TreeView(TreeView tree)
+        {
+            tree_mod = tree;
+        }
         public void add_TextBox(RichTextBox richTextBox)
         {
             debug_box = richTextBox;
@@ -1047,11 +1073,25 @@ namespace opengl3
                     if (e.Button == MouseButtons.Left)
                     {
                         pointsPaint.Add(curPointPaint);
-                        
+                        if(pointsPaint.Count>2)
+                        {
+                            var name_cont = "cont";
+                            buffersGl.removeObj(name_cont);
+                        addMeshWithoutNorm(
+                            z_mesh_from_cont_xy(
+                                Point3d_GL.toPoints(pointsPaint.ToArray()), 400),
+                            PrimitiveType.Triangles,
+                            new Colo3d_GL(1, 0, 0), name_cont);
+                            buffersGl.setTranspobj(name_cont, 0.3f);
+                        }
+                           
+
                     }
                     else if (e.Button == MouseButtons.Right)
                     {
                         pointsPaint.Clear();
+                        var name_cont = "cont";
+                        buffersGl.removeObj(name_cont);
                     }
                     break;
             }
@@ -1392,9 +1432,9 @@ namespace opengl3
             
 
 
-            if (trz.view_3d < 0)
+            if (Convert.ToDouble( trz.view_3d) < 0)
             {
-                transRotZooms[i].view_3d = add_buff_gl_dyn(toFloat(verts), null, null, PrimitiveType.Lines);
+                transRotZooms[i].view_3d = add_buff_gl(toFloat(verts), null, null, PrimitiveType.Lines, i.ToString());
             }
             else
             {
@@ -1429,40 +1469,28 @@ namespace opengl3
             return fl;
         }
 
-        public int add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp)
+        public string add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp,string name = "new obj")
         {
             if (data_v == null)
             {
                 Console.WriteLine("date_v == NULL");
-                return -1;
+                return null;
             }
-            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp));
+            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp),name);
         }
-        public int add_buff_gl_dyn(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp)
+
+        public void remove_buff_gl_id(string name)
         {
-            if (data_v == null)
-            {
-                Console.WriteLine("date_v == NULL");
-                return -1;
-            }
-            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n, null, tp,1));
+            buffersGl.removeObj(name);
         }
-        public void add_buff_gl_mesh_id(float[] data_v, int id, bool visible)
-        {
-            //buffersGl.add_obj_id(data_v, id, visible, PrimitiveType.Triangles);
-        }
-        public void remove_buff_gl_id(int id)
-        {
-            buffersGl.removeObj(id);
-        }
-        public void addFrame(Point3d_GL pos, Point3d_GL x, Point3d_GL y, Point3d_GL z)
+        public void addFrame(Point3d_GL pos, Point3d_GL x, Point3d_GL y, Point3d_GL z,string name = "new Frame")
         {
             //addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 1.0f, 0);
             //addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 0, 0);
             
-            addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 0, 0);
-            addLineMesh(new Point3d_GL[] { pos, y }, 0, 1.0f, 0);
-            addLineMesh(new Point3d_GL[] { pos, z }, 0, 0, 1.0f);
+            addLineMesh(new Point3d_GL[] { pos, x }, new Colo3d_GL(1f,0,0),name);
+            addLineMesh(new Point3d_GL[] { pos, y }, new Colo3d_GL(0, 1, 0), name);
+            addLineMesh(new Point3d_GL[] { pos, z }, new Colo3d_GL(0f, 0, 1), name);
         }
 
         public void addFrame_Cam(Camera cam, int frame_len = 15)
@@ -1471,7 +1499,7 @@ namespace opengl3
             addFrame(cam.pos, cam.pos + cam.oX * frame_len, cam.pos + cam.oY * frame_len, cam.pos + cam.oZ * frame_len * 1.3);
         }
 
-        public void addFlat3d_XZ(Flat3d_GL flat3D_GL, Matrix<double> matrix=null,float r = 0.1f,float g = 0.1f, float b = 0.1f)
+        public void addFlat3d_XZ(Flat3d_GL flat3D_GL, Matrix<double> matrix=null, Colo3d_GL color = null, string name = "new Flat XZ")
         {
             var p0 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, -1000))).calcCrossFlat(flat3D_GL);
             var p1 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, -1000))).calcCrossFlat(flat3D_GL);
@@ -1494,11 +1522,11 @@ namespace opengl3
 
 
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,r,g,b);
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
 
         }
 
-        public void addFlat3d_YZ(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public void addFlat3d_YZ(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Colo3d_GL color = null, string name = "new Flat YZ")
         {
             var p0 = (new Line3d_GL(new Vector3d_GL(10, 0, 0), new Point3d_GL(0, -50,  -1000))).calcCrossFlat(flat3D_GL);
             var p1 = (new Line3d_GL(new Vector3d_GL(10, 0, 0), new Point3d_GL(0, 50, -1000))).calcCrossFlat(flat3D_GL);
@@ -1521,10 +1549,10 @@ namespace opengl3
 
 
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, r, g, b);
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
 
         }
-        public void addFlat3d_XY(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public void addFlat3d_XY(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Colo3d_GL color = null, string name = "new Flat XY")
         {
             var p0 = (new Line3d_GL(new Vector3d_GL( 0, 0,10), new Point3d_GL( -50, -1000,0))).calcCrossFlat(flat3D_GL);
             var p1 = (new Line3d_GL(new Vector3d_GL( 0, 0, 10), new Point3d_GL( 50, -1000,0))).calcCrossFlat(flat3D_GL);
@@ -1547,10 +1575,10 @@ namespace opengl3
 
 
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, r, g, b);
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
 
         }
-        public void addFlat3d_XY_zero(double z = 0)
+        public void addFlat3d_XY_zero(double z = 0,Colo3d_GL color = null, string name = "new Flat XZ")
         {
             Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, z), new Point3d_GL(10, 10, z), new Point3d_GL(0, 10, z));
             var p0 = (new Line3d_GL(new Vector3d_GL(0, 0, 10), new Point3d_GL(-50,  -10,0))).calcCrossFlat(flat3D_GL);
@@ -1564,11 +1592,11 @@ namespace opengl3
                 p1,p3,p2,
                 p2,p0,p1
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles);
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
 
         }
 
-        public void addFlat3d_XZ_zero()
+        public void addFlat3d_XZ_zero(Colo3d_GL color = null,string name = "new Flat XZ")
         {
             Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, 0), new Point3d_GL(10, 0, 10), new Point3d_GL(0, 0, 10));
             var p0 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, -10))).calcCrossFlat(flat3D_GL);
@@ -1582,7 +1610,7 @@ namespace opengl3
                 p1,p3,p2,
                 p2,p0,p1
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles);
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
 
         }
         public void addFrame_Cam(CameraCV cam, int frame_len = 15)
@@ -1609,16 +1637,16 @@ namespace opengl3
             addMeshWithoutNorm(Point3d_GL.toMesh(verts), PrimitiveType.Lines);
 
         }
-        public void addGLMesh(float[] _mesh, PrimitiveType primitiveType, float x = 0, float y = 0, float z = 0, float r = 0.1f, float g = 0.1f, float b = 0.1f, float scale = 1f)
+        public void addGLMesh(float[] _mesh, PrimitiveType primitiveType, float x = 0, float y = 0, float z = 0,float scale = 1f, Colo3d_GL color = null, string name = "new PointMesh")
         {
             // addMesh(cube_buf, PrimitiveType.Points);
             if (x == 0 && y == 0 && z == 0)
             {
-                addMesh(_mesh, primitiveType, r, g, b);
+                addMesh(_mesh, primitiveType, color,name);
             }
             else
             {
-                addMesh(translateMesh(scaleMesh(_mesh, scale), x, y, z), primitiveType, r, g, b);
+                addMesh(translateMesh(scaleMesh(_mesh, scale), x, y, z), primitiveType, color, name);
             }
 
         }
@@ -1644,7 +1672,7 @@ namespace opengl3
             }
             return mesh;
         }
-        public void addPointMesh(Point3d_GL[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public void addPointMesh(Point3d_GL[] points, Colo3d_GL color = null, string name = "new PointMesh")
         {
             var mesh = new List<float>();
             foreach (var p in points)
@@ -1653,9 +1681,9 @@ namespace opengl3
                 mesh.Add((float)p.y);
                 mesh.Add((float)p.z);
             }
-            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, r, g, b);
+            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, color, name);
         }
-        public void addLineFanMesh(float[] startpoint, float[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public void addLineFanMesh(float[] startpoint, float[] points, Colo3d_GL color = null, string name = "new LineFanMesh")
         {
             var mesh = new float[points.Length * 2];
             var j = 0;
@@ -1668,9 +1696,9 @@ namespace opengl3
                 mesh[j] = points[i+1]; j++;
                 mesh[j] = points[i+2]; j++;
             }
-            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b);
+            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
         }
-        public void addLineMesh(Point3d_GL[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public void addLineMesh(Point3d_GL[] points, Colo3d_GL color = null, string name = "new LineMesh")
         {
             var mesh = new List<float>();
             foreach (var p in points)
@@ -1679,18 +1707,29 @@ namespace opengl3
                 mesh.Add((float)p.y);
                 mesh.Add((float)p.z);
             }
-            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b);
+            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
         }
-        public void addLinesMeshTraj(Point3d_GL[][] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public string addLinesMeshTraj(Point3d_GL[][] lines, Colo3d_GL color = null, string name = "new LinesMeshTraj")
         {
-            //var mesh = new List<float>();
-            foreach (var line in points)
+            var mesh_l = new List<float>();
+            foreach (var points in lines)
             {
-                addLineMeshTraj(line, r, g, b);
+                var mesh = new List<float>();
+                for (int i = 1; i < points.Length; i++)
+                {
+                    mesh.Add((float)points[i - 1].x);
+                    mesh.Add((float)points[i - 1].y);
+                    mesh.Add((float)points[i - 1].z);
+
+                    mesh.Add((float)points[i].x);
+                    mesh.Add((float)points[i].y);
+                    mesh.Add((float)points[i].z);
+                }
+                mesh_l.AddRange(mesh);
             }
-           // addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b);
+           return  addMeshWithoutNorm(mesh_l.ToArray(), PrimitiveType.Lines, color, name);
         }
-        public int addLineMeshTraj(Point3d_GL[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public string addLineMeshTraj(Point3d_GL[] points, Colo3d_GL color = null, string name = "new LineMesh")
         {
             var mesh = new List<float>();
             for(int i=1; i<points.Length;i++)
@@ -1703,9 +1742,9 @@ namespace opengl3
                 mesh.Add((float)points[i].y);
                 mesh.Add((float)points[i].z);
             }
-            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, r, g, b,true);
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color);
         }
-        public int addLineMesh(Vertex4f[] points, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public string addLineMesh(Vertex4f[] points, Colo3d_GL color = null, string name = "new LineMesh")
         {
             var mesh = new float[points.Length * 3];
             int ind = 0;
@@ -1715,27 +1754,26 @@ namespace opengl3
                 mesh[ind] = p.y; ind++;
                 mesh[ind] = p.z; ind++;
             }
-            return addMeshWithoutNorm(mesh, PrimitiveType.Lines, r, g, b);
+            return addMeshWithoutNorm(mesh, PrimitiveType.Lines, color,name);
         }
-        public int addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f,bool dyn = false)
+        public string addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, Colo3d_GL color = null,string name = "new mesh without norm")
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
             for (int i = 0; i < color_buffer_data.Length; i += 3)
             {
-                color_buffer_data[i] = r;
-                color_buffer_data[i + 1] = g;
-                color_buffer_data[i + 2] = b;
+                color_buffer_data[i] = color.r;
+                color_buffer_data[i + 1] = color.g;
+                color_buffer_data[i + 2] = color.b;
 
                 normal_buffer_data[i] = 0.1f;
                 normal_buffer_data[i + 1] = 0.1f;
                 normal_buffer_data[i + 2] = 0.1f;
             }
-            if(dyn) return add_buff_gl_dyn(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
-            else return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
 
+            return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType,name);
         }
-        public void addMeshColor(float[] gl_vertex_buffer_data, float[] gl_color_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public string addMeshColor(float[] gl_vertex_buffer_data, float[] gl_color_buffer_data, PrimitiveType primitiveType, Colo3d_GL color = null,string name= "new mesh color")
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             Point3d_GL p1, p2, p3, U, V, Norm1, Norm;
@@ -1764,9 +1802,9 @@ namespace opengl3
                 normal_buffer_data[i + 8] = (float)Norm1.z;
             }
             // Console.WriteLine("vert len " + gl_vertex_buffer_data.Length);
-            add_buff_gl(gl_vertex_buffer_data, gl_color_buffer_data, normal_buffer_data, primitiveType);
+            return add_buff_gl(gl_vertex_buffer_data, gl_color_buffer_data, normal_buffer_data, primitiveType, name);
         }
-        public int addMesh(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, float r = 0.1f, float g = 0.1f, float b = 0.1f)
+        public string addMesh(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, Colo3d_GL color = null,string name = "new mesh")
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             Point3d_GL p1,p2,p3,U,V,Norm1,Norm;
@@ -1806,13 +1844,24 @@ namespace opengl3
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
             for (int i = 0; i < color_buffer_data.Length; i += 3)
             {
-                color_buffer_data[i] = r;
-                color_buffer_data[i + 1] = g;
-                color_buffer_data[i + 2] = b;
+                color_buffer_data[i] = color.r;
+                color_buffer_data[i + 1] = color.g;
+                color_buffer_data[i + 2] = color.b;
             }
             //Console.WriteLine( gl_vertex_buffer_data.Length);
-            return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType);
+            return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType,name);
         }
+
+
+        public float[] z_mesh_from_cont_xy(Point3d_GL[] ps, double z)
+        {
+            var ps_up = Point3d_GL.add_arr(ps, new Point3d_GL(0, 0, z));
+            var ps_down = Point3d_GL.add_arr(ps, new Point3d_GL(0, 0, -z));
+            var mesh = Polygon3d_GL.triangulate_two_same_conts(ps_up, ps_down);
+            return Polygon3d_GL.toMesh(mesh)[0];
+        
+        }
+
 
 
         #endregion
@@ -1932,190 +1981,6 @@ namespace opengl3
             Gl.DeleteShader(ComputeShaderID);
             return ProgrammID;
         }
-
-        #endregion
-
-
-        #region leg
-
-        public Point3d_GL[][] cross_flat_gpu_mesh_2(float[] mesh_m, Flat3d_GL[] flats)
-        {
-            //float[] mesh_m = Point3d_GL.mesh3to4(buffersGl.objs_dynamic[obj].vertex_buffer_data);
-            mesh_m = Point3d_GL.mesh3to4(mesh_m);
-            int verts_tr = 3;
-            int max_w_tex = 8000;
-            int max_w_tex_buf = 952000;
-            max_w_tex = 1200;
-            max_w_tex_buf = 480000;
-            var mesh_m_l = mesh_m.ToList();
-            int h_buf = 1;
-            int w_buf = mesh_m.Length / 4;
-            if (mesh_m.Length > max_w_tex_buf)
-            {
-                h_buf = (int)(mesh_m.Length / max_w_tex_buf) + 1;
-            }
-
-
-            /* for (int i = 0; i < mesh_m_l.Count; i++)
-             {
-                 mesh_m_l[i] = i;
-                 if (i % 2 == 0)
-                 {
-                     // mesh2[i] *= -1;
-                 }
-                 if ((i+1) % 4 == 0)
-                 {
-                     mesh_m_l[i] = 0;
-                 }
-             }
-             */
-
-            //Console.WriteLine(toStringBuf(mesh_m_l.ToArray(), 4, 4, "mesh_data"));
-            var pss = new List<Point3d_GL>[h_buf];
-            var pss_r = new Point3d_GL[h_buf][];
-
-            //Console.WriteLine(h_buf + " h_buf "+ mesh_m.Length +" "+max_w_tex_buf+ " mesh_m.Length > max_w_tex_buf");
-            for (int j = 1; j <= h_buf; j++)
-            {
-                var stop = j * max_w_tex_buf;
-                var start = (j - 1) * max_w_tex_buf;
-                if (start >= mesh_m.Length) break;
-                if (stop >= mesh_m.Length) stop = mesh_m.Length - 1;
-                var mesh = mesh_m_l.GetRange(start, stop - start).ToArray();
-
-                int h = 1;
-                int w = mesh.Length / 4;
-                if (((double)mesh.Length / 4) % 1 > 0) w++;
-
-                if (w > max_w_tex)
-                {
-                    h = (int)(w / max_w_tex) + 1;
-                    w = max_w_tex;
-                }
-
-                // Console.WriteLine(toStringBuf(mesh, 4, 4, "mesh_data"));
-                Console.WriteLine(w + " " + h + " " + w * h * 4 + " " + mesh.Length);
-                var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba, mesh);
-                //var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba);
-
-
-
-                for (int i = 0; i < flats.Length; i++)
-                {
-                    surf_cross = new Vertex4f((float)flats[i].A, (float)flats[i].B, (float)flats[i].C, (float)flats[i].D);
-
-                    isolines_data = new TextureGL(3, w, h, PixelFormat.Rgba);
-
-                    load_vars_gl(idsCsSlice, new openGlobj());
-                    Gl.DispatchCompute((uint)(w), (uint)(h), 1);
-                    Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
-                    var ps_data = isolines_data.getData();
-                    var ps_data_div = Point3d_GL.divide_data(ps_data, w);
-                    var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
-                    var ps = Point3d_GL.unifPoints2d(Point3d_GL.filtrExistPoints2d(ps_cr));
-                    if (pss[j - 1] == null)
-                    {
-                        pss[j - 1] = new List<Point3d_GL>();
-                    }
-                    pss[j - 1].AddRange(ps);
-                    //Console.WriteLine(toStringBuf(ps_data, ps_data.Length/w, 4, "isolines_data"));
-                }
-            }
-            for (int i = 0; i < pss.Length; i++)
-            {
-                if (pss[i] != null)
-                    pss_r[i] = pss[i].ToArray();
-            }
-
-            return pss_r;
-        }
-
-        public Point3d_GL[][] cross_flat_gpu_mesh_simple(float[] mesh, Flat3d_GL[] flats)
-        {
-            int verts_tr = 3;
-            const int max_w_tex = 8000;//
-
-            mesh = Point3d_GL.mesh3to4(mesh);
-            int h = 1;
-            int w = mesh.Length / 4;
-            if (w > max_w_tex)
-            {
-                h = (int)(w / max_w_tex) + 1;
-                w = max_w_tex;
-            }
-            Console.WriteLine(w + " " + h + " " + w * h * 4 + " " + mesh.Length);
-
-            /* var len = w * h * 4;//341000;//w*h*4;//946000
-             var mesh2 = new float[len];
-             for (int i = 0; i < mesh.Length; i++)
-             {
-                 mesh2[i] = mesh[i];
-                 if (i % 2 == 0)
-                 {
-                     mesh2[i] *=-1;
-                 }
-                 if (i%4==0)
-                 {
-                     mesh2[i] = 0;
-                 }
-             }
-
-             */
-            var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba, mesh);
-
-            //var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba, mesh);
-
-
-            //var mesh_data = new TextureGL(2, w, h, PixelFormat.Rgba);
-            var pss = new List<Point3d_GL[]>();
-
-            for (int i = 0; i < flats.Length; i++)
-            {
-                surf_cross = new Vertex4f((float)flats[i].A, (float)flats[i].B, (float)flats[i].C, (float)flats[i].D);
-
-                isolines_data = new TextureGL(3, w, h, PixelFormat.Rgba);
-
-                load_vars_gl(idsCsSlice, new openGlobj());
-                Gl.DispatchCompute((uint)(w), (uint)(h), 1);
-                Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
-                var ps_data = isolines_data.getData();
-                var ps_data_div = Point3d_GL.divide_data(ps_data, w);
-                var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
-                var ps = Point3d_GL.unifPoints2d(Point3d_GL.filtrExistPoints2d(ps_cr));
-                pss.Add(ps);
-            }
-
-            return pss.ToArray();
-        }
-        public void comp_test()
-        {
-
-            isolines_data = new TextureGL(1, 100, 10, PixelFormat.Rgba);
-
-            Gl.UseProgram(idsCs.programID);
-            Gl.DispatchCompute(1, 1, 1);
-            Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
-
-            var ps_data = isolines_data.getData();
-            Console.WriteLine(toStringBuf(ps_data, ps_data.Length / 10, 4, "isolines_data"));
-
-        }
-
-        async public void cross_flat(int obj, Flat3d_GL flat)
-        {
-            int w = 3;
-            int h = 8;
-            Vertex4f flat_gl = new Vertex4f((float)flat.A, (float)flat.B, (float)flat.C, (float)flat.D);
-            isolines_data = new TextureGL(3, w, h, PixelFormat.Rgba);
-            buffersGl.set_cross_flat_obj(obj, flat_gl);
-            await Task.Delay(150);
-            var ps_data = isolines_data.getData();
-            var ps_data_div = Point3d_GL.divide_data(ps_data, w);
-            var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
-            prin.t(ps_cr);
-            buffersGl.set_comp_flat(obj, 0);
-        }
-
 
         #endregion
 

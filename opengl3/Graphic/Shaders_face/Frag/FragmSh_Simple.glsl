@@ -6,6 +6,7 @@ uniform vec3 MaterialSpecular;
 uniform float lightPower;
 uniform sampler2D textureSample;
 uniform int textureVis;
+uniform float transparency;
 
 in GS_FS_INTERFACE
 {
@@ -29,5 +30,5 @@ void main() {
 	}*/
 	color.xyz = fs_in.Color;
 
-	color.w = 1.0;
+	color.w = transparency;
 }

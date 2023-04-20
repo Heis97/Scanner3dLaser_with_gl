@@ -109,10 +109,10 @@ namespace opengl3
                 {
                     if (i != 0)
                     {
-                        graphicGL.remove_buff_gl_id(i + 9);
+                       // graphicGL.remove_buff_gl_id(i + 9);
                     }
                     //prin.t(i);
-                    graphicGL.add_buff_gl_mesh_id(boards[i], i + 10, true);
+                    //graphicGL.add_buff_gl_mesh_id(boards[i], i + 10, true);
                     await Task.Delay(100);
                     SaveImage_Chess(input, path, i);
                     await Task.Delay(100);
