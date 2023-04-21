@@ -113,7 +113,7 @@ namespace opengl3
             }
             
         }
-        static double arccos(double cos)
+        public static double arccos(double cos)
         {
             double _cos = cos;
             if (_cos >= 1) _cos = 1;

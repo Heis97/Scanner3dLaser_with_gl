@@ -123,7 +123,7 @@ namespace opengl3
             var z_len = (int)(p_len.z * 1.1);
             var map_xyz = new int[x_len, y_len, z_len][];
 
-            int triangle_overlay = 0;
+            int triangle_overlay = 1;
             for (int i = 0; i < surface.Length; i++)
             {
                 var pol_minmax = surface[i].get_dimens_minmax();

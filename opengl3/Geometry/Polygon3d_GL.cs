@@ -553,22 +553,23 @@ namespace opengl3
             }
             return dim_all / len;
         }
+        
 
         static Point3d_GL cross_line_triang(Polygon3d_GL polygon, Line3d_GL line)
         {
             var p_cross = line.calcCrossFlat(polygon.flat3D);
             var v_c = p_cross - polygon.ps[2];
-            var a1 = polygon.ps[0]^ v_c;
-            var a2 = polygon.ps[1]^ v_c;
-            var b1 = polygon.ps[0]^ polygon.ps[1];
+            var a1 = RobotFrame.arccos(polygon.ps[0]^ v_c);
+            var a2 = RobotFrame.arccos(polygon.ps[1]^ v_c);
+            var b1 = RobotFrame.arccos(polygon.ps[0]^ polygon.ps[1]);
             if (a1 > b1 || a2 > b1)
             {
                 return Point3d_GL.notExistP();
             }
             v_c = p_cross - polygon.ps[1];
-            a1 = polygon.ps[0] ^ v_c;
-            a2 = polygon.ps[2] ^ v_c;
-            b1 = polygon.ps[0] ^ polygon.ps[2];
+            a1 = RobotFrame.arccos(polygon.ps[0] ^ v_c);
+            a2 = RobotFrame.arccos(polygon.ps[2] ^ v_c);
+            b1 = RobotFrame.arccos(polygon.ps[0] ^ polygon.ps[2]);
             if (a1 > b1 || a2 > b1)
             {
                 return Point3d_GL.notExistP();

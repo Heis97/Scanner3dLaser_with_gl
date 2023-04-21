@@ -192,7 +192,7 @@ namespace opengl3
             propGrid_traj.SelectedObject = param_tr;
 
             debugBox.Text = "0.3 0.3 1";
-
+            load_camers_v2();
         }
 
         void loadStereo()
@@ -404,9 +404,9 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_cal_130423", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_z_cal_1", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);       
-            cam1.save_camera("cam1_conf_130423.txt");            
+            cam1.save_camera("cam1_z_conf_210423.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_2412_2", FrameType.Pattern, PatternType.Mesh);
@@ -3840,7 +3840,7 @@ namespace opengl3
             var intersec = RasterMap.matches_two_surf(obj1, obj2);
 
             var ps=  RasterMap.calc_intersec(obj2, obj1,intersec);
-
+            Console.WriteLine(ps.Length);
             GL1.addPointMesh(ps, new Colo3d_GL(1, 0, 0), "intersec");
 
         }
