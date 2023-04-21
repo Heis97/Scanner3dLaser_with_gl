@@ -118,12 +118,12 @@ namespace opengl3
 
         static RasterMap raster_mesh_xyz(Polygon3d_GL[] surface, Point3d_GL p_len, Point3d_GL p_min, double resolution)
         {
-            var x_len = (int)(p_len.x * 1.05);
-            var y_len = (int)(p_len.y * 1.05);
-            var z_len = (int)(p_len.z * 1.05);
+            var x_len = (int)(p_len.x * 1.1);
+            var y_len = (int)(p_len.y * 1.1);
+            var z_len = (int)(p_len.z * 1.1);
             var map_xyz = new int[x_len, y_len, z_len][];
 
-            int triangle_overlay = 1;
+            int triangle_overlay = 0;
             for (int i = 0; i < surface.Length; i++)
             {
                 var pol_minmax = surface[i].get_dimens_minmax();
@@ -134,20 +134,23 @@ namespace opengl3
                     {
                         for (int z = (int)(pol_min.z / resolution) - triangle_overlay; z < pol_max.z / resolution + triangle_overlay; z++)
                         {
-                            if (x >= x_len) x = x_len - 1;
-                            if (x < 0) x = 0;
+                            var c_x = x;
+                            var c_y = y;
+                            var c_z = z;
+                            if (c_x >= x_len) c_x = x_len - 1;
+                            if (c_x < 0) c_x = 0;
 
-                            if (y >= y_len) y = y_len - 1;
-                            if (y < 0) y = 0;
+                            if (c_y >= y_len) c_y = y_len - 1;
+                            if (c_y < 0) c_y = 0;
 
-                            if (z >= z_len) y = z_len - 1;
-                            if (z < 0) z = 0;
+                            if (c_z >= z_len) c_z = z_len - 1;
+                            if (c_z < 0) c_z = 0;
 
-                            if (map_xyz[x, y, z] == null) map_xyz[x, y, z] = new int[0];
-                            var map_cur = map_xyz[x, y, z];
+                            if (map_xyz[c_x, c_y, c_z] == null) map_xyz[c_x, c_y, c_z] = new int[0];
+                            var map_cur = map_xyz[c_x, c_y, c_z];
                             var list = map_cur.ToList();
                             list.Add(i);
-                            map_xyz[x, y, z] = list.ToArray();
+                            map_xyz[c_x, c_y, c_z] = list.ToArray();
                         }
                     }
                 }
@@ -157,10 +160,15 @@ namespace opengl3
         }
 
 
-        static public  int[][] matches_two_surf(Polygon3d_GL[] surface1, Polygon3d_GL[] surface2, double resolution)
+        static public  int[][] matches_two_surf(Polygon3d_GL[] surface1, Polygon3d_GL[] surface2, double resolution = -1)
         {
+            if(resolution<0)
+            {
+                resolution = Polygon3d_GL.aver_dim(new Polygon3d_GL[][] { surface1, surface2 });
+            }
             var maps = map_two_mesh(surface1, surface2, resolution);
             var matches = matches_map(maps[0],maps[1]);
+            Console.WriteLine(matches.Length);
             return matches;
         }
 
@@ -190,8 +198,7 @@ namespace opengl3
             var match_intersec = new bool[map1.len, map2.len];  
 
             var matches = new List<int[]>();
-
-            for(int x = 0; x < map1.map_xyz.GetLength(0); x++)
+            for (int x = 0; x < map1.map_xyz.GetLength(0); x++)
             {
                 for (int y = 0; y < map1.map_xyz.GetLength(1); y++)
                 {
@@ -215,6 +222,20 @@ namespace opengl3
                 }
             }
             return matches.ToArray();
+        }
+
+        public static Point3d_GL[] calc_intersec(Polygon3d_GL[] surface1, Polygon3d_GL[] surface2,int[][] inters)
+        {
+            var ps = new List<Point3d_GL>();
+            for(int i = 0; i < inters.Length; i++)
+            {
+                var p_inter = Polygon3d_GL.cross_triang(surface1[inters[i][0]], surface2[inters[i][0]]);
+                if(p_inter != null)
+                    if(p_inter.Length>0)
+                        ps.AddRange(p_inter);
+            }
+
+            return ps.ToArray();
         }
 
 

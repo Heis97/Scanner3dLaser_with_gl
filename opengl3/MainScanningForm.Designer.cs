@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_intersec_obj = new System.Windows.Forms.Button();
             this.prop_grid_model = new System.Windows.Forms.PropertyGrid();
             this.tree_models = new System.Windows.Forms.TreeView();
             this.but_scan_stereo_rob = new System.Windows.Forms.Button();
@@ -965,6 +966,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_intersec_obj);
             this.tabOpenGl.Controls.Add(this.prop_grid_model);
             this.tabOpenGl.Controls.Add(this.tree_models);
             this.tabOpenGl.Controls.Add(this.but_scan_stereo_rob);
@@ -1074,21 +1076,32 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // but_intersec_obj
+            // 
+            this.but_intersec_obj.Location = new System.Drawing.Point(674, 933);
+            this.but_intersec_obj.Name = "but_intersec_obj";
+            this.but_intersec_obj.Size = new System.Drawing.Size(96, 34);
+            this.but_intersec_obj.TabIndex = 151;
+            this.but_intersec_obj.Text = "Линия пересеч. объектов";
+            this.but_intersec_obj.UseVisualStyleBackColor = true;
+            this.but_intersec_obj.Click += new System.EventHandler(this.but_intersec_obj_Click);
+            // 
             // prop_grid_model
             // 
-            this.prop_grid_model.Location = new System.Drawing.Point(619, 292);
+            this.prop_grid_model.Location = new System.Drawing.Point(996, 6);
             this.prop_grid_model.Name = "prop_grid_model";
-            this.prop_grid_model.Size = new System.Drawing.Size(183, 343);
+            this.prop_grid_model.Size = new System.Drawing.Size(183, 271);
             this.prop_grid_model.TabIndex = 150;
             // 
             // tree_models
             // 
             this.tree_models.BackColor = System.Drawing.SystemColors.Window;
-            this.tree_models.Location = new System.Drawing.Point(619, 15);
+            this.tree_models.Location = new System.Drawing.Point(813, 6);
             this.tree_models.Name = "tree_models";
             this.tree_models.Size = new System.Drawing.Size(177, 271);
             this.tree_models.TabIndex = 149;
             this.tree_models.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tree_models_AfterSelect);
+            this.tree_models.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tree_models_MouseDown);
             // 
             // but_scan_stereo_rob
             // 
@@ -1102,7 +1115,7 @@ namespace opengl3
             // 
             // but_rob_traj_pulse
             // 
-            this.but_rob_traj_pulse.Location = new System.Drawing.Point(888, 590);
+            this.but_rob_traj_pulse.Location = new System.Drawing.Point(813, 632);
             this.but_rob_traj_pulse.Name = "but_rob_traj_pulse";
             this.but_rob_traj_pulse.Size = new System.Drawing.Size(106, 34);
             this.but_rob_traj_pulse.TabIndex = 147;
@@ -1112,7 +1125,7 @@ namespace opengl3
             // 
             // but_rob_traj_kuka
             // 
-            this.but_rob_traj_kuka.Location = new System.Drawing.Point(1000, 590);
+            this.but_rob_traj_kuka.Location = new System.Drawing.Point(813, 668);
             this.but_rob_traj_kuka.Name = "but_rob_traj_kuka";
             this.but_rob_traj_kuka.Size = new System.Drawing.Size(106, 34);
             this.but_rob_traj_kuka.TabIndex = 146;
@@ -1123,7 +1136,7 @@ namespace opengl3
             // but_rob_start_sc
             // 
             this.but_rob_start_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_start_sc.Location = new System.Drawing.Point(1000, 551);
+            this.but_rob_start_sc.Location = new System.Drawing.Point(1080, 757);
             this.but_rob_start_sc.Name = "but_rob_start_sc";
             this.but_rob_start_sc.Size = new System.Drawing.Size(106, 33);
             this.but_rob_start_sc.TabIndex = 145;
@@ -1134,7 +1147,7 @@ namespace opengl3
             // but_rob_clear_sc
             // 
             this.but_rob_clear_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_clear_sc.Location = new System.Drawing.Point(1000, 507);
+            this.but_rob_clear_sc.Location = new System.Drawing.Point(1080, 713);
             this.but_rob_clear_sc.Name = "but_rob_clear_sc";
             this.but_rob_clear_sc.Size = new System.Drawing.Size(106, 33);
             this.but_rob_clear_sc.TabIndex = 144;
@@ -1145,7 +1158,7 @@ namespace opengl3
             // but_rob_manual_sc
             // 
             this.but_rob_manual_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_manual_sc.Location = new System.Drawing.Point(1000, 463);
+            this.but_rob_manual_sc.Location = new System.Drawing.Point(1080, 669);
             this.but_rob_manual_sc.Name = "but_rob_manual_sc";
             this.but_rob_manual_sc.Size = new System.Drawing.Size(106, 33);
             this.but_rob_manual_sc.TabIndex = 143;
@@ -1156,7 +1169,7 @@ namespace opengl3
             // but_rob_auto_sc
             // 
             this.but_rob_auto_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_auto_sc.Location = new System.Drawing.Point(1000, 419);
+            this.but_rob_auto_sc.Location = new System.Drawing.Point(1080, 625);
             this.but_rob_auto_sc.Name = "but_rob_auto_sc";
             this.but_rob_auto_sc.Size = new System.Drawing.Size(106, 33);
             this.but_rob_auto_sc.TabIndex = 142;
@@ -1175,7 +1188,7 @@ namespace opengl3
             // but_rob_res_sc
             // 
             this.but_rob_res_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_res_sc.Location = new System.Drawing.Point(888, 551);
+            this.but_rob_res_sc.Location = new System.Drawing.Point(968, 757);
             this.but_rob_res_sc.Name = "but_rob_res_sc";
             this.but_rob_res_sc.Size = new System.Drawing.Size(106, 33);
             this.but_rob_res_sc.TabIndex = 140;
@@ -1186,7 +1199,7 @@ namespace opengl3
             // but_rob_con_sc
             // 
             this.but_rob_con_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_con_sc.Location = new System.Drawing.Point(888, 419);
+            this.but_rob_con_sc.Location = new System.Drawing.Point(968, 625);
             this.but_rob_con_sc.Name = "but_rob_con_sc";
             this.but_rob_con_sc.Size = new System.Drawing.Size(106, 33);
             this.but_rob_con_sc.TabIndex = 137;
@@ -1197,7 +1210,7 @@ namespace opengl3
             // but_rob_discon_sc
             // 
             this.but_rob_discon_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_discon_sc.Location = new System.Drawing.Point(888, 463);
+            this.but_rob_discon_sc.Location = new System.Drawing.Point(968, 669);
             this.but_rob_discon_sc.Name = "but_rob_discon_sc";
             this.but_rob_discon_sc.Size = new System.Drawing.Size(106, 33);
             this.but_rob_discon_sc.TabIndex = 138;
@@ -1208,7 +1221,7 @@ namespace opengl3
             // but_rob_send_sc
             // 
             this.but_rob_send_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_send_sc.Location = new System.Drawing.Point(888, 507);
+            this.but_rob_send_sc.Location = new System.Drawing.Point(968, 713);
             this.but_rob_send_sc.Name = "but_rob_send_sc";
             this.but_rob_send_sc.Size = new System.Drawing.Size(106, 33);
             this.but_rob_send_sc.TabIndex = 139;
@@ -1218,7 +1231,7 @@ namespace opengl3
             // 
             // but_reconstruc_area
             // 
-            this.but_reconstruc_area.Location = new System.Drawing.Point(674, 958);
+            this.but_reconstruc_area.Location = new System.Drawing.Point(572, 933);
             this.but_reconstruc_area.Name = "but_reconstruc_area";
             this.but_reconstruc_area.Size = new System.Drawing.Size(96, 34);
             this.but_reconstruc_area.TabIndex = 136;
@@ -1228,7 +1241,7 @@ namespace opengl3
             // 
             // but_keep_area
             // 
-            this.but_keep_area.Location = new System.Drawing.Point(776, 920);
+            this.but_keep_area.Location = new System.Drawing.Point(528, 856);
             this.but_keep_area.Name = "but_keep_area";
             this.but_keep_area.Size = new System.Drawing.Size(96, 34);
             this.but_keep_area.TabIndex = 135;
@@ -1238,7 +1251,7 @@ namespace opengl3
             // 
             // but_delete_area
             // 
-            this.but_delete_area.Location = new System.Drawing.Point(674, 920);
+            this.but_delete_area.Location = new System.Drawing.Point(528, 893);
             this.but_delete_area.Name = "but_delete_area";
             this.but_delete_area.Size = new System.Drawing.Size(96, 34);
             this.but_delete_area.TabIndex = 134;
@@ -1288,7 +1301,7 @@ namespace opengl3
             // 
             // but_cross_flat
             // 
-            this.but_cross_flat.Location = new System.Drawing.Point(195, 15);
+            this.but_cross_flat.Location = new System.Drawing.Point(431, 907);
             this.but_cross_flat.Name = "but_cross_flat";
             this.but_cross_flat.Size = new System.Drawing.Size(75, 23);
             this.but_cross_flat.TabIndex = 129;
@@ -1298,7 +1311,7 @@ namespace opengl3
             // 
             // but_traj_clear
             // 
-            this.but_traj_clear.Location = new System.Drawing.Point(470, 838);
+            this.but_traj_clear.Location = new System.Drawing.Point(247, 979);
             this.but_traj_clear.Name = "but_traj_clear";
             this.but_traj_clear.Size = new System.Drawing.Size(96, 24);
             this.but_traj_clear.TabIndex = 128;
@@ -1325,7 +1338,7 @@ namespace opengl3
             // 
             // but_gl_light
             // 
-            this.but_gl_light.Location = new System.Drawing.Point(572, 869);
+            this.but_gl_light.Location = new System.Drawing.Point(431, 958);
             this.but_gl_light.Name = "but_gl_light";
             this.but_gl_light.Size = new System.Drawing.Size(96, 49);
             this.but_gl_light.TabIndex = 125;
@@ -1362,7 +1375,7 @@ namespace opengl3
             // 
             // but_im_to_3d_im1
             // 
-            this.but_im_to_3d_im1.Location = new System.Drawing.Point(470, 869);
+            this.but_im_to_3d_im1.Location = new System.Drawing.Point(14, 872);
             this.but_im_to_3d_im1.Name = "but_im_to_3d_im1";
             this.but_im_to_3d_im1.Size = new System.Drawing.Size(96, 49);
             this.but_im_to_3d_im1.TabIndex = 121;
@@ -1382,14 +1395,14 @@ namespace opengl3
             // 
             // propGrid_traj
             // 
-            this.propGrid_traj.Location = new System.Drawing.Point(6, 6);
+            this.propGrid_traj.Location = new System.Drawing.Point(807, 283);
             this.propGrid_traj.Name = "propGrid_traj";
             this.propGrid_traj.Size = new System.Drawing.Size(183, 343);
             this.propGrid_traj.TabIndex = 119;
             // 
             // but_gl_clear
             // 
-            this.but_gl_clear.Location = new System.Drawing.Point(470, 813);
+            this.but_gl_clear.Location = new System.Drawing.Point(243, 955);
             this.but_gl_clear.Name = "but_gl_clear";
             this.but_gl_clear.Size = new System.Drawing.Size(96, 28);
             this.but_gl_clear.TabIndex = 118;
@@ -1517,7 +1530,7 @@ namespace opengl3
             // 
             // but_send_traj
             // 
-            this.but_send_traj.Location = new System.Drawing.Point(572, 958);
+            this.but_send_traj.Location = new System.Drawing.Point(807, 967);
             this.but_send_traj.Name = "but_send_traj";
             this.but_send_traj.Size = new System.Drawing.Size(96, 34);
             this.but_send_traj.TabIndex = 104;
@@ -1527,7 +1540,7 @@ namespace opengl3
             // 
             // but_end_cont
             // 
-            this.but_end_cont.Location = new System.Drawing.Point(572, 920);
+            this.but_end_cont.Location = new System.Drawing.Point(528, 820);
             this.but_end_cont.Name = "but_end_cont";
             this.but_end_cont.Size = new System.Drawing.Size(96, 34);
             this.but_end_cont.TabIndex = 103;
@@ -1537,7 +1550,7 @@ namespace opengl3
             // 
             // but_point_type
             // 
-            this.but_point_type.Location = new System.Drawing.Point(674, 812);
+            this.but_point_type.Location = new System.Drawing.Point(361, 812);
             this.but_point_type.Name = "but_point_type";
             this.but_point_type.Size = new System.Drawing.Size(96, 50);
             this.but_point_type.TabIndex = 101;
@@ -1547,7 +1560,7 @@ namespace opengl3
             // 
             // but_text_vis
             // 
-            this.but_text_vis.Location = new System.Drawing.Point(572, 812);
+            this.but_text_vis.Location = new System.Drawing.Point(470, 951);
             this.but_text_vis.Name = "but_text_vis";
             this.but_text_vis.Size = new System.Drawing.Size(96, 50);
             this.but_text_vis.TabIndex = 100;
@@ -3357,7 +3370,7 @@ namespace opengl3
             // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1370, 749);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
@@ -3726,6 +3739,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_scan_stereo_rob;
         private System.Windows.Forms.TreeView tree_models;
         private System.Windows.Forms.PropertyGrid prop_grid_model;
+        private System.Windows.Forms.Button but_intersec_obj;
     }
 }
 

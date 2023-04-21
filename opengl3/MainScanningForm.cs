@@ -3693,15 +3693,16 @@ namespace opengl3
         private void but_save_stl_Click(object sender, EventArgs e)
         {
             var stl_name = save_file_name(Directory.GetCurrentDirectory(), "stl");
-            var scan_stl = Polygon3d_GL.toMesh(mesh);
-            STLmodel.saveMesh(scan_stl[0], stl_name);
+            //var scan_stl = Polygon3d_GL.toMesh(mesh);
+            STLmodel.saveMesh(GL1.buffersGl.objs[tree_models.SelectedNode.Text].vertex_buffer_data, stl_name);
         }
         private void but_load_stl_Click(object sender, EventArgs e)
         {
             var stl_name = get_file_name(Directory.GetCurrentDirectory(), "stl");
+            
             var scan_stl = new Model3d(stl_name, false);
             mesh = scan_stl.pols;
-            scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles,stl_name);
+            scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles,Path.GetFileNameWithoutExtension(stl_name));
         }
 
 
@@ -3794,6 +3795,10 @@ namespace opengl3
             {
                 prop_grid_model.SelectedObject = GL1.buffersGl.objs[e.Node.Text];
                 prop_grid_model.Text = e.Node.Text;
+                if(ModifierKeys == Keys.Control)
+                    e.Node.BackColor = Color.Green;
+                else
+                    e.Node.BackColor = Color.White;               
             }
             catch
             {
@@ -3802,7 +3807,43 @@ namespace opengl3
             
         }
 
+        private void tree_models_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right) clear_selected_nodes();
+        }
 
+        string[] selected_nodes()
+        {
+            List<string> nodes = new List<string>();
+            for(int i=0; i<tree_models.Nodes.Count; i++)
+            {
+                if (tree_models.Nodes[i].BackColor == Color.Green) nodes.Add(tree_models.Nodes[i].Text);
+            }
+            return nodes.ToArray();
+        }
+        void clear_selected_nodes()
+        {
+            List<string> nodes = new List<string>();
+            for (int i = 0; i < tree_models.Nodes.Count; i++)
+            {
+                tree_models.Nodes[i].BackColor = Color.White;
+            }
+        }
+
+        private void but_intersec_obj_Click(object sender, EventArgs e)
+        {
+            var selected_obj = selected_nodes();
+            if (selected_obj == null) return;
+            if (selected_obj.Length <2) return;
+            var obj1 = Polygon3d_GL.polygs_from_mesh( GL1.buffersGl.objs[selected_obj[0]].vertex_buffer_data);
+            var obj2 = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj[1]].vertex_buffer_data);
+            var intersec = RasterMap.matches_two_surf(obj1, obj2);
+
+            var ps=  RasterMap.calc_intersec(obj2, obj1,intersec);
+
+            GL1.addPointMesh(ps, new Colo3d_GL(1, 0, 0), "intersec");
+
+        }
     }
 }
 

@@ -13,6 +13,7 @@ namespace opengl3
         public Flat3d_GL flat3D;
         public Vector3d_GL v1,v2,v3;
         int special_point_ind;
+        public double dim;
 
         public Polygon3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3, int _special_point_ind = 0)
         {
@@ -26,6 +27,8 @@ namespace opengl3
             {
                 v3 = -v3;
             }
+
+            dim = Math.Max(Math.Max((P3 - P1).magnitude(), (P2 - P1).magnitude()),(P3 - P2).magnitude());
             //Console.WriteLine(v3);
             v3.normalize();
             flat3D = new Flat3d_GL(v3.x, v3.y, v3.z, -v3 * P1);
@@ -459,7 +462,21 @@ namespace opengl3
                 }              
             }
             return new float[][] { mesh.ToArray(), color.ToArray(), normal.ToArray() };
-        }        
+        }
+
+        static public Polygon3d_GL[] polygs_from_mesh(float[] mesh)
+        {
+            if (mesh.Length % 9 != 0) return null;
+            List<Polygon3d_GL> polygs = new List<Polygon3d_GL> ();
+            for (int i = 0; i < mesh.Length; i+=9)
+            {
+                var p1 = new Point3d_GL(mesh[  i  ], mesh[i + 1], mesh[i + 2]);
+                var p2 = new Point3d_GL(mesh[i + 3], mesh[i + 4], mesh[i + 5]);
+                var p3 = new Point3d_GL(mesh[i + 6], mesh[i + 7], mesh[i + 8]);
+                polygs.Add( new Polygon3d_GL(p1, p2, p3));
+            }
+            return polygs.ToArray();
+        }
 
         static public Polygon3d_GL[] triangulate_two_same_conts(Point3d_GL[] ps1, Point3d_GL[] ps2)
         {
@@ -495,8 +512,10 @@ namespace opengl3
         {
             var p_min = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);
             var p_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue);
+
             for (int i = 0; i < polygons.Length; i++)
             {
+
                 if (polygons[i].ps[0].x < p_min.x) p_min.x = polygons[i].ps[0].x;
                 if (polygons[i].ps[0].y < p_min.y) p_min.y = polygons[i].ps[0].y;
                 if (polygons[i].ps[0].z < p_min.z) p_min.z = polygons[i].ps[0].z;
@@ -504,6 +523,7 @@ namespace opengl3
                 if (polygons[i].ps[0].x > p_max.x) p_max.x = polygons[i].ps[0].x;
                 if (polygons[i].ps[0].y > p_max.y) p_max.y = polygons[i].ps[0].y;
                 if (polygons[i].ps[0].z > p_max.z) p_max.z = polygons[i].ps[0].z;
+
             }
             return new Point3d_GL[] { p_min, p_max };
         }
@@ -516,6 +536,70 @@ namespace opengl3
             }
             var z = (-flat3D.D - flat3D.A * p.x - flat3D.B * p.y) / flat3D.C;
             return new Point3d_GL(p.x, p.y, z);
+        }
+
+        static public double aver_dim(Polygon3d_GL[][] polygons)
+        {
+            int len = 0;
+            double dim_all = 0;
+
+            for (int i = 0; i < polygons.Length; i++)
+            {
+                for (int j = 0; j < polygons[i].Length; j++)
+                {
+                    dim_all += polygons[i][j].dim;
+                }
+                len += polygons[i].Length;
+            }
+            return dim_all / len;
+        }
+
+        static Point3d_GL cross_line_triang(Polygon3d_GL polygon, Line3d_GL line)
+        {
+            var p_cross = line.calcCrossFlat(polygon.flat3D);
+            var v_c = p_cross - polygon.ps[2];
+            var a1 = polygon.ps[0]^ v_c;
+            var a2 = polygon.ps[1]^ v_c;
+            var b1 = polygon.ps[0]^ polygon.ps[1];
+            if (a1 > b1 || a2 > b1)
+            {
+                return Point3d_GL.notExistP();
+            }
+            v_c = p_cross - polygon.ps[1];
+            a1 = polygon.ps[0] ^ v_c;
+            a2 = polygon.ps[2] ^ v_c;
+            b1 = polygon.ps[0] ^ polygon.ps[2];
+            if (a1 > b1 || a2 > b1)
+            {
+                return Point3d_GL.notExistP();
+            }
+            return p_cross;
+        }
+
+         public static Point3d_GL[] cross_triang(Polygon3d_GL pn1, Polygon3d_GL pn2)
+         {
+            int ind = 0;
+           var ps1 = new List<Point3d_GL>();
+            Point3d_GL[] ps2 = new Point3d_GL[6];
+
+            ps2[0] = cross_line_triang(pn1, new Line3d_GL(pn2.ps[0], pn2.ps[1]));
+            ps2[1] = cross_line_triang(pn1, new Line3d_GL(pn2.ps[1], pn2.ps[2]));
+            ps2[2] = cross_line_triang(pn1, new Line3d_GL(pn2.ps[2], pn2.ps[0]));
+
+            ps2[3] = cross_line_triang(pn2, new Line3d_GL(pn1.ps[0], pn1.ps[1]));
+            ps2[4] = cross_line_triang(pn2, new Line3d_GL(pn1.ps[1], pn1.ps[2]));
+            ps2[5] = cross_line_triang(pn2, new Line3d_GL(pn1.ps[2], pn1.ps[0]));
+
+            for (int i = 0; i < 6; i++)
+            {
+                if (ps2[i].exist)
+                {
+                    ps1.Add(ps2[i]);
+                    ind++;
+                }
+            } 
+
+            return ps1.ToArray();
         }
     }
 }
