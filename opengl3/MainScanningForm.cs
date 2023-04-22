@@ -31,7 +31,7 @@ namespace opengl3
     {
         #region var
 
-        StringBuilder sb_enc =null;
+        StringBuilder sb_enc = null;
         string video_scan_name = "1";
         string scan_i = "emp";
         string traj_i = "emp";
@@ -48,7 +48,7 @@ namespace opengl3
         Point cam_calib_p2 = new Point(0, 0);
         bool settingWindow = false;
         Mat[] patt;
-        Matrix<double> persp_matr = new Matrix<double>(new double[3,3] { {1,0,0},{0,1,0 },{0,0,1 } });
+        Matrix<double> persp_matr = new Matrix<double>(new double[3, 3] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } });
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
         float markSize = 10f;
@@ -81,7 +81,7 @@ namespace opengl3
         private Point3d_GL offset_model;
         int fr_ind = 0;
         private List<Frame> frames;
-       
+
         int res_min = 256 * 1;
         volatile Mat[] mat_global = new Mat[3];
         Mat matr = new Mat();
@@ -112,11 +112,11 @@ namespace opengl3
         Matrix<double> cameraDistortionCoeffs_dist = new Matrix<double>(5, 1);
         Matrix<double> cameraMatrix_dist = new Matrix<double>(3, 3);
 
-     
+
         int k = 1;
         bool writ = false;
         int bin_pos = 40;
-       
+
         List<Mat> cap_mats = new List<Mat>();
         Features features = new Features();
         MCvPoint3D32f[] points3D = new MCvPoint3D32f[]
@@ -146,13 +146,13 @@ namespace opengl3
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            label_timer.Text = DateTime.Now.Second + " : "+DateTime.Now.Millisecond;
+            label_timer.Text = DateTime.Now.Second + " : " + DateTime.Now.Millisecond;
         }
         void init_vars()
         {
             #region important
-            combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн","Стерео Исп","Паттерн круги","Датчик расст", "Ничего" });
-           
+            combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "Ничего" });
+
             cameraDistortionCoeffs_dist[0, 0] = -0.1;
 
             mat_global[0] = new Mat();
@@ -179,7 +179,7 @@ namespace opengl3
             red_c = 252;
             //var model_mesh = STLmodel.parsingStl_GL4(@"curve_test_asc.STL");
             //GL1.addMesh(model_mesh, PrimitiveType.Triangles);
-            
+
             param_tr = new TrajParams
             {
                 dz = 0.4,
@@ -192,15 +192,15 @@ namespace opengl3
             propGrid_traj.SelectedObject = param_tr;
 
             debugBox.Text = "0.3 0.3 1";
-            load_camers_v2();
+            //load_camers_v2();
         }
 
         void loadStereo()
         {
             var cam_cal_1 = new string[] { @"cam1\camera_cal_1006_1" };
             var cam_cal_2 = new string[] { @"cam2\camera_cal_1006_1" };
-            
-            var frms1 = FrameLoader.loadPathsDiff(cam_cal_1, FrameType.MarkBoard,PatternType.Chess);
+
+            var frms1 = FrameLoader.loadPathsDiff(cam_cal_1, FrameType.MarkBoard, PatternType.Chess);
             var frms2 = FrameLoader.loadPathsDiff(cam_cal_2, FrameType.MarkBoard, PatternType.Chess);
             var cam1 = new CameraCV(frms1, chess_size, markSize, null);
             var cam2 = new CameraCV(frms2, chess_size, markSize, null);
@@ -212,7 +212,7 @@ namespace opengl3
 
             var frms3 = FrameLoader.loadImages_stereoCV(@"cam1\" + cam_cal_stereo[0], @"cam2\" + cam_cal_stereo[0], FrameType.MarkBoard);
             comboImages.Items.AddRange(frms3);
-            
+
         }
 
         void oneCam(string[] cam_cal_paths, float mark_size)
@@ -221,7 +221,28 @@ namespace opengl3
             var cam1 = new CameraCV(frms, chess_size_real, mark_size, null);
             cameraCVcommon = cam1;
             comboImages.Items.AddRange(frms);
-          
+
+        }
+
+        void test_cross_triag()
+        {
+            double l = 10;
+            var p1 = new Point3d_GL(l, 0, 0);
+            var p2 = new Point3d_GL(0, l/2, 0);
+            var p3 = new Point3d_GL(0, 0, l/2);
+
+            var p4 = new Point3d_GL(0, 0, 0);
+            var p5 = new Point3d_GL(l/3, l, l);
+            var p6 = new Point3d_GL(l, 0, l);
+
+            var t1 = new Polygon3d_GL(p1, p2, p3);
+            var t2 = new Polygon3d_GL(p4, p5, p6);
+
+            var ps = Polygon3d_GL.cross_triang(t1, t2);
+
+            GL1.addPointMesh(ps,new Colo3d_GL(1));
+            var triag = GL1.addMesh(Polygon3d_GL.toMesh(new Polygon3d_GL[] {t1,t2})[0],PrimitiveType.Triangles);
+            GL1.buffersGl.setTranspobj(triag, 0.3f);
         }
 
         #region laserScanner
@@ -941,7 +962,9 @@ namespace opengl3
 
             // startGenerate();
             //trB_SGBM_Enter();
-            
+           // test_cross_triag();
+
+
 
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
@@ -3842,6 +3865,11 @@ namespace opengl3
             var ps=  RasterMap.calc_intersec(obj2, obj1,intersec);
             Console.WriteLine(ps.Length);
             GL1.addPointMesh(ps, new Colo3d_GL(1, 0, 0), "intersec");
+
+            Console.WriteLine(obj1.Length+" "+ obj2.Length);
+
+            GL1.addMesh(Polygon3d_GL.toMesh(obj1)[0],PrimitiveType.Triangles, new Colo3d_GL(0,1, 0), "m1");
+            GL1.addMesh(Polygon3d_GL.toMesh(obj2)[0], PrimitiveType.Triangles, new Colo3d_GL(0,1, 0), "m2");
 
         }
     }

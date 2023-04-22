@@ -1760,6 +1760,7 @@ namespace opengl3
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
+            if (color == null) color = new Colo3d_GL();
             for (int i = 0; i < color_buffer_data.Length; i += 3)
             {
                 color_buffer_data[i] = color.r;
@@ -1841,6 +1842,7 @@ namespace opengl3
                 
                 
             }
+            if (color == null) color = new Colo3d_GL();
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
             for (int i = 0; i < color_buffer_data.Length; i += 3)
             {

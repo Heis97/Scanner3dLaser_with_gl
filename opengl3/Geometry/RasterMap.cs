@@ -180,9 +180,9 @@ namespace opengl3
             var p_max = Point3d_GL.Max(p_minmax1[1], p_minmax2[1]);
 
             var p_len = (p_max - p_min) / resolution;
-            var x_len = (int)(p_len.x * 1.05);
-            var y_len = (int)(p_len.y * 1.05);
-            var z_len = (int)(p_len.z * 1.05);
+            var x_len = (int)(p_len.x);
+            var y_len = (int)(p_len.y);
+            var z_len = (int)(p_len.z);
 
             var map1 = raster_mesh_xyz(surface1, new Point3d_GL(x_len, y_len, z_len), p_min, resolution);
             var map2 = raster_mesh_xyz(surface2, new Point3d_GL(x_len, y_len, z_len), p_min, resolution);
@@ -208,14 +208,17 @@ namespace opengl3
                         if(map1.map_xyz[x, y, z] != null && map2.map_xyz[x, y, z] != null)
                         {
                             for (int i = 0; i < map1.map_xyz[x, y, z].Length; i++)
+                            {
                                 for (int j = 0; j < map2.map_xyz[x, y, z].Length; j++)
                                 {
-                                    if(!match_intersec[map1.map_xyz[x, y, z][i],map2.map_xyz[x, y, z][j]])
+                                    if (!match_intersec[map1.map_xyz[x, y, z][i], map2.map_xyz[x, y, z][j]])
                                     {
                                         match_intersec[map1.map_xyz[x, y, z][i], map2.map_xyz[x, y, z][j]] = true;
-                                        matches.Add(new int[] { i,j });
+                                        matches.Add(new int[] { i, j });
                                     }
                                 }
+                            }
+                                
                         }
                         //--------------------
                     }
