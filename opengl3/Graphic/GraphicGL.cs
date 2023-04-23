@@ -236,11 +236,11 @@ namespace opengl3
         public void update_tree()
         {
             if (tree_mod == null) return;          
-            foreach (var name in buffersGl.objs.Keys)
+            foreach (var name in buffersGl.objs)
             {
-                if(!check_obj_in_tree(name))
+                if(!check_obj_in_tree(name.Value.name))
                 {
-                    tree_mod.Nodes.Add(name);
+                    tree_mod.Nodes.Add(name.Value.name);
                 }  
             }
         }
@@ -290,21 +290,18 @@ namespace opengl3
             {
                 if (buffersGl.objs.Count != 0)
                 {
-                    foreach (var opglObj in buffersGl.objs.Values)
+                    foreach (var opglObj in buffersGl.objs)
                     {
-                        renderGlobj(opglObj);
+                        renderGlobj(opglObj.Value);
                     }
                 }
             }
-            //Console.WriteLine(sizeControl.Width+" "+sizeControl.Height);
             rendercout++;
             if(rendercout%renderdelim==0)
             {
                 rendercout = 0;
             }
             update_tree();
-
-
         }
         
         void renderGlobj(openGlobj opgl_obj)
@@ -321,22 +318,21 @@ namespace opengl3
                         {
                             ids = idsPsOne;
                         }
+                        else
+                        {
+                            ids = idsPs;
+                        }
                     }
                     else if (opgl_obj.tp == PrimitiveType.Triangles)
                     {
                         ids = idsTs;
                         if (opgl_obj.count == 1)
                         {
-                            if(opgl_obj.comp_flat == 1)
-                            {
-                                //Console.WriteLine("comp_flat");
-                                ids = idsTsOneSlice;
-                            }
-                            else
-                            {
-                                ids = idsTsOne;
-                            }
-                            
+                            ids = idsTsOne;
+                        }
+                        else
+                        {
+                            ids = idsTs;
                         }
                     }
                     else if (opgl_obj.tp == PrimitiveType.Lines)
@@ -346,9 +342,16 @@ namespace opengl3
                         {
                             ids = idsLsOne;
                         }
+                        else
+                        {
+                            ids = idsLs;
+                        }
                     }
                     load_vars_gl(ids, opgl_obj);
                     opgl_obj.useBuffers();
+                   // Console.WriteLine(opgl_obj.count);
+                   // Console.WriteLine(opgl_obj.tp);
+
                     if (opgl_obj.count > 1)
                     {
                         opgl_obj.loadModels();
@@ -1081,7 +1084,7 @@ namespace opengl3
                             z_mesh_from_cont_xy(
                                 Point3d_GL.toPoints(pointsPaint.ToArray()), 400),
                             PrimitiveType.Triangles,
-                            new Colo3d_GL(1, 0, 0), name_cont);
+                            new Color3d_GL(1, 0, 0), name_cont);
                             buffersGl.setTranspobj(name_cont, 0.3f);
                         }
                            
@@ -1476,21 +1479,42 @@ namespace opengl3
                 Console.WriteLine("date_v == NULL");
                 return null;
             }
-            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp),name);
+            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp,name),name);
         }
 
         public void remove_buff_gl_id(string name)
         {
             buffersGl.removeObj(name);
         }
-        public void addFrame(Point3d_GL pos, Point3d_GL x, Point3d_GL y, Point3d_GL z,string name = "new Frame")
+        public string addFrame(Point3d_GL pos, Point3d_GL x, Point3d_GL y, Point3d_GL z, string name = "new Frame")
         {
             //addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 1.0f, 0);
             //addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 0, 0);
-            
-            addLineMesh(new Point3d_GL[] { pos, x }, new Colo3d_GL(1f,0,0),name);
-            addLineMesh(new Point3d_GL[] { pos, y }, new Colo3d_GL(0, 1, 0), name);
-            addLineMesh(new Point3d_GL[] { pos, z }, new Colo3d_GL(0f, 0, 1), name);
+            var mesh = new List<float>();
+            var color = new List<float>();
+            var points = new Point3d_GL[] { x, y, z };
+            var colors = new Color3d_GL[] { Color3d_GL.red(), Color3d_GL.green(), Color3d_GL.blue() };
+            for (int i=0; i<points.Length;i++)
+            {
+                mesh.Add((float)pos.x); 
+                mesh.Add((float)pos.y); 
+                mesh.Add((float)pos.z); 
+
+                color.Add(colors[i].r);
+                color.Add(colors[i].g);
+                color.Add(colors[i].b);
+
+                mesh.Add((float)points[i].x);
+                mesh.Add((float)points[i].y);
+                mesh.Add((float)points[i].z);
+
+                color.Add(colors[i].r);
+                color.Add(colors[i].g);
+                color.Add(colors[i].b);
+
+            }
+
+            return addMeshColor(mesh.ToArray(), color.ToArray(), PrimitiveType.Lines,name);
         }
 
         public void addFrame_Cam(Camera cam, int frame_len = 15)
@@ -1499,7 +1523,7 @@ namespace opengl3
             addFrame(cam.pos, cam.pos + cam.oX * frame_len, cam.pos + cam.oY * frame_len, cam.pos + cam.oZ * frame_len * 1.3);
         }
 
-        public void addFlat3d_XZ(Flat3d_GL flat3D_GL, Matrix<double> matrix=null, Colo3d_GL color = null, string name = "new Flat XZ")
+        public void addFlat3d_XZ(Flat3d_GL flat3D_GL, Matrix<double> matrix=null, Color3d_GL color = null, string name = "new Flat XZ")
         {
             var p0 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, -1000))).calcCrossFlat(flat3D_GL);
             var p1 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, -1000))).calcCrossFlat(flat3D_GL);
@@ -1526,7 +1550,7 @@ namespace opengl3
 
         }
 
-        public void addFlat3d_YZ(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Colo3d_GL color = null, string name = "new Flat YZ")
+        public void addFlat3d_YZ(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Color3d_GL color = null, string name = "new Flat YZ")
         {
             var p0 = (new Line3d_GL(new Vector3d_GL(10, 0, 0), new Point3d_GL(0, -50,  -1000))).calcCrossFlat(flat3D_GL);
             var p1 = (new Line3d_GL(new Vector3d_GL(10, 0, 0), new Point3d_GL(0, 50, -1000))).calcCrossFlat(flat3D_GL);
@@ -1552,7 +1576,7 @@ namespace opengl3
             addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
 
         }
-        public void addFlat3d_XY(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Colo3d_GL color = null, string name = "new Flat XY")
+        public void addFlat3d_XY(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Color3d_GL color = null, string name = "new Flat XY")
         {
             var p0 = (new Line3d_GL(new Vector3d_GL( 0, 0,10), new Point3d_GL( -50, -1000,0))).calcCrossFlat(flat3D_GL);
             var p1 = (new Line3d_GL(new Vector3d_GL( 0, 0, 10), new Point3d_GL( 50, -1000,0))).calcCrossFlat(flat3D_GL);
@@ -1578,7 +1602,7 @@ namespace opengl3
             addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
 
         }
-        public void addFlat3d_XY_zero(double z = 0,Colo3d_GL color = null, string name = "new Flat XZ")
+        public void addFlat3d_XY_zero(double z = 0,Color3d_GL color = null, string name = "new Flat XZ")
         {
             Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, z), new Point3d_GL(10, 10, z), new Point3d_GL(0, 10, z));
             var p0 = (new Line3d_GL(new Vector3d_GL(0, 0, 10), new Point3d_GL(-50,  -10,0))).calcCrossFlat(flat3D_GL);
@@ -1596,7 +1620,7 @@ namespace opengl3
 
         }
 
-        public void addFlat3d_XZ_zero(Colo3d_GL color = null,string name = "new Flat XZ")
+        public void addFlat3d_XZ_zero(Color3d_GL color = null,string name = "new Flat XZ")
         {
             Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, 0), new Point3d_GL(10, 0, 10), new Point3d_GL(0, 0, 10));
             var p0 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, -10))).calcCrossFlat(flat3D_GL);
@@ -1637,7 +1661,7 @@ namespace opengl3
             addMeshWithoutNorm(Point3d_GL.toMesh(verts), PrimitiveType.Lines);
 
         }
-        public void addGLMesh(float[] _mesh, PrimitiveType primitiveType, float x = 0, float y = 0, float z = 0,float scale = 1f, Colo3d_GL color = null, string name = "new PointMesh")
+        public void addGLMesh(float[] _mesh, PrimitiveType primitiveType, float x = 0, float y = 0, float z = 0,float scale = 1f, Color3d_GL color = null, string name = "new PointMesh")
         {
             // addMesh(cube_buf, PrimitiveType.Points);
             if (x == 0 && y == 0 && z == 0)
@@ -1672,7 +1696,7 @@ namespace opengl3
             }
             return mesh;
         }
-        public void addPointMesh(Point3d_GL[] points, Colo3d_GL color = null, string name = "new PointMesh")
+        public void addPointMesh(Point3d_GL[] points, Color3d_GL color = null, string name = "new PointMesh")
         {
             var mesh = new List<float>();
             foreach (var p in points)
@@ -1683,7 +1707,7 @@ namespace opengl3
             }
             addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, color, name);
         }
-        public void addLineFanMesh(float[] startpoint, float[] points, Colo3d_GL color = null, string name = "new LineFanMesh")
+        public void addLineFanMesh(float[] startpoint, float[] points, Color3d_GL color = null, string name = "new LineFanMesh")
         {
             var mesh = new float[points.Length * 2];
             var j = 0;
@@ -1698,7 +1722,7 @@ namespace opengl3
             }
             addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
         }
-        public void addLineMesh(Point3d_GL[] points, Colo3d_GL color = null, string name = "new LineMesh")
+        public void addLineMesh(Point3d_GL[] points, Color3d_GL color = null, string name = "new LineMesh")
         {
             var mesh = new List<float>();
             foreach (var p in points)
@@ -1709,7 +1733,7 @@ namespace opengl3
             }
             addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
         }
-        public string addLinesMeshTraj(Point3d_GL[][] lines, Colo3d_GL color = null, string name = "new LinesMeshTraj")
+        public string addLinesMeshTraj(Point3d_GL[][] lines, Color3d_GL color = null, string name = "new LinesMeshTraj")
         {
             var mesh_l = new List<float>();
             foreach (var points in lines)
@@ -1729,7 +1753,7 @@ namespace opengl3
             }
            return  addMeshWithoutNorm(mesh_l.ToArray(), PrimitiveType.Lines, color, name);
         }
-        public string addLineMeshTraj(Point3d_GL[] points, Colo3d_GL color = null, string name = "new LineMesh")
+        public string addLineMeshTraj(Point3d_GL[] points, Color3d_GL color = null, string name = "new LineMesh")
         {
             var mesh = new List<float>();
             for(int i=1; i<points.Length;i++)
@@ -1744,7 +1768,7 @@ namespace opengl3
             }
             return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color);
         }
-        public string addLineMesh(Vertex4f[] points, Colo3d_GL color = null, string name = "new LineMesh")
+        public string addLineMesh(Vertex4f[] points, Color3d_GL color = null, string name = "new LineMesh")
         {
             var mesh = new float[points.Length * 3];
             int ind = 0;
@@ -1756,11 +1780,11 @@ namespace opengl3
             }
             return addMeshWithoutNorm(mesh, PrimitiveType.Lines, color,name);
         }
-        public string addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, Colo3d_GL color = null,string name = "new mesh without norm")
+        public string addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, Color3d_GL color = null,string name = "new mesh without norm")
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
-            if (color == null) color = new Colo3d_GL();
+            if (color == null) color = new Color3d_GL();
             for (int i = 0; i < color_buffer_data.Length; i += 3)
             {
                 color_buffer_data[i] = color.r;
@@ -1774,7 +1798,7 @@ namespace opengl3
 
             return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType,name);
         }
-        public string addMeshColor(float[] gl_vertex_buffer_data, float[] gl_color_buffer_data, PrimitiveType primitiveType, Colo3d_GL color = null,string name= "new mesh color")
+        public string addMeshColor(float[] gl_vertex_buffer_data, float[] gl_color_buffer_data, PrimitiveType primitiveType,string name= "new mesh color")
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             Point3d_GL p1, p2, p3, U, V, Norm1, Norm;
@@ -1805,7 +1829,7 @@ namespace opengl3
             // Console.WriteLine("vert len " + gl_vertex_buffer_data.Length);
             return add_buff_gl(gl_vertex_buffer_data, gl_color_buffer_data, normal_buffer_data, primitiveType, name);
         }
-        public string addMesh(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, Colo3d_GL color = null,string name = "new mesh")
+        public string addMesh(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, Color3d_GL color = null,string name = "new mesh")
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             Point3d_GL p1,p2,p3,U,V,Norm1,Norm;
@@ -1842,7 +1866,7 @@ namespace opengl3
                 
                 
             }
-            if (color == null) color = new Colo3d_GL();
+            if (color == null) color = new Color3d_GL();
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
             for (int i = 0; i < color_buffer_data.Length; i += 3)
             {

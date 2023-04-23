@@ -87,6 +87,13 @@ namespace opengl3
             flat.exist = false;
             return flat;
         }
+
+        public double dist_to_flat(Point3d_GL p)
+        {
+            var flat = new Flat3d_GL();
+            flat.exist = false;
+            return p.x * A + p.y * B + p.z * C + D;
+        }
         public double valP(Point3d_GL p)
         {
             return A * p.x + B * p.y + C * p.z + D;

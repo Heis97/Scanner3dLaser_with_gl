@@ -19,9 +19,9 @@ namespace opengl3
         }
         public string add_obj(openGlobj opgl_obj, string name)
         {
-            string name_obj =gen_name( name);
-            
-            objs.Add(name_obj, opgl_obj);
+            string name_obj =gen_name(name);
+            opgl_obj = opgl_obj.setName(name_obj);
+            objs.Add(opgl_obj.name, opgl_obj);
             return name_obj;
         }
 

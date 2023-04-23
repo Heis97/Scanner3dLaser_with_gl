@@ -118,12 +118,12 @@ namespace opengl3
 
         static RasterMap raster_mesh_xyz(Polygon3d_GL[] surface, Point3d_GL p_len, Point3d_GL p_min, double resolution)
         {
-            var x_len = (int)(p_len.x * 1.1);
-            var y_len = (int)(p_len.y * 1.1);
-            var z_len = (int)(p_len.z * 1.1);
+            var x_len = (int)(p_len.x * 1.1) + 1;
+            var y_len = (int)(p_len.y * 1.1) + 1;
+            var z_len = (int)(p_len.z * 1.1)+1;
             var map_xyz = new int[x_len, y_len, z_len][];
 
-            int triangle_overlay = 1;
+            int triangle_overlay = 0;
             for (int i = 0; i < surface.Length; i++)
             {
                 var pol_minmax = surface[i].get_dimens_minmax();
@@ -214,7 +214,7 @@ namespace opengl3
                                     if (!match_intersec[map1.map_xyz[x, y, z][i], map2.map_xyz[x, y, z][j]])
                                     {
                                         match_intersec[map1.map_xyz[x, y, z][i], map2.map_xyz[x, y, z][j]] = true;
-                                        matches.Add(new int[] { i, j });
+                                        matches.Add(new int[] { map1.map_xyz[x, y, z][i], map2.map_xyz[x, y, z][j] });
                                     }
                                 }
                             }
@@ -232,7 +232,7 @@ namespace opengl3
             var ps = new List<Point3d_GL>();
             for(int i = 0; i < inters.Length; i++)
             {
-                var p_inter = Polygon3d_GL.cross_triang(surface1[inters[i][0]], surface2[inters[i][0]]);
+                var p_inter = Polygon3d_GL.cross_triang(surface1[inters[i][0]], surface2[inters[i][1]]);
                 if(p_inter != null)
                     if(p_inter.Length>0)
                         ps.AddRange(p_inter);

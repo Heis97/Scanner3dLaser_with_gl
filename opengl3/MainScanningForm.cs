@@ -240,7 +240,7 @@ namespace opengl3
 
             var ps = Polygon3d_GL.cross_triang(t1, t2);
 
-            GL1.addPointMesh(ps,new Colo3d_GL(1));
+            GL1.addPointMesh(ps,new Color3d_GL(1));
             var triag = GL1.addMesh(Polygon3d_GL.toMesh(new Polygon3d_GL[] {t1,t2})[0],PrimitiveType.Triangles);
             GL1.buffersGl.setTranspobj(triag, 0.3f);
         }
@@ -271,7 +271,7 @@ namespace opengl3
                 scanner1.addPoints(Frame.getMats(frms_scan));
                 var p3d_scan_sc = scanner1.getPointsScene();
                 var mesh_scan_sc = Point3d_GL.toMesh(p3d_scan_sc);
-                GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, new Colo3d_GL(0.9f));
+                GL1.addMeshWithoutNorm(mesh_scan_sc, PrimitiveType.Points, new Color3d_GL(0.9f));
             }
             else
             {
@@ -405,7 +405,7 @@ namespace opengl3
                     //frms_scan_diff = null;
                     Console.WriteLine("Load Points Done__" + lins + "_lins__________________");
                     var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesCam());
-                    GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, new Colo3d_GL( normrgb[0], normrgb[1], normrgb[2]));
+                    GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, new Color3d_GL( normrgb[0], normrgb[1], normrgb[2]));
                     mesh_scan_stl = null;
                     scanner1 = null;
 
@@ -3449,7 +3449,7 @@ namespace opengl3
                 var ps = PathPlanner.traj_to_matr(rob_traj);
                 if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
 
-                traj_i = GL1.addLineMeshTraj(ps.ToArray(),new Colo3d_GL(0.9f),"gen_traj");
+                traj_i = GL1.addLineMeshTraj(ps.ToArray(),new Color3d_GL(0.9f),"gen_traj");
                 var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType);
                 return traj_rob;
 
@@ -3862,14 +3862,14 @@ namespace opengl3
             var obj2 = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj[1]].vertex_buffer_data);
             var intersec = RasterMap.matches_two_surf(obj1, obj2);
 
-            var ps=  RasterMap.calc_intersec(obj2, obj1,intersec);
+            var ps=  RasterMap.calc_intersec(obj1, obj2,intersec);
             Console.WriteLine(ps.Length);
-            GL1.addPointMesh(ps, new Colo3d_GL(1, 0, 0), "intersec");
+            GL1.addPointMesh(ps, new Color3d_GL(1, 0, 0), "intersec");
 
             Console.WriteLine(obj1.Length+" "+ obj2.Length);
 
-            GL1.addMesh(Polygon3d_GL.toMesh(obj1)[0],PrimitiveType.Triangles, new Colo3d_GL(0,1, 0), "m1");
-            GL1.addMesh(Polygon3d_GL.toMesh(obj2)[0], PrimitiveType.Triangles, new Colo3d_GL(0,1, 0), "m2");
+            //GL1.addMesh(Polygon3d_GL.toMesh(obj1)[0],PrimitiveType.Triangles, new Color3d_GL(0,1, 0), "m1");
+            //GL1.addMesh(Polygon3d_GL.toMesh(obj2)[0], PrimitiveType.Triangles, new Color3d_GL(0,1, 0), "m2");
 
         }
     }

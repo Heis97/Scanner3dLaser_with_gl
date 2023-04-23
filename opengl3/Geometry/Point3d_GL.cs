@@ -16,8 +16,8 @@ namespace opengl3
         public double y { get; set; }
         public double z { get; set; }
         public bool exist { get; set; }
-        public Colo3d_GL color { get; set; }
-        public Point3d_GL(double _x = 0, double _y = 0, double _z = 0, Colo3d_GL _color = null)
+        public Color3d_GL color { get; set; }
+        public Point3d_GL(double _x = 0, double _y = 0, double _z = 0, Color3d_GL _color = null)
         {
             x = _x;
             y = _y;
@@ -25,7 +25,7 @@ namespace opengl3
             exist = true;
             color = _color;
         }
-        public Point3d_GL(Vertex4f vertex, Colo3d_GL _color = null)
+        public Point3d_GL(Vertex4f vertex, Color3d_GL _color = null)
         {
             x = vertex.x;
             y = vertex.y;
@@ -63,7 +63,7 @@ namespace opengl3
         {
             return new Point3d_GL(x, y, z, color);
         }
-        public Point3d_GL(double[,] cor, Colo3d_GL _color = null)
+        public Point3d_GL(double[,] cor, Color3d_GL _color = null)
         {
             x = cor[0, 0];
             y = cor[1, 0];
@@ -426,7 +426,6 @@ namespace opengl3
         }
         public override string ToString()
         {
-
             return Math.Round(x, 4).ToString() + " " + Math.Round(y, 4).ToString() + " " + Math.Round(z, 4).ToString();
         }
 

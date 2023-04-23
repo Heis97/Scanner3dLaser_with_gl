@@ -15,7 +15,7 @@ namespace opengl3
         public float[] normal_buffer_data { get; set; }
         public float[] texture_buffer_data;
         public int vert_len { get; set; }
-        public PrimitiveType tp;
+        public PrimitiveType tp { get; set; }
         public int Textureid;
         public bool visible { get; set; }
         public bool text_vis { get; set; }
@@ -23,6 +23,7 @@ namespace opengl3
         public float transparency { get; set; }
         uint buff_array;
 
+        public string name { get; set; }
         uint v_ubuf;
         uint n_ubuf;
 
@@ -33,7 +34,7 @@ namespace opengl3
         Vertex4f cross_flat;
         public int comp_flat;
 
-        public openGlobj(float[] v_buf, float[] c_buf, float[] n_buf, float[] t_buf=null, PrimitiveType type=PrimitiveType.Triangles, int _count = 1, int textureId = -1)
+        public openGlobj(float[] v_buf, float[] c_buf, float[] n_buf, float[] t_buf=null, PrimitiveType type=PrimitiveType.Triangles,string name = "name", int _count = 1, int textureId = -1)
         {
             text_vis = false;
             light_vis = false;
@@ -46,7 +47,8 @@ namespace opengl3
             count = _count;
             transparency = 1f;
             trsc = new trsc[_count];
-            for(int i=0;i<trsc.Length;i++)
+            this.name = name;
+            for (int i=0;i<trsc.Length;i++)
             {
                 trsc[i] = new trsc(Matrix4x4f.Identity);
             }
@@ -191,6 +193,12 @@ namespace opengl3
         public openGlobj setType(PrimitiveType ptype)
         {
             tp = ptype;
+            return this;
+        }
+
+        public openGlobj setName(string name)
+        {
+            this.name = name;
             return this;
         }
         public openGlobj setVisible(bool _visible)
