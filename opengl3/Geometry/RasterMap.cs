@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PathPlanning;
 
 namespace opengl3
 {
@@ -35,6 +36,10 @@ namespace opengl3
         }
         void rasterxy_surface_xy(Polygon3d_GL[] surface, double resolution)
         {
+            if (resolution < 0)
+            {
+                resolution = Polygon3d_GL.aver_dim(new Polygon3d_GL[][] { surface });
+            }
             var p_minmax = Polygon3d_GL.get_dimens_minmax_arr(surface);
             var p_min = p_minmax[0]; var p_max = p_minmax[1];
             var p_len = (p_max - p_min) / resolution;
@@ -239,6 +244,17 @@ namespace opengl3
             }
 
             return ps.ToArray();
+        }
+
+        public static Point3d_GL[] intersec_line_of_two_mesh(float[] mesh1, float[] mesh2)
+        {
+            var obj1 = Polygon3d_GL.polygs_from_mesh(mesh1);
+            var obj2 = Polygon3d_GL.polygs_from_mesh(mesh2);
+            var intersec = matches_two_surf(obj1, obj2);
+            var ps = calc_intersec(obj1, obj2, intersec);
+            var ps_or = Point3d_GL.order_points(ps);
+            ps_or = PathPlanner.filter_traj(ps_or.ToList(), 0.0001).ToArray();
+            return ps_or;
         }
 
 

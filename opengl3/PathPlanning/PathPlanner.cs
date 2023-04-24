@@ -12,7 +12,7 @@ using opengl3;
 
 namespace PathPlanning
 {
-    class PathPlanner
+    public class PathPlanner
     {
 
         public static List<Point3d_GL> traj_to_matr(List<Matrix<double>> matrs)

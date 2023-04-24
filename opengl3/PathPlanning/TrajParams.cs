@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace opengl3
 {
 
-    class TrajParams
+    public class TrajParams
     {
 
         public double[] z;

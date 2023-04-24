@@ -143,6 +143,7 @@ namespace opengl3
         public int render_count_ID;
         public int show_faces_ID;
         public int transparency_ID;
+        public int selected_ID;
         public int inv_norm_ID;
         public int[] surfs_cross_ID = new int[30];
         public int surfs_len_ID;
@@ -241,7 +242,7 @@ namespace opengl3
                 if(!check_obj_in_tree(name.Value.name))
                 {
                     tree_mod.Nodes.Add(name.Value.name);
-                }  
+                }
             }
         }
 
@@ -453,6 +454,7 @@ namespace opengl3
 
             ids.textureVisID = Gl.GetUniformLocation(ids.programID, "textureVis");
             ids.lightVisID = Gl.GetUniformLocation(ids.programID, "lightVis");
+            ids.selected_ID = Gl.GetUniformLocation(ids.programID, "selected");
 
             ids.MouseLocID = Gl.GetUniformLocation(ids.programID, "MouseLoc");
             ids.MouseLocGLID = Gl.GetUniformLocation(ids.programID, "MouseLocGL");
@@ -498,11 +500,14 @@ namespace opengl3
             //Gl.Uniform1i(ids.lightVisID, 1, lightVis);
             int text_vis = 0;
             int light_vis = 0;
+            int selected = 0;
             if (openGlobj.light_vis) light_vis = 1;
             if (openGlobj.text_vis) text_vis = 1;
+            if (openGlobj.selected) selected = 1;
 
             Gl.Uniform1i(ids.textureVisID, 1, text_vis);
             Gl.Uniform1i(ids.lightVisID, 1, light_vis);
+            Gl.Uniform1i(ids.selected_ID, 1, selected);
 
             Gl.Uniform1i(ids.show_faces_ID, 1, show_faces);
             Gl.Uniform1f(ids.transparency_ID, 1, openGlobj.transparency);

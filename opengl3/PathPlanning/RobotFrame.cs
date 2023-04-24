@@ -7,7 +7,7 @@ using Emgu.CV;
 
 namespace opengl3
 {
-    class RobotFrame
+    public class RobotFrame
     {
         public double X, Y, Z, A, B, C, V, D;
         public enum RobotType { KUKA = 1, PULSE = 2};

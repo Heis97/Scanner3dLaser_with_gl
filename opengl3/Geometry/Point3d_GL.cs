@@ -458,7 +458,6 @@ namespace opengl3
                 }                   
                 ps_or.Add(ps[i_min]);
                 ps = remove_element(ps, i_min);
-                //Console.WriteLine(ps.Length);
             }
 
             return ps_or.ToArray();

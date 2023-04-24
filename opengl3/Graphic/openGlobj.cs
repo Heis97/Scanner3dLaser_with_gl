@@ -20,6 +20,7 @@ namespace opengl3
         public bool visible { get; set; }
         public bool text_vis { get; set; }
         public bool light_vis { get; set; }
+        public bool selected { get; set; }
         public float transparency { get; set; }
         uint buff_array;
 
@@ -36,6 +37,7 @@ namespace opengl3
 
         public openGlobj(float[] v_buf, float[] c_buf, float[] n_buf, float[] t_buf=null, PrimitiveType type=PrimitiveType.Triangles,string name = "name", int _count = 1, int textureId = -1)
         {
+            selected = false;
             text_vis = false;
             light_vis = false;
             cross_flat = new Vertex4f();
@@ -195,7 +197,11 @@ namespace opengl3
             tp = ptype;
             return this;
         }
-
+        public openGlobj setSelected(bool _selected)
+        {
+            selected = _selected;
+            return this;
+        }
         public openGlobj setName(string name)
         {
             this.name = name;

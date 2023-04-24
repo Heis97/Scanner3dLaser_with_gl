@@ -7,6 +7,7 @@ uniform float lightPower;
 uniform sampler2D textureSample;
 uniform int textureVis;
 uniform float transparency;
+uniform int selected;
 
 in GS_FS_INTERFACE
 {
@@ -31,4 +32,10 @@ void main() {
 	color.xyz = fs_in.Color;
 
 	color.w = transparency;
+
+	if(selected == 1)
+	{
+		color.g +=0.2;
+		color.w = 0.4;
+	}
 }

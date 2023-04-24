@@ -3459,22 +3459,24 @@ namespace opengl3
 
 
 
-        void cut_area(RasterMap.type_out type_cut)
+        void cut_area(RasterMap.type_out type_cut,string selected_obj)
         {
+
             var cont = GL1.get_contour();
             if (mesh != null && cont != null)
             {
-                double resolut = 0.2;
+                double resolut = -1;
                 var map_xy = new RasterMap(mesh, resolut, RasterMap.type_map.XY);
-                var cut_surf = map_xy.get_polyg_contour_xy(cont, mesh, type_cut);
+                var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+                var cut_surf = map_xy.get_polyg_contour_xy(cont, polygs, type_cut);
 
-                GL1.buffersGl.removeObj(scan_i);
+                GL1.buffersGl.removeObj(selected_obj);
                 
 
                 var scan_stl = Polygon3d_GL.toMesh(cut_surf);
                 if (scan_stl != null)
                 {
-                    scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_i);
+                    GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj);
                 }
                 
             }
@@ -3482,32 +3484,35 @@ namespace opengl3
         }
         private void but_reconstruc_area_Click(object sender, EventArgs e)
         {
-            
-            cut_area(RasterMap.type_out.outside);
+            var selected_obj = selected_object(); if (selected_obj == null) return;
+            //cut_area(RasterMap.type_out.outside, selected_obj);
             //var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
             var fi = 0.1;
             var df = 1;
             var ds = 1;
-            var ps = cross_obj_flats(GL1.buffersGl.objs[scan_i].vertex_buffer_data, df,ds,fi);
+            var ps = cross_obj_flats(GL1.buffersGl.objs[selected_obj].vertex_buffer_data, df,ds,fi);
             var pols = Polygon3d_GL.triangulate_lines_xy(ps);
-            for(int i=0; i<ps.Length;i++)
-            {
-              //  GL1.addPointMesh(ps[i], 0.1f, 0.5f);
-            }
             var scan_stl = Polygon3d_GL.toMesh(pols);
             var rec = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"reconstruct");
-            
-
         }
-
+        private void but_intersec_obj_Click(object sender, EventArgs e)
+        {
+            var selected_obj = selected_nodes();
+            if (selected_obj == null) return;
+            if (selected_obj.Length < 2) return;
+            var ps = RasterMap.intersec_line_of_two_mesh(GL1.buffersGl.objs[selected_obj[0]].vertex_buffer_data, GL1.buffersGl.objs[selected_obj[1]].vertex_buffer_data);
+            GL1.addLineMeshTraj(ps, new Color3d_GL(1, 0, 0), "intersec");
+        }
         private void but_delete_area_Click(object sender, EventArgs e)
         {
-            cut_area(RasterMap.type_out.outside);
+            var sel_ob = selected_object(); if (sel_ob == null) return;
+            cut_area(RasterMap.type_out.outside, sel_ob);
         }
 
         private void but_keep_area_Click(object sender, EventArgs e)
         {
-            cut_area(RasterMap.type_out.inside);
+            var sel_ob = selected_object(); if (sel_ob == null) return;
+            cut_area(RasterMap.type_out.inside, sel_ob);
         }
 
         private void but_send_traj_Click(object sender, EventArgs e)
@@ -3717,6 +3722,7 @@ namespace opengl3
         {
             var stl_name = save_file_name(Directory.GetCurrentDirectory(), "stl");
             //var scan_stl = Polygon3d_GL.toMesh(mesh);
+            if(stl_name == null) return;
             STLmodel.saveMesh(GL1.buffersGl.objs[tree_models.SelectedNode.Text].vertex_buffer_data, stl_name);
         }
         private void but_load_stl_Click(object sender, EventArgs e)
@@ -3819,9 +3825,16 @@ namespace opengl3
                 prop_grid_model.SelectedObject = GL1.buffersGl.objs[e.Node.Text];
                 prop_grid_model.Text = e.Node.Text;
                 if(ModifierKeys == Keys.Control)
+                {
                     e.Node.BackColor = Color.Green;
+                    GL1.buffersGl.objs[e.Node.Text] = GL1.buffersGl.objs[e.Node.Text].setSelected(true);
+                }
                 else
-                    e.Node.BackColor = Color.White;               
+                {
+                    e.Node.BackColor = Color.White;
+                    GL1.buffersGl.objs[e.Node.Text] = GL1.buffersGl.objs[e.Node.Text].setSelected(false);
+                }
+                   
             }
             catch
             {
@@ -3844,34 +3857,25 @@ namespace opengl3
             }
             return nodes.ToArray();
         }
+        string selected_object()
+        {
+            var selected_obj = selected_nodes();
+            if (selected_obj == null) return null;
+            if (selected_obj.Length < 1) return null;
+            return selected_obj[0];
+        }
+
         void clear_selected_nodes()
         {
-            List<string> nodes = new List<string>();
             for (int i = 0; i < tree_models.Nodes.Count; i++)
             {
                 tree_models.Nodes[i].BackColor = Color.White;
+                GL1.buffersGl.objs[tree_models.Nodes[i].Text].setSelected(false);
+
             }
         }
 
-        private void but_intersec_obj_Click(object sender, EventArgs e)
-        {
-            var selected_obj = selected_nodes();
-            if (selected_obj == null) return;
-            if (selected_obj.Length <2) return;
-            var obj1 = Polygon3d_GL.polygs_from_mesh( GL1.buffersGl.objs[selected_obj[0]].vertex_buffer_data);
-            var obj2 = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj[1]].vertex_buffer_data);
-            var intersec = RasterMap.matches_two_surf(obj1, obj2);
-
-            var ps=  RasterMap.calc_intersec(obj1, obj2,intersec);
-            Console.WriteLine(ps.Length);
-            GL1.addPointMesh(ps, new Color3d_GL(1, 0, 0), "intersec");
-
-            Console.WriteLine(obj1.Length+" "+ obj2.Length);
-
-            //GL1.addMesh(Polygon3d_GL.toMesh(obj1)[0],PrimitiveType.Triangles, new Color3d_GL(0,1, 0), "m1");
-            //GL1.addMesh(Polygon3d_GL.toMesh(obj2)[0], PrimitiveType.Triangles, new Color3d_GL(0,1, 0), "m2");
-
-        }
+        
     }
 }
 
