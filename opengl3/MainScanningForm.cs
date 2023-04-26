@@ -3480,17 +3480,18 @@ namespace opengl3
                 }
                 
             }
-
         }
+
         private void but_reconstruc_area_Click(object sender, EventArgs e)
         {
             var selected_obj = selected_object(); if (selected_obj == null) return;
             //cut_area(RasterMap.type_out.outside, selected_obj);
             //var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
-            var fi = 0.1;
+            var fi = 1.5;
             var df = 1;
             var ds = 1;
             var ps = cross_obj_flats(GL1.buffersGl.objs[selected_obj].vertex_buffer_data, df,ds,fi);
+            //ps = Polygon3d_GL.smooth_lines_xy(ps, 2);
             var pols = Polygon3d_GL.triangulate_lines_xy(ps);
             var scan_stl = Polygon3d_GL.toMesh(pols);
             var rec = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"reconstruct");
