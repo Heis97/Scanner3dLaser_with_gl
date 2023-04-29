@@ -1771,7 +1771,7 @@ namespace opengl3
                 mesh.Add((float)points[i].y);
                 mesh.Add((float)points[i].z);
             }
-            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color);
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
         }
         public string addLineMesh(Vertex4f[] points, Color3d_GL color = null, string name = "new LineMesh")
         {

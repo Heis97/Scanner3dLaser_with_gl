@@ -306,7 +306,7 @@ namespace PathPlanning
             }
             return traj_fil;
         }
-        static List<Point3d_GL> divide_traj(List<Point3d_GL> layer,double div_step)
+        public static List<Point3d_GL> divide_traj(List<Point3d_GL> layer,double div_step)
         {
             var traj_div = new List<Point3d_GL>();
             for(int i=0; i<layer.Count-1;i++)

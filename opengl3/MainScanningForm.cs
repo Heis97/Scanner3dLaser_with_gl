@@ -195,6 +195,24 @@ namespace opengl3
             //load_camers_v2();
         }
 
+        void test_smooth()
+        {
+            var p1 = new Point3d_GL(0,0,0);
+            var p2 = new Point3d_GL(10, 0, 0);
+            var p3 = new Point3d_GL(10, 10, 10);
+            var traj = new List<Point3d_GL>();
+            traj.Add(p1);
+            traj.Add(p2);
+            traj.Add(p3);
+            var div = PathPlanner.divide_traj(traj, 0.05);
+            var line_s1 = Point3d_GL.line_aver(div.ToArray(), 20);
+            var line_s2 = Point3d_GL.line_laplace(div.ToArray(), 200);
+            GL1.addLineMeshTraj(line_s1,Color3d_GL.red(),"aver");
+            GL1.addLineMeshTraj(line_s2, Color3d_GL.blue(), "lapl");
+
+        }
+
+
         void loadStereo()
         {
             var cam_cal_1 = new string[] { @"cam1\camera_cal_1006_1" };
@@ -962,8 +980,8 @@ namespace opengl3
 
             // startGenerate();
             //trB_SGBM_Enter();
-           // test_cross_triag();
-
+            // test_cross_triag();
+            test_smooth();
 
 
         }

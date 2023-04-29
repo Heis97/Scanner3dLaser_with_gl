@@ -547,6 +547,47 @@ namespace opengl3
             }
             return ret;
         }
+
+
+        public static Point3d_GL[] line_aver(Point3d_GL[] ps,int wind)
+        {
+            if(ps == null) return null;
+            if (ps.Length<3) return null;
+            var ps_s = new Point3d_GL[ps.Length];
+            for(int i=0; i<ps.Length; i++)
+            {
+                int beg = i - wind; if(beg < 0) beg = 0;
+                int end = i + wind; if (end > ps.Length-1) end = ps.Length - 1;
+                var ps_av = new Point3d_GL(0, 0, 0);
+                for (int j = beg; j < end; j++)
+                {
+                    ps_av+=ps[j];
+                }
+                ps_s[i] = ps_av/(end-beg);
+            }
+
+            return ps_s;
+        }
+
+        public static Point3d_GL[] line_laplace(Point3d_GL[] ps, int iter)
+        {
+            if (ps == null) return null;
+            if (ps.Length < 3) return null;
+            var ps_s = new Point3d_GL[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                int beg = i - 1; if (beg < 0) beg = 0;
+                int end = i + 1; if (end > ps.Length - 1) end = ps.Length - 1;
+                var L_p =  (ps[end] - ps[i]) * 0.5 +  (ps[beg] - ps[i]) * 0.5;
+                ps_s[i] = ps[i] + L_p*0.5;
+            }
+            iter--;
+            
+            if(iter <= 0)
+                return ps_s;
+            else
+                return line_laplace(ps_s, iter);
+        }
     }
 
 }
