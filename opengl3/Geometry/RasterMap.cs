@@ -26,6 +26,15 @@ namespace opengl3
             }
            
         }
+        public RasterMap(Point3d_GL[] ps, double resolution, type_map type = type_map.XY)
+        {
+            switch (type)
+            {
+                case type_map.XYZ: raster_points_xyz(ps, resolution); break;
+                default: break;
+            }
+        }
+
         public RasterMap(int[,,][] map_xyz, double resolution, Point3d_GL p_len_i, Point3d_GL p_min,int len)
         {
             this.map_xyz = map_xyz;
@@ -78,6 +87,10 @@ namespace opengl3
 
         void rasterxy_surface_xyz(Polygon3d_GL[] surface, double resolution)
         {
+            if (resolution < 0)
+            {
+                resolution = Polygon3d_GL.aver_dim(new Polygon3d_GL[][] { surface });
+            }
             var p_minmax = Polygon3d_GL.get_dimens_minmax_arr(surface);
             var p_min = p_minmax[0]; var p_max = p_minmax[1];
             var p_len = (p_max - p_min) / resolution;
@@ -114,6 +127,44 @@ namespace opengl3
                         }
                     }
                 }
+            }
+            this.map_xyz = map_xyz;
+            pt_min = p_min;
+            pt_max = p_max;
+            res = resolution;
+        }
+
+        void raster_points_xyz(Point3d_GL[] points, double resolution)
+        {
+            
+            var p_min = Point3d_GL.Min(points); 
+            var p_max = Point3d_GL.Max(points);
+            var p_d = p_max - p_min;
+            var d_max = Math.Max(Math.Max(p_d.x, p_d.y), p_d.z);
+            if (resolution < 0)
+            {
+
+                resolution = d_max/Math.Sqrt(points.Length);
+                Console.WriteLine(resolution);
+            }
+            var p_len = (p_max - p_min) / resolution;
+            var x_len = (int)(p_len.x * 1.05) + 1;
+            var y_len = (int)(p_len.y * 1.05) + 1;
+            var z_len = (int)(p_len.z * 1.05) + 1;
+            var map_xyz = new int[x_len, y_len, z_len][];
+
+            for (int i = 0; i < points.Length; i++)
+            {
+                var point = points[i] - p_min;
+                var x = (int)(point.x / resolution);
+                var y = (int)(point.y / resolution);
+                var z = (int)(point.z / resolution);
+
+                if (map_xyz[x, y, z] == null) map_xyz[x, y, z] = new int[0];
+                var map_cur = map_xyz[x, y, z];
+                var list = map_cur.ToList();
+                list.Add(i);
+                map_xyz[x, y, z] = list.ToArray();
             }
             this.map_xyz = map_xyz;
             pt_min = p_min;
@@ -246,6 +297,55 @@ namespace opengl3
             return ps.ToArray();
         }
 
+        public static Polygon3d_GL[] smooth_mesh(Polygon3d_GL[] surface, double rad)
+        {
+            var mesh_ind = new IndexedMesh(surface);
+            Console.WriteLine(mesh_ind.ps_uniq[0]);
+            mesh_ind.ps_uniq = smooth_points(mesh_ind.ps_uniq, rad);
+            Console.WriteLine(mesh_ind.ps_uniq[0]);
+            var polygs = mesh_ind.get_polygs(); 
+            return polygs;
+        }
+
+        public static Point3d_GL[] smooth_points(Point3d_GL[] ps, double rad)
+        {
+            var ps_sm = new Point3d_GL[ps.Length];
+            var ps_map = new RasterMap(ps, -1, type_map.XYZ);
+            for (int i = 0; i < ps.Length; i++)
+            {
+                var inds = ps_map.get_local_ps(ps[i], -1, rad);
+                var loc_ps = new List<Point3d_GL>();
+                for (int j = 0; j < inds.Length; j++)
+                {
+                    if((ps[i]-ps[inds[j]]).magnitude()<rad)
+                    {
+                        loc_ps.Add(ps[inds[j]]);
+                    }
+                }
+                
+                if(loc_ps.Count>0)
+                {
+                    
+                    
+                    ps_sm[i] = Point3d_GL.aver(loc_ps.ToArray());
+                    if (i == 0)
+                    {
+                        Console.WriteLine(loc_ps.Count + " " + i+" "+ ps_sm[i]);
+                    }
+                }
+                else
+                {
+                    ps_sm[i] = ps[i];
+                }
+                //Console.WriteLine("smooth "+i+"/"+ps.Length);   
+            }
+            Console.WriteLine(ps_sm[0]);
+            return ps_sm;
+        }
+
+
+
+
         public static Point3d_GL[] intersec_line_of_two_mesh(float[] mesh1, float[] mesh2)
         {
             var obj1 = Polygon3d_GL.polygs_from_mesh(mesh1);
@@ -257,6 +357,55 @@ namespace opengl3
             return ps_or;
         }
 
+        public int[] get_local_ps(Point3d_GL p, int wind = 2,double rad = 1)
+        {
+            var p_xyz = (p - pt_min) / res;
+            var x_c = (int)p_xyz.x;
+            var y_c = (int)p_xyz.y;
+            var z_c = (int)p_xyz.z;
+
+            if(wind<0)
+            {
+                wind = (int)(rad / res)+1;
+            }
+            
+
+            var x_b = x_c - wind; if(x_b < 0) x_b = 0;
+            var y_b = y_c - wind; if (y_b < 0) y_b = 0;
+            var z_b = z_c - wind; if (z_b < 0) z_b = 0;
+
+            var x_e = x_c + wind; if (x_e > map_xyz.GetLength(0)) x_e = map_xyz.GetLength(0);
+            var y_e = y_c + wind; if (y_e > map_xyz.GetLength(1)) y_e = map_xyz.GetLength(1);
+            var z_e = z_c + wind; if (z_e > map_xyz.GetLength(2)) z_e = map_xyz.GetLength(2);
+
+            var loc_inds = new List<int>();
+
+            for(int x = x_b; x < x_e; x++)
+                for (int y = y_b; y < y_e; y++)
+                    for (int z = z_b; z < z_e; z++)
+                    {
+                        var inds = map_xyz[x, y, z];
+                        if (inds != null)
+                            if (inds.Length > 0)
+                            {
+                                loc_inds.AddRange(inds);
+                            }
+                    }
+
+
+           
+            return loc_inds.ToArray();
+        }
+
+        public Point3d_GL[] get_ps_from_inds(Point3d_GL[] ps, int[] inds)
+        {
+            var ps_ind = new List<Point3d_GL>();
+            for(int i = 0; i < inds.Length; i++)
+            {
+                if(inds[i] <ps.Length) ps_ind.Add(ps[inds[i]]);
+            }
+            return ps_ind.ToArray();
+        }
 
         public int get_polyg_ind(Point3d_GL p)
         {
@@ -325,6 +474,7 @@ namespace opengl3
             }
             return 0;
         }
+
         public enum type_out { inside, outside };
         public Polygon3d_GL[] get_polyg_contour_xy(Point3d_GL[] cont, Polygon3d_GL[] surface, type_out type)
         {

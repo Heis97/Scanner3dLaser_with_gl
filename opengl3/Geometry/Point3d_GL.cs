@@ -533,6 +533,33 @@ namespace opengl3
 
             return new Point3d_GL(x,y,z);
         }
+        public static Point3d_GL Min(Point3d_GL p1, Point3d_GL p2)
+        {
+            var x = Math.Min(p1.x, p2.x);
+            var y = Math.Min(p1.y, p2.y);
+            var z = Math.Min(p1.z, p2.z);
+
+            return new Point3d_GL(x, y, z);
+        }
+        public static Point3d_GL Max(Point3d_GL[] ps)
+        {
+            var ps_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue); 
+            for(int i = 0; i < ps.Length; i++)
+            {
+                ps_max = Max(ps_max, ps[i]);
+            }
+            return ps_max;
+        }
+
+        public static Point3d_GL Min(Point3d_GL[] ps)
+        {
+            var ps_max = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ps_max = Min(ps_max, ps[i]);
+            }
+            return ps_max;
+        }
 
         public void setx(double x) { this.x = x; }
         public void sety(double y) { this.y = y; }
@@ -588,6 +615,19 @@ namespace opengl3
             else
                 return line_laplace(ps_s, iter);
         }
+
+        public static Point3d_GL aver(Point3d_GL[] ps)
+        {
+            var p = new Point3d_GL(0, 0, 0);
+            for(int i = 0; i < ps.Length; i++)
+            {
+                p+=ps[i];
+            }
+            return p / ps.Length;
+        }
+
+
+
     }
 
 }

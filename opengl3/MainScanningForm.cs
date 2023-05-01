@@ -212,6 +212,27 @@ namespace opengl3
 
         }
 
+        void test_remesh()
+        {
+           /* var p1 = new Point3d_GL(1, 1, 1);
+            var p2 = new Point3d_GL(2, 2, 2);
+            var p3 = new Point3d_GL(3, 3, 3);
+            var p4 = new Point3d_GL(4, 4, 4);*/
+
+            var p1 = new Point3d_GL(0, 0, 0);
+            var p2 = new Point3d_GL(10, 0, 0);
+            var p3 = new Point3d_GL(10, 10, 0);
+            var p4 = new Point3d_GL(0, 10, 0);
+            var polygs = new Polygon3d_GL[] { new Polygon3d_GL(p1, p2, p3), new Polygon3d_GL(p1, p4, p3) };
+            var inds_m = new IndexedMesh(polygs);
+            var polyg_re = inds_m.get_polygs();
+
+            var mesh = Polygon3d_GL.toMesh(polygs);           
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, "re1");
+
+            mesh = Polygon3d_GL.toMesh(polyg_re);
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, "re2");
+        }
 
         void loadStereo()
         {
@@ -981,8 +1002,8 @@ namespace opengl3
             // startGenerate();
             //trB_SGBM_Enter();
             // test_cross_triag();
-            test_smooth();
-
+            //test_smooth();
+            //test_remesh();
 
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
@@ -3894,7 +3915,14 @@ namespace opengl3
             }
         }
 
-        
+        private void but_remesh_test_Click(object sender, EventArgs e)
+        {
+            var selected_obj = selected_object(); if (selected_obj == null) return;
+            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+            var polyg_sm = RasterMap.smooth_mesh(polygs, 1);
+            var mesh = Polygon3d_GL.toMesh(polyg_sm);
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, "re");
+        }
     }
 }
 

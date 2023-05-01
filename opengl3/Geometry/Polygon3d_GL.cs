@@ -33,7 +33,16 @@ namespace opengl3
             v3.normalize();
             flat3D = new Flat3d_GL(v3.x, v3.y, v3.z, -v3 * P1);
 
-      
+        }
+        static public Polygon3d_GL from_ps(Point3d_GL[] ps)
+        {
+            if(ps == null) return new Polygon3d_GL();
+            if(ps.Length>2)
+            {
+                return new Polygon3d_GL(ps[0], ps[1], ps[2]);
+            }
+            else return new Polygon3d_GL();
+
         }
 
         static public Polygon3d_GL[] multMatr(Polygon3d_GL[] pols, Matrix<double> matrix)
@@ -45,13 +54,6 @@ namespace opengl3
                 pols_mul[i]= new Polygon3d_GL(ps[0],ps[1],ps[2]);
             }
             return pols_mul;
-        }
-
-        static public Flat3d_GL notExistFlat()
-        {
-            var flat = new Flat3d_GL();
-            flat.exist = false;
-            return flat;
         }
 
         public bool affilationPoint_xy(Point3d_GL p)
@@ -602,5 +604,128 @@ namespace opengl3
 
             return ps1.ToArray();
         }
+
+
+        public static Point3d_GL[] get_points(Polygon3d_GL[] pn1)
+        {
+            return null;
+        }
+
+        public static Polygon3d_GL[] from_points(Point3d_GL[] ps1)
+        {
+            return null;
+        }
+    }
+
+    public class IndexedMesh
+    {
+        public Point3d_GL[] ps_uniq;
+        public int[] inds_uniq;
+        public IndexedMesh(Polygon3d_GL[] pns)
+        {
+            var ps = new List<Point3d_GL>();
+            var pn_l = new List<int>();
+            for (int i = 0; i < pns.Length; i++)
+            {
+                ps.AddRange(pns[i].ps);
+            }
+
+            var map_ps = new RasterMap(ps.ToArray(), -1, RasterMap.type_map.XYZ);
+            
+            var inds = new int [ps.Count];
+            var inds_ch = new bool[ps.Count];
+            for (int i = 0; i < ps.Count; i++)
+            {
+                inds[i] = i;
+                inds_ch[i] = false;
+            }
+                
+
+            var ps_uniq = new List<Point3d_GL>();
+            int ind_cur = 0;
+            /*for (int i = 0; i < ps.Count; i++)
+            {
+                int ind_ref = 0;
+                for (int j = i; j < ps.Count; j++)
+                {                              
+                    if(i!=j)
+                        if ((ps[j] - ps[i]).magnitude() < 0.001 && inds_ch[j] != true)
+                        {
+                            inds[j] = ind_cur;
+                            inds_ch[j] = true;
+                            ind_ref++;
+                        }                                                         
+                }
+                if(ind_ref>0)
+                {
+                    ps_uniq.Add(ps[i]);
+                    inds[i] = ind_cur;
+                    ind_cur++;
+                    inds_ch[i] = true;
+                    
+                }
+                Console.WriteLine("remesh: " + i + "/" + ps.Count);
+            }*/
+
+            for (int i = 0; i < ps.Count; i++)
+            {
+                int ind_ref = 0;
+
+                //-------------------------------------
+
+                var inds_loc = map_ps.get_local_ps(ps[i]);
+
+
+                for (int k = 0; k < inds_loc.Length; k++)
+                {
+                    int j =  inds_loc[k];
+                    if (i != j)
+                        if ((ps[j] - ps[i]).magnitude() < 0.001 && inds_ch[j] != true)
+                        {
+                            inds[j] = ind_cur;
+                            inds_ch[j] = true;
+                            ind_ref++;
+                        }
+                }
+
+
+                //-------------------------------------
+                if (ind_ref > 0)
+                {
+                    ps_uniq.Add(ps[i]);
+                    inds[i] = ind_cur;
+                    ind_cur++;
+                    inds_ch[i] = true;
+
+                }
+                //Console.WriteLine("remesh: " + i + "/" + ps.Count);
+            }
+            Console.WriteLine(ps_uniq.Count);
+            for (int i = 0; i < inds_ch.Length; i++)
+            {
+                if (!inds_ch[i])
+                {
+                    inds[i] = ind_cur;
+                    ps_uniq.Add(ps[i]);
+                    
+                    ind_cur++;
+                }
+            }
+
+            this.ps_uniq = ps_uniq.ToArray();
+            this.inds_uniq = inds.ToArray();
+            Console.WriteLine(ps_uniq.Count);
+            Console.WriteLine(inds.Length);
+        }
+        public  Polygon3d_GL[] get_polygs()
+        {
+            var pns = new List<Polygon3d_GL>();
+            for (int i = 0; i < inds_uniq.Length; i+=3)
+            {
+                pns.Add( new Polygon3d_GL(ps_uniq[inds_uniq[i]], ps_uniq[inds_uniq[i + 1]], ps_uniq[inds_uniq[i + 2]]));
+            }
+            return pns.ToArray();
+        }
+
     }
 }

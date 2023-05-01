@@ -315,6 +315,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.but_remesh_test = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -966,6 +967,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_remesh_test);
             this.tabOpenGl.Controls.Add(this.but_intersec_obj);
             this.tabOpenGl.Controls.Add(this.prop_grid_model);
             this.tabOpenGl.Controls.Add(this.tree_models);
@@ -3368,6 +3370,16 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
+            // but_remesh_test
+            // 
+            this.but_remesh_test.Location = new System.Drawing.Point(662, 820);
+            this.but_remesh_test.Name = "but_remesh_test";
+            this.but_remesh_test.Size = new System.Drawing.Size(96, 34);
+            this.but_remesh_test.TabIndex = 152;
+            this.but_remesh_test.Text = "Ремеш";
+            this.but_remesh_test.UseVisualStyleBackColor = true;
+            this.but_remesh_test.Click += new System.EventHandler(this.but_remesh_test_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -3740,6 +3752,7 @@ namespace opengl3
         private System.Windows.Forms.TreeView tree_models;
         private System.Windows.Forms.PropertyGrid prop_grid_model;
         private System.Windows.Forms.Button but_intersec_obj;
+        private System.Windows.Forms.Button but_remesh_test;
     }
 }
 
