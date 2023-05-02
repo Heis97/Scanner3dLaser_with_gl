@@ -2416,7 +2416,7 @@ namespace opengl3
 
         void initWrite(int ind)
         {
-            int fcc = VideoWriter.Fourcc('M', 'P', '4', 'V'); //'M', 'J', 'P', 'G'
+            int fcc = VideoWriter.Fourcc('m', 'p', '4', 'v'); //'M', 'J', 'P', 'G'
             int fps = 30;
             string name ="cam"+ind.ToString()+"\\"+ box_scanFolder.Text + "\\"+video_scan_name+".mp4";
             video_writer[ind - 1] = new VideoWriter(name, fcc, fps, new Size(cameraSize.Width, cameraSize.Height), true);
