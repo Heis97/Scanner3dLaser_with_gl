@@ -148,7 +148,6 @@ namespace opengl3
         public int[] surfs_cross_ID = new int[30];
         public int surfs_len_ID;
         public int surf_crossID;
-
     }
     public class GraphicGL
     {

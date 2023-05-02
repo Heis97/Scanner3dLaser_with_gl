@@ -133,7 +133,7 @@
     <Compile Include="Geometry\Color3d_GL.cs" />
     <Compile Include="Geometry\Polygon3d_GL.cs" />
     <Compile Include="Geometry\Matr4x4f.cs" />
-    <Compile Include="Geometry\Matr3x3f_.cs" />
+    <Compile Include="Geometry\Matr3x3f.cs" />
     <Compile Include="Geometry\RasterMap.cs" />
     <Compile Include="Graphic\BuffersGl.cs" />
     <Compile Include="Extra\Analyse.cs" />
