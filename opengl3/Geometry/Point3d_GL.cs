@@ -550,6 +550,24 @@ namespace opengl3
             }
             return ps_max;
         }
+        public static Point3d_GL Max(Point3d_GL[][] ps)
+        {
+            var ps_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue);
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ps_max = Max(ps_max, Max(ps[i]));
+            }
+            return ps_max;
+        }
+        public static Point3d_GL Min(Point3d_GL[][] ps)
+        {
+            var ps_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue);
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ps_max = Min(ps_max, Min(ps[i]));
+            }
+            return ps_max;
+        }
 
         public static Point3d_GL Min(Point3d_GL[] ps)
         {

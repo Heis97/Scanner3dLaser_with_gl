@@ -171,7 +171,28 @@ namespace opengl3
             pt_max = p_max;
             res = resolution;
         }
+        static RasterMap raster_points_xyz(Point3d_GL[] points,  Point3d_GL p_len, Point3d_GL p_min,double resolution)
+        {
+            var x_len = (int)(p_len.x * 1.05) + 1;
+            var y_len = (int)(p_len.y * 1.05) + 1;
+            var z_len = (int)(p_len.z * 1.05) + 1;
+            var map_xyz = new int[x_len, y_len, z_len][];
 
+            for (int i = 0; i < points.Length; i++)
+            {
+                var point = points[i] - p_min;
+                var x = (int)(point.x / resolution);
+                var y = (int)(point.y / resolution);
+                var z = (int)(point.z / resolution);
+
+                if (map_xyz[x, y, z] == null) map_xyz[x, y, z] = new int[0];
+                var map_cur = map_xyz[x, y, z];
+                var list = map_cur.ToList();
+                list.Add(i);
+                map_xyz[x, y, z] = list.ToArray();
+            }
+            return new RasterMap(map_xyz, resolution, p_len, p_min, points.Length);
+        }
         static RasterMap raster_mesh_xyz(Polygon3d_GL[] surface, Point3d_GL p_len, Point3d_GL p_min, double resolution)
         {
             var x_len = (int)(p_len.x * 1.1) + 1;
@@ -228,11 +249,31 @@ namespace opengl3
             return matches;
         }
 
+        static double comp_resol(Point3d_GL[] points)
+        {
+            var p_min = Point3d_GL.Min(points);
+            var p_max = Point3d_GL.Max(points);
+            var p_d = p_max - p_min;
+            var d_max = Math.Max(Math.Max(p_d.x, p_d.y), p_d.z);
+            var resolution = d_max / Math.Sqrt(points.Length);
+            return resolution;
+        }
+
+        static public int[][] matches_two_cloud(Point3d_GL[] points1, Point3d_GL[] points2)
+        {
+            var res1 = comp_resol(points1);
+            var res2 = comp_resol(points1);
+            var res = Math.Min(res1, res2);
+            var maps = map_two_cloud(points1, points2, res);
+            var matches = matches_area_inds(maps[0], maps[1]);
+            Console.WriteLine(matches.Length);
+            return matches;
+        }
         static RasterMap[] map_two_mesh(Polygon3d_GL[] surface1, Polygon3d_GL[] surface2,double resolution)
         {
             var p_minmax1 = Polygon3d_GL.get_dimens_minmax_arr(surface1);
             var p_minmax2 = Polygon3d_GL.get_dimens_minmax_arr(surface2);
-            var p_min = Point3d_GL.Max(p_minmax1[0], p_minmax2[0]);
+            var p_min = Point3d_GL.Min(p_minmax1[0], p_minmax2[0]);
             var p_max = Point3d_GL.Max(p_minmax1[1], p_minmax2[1]);
 
             var p_len = (p_max - p_min) / resolution;
@@ -245,7 +286,22 @@ namespace opengl3
             return new RasterMap[] {map1, map2};    
 
         }
+        static RasterMap[] map_two_cloud(Point3d_GL[] points1, Point3d_GL[] points2, double resolution)
+        {
 
+            var p_min = Point3d_GL.Min(new Point3d_GL[][] { points1, points2 });
+            var p_max = Point3d_GL.Max(new Point3d_GL[][] { points1, points2 });
+
+            var p_len = (p_max - p_min) / resolution;
+            var x_len = (int)(p_len.x);
+            var y_len = (int)(p_len.y);
+            var z_len = (int)(p_len.z);
+
+            var map1 = raster_points_xyz(points1, new Point3d_GL(x_len, y_len, z_len), p_min, resolution);
+            var map2 = raster_points_xyz(points2, new Point3d_GL(x_len, y_len, z_len), p_min, resolution);
+            return new RasterMap[] { map1, map2 };
+
+        }
         static int[][] matches_map(RasterMap map1, RasterMap map2)
         {
 
@@ -282,6 +338,34 @@ namespace opengl3
             }
             return matches.ToArray();
         }
+
+        static int[][] matches_area_inds(RasterMap map1, RasterMap map2)
+        {
+            var inds1 = new List<int>();
+            var inds2 = new List<int>();
+
+            if (map1.map_xyz.Length != map2.map_xyz.Length) return null;
+
+            for (int x = 0; x < map1.map_xyz.GetLength(0); x++)
+            {
+                for (int y = 0; y < map1.map_xyz.GetLength(1); y++)
+                {
+                    for (int z = 0; z < map1.map_xyz.GetLength(2); z++)
+                    {
+                        //--------------------
+                        if (map1.map_xyz[x, y, z] != null && map2.map_xyz[x, y, z] != null)
+                        {
+                            inds1.AddRange(map1.map_xyz[x, y, z]);
+                            inds2.AddRange(map2.map_xyz[x, y, z]);
+                        }
+                        //--------------------
+                    }
+                }
+            }
+            return new int[][] { inds1.ToArray(), inds2.ToArray() };
+        }
+
+
 
         public static Point3d_GL[] calc_intersec(Polygon3d_GL[] surface1, Polygon3d_GL[] surface2,int[][] inters)
         {
@@ -344,6 +428,17 @@ namespace opengl3
         }
 
 
+        static RobotFrame allign_meshes(Point3d_GL[] ps1, Point3d_GL[] ps2)
+        {
+            var match_ind = matches_two_cloud(ps1, ps2);
+            var ps1_cut = get_ps_from_inds(ps1, match_ind[0]);
+            var ps2_cut = get_ps_from_inds(ps2, match_ind[1]);
+
+
+
+            return null;
+        }
+
 
 
         public static Point3d_GL[] intersec_line_of_two_mesh(float[] mesh1, float[] mesh2)
@@ -397,7 +492,7 @@ namespace opengl3
             return loc_inds.ToArray();
         }
 
-        public Point3d_GL[] get_ps_from_inds(Point3d_GL[] ps, int[] inds)
+        static public Point3d_GL[] get_ps_from_inds(Point3d_GL[] ps, int[] inds)
         {
             var ps_ind = new List<Point3d_GL>();
             for(int i = 0; i < inds.Length; i++)

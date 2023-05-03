@@ -11,8 +11,11 @@ namespace opengl3
     {
         public double X, Y, Z, A, B, C, V, D;
         public enum RobotType { KUKA = 1, PULSE = 2};
-        
-        public RobotFrame(double x, double y, double z, double a, double b, double c, double v, double d)
+
+        public RobotType robotType;
+
+
+        public RobotFrame(double x, double y, double z, double a, double b, double c, double v, double d, RobotType robotType)
         {
             X = x;
             Y = y;
@@ -22,6 +25,7 @@ namespace opengl3
             C = c;
             V = v;
             D = d;
+            this.robotType = robotType;
         }
 
         public RobotFrame(string coords)
@@ -37,6 +41,7 @@ namespace opengl3
             C = Convert.ToDouble(coords_s[5]);
             V = 0;
             D = 0;
+            this.robotType = RobotType.PULSE;
         }
 
         public Matrix<double>  getMatrix()
@@ -46,6 +51,7 @@ namespace opengl3
 
         public RobotFrame(Matrix<double> m, double v, RobotType type = RobotType.KUKA)
         {
+            robotType = type;
             switch (type)
             {
                 case RobotType.KUKA:
@@ -110,9 +116,9 @@ namespace opengl3
                         D = d;
                     }
                     break;
-            }
-            
+            }            
         }
+
         public static double arccos(double cos)
         {
             double _cos = cos;
@@ -121,40 +127,7 @@ namespace opengl3
             return Math.Acos(_cos);
 
         }
-        public RobotFrame(Matrix<double> matrix, double v)
-        {
-            Matrix<double> base_matrix = ABCmatr(596.56, 87.9, 57.0, 1.9, 0.01, -0.005);
-
-            prin.t(base_matrix);
-            //prin.t(_matrix);
-
-            prin.t(matrix);
-            prin.t("___________");
-            //var matrix = base_matrix * _matrix;
-            //CvInvoke.Invert(base_matrix, base_matrix, Emgu.CV.CvEnum.DecompMethod.LU);
-
-            var x = matrix[0, 3];
-            var y = matrix[1, 3];
-            var z = matrix[2, 3];
-            double b = Math.Asin(-matrix[2, 0]);
-            double a = 0;
-            double c = 0;
-            if (Math.Cos(b) != 0)
-            {
-                c = Math.Asin(matrix[2, 1] / Math.Cos(b));
-                a = Math.Asin(matrix[1, 0] / Math.Cos(b));
-            }
-            int d = (int)matrix[3, 3];
-            X = x;
-            Y = y;
-            Z = z;
-            A = a;
-            B = b;
-            C = c;
-            V = v;
-            D = d;
-        }
-
+       
 
         static public string generate_string(RobotFrame[] frames)
         {
@@ -187,7 +160,7 @@ namespace opengl3
 
         public RobotFrame Clone()
         {
-            return new RobotFrame(X, Y, Z, A, B, C, V, D);
+            return new RobotFrame(X, Y, Z, A, B, C, V, D,robotType);
         }
         //---------------------------------------------------------------------------------------
 

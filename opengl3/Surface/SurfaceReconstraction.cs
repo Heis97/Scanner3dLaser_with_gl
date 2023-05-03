@@ -108,12 +108,6 @@ namespace opengl3
 
 
 
-        static Point3d_GL[] allign_meshes(Point3d_GL[] ps1, Point3d_GL[] ps2, Matrix<double> m1, Matrix<double> m2)       
-        {
-
-            
-            return null;
-        }
-
+       
     }
 }
