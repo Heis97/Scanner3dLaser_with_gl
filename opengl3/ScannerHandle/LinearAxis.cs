@@ -119,14 +119,17 @@ namespace opengl3
         {
             var orig1= orig.Clone();
             orig1 = FindCircles.sobel_mat(orig1);
+
             CvInvoke.CvtColor(orig1, orig1, ColorConversion.Rgb2Gray);
             CvInvoke.MedianBlur(orig1, orig1, 5);
-            CvInvoke.Threshold(orig1, orig1, 70, 255, ThresholdType.Binary);
+            CvInvoke.Threshold(orig1, orig1, 40, 255, ThresholdType.Binary);
+            //CvInvoke.Imshow("corn1s", orig1);
             var cont = FindCircles.find_max_contour(orig1);
             var c_f = PointF.from_contour(cont);
             var corn = FindCircles.findGab(PointF.toSystemPoint(c_f));
-          //  UtilOpenCV.drawPointsF(orig, corn, 255, 0, 0, 2, true);
-           // CvInvoke.Imshow("corns", orig);
+           // UtilOpenCV.drawPointsF(orig1, corn, 255, 0, 0, 2, true);
+            //UtilOpenCV.drawPointsF(orig, corn, 255, 0, 0, 2, true);
+           // CvInvoke.Imshow("corns", orig1);
 
 
             return corn;

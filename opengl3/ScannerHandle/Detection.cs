@@ -210,7 +210,7 @@ namespace opengl3
             return ps;
         }
 
-        public static PointF[] detectLineDiff_2(Mat _mat, int wind = 3,float board = 0.05f,bool reverse = false)
+        public static PointF[] detectLineDiff_2(Mat _mat, int wind = 3,float board = 0,bool reverse = false)
         {
             var mat = _mat.Clone();
             
@@ -345,7 +345,7 @@ namespace opengl3
         }
 
         public static PointF[] detectLineDiff(Mat _mat,
-            int wind = 5, float board = 0.05f,
+            int wind = 5, float board = 0f,
             bool reverse = false, bool rotate = true,
             bool orig = false)
         {
@@ -450,7 +450,7 @@ namespace opengl3
                 j_max_2 = j_max;
                 if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
                 {
-                    if (data[(int)j_max_2, i] > 10)
+                    if (data[(int)j_max_2, i] > 20)
                     {
                         ps_list.Add(new PointF(i, j_max_2));
                         p_add = true;
@@ -477,7 +477,8 @@ namespace opengl3
            
 
             GC.Collect();
-            //CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255, 255));
+            /*CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255));
+            CvInvoke.WaitKey();*/
             if (rotate)
             {
                 if (reverse)

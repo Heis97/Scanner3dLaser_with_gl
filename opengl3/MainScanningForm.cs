@@ -60,8 +60,8 @@ namespace opengl3
         TCPclient con1;
         private const float PI = 3.14159265358979f;
         // private Size cameraSize = new Size(1280, 960);
-        // private Size cameraSize = new Size(1184, 656);
-        private Size cameraSize = new Size(1920, 1080);
+         private Size cameraSize = new Size(1184, 656);
+        //private Size cameraSize = new Size(1920, 1080);
         // private Size cameraSize = new Size(640, 480);
         private GraphicGL GL1 = new GraphicGL();
         private VideoCapture myCapture1 = null;
@@ -3384,7 +3384,7 @@ namespace opengl3
             }
             var inc_pos = scanner.enc_pos(enc_file, (int)all_frames);
 
-            while (videoframe_count < all_frames)
+            while (videoframe_count < all_frames*0.5)
             {
                 Mat im1 = new Mat();
                 while (!capture1.Read(im1)) { }
@@ -3392,15 +3392,16 @@ namespace opengl3
                 {
                     if (videoframe_count % strip == 0)
                     {
-                        im1 -= orig1;
-                        
-                        if(calib)
+                        //im1 -= orig1;
+                        var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
+                        frames_show.Add(frame_d);
+                        if (calib)
                         {
-                            var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
+                          /*  var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                             frames_show.Add(frame_d);
                             pos_inc_cal.Add(inc_pos[videoframe_count]);
 
-                            scanner.addPointsSingLas_2d(im1, false, calib);
+                            scanner.addPointsSingLas_2d(im1, false, calib);*/
                         }
                         else scanner.addPointsLinLas_step(im1, inc_pos[videoframe_count], PatternType.Mesh);
 

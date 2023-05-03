@@ -31,9 +31,10 @@ namespace opengl3
             {
                 return Flat3d_GL.notExistFlat();
             }
-            var flat = new Flat3d_GL(points[2], points[0], points[1]);
-            var flat1 = new Flat3d_GL(points[3], points[0], points[1]);
+            var flat = new Flat3d_GL(points[1], points[2], points[4]);
+            var flat1 = new Flat3d_GL(points[0], points[2], points[3]);
 
+           // if (flat.A<)
             Console.WriteLine(flat);
             Console.WriteLine(flat1);
             Console.WriteLine("_____________");
@@ -178,25 +179,26 @@ namespace opengl3
 
         static Point3d_GL[] points3dInCam_step(Mat mat, CameraCV cameraCV, PatternType patternType, int div = -1, GraphicGL graphicGL = null)
         {
+
             
-
-            var points =order_y(Detection.detectLineDiff(mat, 5));
+            var points =order_y(Detection.detectLineDiff(mat, 5,0,false,true,true));
             var ps_m = order_y(Detection.x_max_claster(points,3));
-
-
+           // CvInvoke.Imshow("orig", UtilOpenCV.drawPointsF(mat, ps_m, 255, 0, 0));
+           // CvInvoke.WaitKey();
 
             var p_mm = new PointF(ps_m[0].Y, ps_m[ps_m.Length-1].Y);
             var start = ind_y(points, p_mm.X);
             var len  = ind_y(points, p_mm.Y) - start;
-            ps_m = points.ToList().GetRange(start, len).ToArray();
-            //var mat_p = UtilOpenCV.drawPointsF(mat, points, 255, 0, 0);
-            /* CvInvoke.Imshow("asf", mat_p);
-             CvInvoke.WaitKey();*/
+            var ps_m_2 = points.ToList().GetRange(start, len).ToArray();
+            var mat_p = UtilOpenCV.drawPointsF(mat, points, 255, 0, 0);
+            
+           // CvInvoke.Imshow("asf", mat_p);
+            // CvInvoke.WaitKey();
 
-            var ps = takePointsForFlat(ps_m,false, div);
+            var ps = takePointsForFlat(ps_m_2, false, div);
 
-            /*var orig_c = mat.Clone();
-           UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
+            var orig_c = mat.Clone();
+          /* UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
             UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
             CvInvoke.Imshow("corn", orig_c);
             CvInvoke.WaitKey();*/
