@@ -528,7 +528,7 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             scanner = loadVideo_sing_cam(scan_path_1, scanner,strip);
             var ps = scanner.getPointsLinesScene();
-            var mesh = Polygon3d_GL.triangulate_lines_xy(ps, -1);
+            var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"scan_sing");
             
@@ -3406,8 +3406,8 @@ namespace opengl3
                         CvInvoke.Imshow("im1", im1);
                         CvInvoke.Imshow("im1-or", im1_or);
                         CvInvoke.WaitKey();*/
-                       // var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
-                        //frames_show.Add(frame_d);
+                        var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
+                        frames_show.Add(frame_d);
                         if (calib)
                         {
                           /*  var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
