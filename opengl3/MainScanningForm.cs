@@ -3383,6 +3383,10 @@ namespace opengl3
                 enc_file = sr.ReadToEnd();
             }
             var inc_pos = scanner.enc_pos(enc_file, (int)all_frames);
+            var buffer_mat = new Mat();
+            var im_orig = orig1.ToImage<Bgr, byte>();
+
+            foreach (var pos in inc_pos) Console.WriteLine(pos);
 
             while (videoframe_count < all_frames*0.5)
             {
@@ -3390,11 +3394,20 @@ namespace opengl3
                 while (!capture1.Read(im1)) { }
                 if (scanner != null)
                 {
-                    if (videoframe_count % strip == 0)
+                    var buffer_mat1 = im1.Clone();
+                    //if (videoframe_count % strip == 0)
+                    if (videoframe_count % strip == 0 && videoframe_count>3)
                     {
-                        //im1 -= orig1;
-                        var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
-                        frames_show.Add(frame_d);
+                        im1 -= buffer_mat;
+                        /*var im1_or = im1 - orig1;
+                        CvInvoke.Imshow("im1_or", im1);
+                        CvInvoke.Imshow("buffer_mat", buffer_mat);
+                        
+                        CvInvoke.Imshow("im1", im1);
+                        CvInvoke.Imshow("im1-or", im1_or);
+                        CvInvoke.WaitKey();*/
+                       // var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
+                        //frames_show.Add(frame_d);
                         if (calib)
                         {
                           /*  var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
@@ -3403,9 +3416,10 @@ namespace opengl3
 
                             scanner.addPointsSingLas_2d(im1, false, calib);*/
                         }
-                        else scanner.addPointsLinLas_step(im1, inc_pos[videoframe_count], PatternType.Mesh);
+                        else scanner.addPointsLinLas_step(im1,im_orig, inc_pos[videoframe_count], PatternType.Mesh);
 
                     }
+                    buffer_mat = buffer_mat1.Clone();
                 }
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);

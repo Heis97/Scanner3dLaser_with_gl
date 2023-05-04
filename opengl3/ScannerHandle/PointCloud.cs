@@ -76,19 +76,23 @@ namespace opengl3
             points3d = ps_list.ToArray();
             return true;
         }
-        public bool addPointsLinLas_step(Mat mat, double LinPos, CameraCV cameraCV, LinearAxis linearAxis, PatternType patternType)
+        public bool addPointsLinLas_step(Mat mat, Image<Bgr,byte> orig, double LinPos, CameraCV cameraCV, LinearAxis linearAxis, PatternType patternType)
         {
             var points_im = Detection.detectLineDiff(mat, 5, 0.05f, false, true);
             //var points_im = Detection.detectLineDiff(mat);
+            if(points_im == null) return false;
             Console.WriteLine(points_im.Length);
           /*var orig = mat.Clone();
             UtilOpenCV.drawPoints(orig, points_im, 0, 255, 0);
             CvInvoke.Imshow("ps", orig);
             CvInvoke.WaitKey();*/
+            
             var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
+            points_cam = color_points3d(points_im, points_cam, orig);
             //graphicGL.addFlat3d_YZ(linearAxis.getLaserSurf(LinPos),null,0.1f,0.1f,0.4f);
             points3d_cur = points_cam;
             //points3d_cur = camToScene(points_cam, cameraCV.matrixCS);
+            //prin.t(cameraCV.matrixCS);
             var ps_list = points3d.ToList();
             ps_list.AddRange(points3d_cur);
             points3d_lines.Add(points3d_cur);
@@ -400,6 +404,25 @@ namespace opengl3
                     }
                    
                 }               
+            }
+            return points3d;
+        }
+
+        static Point3d_GL[] color_points3d(PointF[] points_im, Point3d_GL[] points3d, Image<Bgr,byte> image)
+        {
+            for (int i = 0; i < points3d.Length; i++)
+            {
+                if (image != null)
+                {
+                    var y = (int)points_im[i].Y;
+                    var x = (int)points_im[i].X;
+                    if (x >= 0 && x < image.Width && y >= 0 && y < image.Height)
+                    {
+                        var color = image[y, x];
+                        points3d[i].color = new Color3d_GL((float)color.Red / 255, (float)color.Green / 255, (float)color.Blue / 255);
+                    }
+
+                }
             }
             return points3d;
         }

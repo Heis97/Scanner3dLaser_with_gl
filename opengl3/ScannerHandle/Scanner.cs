@@ -138,9 +138,9 @@ namespace opengl3
             return pointCloud.addPointsLinLas(mat, linPos, cameraCV, linearAxis,orig, patternType);
         }
 
-        public bool addPointsLinLas_step(Mat mat, double linPos, PatternType patternType)
+        public bool addPointsLinLas_step(Mat mat, Image<Bgr, byte> orig, double linPos, PatternType patternType)
         {
-            return pointCloud.addPointsLinLas_step(mat, linPos, cameraCV, linearAxis, patternType);
+            return pointCloud.addPointsLinLas_step(mat,orig, linPos, cameraCV, linearAxis, patternType);
         }
         public int addPointsLinLas(Mat[] mats, double[] linPos,Mat orig, PatternType patternType)
         {
@@ -232,7 +232,7 @@ namespace opengl3
             return enc_pos;
         }
 
-        int try_int32(string val)
+        static int try_int32(string val)
         {
             try
             {
@@ -245,8 +245,8 @@ namespace opengl3
             
         }
    
-    
-    
+       
+        
     
     }
 

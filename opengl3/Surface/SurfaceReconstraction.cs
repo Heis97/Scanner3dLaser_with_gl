@@ -101,8 +101,6 @@ namespace opengl3
 
         /*static Polygon3d_GL[] splines_to_mesh(CubicSpline[] splines)
         {
-
-
             return null;
         }*/
 
