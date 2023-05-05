@@ -671,6 +671,7 @@ namespace opengl3
                 startWrite(2, counts);
                 laserLine?.setShvpVel(v_laser);
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
+                sb_enc = new StringBuilder();
 
             }
 
@@ -2390,9 +2391,13 @@ namespace opengl3
 
             if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
             {
-                sb_enc?.AppendLine( laserLine?.get_las_pos()+" "+ videoframe_counts[ind - 1]);
+                sb_enc?.Append( laserLine?.get_las_pos()+" "+ videoframe_counts[ind - 1]+" "+ind + " ");
+                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append("\n");
                 video_writer[ind - 1]?.Write(mat);
-                sb_enc?.AppendLine(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1]);
+                sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append("\n");
 
                 videoframe_counts[ind - 1]++;
             }
@@ -2400,7 +2405,7 @@ namespace opengl3
             {
                 if (sb_enc!=null)
                 {
-                    string path = "cam" + ind.ToString() + "\\" + box_scanFolder.Text + "\\enc.txt";
+                    string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
                     using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
                     {
                         sw.Write(sb_enc.ToString());
