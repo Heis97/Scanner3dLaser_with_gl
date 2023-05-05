@@ -134,7 +134,61 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
+            var enc = analys_enc(@"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1\scan_0505_2d\enc.txt");
         }
+
+        ulong[,] analys_enc(string enc_path)
+        {
+            string enc;
+            using (StreamReader sr = new StreamReader(enc_path))
+            {
+                enc = sr.ReadToEnd();
+            }
+            
+            enc = enc.Replace("\r", "");
+            var lines = enc.Split('\n');
+            var enc_pos = new ulong[lines.Length,8];
+            int ind = 0;
+            ulong st_time = 0;
+            foreach (var line in lines)
+            {
+                if (line.Length >0)
+                {
+                    var vals = line.Trim().Split(' ');
+                    
+                    if (vals.Length == 6)
+                    {
+                        for (int i = 0; i < vals.Length; i++)
+                        {                            
+                            if(i==3)
+                            {
+                                string time = "";
+                                for(int j = vals[i].Length / 2; j < vals[i].Length; j++)
+                                {
+                                    time += vals[i][j];
+                                }
+                                vals[i] = time;
+                            }                           
+                            enc_pos[ind,i] = Convert.ToUInt64(vals[i]);
+                            if (i == 3)
+                            {
+                                enc_pos[ind, i] -= st_time;
+                                if (ind == 0) st_time = enc_pos[ind, i];
+                            }
+                        }                        
+                        Console.Write(enc_pos[ind, 3] + ";");
+                        if(enc_pos[ind, 5] == 1) Console.Write(enc_pos[ind, 4] + ";" + ";");
+                        if (enc_pos[ind, 5] == 2) Console.Write(";" + enc_pos[ind, 4] + ";");
+                        
+                        
+                        Console.WriteLine(' ');
+                    }
+                }
+                ind++;
+            }
+            return enc_pos;
+        }
+
         void python_c_sh()
         {
             var eng = IronPython.Hosting.Python.CreateEngine();
@@ -146,7 +200,7 @@ namespace opengl3
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            label_timer.Text = DateTime.Now.Second + " : " + DateTime.Now.Millisecond;
+            label_timer.Text = DateTime.Now.Second + " : " + DateTime.Now.Millisecond;// +" "+ DateTime.Now.Ticks/ TimeSpan.TicksPerMillisecond;
         }
         void init_vars()
         {
@@ -3297,20 +3351,32 @@ namespace opengl3
                 scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
                 scanner.pointCloud.graphicGL = GL1;
             }
+            var im1_buff = new Mat();
+            var im2_buff = new Mat();
+
+            var im1_buff_list = new List<Mat>();
+            var im2_buff_list = new List<Mat>();
+
             while (videoframe_count < all_frames)
               //while (videoframe_count < all_frames/2)
-                {
+            {
                 Mat im1 = new Mat();
                 Mat im2 = new Mat();
+                
                 while (!capture1.Read(im1)) { }
                 while (!capture2.Read(im2)) { }
                 //Console.WriteLine("____________________");
                 if (scanner != null)
                 {
-                    if (videoframe_count % strip == 0)
+
+                    var buffer_mat1 = im1.Clone();
+                    var buffer_mat2 = im2.Clone();
+                    if (videoframe_count % strip == 0 && videoframe_count>5)
                     {
-                        im1 -= orig1;
-                        im2 -= orig2;
+                       // im1 -= orig1;
+                       // im2 -= orig2;
+                        im1 -= im1_buff_list[1];
+                        im2 -= im2_buff_list[1];
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
 
                         /*var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
@@ -3326,6 +3392,21 @@ namespace opengl3
                         
                         scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);//true???
                     }
+                    
+                    im1_buff = buffer_mat1.Clone();
+                    im2_buff = buffer_mat2.Clone();
+
+                    im1_buff_list.Add(im1_buff);
+                    im2_buff_list.Add(im2_buff);
+                    if(im1_buff_list.Count>5)
+                    {
+                        im1_buff_list.RemoveAt(0);
+                        im2_buff_list.RemoveAt(0);
+                    }
+                    
+
+
+
                 }                
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
