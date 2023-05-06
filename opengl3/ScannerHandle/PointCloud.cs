@@ -136,7 +136,33 @@ namespace opengl3
                     Console.WriteLine(points_im1.Length + " " + points_im2.Length);
                 }
             
-            
+            return true;
+        }
+
+        public bool addPoints2dStereoLas_sync(Mat[] mat, StereoCamera stereocamera, double k, int cam_min, int cam_max, bool undist)
+        {
+
+            if (undist)
+            {
+                mat[0] = stereocamera.cameraCVs[cam_min - 1].undist(mat[0]);
+                mat[1] = stereocamera.cameraCVs[cam_max - 1].undist(mat[1]);
+                mat[2] = stereocamera.cameraCVs[cam_max - 1].undist(mat[2]);
+            }
+            var points_im1 = Detection.detectLineDiff(mat[0], 7);
+            var points_im_max = Detection.detectLineDiff(mat[1], 7);
+            var points_im_max_prev = Detection.detectLineDiff(mat[2], 7);
+
+
+            var points_im2 = PointF.averX(points_im_max_prev, points_im_max, k);
+
+            points_im2 = points_im_max;
+            if (points_im1 != null && points_im2 != null)
+                if (points_im1.Length == points_im2.Length)
+                {
+                    stereocamera.cameraCVs[cam_min - 1].scan_points.Add(points_im1);
+                    stereocamera.cameraCVs[cam_max - 1].scan_points.Add(points_im2);
+                    Console.WriteLine(points_im1.Length + " " + points_im2.Length);
+                }
 
             return true;
         }

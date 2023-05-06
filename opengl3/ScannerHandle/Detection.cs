@@ -642,7 +642,7 @@ namespace opengl3
                     indixes.Add(i);
                 }
             }
-            if (indixes.Count == 0) return null;
+            if (indixes.Count < 5) return null;
             var indes = indixes.ToArray();
             int next_p = 1;
             for (int i = 0; i < inp.Length; i++)

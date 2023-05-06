@@ -14,12 +14,12 @@ namespace opengl3
         public float X;
         public float Y;
         public bool exist;
-        public float norm 
-        { 
-            get 
-            { 
-                return (float)Math.Sqrt(X * X + Y * Y); 
-            } 
+        public float norm
+        {
+            get
+            {
+                return (float)Math.Sqrt(X * X + Y * Y);
+            }
         }
         public PointF(float _x, float _y)
         {
@@ -210,7 +210,7 @@ namespace opengl3
         }
         public override string ToString()
         {
-            return X.ToString() + " " + Y.ToString()+" ";
+            return X.ToString() + " " + Y.ToString() + " ";
         }
 
         public static PointF[] operator +(PointF[] ps, PointF p1)
@@ -225,9 +225,38 @@ namespace opengl3
         {
             if (ps == null) return null;
             var ps_p = new PointF[ps.Size];
-            for (int i = 0; i < ps.Size; i++) ps_p[i] =new PointF(ps[i].X, ps[i].Y);
+            for (int i = 0; i < ps.Size; i++) ps_p[i] = new PointF(ps[i].X, ps[i].Y);
             return ps_p;
         }
+
+        public static PointF[] averX(PointF[] ps1, PointF[] ps2, double k = 0.5)
+        {
+            if (ps1 == null || ps2 == null) return null;
+            if (ps1.Length != ps2.Length) return null;
+            var ps_aver = new PointF[ps1.Length];
+            for(int i=0; i<ps1.Length;i++)
+            {
+                ps_aver[i] = new PointF(ps1[i].X+(ps2[i].X - ps1[i].X) *k, ps1[i].Y);
+            }
+
+            return ps_aver;
+
+        }
+
+        public static PointF[] averY(PointF[] ps1, PointF[] ps2, double k = 0.5)
+        {
+            if (ps1 == null || ps2 == null) return null;
+            if (ps1.Length != ps2.Length) return null;
+            var ps_aver = new PointF[ps1.Length];
+            for (int i = 0; i < ps1.Length; i++)
+            {
+                ps_aver[i] = new PointF(ps1[i].X,ps1[i].Y + (ps2[i].Y - ps1[i].Y) * k);
+            }
+
+            return ps_aver;
+
+        }
+
 
     }
 }
