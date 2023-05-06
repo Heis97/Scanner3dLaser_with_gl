@@ -134,54 +134,86 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-            var enc = analys_enc(@"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1\scan_0505_2d\enc.txt");
+             frames_sync_from_file(@"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1\scan_0505_2d\enc.txt");
         }
 
-        ulong[,] analys_enc(string enc_path)
+        static public void frames_sync_from_file(string enc_path)
+        {
+            var data = analys_sync(enc_path);
+            var data_s = new int[3,data[data.GetLength(0)-3,1]+1][];
+            for(int i = 0; i < data.GetLength(0); i++)
+            {
+                var fr_n = data[i,1];
+                var cam_n = data[i, 2];
+                var time = data[i, 3];
+                if( data_s[cam_n,fr_n]==null)
+                {
+                    data_s[cam_n, fr_n] = new int[0];
+                }
+                var l = data_s[cam_n, fr_n].ToList();
+                l.Add(time);
+                data_s[cam_n, fr_n] = l.ToArray();
+            }
+
+            for (int i = 1; i < data_s.GetLength(1); i++)
+            {
+                if (data_s[1, i] != null && data_s[1, i - 1] != null)
+                    if (data_s[1, i].Length > 1 && data_s[1, i - 1].Length > 1) { }
+                        //Console.WriteLine(data_s[1, i][1] +"  "+ data_s[2, i][1]);
+            }
+
+        }
+
+        static int[,] analys_sync(string enc_path)
         {
             string enc;
             using (StreamReader sr = new StreamReader(enc_path))
             {
                 enc = sr.ReadToEnd();
             }
-            
+
             enc = enc.Replace("\r", "");
             var lines = enc.Split('\n');
-            var enc_pos = new ulong[lines.Length,8];
+            var enc_pos = new int[lines.Length, 8];
             int ind = 0;
-            ulong st_time = 0;
+            int st_time = 0;
             foreach (var line in lines)
             {
-                if (line.Length >0)
+                if (line.Length > 0)
                 {
                     var vals = line.Trim().Split(' ');
-                    
+
                     if (vals.Length == 6)
                     {
                         for (int i = 0; i < vals.Length; i++)
-                        {                            
-                            if(i==3)
+                        {
+                            if (i == 3)
                             {
                                 string time = "";
-                                for(int j = vals[i].Length / 2; j < vals[i].Length; j++)
+                                for (int j = vals[i].Length / 2; j < vals[i].Length; j++)
                                 {
                                     time += vals[i][j];
                                 }
                                 vals[i] = time;
-                            }                           
-                            enc_pos[ind,i] = Convert.ToUInt64(vals[i]);
+                            }
+                            enc_pos[ind, i] = Convert.ToInt32(vals[i]);
                             if (i == 3)
                             {
                                 enc_pos[ind, i] -= st_time;
-                                if (ind == 0) st_time = enc_pos[ind, i];
+                                if (ind == 0)
+                                {
+                                    st_time = enc_pos[ind, i];
+                                    enc_pos[ind, i] = 0;
+                                }
+
                             }
-                        }                        
-                        Console.Write(enc_pos[ind, 3] + ";");
-                        if(enc_pos[ind, 5] == 1) Console.Write(enc_pos[ind, 4] + ";" + ";");
+                        }
+                        /*Console.Write(enc_pos[ind, 3] + ";");
+                        if (enc_pos[ind, 5] == 1) Console.Write(enc_pos[ind, 4] + ";" + ";");
                         if (enc_pos[ind, 5] == 2) Console.Write(";" + enc_pos[ind, 4] + ";");
-                        
-                        
-                        Console.WriteLine(' ');
+
+
+                        Console.WriteLine(' ');*/
                     }
                 }
                 ind++;
@@ -3306,7 +3338,7 @@ namespace opengl3
             var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
             //capture1.SetCaptureProperty(CapProp.);
         }
-        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner = null, int strip = 1)
         {
 
             videoframe_count = 0;
@@ -3342,6 +3374,9 @@ namespace opengl3
             var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
             comboImages.Items.Add(fr_st_vid);
+
+            int buff_len = 10;
+            int buff_diff = 9;
             
             var all_frames = Math.Min(all_frames1, all_frames2);
             if (scanner != null)
@@ -3371,15 +3406,25 @@ namespace opengl3
 
                     var buffer_mat1 = im1.Clone();
                     var buffer_mat2 = im2.Clone();
-                    if (videoframe_count % strip == 0 && videoframe_count>5)
+                    if (videoframe_count % strip == 0 && videoframe_count> buff_len)
                     {
-                       // im1 -= orig1;
-                       // im2 -= orig2;
-                        im1 -= im1_buff_list[1];
-                        im2 -= im2_buff_list[1];
+                        // im1 -= orig1;
+                        // im2 -= orig2;
+
+       
+                        /* CvInvoke.Imshow("im1_or", im1);
+                         CvInvoke.Imshow("buffer_mat1", im1_buff_list[1]);
+                         CvInvoke.Imshow("buffer_mat8", im1_buff_list[8]);
+                       */
+
+                        im1 -= im1_buff_list[buff_len - buff_diff];
+                        im2 -= im2_buff_list[buff_len - buff_diff];
+                        //CvInvoke.Imshow("im1_dif", im1);
+                       // CvInvoke.WaitKey();
+
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
 
-                        /*var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                       /* var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                         frame_d.stereo = true;
                         frames_show.Add(frame_d);*/
                         //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
@@ -3398,7 +3443,7 @@ namespace opengl3
 
                     im1_buff_list.Add(im1_buff);
                     im2_buff_list.Add(im2_buff);
-                    if(im1_buff_list.Count>5)
+                    if(im1_buff_list.Count> buff_len)
                     {
                         im1_buff_list.RemoveAt(0);
                         im2_buff_list.RemoveAt(0);
@@ -3408,6 +3453,130 @@ namespace opengl3
 
 
                 }                
+                videoframe_count++;
+                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+            }
+            comboImages.Items.AddRange(frames_show.ToArray());
+            scanner.compPointsStereoLas_2d();
+            Console.WriteLine("Points computed.");
+            return scanner;
+        }
+
+        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
+        {
+
+            videoframe_count = 0;
+            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
+            var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
+            Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
+            Console.WriteLine(Directory.GetFiles("cam2\\" + filepath)[0]);
+
+            var ve_paths1 = get_video_path(1, filepath);
+            string video_path1 = ve_paths1[0];
+            // string enc_path1 = ve_paths1[1];
+
+            var ve_paths2 = get_video_path(2, filepath);
+            string video_path2 = ve_paths2[0];
+            // string enc_path2 = ve_paths2[1];
+
+            scanner.set_coord_sys(StereoCamera.mode.model);
+            var name_v1 = Path.GetFileNameWithoutExtension(video_path1);
+            var name_v2 = Path.GetFileNameWithoutExtension(video_path2);
+            if (name_v1.Length > 1 && name_v2.Length > 1)
+            {
+                scanner.set_rob_pos(name_v1);
+                scanner.set_coord_sys(StereoCamera.mode.world);
+            }
+
+
+
+            var capture1 = new VideoCapture(video_path1);
+            var capture2 = new VideoCapture(video_path2);
+            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
+            var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
+            var frames_show = new List<Frame>();
+            fr_st_vid.stereo = true;
+            comboImages.Items.Add(fr_st_vid);
+
+            int buff_len = 10;
+            int buff_diff = 9;
+
+            var all_frames = Math.Min(all_frames1, all_frames2);
+            if (scanner != null)
+            {
+                var orig2_im = orig2.ToImage<Bgr, byte>();
+                CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
+                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
+                scanner.pointCloud.graphicGL = GL1;
+            }
+            var im1_buff = new Mat();
+            var im2_buff = new Mat();
+
+            var im1_buff_list = new List<Mat>();
+            var im2_buff_list = new List<Mat>();
+
+            while (videoframe_count < all_frames)
+            //while (videoframe_count < all_frames/2)
+            {
+                Mat im1 = new Mat();
+                Mat im2 = new Mat();
+
+                while (!capture1.Read(im1)) { }
+                while (!capture2.Read(im2)) { }
+                //Console.WriteLine("____________________");
+                if (scanner != null)
+                {
+
+                    var buffer_mat1 = im1.Clone();
+                    var buffer_mat2 = im2.Clone();
+                    if (videoframe_count % strip == 0 && videoframe_count > buff_len)
+                    {
+                        // im1 -= orig1;
+                        // im2 -= orig2;
+
+
+                        /* CvInvoke.Imshow("im1_or", im1);
+                         CvInvoke.Imshow("buffer_mat1", im1_buff_list[1]);
+                         CvInvoke.Imshow("buffer_mat8", im1_buff_list[8]);
+                       */
+
+                        im1 -= im1_buff_list[buff_len - buff_diff];
+                        im2 -= im2_buff_list[buff_len - buff_diff];
+                        //CvInvoke.Imshow("im1_dif", im1);
+                        // CvInvoke.WaitKey();
+
+                        CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
+
+                        /* var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                         frame_d.stereo = true;
+                         frames_show.Add(frame_d);*/
+                        //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
+                        /*var ps1 = Detection.detectLineDiff(im1, 7);
+                        var ps2 = Detection.detectLineDiff(im2, 7);
+
+                        imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
+                        imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
+                        //CvInvoke.Imshow("im2", im2);                       
+
+                        scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);//true???
+                    }
+
+                    im1_buff = buffer_mat1.Clone();
+                    im2_buff = buffer_mat2.Clone();
+
+                    im1_buff_list.Add(im1_buff);
+                    im2_buff_list.Add(im2_buff);
+                    if (im1_buff_list.Count > buff_len)
+                    {
+                        im1_buff_list.RemoveAt(0);
+                        im2_buff_list.RemoveAt(0);
+                    }
+
+
+
+
+                }
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }

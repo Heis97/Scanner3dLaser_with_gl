@@ -364,12 +364,12 @@ namespace opengl3
             }
             
 
-            var ps = new PointF[mat.Width];
+            
             var ps_list = new List<PointF>();
 
             CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
             CvInvoke.GaussianBlur(mat, mat, new Size(5, 5), -1);
-
+           // CvInvoke.Imshow("detect_dif",mat);
             var data = (byte[,])mat.GetData();
             var ps_arr_j = new PointF[data.GetLength(0)];
             for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();
@@ -447,10 +447,10 @@ namespace opengl3
                 var a = koef[2];
                 var b = koef[1];
                 var j_max_2 = (-b / (2 * a));
-                j_max_2 = j_max;
+                //var j_max_2 = j_max;
                 if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
                 {
-                    if (data[(int)j_max_2, i] > 20)
+                    if (data[(int)j_max_2, i] > 5)
                     {
                         ps_list.Add(new PointF(i, j_max_2));
                         p_add = true;
@@ -467,12 +467,12 @@ namespace opengl3
 
             }
             if (add_count < 5) return null;
-            
-            ps = ps_list.ToArray();
+            var ps = ps_list.ToArray();
             if(!orig)
             {
+                
+                ps = medianFilter_real(ps, 10);
                 ps = connectPoints(ps);
-                ps = medianFilter(ps, 5, 5);
             }
            
 
@@ -602,6 +602,7 @@ namespace opengl3
 
         static PointF[] rotatePointsClockwise(PointF[] ps,Size size)
         {
+            if(ps==null) return null;
             var ps_rot = new PointF[ps.Length];
             for(int i=0; i<ps_rot.Length;i++)
             {
@@ -641,6 +642,7 @@ namespace opengl3
                     indixes.Add(i);
                 }
             }
+            if (indixes.Count == 0) return null;
             var indes = indixes.ToArray();
             int next_p = 1;
             for (int i = 0; i < inp.Length; i++)
@@ -916,6 +918,26 @@ namespace opengl3
             }
             return ps1L_cop.ToArray();
         }
+
+        static PointF[] medianFilter_real(PointF[] ps, int wind = 10)
+        {
+            var ps_m = new PointF[ps.Length];
+            var ps_l = ps.ToList(); 
+            for (int i = 0; i < ps.Length; i++)
+            {
+                var beg = i - wind ; if (beg < 0) beg = 0;
+                var end = i + wind ; if (end > ps.Length-1) end = ps.Length - 1;
+                var len = end - beg;
+                var arr = ps_l.GetRange(beg,len);
+                arr = (from p in arr
+                      orderby p.Y
+                      select p).ToList();
+                ps_m[i] = arr[arr.Count/2];
+            }
+            return ps_m;
+        }
+
+
 
         static PointF[] gaussFilter(PointF[] ps1,  int wind = 3)
         {

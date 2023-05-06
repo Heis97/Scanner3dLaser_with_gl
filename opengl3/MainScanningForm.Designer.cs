@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_remesh_test = new System.Windows.Forms.Button();
             this.but_intersec_obj = new System.Windows.Forms.Button();
             this.prop_grid_model = new System.Windows.Forms.PropertyGrid();
             this.tree_models = new System.Windows.Forms.TreeView();
@@ -315,7 +316,6 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_remesh_test = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1078,6 +1078,16 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // but_remesh_test
+            // 
+            this.but_remesh_test.Location = new System.Drawing.Point(662, 820);
+            this.but_remesh_test.Name = "but_remesh_test";
+            this.but_remesh_test.Size = new System.Drawing.Size(96, 34);
+            this.but_remesh_test.TabIndex = 152;
+            this.but_remesh_test.Text = "Ремеш";
+            this.but_remesh_test.UseVisualStyleBackColor = true;
+            this.but_remesh_test.Click += new System.EventHandler(this.but_remesh_test_Click);
+            // 
             // but_intersec_obj
             // 
             this.but_intersec_obj.Location = new System.Drawing.Point(674, 933);
@@ -1327,7 +1337,7 @@ namespace opengl3
             this.tp_smooth_scan.Name = "tp_smooth_scan";
             this.tp_smooth_scan.Size = new System.Drawing.Size(68, 20);
             this.tp_smooth_scan.TabIndex = 127;
-            this.tp_smooth_scan.Text = "0.8";
+            this.tp_smooth_scan.Text = "-1";
             // 
             // label19
             // 
@@ -1364,7 +1374,7 @@ namespace opengl3
             this.tb_strip_scan.Name = "tb_strip_scan";
             this.tb_strip_scan.Size = new System.Drawing.Size(68, 20);
             this.tb_strip_scan.TabIndex = 123;
-            this.tb_strip_scan.Text = "20";
+            this.tb_strip_scan.Text = "5";
             // 
             // label18
             // 
@@ -3369,16 +3379,6 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
-            // 
-            // but_remesh_test
-            // 
-            this.but_remesh_test.Location = new System.Drawing.Point(662, 820);
-            this.but_remesh_test.Name = "but_remesh_test";
-            this.but_remesh_test.Size = new System.Drawing.Size(96, 34);
-            this.but_remesh_test.TabIndex = 152;
-            this.but_remesh_test.Text = "Ремеш";
-            this.but_remesh_test.UseVisualStyleBackColor = true;
-            this.but_remesh_test.Click += new System.EventHandler(this.but_remesh_test_Click);
             // 
             // MainScanningForm
             // 
