@@ -136,7 +136,7 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-             frames_sync_from_file(@"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1\scan_0505_2d\enc.txt");
+           //  frames_sync_from_file(@"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1\scan_0505_2d\enc.txt");
         }
 
         static public void frames_sync_from_file(string enc_path)
@@ -2416,7 +2416,7 @@ namespace opengl3
                     
                     cap.Retrieve(mat_global[0]);
                     camera_frame_time.Add(DateTime.Now.Ticks / 10000);
-                    int fps_c = 10;
+                    int fps_c = 100;
                     if(camera_frame_time.Count> fps_c)
                     {
                         camera_frame_time.RemoveAt(0);
@@ -2424,7 +2424,7 @@ namespace opengl3
                     if(camera_frame_time.Count== fps_c)
                     {
                             var dt = (int)(camera_frame_time[camera_frame_time.Count - 1] - camera_frame_time[0]);
-                          fps1=  (double)fps_c*1000 / dt;
+                          fps1=Math.Round(  (double)fps_c*1000 / dt,1);
                     }
                     
                     imageBox1.Image = mat_global[0];  

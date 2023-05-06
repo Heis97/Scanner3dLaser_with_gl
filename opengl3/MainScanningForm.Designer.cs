@@ -193,6 +193,7 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.lab_fps_cam1 = new System.Windows.Forms.Label();
             this.tB_fps_scan = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
             this.but_scan_sing_las = new System.Windows.Forms.Button();
@@ -316,7 +317,6 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.lab_fps_cam1 = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2194,6 +2194,13 @@ namespace opengl3
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // lab_fps_cam1
+            // 
+            this.lab_fps_cam1.Location = new System.Drawing.Point(6, 9);
+            this.lab_fps_cam1.Name = "lab_fps_cam1";
+            this.lab_fps_cam1.Size = new System.Drawing.Size(100, 23);
+            this.lab_fps_cam1.TabIndex = 0;
+            // 
             // tB_fps_scan
             // 
             this.tB_fps_scan.Location = new System.Drawing.Point(1425, 475);
@@ -3380,16 +3387,6 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
-            // 
-            // but_remesh_test
-            // 
-            this.but_remesh_test.Location = new System.Drawing.Point(662, 820);
-            this.but_remesh_test.Name = "but_remesh_test";
-            this.but_remesh_test.Size = new System.Drawing.Size(96, 34);
-            this.but_remesh_test.TabIndex = 152;
-            this.but_remesh_test.Text = "Ремеш";
-            this.but_remesh_test.UseVisualStyleBackColor = true;
-            this.but_remesh_test.Click += new System.EventHandler(this.but_remesh_test_Click);
             // 
             // MainScanningForm
             // 
