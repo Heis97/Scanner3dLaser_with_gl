@@ -316,6 +316,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.lab_fps_cam1 = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2090,6 +2091,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.lab_fps_cam1);
             this.tabMain.Controls.Add(this.tB_fps_scan);
             this.tabMain.Controls.Add(this.label21);
             this.tabMain.Controls.Add(this.but_scan_sing_las);
@@ -3061,10 +3063,9 @@ namespace opengl3
             // 
             // imageBox1
             // 
-            this.imageBox1.Dock = System.Windows.Forms.DockStyle.Left;
             this.imageBox1.Location = new System.Drawing.Point(3, 3);
             this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(640, 997);
+            this.imageBox1.Size = new System.Drawing.Size(640, 480);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
             // 
@@ -3379,6 +3380,16 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
+            // 
+            // but_remesh_test
+            // 
+            this.but_remesh_test.Location = new System.Drawing.Point(662, 820);
+            this.but_remesh_test.Name = "but_remesh_test";
+            this.but_remesh_test.Size = new System.Drawing.Size(96, 34);
+            this.but_remesh_test.TabIndex = 152;
+            this.but_remesh_test.Text = "Ремеш";
+            this.but_remesh_test.UseVisualStyleBackColor = true;
+            this.but_remesh_test.Click += new System.EventHandler(this.but_remesh_test_Click);
             // 
             // MainScanningForm
             // 
@@ -3753,6 +3764,7 @@ namespace opengl3
         private System.Windows.Forms.PropertyGrid prop_grid_model;
         private System.Windows.Forms.Button but_intersec_obj;
         private System.Windows.Forms.Button but_remesh_test;
+        private System.Windows.Forms.Label lab_fps_cam1;
     }
 }
 

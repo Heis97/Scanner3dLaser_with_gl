@@ -60,12 +60,13 @@ namespace opengl3
         TCPclient con1;
         private const float PI = 3.14159265358979f;
         // private Size cameraSize = new Size(1280, 960);
-         private Size cameraSize = new Size(1184, 656);
-        //private Size cameraSize = new Size(1920, 1080);
+         //private Size cameraSize = new Size(1184, 656);
+        private Size cameraSize = new Size(1920, 1080);
         // private Size cameraSize = new Size(640, 480);
         private GraphicGL GL1 = new GraphicGL();
         private VideoCapture myCapture1 = null;
         VideoWriter writer = null;
+        double fps1 = 0;
 
         VideoWriter[] video_writer = new VideoWriter[2];
 
@@ -75,6 +76,7 @@ namespace opengl3
         private float[] normal_buffer_data = { 0.0f };
         private float[] color_buffer_data = { 0.0f };
         volatile List<int> camera_ind = new List<int>();
+        volatile List<long> camera_frame_time = new List<long>();
         List<float[]> im = new List<float[]>();
         public List<Mat> Ims;
         public List<Point> ints;
@@ -233,6 +235,7 @@ namespace opengl3
         private void timer1_Tick(object sender, EventArgs e)
         {
             label_timer.Text = DateTime.Now.Second + " : " + DateTime.Now.Millisecond;// +" "+ DateTime.Now.Ticks/ TimeSpan.TicksPerMillisecond;
+            lab_fps_cam1.Text = fps1.ToString();
         }
         void init_vars()
         {
@@ -2412,14 +2415,29 @@ namespace opengl3
                 {
                     
                     cap.Retrieve(mat_global[0]);
-                    imageBox1.Image = mat_global[0];                   
+                    camera_frame_time.Add(DateTime.Now.Ticks / 10000);
+                    int fps_c = 10;
+                    if(camera_frame_time.Count> fps_c)
+                    {
+                        camera_frame_time.RemoveAt(0);
+                    }
+                    if(camera_frame_time.Count== fps_c)
+                    {
+                            var dt = (int)(camera_frame_time[camera_frame_time.Count - 1] - camera_frame_time[0]);
+                          fps1=  (double)fps_c*1000 / dt;
+                    }
+                    
+                    imageBox1.Image = mat_global[0];  
+                    
                     imProcess(mat_global[0],1);
+
 
                 }
                 else if ((camera_ind.Count > 1) && ((int)cap.Ptr == camera_ind[1]))
                 {
                     cap.Retrieve(mat_global[1]);                                      
                     imageBox2.Image = mat_global[1];
+
                     imProcess(mat_global[1],2);
 
                     //imBox_base.Image = stereoProc(mat_global[0], mat_global[1]);
@@ -2432,6 +2450,7 @@ namespace opengl3
 
             switch (imProcType)
             {
+
                 case FrameType.Test:
                     //laserLine?.offLaserSensor();
                     imb_base[ind-1].Image = mat;
@@ -2533,6 +2552,7 @@ namespace opengl3
         }
         private void videoStart_Click(object sender, EventArgs e)
         {
+
             var contr = (TextBox)sender;
             videoStart(Convert.ToInt32(contr.Text));
         }
