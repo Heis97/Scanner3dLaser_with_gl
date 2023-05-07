@@ -1990,7 +1990,9 @@ namespace opengl3
             {
                 con1 = new TCPclient();
             }
-            con1.Connection(30005, "172.31.1.147");
+            string iiwa = "172.31.1.147";
+            string pulse = "localhost";
+            con1.Connection(30005,pulse );
         }
         private void but_res_pos1_Click(object sender, EventArgs e)
         {
@@ -3651,7 +3653,7 @@ namespace opengl3
                          frame_d.stereo = true;
                          frames_show.Add(frame_d);*/
 
-                        scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min,  im_max, im_max_prev }, 1-k,cam_min, cam_max, false);
+                        scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min,  im_max, im_max_prev }, k,cam_min, cam_max, false);
                     }
                 }
                 videoframe_count++;
@@ -3662,7 +3664,7 @@ namespace opengl3
             Console.WriteLine("Points computed.");
             return scanner;
         }
-        string[] get_video_path(int ind,string filepath)//0 - video, 1 - enc
+        string[] get_video_path(int ind,string filepath)//[ video, enc]
         {
             var files = Directory.GetFiles("cam"+ind+"\\" + filepath);
             string video_path = "";

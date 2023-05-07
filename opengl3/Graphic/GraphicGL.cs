@@ -659,6 +659,70 @@ namespace opengl3
 
         #endregion
 
+        #region texture
+        private void useTexture(uint buff_texture)
+        {
+            Gl.ActiveTexture(TextureUnit.Texture0);
+            Gl.BindTexture(TextureTarget.Texture2d, buff_texture);
+        }
+        Bitmap byteToBitmap(byte[] arr, Size size)
+        {
+            var bmp = new Bitmap(size.Width, size.Height);
+            for (int i = 0; i < size.Width; i++)
+            {
+                for (int j = 0; j < size.Height; j++)
+                {
+                    // Console.WriteLine(3 * (j * size.Width + j));
+                    var color = Color.FromArgb(
+                        arr[3 * (j * size.Width + i)],
+                        arr[3 * (j * size.Width + i) + 1],
+                        arr[3 * (j * size.Width + i) + 2]
+                        );
+                    bmp.SetPixel(i, j, color);
+                }
+            }
+            return bmp;
+        }
+        byte[] textureLoad(Mat mat)
+        {
+
+            var bytearr = (byte[,,])mat.GetData();
+            Console.WriteLine(mat.Rows + " " + mat.Cols + " " + mat.NumberOfChannels + " ");
+            var bytetext = new byte[bytearr.GetLength(0) * bytearr.GetLength(1) * bytearr.GetLength(2)];
+            Console.WriteLine(bytearr.GetLength(0));
+            Console.WriteLine(bytearr.GetLength(1));
+            Console.WriteLine(bytearr.GetLength(0) * bytearr.GetLength(1) * 3);
+            Console.WriteLine("___");
+            int ind = 0;
+
+            for (int i = 0; i < bytearr.GetLength(0); i++)
+            {
+                for (int j = 0; j < bytearr.GetLength(1); j++)
+                {
+                    bytetext[ind] = bytearr[bytearr.GetLength(0) - i - 1, j, 0]; ind++;
+                    bytetext[ind] = bytearr[bytearr.GetLength(0) - i - 1, j, 1]; ind++;
+                    bytetext[ind] = bytearr[bytearr.GetLength(0) - i - 1, j, 2]; ind++;
+                }
+            }
+            Console.WriteLine(ind);
+            var textureSize = new Size(mat.Width, mat.Height);
+            return bytetext;
+        }
+        private uint bindTexture(byte[] arrB, Size textureSize)
+        {
+            var buff_texture = Gl.GenTexture();
+            Gl.ActiveTexture(TextureUnit.Texture0);
+            Gl.BindTexture(TextureTarget.Texture2d, buff_texture);
+            // Gl.TexParameter(TextureTarget.Texture2d, TextureParameterName.TextureWrapS, Gl.REPEAT);
+
+            Gl.TexImage2D(TextureTarget.Texture2d, 0, InternalFormat.Rgb, textureSize.Width, textureSize.Height, 0, PixelFormat.Bgr, PixelType.UnsignedByte, arrB);
+            Gl.GenerateMipmap(TextureTarget.Texture2d);
+            return buff_texture;
+        }
+
+        #endregion
+
+
         #region util
         public Matr4x4f rightMatrMon(int ind_mon)
         {

@@ -17,6 +17,7 @@ namespace opengl3
         public double z { get; set; }
         public bool exist { get; set; }
         public Color3d_GL color { get; set; }
+        //public PointF uv { get; set; }
         public Point3d_GL(double _x = 0, double _y = 0, double _z = 0, Color3d_GL _color = null)
         {
             x = _x;
@@ -25,6 +26,7 @@ namespace opengl3
             exist = true;
             color = _color;
         }
+
         public Point3d_GL(Vertex4f vertex, Color3d_GL _color = null)
         {
             x = vertex.x;
@@ -33,6 +35,7 @@ namespace opengl3
             exist = true;
             color = _color;
         }
+
         public Point3d_GL(Point p, double _z)
         {
             x = p.X;
