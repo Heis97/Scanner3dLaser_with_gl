@@ -1992,7 +1992,7 @@ namespace opengl3
             }
             string iiwa = "172.31.1.147";
             string pulse = "localhost";
-            con1.Connection(30005,pulse );
+            con1.Connection(30006,pulse );
         }
         private void but_res_pos1_Click(object sender, EventArgs e)
         {
@@ -2061,6 +2061,7 @@ namespace opengl3
                     con1.send_mes("f\n");
                     Thread.Sleep(50);
                     var res = con1.reseav();
+                    Console.WriteLine(res);
                     if (res == null || res.Length < 10)
                     {
                         return null;
@@ -2089,6 +2090,7 @@ namespace opengl3
         private void bet_res_pos_Click(object sender, EventArgs e)
         {
             var posRob = positionFromRobot(con1);
+            if (posRob == null) return;
             nameX_in.Text = posRob.x.ToString();
             nameY_in.Text = posRob.y.ToString();
             nameZ_in.Text = posRob.z.ToString();
@@ -4134,7 +4136,9 @@ namespace opengl3
             {
                 con1 = new TCPclient();
             }
-            con1.Connection(30002, "172.31.1.147");
+            var pulse = "localhost";
+            var kuka = "172.31.1.147";
+            con1.Connection(30006, pulse);
         }
 
         private void but_rob_discon_sc_Click(object sender, EventArgs e)

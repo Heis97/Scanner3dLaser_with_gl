@@ -6,7 +6,7 @@ uniform vec3 MaterialAmbient;
 uniform vec3 MaterialSpecular;
 
 uniform float lightPower;
-uniform readonly sampler2D texture_im;
+//uniform readonly sampler2D texture_im;
 
 uniform int textureVis;
 uniform int lightVis;
