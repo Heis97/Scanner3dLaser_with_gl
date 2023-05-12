@@ -294,7 +294,7 @@ namespace opengl3
                 CvInvoke.Rotate(im2, im2, Emgu.CV.CvEnum.RotateFlags.Rotate180);
             }
             var fr = new Frame(im1, im2, name1, frameType);
-
+            fr.stereo = true;
 
             fr.dateTime = File.GetCreationTime(filepath1);
             return fr;
@@ -575,6 +575,28 @@ namespace opengl3
                     }
                 }
             }
+        }
+
+        static public Frame[] load_rob_frames(string path)
+        {
+            var files = Directory.GetFiles(path);
+            var frames = new List<Frame>();
+            for (int i = 0; i < files.Length; i++)
+            {
+                var fr = load_rob_frame(files[i]);
+                if(fr!=null) frames.Add(fr);
+            }
+            return frames.ToArray();
+        }
+
+        static public Frame load_rob_frame(string path)
+        {
+            var name = Path.GetFileNameWithoutExtension(path);
+            var rob_fr = new RobotFrame(name);
+            var mat = new Mat(path);
+            var fr = new Frame(mat,name);
+            fr.RobotFrame = rob_fr;
+            return fr;
         }
     }
 }

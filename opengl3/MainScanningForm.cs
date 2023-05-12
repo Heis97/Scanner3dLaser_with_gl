@@ -613,15 +613,15 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_z_cal_1", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\stereo_cal_0505_1", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);       
-            cam1.save_camera("cam1_z_conf_210423.txt");            
+            cam1.save_camera("cam1_conf_120523.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
-           /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_2412_2", FrameType.Pattern, PatternType.Mesh);
+            var frms_2 = FrameLoader.loadImages_diff(@"cam2\stereo_cal_0505_1", FrameType.Pattern, PatternType.Mesh);
             var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
-            cam2.save_camera("cam2_conf_2412_1.txt");
-            comboImages.Items.AddRange(frms_2);*/
+            cam2.save_camera("cam2_conf_120523.txt");
+            comboImages.Items.AddRange(frms_2);
         }
         Scanner loadScanner_v2(string  conf1, string conf2, string stereo_cal, string bfs_file = null)
         {
@@ -637,6 +637,7 @@ namespace opengl3
 
                 var stereo_cam = new StereoCamera(new CameraCV[] { cam1, cam2 },bfs_file);
                 scanner = new Scanner(stereo_cam);
+                stereocam_scan = stereo_cam;
             }
             
             var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
@@ -1647,6 +1648,7 @@ namespace opengl3
                 }
                 else if (fr.frameType == FrameType.Test)
                 {
+                    imageBox1.Image = fr.im;
                     //findLaserArea(fr.im, imageBox1, (int)red_c);
                     //imageBox_debug_cam_2.Image =  drawDescriptors(fr.im);
                     //findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Up);
@@ -3914,6 +3916,7 @@ namespace opengl3
 
         #endregion
         #region load_but
+
         private void but_scan_load_ex_Click(object sender, EventArgs e)
         {
 
@@ -4104,7 +4107,8 @@ namespace opengl3
             var cam2 = CameraCV.load_camera(cam2_conf_path);
             var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
             stereocam_scan = stereo;
-            stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh);
+            //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh);
+            stereocam_scan.calibrate_stereo_rob(frms_stereo, PatternType.Mesh);
             comboImages.Items.AddRange(frms_stereo);
 
         }

@@ -86,9 +86,9 @@ namespace opengl3
                         var inv_cs1 = new Matrix<double>(4, 4);
                         CvInvoke.Invert(cameraCVs[0].matrixCS, inv_cs1, DecompMethod.LU);
 
-                        R = inv_cs1 * cameraCVs[1].matrixCS;
+                        R = inv_cs1 * cameraCVs[1].matrixCS; 
                         var c1 = cameraCVs[0].matrixCS;
-                        Console.WriteLine(i + " " + R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]);
+                        Console.WriteLine(i + " " + R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");// + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
                         GC.Collect();
                     }
 
@@ -96,6 +96,35 @@ namespace opengl3
                 }
             }
         }
+
+        public void calibrate_stereo_rob(Frame[] frames, PatternType patternType)
+        {
+
+            if (cameraCVs.Length == 2)
+            {
+                for (int i = 0; i < frames.Length; i++)
+                {
+                    var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, 10f);
+                    var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, 10f);
+                    if (pos1 && pos2)
+                    {
+                        var inv_cs1 = new Matrix<double>(4, 4);
+                        CvInvoke.Invert(cameraCVs[0].matrixCS, inv_cs1, DecompMethod.LU);
+
+                        R = inv_cs1 * cameraCVs[1].matrixCS;
+                        var c1 = cameraCVs[0].matrixCS;
+                        var rob_pos = new RobotFrame(frames[i].name);
+                        var r1 = rob_pos.getMatrix();
+                        Console.Write(i + " " + r1[0, 3] + " " + r1[1, 3] + " " + r1[2, 3]+" ");// + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");
+                        Console.WriteLine(R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");// + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
+                        GC.Collect();
+                    }
+
+                    //Console.WriteLine(comp_pos);
+                }
+            }
+        }
+
         public Matrix<double> calibrateBfs(Frame[] pos,string file_name = "bfs_cal.txt")
         {
             var Bfs_l = new List<Matrix<double>>();
