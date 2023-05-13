@@ -40,6 +40,8 @@ namespace opengl3
         public Matrix<double> matrixCS;
         public Matrix<double> matrixSC;
         public Size image_size;
+        public Size pattern_size;
+
         public float mark_size = 10f;
 
         public List<PointF[]> scan_points = new List<PointF[]>();
@@ -286,12 +288,14 @@ namespace opengl3
             cameramatrix = _cameramatrix;
             distortmatrix = _distortmatrix;
             image_size = im_size;
+            pattern_size = new Size(6, 7);
             init_vars();
         }
         public CameraCV(Frame[] _frames, Size _size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
             calibrateCam(_frames, _size, markSize, obp_inp);
             //calibrateCamFish(_frames, _size, markSize, obp_inp);
+            pattern_size = new Size(6, 7);
             init_vars();
         }
 
@@ -389,12 +393,12 @@ namespace opengl3
             setPos();
             return pos;
         }
-        public bool compPos(Mat _mat, PatternType patternType,float mark = -1)
+        public bool compPos(Mat _mat, PatternType patternType,Size pattern_size,float mark = -1)
         {
             var mat = _mat.Clone();
             if (patternType == PatternType.Chess)
             {
-                Size size_patt = new Size(6, 7);
+                Size size_patt = pattern_size;
                 var mat1 = mat.Clone();
                 var gray = mat.ToImage<Gray, byte>();
                 var corn = new VectorOfPointF();
@@ -439,7 +443,7 @@ namespace opengl3
             }
             else if (patternType == PatternType.Mesh)
             {
-                Size size_patt = new Size(6, 7);
+                Size size_patt = pattern_size;
                 float markSize = this.mark_size;
                 if (mark > 0)
                 {
@@ -654,27 +658,22 @@ namespace opengl3
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
                 var f_c = FindCircles.findCircles(frame.im,ref cornF, size_patt);
+                
                 //var mat = GeometryAnalyse.findCirclesIter(frame.im.Clone(), ref cornF, size_patt);
-                //CvInvoke.Imshow("calib", f_c);
-                // CvInvoke.WaitKey();
+                
                 //mat = null;
                 //Console.WriteLine(" cornF");
                 //prin.t(cornF);
                 //Console.WriteLine(" corn2");
-                GC.Collect();
-                if (cornF == null)
-                {
+                if(f_c == null)
                     return null;
-                }
+                
+                if (cornF == null)          
+                    return null;            
                 if (cornF.Length != len)
-                {
                     return null;
-                }
                 else
-                {
-                    
                     return cornF;
-                }
             }
             else
             {

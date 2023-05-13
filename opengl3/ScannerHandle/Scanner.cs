@@ -53,9 +53,9 @@ namespace opengl3
             this.stereoCamera = stereoCamera;
 
         }
-        public void initStereo(Mat[] mats, PatternType patternType)
+        public void initStereo(Mat[] mats, PatternType patternType,System.Drawing.Size pattern_size)
         {
-            stereoCamera.calibrate(mats, patternType);
+            stereoCamera.calibrate(mats, patternType, pattern_size);
         }
 
         public Scanner set_coord_sys(StereoCamera.mode mode)

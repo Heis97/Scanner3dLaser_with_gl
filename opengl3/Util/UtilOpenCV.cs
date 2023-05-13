@@ -2101,7 +2101,7 @@ namespace opengl3
                     }
                 }
             }
-            im_ret.Save("black_br_" + n + "_" + m + ".png");
+            im_ret.Save("black_sq_br_" + n + "_" + m + ".png");
             return new Mat[] { im_ret.Mat, new Matrix<float>(points_cv).Mat, new Matrix<float>(points_all).Mat } ;
         }
 
@@ -2142,7 +2142,7 @@ namespace opengl3
 
             for (int i = 0; i < p_start.Count; i++)
             {   
-               CvInvoke.Circle(im_ret, new Point(p_start[i].X, p_start[i].Y), q_side / 4, new MCvScalar(0, 0, 0),-1);       
+               CvInvoke.Circle(im_ret, new Point(p_start[i].X, p_start[i].Y), (int)(q_side / 2.3), new MCvScalar(0, 0, 0),-1);       
             }
             im_ret.Save("black_br_" + n + "_" + m + ".png");
             return new Mat[] { im_ret.Mat, new Matrix<float>(points_all).Mat, new Matrix<float>(points_all).Mat };

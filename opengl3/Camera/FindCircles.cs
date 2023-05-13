@@ -118,9 +118,10 @@ namespace opengl3
                 //CvInvoke.DrawContours(im_tr, conts, -1, new MCvScalar(255, 0, 0), 2, LineType.EightConnected);
             }
            
-           // CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
+            CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
 
             //CvInvoke.Imshow("bin ", im_tr);
+            
             counter++;
 
             if (cents == null)
@@ -128,14 +129,15 @@ namespace opengl3
                 Console.WriteLine("find_circ ret null");
                 return null;
             }
-           // CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
-          //  CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
-            
+            orig = mat.Clone();
+            CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
+            CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
 
+           
             //prin.t(cents);
             //prin.t("____________");
-            //CvInvoke.Imshow("fnd", mat);
-            
+            //CvInvoke.Imshow("fnd", orig);
+            //CvInvoke.WaitKey();
             corn = new System.Drawing.PointF[pattern_size.Width * pattern_size.Height];
             
             if(order)
@@ -253,6 +255,7 @@ namespace opengl3
         {
             var M = CvInvoke.Moments(cont);
             var ms = CvInvoke.HuMoments(M);
+            
             var mass_2 = 0d;
             for (int j = 0; j < ms.Length; j++)
             {

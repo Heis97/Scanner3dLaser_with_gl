@@ -68,8 +68,8 @@ namespace opengl3
                 new Size(offset_xy * size_patt.Width + 2* offset_xy, offset_xy * size_patt.Height + 2*offset_xy),
                 Inter.Linear,Warp.Default,BorderType.Replicate);           
             var matDraw_pers = FindCircles.findCircles(im_pers,ref corn, size_patt);
+            if(matDraw_pers == null) return null;
 
-            
             //CvInvoke.Imshow("pers1" + count_1, matDraw_pers);
             count_1++;
             //CvInvoke.Imshow("pers1", matDraw_pers);

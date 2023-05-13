@@ -133,11 +133,11 @@ namespace opengl3
             {
                 if(orig!=null)
                 {
-                    cameraCV.compPos(orig, patternType);
+                    cameraCV.compPos(orig, patternType,cameraCV.pattern_size);
                 }
                 else
                 {
-                    cameraCV.compPos(mat, patternType);
+                    cameraCV.compPos(mat, patternType, cameraCV.pattern_size);
                 }
             }
             var lines = PointCloud.computeTracesCam(ps, cameraCV,graphicGL);

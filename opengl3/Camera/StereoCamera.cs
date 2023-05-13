@@ -40,14 +40,14 @@ namespace opengl3
         
 
 
-        public void calibrate(Mat[] mats,PatternType patternType)
+        public void calibrate(Mat[] mats,PatternType patternType,System.Drawing.Size pattern_size)
         {
             if(mats.Length == cameraCVs.Length)
             {
                 bool comp_pos = true;
                 for(int i = 0; i < mats.Length; i++)
                 {
-                    comp_pos &= cameraCVs[i].compPos(mats[i], patternType, 10f);
+                    comp_pos &= cameraCVs[i].compPos(mats[i], patternType, pattern_size,10f);
                     //Console.WriteLine(comp_pos);
                 }
                 if(mats.Length>1 && comp_pos)
@@ -72,15 +72,16 @@ namespace opengl3
                 }
             }
         }
-        public void calibrate_stereo(Frame[] frames, PatternType patternType)
+        public void calibrate_stereo(Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size)
         {
             
             if (cameraCVs.Length==2)
             {
                 for (int i = 0; i < frames.Length; i++)
                 {
-                    var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, 10f);
-                    var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, 10f);
+                    var mark_size = 6.2273f;
+                    var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, pattern_size, mark_size);
+                    var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, pattern_size, mark_size);
                     if(pos1&&pos2)
                     {
                         var inv_cs1 = new Matrix<double>(4, 4);
@@ -88,7 +89,8 @@ namespace opengl3
 
                         R = inv_cs1 * cameraCVs[1].matrixCS; 
                         var c1 = cameraCVs[0].matrixCS;
-                        Console.WriteLine(i + " " + R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");// + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
+                        Console.WriteLine(i + " " + R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " "//
+                        + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
                         GC.Collect();
                     }
 
@@ -97,15 +99,17 @@ namespace opengl3
             }
         }
 
-        public void calibrate_stereo_rob(Frame[] frames, PatternType patternType)
+        public void calibrate_stereo_rob(Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size)
         {
 
             if (cameraCVs.Length == 2)
             {
+                var p_rob = new List<Point3d_GL>();
+                var p_cam = new List<Point3d_GL>();
                 for (int i = 0; i < frames.Length; i++)
                 {
-                    var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, 10f);
-                    var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, 10f);
+                    var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, pattern_size, 10f);
+                    var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, pattern_size, 10f);
                     if (pos1 && pos2)
                     {
                         var inv_cs1 = new Matrix<double>(4, 4);
@@ -115,6 +119,11 @@ namespace opengl3
                         var c1 = cameraCVs[0].matrixCS;
                         var rob_pos = new RobotFrame(frames[i].name);
                         var r1 = rob_pos.getMatrix();
+                        var p1 = new Point3d_GL(r1[0, 3], r1[1, 3], r1[2, 3]);
+                        var p2 = new Point3d_GL(c1[0, 3], c1[1, 3], c1[2, 3]);
+                        p_rob.Add(p1);
+                        p_cam.Add(p2);
+                        
                         Console.Write(i + " " + r1[0, 3] + " " + r1[1, 3] + " " + r1[2, 3]+" ");// + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");
                         Console.WriteLine(R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");// + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
                         GC.Collect();
@@ -122,15 +131,20 @@ namespace opengl3
 
                     //Console.WriteLine(comp_pos);
                 }
+                for (int i = 1; i <p_cam.Count; i++)
+                {
+                    Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
+                }
+
             }
         }
 
-        public Matrix<double> calibrateBfs(Frame[] pos,string file_name = "bfs_cal.txt")
+        public Matrix<double> calibrateBfs(Frame[] pos,System.Drawing.Size pattern_size, string file_name = "bfs_cal.txt")
         {
             var Bfs_l = new List<Matrix<double>>();
             for(int i=0; i<pos.Length; i++)
             {
-                cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, 10f);
+                cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, pattern_size, 10f);
                 var Bsm = cameraCVs[0].matrixCS.Clone();
                 var Bbf = new RobotFrame(pos[i].name).getMatrix();
                 var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix();

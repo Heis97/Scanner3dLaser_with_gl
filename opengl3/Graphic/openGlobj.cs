@@ -40,6 +40,7 @@ namespace opengl3
             selected = false;
             text_vis = false;
             light_vis = false;
+            if(type == PrimitiveType.Triangles) light_vis = true;
             cross_flat = new Vertex4f();
             comp_flat = 0;
             buff_array = uint.MaxValue;

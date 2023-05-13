@@ -160,7 +160,7 @@ namespace opengl3
 
         bool addPosition(Mat mat, double position, CameraCV cameraCV, PatternType patternType)
         {
-            if (cameraCV.compPos(mat, patternType))
+            if (cameraCV.compPos(mat, patternType,cameraCV.pattern_size))
             {
                //prin.t(cameraCV.matrixCS);
                // Console.WriteLine(cameraCV.matrixCS[0,2]+" "+ cameraCV.matrixCS[1, 2]+" "+ cameraCV.matrixCS[2, 2]+" "+ position);

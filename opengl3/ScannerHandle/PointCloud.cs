@@ -37,7 +37,7 @@ namespace opengl3
             //var points_im = Detection.detectLine(cameraCV.undist(mat));
             var points_im = Detection.detectLine(mat);
             var points_cam = fromLines(points_im, cameraCV, laserSurface.flat3D);
-            cameraCV.compPos(mat, PatternType.Chess);
+            cameraCV.compPos(mat, PatternType.Chess,cameraCV.pattern_size);
             points3d_cur = camToScene(points_cam, cameraCV.matrixCS);
             var ps_list = points3d.ToList();
             ps_list.AddRange(points3d_cur);
@@ -62,7 +62,7 @@ namespace opengl3
 
         public bool addPointsLinLas(Mat mat, double LinPos, CameraCV cameraCV, LinearAxis linearAxis,Mat orig,PatternType patternType)
         {
-            cameraCV.compPos(orig, patternType);  
+            cameraCV.compPos(orig, patternType, cameraCV.pattern_size);  
             var points_im = Detection.detectLineDiff(mat,5,0.05f,false,false);
             //var points_im = Detection.detectLineDiff(mat);
             var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));

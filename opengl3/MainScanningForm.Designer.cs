@@ -2820,7 +2820,7 @@ namespace opengl3
             // but_ph
             // 
             this.but_ph.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_ph.Location = new System.Drawing.Point(1295, 326);
+            this.but_ph.Location = new System.Drawing.Point(20, 483);
             this.but_ph.Name = "but_ph";
             this.but_ph.Size = new System.Drawing.Size(106, 33);
             this.but_ph.TabIndex = 116;
