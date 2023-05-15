@@ -343,6 +343,8 @@ namespace opengl3
             propGrid_traj.SelectedObject = param_tr;
 
             debugBox.Text = "0.3 0.3 1";
+
+            tree_models.CheckBoxes = true;
             //load_camers_v2();
         }
 

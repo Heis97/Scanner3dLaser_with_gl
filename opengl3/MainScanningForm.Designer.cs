@@ -1103,7 +1103,7 @@ namespace opengl3
             // 
             this.prop_grid_model.Location = new System.Drawing.Point(996, 6);
             this.prop_grid_model.Name = "prop_grid_model";
-            this.prop_grid_model.Size = new System.Drawing.Size(183, 271);
+            this.prop_grid_model.Size = new System.Drawing.Size(183, 400);
             this.prop_grid_model.TabIndex = 150;
             // 
             // tree_models

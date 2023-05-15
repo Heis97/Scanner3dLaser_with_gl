@@ -582,7 +582,7 @@ namespace opengl3
          public static Point3d_GL[] cross_triang(Polygon3d_GL pn1, Polygon3d_GL pn2)
          {
             int ind = 0;
-           var ps1 = new List<Point3d_GL>();
+            var ps1 = new List<Point3d_GL>();
             Point3d_GL[] ps2 = new Point3d_GL[6];
 
             ps2[0] = cross_line_triang(pn1, new Line3d_GL(pn2.ps[0], pn2.ps[1]));
