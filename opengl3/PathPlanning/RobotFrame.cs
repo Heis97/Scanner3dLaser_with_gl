@@ -149,7 +149,7 @@ namespace opengl3
         public string ToStr(string del = " ")
         {
             return del+"X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) +
-                    del + "A" + round(A) + del + "B" + round(B) + del + "C" + round(C) +
+                    del + "A" + round(A*0.5) + del + "B" + round(B*0.5) + del + "C" + round(C) +
                     del + "V" + round(V) + del + "D" + D + " \n";
         }
 
