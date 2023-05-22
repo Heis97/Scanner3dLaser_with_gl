@@ -317,6 +317,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tb_port_tcp = new System.Windows.Forms.TextBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2091,6 +2092,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.tb_port_tcp);
             this.tabMain.Controls.Add(this.lab_fps_cam1);
             this.tabMain.Controls.Add(this.tB_fps_scan);
             this.tabMain.Controls.Add(this.label21);
@@ -2302,7 +2304,7 @@ namespace opengl3
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1298, 12);
+            this.label1.Location = new System.Drawing.Point(1425, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(69, 20);
             this.label1.TabIndex = 124;
@@ -2642,7 +2644,7 @@ namespace opengl3
             // 
             // textNimVid
             // 
-            this.textNimVid.Location = new System.Drawing.Point(1373, 9);
+            this.textNimVid.Location = new System.Drawing.Point(1500, 6);
             this.textNimVid.Name = "textNimVid";
             this.textNimVid.Size = new System.Drawing.Size(45, 26);
             this.textNimVid.TabIndex = 40;
@@ -3372,7 +3374,7 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabDebug);
             this.windowsTabs.Controls.Add(this.tabDistort);
             this.windowsTabs.Controls.Add(this.tabCalibMonit);
-            this.windowsTabs.Location = new System.Drawing.Point(12, 3);
+            this.windowsTabs.Location = new System.Drawing.Point(12, 0);
             this.windowsTabs.Name = "windowsTabs";
             this.windowsTabs.SelectedIndex = 0;
             this.windowsTabs.Size = new System.Drawing.Size(1890, 1029);
@@ -3387,6 +3389,14 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
+            // 
+            // tb_port_tcp
+            // 
+            this.tb_port_tcp.Location = new System.Drawing.Point(1296, 9);
+            this.tb_port_tcp.Name = "tb_port_tcp";
+            this.tb_port_tcp.Size = new System.Drawing.Size(100, 26);
+            this.tb_port_tcp.TabIndex = 136;
+            this.tb_port_tcp.Text = "30006";
             // 
             // MainScanningForm
             // 
@@ -3762,6 +3772,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_intersec_obj;
         private System.Windows.Forms.Button but_remesh_test;
         private System.Windows.Forms.Label lab_fps_cam1;
+        private System.Windows.Forms.TextBox tb_port_tcp;
     }
 }
 

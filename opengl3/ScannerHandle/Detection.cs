@@ -349,6 +349,7 @@ namespace opengl3
             bool reverse = false, bool rotate = true,
             bool orig = false)
         {
+            if (_mat.GetData() == null) return null;
             var mat = _mat.Clone();
             //var mat = _mat;
             if (rotate)

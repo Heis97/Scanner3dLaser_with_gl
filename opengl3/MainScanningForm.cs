@@ -30,7 +30,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
-
+        int port_tcp = 30005;
         StringBuilder sb_enc = null;
         string video_scan_name = "1";
         string scan_i = "emp";
@@ -52,7 +52,7 @@ namespace opengl3
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
         float markSize = 10f;
-        Size chess_size = new Size(10, 11);
+        Size chess_size = new Size(6, 7);
         Size chess_size_real = new Size(6, 7);
         StereoCameraCV stereocam = null;
         StereoCamera stereocam_scan = null;
@@ -60,8 +60,8 @@ namespace opengl3
         TCPclient con1;
         private const float PI = 3.14159265358979f;
         // private Size cameraSize = new Size(1280, 960);
-         //private Size cameraSize = new Size(1184, 656);
-        private Size cameraSize = new Size(1920, 1080);
+         private Size cameraSize = new Size(1184, 656);
+        //private Size cameraSize = new Size(1920, 1080);
         // private Size cameraSize = new Size(640, 480);
         private GraphicGL GL1 = new GraphicGL();
         private VideoCapture myCapture1 = null;
@@ -192,7 +192,7 @@ namespace opengl3
                 if (data_s[cam_max, i] != null && data_s[cam_min, i] != null)
                     if (data_s[cam_max, i].Length > 1 && data_s[cam_min, i].Length > 1)
                     { 
-                        //Console.WriteLine(data_s[cam_max, i][1] + "  " + data_s[cam_min, i][1]); 
+                        Console.WriteLine(data_s[cam_max, i][1] + "  " + data_s[cam_min, i][1]); 
                     }
             }
             var prs = compare_frames(data_s, fr_min, fr_max, cam_min, cam_max);
@@ -216,14 +216,14 @@ namespace opengl3
                     {
                         df = (double)(data[cam_max, i][0] - data[cam_max, j - 1][0]) /(data[cam_max, j][0] - data[cam_max, j - 1][0]) ;
 
-                        /*var d1 = data[cam_max, i][0];
+                        var d1 = data[cam_max, i][0];
                         var d2 = data[cam_max, j][0] - (data[cam_max, j][0] - data[cam_max, j - 1][0]) * (1 - df);
-                        Console.WriteLine(d1 + " " + d2);*/
+                        //Console.WriteLine(d1 + " " + d2);
                     }
                     pairs[i] = new double[] { j, df };
                    
                 }
-                Console.WriteLine(i + " " + j);
+                //Console.WriteLine(i + " " + j);
             }
             pairs[0] = new double[] { cam_min, cam_max ,frame_min, frame_max};
             return pairs;
@@ -1997,7 +1997,8 @@ namespace opengl3
             }
             string iiwa = "172.31.1.147";
             string pulse = "localhost";
-            con1.Connection(30006,pulse );
+            port_tcp = Convert.ToInt32(tb_port_tcp.Text);
+            con1.Connection(port_tcp,iiwa );
         }
         private void but_res_pos1_Click(object sender, EventArgs e)
         {
@@ -2568,7 +2569,7 @@ namespace opengl3
 
             if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
             {
-                sb_enc?.Append( laserLine?.get_las_pos()+" "+ videoframe_counts[ind - 1]+" "+ind + " ");
+                sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("\n");
                 video_writer[ind - 1]?.Write(mat);
@@ -3429,7 +3430,7 @@ namespace opengl3
             var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
             //capture1.SetCaptureProperty(CapProp.);
         }
-        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
         {
 
             videoframe_count = 0;
@@ -3562,7 +3563,7 @@ namespace opengl3
             if (buff.Count > len) buff.RemoveAt(0);
             return buff;
         }
-        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner = null, int strip = 1)
         {
 
             videoframe_count = 0;
@@ -4200,7 +4201,8 @@ namespace opengl3
             }
             var pulse = "localhost";
             var kuka = "172.31.1.147";
-            con1.Connection(30006, pulse);
+            port_tcp = Convert.ToInt32(tb_port_tcp.Text);
+            con1.Connection(port_tcp, kuka);
         }
 
         private void but_rob_discon_sc_Click(object sender, EventArgs e)
@@ -4219,7 +4221,6 @@ namespace opengl3
         private void but_rob_send_sc_Click(object sender, EventArgs e)
         {
                 con1?.send_mes(debugBox.Text + "\n");
-
         }
 
         private void but_rob_res_sc_Click(object sender, EventArgs e)

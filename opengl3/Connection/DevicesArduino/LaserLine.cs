@@ -121,7 +121,7 @@ namespace opengl3
         public int get_las_pos()
         {
             get_las_pos_send();
-            Thread.Sleep(1);
+            //Thread.Sleep(1);
             return get_las_pos_res();
         }
         static int comp_vel_div(double vel)
