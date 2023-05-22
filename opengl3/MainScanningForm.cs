@@ -3430,7 +3430,7 @@ namespace opengl3
             var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
             //capture1.SetCaptureProperty(CapProp.);
         }
-        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner = null, int strip = 1)
         {
 
             videoframe_count = 0;
@@ -3563,7 +3563,7 @@ namespace opengl3
             if (buff.Count > len) buff.RemoveAt(0);
             return buff;
         }
-        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
         {
 
             videoframe_count = 0;
