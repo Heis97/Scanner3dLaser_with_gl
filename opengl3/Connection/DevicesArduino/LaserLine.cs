@@ -56,7 +56,7 @@ namespace opengl3
 
         public void setShvpVel(double _vel)
         {
-            send(comp_vel_div(_vel), shvp_vel);
+            if(_vel>0) send(comp_vel_div(_vel), shvp_vel);
         }
         public void setLaserCur(int _pos)
         {

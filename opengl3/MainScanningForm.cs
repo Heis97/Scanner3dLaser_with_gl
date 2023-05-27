@@ -2586,9 +2586,14 @@ namespace opengl3
                     string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
                     using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
                     {
-                        sw.Write(sb_enc.ToString());
+                        if(sb_enc!=null)
+                        {
+                            sw.Write(sb_enc.ToString());
+                            sb_enc = null;
+                        }
+                       
                     }
-                    sb_enc = null;
+                   
                 }
 
 
