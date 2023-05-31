@@ -138,6 +138,19 @@ namespace opengl3
             init_vars();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
             //load_camers_v2();
+
+            var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
+            var paths = Directory.GetDirectories(path);
+
+            var paths_sort = (from f in paths
+                             orderby File.GetCreationTime(f) descending
+                             select f).ToList().GetRange(0,27);
+
+
+            foreach (string filename in paths_sort)
+                //File.GetCreationTime(filename);
+                Console.WriteLine(filename+" " +File.GetCreationTime(filename));
+            
         }
         static int[] frames_max(int[,] data)
         {
@@ -3540,7 +3553,7 @@ namespace opengl3
 
                     im1_buff_list.Add(im1_buff);
                     im2_buff_list.Add(im2_buff);
-                    if(im1_buff_list.Count> buff_len)
+                    if(im1_buff_list.Count>buff_len)
                     {
                         im1_buff_list.RemoveAt(0);
                         im2_buff_list.RemoveAt(0);

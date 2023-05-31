@@ -162,7 +162,7 @@ namespace opengl3
                 CvInvoke.Invert(Bbm, Bbm_1, DecompMethod.LU);
                 var Bfs = Bbf_1 * Bbm * Bsm;
                 Bfs_l.Add(Bfs);
-                
+                Console.WriteLine(Bfs[0, 3] + " " + Bfs[1, 3] + " " + Bfs[2, 3] + " " + Bfs[0, 0] + " " + Bfs[0, 1] + " " + Bfs[0, 2]);
                 /*
                 //prin.t(Bfs);
                 using (StreamWriter sw = new StreamWriter(file_name, false, Encoding.UTF8))
