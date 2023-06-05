@@ -21,7 +21,11 @@ namespace opengl3
             laser_sensor = 8,
             k_p_p = 9,
             k_v_p = 10,
-            send_pos_las = 11;
+            send_pos_las = 11,
+            div_disp = 12,
+            dir_disp = 13,
+            home_laser = 14;
+
         int on = 1, off = 2;
         public LaserLine(string _port)
         {
@@ -58,6 +62,8 @@ namespace opengl3
         {
             if(_vel>0) send(comp_vel_div(_vel), shvp_vel);
         }
+
+
         public void setLaserCur(int _pos)
         {
             send(_pos, laser_cur);
@@ -126,7 +132,20 @@ namespace opengl3
         }
         static int comp_vel_div(double vel)
         {
-            return Math.Abs((int)(1000 / vel));
+            return Math.Abs((int)(5000 / vel));
+        }
+
+        public void set_dir_disp(int _dir)
+        {
+            send(_dir+1, dir_disp);
+        }
+        public void set_div_disp(double _vel)
+        {
+            if (_vel > 0) send(comp_vel_div(_vel), div_disp);
+        }
+        public void set_home_laser()
+        {
+            send(0, home_laser);
         }
     }
 }

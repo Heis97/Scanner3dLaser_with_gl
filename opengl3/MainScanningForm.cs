@@ -139,7 +139,7 @@ namespace opengl3
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
             //load_camers_v2();
 
-            var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
+           /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
             var paths = Directory.GetDirectories(path);
 
             var paths_sort = (from f in paths
@@ -149,7 +149,7 @@ namespace opengl3
 
             foreach (string filename in paths_sort)
                 //File.GetCreationTime(filename);
-                Console.WriteLine(filename+" " +File.GetCreationTime(filename));
+                Console.WriteLine(filename+" " +File.GetCreationTime(filename));*/
             
         }
         static int[] frames_max(int[,] data)
@@ -2008,6 +2008,7 @@ namespace opengl3
             {
                 con1 = new TCPclient();
             }
+
             string iiwa = "172.31.1.147";
             string pulse = "localhost";
             port_tcp = Convert.ToInt32(tb_port_tcp.Text);
@@ -4357,7 +4358,21 @@ namespace opengl3
             
         }
 
-        
+        private void but_home_las_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_home_laser();
+        }
+
+        private void but_div_disp_Click(object sender, EventArgs e)
+        {
+
+            laserLine?.set_div_disp(Convert.ToDouble(tb_div_disp.Text));
+        }
+
+        private void but_dir_disp_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_dir_disp(Convert.ToInt32(tb_dir_disp.Text));
+        }
     }
 }
 

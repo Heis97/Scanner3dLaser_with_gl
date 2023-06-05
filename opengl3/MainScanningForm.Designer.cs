@@ -193,6 +193,7 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.tb_port_tcp = new System.Windows.Forms.TextBox();
             this.lab_fps_cam1 = new System.Windows.Forms.Label();
             this.tB_fps_scan = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
@@ -207,6 +208,11 @@ namespace opengl3
             this.combo_improc = new System.Windows.Forms.ComboBox();
             this.label56 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.but_dir_disp = new System.Windows.Forms.Button();
+            this.tb_dir_disp = new System.Windows.Forms.TextBox();
+            this.but_home_las = new System.Windows.Forms.Button();
+            this.but_div_disp = new System.Windows.Forms.Button();
+            this.tb_div_disp = new System.Windows.Forms.TextBox();
             this.but_las_enc = new System.Windows.Forms.Button();
             this.label20 = new System.Windows.Forms.Label();
             this.butset_kvp = new System.Windows.Forms.Button();
@@ -317,7 +323,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tb_port_tcp = new System.Windows.Forms.TextBox();
+            this.combo_robot_ch = new System.Windows.Forms.ComboBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2092,6 +2098,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.combo_robot_ch);
             this.tabMain.Controls.Add(this.tb_port_tcp);
             this.tabMain.Controls.Add(this.lab_fps_cam1);
             this.tabMain.Controls.Add(this.tB_fps_scan);
@@ -2196,6 +2203,14 @@ namespace opengl3
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // tb_port_tcp
+            // 
+            this.tb_port_tcp.Location = new System.Drawing.Point(1296, 9);
+            this.tb_port_tcp.Name = "tb_port_tcp";
+            this.tb_port_tcp.Size = new System.Drawing.Size(100, 26);
+            this.tb_port_tcp.TabIndex = 136;
+            this.tb_port_tcp.Text = "30006";
+            // 
             // lab_fps_cam1
             // 
             this.lab_fps_cam1.Location = new System.Drawing.Point(6, 9);
@@ -2237,7 +2252,7 @@ namespace opengl3
             // 
             this.label_timer.AutoSize = true;
             this.label_timer.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
-            this.label_timer.Location = new System.Drawing.Point(96, 739);
+            this.label_timer.Location = new System.Drawing.Point(3, 584);
             this.label_timer.Name = "label_timer";
             this.label_timer.Size = new System.Drawing.Size(118, 37);
             this.label_timer.TabIndex = 131;
@@ -2245,7 +2260,7 @@ namespace opengl3
             // 
             // but_load_scan
             // 
-            this.but_load_scan.Location = new System.Drawing.Point(1222, 566);
+            this.but_load_scan.Location = new System.Drawing.Point(1110, 616);
             this.but_load_scan.Name = "but_load_scan";
             this.but_load_scan.Size = new System.Drawing.Size(106, 38);
             this.but_load_scan.TabIndex = 129;
@@ -2304,7 +2319,7 @@ namespace opengl3
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1425, 9);
+            this.label1.Location = new System.Drawing.Point(1544, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(69, 20);
             this.label1.TabIndex = 124;
@@ -2330,6 +2345,11 @@ namespace opengl3
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.but_dir_disp);
+            this.groupBox1.Controls.Add(this.tb_dir_disp);
+            this.groupBox1.Controls.Add(this.but_home_las);
+            this.groupBox1.Controls.Add(this.but_div_disp);
+            this.groupBox1.Controls.Add(this.tb_div_disp);
             this.groupBox1.Controls.Add(this.but_las_enc);
             this.groupBox1.Controls.Add(this.label20);
             this.groupBox1.Controls.Add(this.butset_kvp);
@@ -2356,12 +2376,58 @@ namespace opengl3
             this.groupBox1.Controls.Add(this.comboBox_portsArd);
             this.groupBox1.Controls.Add(this.but_find_ports);
             this.groupBox1.Controls.Add(this.textBox_powerLaser);
-            this.groupBox1.Location = new System.Drawing.Point(1472, 529);
+            this.groupBox1.Location = new System.Drawing.Point(1222, 529);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(404, 468);
+            this.groupBox1.Size = new System.Drawing.Size(654, 468);
             this.groupBox1.TabIndex = 121;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Scaner Manual Control";
+            // 
+            // but_dir_disp
+            // 
+            this.but_dir_disp.Location = new System.Drawing.Point(451, 147);
+            this.but_dir_disp.Name = "but_dir_disp";
+            this.but_dir_disp.Size = new System.Drawing.Size(110, 55);
+            this.but_dir_disp.TabIndex = 138;
+            this.but_dir_disp.Text = "Установить направ.";
+            this.but_dir_disp.UseVisualStyleBackColor = true;
+            this.but_dir_disp.Click += new System.EventHandler(this.but_dir_disp_Click);
+            // 
+            // tb_dir_disp
+            // 
+            this.tb_dir_disp.Location = new System.Drawing.Point(562, 161);
+            this.tb_dir_disp.Name = "tb_dir_disp";
+            this.tb_dir_disp.Size = new System.Drawing.Size(71, 26);
+            this.tb_dir_disp.TabIndex = 137;
+            this.tb_dir_disp.Text = "0";
+            // 
+            // but_home_las
+            // 
+            this.but_home_las.Location = new System.Drawing.Point(401, 32);
+            this.but_home_las.Name = "but_home_las";
+            this.but_home_las.Size = new System.Drawing.Size(110, 46);
+            this.but_home_las.TabIndex = 136;
+            this.but_home_las.Text = "Ноль";
+            this.but_home_las.UseVisualStyleBackColor = true;
+            this.but_home_las.Click += new System.EventHandler(this.but_home_las_Click);
+            // 
+            // but_div_disp
+            // 
+            this.but_div_disp.Location = new System.Drawing.Point(451, 87);
+            this.but_div_disp.Name = "but_div_disp";
+            this.but_div_disp.Size = new System.Drawing.Size(110, 55);
+            this.but_div_disp.TabIndex = 135;
+            this.but_div_disp.Text = "Установить скорость";
+            this.but_div_disp.UseVisualStyleBackColor = true;
+            this.but_div_disp.Click += new System.EventHandler(this.but_div_disp_Click);
+            // 
+            // tb_div_disp
+            // 
+            this.tb_div_disp.Location = new System.Drawing.Point(562, 101);
+            this.tb_div_disp.Name = "tb_div_disp";
+            this.tb_div_disp.Size = new System.Drawing.Size(71, 26);
+            this.tb_div_disp.TabIndex = 134;
+            this.tb_div_disp.Text = "0";
             // 
             // but_las_enc
             // 
@@ -2644,7 +2710,7 @@ namespace opengl3
             // 
             // textNimVid
             // 
-            this.textNimVid.Location = new System.Drawing.Point(1500, 6);
+            this.textNimVid.Location = new System.Drawing.Point(1619, 0);
             this.textNimVid.Name = "textNimVid";
             this.textNimVid.Size = new System.Drawing.Size(45, 26);
             this.textNimVid.TabIndex = 40;
@@ -2805,7 +2871,7 @@ namespace opengl3
             // 
             // imBox_base_2
             // 
-            this.imBox_base_2.Location = new System.Drawing.Point(978, 607);
+            this.imBox_base_2.Location = new System.Drawing.Point(604, 607);
             this.imBox_base_2.Name = "imBox_base_2";
             this.imBox_base_2.Size = new System.Drawing.Size(480, 360);
             this.imBox_base_2.TabIndex = 118;
@@ -2813,7 +2879,7 @@ namespace opengl3
             // 
             // imBox_base_1
             // 
-            this.imBox_base_1.Location = new System.Drawing.Point(492, 607);
+            this.imBox_base_1.Location = new System.Drawing.Point(118, 607);
             this.imBox_base_1.Name = "imBox_base_1";
             this.imBox_base_1.Size = new System.Drawing.Size(480, 360);
             this.imBox_base_1.TabIndex = 117;
@@ -3390,13 +3456,13 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // tb_port_tcp
+            // combo_robot_ch
             // 
-            this.tb_port_tcp.Location = new System.Drawing.Point(1296, 9);
-            this.tb_port_tcp.Name = "tb_port_tcp";
-            this.tb_port_tcp.Size = new System.Drawing.Size(100, 26);
-            this.tb_port_tcp.TabIndex = 136;
-            this.tb_port_tcp.Text = "30006";
+            this.combo_robot_ch.FormattingEnabled = true;
+            this.combo_robot_ch.Location = new System.Drawing.Point(1407, 7);
+            this.combo_robot_ch.Name = "combo_robot_ch";
+            this.combo_robot_ch.Size = new System.Drawing.Size(121, 28);
+            this.combo_robot_ch.TabIndex = 137;
             // 
             // MainScanningForm
             // 
@@ -3773,6 +3839,12 @@ namespace opengl3
         private System.Windows.Forms.Button but_remesh_test;
         private System.Windows.Forms.Label lab_fps_cam1;
         private System.Windows.Forms.TextBox tb_port_tcp;
+        private System.Windows.Forms.Button but_dir_disp;
+        private System.Windows.Forms.TextBox tb_dir_disp;
+        private System.Windows.Forms.Button but_home_las;
+        private System.Windows.Forms.Button but_div_disp;
+        private System.Windows.Forms.TextBox tb_div_disp;
+        private System.Windows.Forms.ComboBox combo_robot_ch;
     }
 }
 
