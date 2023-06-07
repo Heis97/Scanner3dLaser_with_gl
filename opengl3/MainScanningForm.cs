@@ -1512,8 +1512,8 @@ namespace opengl3
 
             if (fr.stereo)
             {
-                var mat1 = fr.im_sec;
-                var mat2 = fr.im;
+                var mat1 = fr.im;
+                var mat2 = fr.im_sec;
                // CvInvoke.Rotate(mat2, mat2, RotateFlags.Rotate180);
                 if (fr.frameType == FrameType.MarkBoard)
                 {

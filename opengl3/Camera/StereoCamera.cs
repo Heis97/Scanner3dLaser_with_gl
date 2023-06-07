@@ -147,7 +147,9 @@ namespace opengl3
                 cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, pattern_size, 10f);
                 var Bsm = cameraCVs[0].matrixCS.Clone();
                 var Bbf = new RobotFrame(pos[i].name).getMatrix();
-                var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix();
+                //var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix();
+
+                var Bbm = new RobotFrame("-218.37 -239.51 -33.85 -1.5658 -0.014 -0.0058").getMatrix();
                 /*prin.t("Bsm");
                 prin.t(Bsm);
                 prin.t("Bbf");
@@ -160,7 +162,7 @@ namespace opengl3
                 CvInvoke.Invert(Bsm,Bsm_1,DecompMethod.LU);
                 CvInvoke.Invert(Bbf, Bbf_1, DecompMethod.LU);
                 CvInvoke.Invert(Bbm, Bbm_1, DecompMethod.LU);
-                var Bfs = Bbf_1 * Bbm * Bsm;
+                var Bfs = Bbf_1 * Bbm_1 * Bsm;
                 Bfs_l.Add(Bfs);
                 Console.WriteLine(Bfs[0, 3] + " " + Bfs[1, 3] + " " + Bfs[2, 3] + " " + Bfs[0, 0] + " " + Bfs[0, 1] + " " + Bfs[0, 2]);
                 /*
