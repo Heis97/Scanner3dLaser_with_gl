@@ -2012,7 +2012,7 @@ namespace opengl3
             string iiwa = "172.31.1.147";
             string pulse = "localhost";
             port_tcp = Convert.ToInt32(tb_port_tcp.Text);
-            con1.Connection(port_tcp,iiwa );
+            con1.Connection(port_tcp,pulse );
         }
         private void but_res_pos1_Click(object sender, EventArgs e)
         {
