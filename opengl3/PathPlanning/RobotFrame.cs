@@ -28,7 +28,7 @@ namespace opengl3
             this.robotType = robotType;
         }
 
-        public RobotFrame(string coords)
+        public RobotFrame(string coords, RobotType robotType = RobotType.PULSE)
         {
             var coords_s = coords.Split(' ');
             if (coords_s.Length < 6)
@@ -41,12 +41,12 @@ namespace opengl3
             C = Convert.ToDouble(coords_s[5]);
             V = 0;
             D = 0;
-            this.robotType = RobotType.PULSE;
+            this.robotType = robotType;
         }
 
-        public Matrix<double>  getMatrix()
+        public Matrix<double>  getMatrix(RobotType robotType = RobotType.PULSE)
         {
-            return ABCmatr(X, Y, Z, A, B, C);
+            return ABCmatr(X, Y, Z, A, B, C, robotType);
         }
 
         public RobotFrame(Matrix<double> m, double v, RobotType type = RobotType.KUKA)
@@ -230,10 +230,21 @@ namespace opengl3
                 { 0, 0, 0, 1 } });
             return matrix;
         }
-        static public Matrix<double> ABCmatr(double X, double Y, double Z, double A, double B, double C)
+        static public Matrix<double> ABCmatr(double X, double Y, double Z, double A, double B, double C,RobotType robotType)
         {
-            var matrix = Translmatr(X, Y, Z)* RotZmatr(A) * RotYmatr(B) * RotXmatr(C);
-            return matrix;
+            if (robotType == RobotType.KUKA)
+            {
+                var matrix = Translmatr(X, Y, Z) * RotZmatr(A) * RotYmatr(B) * RotXmatr(C);
+                return matrix;
+            }
+            else 
+            {
+                var matrix =  RotXmatr(A) * RotYmatr(B) * RotZmatr(C);
+                matrix[0, 3] = X;
+                matrix[1, 3] = Y;
+                matrix[2, 3] = Z;
+                return matrix;
+            }
         }
 
         static public double cos(double alpha)

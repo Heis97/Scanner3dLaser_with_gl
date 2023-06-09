@@ -4157,7 +4157,9 @@ namespace opengl3
             var cam2 = CameraCV.load_camera(cam2_conf_path);
             var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
             stereocam_scan = stereo;
-            var frms_stereo1 = FrameLoader.loadImages_stereoCV(@"cam1\photo_1811_2", @"cam2\photo_1811_2", FrameType.Pattern, false);
+            var stereo_cal_1 = textB_stereo_cal_path.Text.Split('\\').Reverse().ToArray()[0];
+            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
+            var frms_stereo1 = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
             comboImages.Items.AddRange(frms_stereo1);
 
             stereo.calibrateBfs(frms_stereo1,chess_size);

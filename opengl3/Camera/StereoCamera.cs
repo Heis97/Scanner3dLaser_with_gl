@@ -106,6 +106,7 @@ namespace opengl3
             {
                 var p_rob = new List<Point3d_GL>();
                 var p_cam = new List<Point3d_GL>();
+                Console.WriteLine("calibrate_stereo_rob");
                 for (int i = 0; i < frames.Length; i++)
                 {
                     var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, pattern_size, 10f);
@@ -124,7 +125,7 @@ namespace opengl3
                         p_rob.Add(p1);
                         p_cam.Add(p2);
                         
-                        Console.Write(i + " " + r1[0, 3] + " " + r1[1, 3] + " " + r1[2, 3]+" ");// + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");
+                        //Console.WriteLine(i + " " + r1[0, 3] + " " + r1[1, 3] + " " + r1[2, 3]+" ");// + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");
                         Console.WriteLine(R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");// + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
                         GC.Collect();
                     }
@@ -142,14 +143,18 @@ namespace opengl3
         public Matrix<double> calibrateBfs(Frame[] pos,System.Drawing.Size pattern_size, string file_name = "bfs_cal.txt")
         {
             var Bfs_l = new List<Matrix<double>>();
-            for(int i=0; i<pos.Length; i++)
+            RobotFrame.RobotType robotType = RobotFrame.RobotType.PULSE;
+            for (int i=0; i<pos.Length; i++)
             {
                 cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, pattern_size, 10f);
                 var Bsm = cameraCVs[0].matrixCS.Clone();
-                var Bbf = new RobotFrame(pos[i].name).getMatrix();
-                //var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix();
+                var Bbf = new RobotFrame(pos[i].name).getMatrix(robotType);
 
-                var Bbm = new RobotFrame("-218.37 -239.51 -33.85 -1.5658 -0.014 -0.0058").getMatrix();
+                //prin.t(pos[i].name);
+                //prin.t(Bbf);
+                //var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix(robotType);
+
+                var Bbm = new RobotFrame("-218.37 -239.51 -33.85 -0.014 -0.0058 -1.5658").getMatrix(robotType);
                 /*prin.t("Bsm");
                 prin.t(Bsm);
                 prin.t("Bbf");
