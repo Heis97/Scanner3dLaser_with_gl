@@ -154,8 +154,11 @@ namespace opengl3
                // prin.t(Bbf);
                 //var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix(robotType);
 
-                var Bbm = new RobotFrame("-342.302 -151.944 216.247 3.130 0.003 -3.129").getMatrix(robotType);
-                /*prin.t("Bsm");
+                var Bbm = new RobotFrame("-342.302 -151.944 216.247 3.130 0.0026 -3.129").getMatrix(robotType);
+                //var Bbm = new RobotFrame("-218.37 -239.51 -33.85 -0.014 -0.0058 -1.5658").getMatrix(robotType);
+
+               /* prin.t("--------------------------------");
+                prin.t("Bsm");
                 prin.t(Bsm);
                 prin.t("Bbf");
                 prin.t(Bbf);
@@ -164,10 +167,12 @@ namespace opengl3
                 var Bsm_1 = Bsm.Clone();
                 var Bbf_1 = Bbf.Clone();
                 var Bbm_1 = Bbm.Clone();
-                CvInvoke.Invert(Bsm,Bsm_1,DecompMethod.LU);
+                CvInvoke.Invert(Bsm, Bsm_1, DecompMethod.LU);
                 CvInvoke.Invert(Bbf, Bbf_1, DecompMethod.LU);
                 CvInvoke.Invert(Bbm, Bbm_1, DecompMethod.LU);
+                if(robotType == RobotFrame.RobotType.KUKA) Bbm_1 = Bbm;                
                 var Bfs = Bbf_1 * Bbm_1 * Bsm;
+                //var Bfs = Bbf_1 * Bbm_1 * Bsm;
                 Bfs_l.Add(Bfs);
                 Console.WriteLine(Bfs[0, 3] + " " + Bfs[1, 3] + " " + Bfs[2, 3] + " " + Bfs[0, 0] + " " + Bfs[0, 1] + " " + Bfs[0, 2]);
                 /*
@@ -177,8 +182,9 @@ namespace opengl3
                     sw.WriteLine(Settings_loader.matrix_save(Bfs));
                 }
                 Console.WriteLine(Bfs[0, 3] + " " + Bfs[1, 3] + " " + Bfs[2, 3] + " " + Bfs[0, 0] + " " + Bfs[0, 1] + " " + Bfs[0, 2]);
-                //prin.t("--------------------------------");
+                
                 */
+               
             }
             var Bfs_med = new Matrix<double>(new double[4,4]);
             for(int i=0; i<Bfs_l.Count;i++)

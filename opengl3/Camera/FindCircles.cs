@@ -149,7 +149,7 @@ namespace opengl3
                 {
                     ps_ord.CopyTo(corn, 0);
                     
-                    //UtilOpenCV.drawTours(orig, PointF.toPoint(corn), 255, 0, 0, 2);
+                    
                 }
                 else
                 {
@@ -163,6 +163,7 @@ namespace opengl3
                 //Console.WriteLine(" corn______________________");
                 //Console.WriteLine(ps_ord.Length+" "+ corn.Length);
                 //prin.t(corn);
+                UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
                 UtilOpenCV.drawLines(im_tr, ps_ord, 0, 0, 255, 2);
                 return im_tr;
             }

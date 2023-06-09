@@ -3482,9 +3482,9 @@ namespace opengl3
             fr_st_vid.stereo = true;
             comboImages.Items.Add(fr_st_vid);
 
-            int buff_len = 10;
-            int buff_diff = 9;
             
+            int buff_diff = 9;
+            int buff_len = buff_diff+1;
             var all_frames = Math.Min(all_frames1, all_frames2);
             if (scanner != null)
             {
