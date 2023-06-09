@@ -2004,11 +2004,7 @@ namespace opengl3
         }
         private void rob_con_Click(object sender, EventArgs e)
         {
-            if (con1 == null)
-            {
-                con1 = new TCPclient();
-            }
-
+            con1 = new TCPclient();           
             string iiwa = "172.31.1.147";
             string pulse = "localhost";
             port_tcp = Convert.ToInt32(tb_port_tcp.Text);
