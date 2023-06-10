@@ -193,6 +193,7 @@ namespace opengl3
             this.trackX_light = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.combo_robot_ch = new System.Windows.Forms.ComboBox();
             this.tb_port_tcp = new System.Windows.Forms.TextBox();
             this.lab_fps_cam1 = new System.Windows.Forms.Label();
             this.tB_fps_scan = new System.Windows.Forms.TextBox();
@@ -323,7 +324,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.combo_robot_ch = new System.Windows.Forms.ComboBox();
+            this.but_del_obj3d = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -975,6 +976,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_del_obj3d);
             this.tabOpenGl.Controls.Add(this.but_remesh_test);
             this.tabOpenGl.Controls.Add(this.but_intersec_obj);
             this.tabOpenGl.Controls.Add(this.prop_grid_model);
@@ -2202,6 +2204,14 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // combo_robot_ch
+            // 
+            this.combo_robot_ch.FormattingEnabled = true;
+            this.combo_robot_ch.Location = new System.Drawing.Point(1407, 7);
+            this.combo_robot_ch.Name = "combo_robot_ch";
+            this.combo_robot_ch.Size = new System.Drawing.Size(121, 28);
+            this.combo_robot_ch.TabIndex = 137;
             // 
             // tb_port_tcp
             // 
@@ -3456,13 +3466,15 @@ namespace opengl3
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
             // 
-            // combo_robot_ch
+            // but_del_obj3d
             // 
-            this.combo_robot_ch.FormattingEnabled = true;
-            this.combo_robot_ch.Location = new System.Drawing.Point(1407, 7);
-            this.combo_robot_ch.Name = "combo_robot_ch";
-            this.combo_robot_ch.Size = new System.Drawing.Size(121, 28);
-            this.combo_robot_ch.TabIndex = 137;
+            this.but_del_obj3d.Location = new System.Drawing.Point(776, 922);
+            this.but_del_obj3d.Name = "but_del_obj3d";
+            this.but_del_obj3d.Size = new System.Drawing.Size(132, 24);
+            this.but_del_obj3d.TabIndex = 153;
+            this.but_del_obj3d.Text = "Удалить объект";
+            this.but_del_obj3d.UseVisualStyleBackColor = true;
+            this.but_del_obj3d.Click += new System.EventHandler(this.but_del_obj3d_Click);
             // 
             // MainScanningForm
             // 
@@ -3845,6 +3857,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_div_disp;
         private System.Windows.Forms.TextBox tb_div_disp;
         private System.Windows.Forms.ComboBox combo_robot_ch;
+        private System.Windows.Forms.Button but_del_obj3d;
     }
 }
 

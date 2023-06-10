@@ -426,8 +426,8 @@ namespace opengl3
                     if (x >= 0 && x < image.Width && y >= 0 && y < image.Height)
                     {
                         var color = image[y, x];
-                        //points3d[i].color = new Color3d_GL((float)color.Red / 255, (float)color.Green / 255, (float)color.Blue / 255);
-                        points3d[i].color = new Color3d_GL(x, y, (float)color.Blue / 255);
+                        points3d[i].color = new Color3d_GL((float)color.Red / 255, (float)color.Green / 255, (float)color.Blue / 255);
+                        //points3d[i].color = new Color3d_GL(x, y, (float)color.Blue / 255);
                     }                   
                 }               
             } 

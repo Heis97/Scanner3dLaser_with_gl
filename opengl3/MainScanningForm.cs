@@ -4205,6 +4205,15 @@ namespace opengl3
             scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles,Path.GetFileNameWithoutExtension(stl_name));
         }
 
+        private void but_del_obj3d_Click(object sender, EventArgs e)
+        {
+
+            GL1.buffersGl.removeObj(tree_models.SelectedNode.Text);
+            int i_n = GL1.node_obj_in_tree(tree_models.SelectedNode.Text);
+            if (i_n >= 0) tree_models.Nodes.Remove(tree_models.Nodes[i_n]);
+
+        }
+
 
         #endregion
 
@@ -4371,6 +4380,8 @@ namespace opengl3
         {
             laserLine?.set_dir_disp(Convert.ToInt32(tb_dir_disp.Text));
         }
+
+        
     }
 }
 

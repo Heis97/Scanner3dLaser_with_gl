@@ -241,6 +241,7 @@ namespace opengl3
                 if(!check_obj_in_tree(name.Value.name))
                 {
                     tree_mod.Nodes.Add(name.Value.name);
+                    
                 }
             }
         }
@@ -253,7 +254,14 @@ namespace opengl3
                     check = true;
             return check;
         }
-        
+        public int node_obj_in_tree(string obj)
+        {
+            for (int i = 0; i < tree_mod.Nodes.Count; i++)
+                if (tree_mod.Nodes[i].Text == obj)
+                    return i;
+
+            return -1;
+        }
         void draw_cont()
         {
 

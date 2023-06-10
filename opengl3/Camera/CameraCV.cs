@@ -431,8 +431,7 @@ namespace opengl3
                     var points2d = UtilOpenCV.takeGabObp(corn2, size_patt);
                     var points3d = UtilOpenCV.takeGabObp(obp, size_patt);
                     compPos(points3d, points2d);
-                   /* UtilOpenCV.drawPoints(mat1, points2d, points3d, 255, 0, 255, 2);
-                    CvInvoke.Imshow("pos", mat1);*/
+                    
                     return true;
 
                 }
@@ -453,12 +452,20 @@ namespace opengl3
                 var x = markSize * (size_patt.Width - 1);
                 var y = markSize * (size_patt.Height - 1);
 
-                var points3d = new MCvPoint3D32f[]
+               /* var points3d = new MCvPoint3D32f[]
                 {
                     new MCvPoint3D32f(0,0,0),
                     new MCvPoint3D32f(x,0,0),
                     new MCvPoint3D32f(0,y,0),
                     new MCvPoint3D32f(x,y,0)
+                };*/
+
+                var points3d = new MCvPoint3D32f[]
+                {
+                    new MCvPoint3D32f(x,y,0),
+                    new MCvPoint3D32f(0,y,0),
+                    new MCvPoint3D32f(x,0,0),
+                    new MCvPoint3D32f(0,0,0)
                 };
 
                 var len = size_patt.Width * size_patt.Height;
@@ -474,6 +481,9 @@ namespace opengl3
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
 
                 compPos(points3d, points2d);
+               /* UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 2);
+                CvInvoke.Imshow("pos", matDraw);
+                CvInvoke.WaitKey();*/
                 mat = null;
                 matDraw = null;
 
