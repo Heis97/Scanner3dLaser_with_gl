@@ -404,7 +404,7 @@ namespace PathPlanning
             {
                 traj_rob.Add(new RobotFrame(traj[i], v,type_robot));
             }
-            traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
+            traj_rob = RobotFrame.smooth_angle(traj_rob, 20);
 
             return RobotFrame.generate_string(traj_rob.ToArray());
         }
