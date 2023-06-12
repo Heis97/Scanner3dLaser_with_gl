@@ -3531,7 +3531,7 @@ namespace opengl3
 
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
 
-                       /* var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                        /*var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                         frame_d.stereo = true;
                         frames_show.Add(frame_d);*/
                         //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
