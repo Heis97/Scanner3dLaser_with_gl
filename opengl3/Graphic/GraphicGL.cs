@@ -1721,6 +1721,26 @@ namespace opengl3
             var oz = cam.matrixCS * new Point3d_GL( 0, 0, frame_len);
             addFrame(posit, ox, oy, oz);
         }
+        public void addFrame(Matrix<double> matrix, int frame_len = 15)
+        {
+            var posit = matrix * new Point3d_GL(0, 0, 0);
+            var ox = matrix * new Point3d_GL(frame_len, 0, 0);
+            var oy = matrix * new Point3d_GL(0, frame_len, 0);
+            var oz = matrix * new Point3d_GL(0, 0, frame_len);
+            addFrame(posit, ox, oy, oz);
+        }
+        public void addNormals(Polygon3d_GL[] pols,double len)
+        {
+            var ps = new List<Point3d_GL>();
+            for (int i = 0; i < pols.Length; i++)
+            {
+                var p1 = pols[i].ps[0];
+                var p2 = p1 + pols[i].v3 * len;
+                ps.Add(p1); ps.Add(p2);
+            }
+            addLineMesh(ps.ToArray());
+        }
+
         public void addCamArea(CameraCV cam, double len, bool paint = true)
         {
             var p0 = cam.matrixCS * new Point3d_GL(0, 0, 0);

@@ -449,7 +449,7 @@ namespace opengl3
                 var b = koef[1];
                 var j_max_2 = (-b / (2 * a));
                 //var j_max_2 = j_max;
-                if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
+                if (j_max_2 > 30 && j_max_2 < data.GetLength(0))
                 {
                     if (data[(int)j_max_2, i] > 5)
                     {
@@ -461,6 +461,7 @@ namespace opengl3
 
                 if(!p_add)
                 {
+                    
                     ps_list.Add(PointF.notExistP());                     
                 }
 
@@ -470,12 +471,16 @@ namespace opengl3
             if (add_count < 5) return null;
             var ps = ps_list.ToArray();
             if(!orig)
-            {
-                
+            {                
                 ps = medianFilter_real(ps, 10);
-                ps = connectPoints(ps);
+                //ps = connectPoints(ps);
             }
-           
+            
+            for(int i = 0; i < ps.Length; i++)
+            {
+               // if(!ps[i].exist)
+                    //Console.WriteLine(i);
+            }
 
             GC.Collect();
             /*CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255));
@@ -933,6 +938,7 @@ namespace opengl3
                 arr = (from p in arr
                       orderby p.Y
                       select p).ToList();
+
                 ps_m[i] = arr[arr.Count/2];
             }
             return ps_m;

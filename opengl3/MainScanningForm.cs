@@ -675,7 +675,7 @@ namespace opengl3
             scanner = loadVideo_stereo(scan_path_1, scanner, strip);
 
             mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
-
+            GL1.addNormals(mesh, 10);
 
 
             var scan_stl = Polygon3d_GL.toMesh(mesh);
@@ -3499,8 +3499,8 @@ namespace opengl3
             var im1_buff_list = new List<Mat>();
             var im2_buff_list = new List<Mat>();
 
-            while (videoframe_count < all_frames)
-              //while (videoframe_count < all_frames/2)
+            while (videoframe_count < 80)
+            //while (videoframe_count < all_frames)
             {
                 Mat im1 = new Mat();
                 Mat im2 = new Mat();
@@ -3531,9 +3531,9 @@ namespace opengl3
 
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
 
-                        /*var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                        var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                         frame_d.stereo = true;
-                        frames_show.Add(frame_d);*/
+                        frames_show.Add(frame_d);
                         //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
                         /*var ps1 = Detection.detectLineDiff(im1, 7);
                         var ps2 = Detection.detectLineDiff(im2, 7);
@@ -3850,15 +3850,14 @@ namespace opengl3
             {
                 List<List<Point3d_GL>> conts = new List<List<Point3d_GL>>();
                 for (int i = 0; i < param_tr.layers; i++)
-                {
                     conts.Add(cont);
-                }
+                
                 var _traj = PathPlanner.Generate_multiLayer3d_mesh(mesh, conts, param_tr);
 
                 rob_traj = PathPlanner.join_traj(_traj);
                 var ps = PathPlanner.traj_to_matr(rob_traj);
                 if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
-
+                for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i]);
                 traj_i = GL1.addLineMeshTraj(ps.ToArray(),new Color3d_GL(0.9f),"gen_traj");
                 var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType);
                 return traj_rob;
