@@ -331,16 +331,36 @@ namespace PathPlanning
         }
 
 
+        static Vector3d_GL comp_vecx(Vector3d_GL vec_x_dir, Vector3d_GL n)
+        {
+            var y = (n | vec_x_dir).normalize();
+            var x = (y | n).normalize();
+            return x;
+        }
+        static Vector3d_GL comp_vecz(Vector3d_GL vec_x, Vector3d_GL normal)
+        {
+            var y = (normal | vec_x).normalize();
+            var n = (vec_x | y).normalize();
+            return n;
+        }
+
+
         static Matrix<double> proj_point(Polygon3d_GL polyg, Point3d_GL point,Vector3d_GL vec_x_dir)
         {
-            
-            var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
-            //Console.WriteLine(vec_y);
-            var vec_x = (vec_y | polyg.flat3D.n).normalize();
-            //Console.WriteLine(vec_x);
-            var vec_z = polyg.flat3D.n;
-            //Console.WriteLine(vec_z);
-            //Console.WriteLine("_________________");
+
+            /* var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
+             //Console.WriteLine(vec_y);
+             var vec_x = (vec_y | polyg.flat3D.n).normalize();
+             //Console.WriteLine(vec_x);
+             var vec_z = polyg.flat3D.n;
+             //Console.WriteLine(vec_z);
+             //Console.WriteLine("_________________");
+             */
+            var n = polyg.flat3D.n;
+            var vec_x = comp_vecx(vec_x_dir,n);
+            var vec_z = comp_vecz(vec_x,n);
+            var vec_y = (vec_z | vec_x).normalize();
+
             var p_proj = polyg.project_point_xy(point);
             
             //var p_proj = polyg.ps[0];
@@ -352,11 +372,35 @@ namespace PathPlanning
                    { 0,0,0,1}
             });
         }
+
+        public static Matrix<double> proj_point_test(Polygon3d_GL polyg, Vector3d_GL vec_x_dir)
+        {
+
+            var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
+            //Console.WriteLine(vec_y);
+            var vec_x = (vec_y | polyg.flat3D.n).normalize();
+            //Console.WriteLine(vec_x);
+            var vec_z = polyg.flat3D.n;
+            //Console.WriteLine(vec_z);
+            //Console.WriteLine("_________________");
+            //var p_proj = polyg.project_point_xy(point);
+            var p_proj = new Point3d_GL(10, 10, 0);
+            //var p_proj = polyg.ps[0];
+            return new Matrix<double>(new double[,]
+            {
+                { vec_x.x,vec_x.y,vec_x.z,p_proj.x},
+                { vec_y.x,vec_y.y,vec_y.z,p_proj.y},
+                { vec_z.x,vec_z.y,vec_z.z,p_proj.z},
+                { 0      ,      0,      0,       1}
+            });
+        }
+
         static List<Matrix<double>> project_layer(Polygon3d_GL[] surface, List<Point3d_GL> layer, RasterMap map_xy, Vector3d_GL vec_x_dir)
         {
             var layer_3d = new List<Matrix<double>>();
             for (int i = 0; i < layer.Count; i++)
             {
+               // if(i>0) vec_x_dir = layer[i] - 
                 var polyg_ind = map_xy.get_polyg_ind_prec_xy(layer[i], surface);
                 var polyg = surface[polyg_ind];
                 layer_3d.Add(proj_point(polyg, layer[i],vec_x_dir));
@@ -404,7 +448,7 @@ namespace PathPlanning
             {
                 traj_rob.Add(new RobotFrame(traj[i], v,type_robot));
             }
-            traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
+            //traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
 
             return RobotFrame.generate_string(traj_rob.ToArray());
         }

@@ -369,8 +369,10 @@ namespace opengl3
             var ps_list = new List<PointF>();
 
             CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
+            //var mats = mat.Split();
+            //mat = mats[0];
             CvInvoke.GaussianBlur(mat, mat, new Size(5, 5), -1);
-           // CvInvoke.Imshow("detect_dif",mat);
+            //CvInvoke.Imshow("detect_dif",mat);
             var data = (byte[,])mat.GetData();
             var ps_arr_j = new PointF[data.GetLength(0)];
             for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();

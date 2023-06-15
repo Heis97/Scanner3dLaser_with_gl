@@ -338,12 +338,12 @@ namespace opengl3
             }
             else
             {
-                return Point3d_GL.notExistP();
+                return notExistP();
             }
 
             if (matrixA.GetLength(1) != matrixB.GetLength(0))
             {
-                return Point3d_GL.notExistP();
+                return notExistP();
             }
             var matrixC = new double[matrixA.GetLength(0), matrixB.GetLength(1)];
             for (var i = 0; i < matrixA.GetLength(0); i++)
@@ -400,7 +400,24 @@ namespace opengl3
             var matrix = Matrix4x4ToDouble(matrixA);
             return matrix * p;
         }
-
+        public static Point3d_GL operator *(Point3d_GL p, Matrix<double> m)
+        {
+            return matrix_to_p(p.p_to_matrix() * m);
+        }
+        public Matrix<double> p_to_matrix()
+        {
+            return new Matrix<double>(new double[,]
+            {
+                { 1,0,0,x},
+                { 0,1,0,y},
+                { 0,0,1,z},
+                { 0,0,0,1}
+            });
+        }
+        public static Point3d_GL matrix_to_p(Matrix<double> m)
+        {
+            return new Point3d_GL(m[0,3], m[1,3], m[2,3]);
+        }
         public static Point3d_GL operator +(Point3d_GL p, Vector3d_GL v1)
         {
             return new Point3d_GL(p.x + v1.x, p.y + v1.y, p.z + v1.z,p.color);

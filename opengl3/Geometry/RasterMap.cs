@@ -383,10 +383,11 @@ namespace opengl3
 
         public static Polygon3d_GL[] smooth_mesh(Polygon3d_GL[] surface, double rad)
         {
+            if (rad < 0) return surface;
             var mesh_ind = new IndexedMesh(surface);
-            Console.WriteLine(mesh_ind.ps_uniq[0]);
+            //Console.WriteLine(mesh_ind.ps_uniq[0]);
             mesh_ind.ps_uniq = smooth_points(mesh_ind.ps_uniq, rad);
-            Console.WriteLine(mesh_ind.ps_uniq[0]);
+            //Console.WriteLine(mesh_ind.ps_uniq[0]);
             var polygs = mesh_ind.get_polygs(); 
             return polygs;
         }

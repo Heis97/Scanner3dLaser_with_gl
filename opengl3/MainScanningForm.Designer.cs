@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_del_obj3d = new System.Windows.Forms.Button();
             this.but_remesh_test = new System.Windows.Forms.Button();
             this.but_intersec_obj = new System.Windows.Forms.Button();
             this.prop_grid_model = new System.Windows.Forms.PropertyGrid();
@@ -324,7 +325,6 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_del_obj3d = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1088,13 +1088,23 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // but_del_obj3d
+            // 
+            this.but_del_obj3d.Location = new System.Drawing.Point(776, 922);
+            this.but_del_obj3d.Name = "but_del_obj3d";
+            this.but_del_obj3d.Size = new System.Drawing.Size(132, 24);
+            this.but_del_obj3d.TabIndex = 153;
+            this.but_del_obj3d.Text = "Удалить объект";
+            this.but_del_obj3d.UseVisualStyleBackColor = true;
+            this.but_del_obj3d.Click += new System.EventHandler(this.but_del_obj3d_Click);
+            // 
             // but_remesh_test
             // 
             this.but_remesh_test.Location = new System.Drawing.Point(662, 820);
             this.but_remesh_test.Name = "but_remesh_test";
             this.but_remesh_test.Size = new System.Drawing.Size(96, 34);
             this.but_remesh_test.TabIndex = 152;
-            this.but_remesh_test.Text = "Ремеш";
+            this.but_remesh_test.Text = "Сгладить";
             this.but_remesh_test.UseVisualStyleBackColor = true;
             this.but_remesh_test.Click += new System.EventHandler(this.but_remesh_test_Click);
             // 
@@ -3465,16 +3475,6 @@ namespace opengl3
             // graphicGLBindingSource
             // 
             this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
-            // 
-            // but_del_obj3d
-            // 
-            this.but_del_obj3d.Location = new System.Drawing.Point(776, 922);
-            this.but_del_obj3d.Name = "but_del_obj3d";
-            this.but_del_obj3d.Size = new System.Drawing.Size(132, 24);
-            this.but_del_obj3d.TabIndex = 153;
-            this.but_del_obj3d.Text = "Удалить объект";
-            this.but_del_obj3d.UseVisualStyleBackColor = true;
-            this.but_del_obj3d.Click += new System.EventHandler(this.but_del_obj3d_Click);
             // 
             // MainScanningForm
             // 

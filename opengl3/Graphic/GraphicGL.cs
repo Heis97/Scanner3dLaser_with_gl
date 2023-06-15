@@ -1721,24 +1721,41 @@ namespace opengl3
             var oz = cam.matrixCS * new Point3d_GL( 0, 0, frame_len);
             addFrame(posit, ox, oy, oz);
         }
-        public void addFrame(Matrix<double> matrix, int frame_len = 15)
+
+        public void addFrame(Matrix<double> m, int frame_len = 15)
         {
-            var posit = matrix * new Point3d_GL(0, 0, 0);
-            var ox = matrix * new Point3d_GL(frame_len, 0, 0);
-            var oy = matrix * new Point3d_GL(0, frame_len, 0);
-            var oz = matrix * new Point3d_GL(0, 0, frame_len);
+            var posit = m * new Point3d_GL(0, 0, 0);
+            /*var ox = matrix * new Point3d_GL(frame_len, 0, 0);
+             var oy = matrix * new Point3d_GL(0, frame_len, 0);
+             var oz = matrix * new Point3d_GL(0, 0, frame_len);*/
+
+            var ox = new Point3d_GL(m[0, 0] * frame_len, m[0, 1] * frame_len, m[0, 2] * frame_len);
+            var oy = new Point3d_GL(m[1, 0] * frame_len, m[1, 1] * frame_len, m[1, 2] * frame_len);
+            var oz = new Point3d_GL(m[2, 0] * frame_len, m[2, 1] * frame_len, m[2, 2] * frame_len);
+            ox += posit;
+            oy += posit;
+            oz += posit;
             addFrame(posit, ox, oy, oz);
         }
-        public void addNormals(Polygon3d_GL[] pols,double len)
+
+        public Polygon3d_GL[] addNormals(Polygon3d_GL[] pols,double len)
         {
             var ps = new List<Point3d_GL>();
             for (int i = 0; i < pols.Length; i++)
             {
-                var p1 = pols[i].ps[0];
-                var p2 = p1 + pols[i].v3 * len;
-                ps.Add(p1); ps.Add(p2);
+                //if(pols[i].v3.z<0.5)
+                {
+                    var p1 = pols[i].ps[0];
+                    var p2 = p1 + pols[i].v3 * len;
+                    ps.Add(p1); ps.Add(p2);
+                    pols[i].ps[0].color = Color3d_GL.blue();
+                    pols[i].ps[1].color = Color3d_GL.blue();
+                    pols[i].ps[2].color = Color3d_GL.blue();
+                }
             }
-            addLineMesh(ps.ToArray());
+            //addLineMesh(ps.ToArray(), Color3d_GL.blue());
+            return pols;
+            //
         }
 
         public void addCamArea(CameraCV cam, double len, bool paint = true)
