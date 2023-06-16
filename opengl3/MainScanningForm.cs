@@ -674,11 +674,11 @@ namespace opengl3
 
 
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            scanner = loadVideo_stereo(scan_path_1, scanner, strip);
+            scanner = loadVideo_stereo_not_sync(scan_path_1, scanner, strip);
 
             var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
 
-            mesh = GL1.addNormals(mesh, 1);
+            //mesh = GL1.addNormals(mesh, 1);
 
 
             var scan_stl = Polygon3d_GL.toMesh(mesh);
@@ -1172,7 +1172,7 @@ namespace opengl3
             GL1.add_TreeView(tree_models);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-            var p1 = new Point3d_GL(0, 0, 20);
+           /* var p1 = new Point3d_GL(0, 0, 20);
             var p2 = new Point3d_GL(30, 0, 0);
             var p3 = new Point3d_GL(30, 30, 0);
             var p4 = new Point3d_GL(0, 30, 0);
@@ -1180,7 +1180,7 @@ namespace opengl3
             var m1 = PathPlanner.proj_point_test(polygs[0], new Vector3d_GL(1, 0, 0));
             var ps = new Point3d_GL[] { p1, p2, p3 };
             GL1.addFrame(m1);
-            GL1.addLineMesh(ps);
+            GL1.addLineMesh(ps);*/
             // startGenerate();
             //trB_SGBM_Enter();
             // test_cross_triag();
@@ -3510,18 +3510,18 @@ namespace opengl3
             var im1_buff_list = new List<Mat>();
             var im2_buff_list = new List<Mat>();
 
-            while (videoframe_count < 80)
-            //while (videoframe_count < all_frames)
+            //while (videoframe_count < 80)
+            while (videoframe_count < all_frames)
             {
                 Mat im1 = new Mat();
                 Mat im2 = new Mat();
                 
                 while (!capture1.Read(im1)) { }
                 while (!capture2.Read(im2)) { }
-                //Console.WriteLine("____________________");
-                if (scanner != null)
+               // Console.WriteLine(videoframe_count+"____________________");
+                
+                if (scanner != null && im1!= null && im2!=null)
                 {
-
                     var buffer_mat1 = im1.Clone();
                     var buffer_mat2 = im2.Clone();
                     if (videoframe_count % strip == 0 && videoframe_count> buff_len)
@@ -3534,17 +3534,17 @@ namespace opengl3
                          CvInvoke.Imshow("buffer_mat1", im1_buff_list[1]);
                          CvInvoke.Imshow("buffer_mat8", im1_buff_list[8]);
                        */
-
+                        
                         im1 -= im1_buff_list[buff_len - buff_diff];
                         im2 -= im2_buff_list[buff_len - buff_diff];
-                        //CvInvoke.Imshow("im1_dif", im1);
+                       // CvInvoke.Imshow("im1_dif", im1);
                        // CvInvoke.WaitKey();
-
+                        
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
 
-                        var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                       /* var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                         frame_d.stereo = true;
-                        frames_show.Add(frame_d);
+                        frames_show.Add(frame_d);*/
                         //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
                         /*var ps1 = Detection.detectLineDiff(im1, 7);
                         var ps2 = Detection.detectLineDiff(im2, 7);
@@ -3873,7 +3873,7 @@ namespace opengl3
 
                 if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
 
-                for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
+                //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
 
                 traj_i = GL1.addLineMeshTraj(ps.ToArray(),new Color3d_GL(0.9f),"gen_traj");
                 var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType);
@@ -3973,7 +3973,7 @@ namespace opengl3
             var selected_obj = selected_object(); if (selected_obj == null) return;
             var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
             var polyg_sm = RasterMap.smooth_mesh(polygs, Convert.ToDouble(tp_smooth_scan.Text));
-            polyg_sm = GL1.addNormals(polyg_sm, 0.5);
+            //polyg_sm = GL1.addNormals(polyg_sm, 0.5);
             var mesh = Polygon3d_GL.toMesh(polyg_sm);
             GL1.remove_buff_gl_id(selected_obj);
             GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, selected_obj);

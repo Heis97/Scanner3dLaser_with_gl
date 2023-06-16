@@ -372,8 +372,8 @@ namespace opengl3
             //var mats = mat.Split();
             //mat = mats[0];
             CvInvoke.GaussianBlur(mat, mat, new Size(7, 7), -1);
-            //CvInvoke.Imshow("detect_dif",mat);
-            //CvInvoke.WaitKey();
+           /* CvInvoke.Imshow("detect_dif",mat);
+            CvInvoke.WaitKey();*/
             var data = (byte[,])mat.GetData();
             var ps_arr_j = new PointF[data.GetLength(0)];
             for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();
@@ -486,7 +486,7 @@ namespace opengl3
             }
 
             GC.Collect();
-            /*CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255));
+           /* CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255));
             CvInvoke.WaitKey();*/
             if (rotate)
             {
