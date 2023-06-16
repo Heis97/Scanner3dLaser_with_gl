@@ -371,8 +371,9 @@ namespace opengl3
             CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
             //var mats = mat.Split();
             //mat = mats[0];
-            CvInvoke.GaussianBlur(mat, mat, new Size(5, 5), -1);
+            CvInvoke.GaussianBlur(mat, mat, new Size(7, 7), -1);
             //CvInvoke.Imshow("detect_dif",mat);
+            //CvInvoke.WaitKey();
             var data = (byte[,])mat.GetData();
             var ps_arr_j = new PointF[data.GetLength(0)];
             for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();
@@ -445,15 +446,15 @@ namespace opengl3
                 {
                     vals_regr.Add(new double[] { data[k1, i],k1 });
                 }*/
-
+                var threshold = 10;
                 var koef = Regression.regression(vals_regr.ToArray(), 2);
                 var a = koef[2];
                 var b = koef[1];
                 var j_max_2 = (-b / (2 * a));
                 //var j_max_2 = j_max;
-                if (j_max_2 > 30 && j_max_2 < data.GetLength(0))
+                if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
                 {
-                    if (data[(int)j_max_2, i] > 5)
+                    if (data[(int)j_max_2, i] > threshold)
                     {
                         ps_list.Add(new PointF(i, j_max_2));
                         p_add = true;
@@ -480,7 +481,7 @@ namespace opengl3
             
             for(int i = 0; i < ps.Length; i++)
             {
-               // if(!ps[i].exist)
+               //if(!ps[i].exist)
                     //Console.WriteLine(i);
             }
 
@@ -617,6 +618,7 @@ namespace opengl3
                 //ps_rot[i] = new PointF(size.Width - ps[i].Y,size.Height- ps[i].X);
                 ps_rot[i] = new PointF(size.Width - ps[i].Y,  ps[i].X);
                 //ps_rot[i] = new PointF( ps[i].Y, ps[i].X);
+                ps_rot[i].exist = ps[i].exist;
             }
             return ps_rot;
         }
@@ -628,6 +630,7 @@ namespace opengl3
             {
                // ps_rot[i] = new PointF( ps[i].Y,  ps[i].X);
                 ps_rot[i] = new PointF(ps[i].Y, size.Height - ps[i].X);
+                ps_rot[i].exist = ps[i].exist;
             }
             return ps_rot;
         }

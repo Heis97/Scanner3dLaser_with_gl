@@ -3670,7 +3670,7 @@ namespace opengl3
                         var im_max = im_max_buff_list[buff_len - 1] - im_max_buff_list[buff_len - buff_diff];
                         var im_max_prev = im_max_buff_list[buff_len - 1-1] - im_max_buff_list[buff_len - buff_diff-1];
 
-                        if(cam_min==2)
+                        if(cam_min == 2)
                         {
                             CvInvoke.Rotate(im_min, im_min, RotateFlags.Rotate180);
                         }

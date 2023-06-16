@@ -100,6 +100,7 @@ namespace opengl3
                 data[4 * i] = (float)ps[i].x;
                 data[4 * i + 1] = (float)ps[i].y;
                 data[4 * i + 2] = (float)ps[i].z;
+                if (ps[i].exist) data[4 * i + 3] = 1;
             }
             return data;
         }
@@ -357,7 +358,9 @@ namespace opengl3
                     }
                 }
             }
-            return new Point3d_GL(matrixC,p.color);
+            var pm = new Point3d_GL(matrixC, p.color);
+            pm.exist = p.exist;
+            return pm;
         }
         static double[,] Matrix4x4ToDouble(Matrix4x4f matrixA)
         {

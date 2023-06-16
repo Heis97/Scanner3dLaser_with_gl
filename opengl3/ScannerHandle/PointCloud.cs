@@ -159,6 +159,8 @@ namespace opengl3
             if (points_im1 != null && points_im2 != null)
                 if (points_im1.Length == points_im2.Length)
                 {
+                    //PointF.check_exist(points_im1);
+                   // Console.WriteLine("add_sync");
                     stereocamera.cameraCVs[cam_min - 1].scan_points.Add(points_im1);
                     stereocamera.cameraCVs[cam_max - 1].scan_points.Add(points_im2);
                     Console.WriteLine(points_im1.Length + " " + points_im2.Length);
@@ -292,9 +294,16 @@ namespace opengl3
 
         public static Point3d_GL[][] fromStereoLaser_gpu_all(PointF[][] points_im1, PointF[][] points_im2, StereoCamera stereocamera, GraphicGL graphicGL = null, Image<Bgr, byte>[] color_im = null)
         {
+            /*for(int i = 0; i < points_im1.Length; i++)
+            {
+                PointF.check_exist(points_im1[i]);
+                PointF.check_exist(points_im2[i]);
+                Console.WriteLine("comp_sync");
+            }*/
+           
             var points3d_1 = computePointsCam_2d(points_im1, stereocamera.cameraCVs[0], color_im[0]);
             var points3d_2 = computePointsCam_2d(points_im2, stereocamera.cameraCVs[1], color_im[1]);
-
+            
 
             var m1 = stereocamera.cameraCVs[0].matrixCS;
             if(stereocamera.scan_coord_sys == StereoCamera.mode.camera)
@@ -311,6 +320,7 @@ namespace opengl3
             var ps1 = comp_points_for_gpu_2d(points3d_1, m1);
             var ps2 = comp_points_for_gpu_2d(points3d_2, m2);
             Console.WriteLine("points prepared.");
+
             var points_cam2b = graphicGL.cross_flat_gpu_all(ps1, ps2);
 
             //Console.WriteLine(graphicGL.toStringBuf(Point3d_GL.toMesh(points_cam2b), 3, 0, "orig ps"));
@@ -419,7 +429,8 @@ namespace opengl3
             for (int i = 0; i < points3d.Length; i++)
             {
                 points3d[i] = cameraCV.point3DfromCam(points_im[i]);
-                if(image != null)
+                points3d[i].exist = points_im[i].exist;
+                if (image != null)
                 {
                     var y= (int)points_im[i].Y;
                     var x = (int)points_im[i].X;
@@ -427,6 +438,7 @@ namespace opengl3
                     {
                         var color = image[y, x];
                         points3d[i].color = new Color3d_GL((float)color.Red / 255, (float)color.Green / 255, (float)color.Blue / 255);
+                        
                         //points3d[i].color = new Color3d_GL(x, y, (float)color.Blue / 255);
                     }                   
                 }               

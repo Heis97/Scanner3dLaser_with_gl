@@ -399,7 +399,7 @@ namespace opengl3
             var GeometryShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Triangles.glsl" });
             var GeometryShaderTrianglesSliceGL = assembCode(new string[] { @"Graphic\Shaders\Geom\slice_shader_one.glsl" });
 
-            var CompShaderGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo_all_f.glsl" });
+            var CompShaderGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo_f.glsl" });
             programID_comp = createShaderCompute(CompShaderGL);
 
             var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one.glsl" });

@@ -77,6 +77,14 @@ namespace opengl3
             }
             return ret;
         }
+        public static void check_exist(PointF[] ps)
+        {
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if(!ps[i].exist) Console.WriteLine(ps[i].exist + " " + i);
+
+            }
+        }
         public static Point[] toPoint(System.Drawing.PointF[] ps)
         {
             if (ps == null)
