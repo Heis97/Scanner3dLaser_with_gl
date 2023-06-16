@@ -674,7 +674,8 @@ namespace opengl3
 
 
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            scanner = loadVideo_stereo_not_sync(scan_path_1, scanner, strip);
+            //scanner = loadVideo_stereo_not_sync(scan_path_1, scanner, strip);
+            scanner = loadVideo_stereo(scan_path_1, scanner, strip);
 
             var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
 
@@ -1558,10 +1559,23 @@ namespace opengl3
 
                 else if (fr.frameType == FrameType.LasDif)
                 {
-                    var ps1 = Detection.detectLineDiff(fr.im);
-                    var ps2 = Detection.detectLineDiff(fr.im_sec);
-                    imBox_base_1.Image = UtilOpenCV.drawPointsF(fr.im.Clone(), ps1, 0, 255, 0, 2);
-                    imBox_base_2.Image = UtilOpenCV.drawPointsF(fr.im_sec.Clone(), ps2, 0, 255, 0, 2);
+                    var fr_im_cl = scanner.stereoCamera.cameraCVs[0].undist(fr.im);
+                    var fr_im_sec_cl = scanner.stereoCamera.cameraCVs[1].undist(fr.im_sec);
+
+                    var ps1 = Detection.detectLineDiff(fr_im_cl);
+                    var ps2 = Detection.detectLineDiff(fr_im_sec_cl);
+                    var ps1_dr = PointF.toSystemPoint_d(ps1);
+                    var ps2_dr = PointF.toSystemPoint_d(ps2);
+
+                    
+                    //var fr_im_cl = fr.im.Clone();
+                    //var fr_im_sec_cl = fr.im_sec.Clone();
+                    CvInvoke.Line(fr_im_cl, ps1_dr[0], ps1_dr[ps1_dr.Length - 1], new MCvScalar(255, 0, 0));
+                    CvInvoke.Line(fr_im_sec_cl, ps2_dr[0], ps2_dr[ps2_dr.Length - 1], new MCvScalar(255, 0, 0));
+                    imBox_base_1.Image = UtilOpenCV.drawPoints(fr_im_cl, ps1_dr, 0, 255, 0, 2);
+                    imBox_base_2.Image = UtilOpenCV.drawPoints(fr_im_sec_cl, ps2_dr, 0, 255, 0, 2);
+                    
+                    
                 }
                     
 
@@ -3652,12 +3666,14 @@ namespace opengl3
             int f2 = 0;
             //f1 = 70;
             //while (f1 < frame_min-1)
-            while (f1 < frame_min - 1 )
+            //while (f1 < frame_min - 1 )
+            while (f1 < 200)
             {
                 im_min_buff_list = read_frame(captures[cam_min-1], im_min_buff_list, buff_len); f1++;
                 var f2_ind = (int)pairs[f1][0];
                 var k = pairs[f1][1];
-                while(f2!= f2_ind)
+                while(f2 <= f2_ind)
+                //while (f2 != f2_ind)
                 {
                     im_max_buff_list = read_frame(captures[cam_max - 1], im_max_buff_list, buff_len); f2++;
                 } 
@@ -3668,8 +3684,8 @@ namespace opengl3
                         var im_min = im_min_buff_list[buff_len - 1] - im_min_buff_list[buff_len - buff_diff];
 
                         var im_max = im_max_buff_list[buff_len - 1] - im_max_buff_list[buff_len - buff_diff];
-                        var im_max_prev = im_max_buff_list[buff_len - 1-1] - im_max_buff_list[buff_len - buff_diff-1];
-
+                        var im_max_prev = im_max_buff_list[buff_len - 1 - 1] - im_max_buff_list[buff_len - buff_diff-1];
+                        
                         if(cam_min == 2)
                         {
                             CvInvoke.Rotate(im_min, im_min, RotateFlags.Rotate180);
@@ -3683,11 +3699,11 @@ namespace opengl3
 
                         
                         //CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                         var frame_d = new Frame(im_min, im_max, videoframe_count.ToString(), FrameType.LasDif);
+                        /* var frame_d = new Frame(im_min, im_max, videoframe_count.ToString(), FrameType.LasDif);
                          frame_d.stereo = true;
-                         frames_show.Add(frame_d);
+                         frames_show.Add(frame_d);*/
 
-                        scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min,  im_max, im_max_prev }, k,cam_min, cam_max, false);
+                        scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min,  im_max, im_max_prev }, k,cam_min, cam_max, true);
                     }
                 }
                 videoframe_count++;
@@ -4020,6 +4036,7 @@ namespace opengl3
             double smooth = Convert.ToDouble(tp_smooth_scan.Text);
 
             var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
+            this.scanner = scanner;
             load_scan_v2(scanner,scan_path, strip,smooth);
 
         }

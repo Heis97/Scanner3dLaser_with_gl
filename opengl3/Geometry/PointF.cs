@@ -137,6 +137,19 @@ namespace opengl3
             }
             return ret;
         }
+        public static System.Drawing.Point[] toSystemPoint_d(PointF[] ps)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new System.Drawing.Point[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ret[i] = new System.Drawing.Point((int)ps[i].X, (int)ps[i].Y);
+            }
+            return ret;
+        }
         public static System.Drawing.PointF[] toSystemPoint(PointF[] ps)
         {
             if (ps == null)
@@ -244,7 +257,9 @@ namespace opengl3
             var ps_aver = new PointF[ps1.Length];
             for(int i=0; i<ps1.Length;i++)
             {
+                
                 ps_aver[i] = new PointF(ps1[i].X+(ps2[i].X - ps1[i].X) *k, ps1[i].Y);
+                if (!ps1[i].exist || !ps2[i].exist) ps_aver[i].exist = false;
             }
 
             return ps_aver;

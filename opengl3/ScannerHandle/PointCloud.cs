@@ -154,8 +154,14 @@ namespace opengl3
 
 
             var points_im2 = PointF.averX(points_im_max_prev, points_im_max, k);
-
-            points_im2 = points_im_max;
+            /*var m1 = mat[0].Clone();
+            var m2 = mat[1].Clone();
+            m1 = UtilOpenCV.drawPointsF(m1, points_im1, 0, 255, 0, 1);
+            m2 = UtilOpenCV.drawPointsF(m2, points_im2, 0, 255, 0, 1);
+            CvInvoke.Imshow("m1", m1);
+            CvInvoke.Imshow("m2", m2);
+            CvInvoke.WaitKey();*/
+            //points_im2 = points_im_max;
             if (points_im1 != null && points_im2 != null)
                 if (points_im1.Length == points_im2.Length)
                 {

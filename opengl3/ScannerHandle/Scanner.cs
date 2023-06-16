@@ -16,7 +16,7 @@ namespace opengl3
         LaserSurface laserSurface;
         public PointCloud pointCloud;
         CameraCV cameraCV;
-        StereoCamera stereoCamera;
+        public StereoCamera stereoCamera;
 
 
         public LinearAxis linearAxis;
@@ -53,6 +53,8 @@ namespace opengl3
             this.stereoCamera = stereoCamera;
 
         }
+
+
         public void initStereo(Mat[] mats, PatternType patternType,System.Drawing.Size pattern_size)
         {
             stereoCamera.calibrate(mats, patternType, pattern_size);

@@ -626,9 +626,9 @@ namespace opengl3
             return im;
         }
 
-        static public void drawPointsF(Mat im, System.Drawing.PointF[] points, int r, int g, int b, int size = 1, bool text = false)
+        static public Mat  drawPointsF(Mat im, System.Drawing.PointF[] points, int r, int g, int b, int size = 1, bool text = false)
         {
-            drawPoints(im, PointF.toPoint(points), r, g, b, size, text);
+            return drawPoints(im, PointF.toPoint(points), r, g, b, size, text);
         }
         static public Mat draw_point_data(Mat im, double[][] data, int r, int g, int b, int size = 1, bool text = false)
         {
