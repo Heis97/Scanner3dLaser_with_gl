@@ -77,7 +77,7 @@ namespace opengl3
         private float[] vertex_buffer_data = { 0.0f };
         private float[] normal_buffer_data = { 0.0f };
         private float[] color_buffer_data = { 0.0f };
-        volatile List<int> camera_ind = new List<int>();
+        volatile List<IntPtr> camera_ind = new List<IntPtr>();
         volatile List<long> camera_frame_time = new List<long>();
         List<float[]> im = new List<float[]>();
         public List<Mat> Ims;
@@ -2528,7 +2528,7 @@ namespace opengl3
             if (camera_ind != null)
             {
 
-                if ((camera_ind.Count > 0) && ((int)cap.Ptr == camera_ind[0]))
+                if ((camera_ind.Count > 0) && (cap.Ptr == camera_ind[0]))
                 {
                     
                     cap.Retrieve(mat_global[0]);
@@ -2550,7 +2550,7 @@ namespace opengl3
 
 
                 }
-                else if ((camera_ind.Count > 1) && ((int)cap.Ptr == camera_ind[1]))
+                else if ((camera_ind.Count > 1) && (cap.Ptr == camera_ind[1]))
                 {
                     cap.Retrieve(mat_global[1]);                                      
                     imageBox2.Image = mat_global[1];
@@ -2689,7 +2689,7 @@ namespace opengl3
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
-            camera_ind.Add((int)capture.Ptr);
+            camera_ind.Add(capture.Ptr);
             capture.ImageGrabbed += capturingVideo;
             capture.Start();
         }
@@ -4421,7 +4421,7 @@ namespace opengl3
         private void but_div_disp_Click(object sender, EventArgs e)
         {
 
-            laserLine?.set_div_disp(Convert.ToDouble(tb_div_disp.Text));
+            laserLine?.set_div_disp(Convert.ToInt32(tb_div_disp.Text));
         }
 
         private void but_dir_disp_Click(object sender, EventArgs e)
@@ -4436,6 +4436,16 @@ namespace opengl3
         private void ch_b_dist_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void but_extr_st_Click(object sender, EventArgs e)
+        {
+            double vel_noz = Convert.ToDouble(tb_print_vel.Text);
+            double d_noz = Convert.ToDouble(tb_print_nozzle_d.Text);
+            double d_syr = Convert.ToDouble(tb_print_syr_d.Text);
+            var div = LaserLine.vel_div(vel_noz, d_noz, d_syr);
+            laserLine?.set_dir_disp(-1);
+            laserLine?.set_div_disp(div);
         }
     }
 }

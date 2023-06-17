@@ -139,13 +139,24 @@ namespace opengl3
         {
             send(_dir+1, dir_disp);
         }
-        public void set_div_disp(double _vel)
+        public void set_div_disp(int _vel)
         {
-            if (_vel > 0) send(comp_vel_div(_vel), div_disp);
+            if (_vel >= 0) send(_vel, div_disp);
         }
         public void set_home_laser()
         {
             send(0, home_laser);
+        }
+
+        public static int vel_div(double vel_nos, double d_nos, double d_syr)
+        {
+            double vel = (vel_nos * d_nos * d_nos) / (d_syr * d_syr);//vel pist
+            double nT = 5000;  //  #timer freq
+            double p = 0.8;//     #step mm
+            double rev = 200 * 16 * (60d/16d); //# - reduct steps per revol
+            int st = (int)((nT * p) / (vel * rev));
+            //vel = (nT * p) / (st * rev);
+            return st;
         }
     }
 }
