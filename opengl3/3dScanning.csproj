@@ -104,6 +104,10 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OpenGL.Net.Math, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\OpenGL.Net.Math.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
     </Reference>
@@ -366,9 +370,6 @@
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="OpenGL.Net">
-      <Version>0.8.4</Version>
-    </PackageReference>
-    <PackageReference Include="OpenGL.Net.Math">
       <Version>0.8.4</Version>
     </PackageReference>
     <PackageReference Include="OpenGL.Net.WinForms">

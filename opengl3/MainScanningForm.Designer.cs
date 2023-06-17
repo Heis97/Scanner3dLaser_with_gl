@@ -89,6 +89,8 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.ch_b_dist = new System.Windows.Forms.CheckBox();
+            this.ch_b_sync = new System.Windows.Forms.CheckBox();
             this.but_del_obj3d = new System.Windows.Forms.Button();
             this.but_remesh_test = new System.Windows.Forms.Button();
             this.but_intersec_obj = new System.Windows.Forms.Button();
@@ -976,6 +978,8 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.ch_b_dist);
+            this.tabOpenGl.Controls.Add(this.ch_b_sync);
             this.tabOpenGl.Controls.Add(this.but_del_obj3d);
             this.tabOpenGl.Controls.Add(this.but_remesh_test);
             this.tabOpenGl.Controls.Add(this.but_intersec_obj);
@@ -1087,6 +1091,32 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // ch_b_dist
+            // 
+            this.ch_b_dist.AutoSize = true;
+            this.ch_b_dist.Checked = true;
+            this.ch_b_dist.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ch_b_dist.Location = new System.Drawing.Point(1244, 832);
+            this.ch_b_dist.Name = "ch_b_dist";
+            this.ch_b_dist.Size = new System.Drawing.Size(82, 17);
+            this.ch_b_dist.TabIndex = 155;
+            this.ch_b_dist.Text = "Дисторсия";
+            this.ch_b_dist.UseVisualStyleBackColor = true;
+            this.ch_b_dist.CheckedChanged += new System.EventHandler(this.ch_b_dist_CheckedChanged);
+            // 
+            // ch_b_sync
+            // 
+            this.ch_b_sync.AutoSize = true;
+            this.ch_b_sync.Checked = true;
+            this.ch_b_sync.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ch_b_sync.Location = new System.Drawing.Point(1244, 814);
+            this.ch_b_sync.Name = "ch_b_sync";
+            this.ch_b_sync.Size = new System.Drawing.Size(104, 17);
+            this.ch_b_sync.TabIndex = 154;
+            this.ch_b_sync.Text = "Синхронизация";
+            this.ch_b_sync.UseVisualStyleBackColor = true;
+            this.ch_b_sync.CheckedChanged += new System.EventHandler(this.ch_b_sync_CheckedChanged);
             // 
             // but_del_obj3d
             // 
@@ -1613,7 +1643,7 @@ namespace opengl3
             // 
             this.debugBox.Location = new System.Drawing.Point(1218, 6);
             this.debugBox.Name = "debugBox";
-            this.debugBox.Size = new System.Drawing.Size(402, 838);
+            this.debugBox.Size = new System.Drawing.Size(402, 784);
             this.debugBox.TabIndex = 62;
             this.debugBox.Text = "";
             // 
@@ -3858,6 +3888,8 @@ namespace opengl3
         private System.Windows.Forms.TextBox tb_div_disp;
         private System.Windows.Forms.ComboBox combo_robot_ch;
         private System.Windows.Forms.Button but_del_obj3d;
+        private System.Windows.Forms.CheckBox ch_b_dist;
+        private System.Windows.Forms.CheckBox ch_b_sync;
     }
 }
 

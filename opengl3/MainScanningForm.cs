@@ -30,6 +30,8 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        bool scan_dist = false;
+        bool scan_sync = false;
         int port_tcp = 30005;
         StringBuilder sb_enc = null;
         string video_scan_name = "1";
@@ -357,6 +359,9 @@ namespace opengl3
 
             debugBox.Text = "0.3 0.3 1";
 
+            scan_dist = ch_b_dist.Checked;
+            scan_sync = ch_b_sync.Checked;
+
             tree_models.CheckBoxes = true;
             //load_camers_v2();
         }
@@ -664,7 +669,7 @@ namespace opengl3
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size);
 
-            comboImages.Items.AddRange(frms_stereo);
+            //comboImages.Items.AddRange(frms_stereo);
 
             return scanner;
         }
@@ -674,8 +679,11 @@ namespace opengl3
 
 
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            //scanner = loadVideo_stereo_not_sync(scan_path_1, scanner, strip);
-            scanner = loadVideo_stereo(scan_path_1, scanner, strip);
+            //
+            if(ch_b_sync.Checked)
+                scanner = loadVideo_stereo(scan_path_1, scanner, strip);
+            else
+                scanner = loadVideo_stereo_not_sync(scan_path_1, scanner, strip);
 
             var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
 
@@ -1526,7 +1534,9 @@ namespace opengl3
             {
                 var mat1 = fr.im;
                 var mat2 = fr.im_sec;
-               // CvInvoke.Rotate(mat2, mat2, RotateFlags.Rotate180);
+                imageBox1.Image = mat1;
+                imageBox2.Image = mat2;
+                // CvInvoke.Rotate(mat2, mat2, RotateFlags.Rotate180);
                 if (fr.frameType == FrameType.MarkBoard)
                 {
                     imBox_base_1.Image = stereocam.remapCam(fr.im, 1);
@@ -1579,8 +1589,7 @@ namespace opengl3
                 }
                     
 
-                imageBox1.Image = mat1;
-                imageBox2.Image = mat2;
+                
             }
             else
             {
@@ -3505,7 +3514,7 @@ namespace opengl3
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
-            comboImages.Items.Add(fr_st_vid);
+            //comboImages.Items.Add(fr_st_vid);
 
             
             int buff_diff = 9;
@@ -3567,7 +3576,7 @@ namespace opengl3
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                         //CvInvoke.Imshow("im2", im2);                       
                         
-                        scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, false);//true???
+                        scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, ch_b_dist.Checked);
                     }
                     
                     im1_buff = buffer_mat1.Clone();
@@ -3647,9 +3656,9 @@ namespace opengl3
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
-            comboImages.Items.Add(fr_st_vid);
+            //comboImages.Items.Add(fr_st_vid);
 
-            int buff_diff = 9;
+            int buff_diff = 4;
             int buff_len = buff_diff + 1;
 
             var all_frames = Math.Min(all_frames1, all_frames2);
@@ -3666,13 +3675,13 @@ namespace opengl3
             int f2 = 0;
             //f1 = 70;
             //while (f1 < frame_min-1)
-            //while (f1 < frame_min - 1 )
-            while (f1 < 200)
+            while (f1 < frame_min - 1 )
+            //while (f1 < 200)
             {
                 im_min_buff_list = read_frame(captures[cam_min-1], im_min_buff_list, buff_len); f1++;
                 var f2_ind = (int)pairs[f1][0];
                 var k = pairs[f1][1];
-                while(f2 <= f2_ind)
+                while(f2 < f2_ind)
                 //while (f2 != f2_ind)
                 {
                     im_max_buff_list = read_frame(captures[cam_max - 1], im_max_buff_list, buff_len); f2++;
@@ -3703,7 +3712,7 @@ namespace opengl3
                          frame_d.stereo = true;
                          frames_show.Add(frame_d);*/
 
-                        scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min,  im_max, im_max_prev }, k,cam_min, cam_max, true);
+                        scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min,  im_max, im_max_prev }, k,cam_min, cam_max, ch_b_dist.Checked);
                     }
                 }
                 videoframe_count++;
@@ -4420,7 +4429,14 @@ namespace opengl3
             laserLine?.set_dir_disp(Convert.ToInt32(tb_dir_disp.Text));
         }
 
-        
+        private void ch_b_sync_CheckedChanged(object sender, EventArgs e)
+        {
+            //scan_sync = 
+        }
+        private void ch_b_dist_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
