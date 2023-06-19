@@ -44,10 +44,11 @@ namespace opengl3
         {
             if(mats.Length == cameraCVs.Length)
             {
+                var marksize = 6.227f;
                 bool comp_pos = true;
                 for(int i = 0; i < mats.Length; i++)
                 {
-                    comp_pos &= cameraCVs[i].compPos(mats[i], patternType, pattern_size,10f);
+                    comp_pos &= cameraCVs[i].compPos(mats[i], patternType, pattern_size,marksize);
                     //Console.WriteLine(comp_pos);
                 }
                 if(mats.Length>1 && comp_pos)
@@ -107,7 +108,7 @@ namespace opengl3
                 var p_rob = new List<Point3d_GL>();
                 var p_cam = new List<Point3d_GL>();
                 Console.WriteLine("calibrate_stereo_rob");
-                var markSize = 6.228f;
+                var markSize = 6.227f;
                 for (int i = 0; i < frames.Length; i++)
                 {
                     var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, pattern_size, markSize);
@@ -157,8 +158,8 @@ namespace opengl3
                // prin.t(Bbf);
                 //var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix(robotType);
 
-                var Bbm = new RobotFrame("-193.677 -334.085 -30.528 -0.01515 -0.00087 -1.54447").getMatrix(robotType);
-                //var Bbm = new RobotFrame("-199.191 -350.3198 5.9134 -0.00519 -0.00268 -1.52663").getMatrix(robotType);
+                //var Bbm = new RobotFrame("-193.677 -334.085 -30.528 -0.01515 -0.00087 -1.54447").getMatrix(robotType);
+                var Bbm = new RobotFrame("-199.191 -350.3198 5.9134 -0.00519 -0.00268 -1.52663").getMatrix(robotType);
                 //var Bbm = new RobotFrame("-218.37 -239.51 -33.85 -0.014 -0.0058 -1.5658").getMatrix(robotType);
 
                 /* prin.t("--------------------------------");
