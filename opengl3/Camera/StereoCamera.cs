@@ -107,10 +107,11 @@ namespace opengl3
                 var p_rob = new List<Point3d_GL>();
                 var p_cam = new List<Point3d_GL>();
                 Console.WriteLine("calibrate_stereo_rob");
+                var markSize = 6.228f;
                 for (int i = 0; i < frames.Length; i++)
                 {
-                    var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, pattern_size, 10f);
-                    var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, pattern_size, 10f);
+                    var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, pattern_size, markSize);
+                    var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, pattern_size, markSize);
                     if (pos1 && pos2)
                     {
                         var inv_cs1 = new Matrix<double>(4, 4);
@@ -144,9 +145,11 @@ namespace opengl3
         {
             var Bfs_l = new List<Matrix<double>>();
             RobotFrame.RobotType robotType = RobotFrame.RobotType.PULSE;
+            var markSize = 6.2273f;
+            //var markSize = 10f;
             for (int i=0; i<pos.Length; i++)
             {
-                cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, pattern_size, 10f);
+                cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, pattern_size, markSize);
                 var Bsm = cameraCVs[0].matrixCS.Clone();
                 var Bbf = new RobotFrame(pos[i].name).getMatrix(robotType);
 
@@ -155,15 +158,16 @@ namespace opengl3
                 //var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix(robotType);
 
                 var Bbm = new RobotFrame("-193.677 -334.085 -30.528 -0.01515 -0.00087 -1.54447").getMatrix(robotType);
+                //var Bbm = new RobotFrame("-199.191 -350.3198 5.9134 -0.00519 -0.00268 -1.52663").getMatrix(robotType);
                 //var Bbm = new RobotFrame("-218.37 -239.51 -33.85 -0.014 -0.0058 -1.5658").getMatrix(robotType);
 
-               /* prin.t("--------------------------------");
-                prin.t("Bsm");
-                prin.t(Bsm);
-                prin.t("Bbf");
-                prin.t(Bbf);
-                prin.t("Bbm");
-                prin.t(Bbm);*/
+                /* prin.t("--------------------------------");
+                 prin.t("Bsm");
+                 prin.t(Bsm);
+                 prin.t("Bbf");
+                 prin.t(Bbf);
+                 prin.t("Bbm");
+                 prin.t(Bbm);*/
                 var Bsm_1 = Bsm.Clone();
                 var Bbf_1 = Bbf.Clone();
                 var Bbm_1 = Bbm.Clone();
@@ -192,7 +196,7 @@ namespace opengl3
                 Bfs_med+=Bfs_l[i];
             }
             Bfs_med /= Bfs_l.Count;
-            Settings_loader.save_file("bfs_cal.txt", new object[] { Bfs_med });
+            Settings_loader.save_file(file_name, new object[] { Bfs_med });
             return Bfs_med;
         }
         /// <summary>

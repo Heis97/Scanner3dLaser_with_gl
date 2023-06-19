@@ -639,9 +639,9 @@ namespace opengl3
         {
             markSize = 6.2273f;
             chess_size = new Size(10, 11);
-            var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("cam2_conf_190623_2.txt");            
+            cam1.save_camera("cam1_conf_190623_2.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_130523_2", FrameType.Pattern, PatternType.Mesh);
@@ -4203,6 +4203,7 @@ namespace opengl3
             var frms_stereo1 = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
             comboImages.Items.AddRange(frms_stereo1);
 
+            chess_size = new Size(10, 11);
             stereo.calibrateBfs(frms_stereo1,chess_size);
         }
 
@@ -4231,7 +4232,7 @@ namespace opengl3
             var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
             stereocam_scan = stereo;
             //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
-            chess_size = new Size(6, 7);
+            chess_size = new Size(10, 11);
             stereocam_scan.calibrate_stereo_rob(frms_stereo, PatternType.Mesh, chess_size);
             comboImages.Items.AddRange(frms_stereo);
 

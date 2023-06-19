@@ -91,7 +91,7 @@ namespace opengl3
             CvInvoke.CvtColor(mat, im_tr, ColorConversion.Bgr2Gray);
             CvInvoke.GaussianBlur(im_tr, im_tr, new Size(7, 7), 3);
             im_tr = sobel_mat(im_tr);
-            CvInvoke.Threshold(im_tr, im_tr, 65, 255, ThresholdType.Binary);
+            CvInvoke.Threshold(im_tr, im_tr, 95, 255, ThresholdType.Binary);
 
 
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
@@ -267,8 +267,8 @@ namespace opengl3
         static VectorOfVectorOfPoint sameContours(VectorOfVectorOfPoint contours)
         {
             var clasters = new List<VectorOfVectorOfPoint>();
-            var err = 0.17;
-            var err_area = 0.65;
+            var err = 0.025;
+            var err_area = 0.35;
            // Console.WriteLine("------------------------");
             for (int i=0; i< contours.Size;i++)
             {
@@ -285,8 +285,9 @@ namespace opengl3
                         var area_cur  = CvInvoke.ContourArea(contours[i]);
 
                         var area_clast = areaAver(clasters[j]);
+
                         //Console.WriteLine(" i: " + i + " j: " + j + " area_clast: " + area_clast + " perim_clast: " + perim_clast + " area_cur: " + area_cur + " perim_cur: " + perim_cur);
-                        if (Math.Abs(sumHuMom(contours[i]) - sumHuMom(clasters[j][0]))< HuMomAver(clasters[j])*err &&
+                        if (Math.Abs(sumHuMom(contours[i]) - HuMomAver(clasters[j])) < HuMomAver(clasters[j])*err &&
                             Math.Abs(area_cur - area_clast) < area_clast * err_area)
                         {
                             clasters[j].Push(contours[i]);

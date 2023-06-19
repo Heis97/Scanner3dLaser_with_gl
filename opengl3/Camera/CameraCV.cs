@@ -669,8 +669,6 @@ namespace opengl3
                 var cornF = new System.Drawing.PointF[len];
                 var f_c = FindCircles.findCircles(frame.im,ref cornF, size_patt);
                 
-                //var mat = GeometryAnalyse.findCirclesIter(frame.im.Clone(), ref cornF, size_patt);
-                
                 //mat = null;
                 //Console.WriteLine(" cornF");
                 //prin.t(cornF);
