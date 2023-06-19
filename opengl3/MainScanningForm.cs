@@ -638,12 +638,13 @@ namespace opengl3
         void load_camers_v2()
         {
             markSize = 6.2273f;
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_60fps_cal_130523_2", FrameType.Pattern, PatternType.Mesh);
+            chess_size = new Size(10, 11);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("cam1_conf_60fps_130523_2.txt");            
+            cam1.save_camera("cam2_conf_190623_2.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
-            /*var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_130523_2", FrameType.Pattern, PatternType.Mesh);
+           /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_130523_2", FrameType.Pattern, PatternType.Mesh);
             var cam2 = new CameraCV(frms_2, chess_size, markSize, null);
             cam2.save_camera("cam2_conf_130523_2.txt");
             comboImages.Items.AddRange(frms_2);*/
@@ -688,7 +689,7 @@ namespace opengl3
             var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
 
             //mesh = GL1.addNormals(mesh, 1);
-
+            this.scanner = scanner;
 
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             if(scan_stl != null) scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"scan_stereo");

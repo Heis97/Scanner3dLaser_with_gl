@@ -109,7 +109,7 @@ namespace opengl3
                         X = x;
                         Y = y;
                         Z = z;
-                        A = Rx;
+                        A = -Rx;
                         B = Ry;
                         C = Rz;
                         V = v;

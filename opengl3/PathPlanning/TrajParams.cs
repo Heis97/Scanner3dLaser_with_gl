@@ -33,7 +33,7 @@ namespace opengl3
             z = new double[layers];
             for (int i = 0; i < z.Length; i++)
             {
-                z[i] = dz * (i + 1);
+                z[i] = dz * (i + 1)+off_z;
             }
         }
 
@@ -49,7 +49,12 @@ namespace opengl3
             get { return step; }
             set { step = value; }
         }
-
+        public double off_z;
+        public double Off_z
+        {
+            get { return off_z; }
+            set {off_z = value; }
+        }
         //------------------------
         public double div_step;
         public double Div_step
@@ -78,7 +83,7 @@ namespace opengl3
             get { return h_transf; }
             set { h_transf = value; }
         }
-        public TrajParams(double _step, int _layers, double _div_step, double _layers_angle, double[] _z, double _h_transf)
+        public TrajParams(double _step, int _layers, double _div_step, double _layers_angle, double[] _z, double _h_transf,double _off_z = 0)
         {
             step = _step;
             layers = _layers;
@@ -86,6 +91,7 @@ namespace opengl3
             layers_angle = _layers_angle;
             z = _z;
             h_transf = _h_transf;
+            off_z = _off_z;
         }
         public TrajParams()
         {
