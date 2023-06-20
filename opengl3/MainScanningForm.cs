@@ -639,9 +639,9 @@ namespace opengl3
         {
             markSize = 6.2273f;
             chess_size = new Size(10, 11);
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("cam1_conf_190623_2.txt");            
+            cam1.save_camera("cam2_conf_190623_2.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_130523_2", FrameType.Pattern, PatternType.Mesh);
@@ -1549,23 +1549,23 @@ namespace opengl3
                     System.Drawing.PointF[] corn = null;
                     if (true)
                     {
-                        
+
                         //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im.Clone(), chess_size);
                         //imageBox2.Image = UtilOpenCV.drawInsideRectCirc(fr.im_sec.Clone(), chess_size);
                         //imBox_base_1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
                         //imBox_base_2.Image = GeometryAnalyse.findCirclesIter(fr.im_sec.Clone(), ref corn, chess_size);
-                        if(stereocam_scan!=null)
+                        if (stereocam_scan != null)
                         {
                             imBox_base_1.Image = GeometryAnalyse.findCirclesIter(stereocam_scan.cameraCVs[0].undist(mat1.Clone()), ref corn, chess_size);
                             imBox_base_2.Image = GeometryAnalyse.findCirclesIter(stereocam_scan.cameraCVs[1].undist(mat2.Clone()), ref corn, chess_size);
                         }
-                        
+
                     }
                     else
                     {
                         imBox_base_1.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
                         imBox_base_2.Image = FindCircles.findCircles(mat2, ref corn, chess_size);
-                    }                                                           
+                    }
                 }
 
                 else if (fr.frameType == FrameType.LasDif)
@@ -1578,13 +1578,14 @@ namespace opengl3
                     var ps1_dr = PointF.toSystemPoint_d(ps1);
                     var ps2_dr = PointF.toSystemPoint_d(ps2);
 
-                    
+
                     //var fr_im_cl = fr.im.Clone();
                     //var fr_im_sec_cl = fr.im_sec.Clone();
+                    if (ps1_dr == null || ps2_dr == null) return;
                     CvInvoke.Line(fr_im_cl, ps1_dr[0], ps1_dr[ps1_dr.Length - 1], new MCvScalar(255, 0, 0));
                     CvInvoke.Line(fr_im_sec_cl, ps2_dr[0], ps2_dr[ps2_dr.Length - 1], new MCvScalar(255, 0, 0));
-                    imBox_base_1.Image = UtilOpenCV.drawPoints(fr_im_cl, ps1_dr, 0, 255, 0, 2);
-                    imBox_base_2.Image = UtilOpenCV.drawPoints(fr_im_sec_cl, ps2_dr, 0, 255, 0, 2);
+                    imBox_base_1.Image = UtilOpenCV.drawPoints(fr_im_cl, ps1_dr, 0, 255, 0, 1);
+                    imBox_base_2.Image = UtilOpenCV.drawPoints(fr_im_sec_cl, ps2_dr, 0, 255, 0, 1);
                     
                     
                 }
@@ -3565,19 +3566,21 @@ namespace opengl3
                        // CvInvoke.WaitKey();
                         
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
+                        if (ch_b_im_s.Checked)
+                        {
+                             var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
+                             frame_d.stereo = true;
+                             frames_show.Add(frame_d);
+                        }
+                            //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
+                            /*var ps1 = Detection.detectLineDiff(im1, 7);
+                            var ps2 = Detection.detectLineDiff(im2, 7);
 
-                       /* var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
-                        frame_d.stereo = true;
-                        frames_show.Add(frame_d);*/
-                        //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
-                        /*var ps1 = Detection.detectLineDiff(im1, 7);
-                        var ps2 = Detection.detectLineDiff(im2, 7);
+                            imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
+                            imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
+                            //CvInvoke.Imshow("im2", im2);                       
 
-                        imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
-                        imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
-                        //CvInvoke.Imshow("im2", im2);                       
-                        
-                        scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, ch_b_dist.Checked);
+                            scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, ch_b_dist.Checked);
                     }
                     
                     im1_buff = buffer_mat1.Clone();
@@ -3709,9 +3712,13 @@ namespace opengl3
 
                         
                         //CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                        /* var frame_d = new Frame(im_min, im_max, videoframe_count.ToString(), FrameType.LasDif);
-                         frame_d.stereo = true;
-                         frames_show.Add(frame_d);*/
+                        if(ch_b_im_s.Checked)
+                        {
+                            var frame_d = new Frame(im_min.Clone(), im_max.Clone(), videoframe_count.ToString(), FrameType.LasDif);
+                            frame_d.stereo = true;
+                            frames_show.Add(frame_d);
+                        }
+                        
 
                         scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min,  im_max, im_max_prev }, k,cam_min, cam_max, ch_b_dist.Checked);
                     }

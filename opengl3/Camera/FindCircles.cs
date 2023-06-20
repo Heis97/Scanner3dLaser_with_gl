@@ -91,13 +91,14 @@ namespace opengl3
             CvInvoke.CvtColor(mat, im_tr, ColorConversion.Bgr2Gray);
             CvInvoke.GaussianBlur(im_tr, im_tr, new Size(7, 7), 3);
             im_tr = sobel_mat(im_tr);
-            CvInvoke.Threshold(im_tr, im_tr, 95, 255, ThresholdType.Binary);
+            CvInvoke.Threshold(im_tr, im_tr, 105, 255, ThresholdType.Binary);
 
 
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
             CvInvoke.FindContours(im_tr, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
             //var conts = sameContours_cv(contours);
+            contours = only_same_centres(contours);
             var conts = sameContours(contours);
             if (conts == null)
             {
@@ -109,16 +110,18 @@ namespace opengl3
                 Console.WriteLine("find_circ ret null"); 
                 return null;
             }
-
+            
             conts = filter_same_centres(conts);
             var cents = findCentres(conts);
             CvInvoke.CvtColor(im_tr, im_tr, ColorConversion.Gray2Bgr);
+           // CvInvoke.WaitKey();
             if (conts!=null)
             {
                 //CvInvoke.DrawContours(im_tr, conts, -1, new MCvScalar(255, 0, 0), 2, LineType.EightConnected);
             }
            
             CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
+            //CvInvoke.DrawContours(im_tr, conts_sc, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
 
             //CvInvoke.Imshow("bin ", im_tr);
             
@@ -129,15 +132,15 @@ namespace opengl3
                 Console.WriteLine("find_circ ret null");
                 return null;
             }
-            orig = mat.Clone();
+            orig = mat.Clone(); 
             CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
             CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
 
            
             //prin.t(cents);
             //prin.t("____________");
-            //CvInvoke.Imshow("fnd", orig);
-            //CvInvoke.WaitKey();
+           CvInvoke.Imshow("fnd", orig);
+           // CvInvoke.WaitKey();
             corn = new System.Drawing.PointF[pattern_size.Width * pattern_size.Height];
             
             if(order)
@@ -196,6 +199,28 @@ namespace opengl3
             }
             return filtr_conts;
         }
+
+        static VectorOfVectorOfPoint only_same_centres(VectorOfVectorOfPoint contours)
+        {
+            var filtr_conts = new VectorOfVectorOfPoint();
+            for (int i = 0; i < contours.Size; i++)
+            {
+                bool same_place = false;
+                for (int j = 0; j < contours.Size; j++)
+                {
+                    if(i!=j)
+                        if (distContours(contours[i], contours[j]) < 3)
+                            same_place = true;
+                    
+                }
+                if (same_place)
+                {
+                    filtr_conts.Push(contours[i]);
+                }
+            }
+            return filtr_conts;
+        }
+
         static double dist(System.Drawing.PointF p1, System.Drawing.PointF p2)
         {
             return Math.Sqrt((p1.X-p2.X)* (p1.X - p2.X)+ (p1.Y - p2.Y) * (p1.Y - p2.Y));
@@ -267,8 +292,8 @@ namespace opengl3
         static VectorOfVectorOfPoint sameContours(VectorOfVectorOfPoint contours)
         {
             var clasters = new List<VectorOfVectorOfPoint>();
-            var err = 0.025;
-            var err_area = 0.35;
+            var err = 0.045;
+            var err_area = 0.65;
            // Console.WriteLine("------------------------");
             for (int i=0; i< contours.Size;i++)
             {

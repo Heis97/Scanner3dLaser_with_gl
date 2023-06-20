@@ -212,6 +212,13 @@ namespace opengl3
             this.combo_improc = new System.Windows.Forms.ComboBox();
             this.label56 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.but_extr_st = new System.Windows.Forms.Button();
+            this.label57 = new System.Windows.Forms.Label();
+            this.tb_print_syr_d = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.tb_print_vel = new System.Windows.Forms.TextBox();
+            this.tb_print_nozzle_d = new System.Windows.Forms.TextBox();
             this.but_dir_disp = new System.Windows.Forms.Button();
             this.tb_dir_disp = new System.Windows.Forms.TextBox();
             this.but_home_las = new System.Windows.Forms.Button();
@@ -327,13 +334,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tb_print_nozzle_d = new System.Windows.Forms.TextBox();
-            this.tb_print_vel = new System.Windows.Forms.TextBox();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.tb_print_syr_d = new System.Windows.Forms.TextBox();
-            this.label57 = new System.Windows.Forms.Label();
-            this.but_extr_st = new System.Windows.Forms.Button();
+            this.ch_b_im_s = new System.Windows.Forms.CheckBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -985,6 +986,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.ch_b_im_s);
             this.tabOpenGl.Controls.Add(this.ch_b_dist);
             this.tabOpenGl.Controls.Add(this.ch_b_sync);
             this.tabOpenGl.Controls.Add(this.but_del_obj3d);
@@ -2447,6 +2449,70 @@ namespace opengl3
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Scaner Manual Control";
             // 
+            // but_extr_st
+            // 
+            this.but_extr_st.Location = new System.Drawing.Point(538, 319);
+            this.but_extr_st.Name = "but_extr_st";
+            this.but_extr_st.Size = new System.Drawing.Size(110, 55);
+            this.but_extr_st.TabIndex = 144;
+            this.but_extr_st.Text = "Выдавливание";
+            this.but_extr_st.UseVisualStyleBackColor = true;
+            this.but_extr_st.Click += new System.EventHandler(this.but_extr_st_Click);
+            // 
+            // label57
+            // 
+            this.label57.AutoSize = true;
+            this.label57.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label57.Location = new System.Drawing.Point(397, 290);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(139, 20);
+            this.label57.TabIndex = 143;
+            this.label57.Text = "Диаметр шприца";
+            // 
+            // tb_print_syr_d
+            // 
+            this.tb_print_syr_d.Location = new System.Drawing.Point(538, 287);
+            this.tb_print_syr_d.Name = "tb_print_syr_d";
+            this.tb_print_syr_d.Size = new System.Drawing.Size(110, 26);
+            this.tb_print_syr_d.TabIndex = 142;
+            this.tb_print_syr_d.Text = "12";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label23.Location = new System.Drawing.Point(396, 258);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(139, 20);
+            this.label23.TabIndex = 141;
+            this.label23.Text = "Скорость печати";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label22.Location = new System.Drawing.Point(409, 226);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(126, 20);
+            this.label22.TabIndex = 138;
+            this.label22.Text = "Толщина сопла";
+            // 
+            // tb_print_vel
+            // 
+            this.tb_print_vel.Location = new System.Drawing.Point(538, 255);
+            this.tb_print_vel.Name = "tb_print_vel";
+            this.tb_print_vel.Size = new System.Drawing.Size(110, 26);
+            this.tb_print_vel.TabIndex = 140;
+            this.tb_print_vel.Text = "5";
+            // 
+            // tb_print_nozzle_d
+            // 
+            this.tb_print_nozzle_d.Location = new System.Drawing.Point(538, 223);
+            this.tb_print_nozzle_d.Name = "tb_print_nozzle_d";
+            this.tb_print_nozzle_d.Size = new System.Drawing.Size(110, 26);
+            this.tb_print_nozzle_d.TabIndex = 139;
+            this.tb_print_nozzle_d.Text = "1";
+            // 
             // but_dir_disp
             // 
             this.but_dir_disp.Location = new System.Drawing.Point(451, 147);
@@ -3516,73 +3582,15 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // graphicGLBindingSource
+            // ch_b_im_s
             // 
-            this.graphicGLBindingSource.DataSource = typeof(opengl3.GraphicGL);
-            // 
-            // tb_print_nozzle_d
-            // 
-            this.tb_print_nozzle_d.Location = new System.Drawing.Point(538, 223);
-            this.tb_print_nozzle_d.Name = "tb_print_nozzle_d";
-            this.tb_print_nozzle_d.Size = new System.Drawing.Size(110, 26);
-            this.tb_print_nozzle_d.TabIndex = 139;
-            this.tb_print_nozzle_d.Text = "1";
-            // 
-            // tb_print_vel
-            // 
-            this.tb_print_vel.Location = new System.Drawing.Point(538, 255);
-            this.tb_print_vel.Name = "tb_print_vel";
-            this.tb_print_vel.Size = new System.Drawing.Size(110, 26);
-            this.tb_print_vel.TabIndex = 140;
-            this.tb_print_vel.Text = "5";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label22.Location = new System.Drawing.Point(409, 226);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(126, 20);
-            this.label22.TabIndex = 138;
-            this.label22.Text = "Толщина сопла";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label23.Location = new System.Drawing.Point(396, 258);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(139, 20);
-            this.label23.TabIndex = 141;
-            this.label23.Text = "Скорость печати";
-            // 
-            // tb_print_syr_d
-            // 
-            this.tb_print_syr_d.Location = new System.Drawing.Point(538, 287);
-            this.tb_print_syr_d.Name = "tb_print_syr_d";
-            this.tb_print_syr_d.Size = new System.Drawing.Size(110, 26);
-            this.tb_print_syr_d.TabIndex = 142;
-            this.tb_print_syr_d.Text = "12";
-            // 
-            // label57
-            // 
-            this.label57.AutoSize = true;
-            this.label57.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label57.Location = new System.Drawing.Point(397, 290);
-            this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(139, 20);
-            this.label57.TabIndex = 143;
-            this.label57.Text = "Диаметр шприца";
-            // 
-            // but_extr_st
-            // 
-            this.but_extr_st.Location = new System.Drawing.Point(538, 319);
-            this.but_extr_st.Name = "but_extr_st";
-            this.but_extr_st.Size = new System.Drawing.Size(110, 55);
-            this.but_extr_st.TabIndex = 144;
-            this.but_extr_st.Text = "Выдавливание";
-            this.but_extr_st.UseVisualStyleBackColor = true;
-            this.but_extr_st.Click += new System.EventHandler(this.but_extr_st_Click);
+            this.ch_b_im_s.AutoSize = true;
+            this.ch_b_im_s.Location = new System.Drawing.Point(1244, 850);
+            this.ch_b_im_s.Name = "ch_b_im_s";
+            this.ch_b_im_s.Size = new System.Drawing.Size(150, 17);
+            this.ch_b_im_s.TabIndex = 156;
+            this.ch_b_im_s.Text = "Сохранять изображения";
+            this.ch_b_im_s.UseVisualStyleBackColor = true;
             // 
             // MainScanningForm
             // 
@@ -3975,6 +3983,7 @@ namespace opengl3
         private System.Windows.Forms.Label label57;
         private System.Windows.Forms.TextBox tb_print_syr_d;
         private System.Windows.Forms.Button but_extr_st;
+        private System.Windows.Forms.CheckBox ch_b_im_s;
     }
 }
 

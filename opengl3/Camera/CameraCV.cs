@@ -279,6 +279,7 @@ namespace opengl3
             mapy = new Mat();
             var newRoI = new Rectangle();
             var matr = CvInvoke.GetOptimalNewCameraMatrix(cameramatrix, distortmatrix, image_size, 1, image_size, ref newRoI);
+            prin.t(matr);
             CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F, mapx, mapy);
 
             pos = new float[3] { 0, 0, 0 };
@@ -500,9 +501,9 @@ namespace opengl3
         public Mat undist(Mat mat)
         {
             //Console.WriteLine("undist");
-            //var mat_ret = new Mat();
-            CvInvoke.Remap(mat, mat, mapx, mapy, Inter.Linear);
-            return mat;
+            var mat_ret = new Mat();
+            CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
+            return mat_ret;
         }
         void calibrateCam(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
