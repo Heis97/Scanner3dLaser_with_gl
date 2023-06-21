@@ -438,7 +438,14 @@ namespace PathPlanning
             traj_3d = add_transit(traj_3d, trajParams.h_transf);
             return traj_3d;
         }
-
+        public static List<Point3d_GL> project_contour_on_surface(Polygon3d_GL[] surface, List<Point3d_GL> contour, TrajParams trajParams)
+        {
+            double resolut = 0.2;
+            var map_xy = new RasterMap(surface, resolut, RasterMap.type_map.XY);
+            var proj_c = project_layer(surface, contour, map_xy, new Vector3d_GL(1,0,0));
+            
+            return matr_to_ps(proj_c);
+        }
 
         public static string generate_robot_traj(List<Matrix<double>> traj, RobotFrame.RobotType type_robot)
         {
@@ -451,6 +458,19 @@ namespace PathPlanning
             traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
 
             return RobotFrame.generate_string(traj_rob.ToArray());
+        }
+
+        public static List<Point3d_GL> matr_to_ps(List<Matrix<double>> traj)
+        {
+            var traj_rob = new List<Point3d_GL>();
+
+            for (int i = 0; i < traj.Count; i++)
+            {
+                var f = new RobotFrame(traj[i], 20);
+                traj_rob.Add(new Point3d_GL(f.X, f.Y, f.Z));
+            }
+
+            return traj_rob;
         }
         public static string generate_robot_traj_old(List<Matrix<double>> traj)
         {
@@ -488,10 +508,5 @@ namespace PathPlanning
             return Math.Round(val,4);
         }
     }
-
-
-
-
-
 
 }

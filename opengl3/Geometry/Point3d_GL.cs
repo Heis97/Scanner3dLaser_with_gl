@@ -667,13 +667,14 @@ namespace opengl3
                 return line_laplace(ps_s, iter);
         }
 
-        public static Point3d_GL aver(Point3d_GL[] ps)
+        public static Point3d_GL aver(Point3d_GL[] ps,Color3d_GL color= null)
         {
             var p = new Point3d_GL(0, 0, 0);
             for(int i = 0; i < ps.Length; i++)
             {
                 p+=ps[i];
             }
+            p.color = color;
             return p / ps.Length;
         }
 

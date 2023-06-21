@@ -412,7 +412,7 @@ namespace opengl3
                 {
                     
                     
-                    ps_sm[i] = Point3d_GL.aver(loc_ps.ToArray());
+                    ps_sm[i] = Point3d_GL.aver(loc_ps.ToArray(),ps[i].color);
                     if (i == 0)
                     {
                         Console.WriteLine(loc_ps.Count + " " + i+" "+ ps_sm[i]);

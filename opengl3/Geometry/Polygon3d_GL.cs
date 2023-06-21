@@ -469,7 +469,7 @@ namespace opengl3
             return new float[][] { mesh.ToArray(), color.ToArray(), normal.ToArray() };
         }
 
-        static public Polygon3d_GL[] polygs_from_mesh(float[] mesh)
+        static public Polygon3d_GL[] polygs_from_mesh(float[] mesh,float[] color = null)
         {
             if (mesh.Length % 9 != 0) return null;
             List<Polygon3d_GL> polygs = new List<Polygon3d_GL> ();
@@ -478,6 +478,12 @@ namespace opengl3
                 var p1 = new Point3d_GL(mesh[  i  ], mesh[i + 1], mesh[i + 2]);
                 var p2 = new Point3d_GL(mesh[i + 3], mesh[i + 4], mesh[i + 5]);
                 var p3 = new Point3d_GL(mesh[i + 6], mesh[i + 7], mesh[i + 8]);
+                if(color != null)
+                {
+                    p1.color = new Color3d_GL(color[i], color[i + 1], color[i + 2]);
+                    p2.color = new Color3d_GL(color[i + 3], color[i + 4], color[i + 5]);
+                    p3.color = new Color3d_GL(color[i + 6], color[i + 7], color[i + 8]);
+                }
                 polygs.Add( new Polygon3d_GL(p1, p2, p3));
             }
             return polygs.ToArray();

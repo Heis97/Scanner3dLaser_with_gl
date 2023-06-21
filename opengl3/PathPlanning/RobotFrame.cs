@@ -127,6 +127,7 @@ namespace opengl3
             return Math.Acos(_cos);
 
         }
+        
        
 
         static public string generate_string(RobotFrame[] frames)

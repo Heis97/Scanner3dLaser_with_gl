@@ -138,21 +138,23 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
+            test_pr();
+            test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
             //load_camers_v2();
 
-           /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
-            var paths = Directory.GetDirectories(path);
+            /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
+             var paths = Directory.GetDirectories(path);
 
-            var paths_sort = (from f in paths
-                             orderby File.GetCreationTime(f) descending
-                             select f).ToList().GetRange(0,27);
+             var paths_sort = (from f in paths
+                              orderby File.GetCreationTime(f) descending
+                              select f).ToList().GetRange(0,27);
 
 
-            foreach (string filename in paths_sort)
-                //File.GetCreationTime(filename);
-                Console.WriteLine(filename+" " +File.GetCreationTime(filename));*/
-            
+             foreach (string filename in paths_sort)
+                 //File.GetCreationTime(filename);
+                 Console.WriteLine(filename+" " +File.GetCreationTime(filename));*/
+
         }
         static int[] frames_max(int[,] data)
         {
@@ -1210,6 +1212,33 @@ namespace opengl3
             //test_smooth();
             //test_remesh();
             add_points_cal();
+        }
+        void test_pr()
+        {
+            var p1 = new RozumPoint(new point3d(1, 2, 3), new rotation3d(4, 5, 6));
+            var p2 = new RozumPoint(new point3d(1, 2, 3), new rotation3d(4, 5, 6));
+            var ps_dic = new Dictionary<string, RozumPoint>();
+            ps_dic.Add("cal1", p1);
+            ps_dic.Add("cal2", p2);
+            var ps = new RozumPoint[] { p1, p2 };
+            FileManage.saveToJson(ps_dic, "s.json");
+        }
+
+        void test_basis()
+        {
+
+            var basis1 = new Point3d_GL[] {
+                new Point3d_GL(1, 0, 0),
+                new Point3d_GL(0, 1, 0),
+                new Point3d_GL(0, 0, 1),
+                new Point3d_GL(0, 0, 0)};
+            var basis2 = new Point3d_GL[] { 
+                new Point3d_GL(110, 100, 100),
+                new Point3d_GL(100, 110, 100),
+                new Point3d_GL(100, 100, 110),
+                new Point3d_GL(0, 0, 0)};
+            var transf = UtilMatr.calcTransformMatr(basis1, basis2);
+            prin.t(transf);
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
@@ -4019,7 +4048,8 @@ namespace opengl3
         private void but_remesh_test_Click(object sender, EventArgs e)
         {
             var selected_obj = selected_object(); if (selected_obj == null) return;
-            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+
+            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data, GL1.buffersGl.objs[selected_obj].color_buffer_data);
             var polyg_sm = RasterMap.smooth_mesh(polygs, Convert.ToDouble(tp_smooth_scan.Text));
             //polyg_sm = GL1.addNormals(polyg_sm, 0.5);
             var mesh = Polygon3d_GL.toMesh(polyg_sm);

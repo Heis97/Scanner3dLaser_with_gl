@@ -148,6 +148,7 @@
     <Compile Include="Geometry\Line3d_GL.cs" />
     <Compile Include="PathPlanning\PathPlanner.cs" />
     <Compile Include="PathPlanning\RobotFrame.cs" />
+    <Compile Include="PathPlanning\RozumPoint.cs" />
     <Compile Include="PathPlanning\TrajParams.cs" />
     <Compile Include="ScannerHandle\GeometryAnalyse.cs" />
     <Compile Include="ScannerHandle\LaserSurface.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Surface\CubicSpline.cs" />
     <Compile Include="Surface\Polar2d.cs" />
     <Compile Include="Surface\SurfaceReconstraction.cs" />
+    <Compile Include="Util\FileManage.cs" />
     <Compile Include="Util\FormSettings.cs" />
     <Compile Include="Util\Model3D.cs" />
     <Compile Include="Util\prin.cs" />
