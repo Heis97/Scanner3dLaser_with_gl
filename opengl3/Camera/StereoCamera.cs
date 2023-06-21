@@ -40,11 +40,11 @@ namespace opengl3
         
 
 
-        public void calibrate(Mat[] mats,PatternType patternType,System.Drawing.Size pattern_size)
+        public void calibrate(Mat[] mats,PatternType patternType,System.Drawing.Size pattern_size, float marksize)
         {
             if(mats.Length == cameraCVs.Length)
             {
-                var marksize = 6.227f;
+               
                 bool comp_pos = true;
                 for(int i = 0; i < mats.Length; i++)
                 {
@@ -100,7 +100,7 @@ namespace opengl3
             }
         }
 
-        public void calibrate_stereo_rob(Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size)
+        public void calibrate_stereo_rob(Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize)
         {
 
             if (cameraCVs.Length == 2)
@@ -108,7 +108,7 @@ namespace opengl3
                 var p_rob = new List<Point3d_GL>();
                 var p_cam = new List<Point3d_GL>();
                 Console.WriteLine("calibrate_stereo_rob");
-                var markSize = 6.227f;
+               
                 for (int i = 0; i < frames.Length; i++)
                 {
                     var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, pattern_size, markSize);
@@ -142,11 +142,11 @@ namespace opengl3
             }
         }
 
-        public Matrix<double> calibrateBfs(Frame[] pos,System.Drawing.Size pattern_size, string file_name = "bfs_cal.txt")
+        public Matrix<double> calibrateBfs(Frame[] pos,System.Drawing.Size pattern_size, float markSize,string file_name = "bfs_cal.txt")
         {
             var Bfs_l = new List<Matrix<double>>();
             RobotFrame.RobotType robotType = RobotFrame.RobotType.PULSE;
-            var markSize = 6.2273f;
+            
             //var markSize = 10f;
             for (int i=0; i<pos.Length; i++)
             {
@@ -159,8 +159,10 @@ namespace opengl3
                 //var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix(robotType);
 
                 //var Bbm = new RobotFrame("-193.677 -334.085 -30.528 -0.01515 -0.00087 -1.54447").getMatrix(robotType);
-                var Bbm = new RobotFrame("-199.191 -350.3198 5.9134 -0.00519 -0.00268 -1.52663").getMatrix(robotType);
+                //var Bbm = new RobotFrame("-199.191 -350.3198 5.9134 -0.00519 -0.00268 -1.52663").getMatrix(robotType);
                 //var Bbm = new RobotFrame("-218.37 -239.51 -33.85 -0.014 -0.0058 -1.5658").getMatrix(robotType);
+
+                var Bbm = new RobotFrame("-227.8394 -380.7143 -33.724 -0.00703 -0.00259 -1.569604").getMatrix(robotType);
 
                 /* prin.t("--------------------------------");
                  prin.t("Bsm");

@@ -407,12 +407,11 @@ namespace opengl3
 
         void add_points_cal()
         {
-            var ps = new Point3d_GL[] { new Point3d_GL(-0.33497,0.24939, 0.0065),
-                new Point3d_GL(-0.33610, 0.224247, -0.01335),
-                new Point3d_GL(-0.33719, 0.199492, 0.00664),
-                new Point3d_GL(-0.406819, 0.202103, 0.00659),
-                new Point3d_GL(-0.405710, 0.226771, -0.013303),
-                new Point3d_GL(-0.404555, 0.251804,  0.0064328)
+            var ps = new Point3d_GL[] { 
+                new Point3d_GL(-0.3801956,0.22838, 0.03581),
+                new Point3d_GL(-0.380255,  0.278841, 0.0354566),
+                new Point3d_GL(-0.4398407, 0.278541,0.0353042),
+
             };
             ps = Point3d_GL.mult(ps, 1000);
             GL1.addPointMesh(ps,Color3d_GL.red());
@@ -678,10 +677,11 @@ namespace opengl3
                 scanner = new Scanner(stereo_cam);
                 stereocam_scan = stereo_cam;
             }
-            chess_size = new Size(10, 11);
+            chess_size = new Size(6, 7);
+            var marksize = 10f;
             var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
-            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size);
+            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,marksize);
 
             //comboImages.Items.AddRange(frms_stereo);
 
@@ -790,7 +790,7 @@ namespace opengl3
         
             scanner = new Scanner(new CameraCV[] { cam1, cam2 });
 
-            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size);
+            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,10f);
 
             loadVideo_stereo(scand_path, scanner, strip);
             var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
@@ -2628,11 +2628,13 @@ namespace opengl3
 
             if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
             {
-                sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+               // sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("\n");
                 video_writer[ind - 1]?.Write(mat);
-                sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+               // sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("\n");
 
@@ -4224,7 +4226,11 @@ namespace opengl3
             comboImages.Items.AddRange(frms_stereo1);
 
             chess_size = new Size(10, 11);
-            stereo.calibrateBfs(frms_stereo1,chess_size);
+            var markSize = 6.2273f;
+
+            chess_size = new Size(6, 7);
+            markSize = 10f;
+            stereo.calibrateBfs(frms_stereo1,chess_size, markSize);
         }
 
         private void but_im_to_3d_im1_Click(object sender, EventArgs e)
@@ -4252,8 +4258,9 @@ namespace opengl3
             var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
             stereocam_scan = stereo;
             //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
-            chess_size = new Size(10, 11);
-            stereocam_scan.calibrate_stereo_rob(frms_stereo, PatternType.Mesh, chess_size);
+            chess_size = new Size(6, 7);
+            var markSize = 10f;
+            stereocam_scan.calibrate_stereo_rob(frms_stereo, PatternType.Mesh, chess_size,  markSize );
             comboImages.Items.AddRange(frms_stereo);
 
         }
