@@ -2687,7 +2687,7 @@ namespace opengl3
             //capture.SetCaptureProperty(CapProp.
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-           capture.SetCaptureProperty(CapProp.Fps, 15);
+           capture.SetCaptureProperty(CapProp.Fps, 30);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);

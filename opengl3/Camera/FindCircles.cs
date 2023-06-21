@@ -139,7 +139,7 @@ namespace opengl3
            
             //prin.t(cents);
             //prin.t("____________");
-           CvInvoke.Imshow("fnd", orig);
+          // CvInvoke.Imshow("fnd", orig);
            // CvInvoke.WaitKey();
             corn = new System.Drawing.PointF[pattern_size.Width * pattern_size.Height];
             

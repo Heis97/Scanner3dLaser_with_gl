@@ -446,7 +446,7 @@ namespace opengl3
                 {
                     vals_regr.Add(new double[] { data[k1, i],k1 });
                 }*/
-                var threshold = 10;
+                var threshold = 5;
                 var koef = Regression.regression(vals_regr.ToArray(), 2);
                 var a = koef[2];
                 var b = koef[1];
