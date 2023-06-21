@@ -294,6 +294,16 @@ namespace opengl3
             return ps_ret;
         }
 
+        public static Point3d_GL[] mult(Point3d_GL[] ps, double k)
+        {
+            var ps_ret = new Point3d_GL[ps.Length];
+            for (int i = 0; i < ps_ret.Length; i++)
+            {
+                ps_ret[i] = ps[i]*k;
+            }
+            return ps_ret;
+        }
+
         public static Point3d_GL[][] multMatr(Point3d_GL[][] ps, Matrix<double> matrix)
         {
             var ps_ret = new Point3d_GL[ps.Length][];

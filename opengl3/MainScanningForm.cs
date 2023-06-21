@@ -405,6 +405,19 @@ namespace opengl3
             GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, "re2");
         }
 
+        void add_points_cal()
+        {
+            var ps = new Point3d_GL[] { new Point3d_GL(-0.33497,0.24939, 0.0065),
+                new Point3d_GL(-0.33610, 0.224247, -0.01335),
+                new Point3d_GL(-0.33719, 0.199492, 0.00664),
+                new Point3d_GL(-0.406819, 0.202103, 0.00659),
+                new Point3d_GL(-0.405710, 0.226771, -0.013303),
+                new Point3d_GL(-0.404555, 0.251804,  0.0064328)
+            };
+            ps = Point3d_GL.mult(ps, 1000);
+            GL1.addPointMesh(ps,Color3d_GL.red());
+        }
+
         void loadStereo()
         {
             var cam_cal_1 = new string[] { @"cam1\camera_cal_1006_1" };
@@ -1182,21 +1195,21 @@ namespace opengl3
             GL1.add_TreeView(tree_models);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-           /* var p1 = new Point3d_GL(0, 0, 20);
-            var p2 = new Point3d_GL(30, 0, 0);
-            var p3 = new Point3d_GL(30, 30, 0);
-            var p4 = new Point3d_GL(0, 30, 0);
-            var polygs = new Polygon3d_GL[] { new Polygon3d_GL(p1, p2, p3), new Polygon3d_GL(p1, p4, p3) };
-            var m1 = PathPlanner.proj_point_test(polygs[0], new Vector3d_GL(1, 0, 0));
-            var ps = new Point3d_GL[] { p1, p2, p3 };
-            GL1.addFrame(m1);
-            GL1.addLineMesh(ps);*/
+            /* var p1 = new Point3d_GL(0, 0, 20);
+             var p2 = new Point3d_GL(30, 0, 0);
+             var p3 = new Point3d_GL(30, 30, 0);
+             var p4 = new Point3d_GL(0, 30, 0);
+             var polygs = new Polygon3d_GL[] { new Polygon3d_GL(p1, p2, p3), new Polygon3d_GL(p1, p4, p3) };
+             var m1 = PathPlanner.proj_point_test(polygs[0], new Vector3d_GL(1, 0, 0));
+             var ps = new Point3d_GL[] { p1, p2, p3 };
+             GL1.addFrame(m1);
+             GL1.addLineMesh(ps);*/
             // startGenerate();
             //trB_SGBM_Enter();
             // test_cross_triag();
             //test_smooth();
             //test_remesh();
-
+            add_points_cal();
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
@@ -3662,7 +3675,7 @@ namespace opengl3
             fr_st_vid.stereo = true;
             //comboImages.Items.Add(fr_st_vid);
 
-            int buff_diff = 4;
+            int buff_diff = 10;
             int buff_len = buff_diff + 1;
 
             var all_frames = Math.Min(all_frames1, all_frames2);
