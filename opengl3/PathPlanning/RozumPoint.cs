@@ -19,6 +19,15 @@ namespace opengl3
             this.rotation = r;
             timestamp = DateTime.Now;
         }
+        public override string ToString()
+        {
+            return point.ToString() + " " + rotation.ToString() + timestamp.ToString();
+        }
+
+        public Point3d_GL to_point3dgl()
+        {
+            return new Point3d_GL(point.x, point.y, point.z);
+        }
     }
 
     public class point3d
@@ -33,6 +42,10 @@ namespace opengl3
             this.y = y;
             this.z = z;
         }
+        public override string ToString()
+        {
+            return x + " " + y + " " + z + ";";
+        }
     }
 
     public class rotation3d
@@ -46,6 +59,10 @@ namespace opengl3
             this.roll = roll;
             this.pitch = pitch;
             this.yaw = yaw;
+        }
+        public override string ToString()
+        {
+            return roll + " " + pitch + " " + yaw+";";
         }
     }
 }

@@ -425,6 +425,7 @@ namespace PathPlanning
         {
             trajParams.comp_z();
             var traj_2d = Generate_multiLayer2d_mesh(contour, trajParams);
+            traj_2d = Trajectory.OptimizeTranzitions2Layer(traj_2d);
             var traj_3d = new List<List<Matrix<double>>>();
             double resolut = 0.2;
             var map_xy = new RasterMap(surface, resolut,RasterMap.type_map.XY);
@@ -508,5 +509,234 @@ namespace PathPlanning
             return Math.Round(val,4);
         }
     }
+    public static class Trajectory
+    {
+        static public List<List<Point3d_GL>> OptimizeTranzitions(List<List<Point3d_GL>> traj)
+        {
+            List<int[][]> approach = new List<int[][]>();
 
+            for (int i = 0; i < traj.Count; i++)
+            {
+                int s1 = 0;
+                int s2 = 1;
+                int e1 = -1;
+                int e2 = -2;
+                approach.Add(new int[][] { new int[] { s1, e1 }, new int[] { s2, e2 }, new int[] { e1, s1 }, new int[] { e2, s2 } });
+            }
+
+            List<double[][]> dists = new List<double[][]>();
+
+            for (int i = 0; i < traj.Count - 1; i++)
+            {
+                double[][] distsBetween = new double[approach[i].Length][];
+
+                for (int layer1 = 0; layer1 < approach[i].Length; layer1++)
+                {
+                    double[] distsLayer = new double[approach[i + 1].Length];
+
+                    for (int layer2 = 0; layer2 < approach[i].Length; layer2++)
+                    {
+                        distsLayer[layer2] = Distance(traj[i][approach[i][layer1][layer2]], traj[i + 1][approach[i][layer1][layer2]]);
+                    }
+
+                    distsBetween[layer1] = distsLayer;
+                }
+
+                dists.Add(distsBetween);
+            }
+
+            return traj;
+        }
+
+        static int get_ind(int i, int len)
+        {
+            if (i<0)
+                return len-i;
+            else
+                return i;
+        }
+
+        static public List<List<Point3d_GL>> OptimizeTranzitions2Layer(List<List<Point3d_GL>> traj)
+        {
+            List<int[][]> approach = new List<int[][]>();
+
+            for (int i = 0; i < traj.Count; i++)
+            {
+                int s1 = 0;
+                int s2 = 1;
+                int e1 = -1;
+                int e2 = -2;
+                approach.Add(new int[][] { new int[] { s1, e1 }, new int[] { s2, e2 }, new int[] { e1, s1 }, new int[] { e2, s2 } });
+            }
+
+            List<double[][]> dists = new List<double[][]>();
+
+            for (int i = 0; i < approach.Count; i++)
+            {
+                double[][] b = new double[approach[i].Length][];
+
+                for (int j = 0; j < approach[i].Length; j++)
+                {
+                    double[] c = new double[approach[i].Length];
+                    for (int k = 0; k < approach[i].Length; k++)
+                    {
+                        c[k] = 1000000000.0f;
+                    }
+
+                    b[j] = c;
+                }
+
+                dists.Add(b);
+            }
+
+            for (int i = 0; i < traj.Count - 1; i++)
+            {
+                for (int layer1 = 0; layer1 < approach[i].Length; layer1++)
+                {
+                    for (int layer2 = 0; layer2 < approach[i + 1].Length; layer2++)
+                    {
+                        if (traj[i] != null && traj[i + 1] != null)
+                        {
+                            var i1 =  approach[i][layer1][1];
+                            var i2 = approach[i+1][layer2][0];
+                            var p1 = traj[i][i1];
+                            var p2 = traj[i][i2];
+                            dists[i][layer1][layer2] = 
+                                Distance(p1,p2);
+                        }
+                    }
+                }
+            }
+
+            List<int> fastWay = new List<int>();
+
+            for (int i = 0; i < dists.Count; i++)
+            {
+                int low, up;
+                if (i == 0)
+                {
+                    (low, up) = FindBestWayFirst(dists[i]);
+                    fastWay = new List<int> { low, up };
+                }
+                else
+                {
+                    (low, up) = FindBestWayCont(dists[i], fastWay[fastWay.Count - 1]);
+                    fastWay.Add(up);
+                }
+            }
+
+            Console.WriteLine("Traj before___________");
+            CompTrans(traj.ToArray());
+
+            Console.WriteLine("Traj after___________");
+            CompTrans(OptimizeTrans(traj.ToArray(), approach[0].ToList(), fastWay));
+
+            return traj;
+        }
+
+        static  public (int,int) FindBestWayFirst(double[][] trans_map)
+        {
+            int low = 0;
+            int up = 0;
+            double min_dist = 100000;
+            for (int i = 0; i < trans_map.Length; i++)
+            {
+                for (int j = 0; j < trans_map[i].Length; j++)
+                {
+                    if (trans_map[i][j] < min_dist)
+                    {
+                        min_dist = trans_map[i][j];
+                        low = i;
+                        up = j;
+                    }
+                }
+            }
+            return (low, up);
+        }
+
+        public static (int, int) FindBestWayCont(double[][] transMap, int prevL)
+        {
+            int low = prevL;
+            int up = 0;
+            double minDist = 100000;
+            for (int j = 0; j < transMap[prevL].Length; j++)
+            {
+                if (transMap[prevL][j] < minDist)
+                {
+                    minDist = transMap[prevL][j];
+                    up = j;
+                }
+            }
+            return (low, up);
+        }
+
+        public static List<Point3d_GL>[] OptimizeTrans(List<Point3d_GL>[] traj, List<int[]> approach, List<int> fastWay)
+        {
+            var optTraj = new List<Point3d_GL>[traj.Length];
+            for (int i = 0; i < traj.Length; i++)
+            {
+                optTraj[i] = SetLayerDirection(traj[i], approach[i][fastWay[i]]);
+            }
+            return optTraj;
+        }
+
+        public static void CompTrans(List<Point3d_GL>[] traj)
+        {
+            var trans = new List<double>();
+            double allTR = 0;
+            for (int i = 0; i < traj.Length - 1; i++)
+            {
+                if (traj[i] != null && traj[i + 1] != null)
+                {
+                    double dist = Distance(traj[i][traj[i].Count - 1], traj[i + 1][0]);
+                    trans.Add(dist);
+                    allTR += dist;
+                }
+            }
+            Console.WriteLine(allTR);
+        }
+
+        public static List<Point3d_GL> SetLayerDirection(List<Point3d_GL> layer, int inds)
+        {
+            if (inds == 0)
+            {
+                //nothing
+            }
+            else if (inds == -1)
+            {
+                layer.Reverse();
+            }
+            else if (inds == 1)
+            {
+                layer = ReverseLineDirect(layer);
+            }
+            else if (inds == -2)
+            {
+                layer.Reverse();
+                layer = ReverseLineDirect(layer);
+            }
+            return layer;
+        }
+        public static List<Point3d_GL> ReverseLineDirect(List<Point3d_GL> layer)
+        {
+            int i = 0;
+            int stop = 0;
+            if (layer.Count % 2 != 0)
+            {
+                stop = 1;
+            }
+            while (i < layer.Count - stop)
+            {
+                Point3d_GL lam = layer[i + 1].Clone();
+                layer[i + 1] = layer[i].Clone();
+                layer[i] = lam.Clone();
+                i += 2;
+            }
+            return layer;
+        }
+        public static double Distance(Point3d_GL p1, Point3d_GL p2)
+        {
+            return (p1 - p2).magnitude();
+        }
+    }
 }

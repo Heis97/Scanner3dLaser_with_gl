@@ -1220,8 +1220,13 @@ namespace opengl3
             var ps_dic = new Dictionary<string, RozumPoint>();
             ps_dic.Add("cal1", p1);
             ps_dic.Add("cal2", p2);
+            var ps_list = new List<Dictionary<string, RozumPoint>>();
+            ps_list.Add(ps_dic);
             var ps = new RozumPoint[] { p1, p2 };
-            FileManage.saveToJson(ps_dic, "s.json");
+            FileManage.saveToJson(ps_list, "s.json");
+
+            var ps_2 = FileManage.loadFronJson("settings_pulse.json");
+            Console.WriteLine(ps_2[3]["kfc_tcp_n_1"].ToString()); 
         }
 
         void test_basis()

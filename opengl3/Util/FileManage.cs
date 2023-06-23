@@ -35,14 +35,27 @@ namespace opengl3
                 serializer.Serialize(writer, list);
             }
         }
-        public static double[] loadFronJson(string path)
+
+        public static void saveToJson(List<Dictionary<string, RozumPoint>> list, string path)
+        {
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.NullValueHandling = NullValueHandling.Ignore;
+            serializer.Formatting = Formatting.Indented;
+
+            using (StreamWriter sw = new StreamWriter(path))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, list);
+            }
+        }
+        public static List<Dictionary<string, RozumPoint>> loadFronJson(string path)
         {
             string jsontext = "";
             using (StreamReader file = File.OpenText(path))
             {
                 jsontext = file.ReadToEnd();
             }
-            return JsonConvert.DeserializeObject<double[]>(jsontext);
+            return JsonConvert.DeserializeObject<List<Dictionary<string, RozumPoint>>>(jsontext);
         }
     }
 }
