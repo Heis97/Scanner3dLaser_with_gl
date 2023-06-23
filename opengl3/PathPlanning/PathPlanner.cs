@@ -425,7 +425,7 @@ namespace PathPlanning
         {
             trajParams.comp_z();
             var traj_2d = Generate_multiLayer2d_mesh(contour, trajParams);
-            traj_2d = Trajectory.OptimizeTranzitions2Layer(traj_2d);
+            //traj_2d = Trajectory.OptimizeTranzitions2Layer(traj_2d);
             var traj_3d = new List<List<Matrix<double>>>();
             double resolut = 0.2;
             var map_xy = new RasterMap(surface, resolut,RasterMap.type_map.XY);
@@ -597,10 +597,10 @@ namespace PathPlanning
                     {
                         if (traj[i] != null && traj[i + 1] != null)
                         {
-                            var i1 =  approach[i][layer1][1];
-                            var i2 = approach[i+1][layer2][0];
+                            var i1 = get_ind( approach[ i][layer1][1], traj[i].Count) ;
+                            var i2 = get_ind(approach[i+1][layer2][0], traj[i+1].Count);
                             var p1 = traj[i][i1];
-                            var p2 = traj[i][i2];
+                            var p2 = traj[i+1][i2];
                             dists[i][layer1][layer2] = 
                                 Distance(p1,p2);
                         }

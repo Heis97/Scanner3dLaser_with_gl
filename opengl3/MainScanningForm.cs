@@ -138,8 +138,8 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-            test_pr();
-            test_basis();
+            //test_pr();
+            //test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
             //load_camers_v2();
 
