@@ -4080,7 +4080,11 @@ namespace opengl3
             var sel_ob = selected_object(); if (sel_ob == null) return;
             cut_area(RasterMap.type_out.inside, sel_ob);
         }
-
+        private void but_set_model_matr_Click(object sender, EventArgs e)
+        {
+            var sel_ob = selected_object(); if (sel_ob == null) return;
+            GL1.buffersGl.setMatrobj(sel_ob, 0, new Matrix4x4f(new float[] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, }));
+        }
         private void but_send_traj_Click(object sender, EventArgs e)
         {
             //var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
@@ -4493,15 +4497,6 @@ namespace opengl3
             laserLine?.set_dir_disp(Convert.ToInt32(tb_dir_disp.Text));
         }
 
-        private void ch_b_sync_CheckedChanged(object sender, EventArgs e)
-        {
-            //scan_sync = 
-        }
-        private void ch_b_dist_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void but_extr_st_Click(object sender, EventArgs e)
         {
             double vel_noz = Convert.ToDouble(tb_print_vel.Text);
@@ -4511,6 +4506,8 @@ namespace opengl3
             laserLine?.set_dir_disp(-1);
             laserLine?.set_div_disp(div);
         }
+
+        
     }
 }
 

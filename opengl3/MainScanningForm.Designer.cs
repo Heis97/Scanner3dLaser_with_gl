@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.ch_b_im_s = new System.Windows.Forms.CheckBox();
             this.ch_b_dist = new System.Windows.Forms.CheckBox();
             this.ch_b_sync = new System.Windows.Forms.CheckBox();
             this.but_del_obj3d = new System.Windows.Forms.Button();
@@ -334,7 +335,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.ch_b_im_s = new System.Windows.Forms.CheckBox();
+            this.but_set_model_matr = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -986,6 +987,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_set_model_matr);
             this.tabOpenGl.Controls.Add(this.ch_b_im_s);
             this.tabOpenGl.Controls.Add(this.ch_b_dist);
             this.tabOpenGl.Controls.Add(this.ch_b_sync);
@@ -1101,6 +1103,16 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // ch_b_im_s
+            // 
+            this.ch_b_im_s.AutoSize = true;
+            this.ch_b_im_s.Location = new System.Drawing.Point(1244, 850);
+            this.ch_b_im_s.Name = "ch_b_im_s";
+            this.ch_b_im_s.Size = new System.Drawing.Size(150, 17);
+            this.ch_b_im_s.TabIndex = 156;
+            this.ch_b_im_s.Text = "Сохранять изображения";
+            this.ch_b_im_s.UseVisualStyleBackColor = true;
+            // 
             // ch_b_dist
             // 
             this.ch_b_dist.AutoSize = true;
@@ -1112,7 +1124,6 @@ namespace opengl3
             this.ch_b_dist.TabIndex = 155;
             this.ch_b_dist.Text = "Дисторсия";
             this.ch_b_dist.UseVisualStyleBackColor = true;
-            this.ch_b_dist.CheckedChanged += new System.EventHandler(this.ch_b_dist_CheckedChanged);
             // 
             // ch_b_sync
             // 
@@ -1125,7 +1136,6 @@ namespace opengl3
             this.ch_b_sync.TabIndex = 154;
             this.ch_b_sync.Text = "Синхронизация";
             this.ch_b_sync.UseVisualStyleBackColor = true;
-            this.ch_b_sync.CheckedChanged += new System.EventHandler(this.ch_b_sync_CheckedChanged);
             // 
             // but_del_obj3d
             // 
@@ -3582,15 +3592,16 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // ch_b_im_s
+            // but_set_model_matr
             // 
-            this.ch_b_im_s.AutoSize = true;
-            this.ch_b_im_s.Location = new System.Drawing.Point(1244, 850);
-            this.ch_b_im_s.Name = "ch_b_im_s";
-            this.ch_b_im_s.Size = new System.Drawing.Size(150, 17);
-            this.ch_b_im_s.TabIndex = 156;
-            this.ch_b_im_s.Text = "Сохранять изображения";
-            this.ch_b_im_s.UseVisualStyleBackColor = true;
+            this.but_set_model_matr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_set_model_matr.Location = new System.Drawing.Point(1076, 417);
+            this.but_set_model_matr.Name = "but_set_model_matr";
+            this.but_set_model_matr.Size = new System.Drawing.Size(136, 48);
+            this.but_set_model_matr.TabIndex = 157;
+            this.but_set_model_matr.Text = "Установить матрицу";
+            this.but_set_model_matr.UseVisualStyleBackColor = true;
+            this.but_set_model_matr.Click += new System.EventHandler(this.but_set_model_matr_Click);
             // 
             // MainScanningForm
             // 
@@ -3984,6 +3995,7 @@ namespace opengl3
         private System.Windows.Forms.TextBox tb_print_syr_d;
         private System.Windows.Forms.Button but_extr_st;
         private System.Windows.Forms.CheckBox ch_b_im_s;
+        private System.Windows.Forms.Button but_set_model_matr;
     }
 }
 

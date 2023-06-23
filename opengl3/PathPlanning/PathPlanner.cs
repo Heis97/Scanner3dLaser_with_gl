@@ -425,7 +425,7 @@ namespace PathPlanning
         {
             trajParams.comp_z();
             var traj_2d = Generate_multiLayer2d_mesh(contour, trajParams);
-            //traj_2d = Trajectory.OptimizeTranzitions2Layer(traj_2d);
+            traj_2d = Trajectory.OptimizeTranzitions2Layer(traj_2d);
             var traj_3d = new List<List<Matrix<double>>>();
             double resolut = 0.2;
             var map_xy = new RasterMap(surface, resolut,RasterMap.type_map.XY);
@@ -551,7 +551,7 @@ namespace PathPlanning
         static int get_ind(int i, int len)
         {
             if (i<0)
-                return len-i;
+                return len+i;
             else
                 return i;
         }
@@ -597,7 +597,7 @@ namespace PathPlanning
                     {
                         if (traj[i] != null && traj[i + 1] != null)
                         {
-                            var i1 = get_ind( approach[ i][layer1][1], traj[i].Count) ;
+                            var i1 = get_ind(approach[ i][layer1][1], traj[i].Count) ;
                             var i2 = get_ind(approach[i+1][layer2][0], traj[i+1].Count);
                             var p1 = traj[i][i1];
                             var p2 = traj[i+1][i2];
@@ -629,8 +629,7 @@ namespace PathPlanning
             CompTrans(traj.ToArray());
 
             Console.WriteLine("Traj after___________");
-            CompTrans(OptimizeTrans(traj.ToArray(), approach[0].ToList(), fastWay));
-
+            CompTrans(OptimizeTrans(traj.ToArray(), approach.ToList(), fastWay));
             return traj;
         }
 
@@ -670,7 +669,7 @@ namespace PathPlanning
             return (low, up);
         }
 
-        public static List<Point3d_GL>[] OptimizeTrans(List<Point3d_GL>[] traj, List<int[]> approach, List<int> fastWay)
+        public static List<Point3d_GL>[] OptimizeTrans(List<Point3d_GL>[] traj, List<int[][]> approach, List<int> fastWay)
         {
             var optTraj = new List<Point3d_GL>[traj.Length];
             for (int i = 0; i < traj.Length; i++)
@@ -696,21 +695,21 @@ namespace PathPlanning
             Console.WriteLine(allTR);
         }
 
-        public static List<Point3d_GL> SetLayerDirection(List<Point3d_GL> layer, int inds)
+        public static List<Point3d_GL> SetLayerDirection(List<Point3d_GL> layer, int[] inds)
         {
-            if (inds == 0)
+            if (inds[0] == 0)
             {
                 //nothing
             }
-            else if (inds == -1)
+            else if (inds[0] == -1)
             {
                 layer.Reverse();
             }
-            else if (inds == 1)
+            else if (inds[0] == 1)
             {
                 layer = ReverseLineDirect(layer);
             }
-            else if (inds == -2)
+            else if (inds[0] == -2)
             {
                 layer.Reverse();
                 layer = ReverseLineDirect(layer);
