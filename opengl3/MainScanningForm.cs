@@ -4083,7 +4083,12 @@ namespace opengl3
         private void but_set_model_matr_Click(object sender, EventArgs e)
         {
             var sel_ob = selected_object(); if (sel_ob == null) return;
-            GL1.buffersGl.setMatrobj(sel_ob, 0, new Matrix4x4f(new float[] { 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, }));
+            GL1.buffersGl.setMatrobj(sel_ob, 0, 
+                new Matrix4x4f(new float[] { 
+                    2, 0, 0, 0,
+                    0, 2, 0, 0,
+                    0, 0, 2, 0,
+                    0, 0, 0, 1 }));
         }
         private void but_send_traj_Click(object sender, EventArgs e)
         {
