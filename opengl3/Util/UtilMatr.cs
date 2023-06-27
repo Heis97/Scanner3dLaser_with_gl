@@ -276,6 +276,26 @@ namespace opengl3
             }
             return calcTransformMatr(basis1d, basis2d);
         }
+
+        static public Matrix<double> calcTransformMatr_cv(Point3d_GL[] basis1, Point3d_GL[] basis2)
+        {
+            if (basis1.Length != basis2.Length || basis1.Length<4 || basis2.Length < 4)
+            {
+                return null;
+            }
+            var basis1d = new double[4, 4];
+            var basis2d = new double[4, 4];
+            for (int i = 0; i < 4; i++)
+            {
+                basis1d[i, 0] = basis1[i].x; basis1d[i, 1] = basis1[i].y; basis1d[i, 2] = basis1[i].z; basis1d[i, 3] = 1;
+                basis2d[i, 0] = basis2[i].x; basis2d[i, 1] = basis2[i].y; basis2d[i, 2] = basis2[i].z; basis2d[i, 3] = 1;
+            }
+
+            var m1 = new Matrix<double>(basis1d);
+            var m2 = new Matrix<double>(basis2d);
+            CvInvoke.Invert(m1, m1, Emgu.CV.CvEnum.DecompMethod.LU);
+            return m1*m2;
+        }
         static public Mat doubleToMat(double[][] inp, Size size)
         {
             Image<Gray, Byte> im_gray = new Image<Gray, byte>(size);

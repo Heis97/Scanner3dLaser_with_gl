@@ -519,6 +519,28 @@ namespace opengl3
             }
             return new Point3d_GL[] { p_min, p_max };
         }
+        static public Point3d_GL[] get_dimens_minmax_arr_full(Polygon3d_GL[] polygons)
+        {
+            var p_min = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);
+            var p_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue);
+
+            for (int j = 0; j < polygons.Length; j++)
+            {
+
+                for (int i = 0; i < polygons[j].ps.Length; i++)
+                {
+                    if (polygons[j].ps[i].x < p_min.x) p_min.x = polygons[j].ps[i].x;
+                    if (polygons[j].ps[i].y < p_min.y) p_min.y = polygons[j].ps[i].y;
+                    if (polygons[j].ps[i].z < p_min.z) p_min.z = polygons[j].ps[i].z;
+
+                    if (polygons[j].ps[i].x > p_max.x) p_max.x = polygons[j].ps[i].x;
+                    if (polygons[j].ps[i].y > p_max.y) p_max.y = polygons[j].ps[i].y;
+                    if (polygons[j].ps[i].z > p_max.z) p_max.z = polygons[j].ps[i].z;
+                }
+
+            }
+            return new Point3d_GL[] { p_min, p_max };
+        }
         static public Point3d_GL[] get_dimens_minmax_arr(Polygon3d_GL[] polygons)
         {
             var p_min = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);

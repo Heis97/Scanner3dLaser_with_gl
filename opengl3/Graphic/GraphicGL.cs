@@ -1809,7 +1809,7 @@ namespace opengl3
             }
             return mesh;
         }
-        public void addPointMesh(Point3d_GL[] points, Color3d_GL color = null, string name = "new PointMesh")
+        public string addPointMesh(Point3d_GL[] points, Color3d_GL color = null, string name = "new PointMesh")
         {
             var mesh = new List<float>();
             foreach (var p in points)
@@ -1818,7 +1818,7 @@ namespace opengl3
                 mesh.Add((float)p.y);
                 mesh.Add((float)p.z);
             }
-            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, color, name);
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, color, name);
         }
         public void addLineFanMesh(float[] startpoint, float[] points, Color3d_GL color = null, string name = "new LineFanMesh")
         {

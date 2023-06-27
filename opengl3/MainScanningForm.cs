@@ -139,7 +139,7 @@ namespace opengl3
             InitializeComponent();
             init_vars();
             //test_pr();
-            //test_basis();
+            test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
             //load_camers_v2();
 
@@ -1233,16 +1233,27 @@ namespace opengl3
         {
 
             var basis1 = new Point3d_GL[] {
-                new Point3d_GL(1, 0, 0),
-                new Point3d_GL(0, 1, 0),
-                new Point3d_GL(0, 0, 1),
-                new Point3d_GL(0, 0, 0)};
+                new Point3d_GL(-0.91, -0.88, 1),
+                new Point3d_GL(-0.91, 0.94, 1),
+                new Point3d_GL(0.8, 0.94, 1),
+                new Point3d_GL(0.8, -0.82, 0.5)};
             var basis2 = new Point3d_GL[] { 
-                new Point3d_GL(110, 100, 100),
-                new Point3d_GL(100, 110, 100),
-                new Point3d_GL(100, 100, 110),
-                new Point3d_GL(0, 0, 0)};
-            var transf = UtilMatr.calcTransformMatr(basis1, basis2);
+                new Point3d_GL(-6.33, -9.64, 3.82),
+                new Point3d_GL(-6.3, -7.84,3.82),
+                new Point3d_GL(-4.56, -7.87,3.82),
+                new Point3d_GL(-4.56, -9.64, 3.32)};
+
+           /* var basis1 = new Point3d_GL[] {
+                new Point3d_GL(0, 0, 0),
+                new Point3d_GL(0, 10, 0),
+                new Point3d_GL(10, 10, 0),
+                new Point3d_GL(10, 0, 10)};
+            var basis2 = new Point3d_GL[] {
+                new Point3d_GL(0, 0, 0),
+                new Point3d_GL(0, 5,0),
+                new Point3d_GL(5, 5, 0),
+                new Point3d_GL(5, 0, 5)};*/
+            var transf = UtilMatr.calcTransformMatr_cv(basis1, basis2);
             prin.t(transf);
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
@@ -4082,16 +4093,40 @@ namespace opengl3
         }
         private void but_set_model_matr_Click(object sender, EventArgs e)
         {
-            var sel_ob = selected_object(); if (sel_ob == null) return;
-            GL1.buffersGl.setMatrobj(sel_ob, 0, 
-                new Matrix4x4f(new float[] { 
-                    2, 0, 0, 0,
-                    0, 2, 0, 0,
-                    0, 0, 2, 0,
-                    0, 0, 0, 1 }));
+            var selected_obj = selected_nodes();
+            if (selected_obj == null) return;
+            if (selected_obj.Length < 2) return;
+            var matr = GL1.buffersGl.objs[selected_obj[1]].trsc[0].matr;
+            GL1.buffersGl.setMatrobj(selected_obj[0], 0, matr);
+        }
+        private void but_comp_basis_Click(object sender, EventArgs e)
+        {
+            var selected_obj = selected_nodes();
+            if (selected_obj == null) return;
+            if (selected_obj.Length < 2) return;
+            var ps1 = Point3d_GL.fromMesh(GL1.buffersGl.objs[selected_obj[0]].vertex_buffer_data);
+            var ps2 = Point3d_GL.fromMesh(GL1.buffersGl.objs[selected_obj[1]].vertex_buffer_data);
+            if (ps1 == null || ps2 == null) return;
+            if (ps1.Length < 4 || ps2.Length < 4) return;
+            var matr =  UtilMatr.calcTransformMatr_cv(ps1, ps2);
+            var matr_obj = GL1.addPointMesh(new Point3d_GL[] {new Point3d_GL(0,0,0)},Color3d_GL.blue(),"matr");
+            GL1.buffersGl.setMatrobj(matr_obj,0,trsc.toGLmatrix(matr));
+        }
+        private void but_ps_cal_save_Click(object sender, EventArgs e)
+        {
+            var selected_obj = selected_object(); if (selected_obj == null) return;
+            var mesh = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+            var cont = GL1.get_contour()?.ToList();
+            if (mesh != null && cont != null)
+            {
+                var ps_proj =  PathPlanner.project_contour_on_surface(mesh, cont);
+                GL1.addPointMesh(ps_proj.ToArray(), Color3d_GL.green(), "proj_ps");
+            }
+               
         }
         private void but_send_traj_Click(object sender, EventArgs e)
         {
+            
             //var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
             con1?.send_mes(debugBox.Text);
         }

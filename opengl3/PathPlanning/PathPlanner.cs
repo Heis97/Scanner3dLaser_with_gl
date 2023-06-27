@@ -400,12 +400,29 @@ namespace PathPlanning
             var layer_3d = new List<Matrix<double>>();
             for (int i = 0; i < layer.Count; i++)
             {
-               // if(i>0) vec_x_dir = layer[i] - 
-                var polyg_ind = map_xy.get_polyg_ind_prec_xy(layer[i], surface);
-                var polyg = surface[polyg_ind];
-                layer_3d.Add(proj_point(polyg, layer[i],vec_x_dir));
+                var polyg_inds = map_xy.get_polyg_ind_prec_xy(layer[i], surface);
+                var polyg_ind = fing_high_polyg(polyg_inds, layer[i], surface);
+
+                layer_3d.Add(proj_point(surface[polyg_ind], layer[i], vec_x_dir));
             }
             return layer_3d;
+        }
+
+        static int fing_high_polyg(int[] inds, Point3d_GL p, Polygon3d_GL[] surface)
+        {
+            if(inds == null) return 0;
+            int num = 0;
+            double z = double.MinValue;
+            for (int i = 0; i < inds.Length; i++)
+            {
+                var p_p = surface[inds[i]].project_point_xy(p);
+                if(p_p.z>z)
+                {
+                    num = i;
+                    z = p_p.z;
+                }
+            }
+            return inds[num];
         }
 
         static List<List<Matrix<double>>> add_transit(List<List<Matrix<double>>> traj, double trans_h)
@@ -439,11 +456,17 @@ namespace PathPlanning
             traj_3d = add_transit(traj_3d, trajParams.h_transf);
             return traj_3d;
         }
-        public static List<Point3d_GL> project_contour_on_surface(Polygon3d_GL[] surface, List<Point3d_GL> contour, TrajParams trajParams)
+        public static List<Point3d_GL> project_contour_on_surface(Polygon3d_GL[] surface, List<Point3d_GL> contour)
         {
+            var cont_proj = new List<Point3d_GL>();
+            for(int i=0; i< contour.Count; i++)
+            {
+                cont_proj.Add(new Point3d_GL() { x = contour[i].x, y = contour[i].y });
+            }
             double resolut = 0.2;
             var map_xy = new RasterMap(surface, resolut, RasterMap.type_map.XY);
-            var proj_c = project_layer(surface, contour, map_xy, new Vector3d_GL(1,0,0));
+
+            var proj_c = project_layer(surface, cont_proj, map_xy, new Vector3d_GL(1,0,0));
             
             return matr_to_ps(proj_c);
         }

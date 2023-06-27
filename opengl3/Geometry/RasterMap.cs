@@ -49,11 +49,16 @@ namespace opengl3
             {
                 resolution = Polygon3d_GL.aver_dim(new Polygon3d_GL[][] { surface });
             }
-            var p_minmax = Polygon3d_GL.get_dimens_minmax_arr(surface);
+            var p_minmax = Polygon3d_GL.get_dimens_minmax_arr_full(surface);
             var p_min = p_minmax[0]; var p_max = p_minmax[1];
+
+            var p_med = (p_minmax[1] + p_minmax[0]) / 2;
+            var p_del = (p_minmax[1] - p_minmax[0]) / 2;
+            p_min = p_med - p_del * 1.2;
+            p_max = p_med + p_del * 1.2;
             var p_len = (p_max - p_min) / resolution;
-            var x_len = (int)(p_len.x * 1.1);
-            var y_len = (int)(p_len.y * 1.1);
+            var x_len = (int)(p_len.x);
+            var y_len = (int)(p_len.y);
             var map_xy = new int[x_len, y_len][];
 
             int triangle_overlay = 1;
@@ -61,30 +66,50 @@ namespace opengl3
             {
                 var pol_minmax = surface[i].get_dimens_minmax();
                 var pol_min = pol_minmax[0] - p_min; var pol_max = pol_minmax[1] - p_min;
-                for (int x = (int)(pol_min.x / resolution)- triangle_overlay; x < pol_max.x / resolution+ triangle_overlay; x++)
+                int x_b = (int)(pol_min.x / resolution) - triangle_overlay;
+                int x_e = (int)(pol_max.x / resolution) + triangle_overlay;
+                for (int x = x_b; x <= x_e; x++)
                 {
-                    for (int y = (int)(pol_min.y / resolution)- triangle_overlay; y < pol_max.y / resolution+ triangle_overlay; y++)
+                    int y_b = (int)(pol_min.y / resolution) - triangle_overlay;
+                    int y_e = (int)(pol_max.y / resolution) + triangle_overlay;
+                    for (int y = y_b; y < y_e; y++)
                     {
-                        if (x >= x_len) x = x_len-1;
-                        if (x < 0) x = 0;
+                        var x_i = x;
+                        var y_i = y;
+                        if (x_i >= x_len) x_i = x_len - 1;
+                        if (x_i < 0) x_i = 0;
 
-                        if(y >= y_len) y = y_len - 1;
-                        if (y < 0) y = 0;
+                        if(y_i >= y_len) y_i = y_len - 1;
+                        if (y_i < 0) y_i = 0;
 
-                        if (map_xy[x, y] == null) map_xy[x, y] = new int[0];
-                        var map_cur = map_xy[x, y];
+                        if (map_xy[x_i, y_i] == null) map_xy[x_i, y_i] = new int[0];
+                        var map_cur = map_xy[x_i, y_i];
                         var list = map_cur.ToList();
                         list.Add(i);
-                        map_xy[x, y] = list.ToArray();
+                       
+                        map_xy[x_i, y_i] = list.ToArray();
                     }
                 }
             }
-            map = map_xy;
+
+            map = uniq_map(map_xy);
             pt_min = p_min;
             pt_max = p_max;
             res = resolution;
         }
 
+        int[,][] uniq_map(int[,][] map)
+        {
+            for (int x = 0; x < map.GetLength(0); x++)
+                for (int y = 0; y < map.GetLength(1); y++)
+                {
+                    for(int i=0; i<map[x,y].Length; i++)
+                    {
+                        map[x, y] = map[x, y].Distinct().ToArray();
+                    }
+                }
+            return map;
+        }
         void rasterxy_surface_xyz(Polygon3d_GL[] surface, double resolution)
         {
             if (resolution < 0)
@@ -519,56 +544,31 @@ namespace opengl3
             return 0;
         }
 
-        public int get_polyg_ind_prec_xy(Point3d_GL p,Polygon3d_GL[] surface)
+        public int[] get_polyg_ind_prec_xy(Point3d_GL p,Polygon3d_GL[] surface)
         {
-            if (map == null) return 0;
+            if (map == null) return null;
             var p_xy = (p - pt_min) / res;
             var x = (int)p_xy.x;
             var y = (int)p_xy.y;
 
-
+            if(x >= map.GetLength(0) || y >= map.GetLength(1)) return null;
             var inds = map[x, y];
+            var rets = new List<int>();
             if (inds != null)
             {
                 if (inds.Length > 0)
                 {
                     for (int i = 0; i < inds.Length; i++)
                     {
-                        if (surface[inds[i]].affilationPoint_xy(p))
+                        if (surface[inds[i]].affilationPoint_xy(p) && Math.Abs( surface[inds[i]].v3.z)> 0.001)
                         {
-                            return inds[i];
+                            rets.Add(inds[i]);
                         }
                     }
-                    return inds[0];
                 }
             }
-            return 0;
-        }
-
-        public int get_polyg_ind_prec_xyz(Point3d_GL p, Polygon3d_GL[] surface)
-        {
-            if (map_xyz == null) return 0;
-            var p_xy = (p - pt_min) / res;
-            var x = (int)p_xy.x;
-            var y = (int)p_xy.y;
-            var z = (int)p_xy.z;
-
-            var inds = map_xyz[x, y, z];
-            if (inds != null)
-            {
-                if (inds.Length > 0)
-                {
-                    for (int i = 0; i < inds.Length; i++)
-                    {
-                        if (surface[inds[i]].affilationPoint_xy(p))
-                        {
-                            return inds[i];
-                        }
-                    }
-                    return inds[0];
-                }
-            }
-            return 0;
+            if (rets.Count == 0) return null;
+            return rets.ToArray();
         }
 
         public enum type_out { inside, outside };
