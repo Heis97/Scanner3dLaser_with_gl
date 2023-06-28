@@ -138,8 +138,8 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-            //test_pr();
-            test_basis();
+           
+           // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
             //load_camers_v2();
 
@@ -416,7 +416,7 @@ namespace opengl3
 
             };
             ps = Point3d_GL.mult(ps, 1000);
-            GL1.addPointMesh(ps,Color3d_GL.red());
+           // GL1.addPointMesh(ps,Color3d_GL.red());
         }
 
         void loadStereo()
@@ -1212,21 +1212,30 @@ namespace opengl3
             //test_smooth();
             //test_remesh();
             add_points_cal();
+            load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
+
         }
         void test_pr()
         {
-            var p1 = new RozumPoint(new point3d(1, 2, 3), new rotation3d(4, 5, 6));
-            var p2 = new RozumPoint(new point3d(1, 2, 3), new rotation3d(4, 5, 6));
-            var ps_dic = new Dictionary<string, RozumPoint>();
-            ps_dic.Add("cal1", p1);
-            ps_dic.Add("cal2", p2);
-            var ps_list = new List<Dictionary<string, RozumPoint>>();
-            ps_list.Add(ps_dic);
-            var ps = new RozumPoint[] { p1, p2 };
-            FileManage.saveToJson(ps_list, "s.json");
+            var ps_2 = FileManage.loadFromJson("settings_pulse.json");
+            var ps = new List<Point3d_GL>();
+            ps.Add(ps_2[3]["b_2806a"].to_point3dgl());
+            ps.Add(ps_2[3]["cal_1_2"].to_point3dgl());
+            ps.Add(ps_2[3]["cal_1_3"].to_point3dgl());
+            
+            var ps2 = Point3d_GL.mult(ps.ToArray(), 1000);
+            GL1.addPointMesh(ps2);
+        }
 
-            var ps_2 = FileManage.loadFronJson("settings_pulse.json");
-            Console.WriteLine(ps_2[3]["kfc_tcp_n_1"].ToString()); 
+        void load_ps_from_pulse(string path, string[] ps_n)
+        {
+            var ps_2 = FileManage.loadFromJson(path);
+            var ps = new List<Point3d_GL>();
+            foreach (var p in ps_n)
+                ps.Add(ps_2[3][p].to_point3dgl());
+
+            var ps2 = Point3d_GL.mult(ps.ToArray(), 1000);
+            GL1.addPointMesh(ps2);
         }
 
         void test_basis()

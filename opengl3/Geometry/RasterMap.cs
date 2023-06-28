@@ -98,16 +98,27 @@ namespace opengl3
             res = resolution;
         }
 
-        int[,][] uniq_map(int[,][] map)
+        static int[,][] uniq_map(int[,][] map)
         {
             for (int x = 0; x < map.GetLength(0); x++)
                 for (int y = 0; y < map.GetLength(1); y++)
                 {
-                    for(int i=0; i<map[x,y].Length; i++)
-                    {
-                        map[x, y] = map[x, y].Distinct().ToArray();
-                    }
+                    if(map[x, y] != null)
+                        for(int i=0; i<map[x,y].Length; i++)
+                        {
+                            map[x, y] = map[x, y].Distinct().ToArray();
+                        }
                 }
+            return map;
+        }
+        static int[,,][] uniq_map(int[,,][] map)
+        {
+            for (int x = 0; x < map.GetLength(0); x++)
+                for (int y = 0; y < map.GetLength(1); y++)
+                    for (int z = 0; z < map.GetLength(2); z++)
+                        if (map[x, y,z] != null)
+                            for (int i = 0; i < map[x, y, z].Length; i++)
+                                map[x, y, z] = map[x, y, z].Distinct().ToArray();  
             return map;
         }
         void rasterxy_surface_xyz(Polygon3d_GL[] surface, double resolution)
@@ -216,6 +227,7 @@ namespace opengl3
                 list.Add(i);
                 map_xyz[x, y, z] = list.ToArray();
             }
+            map_xyz = uniq_map(map_xyz);
             return new RasterMap(map_xyz, resolution, p_len, p_min, points.Length);
         }
         static RasterMap raster_mesh_xyz(Polygon3d_GL[] surface, Point3d_GL p_len, Point3d_GL p_min, double resolution)
@@ -257,6 +269,7 @@ namespace opengl3
                     }
                 }
             }
+            map_xyz = uniq_map(map_xyz);
             return new RasterMap(map_xyz, resolution, p_len, p_min,surface.Length);
 
         }

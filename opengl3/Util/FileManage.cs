@@ -48,7 +48,7 @@ namespace opengl3
                 serializer.Serialize(writer, list);
             }
         }
-        public static List<Dictionary<string, RozumPoint>> loadFronJson(string path)
+        public static List<Dictionary<string, RozumPoint>> loadFromJson(string path)
         {
             string jsontext = "";
             using (StreamReader file = File.OpenText(path))
