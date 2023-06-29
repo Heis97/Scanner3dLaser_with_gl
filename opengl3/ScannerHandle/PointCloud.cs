@@ -298,6 +298,33 @@ namespace opengl3
             return points_cam2b;
         }
 
+        public static Point3d_GL[] comp_stereo_ps(PointF[] points_im1, PointF[] points_im2, StereoCamera stereocamera, GraphicGL graphicGL = null, Image<Bgr, byte>[] color_im = null)
+        {
+            var points3d_1 = computePointsCam(points_im1, stereocamera.cameraCVs[0], color_im[0]);
+            var points3d_2 = computePointsCam(points_im2, stereocamera.cameraCVs[1], color_im[1]);
+            var m1 = stereocamera.cameraCVs[0].matrixCS;
+            if (stereocamera.scan_coord_sys == StereoCamera.mode.camera)
+            {
+                m1 = UtilMatr.eye_matr(4);
+            }
+            if (stereocamera.scan_coord_sys == StereoCamera.mode.world)
+            {
+
+                if (stereocamera.Bbf != null && stereocamera.Bfs != null)
+                    m1 = stereocamera.Bbf * stereocamera.Bfs;//or inverse                
+            }
+            var m2 = m1 * stereocamera.R;
+            var ps1 = comp_points_for_gpu(points3d_1, m1);
+            var ps2 = comp_points_for_gpu(points3d_2, m2);
+            var ps3d = comp_stereo_ps(ps1, ps2);
+            return null;
+        }
+
+        public static Point3d_GL[] comp_stereo_ps(Point3d_GL[] ps1, Point3d_GL[] ps2)
+        {
+            return null;
+        }
+
         public static Point3d_GL[][] fromStereoLaser_gpu_all(PointF[][] points_im1, PointF[][] points_im2, StereoCamera stereocamera, GraphicGL graphicGL = null, Image<Bgr, byte>[] color_im = null)
         {
             /*for(int i = 0; i < points_im1.Length; i++)
