@@ -30,6 +30,10 @@ namespace opengl3
         public DateTime dateTime;
         public bool stereo = false;
         public RobotFrame RobotFrame;
+        public Frame()
+        {
+
+        }
         public Frame(Mat _im, Point3d_GL _pos_cam, Point3d_GL _pos_rob, string _name, PointF[] _points)
         {
             im = _im;

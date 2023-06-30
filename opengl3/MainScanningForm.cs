@@ -1212,7 +1212,7 @@ namespace opengl3
             //test_smooth();
             //test_remesh();
             add_points_cal();
-            load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
+            //load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
 
         }
         void test_pr()
@@ -4143,7 +4143,82 @@ namespace opengl3
         #endregion
 
         #region load_but
+        private void but_stereo_3dp_Click(object sender, EventArgs e)
+        {
+            var scan_path = textB_scan_path.Text;
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var stereo_cal_path = textB_stereo_cal_path.Text;
+            scan_path = scan_path.Split('\\').Reverse().ToArray()[0];
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
+            this.scanner = scanner;
+            var fr = new Frame();
 
+            (fr, this.scanner) = load_orig_scan_path(scan_path);
+
+
+            //var stereo_cal_1 = scan_path.Split('\\').Reverse().ToArray()[0];
+            //var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
+            //var frms_stereo1 = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
+           // comboImages.Items.AddRange(frms_stereo1);
+            chess_size = new Size(6, 7);
+            GL1.addPointMesh(ps3d_frame(fr,scanner));
+            
+            
+
+        }
+
+        Point3d_GL[] ps3d_frame(Frame fr,Scanner scanner)
+        {
+            var corn1 = new System.Drawing.PointF[0];
+            var corn2 = new System.Drawing.PointF[0];
+            var mat1 = scanner.stereoCamera.cameraCVs[0].undist(fr.im);
+            var mat2 = scanner.stereoCamera.cameraCVs[1].undist(fr.im_sec);
+            imBox_base_1.Image = FindCircles.findCircles(mat1, ref corn1, chess_size);
+            imBox_base_2.Image = FindCircles.findCircles(mat2, ref corn2, chess_size);
+            var ps = PointCloud.comp_stereo_ps(PointF.toPointF(corn1), PointF.toPointF(corn2), scanner.stereoCamera);
+            GL1.addPointMesh(ps);
+            return ps;
+        }
+
+        (Frame,Scanner) load_orig_scan_path(string filepath )
+        {
+            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
+            var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
+            Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
+            Console.WriteLine(Directory.GetFiles("cam2\\" + filepath)[0]);
+
+            var ve_paths1 = get_video_path(1, filepath);
+            string video_path1 = ve_paths1[0];
+
+            // string enc_path1 = ve_paths1[1];
+
+            var ve_paths2 = get_video_path(2, filepath);
+            string video_path2 = ve_paths2[0];
+            // string enc_path2 = ve_paths2[1];
+
+            string enc_path = ve_paths1[1];
+            var pairs = frames_sync_from_file(enc_path);
+            var cam_min = (int)pairs[0][0];
+            var cam_max = (int)pairs[0][1];
+            var frame_min = (int)pairs[0][2];
+            var frame_max = (int)pairs[0][3];
+
+            scanner.set_coord_sys(StereoCamera.mode.model);
+            var name_v1 = Path.GetFileNameWithoutExtension(video_path1);
+            var name_v2 = Path.GetFileNameWithoutExtension(video_path2);
+            if (name_v1.Length > 1 && name_v2.Length > 1)
+            {
+                scanner.set_rob_pos(name_v1);
+                scanner.set_coord_sys(StereoCamera.mode.world);
+            }
+
+            var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
+            var frames_show = new List<Frame>();
+            fr_st_vid.stereo = true;
+
+            return (fr_st_vid,scanner);
+        }
         private void but_scan_load_ex_Click(object sender, EventArgs e)
         {
 
@@ -4556,7 +4631,7 @@ namespace opengl3
             laserLine?.set_div_disp(div);
         }
 
-        
+       
     }
 }
 

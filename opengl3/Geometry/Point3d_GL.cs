@@ -410,7 +410,13 @@ namespace opengl3
             return ret;
         }
 
-
+        public static Point3d_GL operator |(Point3d_GL p1, Point3d_GL p2)//vector multiply
+        {
+            return new Point3d_GL(
+                  p1.y * p2.z - p1.z * p2.y,
+                  p1.z * p2.x - p1.x * p2.z,
+                  p1.x * p2.y - p1.y * p2.x,p1.color);
+        }
         public static Point3d_GL operator *(Matrix4x4f matrixA, Point3d_GL p)
         {
             var matrix = Matrix4x4ToDouble(matrixA);

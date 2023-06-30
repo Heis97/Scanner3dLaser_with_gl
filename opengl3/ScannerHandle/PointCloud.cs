@@ -300,8 +300,8 @@ namespace opengl3
 
         public static Point3d_GL[] comp_stereo_ps(PointF[] points_im1, PointF[] points_im2, StereoCamera stereocamera, GraphicGL graphicGL = null, Image<Bgr, byte>[] color_im = null)
         {
-            var points3d_1 = computePointsCam(points_im1, stereocamera.cameraCVs[0], color_im[0]);
-            var points3d_2 = computePointsCam(points_im2, stereocamera.cameraCVs[1], color_im[1]);
+            var points3d_1 = computePointsCam(points_im1, stereocamera.cameraCVs[0], null);
+            var points3d_2 = computePointsCam(points_im2, stereocamera.cameraCVs[1], null);
             var m1 = stereocamera.cameraCVs[0].matrixCS;
             if (stereocamera.scan_coord_sys == StereoCamera.mode.camera)
             {
@@ -317,12 +317,29 @@ namespace opengl3
             var ps1 = comp_points_for_gpu(points3d_1, m1);
             var ps2 = comp_points_for_gpu(points3d_2, m2);
             var ps3d = comp_stereo_ps(ps1, ps2);
-            return null;
+            return ps3d;
         }
 
-        public static Point3d_GL[] comp_stereo_ps(Point3d_GL[] ps1, Point3d_GL[] ps2)
+        public static Point3d_GL[] comp_stereo_ps(Point3d_GL[] ps1, Point3d_GL[] ps2)//first point - camera pos
         {
-            return null;
+            var ps3d = new List<Point3d_GL>();
+            var v_cc = ps2[0] - ps1[0];
+
+            for(int i = 1; i < ps1.Length; i++)
+            {
+                var v_i = ps1[i] - ps1[0];
+                var v_n = v_i|v_cc;
+                var p_n = ps1[0] + v_n;
+                var f1 = new Flat3d_GL(ps1[0],ps1[i],v_n);
+                v_i = ps2[i] - ps2[0];
+                v_n = v_i | (-v_cc);
+                p_n = ps2[0] + v_n;
+                var f2 = new Flat3d_GL(ps2[0], ps2[i], v_n);
+                var f3 = new Flat3d_GL(ps1[0], ps2[0], ps1[i]);
+                var p3d = Flat3d_GL.cross(f1, f2, f3);
+                ps3d.Add(p3d);
+            }
+            return ps3d.ToArray();
         }
 
         public static Point3d_GL[][] fromStereoLaser_gpu_all(PointF[][] points_im1, PointF[][] points_im2, StereoCamera stereocamera, GraphicGL graphicGL = null, Image<Bgr, byte>[] color_im = null)

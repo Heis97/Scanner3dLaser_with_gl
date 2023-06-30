@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_comp_basis = new System.Windows.Forms.Button();
             this.but_ps_cal_save = new System.Windows.Forms.Button();
             this.but_set_model_matr = new System.Windows.Forms.Button();
             this.ch_b_im_s = new System.Windows.Forms.CheckBox();
@@ -337,7 +338,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_comp_basis = new System.Windows.Forms.Button();
+            this.but_stereo_3dp = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -989,6 +990,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_stereo_3dp);
             this.tabOpenGl.Controls.Add(this.but_comp_basis);
             this.tabOpenGl.Controls.Add(this.but_ps_cal_save);
             this.tabOpenGl.Controls.Add(this.but_set_model_matr);
@@ -1106,6 +1108,17 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // but_comp_basis
+            // 
+            this.but_comp_basis.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_comp_basis.Location = new System.Drawing.Point(1076, 468);
+            this.but_comp_basis.Name = "but_comp_basis";
+            this.but_comp_basis.Size = new System.Drawing.Size(136, 48);
+            this.but_comp_basis.TabIndex = 159;
+            this.but_comp_basis.Text = "Посчитать матрицу";
+            this.but_comp_basis.UseVisualStyleBackColor = true;
+            this.but_comp_basis.Click += new System.EventHandler(this.but_comp_basis_Click);
             // 
             // but_ps_cal_save
             // 
@@ -3618,16 +3631,15 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // but_comp_basis
+            // but_stereo_3dp
             // 
-            this.but_comp_basis.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_comp_basis.Location = new System.Drawing.Point(1076, 468);
-            this.but_comp_basis.Name = "but_comp_basis";
-            this.but_comp_basis.Size = new System.Drawing.Size(136, 48);
-            this.but_comp_basis.TabIndex = 159;
-            this.but_comp_basis.Text = "Посчитать матрицу";
-            this.but_comp_basis.UseVisualStyleBackColor = true;
-            this.but_comp_basis.Click += new System.EventHandler(this.but_comp_basis_Click);
+            this.but_stereo_3dp.Location = new System.Drawing.Point(1101, 575);
+            this.but_stereo_3dp.Name = "but_stereo_3dp";
+            this.but_stereo_3dp.Size = new System.Drawing.Size(111, 42);
+            this.but_stereo_3dp.TabIndex = 160;
+            this.but_stereo_3dp.Text = "Посчитать 3д точки";
+            this.but_stereo_3dp.UseVisualStyleBackColor = true;
+            this.but_stereo_3dp.Click += new System.EventHandler(this.but_stereo_3dp_Click);
             // 
             // MainScanningForm
             // 
@@ -4024,6 +4036,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_set_model_matr;
         private System.Windows.Forms.Button but_ps_cal_save;
         private System.Windows.Forms.Button but_comp_basis;
+        private System.Windows.Forms.Button but_stereo_3dp;
     }
 }
 
