@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_stereo_3dp = new System.Windows.Forms.Button();
             this.but_comp_basis = new System.Windows.Forms.Button();
             this.but_ps_cal_save = new System.Windows.Forms.Button();
             this.but_set_model_matr = new System.Windows.Forms.Button();
@@ -338,7 +339,7 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_stereo_3dp = new System.Windows.Forms.Button();
+            this.but_dist_same_ps = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -990,6 +991,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_dist_same_ps);
             this.tabOpenGl.Controls.Add(this.but_stereo_3dp);
             this.tabOpenGl.Controls.Add(this.but_comp_basis);
             this.tabOpenGl.Controls.Add(this.but_ps_cal_save);
@@ -1108,6 +1110,16 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // but_stereo_3dp
+            // 
+            this.but_stereo_3dp.Location = new System.Drawing.Point(1101, 575);
+            this.but_stereo_3dp.Name = "but_stereo_3dp";
+            this.but_stereo_3dp.Size = new System.Drawing.Size(111, 42);
+            this.but_stereo_3dp.TabIndex = 160;
+            this.but_stereo_3dp.Text = "Посчитать 3д точки";
+            this.but_stereo_3dp.UseVisualStyleBackColor = true;
+            this.but_stereo_3dp.Click += new System.EventHandler(this.but_stereo_3dp_Click);
             // 
             // but_comp_basis
             // 
@@ -3631,15 +3643,15 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // but_stereo_3dp
+            // but_dist_same_ps
             // 
-            this.but_stereo_3dp.Location = new System.Drawing.Point(1101, 575);
-            this.but_stereo_3dp.Name = "but_stereo_3dp";
-            this.but_stereo_3dp.Size = new System.Drawing.Size(111, 42);
-            this.but_stereo_3dp.TabIndex = 160;
-            this.but_stereo_3dp.Text = "Посчитать 3д точки";
-            this.but_stereo_3dp.UseVisualStyleBackColor = true;
-            this.but_stereo_3dp.Click += new System.EventHandler(this.but_stereo_3dp_Click);
+            this.but_dist_same_ps.Location = new System.Drawing.Point(996, 575);
+            this.but_dist_same_ps.Name = "but_dist_same_ps";
+            this.but_dist_same_ps.Size = new System.Drawing.Size(99, 42);
+            this.but_dist_same_ps.TabIndex = 161;
+            this.but_dist_same_ps.Text = "Расстояние между точками";
+            this.but_dist_same_ps.UseVisualStyleBackColor = true;
+            this.but_dist_same_ps.Click += new System.EventHandler(this.but_dist_same_ps_Click);
             // 
             // MainScanningForm
             // 
@@ -4037,6 +4049,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_ps_cal_save;
         private System.Windows.Forms.Button but_comp_basis;
         private System.Windows.Forms.Button but_stereo_3dp;
+        private System.Windows.Forms.Button but_dist_same_ps;
     }
 }
 

@@ -640,7 +640,17 @@ namespace opengl3
             }
             return ret;
         }
-
+        public static double[] dist_ps(Point3d_GL[] ps1, Point3d_GL[] ps2)
+        {
+            if (ps1 == null || ps2 == null) return null;
+            if (ps1.Length != ps2.Length) return null;
+            var ret = new double[ps1.Length];
+            for (int i = 0; i < ps1.Length; i++)
+            {
+                ret[i] = ( ps1[i]-ps2[i]).magnitude();
+            }
+            return ret;
+        }
 
         public static Point3d_GL[] line_aver(Point3d_GL[] ps,int wind)
         {

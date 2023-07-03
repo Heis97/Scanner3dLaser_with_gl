@@ -3733,7 +3733,11 @@ namespace opengl3
 
             int buff_diff = 10;
             int buff_len = buff_diff + 1;
-
+            if(ch_b_dist.Checked)
+            {
+                orig1 = scanner.stereoCamera.cameraCVs[0].undist(orig1);
+                orig2 = scanner.stereoCamera.cameraCVs[1].undist(orig2);
+            }
             var all_frames = Math.Min(all_frames1, all_frames2);
             if (scanner != null)
             {
@@ -3986,7 +3990,19 @@ namespace opengl3
         }
 
 
+        private void but_dist_same_ps_Click(object sender, EventArgs e)
+        {
+            var selected_obj = selected_nodes();
+            if (selected_obj == null) return;
+            if (selected_obj.Length < 2) return;
+            var ps1 = Point3d_GL.fromMesh(GL1.buffersGl.objs[selected_obj[0]].vertex_buffer_data);
+            var ps2 = Point3d_GL.fromMesh(GL1.buffersGl.objs[selected_obj[1]].vertex_buffer_data);
+            if (ps1 == null || ps2 == null) return;
+            if (ps1.Length != ps2.Length) return;
+            var dist  = Point3d_GL.dist_ps(ps1, ps2);
+            prin.t(dist);
 
+        }
         void cut_area(RasterMap.type_out type_cut,string selected_obj,string cut_obj = null)
         {
 
@@ -4134,8 +4150,7 @@ namespace opengl3
                
         }
         private void but_send_traj_Click(object sender, EventArgs e)
-        {
-            
+        {            
             //var traj_rob = PathPlanner.generate_robot_traj(rob_traj);
             con1?.send_mes(debugBox.Text);
         }
@@ -4150,38 +4165,51 @@ namespace opengl3
             var cam2_conf_path = textB_cam2_conf.Text;
             var stereo_cal_path = textB_stereo_cal_path.Text;
             scan_path = scan_path.Split('\\').Reverse().ToArray()[0];
-            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
+            string bfs_path = "bfs_cal.txt";
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path);
             this.scanner = scanner;
             var fr = new Frame();
 
             (fr, this.scanner) = load_orig_scan_path(scan_path);
+            //(fr, this.scanner) = load_photo_path(scan_path);
 
-
+            comboImages.Items.Add(fr);
             //var stereo_cal_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
             //var frms_stereo1 = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
-           // comboImages.Items.AddRange(frms_stereo1);
+            // comboImages.Items.AddRange(frms_stereo1);
             chess_size = new Size(6, 7);
-            GL1.addPointMesh(ps3d_frame(fr,scanner));
+            GL1.addPointMesh(ps3d_frame(fr,scanner),Color3d_GL.red());
             
-            
-
         }
-
+        
         Point3d_GL[] ps3d_frame(Frame fr,Scanner scanner)
         {
             var corn1 = new System.Drawing.PointF[0];
             var corn2 = new System.Drawing.PointF[0];
-            var mat1 = scanner.stereoCamera.cameraCVs[0].undist(fr.im);
-            var mat2 = scanner.stereoCamera.cameraCVs[1].undist(fr.im_sec);
+            var mat1 = fr.im;
+            var mat2 = fr.im_sec;
+            if(ch_b_dist.Checked)
+            {
+                mat1 = scanner.stereoCamera.cameraCVs[0].undist(mat1);
+                mat2 = scanner.stereoCamera.cameraCVs[1].undist(mat2);
+            }
+            
             imBox_base_1.Image = FindCircles.findCircles(mat1, ref corn1, chess_size);
             imBox_base_2.Image = FindCircles.findCircles(mat2, ref corn2, chess_size);
-            var ps = PointCloud.comp_stereo_ps(PointF.toPointF(corn1), PointF.toPointF(corn2), scanner.stereoCamera);
-            GL1.addPointMesh(ps);
+            var ps = PointCloud.comp_stereo_ps(PointF.toPointF(corn1), PointF.toPointF(corn2), scanner.stereoCamera,GL1);
+            //GL1.addPointMesh(ps);
             return ps;
         }
+        (Frame, Scanner) load_photo_path(string filepath)
+        {
+            var stereo_cal_1 = filepath.Split('\\').Reverse().ToArray()[0];
+            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
+            var frms_stereo1 = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
 
-        (Frame,Scanner) load_orig_scan_path(string filepath )
+            return (frms_stereo1[0], scanner);
+        }
+        (Frame,Scanner) load_orig_scan_path(string filepath)
         {
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
             var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
@@ -4190,19 +4218,9 @@ namespace opengl3
 
             var ve_paths1 = get_video_path(1, filepath);
             string video_path1 = ve_paths1[0];
-
-            // string enc_path1 = ve_paths1[1];
-
             var ve_paths2 = get_video_path(2, filepath);
             string video_path2 = ve_paths2[0];
-            // string enc_path2 = ve_paths2[1];
 
-            string enc_path = ve_paths1[1];
-            var pairs = frames_sync_from_file(enc_path);
-            var cam_min = (int)pairs[0][0];
-            var cam_max = (int)pairs[0][1];
-            var frame_min = (int)pairs[0][2];
-            var frame_max = (int)pairs[0][3];
 
             scanner.set_coord_sys(StereoCamera.mode.model);
             var name_v1 = Path.GetFileNameWithoutExtension(video_path1);
@@ -4213,8 +4231,8 @@ namespace opengl3
                 scanner.set_coord_sys(StereoCamera.mode.world);
             }
 
+            CvInvoke.Rotate(orig2, orig2, RotateFlags.Rotate180);
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
-            var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
 
             return (fr_st_vid,scanner);
@@ -4631,7 +4649,7 @@ namespace opengl3
             laserLine?.set_div_disp(div);
         }
 
-       
+        
     }
 }
 

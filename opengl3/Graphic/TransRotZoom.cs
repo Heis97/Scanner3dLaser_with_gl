@@ -99,7 +99,7 @@ namespace opengl3
             zRot = 0;
             off_x = 0;
             off_y = 0;
-            off_z = -400;
+            off_z = -10;
             rect = _rect;
             id = _id;
             type = TRZtype.Master;
@@ -299,15 +299,15 @@ namespace opengl3
             {
                 float window = (float)trz.zoom;
                 _Pm = Matrix4x4f.Ortho(-window, window, -window, window, -100f, 1000f);
-                _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z) *
+               /* _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z) *
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
-                    Matrix4x4f.RotatedZ((float)trz.zRot);
+                    Matrix4x4f.RotatedZ((float)trz.zRot);*/
 
-              /*  _Vm = 
+                _Vm = 
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
-                    Matrix4x4f.RotatedZ((float)trz.zRot) * Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z);*/
+                    Matrix4x4f.RotatedZ((float)trz.zRot) * Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z);
             }
 
             if (trz.type == TRZtype.Slave) _Vm = trz.const_trz * _Vm;

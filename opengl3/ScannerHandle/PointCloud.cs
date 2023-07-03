@@ -309,13 +309,16 @@ namespace opengl3
             }
             if (stereocamera.scan_coord_sys == StereoCamera.mode.world)
             {
-
                 if (stereocamera.Bbf != null && stereocamera.Bfs != null)
                     m1 = stereocamera.Bbf * stereocamera.Bfs;//or inverse                
             }
+            points3d_1=  Point3d_GL.mult(points3d_1, 300);
+            points3d_2 = Point3d_GL.mult(points3d_2, 300);
             var m2 = m1 * stereocamera.R;
             var ps1 = comp_points_for_gpu(points3d_1, m1);
             var ps2 = comp_points_for_gpu(points3d_2, m2);
+            //graphicGL?.addLineFanMesh(ps1[0], ps1, Color3d_GL.red());
+            //graphicGL?.addLineFanMesh(ps2[0], ps2, Color3d_GL.green());
             var ps3d = comp_stereo_ps(ps1, ps2);
             return ps3d;
         }

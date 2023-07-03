@@ -1820,7 +1820,7 @@ namespace opengl3
             }
             return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, color, name);
         }
-        public void addLineFanMesh(float[] startpoint, float[] points, Color3d_GL color = null, string name = "new LineFanMesh")
+        public string  addLineFanMesh(float[] startpoint, float[] points, Color3d_GL color = null, string name = "new LineFanMesh")
         {
             var mesh = new float[points.Length * 2];
             var j = 0;
@@ -1833,7 +1833,22 @@ namespace opengl3
                 mesh[j] = points[i+1]; j++;
                 mesh[j] = points[i+2]; j++;
             }
-            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
+        }
+        public string addLineFanMesh(Point3d_GL startpoint, Point3d_GL[] points, Color3d_GL color = null, string name = "new LineFanMesh")
+        {
+            var mesh = new float[points.Length * 6];
+            var j = 0;
+            for (int i = 0; i < points.Length; i++)
+            {
+                mesh[j] =(float)startpoint.x; j++;
+                mesh[j] = (float)startpoint.y; j++;
+                mesh[j] = (float)startpoint.z; j++;
+                mesh[j] = (float)points[i].x; j++;
+                mesh[j] = (float)points[i].y; j++;
+                mesh[j] = (float)points[i].z; j++;
+            }
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color, name);
         }
         public void addLineMesh(Point3d_GL[] points, Color3d_GL color = null, string name = "new LineMesh")
         {
