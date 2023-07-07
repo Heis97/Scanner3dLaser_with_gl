@@ -719,7 +719,7 @@ namespace opengl3
             LinearAxis line = null;
             if(laser_line != null)  line = LinearAxis.load(laser_line);
             var scanner = new Scanner( cam1,line);
-
+            this.scanner = scanner;
             return scanner;
         }
         void load_scan_sing(Scanner scanner,string scan_path, int strip = 1, double smooth = 0.8)
@@ -1708,7 +1708,7 @@ namespace opengl3
                  */
                     var mat = fr.im.Clone();
                     var ps = Detection.detectLineDiff(mat,7);
-
+                   
                     /* var ps_t = new List<PointF>();
                      for(int i=0; i<500;i++)
                      {
@@ -1744,10 +1744,12 @@ namespace opengl3
 
                     UtilOpenCV.drawPointsF(mat, ps, 0, 255, 0,2);
 
-                    UtilOpenCV.drawPointsF(mat, ps_xy, 255, 255, 0, 2);
+                    //UtilOpenCV.drawPointsF(mat, ps_xy, 255, 255, 0, 2);
                     //imBox_base.Image = im2;
-                    imageBox2.Image = fr.im;
-                    imageBox1.Image = mat;
+                    imageBox2.Image = scanner.cameraCV.undist(fr.im);
+                    imageBox1.Image = scanner.cameraCV.undist(mat);
+
+
                 }
 
                 else if (fr.frameType == FrameType.LasHand)
@@ -3877,14 +3879,22 @@ namespace opengl3
                     //if (videoframe_count % strip == 0)
                     if (videoframe_count % strip == 0 && videoframe_count > 3)
                     {
+                        var im1_or = im1.Clone();
                         im1 -= im1_buff_list[buff_len - buff_diff];
-                        /*var im1_or = im1 - orig1;
-                        CvInvoke.Imshow("im1_or", im1);
-                        CvInvoke.Imshow("buffer_mat", buffer_mat);
-                        
-                        CvInvoke.Imshow("im1", im1);
-                        CvInvoke.Imshow("im1-or", im1_or);
-                        CvInvoke.WaitKey();*/
+
+                        if(videoframe_count>20)         
+                        {
+                            var im1_or_un = scanner.cameraCV.undist(im1_or);
+                            CvInvoke.Imshow("im1", im1_or_un);
+                            CvInvoke.Imshow("buffer_mat", scanner.cameraCV.undist(im1_buff_list[buff_len - buff_diff]));
+                            var im1_diff_un = scanner.cameraCV.undist(im1);
+                            CvInvoke.Imshow("im1 diff", im1_diff_un);
+
+                            var ps = Detection.detectLineDiff(im1_diff_un);
+                            UtilOpenCV.drawPointsF(im1_or_un, ps, 0, 255, 0, 2);
+                            CvInvoke.Imshow("im1-or_un", im1_or_un);
+                            CvInvoke.WaitKey();
+                        }
                         var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                         frames_show.Add(frame_d);
                         if (calib)

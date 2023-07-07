@@ -15,7 +15,7 @@ namespace opengl3
     {
         LaserSurface laserSurface;
         public PointCloud pointCloud;
-        CameraCV cameraCV;
+        public CameraCV cameraCV;
         public StereoCamera stereoCamera;
 
 
