@@ -1287,7 +1287,7 @@ namespace opengl3
             prin.t(perspMatr);
             return perspMatr;
         }
-        static System.Drawing.PointF[] generatePoints(Size size, float side = 1f)
+        public static System.Drawing.PointF[] generatePoints(Size size, float side = 1f)
         {
             var ps = new System.Drawing.PointF[size.Width * size.Height];
             int ind = 0;
@@ -1295,7 +1295,7 @@ namespace opengl3
             {
                 for (int j = 0; j < size.Height; j++)
                 {
-                    ps[ind] = new System.Drawing.PointF(j * side, i * side); ind++;
+                    ps[ind] = new System.Drawing.PointF(i * side, j * side); ind++;
                 }
             }
             return ps;

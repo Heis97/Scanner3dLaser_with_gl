@@ -98,6 +98,7 @@ namespace opengl3
             Mat hier = new Mat();
             CvInvoke.FindContours(im_tr, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
             //var conts = sameContours_cv(contours);
+            contours = size_filter(contours,20);
             contours = only_same_centres(contours);
             var conts = sameContours(contours);
             if (conts == null)
@@ -205,6 +206,7 @@ namespace opengl3
             var filtr_conts = new VectorOfVectorOfPoint();
             for (int i = 0; i < contours.Size; i++)
             {
+
                 bool same_place = false;
                 for (int j = 0; j < contours.Size; j++)
                 {
@@ -214,6 +216,18 @@ namespace opengl3
                     
                 }
                 if (same_place)
+                {
+                    filtr_conts.Push(contours[i]);
+                }
+            }
+            return filtr_conts;
+        }
+        static VectorOfVectorOfPoint size_filter(VectorOfVectorOfPoint contours,double min_size)
+        {
+            var filtr_conts = new VectorOfVectorOfPoint();
+            for (int i = 0; i < contours.Size; i++)
+            {
+                if (CvInvoke.ContourArea(contours[i])> min_size)
                 {
                     filtr_conts.Push(contours[i]);
                 }

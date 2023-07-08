@@ -339,7 +339,8 @@ namespace opengl3
                 textBoxK_6,textBoxK_7,textBoxK_8,
             };
 
-            patt = UtilOpenCV.generateImage_chessboard_circle(chess_size.Width, chess_size.Height, 200);
+           // patt = UtilOpenCV.generateImage_chessboard(chess_size.Width, chess_size.Height, 200);
+            patt = UtilOpenCV.generateImage_chessboard(10, 11, 200);
             #endregion
             imb_base = new ImageBox[] { imBox_base_1, imBox_base_2 };
             minArea = 1.0 * k * k * 15;
@@ -366,6 +367,11 @@ namespace opengl3
 
             tree_models.CheckBoxes = true;
             //load_camers_v2();
+
+            /*var m_test = new Mat("test_ph.jpg");
+            var fr = new Frame(m_test, "sdf", FrameType.MarkBoard);
+            CameraCV.findPoints(fr, new Size(9, 10));*/
+
         }
 
         void test_smooth()
@@ -655,7 +661,7 @@ namespace opengl3
             chess_size = new Size(10, 11);
             var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("cam2_conf_190623_2.txt");            
+            cam1.save_camera("cam2_conf_190623_2a.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_130523_2", FrameType.Pattern, PatternType.Mesh);
@@ -1212,9 +1218,10 @@ namespace opengl3
             //test_smooth();
             //test_remesh();
             add_points_cal();
-            //load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
+            load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
 
         }
+
         void test_pr()
         {
             var ps_2 = FileManage.loadFromJson("settings_pulse.json");
@@ -1235,6 +1242,8 @@ namespace opengl3
                 ps.Add(ps_2[3][p].to_point3dgl());
 
             var ps2 = Point3d_GL.mult(ps.ToArray(), 1000);
+            var dist = Point3d_GL.dist_betw_ps(ps2);
+            prin.t(dist);
             GL1.addPointMesh(ps2);
         }
 
@@ -4021,6 +4030,7 @@ namespace opengl3
             if (ps1 == null || ps2 == null) return;
             if (ps1.Length != ps2.Length) return;
             var dist  = Point3d_GL.dist_ps(ps1, ps2);
+
             prin.t(dist);
 
         }
@@ -4200,7 +4210,14 @@ namespace opengl3
             //var frms_stereo1 = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
             // comboImages.Items.AddRange(frms_stereo1);
             chess_size = new Size(6, 7);
-            GL1.addPointMesh(ps3d_frame(fr,scanner),Color3d_GL.red());
+            var ps = ps3d_frame(fr, scanner);
+             ps3d_frame_sq(fr, scanner);
+            //GL1.addPointMesh(ps,Color3d_GL.red());
+
+
+
+            //var dist = Point3d_GL.dist_betw_ps(ps);
+            //prin.t(dist);
             
         }
         
@@ -4221,6 +4238,49 @@ namespace opengl3
             var ps = PointCloud.comp_stereo_ps(PointF.toPointF(corn1), PointF.toPointF(corn2), scanner.stereoCamera,GL1);
             //GL1.addPointMesh(ps);
             return ps;
+        }
+
+        void ps3d_frame_sq(Frame fr, Scanner scanner)
+        {
+            var corn1 = new System.Drawing.PointF[0];
+            var corn2 = new System.Drawing.PointF[0];
+            var mat1 = fr.im;
+            var mat2 = fr.im_sec;
+            if (ch_b_dist.Checked)
+            {
+                mat1 = scanner.stereoCamera.cameraCVs[0].undist(mat1);
+                mat2 = scanner.stereoCamera.cameraCVs[1].undist(mat2);
+            }
+
+            imBox_base_1.Image = FindCircles.findCircles(mat1, ref corn1, chess_size);
+            imBox_base_2.Image = FindCircles.findCircles(mat2, ref corn2, chess_size);
+
+            var marksize = 10;
+            var size_patt = new Size(6, 7);
+            var x = (size_patt.Width - 1) * marksize;
+            var y = (size_patt.Height - 1) * marksize;
+
+            var points3d = new Point3d_GL[]
+                {
+                    new Point3d_GL(x,y,0),
+                    new Point3d_GL(0,y,0),
+                    new Point3d_GL(x,0,0),
+                    new Point3d_GL(0,0,0)
+                };
+
+            var ps_2d = UtilOpenCV.generatePoints(size_patt, marksize);
+            points3d = Point3d_GL.toPoints(ps_2d);
+            var pos1 = scanner.stereoCamera.cameraCVs[0].compPos(fr.im, PatternType.Mesh, size_patt, marksize);
+            var pos2 = scanner.stereoCamera.cameraCVs[1].compPos(fr.im_sec, PatternType.Mesh, size_patt, marksize);
+            var ps1_c = points3d;
+            var ps2_c = points3d;
+            ps1_c = Point3d_GL.multMatr(points3d, scanner.stereoCamera.cameraCVs[0].matrixSC);//
+            ps2_c = Point3d_GL.multMatr(points3d, scanner.stereoCamera.cameraCVs[1].matrixSC);
+            (ps1_c,ps2_c) = PointCloud.comp_stereo_ps_from_cam(ps1_c, ps2_c, scanner.stereoCamera, GL1);
+            //var d1 = Point3d_GL.dist_betw_ps(ps1_c);
+            //prin.t(d1);
+            GL1.addPointMesh(ps1_c,Color3d_GL.blue(),"cam1_p");
+            //GL1.addPointMesh(ps2_c, Color3d_GL.aqua(), "cam2_p");
         }
         (Frame, Scanner) load_photo_path(string filepath)
         {

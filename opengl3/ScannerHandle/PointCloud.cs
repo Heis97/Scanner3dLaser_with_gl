@@ -317,10 +317,31 @@ namespace opengl3
             var m2 = m1 * stereocamera.R;
             var ps1 = comp_points_for_gpu(points3d_1, m1);
             var ps2 = comp_points_for_gpu(points3d_2, m2);
-            //graphicGL?.addLineFanMesh(ps1[0], ps1, Color3d_GL.red());
+            graphicGL?.addLineFanMesh(ps1[0], ps1, Color3d_GL.red());
             //graphicGL?.addLineFanMesh(ps2[0], ps2, Color3d_GL.green());
             var ps3d = comp_stereo_ps(ps1, ps2);
             return ps3d;
+        }
+
+        public static (Point3d_GL[], Point3d_GL[]) comp_stereo_ps_from_cam(Point3d_GL[] points3d_1, Point3d_GL[] points3d_2, StereoCamera stereocamera, GraphicGL graphicGL = null, Image<Bgr, byte>[] color_im = null)
+        {
+            var m1 = stereocamera.cameraCVs[0].matrixCS;
+            if (stereocamera.scan_coord_sys == StereoCamera.mode.camera)
+            {
+                m1 = UtilMatr.eye_matr(4);
+            }
+            if (stereocamera.scan_coord_sys == StereoCamera.mode.world)
+            {
+                if (stereocamera.Bbf != null && stereocamera.Bfs != null)
+                    m1 = stereocamera.Bbf * stereocamera.Bfs;//or inverse                
+            }
+
+            var m2 = m1 * stereocamera.R;
+            var ps1 = Point3d_GL.multMatr(points3d_1, m1);
+            var ps2 = Point3d_GL.multMatr(points3d_2, m2);
+            //graphicGL?.addLineFanMesh(ps1[0], ps1, Color3d_GL.red());
+            //graphicGL?.addLineFanMesh(ps2[0], ps2, Color3d_GL.green());
+            return (ps1,ps2); 
         }
 
         public static Point3d_GL[] comp_stereo_ps(Point3d_GL[] ps1, Point3d_GL[] ps2)//first point - camera pos
@@ -400,7 +421,6 @@ namespace opengl3
             }
             return ps3d;
          }
-
 
 
         static Point3d_GL[] intersectWithLaser(Line3d_GL[] lines3d, Flat3d_GL laserSurface)

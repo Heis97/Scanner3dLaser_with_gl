@@ -117,6 +117,13 @@ namespace opengl3
             var v = (double[,])arr;
             return new Vertex3f((float)v[0, 0], (float)v[1, 0], (float)v[2, 0]);
         }
+
+        static public Matrix<double> toMatrix(Mat mat)
+        {
+            var arr = mat.GetData();
+            var v = (double[,])arr;
+            return new Matrix<double>(v);
+        }
         static public System.Drawing.PointF[] toPointF(Mat corn)
         {
 

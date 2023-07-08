@@ -24,6 +24,8 @@ namespace opengl3
         public Matrix<double> cameramatrix;
         public Matrix<double> cameramatrix_inv;
 
+        public Matrix<double> cameramatrix_opt;
+
         public Matrix<double> distortmatrix;
         public Frame[] frames;
         public System.Drawing.PointF[][] corners;
@@ -41,7 +43,7 @@ namespace opengl3
         public Matrix<double> matrixSC;
         public Size image_size;
         public Size pattern_size;
-
+        public Rectangle newRoI;
         public float mark_size = 10f;
 
         public List<PointF[]> scan_points = new List<PointF[]>();
@@ -277,9 +279,14 @@ namespace opengl3
             cameramatrix_inv = invMatrix(cameramatrix); 
             mapx = new Mat();
             mapy = new Mat();
-            var newRoI = new Rectangle();
+            newRoI = new Rectangle();
             var matr = CvInvoke.GetOptimalNewCameraMatrix(cameramatrix, distortmatrix, image_size, 1, image_size, ref newRoI);
-            prin.t(matr);
+            /* prin.t(cameramatrix);
+             Console.WriteLine("optim");
+             prin.t(matr);*/
+            cameramatrix_opt = UtilMatr.toMatrix(matr);
+            //cameramatrix =
+            
             CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F, mapx, mapy);
 
             pos = new float[3] { 0, 0, 0 };
@@ -369,6 +376,7 @@ namespace opengl3
            // prin.t(points3D);
            // prin.t(points2D);
             CvInvoke.SolvePnP(points3D, points2D, cameramatrix, distortmatrix, cur_r, cur_t);
+            //CvInvoke.SolvePnP(points3D, points2D, cameramatrix, distortmatrix, cur_r, cur_t,false,SolvePnpMethod.UPnP);
             var matrs = assemblMatrix(cur_r, cur_t);
             matrixCS = matrs[0];
             matrixSC = matrs[1];
@@ -500,9 +508,17 @@ namespace opengl3
         }
         public Mat undist(Mat mat)
         {
-            //Console.WriteLine("undist");
             var mat_ret = new Mat();
-            CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
+            //CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
+            //-----------------------------
+            CvInvoke.Undistort(mat, mat_ret, cameramatrix, distortmatrix, cameramatrix_opt);
+            /*CvInvoke.Imshow("mat", mat);
+            CvInvoke.Imshow("mat_und", mat_ret);
+            
+            
+            CvInvoke.Imshow("mat_und_cut", mat_ret);
+            CvInvoke.WaitKey();*/
+            mat_ret = new Mat(mat_ret, newRoI);
             return mat_ret;
         }
         void calibrateCam(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)
@@ -634,6 +650,9 @@ namespace opengl3
             if (ret == true)
             {
                 CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+                CvInvoke.DrawChessboardCorners(mat, size_patt, corn, ret);
+                CvInvoke.Imshow("asda", mat);
+                CvInvoke.WaitKey();
                 var corn2 = corn.ToArray();
                 return corn2;
                 /*if(obp_inp!=null)
@@ -654,6 +673,7 @@ namespace opengl3
             }
             else
             {
+                Console.WriteLine("not find patt");
                 return null;
             }
         }
@@ -669,12 +689,17 @@ namespace opengl3
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
                 var f_c = FindCircles.findCircles(frame.im,ref cornF, size_patt);
+                if(f_c != null)
+                {
+                    CvInvoke.Imshow("asda", f_c);
+                    CvInvoke.WaitKey();
+                }
                 
                 //mat = null;
                 //Console.WriteLine(" cornF");
                 //prin.t(cornF);
                 //Console.WriteLine(" corn2");
-                if(f_c == null)
+                if (f_c == null)
                     return null;
                 
                 if (cornF == null)          

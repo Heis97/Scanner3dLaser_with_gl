@@ -20,10 +20,15 @@ namespace opengl3
             this.b = b;
             this.a = a;
         }
-
+        public static Color3d_GL black() { return new Color3d_GL(0, 0, 0); }
         public static Color3d_GL red() { return new Color3d_GL(1, 0, 0); }
         public static Color3d_GL green() { return new Color3d_GL(0, 1, 0); }
         public static Color3d_GL blue() { return new Color3d_GL(0, 0, 1); }
+
+        public static Color3d_GL purple() { return new Color3d_GL(1, 0, 1); }
+        public static Color3d_GL yellow() { return new Color3d_GL(1, 1, 0); }
+
+        public static Color3d_GL aqua() { return new Color3d_GL(0, 1, 1); }
 
 
     }

@@ -282,6 +282,15 @@ namespace opengl3
             }
             return ps;
         }
+        public static Point3d_GL[] toPoints(System.Drawing.PointF[] ps)
+        {
+            var ps3d = new Point3d_GL[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ps3d[i] = new Point3d_GL(ps[i].X,ps[i].Y,0);
+            }
+            return ps3d;
+        }
         public static Point3d_GL notExistP()
         {
             var p = new Point3d_GL();
@@ -651,7 +660,17 @@ namespace opengl3
             }
             return ret;
         }
-
+        public static double[] dist_betw_ps(Point3d_GL[] ps1)
+        {
+            if (ps1 == null) return null;
+            if (ps1.Length <2) return null;
+            var ret = new double[ps1.Length-1];
+            for (int i = 1; i < ps1.Length; i++)
+            {
+                ret[i-1] = (ps1[i] - ps1[i-1]).magnitude();
+            }
+            return ret;
+        }
         public static Point3d_GL[] line_aver(Point3d_GL[] ps,int wind)
         {
             if(ps == null) return null;

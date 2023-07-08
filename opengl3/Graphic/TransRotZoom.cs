@@ -298,7 +298,7 @@ namespace opengl3
             else if (trz.viewType_ == viewType.Ortho)
             {
                 float window = (float)trz.zoom;
-                _Pm = Matrix4x4f.Ortho(-window, window, -window, window, -100f, 1000f);
+                _Pm = Matrix4x4f.Ortho(-window, window, -window, window, -1000f, 1000f);
                /* _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z) *
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
