@@ -372,11 +372,12 @@ namespace opengl3
         }
         public float[] compPos(MCvPoint3D32f[] points3D, System.Drawing.PointF[] points2D)
         {
-            //distortmatrix = new Matrix<double>(new double[,]{ { 0,0,0,0,0} });
+            
            // prin.t(points3D);
            // prin.t(points2D);
+           //var distort = new Matrix<double>(new double[,] { { 0, 0, 0, 0, 0 } });
             CvInvoke.SolvePnP(points3D, points2D, cameramatrix, distortmatrix, cur_r, cur_t);
-            //CvInvoke.SolvePnP(points3D, points2D, cameramatrix, distortmatrix, cur_r, cur_t,false,SolvePnpMethod.UPnP);
+
             var matrs = assemblMatrix(cur_r, cur_t);
             matrixCS = matrs[0];
             matrixSC = matrs[1];
