@@ -367,13 +367,13 @@ namespace opengl3
 
             
             var ps_list = new List<PointF>();
-
+            var ps = ps_list.ToArray();
             CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
             //var mats = mat.Split();
             //mat = mats[0];
             CvInvoke.GaussianBlur(mat, mat, new Size(7, 7), -1);
-           /* CvInvoke.Imshow("detect_dif",mat);
-            CvInvoke.WaitKey();*/
+            //CvInvoke.Imshow("detect_dif",mat);
+            //CvInvoke.WaitKey();
             var data = (byte[,])mat.GetData();
             var ps_arr_j = new PointF[data.GetLength(0)];
             for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();
@@ -397,10 +397,9 @@ namespace opengl3
                     for (int j = data.GetLength(0)-1; j >= 0; j--)
                     {
                         int br_cur = (int)data[j, i];
-                        /*for(int i_w =0; i_w<wind-1; i_w++)
-                        {
-                            br_cur += (int)data[j + i_w, i ];
-                        }*/
+                        //for(int i_w =0; i_w<wind-1; i_w++)
+                            //br_cur += (int)data[j + i_w, i ];
+                        
                         if (br_cur > br_max)
                         {
                             br_max = br_cur;
@@ -415,10 +414,9 @@ namespace opengl3
                     for (int j = 0; j < data.GetLength(0); j++)
                     {
                         int br_cur = (int)data[j, i];
-                        /*for(int i_w =0; i_w<wind-1; i_w++)
-                        {
-                            br_cur += (int)data[j + i_w, i ];
-                        }*/
+                       // for(int i_w =0; i_w<wind-1; i_w++)
+                            //br_cur += (int)data[j + i_w, i ];
+                        
                         if (br_cur > br_max)
                         {
                             br_max = br_cur;
@@ -442,10 +440,9 @@ namespace opengl3
                     
                 }
 
-                /*for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
-                {
-                    vals_regr.Add(new double[] { data[k1, i],k1 });
-                }*/
+                //for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
+                   // vals_regr.Add(new double[] { data[k1, i],k1 });
+                
                 var threshold = 10;
                 var koef = Regression.regression(vals_regr.ToArray(), 2);
                 var a = koef[2];
@@ -472,7 +469,7 @@ namespace opengl3
 
             }
             if (add_count < 5) return null;
-            var ps = ps_list.ToArray();
+            ps = ps_list.ToArray();
             if(!orig)
             {                
                 ps = medianFilter_real(ps, 10);
@@ -486,8 +483,8 @@ namespace opengl3
             }
 
             GC.Collect();
-           /* CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255));
-            CvInvoke.WaitKey();*/
+           // CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255));
+          //  CvInvoke.WaitKey();
             if (rotate)
             {
                 if (reverse)

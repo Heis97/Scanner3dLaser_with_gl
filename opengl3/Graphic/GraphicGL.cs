@@ -240,6 +240,7 @@ namespace opengl3
             {
                 if(!check_obj_in_tree(name.Value.name))
                 {
+
                     tree_mod.Nodes.Add(name.Value.name);
                     
                 }

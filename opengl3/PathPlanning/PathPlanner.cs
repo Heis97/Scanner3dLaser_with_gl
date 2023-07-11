@@ -257,18 +257,18 @@ namespace PathPlanning
             }
             return traj;
         }
-        public static List<List<Point3d_GL>> Generate_multiLayer2d_mesh(List<List<Point3d_GL>> contour, TrajParams trajParams)
+        public static List<List<Point3d_GL>> Generate_multiLayer2d_mesh(List<List<Point3d_GL>> contour, TrajParams trajParams,double z = 0)
         {
 
             var traj = new List<List<Point3d_GL>>();
-            for (int i=0;i < trajParams.layers; i++)
+            for (int i=0;i < contour.Count; i++)
             {
                 var alfa2 = trajParams.layers_angle;
                 if (i % 2 == 0)
                 {
                     alfa2 += Math.PI / 2;
                 }
-
+                
                 var layer = set_z_layer(GeneratePositionTrajectory_angle(contour[i], trajParams.step, alfa2), trajParams.z[i]);
                 traj.Add(layer);
             }
@@ -289,6 +289,39 @@ namespace PathPlanning
                 
             }
             
+
+            return traj;
+        }
+        public static List<List<Point3d_GL>> generate_2d_traj(List<List<Point3d_GL>> contour, TrajParams trajParams)
+        {
+
+            var traj = new List<List<Point3d_GL>>();
+            for (int i = 0; i < contour.Count; i++)
+            {
+                var alfa2 = trajParams.layers_angle;
+                if (i % 2 == 0)
+                {
+                    alfa2 += Math.PI / 2;
+                }
+
+                var layer = GeneratePositionTrajectory_angle(contour[i], trajParams.step, alfa2);
+                traj.Add(layer);
+            }
+
+
+            //traj = Trajectory.optimize_tranzitions_2_layer(traj)
+            for (int i = 0; i < traj.Count; i++)
+            {
+                if (i != traj.Count - 1)
+                {
+                    if (traj[i].Count > 0)
+                    {
+                        traj[i].Add(traj[i][traj[i].Count - 1].Copy());
+                    }
+                }
+
+            }
+
 
             return traj;
         }
@@ -452,6 +485,26 @@ namespace PathPlanning
             {
                 var traj_df = filter_traj(divide_traj(traj_2d[i], trajParams.div_step), trajParams.div_step / 2);
                 traj_3d.Add(project_layer(surface, traj_df, map_xy, vec_x));
+            }
+            traj_3d = add_transit(traj_3d, trajParams.h_transf);
+            return traj_3d;
+        }
+
+        public static List<List<Matrix<double>>> generate_3d_traj_diff_surf(List<Polygon3d_GL[]> surface, List<List<Point3d_GL>> contour, TrajParams trajParams)
+        {
+            trajParams.comp_z();
+            var traj_2d = generate_2d_traj(contour, trajParams);
+            traj_2d = Trajectory.OptimizeTranzitions2Layer(traj_2d);
+            var traj_3d = new List<List<Matrix<double>>>();
+            double resolut = 0.2;
+            
+            var ang_x = trajParams.ang_x;
+            var vec_x = new Vector3d_GL(Math.Cos(ang_x), Math.Sin(ang_x), 0);
+            for (int i = 0; i < traj_2d.Count; i++)
+            {
+                var map_xy = new RasterMap(surface[i], resolut, RasterMap.type_map.XY);
+                var traj_df = filter_traj(divide_traj(traj_2d[i], trajParams.div_step), trajParams.div_step / 2);
+                traj_3d.Add(project_layer(surface[i], traj_df, map_xy, vec_x));
             }
             traj_3d = add_transit(traj_3d, trajParams.h_transf);
             return traj_3d;

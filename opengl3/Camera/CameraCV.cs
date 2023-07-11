@@ -25,6 +25,7 @@ namespace opengl3
         public Matrix<double> cameramatrix_inv;
 
         public Matrix<double> cameramatrix_opt;
+        public Matrix<double> cameramatrix_opt_inv;
 
         public Matrix<double> distortmatrix;
         public Frame[] frames;
@@ -285,8 +286,9 @@ namespace opengl3
              Console.WriteLine("optim");
              prin.t(matr);*/
             cameramatrix_opt = UtilMatr.toMatrix(matr);
+            cameramatrix_opt_inv = invMatrix(cameramatrix_opt);
             //cameramatrix =
-            
+
             CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F, mapx, mapy);
 
             pos = new float[3] { 0, 0, 0 };
@@ -489,8 +491,8 @@ namespace opengl3
                     return false;
                 }
                 var mat_p1 = UtilOpenCV.drawPointsF(_mat, cornF, 255, 0, 0);
-                CvInvoke.Imshow("pos", mat_p1);
-                CvInvoke.WaitKey();
+                //CvInvoke.Imshow("pos", mat_p1);
+                //CvInvoke.WaitKey();
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
 
                 compPos(points3d, points2d);
@@ -507,22 +509,28 @@ namespace opengl3
         }
         public Point3d_GL point3DfromCam(PointF _p)
         {
-            var p =  (cameramatrix_inv * new Point3d_GL(_p.X, _p.Y, 1));
+            var p =  (cameramatrix_opt_inv * new Point3d_GL(_p.X, _p.Y, 1));
             return p;
+        }
+        public PointF point2DfromCam(Point3d_GL _p)
+        {
+            var p = (cameramatrix * _p);
+            return new PointF(p.x,p.y);
         }
         public Mat undist(Mat mat)
         {
             var mat_ret = new Mat();
-            //CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
+            CvInvoke.Remap(mat, mat_ret, mapx, mapy, Inter.Linear);
             //-----------------------------
-            CvInvoke.Undistort(mat, mat_ret, cameramatrix, distortmatrix, cameramatrix_opt);
+            //CvInvoke.Undistort(mat, mat_ret, cameramatrix, distortmatrix, cameramatrix_opt);
+            //mat_ret = new Mat(mat_ret, newRoI);
             /*CvInvoke.Imshow("mat", mat);
             CvInvoke.Imshow("mat_und", mat_ret);
             
             
             CvInvoke.Imshow("mat_und_cut", mat_ret);
             CvInvoke.WaitKey();*/
-            mat_ret = new Mat(mat_ret, newRoI);
+
             return mat_ret;
         }
         void calibrateCam(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)

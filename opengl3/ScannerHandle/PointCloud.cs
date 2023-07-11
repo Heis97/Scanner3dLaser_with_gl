@@ -317,7 +317,7 @@ namespace opengl3
             var m2 = m1 * stereocamera.R;
             var ps1 = comp_points_for_gpu(points3d_1, m1);
             var ps2 = comp_points_for_gpu(points3d_2, m2);
-            graphicGL?.addLineFanMesh(ps1[0], ps1, Color3d_GL.red());
+            //graphicGL?.addLineFanMesh(ps1[0], ps1, Color3d_GL.red());
             //graphicGL?.addLineFanMesh(ps2[0], ps2, Color3d_GL.green());
             var ps3d = comp_stereo_ps(ps1, ps2);
             return ps3d;
@@ -518,7 +518,16 @@ namespace opengl3
             } 
             return points3d;
         }
-
+        public static PointF[] computePointsCam3d_to2d(Point3d_GL[] points3d, CameraCV cameraCV, Image<Bgr, byte> image = null)
+        {
+            var points2d = new PointF[points3d.Length];
+            for (int i = 0; i < points3d.Length; i++)
+            {
+                points2d[i] = cameraCV.point2DfromCam(points3d[i]);
+                points2d[i].exist = points3d[i].exist;
+            }
+            return points2d;
+        }
         static Point3d_GL[] color_points3d(PointF[] points_im, Point3d_GL[] points3d, Image<Bgr,byte> image)
         {
             for (int i = 0; i < points3d.Length; i++)

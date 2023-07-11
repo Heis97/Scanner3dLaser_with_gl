@@ -487,7 +487,8 @@ namespace opengl3
             var intersec = matches_two_surf(obj1, obj2);
             var ps = calc_intersec(obj1, obj2, intersec);
             var ps_or = Point3d_GL.order_points(ps);
-            ps_or = PathPlanner.filter_traj(ps_or.ToList(), 0.0001).ToArray();
+            //ps_or = PathPlanner.filter_traj(ps_or.ToList(), 4.6).ToArray();
+            //ps_or = Point3d_GL.order_points(ps_or);
             return ps_or;
         }
 

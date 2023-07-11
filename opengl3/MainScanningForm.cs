@@ -138,10 +138,10 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-           
-           // test_basis();
+
+            // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-           // load_camers_v2();
+            // load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -154,7 +154,7 @@ namespace opengl3
              foreach (string filename in paths_sort)
                  //File.GetCreationTime(filename);
                  Console.WriteLine(filename+" " +File.GetCreationTime(filename));*/
-
+            resize();
         }
         static int[] frames_max(int[,] data)
         {
@@ -412,7 +412,23 @@ namespace opengl3
             mesh = Polygon3d_GL.toMesh(polyg_re);
             GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, "re2");
         }
+        void test_cross_line_triang()
+        {
+            /* var p1 = new Point3d_GL(1, 1, 1);
+             var p2 = new Point3d_GL(2, 2, 2);
+             var p3 = new Point3d_GL(3, 3, 3);
+             var p4 = new Point3d_GL(4, 4, 4);*/
 
+            var p1 = new Point3d_GL(0, 0, 0);
+            var p2 = new Point3d_GL(10, 0, 0);
+            var p3 = new Point3d_GL(10, 10, 0);
+            var p4 = new Point3d_GL(0, 10, 0);
+            var polygs = new Polygon3d_GL[] { new Polygon3d_GL(p1, p2, p3), new Polygon3d_GL(p1, p4, p3) };
+            var inds_m = new IndexedMesh(polygs);
+            var line = new Line3d_GL(new Point3d_GL(4, -0.5, 0), new Point3d_GL(4, -0.5, 10));
+            var p_cross = Polygon3d_GL.cross_line_triang(polygs[0], line);
+            Console.WriteLine(p_cross+" "+p_cross.exist);
+        }
         void add_points_cal()
         {
             var ps = new Point3d_GL[] { 
@@ -1217,9 +1233,9 @@ namespace opengl3
             // test_cross_triag();
             //test_smooth();
             //test_remesh();
-            add_points_cal();
+            //add_points_cal();
             load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
-
+            test_cross_line_triang();
         }
 
         void test_pr()
@@ -1816,7 +1832,11 @@ namespace opengl3
         }
         private void but_resize_Click(object sender, EventArgs e)
         {
+            resize();
+        }
 
+        void resize()
+        {
             var cur_size = new Size(1920, 1080);
             var target_size = new Size(1300, 700);
 
@@ -1835,7 +1855,6 @@ namespace opengl3
                     tab.Controls[i].Font = new Font(tab.Controls[i].Font.Name, (float)(tab.Controls[i].Font.Size * k));
                 }
             }
-
         }
 
         void chekLines()
@@ -4034,15 +4053,15 @@ namespace opengl3
             prin.t(dist);
 
         }
-        void cut_area(RasterMap.type_out type_cut,string selected_obj,string cut_obj = null)
+        string cut_area(RasterMap.type_out type_cut,string selected_obj,string cut_obj = null)
         {
 
             var cont = GL1.get_contour();
-            if (mesh != null && cont != null)
+            if (selected_obj != null && cont != null)
             {
                 double resolut = -1;
-                var map_xy = new RasterMap(mesh, resolut, RasterMap.type_map.XY);
                 var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+                var map_xy = new RasterMap(polygs, resolut, RasterMap.type_map.XY);
                 var cut_surf = map_xy.get_polyg_contour_xy(cont, polygs, type_cut);
 
                 //GL1.buffersGl.removeObj(selected_obj);
@@ -4053,9 +4072,11 @@ namespace opengl3
                 {
                     
                     GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj);
+                    return selected_obj;
                 }
                 
             }
+            return null;
         }
 
         private void but_reconstruc_area_Click(object sender, EventArgs e)
@@ -4078,8 +4099,8 @@ namespace opengl3
             //cut_area(RasterMap.type_out.outside, selected_obj);
             //var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
             var cut_obj = selected_obj + "_cut";
-            cut_area(RasterMap.type_out.outside, selected_obj,cut_obj);//вырез отверстия раны
-
+            var ret = cut_area(RasterMap.type_out.outside, selected_obj,cut_obj);//вырез отверстия раны
+            if (ret == null) { Console.WriteLine("not cut"); return; };
             var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[cut_obj].vertex_buffer_data);
             var polyg_sm = RasterMap.smooth_mesh(polygs, 1);
             var mesh = Polygon3d_GL.toMesh(polyg_sm);
@@ -4090,31 +4111,45 @@ namespace opengl3
             var fi = 1.5;
             var df = 1;
             var ds = 1;
-            var ps = cross_obj_flats(GL1.buffersGl.objs[smooth_mesh].vertex_buffer_data, df, ds, fi);//реконструирование отверстия
+            var ps_cr = cross_obj_flats(GL1.buffersGl.objs[smooth_mesh].vertex_buffer_data, df, ds, fi);//реконструирование отверстия
             //ps = Polygon3d_GL.smooth_lines_xy(ps, 2);
-            var pols = Polygon3d_GL.triangulate_lines_xy(ps);
+            var pols = Polygon3d_GL.triangulate_lines_xy(ps_cr);
             var scan_stl = Polygon3d_GL.toMesh(pols);
             var mesh_sm = scan_stl[0];
 
-            GL1.buffersGl.removeObj(cut_obj);
-            GL1.buffersGl.removeObj(smooth_mesh);
+            //GL1.buffersGl.removeObj(cut_obj);
+            //GL1.buffersGl.removeObj(smooth_mesh);
 
             var cuts = new List<string>();
+
+            var conts = new List<List<Point3d_GL>>();
+            var surfs = new List<Polygon3d_GL[]>();
             for(int i=0; i<3;i++)
             {
                 var mesh_sm_tr = GL1.translateMesh(mesh_sm, 0, 0,-1+( i*-1f));
-                var rec = GL1.add_buff_gl(mesh_sm_tr, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_cut_"+i);
-                cuts.Add(rec);
-                var ps_inter = RasterMap.intersec_line_of_two_mesh(GL1.buffersGl.objs[rec].vertex_buffer_data, GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
-                GL1.addLineMeshTraj(ps_inter, new Color3d_GL(1, 0, 0), "intersec" + "_cut_" + i);
+                surfs.Add(Polygon3d_GL.polygs_from_mesh(mesh_sm_tr));
+               // var rec = GL1.add_buff_gl(mesh_sm_tr, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_cut_"+i);
+               // cuts.Add(rec);
+                var ps_inter = RasterMap.intersec_line_of_two_mesh(mesh_sm_tr, GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+                 GL1.addLineMeshTraj(ps_inter, new Color3d_GL(1, 0, 0), "intersec_cut_" + i);
+                conts.Add(ps_inter.ToList());
             }
-            
 
-           
+            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, param_tr);
 
-            
+            rob_traj = PathPlanner.join_traj(_traj);
+            var ps = PathPlanner.traj_to_matr(rob_traj);
 
-            
+            if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
+
+            //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
+
+            traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
+            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE);
+           // return traj_rob;
+
+
+
         }
 
         private void but_remesh_test_Click(object sender, EventArgs e)
@@ -4208,16 +4243,16 @@ namespace opengl3
             //var stereo_cal_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
             //var frms_stereo1 = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
-            // comboImages.Items.AddRange(frms_stereo1);
+            //comboImages.Items.AddRange(frms_stereo1);
             chess_size = new Size(6, 7);
             var ps = ps3d_frame(fr, scanner);
-             ps3d_frame_sq(fr, scanner);
-            //GL1.addPointMesh(ps,Color3d_GL.red());
+            //ps3d_frame_sq(fr, scanner);
+            GL1.addPointMesh(ps,Color3d_GL.red());
 
 
 
-            //var dist = Point3d_GL.dist_betw_ps(ps);
-            //prin.t(dist);
+            var dist = Point3d_GL.dist_betw_ps(ps);
+            prin.t(dist);
             
         }
         
@@ -4238,8 +4273,8 @@ namespace opengl3
             //prin.t("p3d");
             //prin.t(corn1);
             var mat_p1 = UtilOpenCV.drawPointsF(mat1, corn1, 255, 0, 0);
-            CvInvoke.Imshow("p3d", mat_p1);
-            CvInvoke.WaitKey();
+            //CvInvoke.Imshow("p3d", mat_p1);
+            //CvInvoke.WaitKey();
             var ps = PointCloud.comp_stereo_ps(PointF.toPointF(corn1), PointF.toPointF(corn2), scanner.stereoCamera,GL1);
             //GL1.addPointMesh(ps);
             return ps;
@@ -4281,10 +4316,12 @@ namespace opengl3
             var ps2_c = points3d;
             ps1_c = Point3d_GL.multMatr(points3d, scanner.stereoCamera.cameraCVs[0].matrixSC);//
             ps2_c = Point3d_GL.multMatr(points3d, scanner.stereoCamera.cameraCVs[1].matrixSC);
+            //var ps2d_1 = PointCloud.computePointsCam3d_to2d(ps1_c, scanner.stereoCamera.cameraCVs[0]);
+
             (ps1_c,ps2_c) = PointCloud.comp_stereo_ps_from_cam(ps1_c, ps2_c, scanner.stereoCamera, GL1);
             //var d1 = Point3d_GL.dist_betw_ps(ps1_c);
             //prin.t(d1);
-            GL1.addPointMesh(ps1_c,Color3d_GL.blue(),"cam1_p");
+            //GL1.addPointMesh(ps1_c,Color3d_GL.blue(),"cam1_p");
             //GL1.addPointMesh(ps2_c, Color3d_GL.aqua(), "cam2_p");
         }
         (Frame, Scanner) load_photo_path(string filepath)
@@ -4672,6 +4709,10 @@ namespace opengl3
         {
             if (e.Button == MouseButtons.Right) clear_selected_nodes();
         }
+        private void tree_models_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            //GL1.buffersGl.objs[e.Node.Text] = GL1.buffersGl.objs[e.Node.Text].setVisible(e.Node.Checked);
+        }
 
         string[] selected_nodes()
         {
@@ -4735,7 +4776,7 @@ namespace opengl3
             laserLine?.set_div_disp(div);
         }
 
-        
+       
     }
 }
 

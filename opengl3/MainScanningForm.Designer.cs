@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_dist_same_ps = new System.Windows.Forms.Button();
             this.but_stereo_3dp = new System.Windows.Forms.Button();
             this.but_comp_basis = new System.Windows.Forms.Button();
             this.but_ps_cal_save = new System.Windows.Forms.Button();
@@ -339,7 +340,6 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_dist_same_ps = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1111,6 +1111,16 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
+            // but_dist_same_ps
+            // 
+            this.but_dist_same_ps.Location = new System.Drawing.Point(996, 575);
+            this.but_dist_same_ps.Name = "but_dist_same_ps";
+            this.but_dist_same_ps.Size = new System.Drawing.Size(99, 42);
+            this.but_dist_same_ps.TabIndex = 161;
+            this.but_dist_same_ps.Text = "Расстояние между точками";
+            this.but_dist_same_ps.UseVisualStyleBackColor = true;
+            this.but_dist_same_ps.Click += new System.EventHandler(this.but_dist_same_ps_Click);
+            // 
             // but_stereo_3dp
             // 
             this.but_stereo_3dp.Location = new System.Drawing.Point(1101, 575);
@@ -1232,6 +1242,7 @@ namespace opengl3
             this.tree_models.Name = "tree_models";
             this.tree_models.Size = new System.Drawing.Size(177, 271);
             this.tree_models.TabIndex = 149;
+            this.tree_models.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tree_models_AfterCheck);
             this.tree_models.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tree_models_AfterSelect);
             this.tree_models.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tree_models_MouseDown);
             // 
@@ -3643,19 +3654,9 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // but_dist_same_ps
-            // 
-            this.but_dist_same_ps.Location = new System.Drawing.Point(996, 575);
-            this.but_dist_same_ps.Name = "but_dist_same_ps";
-            this.but_dist_same_ps.Size = new System.Drawing.Size(99, 42);
-            this.but_dist_same_ps.TabIndex = 161;
-            this.but_dist_same_ps.Text = "Расстояние между точками";
-            this.but_dist_same_ps.UseVisualStyleBackColor = true;
-            this.but_dist_same_ps.Click += new System.EventHandler(this.but_dist_same_ps_Click);
-            // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.ClientSize = new System.Drawing.Size(1370, 749);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);

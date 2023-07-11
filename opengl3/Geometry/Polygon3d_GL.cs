@@ -148,7 +148,7 @@ namespace opengl3
         static public Polygon3d_GL[] triangulate_two_lines_xy(Point3d_GL[] ps1, Point3d_GL[] ps2)
         {
             var ps_or = Point3d_GL.order_points(ps1);
-            var dp = ps_or[ps_or.Length - 1] - ps_or[0];
+            var dp = ps_or[ps_or.Length - 1] - ps_or[0]; 
             Ax ax;
             if (Math.Abs(dp.x) > Math.Abs(dp.y)) ax = Ax.X;
             else ax = Ax.Y;
@@ -588,7 +588,7 @@ namespace opengl3
         }
         
 
-        static Point3d_GL cross_line_triang(Polygon3d_GL polygon, Line3d_GL line)
+        static Point3d_GL cross_line_triang_arc(Polygon3d_GL polygon, Line3d_GL line)
         {
             var p_cross = line.calcCrossFlat(polygon.flat3D);
             var v_c = p_cross - polygon.ps[2];
@@ -609,8 +609,32 @@ namespace opengl3
             }
             return p_cross;
         }
-
-         public static Point3d_GL[] cross_triang(Polygon3d_GL pn1, Polygon3d_GL pn2)
+        public static Point3d_GL cross_line_triang(Polygon3d_GL polygon, Line3d_GL line)
+        {
+            var p_cross = line.calcCrossFlat(polygon.flat3D);
+            var v_c = p_cross - polygon.ps[2];
+            var v1 = (polygon.ps[0] - polygon.ps[2]);
+            var v2 = (polygon.ps[1] - polygon.ps[2]);
+            var a1 = v1 ^ v_c;
+            var a2 = v2 ^ v_c;
+            var b1 = v1 ^ v2;
+            if (a1 < b1 || a2 < b1 || a1 == double.NaN || a2 == double.NaN || b1 == double.NaN)
+            {
+                return Point3d_GL.notExistP();
+            }
+            v_c = p_cross - polygon.ps[1];
+            v1 = (polygon.ps[0] - polygon.ps[1]);
+            v2 = (polygon.ps[2] - polygon.ps[1]);
+            a1 = v1 ^ v_c;
+            a2 = v2 ^ v_c;
+            b1 = v1 ^ v2;
+            if (a1 < b1 || a2 < b1 || a1 == double.NaN || a2 == double.NaN || b1 == double.NaN)
+            {
+                return Point3d_GL.notExistP();
+            }
+            return p_cross;
+        }
+        public static Point3d_GL[] cross_triang(Polygon3d_GL pn1, Polygon3d_GL pn2)
          {
             int ind = 0;
             var ps1 = new List<Point3d_GL>();
