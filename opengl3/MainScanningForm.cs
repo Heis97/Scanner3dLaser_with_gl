@@ -141,7 +141,7 @@ namespace opengl3
            
            // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-            //load_camers_v2();
+           // load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -659,9 +659,9 @@ namespace opengl3
         {
             markSize = 6.2273f;
             chess_size = new Size(10, 11);
-            var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("cam2_conf_190623_2a.txt");            
+            cam1.save_camera("cam1_conf_190623_2a.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_130523_2", FrameType.Pattern, PatternType.Mesh);
@@ -4235,6 +4235,11 @@ namespace opengl3
             
             imBox_base_1.Image = FindCircles.findCircles(mat1, ref corn1, chess_size);
             imBox_base_2.Image = FindCircles.findCircles(mat2, ref corn2, chess_size);
+            //prin.t("p3d");
+            //prin.t(corn1);
+            var mat_p1 = UtilOpenCV.drawPointsF(mat1, corn1, 255, 0, 0);
+            CvInvoke.Imshow("p3d", mat_p1);
+            CvInvoke.WaitKey();
             var ps = PointCloud.comp_stereo_ps(PointF.toPointF(corn1), PointF.toPointF(corn2), scanner.stereoCamera,GL1);
             //GL1.addPointMesh(ps);
             return ps;

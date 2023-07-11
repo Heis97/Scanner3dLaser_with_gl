@@ -488,6 +488,9 @@ namespace opengl3
                 {
                     return false;
                 }
+                var mat_p1 = UtilOpenCV.drawPointsF(_mat, cornF, 255, 0, 0);
+                CvInvoke.Imshow("pos", mat_p1);
+                CvInvoke.WaitKey();
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
 
                 compPos(points3d, points2d);
@@ -692,8 +695,8 @@ namespace opengl3
                 var f_c = FindCircles.findCircles(frame.im,ref cornF, size_patt);
                 if(f_c != null)
                 {
-                    CvInvoke.Imshow("asda", f_c);
-                    CvInvoke.WaitKey();
+                   // CvInvoke.Imshow("asda", f_c);
+                    //CvInvoke.WaitKey();
                 }
                 
                 //mat = null;
