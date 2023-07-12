@@ -154,7 +154,7 @@ namespace opengl3
              foreach (string filename in paths_sort)
                  //File.GetCreationTime(filename);
                  Console.WriteLine(filename+" " +File.GetCreationTime(filename));*/
-            resize();
+           // resize();
         }
         static int[] frames_max(int[,] data)
         {
