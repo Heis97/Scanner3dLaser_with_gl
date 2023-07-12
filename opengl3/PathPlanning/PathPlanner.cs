@@ -428,15 +428,16 @@ namespace PathPlanning
             });
         }
 
-        static List<Matrix<double>> project_layer(Polygon3d_GL[] surface, List<Point3d_GL> layer, RasterMap map_xy, Vector3d_GL vec_x_dir)
+        public static List<Matrix<double>> project_layer(Polygon3d_GL[] surface, List<Point3d_GL> layer, RasterMap map_xy, Vector3d_GL vec_x_dir)
         {
             var layer_3d = new List<Matrix<double>>();
             for (int i = 0; i < layer.Count; i++)
             {
                 var polyg_inds = map_xy.get_polyg_ind_prec_xy(layer[i], surface);
                 var polyg_ind = fing_high_polyg(polyg_inds, layer[i], surface);
-
-                layer_3d.Add(proj_point(surface[polyg_ind], layer[i], vec_x_dir));
+                var proj_matr = proj_point(surface[polyg_ind], layer[i], vec_x_dir);
+                if(proj_matr!=null)
+                    layer_3d.Add(proj_matr);          
             }
             return layer_3d;
         }

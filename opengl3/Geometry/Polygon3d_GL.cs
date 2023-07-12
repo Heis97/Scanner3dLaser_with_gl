@@ -23,13 +23,13 @@ namespace opengl3
             v2 = new Vector3d_GL(P1, P3).normalize();
             v3 = v1 | v2;//vector multiply
 
-            if(v3.z<0)
+            /*if(v3.z<0)
             {
                 v1 = -v1;
                 v2 = -v2;
                 v3 = -v3;
                 
-            }
+            }*/
 
             dim = Math.Max(Math.Max((P3 - P1).magnitude(), (P2 - P1).magnitude()),(P3 - P2).magnitude());
             //Console.WriteLine(v3);

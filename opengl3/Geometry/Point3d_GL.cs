@@ -581,7 +581,17 @@ namespace opengl3
             return r;
         }
 
+        public static Point3d_GL[] divide_sect(Point3d_GL p1, Point3d_GL p2, int num)
+        {
+            var traj_div = new List<Point3d_GL>();
+            var delt = p2 - p1;
+            for(int i = 0; i < num; i++)
+            {
+                traj_div.Add(p1+ delt* (i / num));
+            }
 
+            return traj_div.ToArray();
+        }
         public static Point3d_GL Max(Point3d_GL p1, Point3d_GL p2)
         {
             var x = Math.Max(p1.x, p2.x);

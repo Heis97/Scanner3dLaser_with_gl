@@ -7,16 +7,16 @@ using PathPlanning;
 
 namespace opengl3
 {
-    class RasterMap
+    public class RasterMap
     {
         int[,][] map;
         int[,,][] map_xyz;
         double res;
         Point3d_GL pt_min, pt_max,pt_len_i;
-
+        public Point3d_GL[] pt_minmax;
         int len;
         public enum type_map { XY,XYZ};
-        public RasterMap(Polygon3d_GL[] surface, double resolution,type_map type = type_map.XY)
+        public RasterMap(Polygon3d_GL[] surface, double resolution=-1,type_map type = type_map.XY)
         {
             switch (type)
             {
@@ -50,6 +50,7 @@ namespace opengl3
                 resolution = Polygon3d_GL.aver_dim(new Polygon3d_GL[][] { surface });
             }
             var p_minmax = Polygon3d_GL.get_dimens_minmax_arr_full(surface);
+            pt_minmax = p_minmax;
             var p_min = p_minmax[0]; var p_max = p_minmax[1];
 
             var p_med = (p_minmax[1] + p_minmax[0]) / 2;

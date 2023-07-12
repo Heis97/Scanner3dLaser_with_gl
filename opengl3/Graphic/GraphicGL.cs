@@ -1812,6 +1812,7 @@ namespace opengl3
         }
         public string addPointMesh(Point3d_GL[] points, Color3d_GL color = null, string name = "new PointMesh")
         {
+            if (points == null) return null;
             var mesh = new List<float>();
             foreach (var p in points)
             {
@@ -1820,6 +1821,29 @@ namespace opengl3
                 mesh.Add((float)p.z);
             }
             return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, color, name);
+        }
+
+        public string addLine3dMesh(Line3d_GL[] lines, Color3d_GL color = null, string name = "new linesMesh")
+        {
+            if (lines == null) return null;
+            var mesh = new List<float>();
+            foreach (var l in lines)
+            {
+                mesh.Add((float)l.p.x);
+                mesh.Add((float)l.p.y);
+                mesh.Add((float)l.p.z);
+                mesh.Add((float)(l.k.x+ l.p.x));
+                mesh.Add((float)(l.k.y + l.p.y));
+                mesh.Add((float)(l.k.z + l.p.z));
+
+                mesh.Add((float)l.p.x);
+                mesh.Add((float)l.p.y);
+                mesh.Add((float)l.p.z);
+                mesh.Add((float)(l.p.x - l.k.x));
+                mesh.Add((float)(l.p.y - l.k.y));
+                mesh.Add((float)(l.p.z - l.k.z));
+            }
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color, name);
         }
         public string  addLineFanMesh(float[] startpoint, float[] points, Color3d_GL color = null, string name = "new LineFanMesh")
         {
