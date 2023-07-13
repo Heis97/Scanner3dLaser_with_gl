@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Emgu.CV;
+using Emgu.CV.Structure;
+using OpenGL;
 using PathPlanning;
 
 namespace opengl3
@@ -228,49 +230,178 @@ namespace opengl3
             return i_max * dfi;
         }
 
+        //---------------------------------------------------------------------------
 
-        /*static Polygon3d_GL[] splines_to_mesh(CubicSpline[] splines)
+        static public List<List<Point3d_GL[]>> divide_layer(List<List<Point3d_GL[]>> sort_lines, double dz)
         {
-            return null;
-        }*/
-        static public Polygon3d_GL[] surf_from_rec_lines(Point3d_GL[][] rec_lines)
-        {
-
-            return null;
-        }
-        static public Point3d_GL[] points_from_rec_lines(Point3d_GL[][] rec_lines, int layers)
-        {
-            var ps_layer = new List<Point3d_GL>();
-            for (int i = 0; i < rec_lines.Length; i++)
+            var divide_layers = new List<List<Point3d_GL[]>>();
+            var aver_num = aver_num_layer(sort_lines, dz);
+            for (int i = 0; i < sort_lines.Count; i++)
             {
-                var ps_z = Point3d_GL.divide_sect(rec_lines[0][i], rec_lines[1][i], layers);
-                ps_layer.AddRange(ps_z);
+                divide_layers.Add(new List<Point3d_GL[]>());
+                if (sort_lines[i] != null)
+                {
+                    for (int j = 0; j < sort_lines[i].Count; j++)
+                    {
+                        var ps_d = Point3d_GL.divide_sect_dz (sort_lines[i][j][0], sort_lines[i][j][1],aver_num, dz,dz*0.2);
+                        divide_layers[i].Add(ps_d);
+                    }
+                }
             }
-            return ps_layer.ToArray();
+            return divide_layers;
         }
-        static public Point3d_GL[][] find_rec_lines(Polygon3d_GL[] surf_up, Polygon3d_GL[] surf_down, double dist, GraphicGL graphicGL)
+
+        static public int aver_num_layer(List<List<Point3d_GL[]>> sort_lines, double dz)
+        {
+            var divide_layers = new List<List<Point3d_GL[]>>();
+            double len = 0;
+            int len_i = 0;
+            for (int i = 0; i < sort_lines.Count; i++)
+            {
+                divide_layers.Add(new List<Point3d_GL[]>());
+                if (sort_lines[i] != null)
+                {
+                    for (int j = 0; j < sort_lines[i].Count; j++)
+                    {
+                        len += (sort_lines[i][j][1] - sort_lines[i][j][0]).magnitude();
+                        len_i++;
+                    }
+                }
+            }
+            return (int)(len/ len_i);
+        }
+        static public int max_num_layer(List<List<Point3d_GL[]>> div_lines)
+        {
+            int max_i = 0;
+            for (int i = 0; i < div_lines.Count; i++)
+            {
+                if (div_lines[i] != null)
+                {
+                    for (int j = 0; j < div_lines[i].Count; j++)
+                    {
+                        if(max_i< div_lines[i][j].Length)
+                            max_i = div_lines[i][j].Length;
+                    }
+                }
+            }
+            return max_i;
+        }
+        static public Point3d_GL[][] get_layer(List<List<Point3d_GL[]>> div_l, int ind)
+        {
+            var layer = new List<Point3d_GL[]>();
+            for (int i = 0; i < div_l.Count; i++)
+            {
+                var l = new List<Point3d_GL>();
+                if (div_l[i] != null)
+                {
+                    for (int j = 0; j < div_l[i].Count; j++)
+                    {
+                        if(div_l[i][j] != null)
+                            if(div_l[i][j].Length > ind)
+                                l.Add(div_l[i][j][ind]);
+                    }
+                }
+                layer.Add(l.ToArray()); 
+            }
+            return layer.ToArray();
+        }
+        static public Polygon3d_GL[][] get_layers(List<List<Point3d_GL[]>> sort_lines,double dz)
+        {
+            var div = divide_layer(sort_lines, dz);
+            var max_num = max_num_layer(div);
+            var layers = new List<Polygon3d_GL[]>();
+            for(int i = 0; i < max_num; i++)
+            {
+                var layer_ps = get_layer(div, i);
+                var layer = Polygon3d_GL.triangulate_lines_xy(layer_ps);
+                layers.Add(layer);
+            }
+            return layers.ToArray();
+        }
+        static public int[,] analyse_layer(List<List<Point3d_GL[]>> sort_lines, double dz, GraphicGL graphicGL)
+        {
+            var map_xy_layers = new int[sort_lines.Count,max_sublen(sort_lines)];
+            for(int i = 0; i < sort_lines.Count; i++)
+            {
+                if(sort_lines[i] != null)
+                {
+                    for (int j = 0; j<sort_lines[i].Count;j++)
+                    {
+                        map_xy_layers[i,j] =(int)( (sort_lines[i][j][1]- sort_lines[i][j][0]).magnitude()/dz);
+                    }
+                }  
+            }
+
+            var im = new Image<Gray, Byte>(map_xy_layers.GetLength(0), map_xy_layers.GetLength(1));
+            for (int i = 0; i < im.Width; i++)
+                for (int j = 0; j < im.Height; j++)
+                    im.Data[j, i, 0] = (byte)map_xy_layers[i, j];
+
+            //CvInvoke.Imshow("map", im);
+            MainScanningForm.send_buffer_img(im, PrimitiveType.Triangles, graphicGL);
+
+            return map_xy_layers;
+        }
+        static public int max_sublen(List<List<Point3d_GL[]>> ps)
+        {
+            int len = 0;
+            for(int i = 0; i < ps.Count; i++)
+            {
+                if(ps[i].Count > len)
+                    len = ps[i].Count;
+            }
+            return len;
+        }
+
+        static public List<List<Point3d_GL[]>> clasters_rec_lines(Point3d_GL[][] rec_lines,double dist)
+        {
+            var sort_l = (from l in rec_lines
+                         orderby l[0].x
+                         select l).ToArray();
+            var clast = new List<List<Point3d_GL[]>>();
+            var x_cur = double.MinValue;
+            for (int i = 0; i < sort_l.Length; i++)
+            {
+                if(sort_l[i][0].x - x_cur > dist)
+                {
+                    clast.Add(new List<Point3d_GL[]>());
+                    x_cur = sort_l[i][0].x;
+                }
+                clast[clast.Count - 1].Add(sort_l[i]);
+            }
+            return clast;
+        }
+
+
+        //-------------------------------------------------------------------
+        static public Point3d_GL[][] find_rec_lines(Polygon3d_GL[] surf_up, Polygon3d_GL[] surf_down, double dist,double dz, GraphicGL graphicGL)
         {
             var lines = find_lines_for_surf(surf_down, dist);
             var ps_down = ps_from_lines(lines);
             lines = set_vec_lines(lines, new Point3d_GL(0, 0, 1));
             var ps_up = find_cross_surf_lines(surf_up, lines);
             var ps_rec = divide_ps(ps_up);
+
+            var sort_lines = clasters_rec_lines(ps_rec, dist / 2);
+            var layers = get_layers(sort_lines, dz);
+
+            for(int i = 0; i < layers.Length; i++)
+            {
+                graphicGL.addMesh(Polygon3d_GL.toMesh(layers[i])[0], PrimitiveType.Triangles);
+            }
             //graphicGL.addLine3dMesh(lines, Color3d_GL.green());
-            //graphicGL.addPointMesh(ps_up, Color3d_GL.blue(), "ps_up");
-            graphicGL.addPointMesh(ps_down, Color3d_GL.red(), "ps_down");
-            graphicGL.addLineMesh(ps_up, Color3d_GL.green());
+            //graphicGL.addPointMesh(ps_rec[0], Color3d_GL.blue(), "ps_up");
+            //graphicGL.addLineMesh(ps_up, Color3d_GL.green());
             return null;
         }
-        static public Point3d_GL[][] divide_ps(Point3d_GL[] ps_d)
+        static public Point3d_GL[][] divide_ps(Point3d_GL[] ps_d)//[line1],[...
         {
-            var ps = new List<Point3d_GL>();
-            var ps_st = new List<Point3d_GL>();
+            var ps = new List<Point3d_GL[]>();
             for(int i = 0; i < ps_d.Length; i+=2)
             {
-                ps.Add(ps_d[i]);
-                ps_st.Add(ps_d[i+1]);
+                ps.Add(new Point3d_GL[] { ps_d[i], ps_d[i + 1] });
             }
-            return new Point3d_GL[][] {ps.ToArray(), ps_st.ToArray()};  
+            return ps.ToArray();  
         }
         static public Line3d_GL[] set_vec_lines(Line3d_GL[] lines, Point3d_GL vec)
         {

@@ -65,7 +65,7 @@ namespace opengl3
          private Size cameraSize = new Size(1184, 656);
         //private Size cameraSize = new Size(1920, 1080);
         // private Size cameraSize = new Size(640, 480);
-        private GraphicGL GL1 = new GraphicGL();
+        public GraphicGL GL1 = new GraphicGL();
         private VideoCapture myCapture1 = null;
         VideoWriter writer = null;
         double fps1 = 0;
@@ -1239,16 +1239,17 @@ namespace opengl3
             test_surf_rec();
         }
 
+
         void test_surf_rec()
         {
-            var scan_stla = new Model3d(@"C:\Users\1\Documents\defects\def1a.stl", false);
+            var scan_stla = new Model3d("defects\\def1c.stl", false);
             GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def1a");
-            var scan_stlb = new Model3d(@"C:\Users\1\Documents\defects\def1b.stl", false);
+            var scan_stlb = new Model3d("defects\\def1d.stl", false);
             GL1.add_buff_gl(scan_stlb.mesh, scan_stlb.color, scan_stlb.normale, PrimitiveType.Triangles, "def1b");
 
-            SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 1, GL1);
+            SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);
         }
-
+         
         void test_pr()
         {
             var ps_2 = FileManage.loadFromJson("settings_pulse.json");
@@ -2669,8 +2670,9 @@ namespace opengl3
            
             //capture.SetCaptureProperty(CapProp.
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
+
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-           capture.SetCaptureProperty(CapProp.Fps, 30);
+            capture.SetCaptureProperty(CapProp.Fps, 30);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
@@ -2729,9 +2731,13 @@ namespace opengl3
             }
             GL1.add_buff_gl(vertex_buffer_data, color_buffer_data, normal_buffer_data, PrimitiveType.Points);
         }
-        public void send_buffer_img(Image<Gray, Byte> im2, PrimitiveType type)
+        static public void send_buffer_img(Image<Gray, Byte> im2, PrimitiveType type,GraphicGL graphicGL)
         {
+
             int lenght = im2.Width * im2.Height;
+            var vertex_buffer_data = new float[6 * 3 * lenght];
+            var normal_buffer_data = new float[6 * 3 * lenght];
+            var color_buffer_data = new float[6 * 3 * lenght];
             if (vertex_buffer_data.Length != 6 * 3 * lenght)
             {
                 vertex_buffer_data = new float[6 * 3 * lenght];
@@ -2747,7 +2753,7 @@ namespace opengl3
             int i = 0;
             Console.WriteLine(vertex_buffer_data.Length);
             Console.WriteLine("-----------------------------------");
-            z_mult_cam = 5;
+            var z_mult_cam = 5;
             for (int x = 0; x < im2.Width - 1; x++)
             {
                 for (int y = 0; y < im2.Height - 1; y++)
@@ -2779,7 +2785,7 @@ namespace opengl3
                     vertex_buffer_data[i] = z_mult_cam * im2.Data[y + 1, x + 1, 0] - z_mult_cam / 2; i++;
                 }
             }
-            GL1.addMesh(vertex_buffer_data, type);
+            graphicGL.addMesh(vertex_buffer_data, type);
         }
         private float[] meshFromImage(Image<Gray, float> im2, float dx,float dy, float z_mult_cam, float x_cut = 0, float y_cut = 0, float offx=0, float offy=0, float offz=0)
         {
@@ -4428,7 +4434,7 @@ namespace opengl3
             var im2 = new Mat();
             CvInvoke.CvtColor(im1, im2, ColorConversion.Bgr2Gray);
             CvInvoke.GaussianBlur(im2, im2, new Size(7, 7), -1);
-            send_buffer_img(im2.ToImage<Gray,Byte>(), PrimitiveType.Triangles);
+            send_buffer_img(im2.ToImage<Gray,Byte>(), PrimitiveType.Triangles,GL1);
             
         }
 

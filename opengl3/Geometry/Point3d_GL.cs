@@ -199,6 +199,25 @@ namespace opengl3
             }
             return ps_fil.ToArray();
         }
+
+        public static Point3d_GL[][] reshape(Point3d_GL[][] ps)
+        {
+            var ps_re = new List<List<Point3d_GL>>();
+            for(int i = 0; i < ps[0].Length; i++)
+            {
+                ps_re.Add(new List<Point3d_GL>());
+                for (int j = 0; j < ps.Length; j++)
+                {
+                    ps_re[ps_re.Count - 1].Add(ps[j][i]);
+                }
+            }
+            var ps_re_ar = new List<Point3d_GL[]>();
+            for (int i = 0; i < ps_re.Count; i++)
+            {
+                ps_re_ar.Add(ps_re[i].ToArray());
+            }
+            return ps_re_ar.ToArray();
+        }
         public static Point3d_GL[] unifPoints2d(Point3d_GL[][] ps)
         {
             var ps_fil = new List<Point3d_GL>();
@@ -215,6 +234,7 @@ namespace opengl3
             }
             return ps_fil.ToArray();
         }
+
         public double magnitude()
         {
             return Math.Sqrt(x * x + y * y + z * z);
@@ -585,9 +605,31 @@ namespace opengl3
         {
             var traj_div = new List<Point3d_GL>();
             var delt = p2 - p1;
+            
             for(int i = 0; i < num; i++)
             {
-                traj_div.Add(p1+ delt* (i / num));
+                traj_div.Add(p1+ delt* ((double)i / num));
+            }
+
+            return traj_div.ToArray();
+        }
+
+        public static Point3d_GL[] divide_sect_dz(Point3d_GL p1, Point3d_GL p2, int num, double dz, double ddz)
+        {
+            var traj_div = new List<Point3d_GL>();
+            var delt = p2 - p1;
+            var d_delt = (delt / (double)num);
+            if(d_delt.magnitude() > dz+ddz)
+            {
+                num = (int)(delt.magnitude() / (dz + ddz));
+            }
+            if (d_delt.magnitude() < dz - ddz)
+            {
+                num = (int)(delt.magnitude() / (dz + ddz));
+            }
+            for (int i = 0; i < num; i++)
+            {
+                traj_div.Add(p1 + delt * ((double)i / num));
             }
 
             return traj_div.ToArray();
