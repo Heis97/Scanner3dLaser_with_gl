@@ -20,7 +20,15 @@ namespace opengl3
         {
             switch (type)
             {
-                case type_map.XY: rasterxy_surface_xy(surface, resolution,Point3d_GL.notExistP(),Point3d_GL.notExistP()); break;
+                case type_map.XY: 
+                    var map = rasterxy_surface_xy(surface, resolution,Point3d_GL.notExistP(),Point3d_GL.notExistP());
+                    this.map = map.map;
+                    this.res = map.res;
+                    this.pt_min = map.pt_min;
+                    this.pt_minmax = map.pt_minmax;
+                    this.pt_len_i = map.pt_len_i;
+                    this.len = map.len;
+                    break;
                 case type_map.XYZ: rasterxy_surface_xyz(surface, resolution); break;
                 default: break;
             }
@@ -477,6 +485,7 @@ namespace opengl3
             return polygs;
         }
 
+
         public static Point3d_GL[] smooth_points(Point3d_GL[] ps, double rad)
         {
             var ps_sm = new Point3d_GL[ps.Length];
@@ -612,7 +621,7 @@ namespace opengl3
             var x = (int)p_xy.x;
             var y = (int)p_xy.y;
 
-            if(x >= map.GetLength(0) || y >= map.GetLength(1)) return null;
+            if(x >= map.GetLength(0) || y >= map.GetLength(1)|| x<0 || y<0) return null;
             var inds = map[x, y];
             var rets = new List<int>();
             if (inds != null)

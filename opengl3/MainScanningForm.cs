@@ -1236,7 +1236,7 @@ namespace opengl3
             //add_points_cal();
             load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
             //test_cross_line_triang();
-            //test_surf_rec();
+            test_surf_rec();
         }
 
 
@@ -1247,7 +1247,15 @@ namespace opengl3
             var scan_stlb = new Model3d("defects\\def1d.stl", false);
             GL1.add_buff_gl(scan_stlb.mesh, scan_stlb.color, scan_stlb.normale, PrimitiveType.Triangles, "def1b");
 
-            SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);
+           // SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);
+
+            
+            var layers = SurfaceReconstraction.find_sub_surf_xy(scan_stlb.pols, scan_stla.pols, 0.5,2.5, 0.2,0.1);
+
+            for (int i = 0; i < layers.Length; i++)
+            {
+                GL1.addMesh(Polygon3d_GL.toMesh(layers[i])[0], PrimitiveType.Triangles);
+            }
         }
          
         void test_pr()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -494,77 +495,69 @@ namespace opengl3
 
         static public Polygon3d_GL[][] find_sub_surf_xy(Polygon3d_GL[] surf_up, Polygon3d_GL[] surf_down, double dz, double ddz, double res_xy,double max_ang)
         {
-            var surfs = remesh_gridxy(surf_down, surf_up, res_xy);
-            var surf_d_sm = surf_xy_simp(surfs[0], surfs[1], res_xy, max_ang);
-            var sub = subsurf_betw_grids_dz(surfs, dz, ddz);
+            var surfs = remesh_gridxy(surf_up, surf_down, res_xy);
+            var surf_d_sm = surf_xy_simp(surfs[1], max_ang);
+            var sub = subsurf_betw_grids_dz(new Point3d_GL[][,] { surf_d_sm , surfs[0] }, dz, ddz);
+
             var layrs = triangl_subsurf(sub);
             return layrs;
         }
-        static public Point3d_GL[][,] remesh_gridxy(Polygon3d_GL[] surf1, Polygon3d_GL[] surf2, double step)
+        static public Point3d_GL[][,] remesh_gridxy(Polygon3d_GL[] surf_up, Polygon3d_GL[] surf_down, double step)
         {
-            var map_xy_1 = new RasterMap(surf1);
-            var map_xy_2 = new RasterMap(surf2);
-            var p_min = Point3d_GL.Min(map_xy_1.pt_minmax[0], map_xy_2.pt_minmax[0]);
-            var p_max = Point3d_GL.Max(map_xy_1.pt_minmax[1], map_xy_2.pt_minmax[1]);
+            var map_xy_up = new RasterMap(surf_up);
+            var map_xy_down = new RasterMap(surf_down);
+            var p_min = Point3d_GL.Min(map_xy_up.pt_minmax[0], map_xy_down.pt_minmax[0]);
+            var p_max = Point3d_GL.Max(map_xy_up.pt_minmax[1], map_xy_down.pt_minmax[1]);
             var grid = gen_grid_ps_xy(p_min, p_max, step);
 
-            var grid1_proj = new Point3d_GL[grid.GetLength(0), grid.GetLength(1)];
-            var grid2_proj = new Point3d_GL[grid.GetLength(0), grid.GetLength(1)];
+            var grid_up_proj = new Point3d_GL[grid.GetLength(0), grid.GetLength(1)];
+            var grid_down_proj = new Point3d_GL[grid.GetLength(0), grid.GetLength(1)];
             for (int x = 0; x < grid.GetLength(0); x++)
                 for (int y = 0; y < grid.GetLength(1); y++)
                 {
-                    grid1_proj[x, y] = map_xy_1.proj_point_xy(grid[x, y], surf1);
-                    grid2_proj[x, y] = map_xy_2.proj_point_xy(grid[x, y], surf2);
+                    grid_up_proj[x, y] = map_xy_up.proj_point_xy(grid[x, y], surf_up);
+                    grid_down_proj[x, y] = map_xy_down.proj_point_xy(grid[x, y], surf_down);
                 }
 
 
-            return new Point3d_GL[][,] { grid1_proj, grid2_proj };
+            return new Point3d_GL[][,] { grid_up_proj, grid_down_proj };
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="surf1">smoothing(down)</param>
-        /// <param name="surf2"></param>
-        /// <param name="step"></param>
-        /// <param name="max_ang"></param>
-        /// <returns></returns>
-        static public Point3d_GL[,] surf_xy_simp(Point3d_GL[,] surf1, Point3d_GL[,] surf2, double step, double max_ang)
+        static public Point3d_GL[,] surf_xy_simp(Point3d_GL[,] surf_down,  double max_ang)
         {
-            var max_dz = step * Math.Tan(max_ang);
-            var smooth = smooth_xy_iter(surf1, surf2, max_dz);
-            var up_sm = up_surf(smooth, surf1);
+            var smooth = smooth_xy_iter(surf_down, max_ang);
+            var up_sm = up_surf(smooth, surf_down);
             return up_sm;
         }
-        static public Point3d_GL[,] up_surf(Point3d_GL[,] surf1, Point3d_GL[,] surf2)
+        static public Point3d_GL[,] up_surf(Point3d_GL[,] surf_up, Point3d_GL[,] surf_down)
         {
             var min_dz = double.MaxValue;
-            var w = surf1.GetLength(0);
-            var h = surf1.GetLength(1);
+            var w = surf_up.GetLength(0);
+            var h = surf_up.GetLength(1);
             for (int x = 0; x < w ; x++)
                 for (int y = 0; y < h ; y++)
                 {
-                    if (surf1[x, y].exist && surf2[x, y].exist)
+                    if (surf_up[x, y].exist && surf_down[x, y].exist)
                     {
-                        var dz = surf2[x, y].z - surf1[x, y].z;
+                        var dz = surf_up[x, y].z - surf_down[x, y].z;
                         if(dz<min_dz)
                         {
                             min_dz = dz;
                         }
                     }
                 }
-            var surf_up = new Point3d_GL[w, h];
+            var surf_up_off = new Point3d_GL[w, h];
             for (int x = 0; x < w; x++)
                 for (int y = 0; y < h; y++)
                 {
-                    if (surf1[x, y].exist)                    
-                        surf_up[x, y] = surf1[x, y] - new Point3d_GL(0, 0, min_dz);                    
+                    if (surf_up[x, y].exist)
+                        surf_up_off[x, y] = surf_up[x, y] - new Point3d_GL(0, 0, min_dz);                    
                     else
-                        surf_up[x, y] = Point3d_GL.notExistP();
+                        surf_up_off[x, y] = Point3d_GL.notExistP();
                 }
 
 
-            return surf_up;
+            return surf_up_off;
         }
 
         static public Point3d_GL[,] smooth_xy(Point3d_GL[,] surf, int rad)
@@ -585,12 +578,13 @@ namespace opengl3
                         var end_y = y + rad; if (end_y > h - 1) end_y = h - 1;
 
                         var ps = new List<Point3d_GL>();
-                        for (int x_sub = 0; x_sub < w; x_sub++)
-                            for (int y_sub = 0; y_sub < h; y_sub++)
+                        for (int x_sub = beg_x; x_sub < end_x; x_sub++)
+                            for (int y_sub = beg_y; y_sub < end_y; y_sub++)
                             {
                                 ps.Add(surf[x_sub, y_sub]);
                             }
                         var az = aver_z(ps.ToArray());
+                        //Console.WriteLine(az);
                         if (az != double.NaN)
                             surf_smooth[x, y] = new Point3d_GL(surf[x, y].x, surf[x, y].y, az);
                     }                                 
@@ -613,14 +607,16 @@ namespace opengl3
             if (len == 0) return double.NaN;
             return z_all / len;
         }
-        static public Point3d_GL[,] smooth_xy_iter(Point3d_GL[,] surf1, Point3d_GL[,] surf2, double max_dz)
+        static public Point3d_GL[,] smooth_xy_iter(Point3d_GL[,] surf_down, double max_ang)
         {
-            int iter_max = 10;
+            int iter_max = 100;
             int i = 0;
-            int rad = 2;
-            var smooth_surf = surf1;
-            while(max_dz_neigh(smooth_surf, surf2)>max_dz && i<iter_max)
+            int rad = 10;
+            var smooth_surf = surf_down;
+            var ang = max_dz_neigh_ang(smooth_surf);
+            while (ang > max_ang && i<iter_max)
             {
+                max_ang = max_dz_neigh_ang(smooth_surf);
                 smooth_surf = smooth_xy(smooth_surf, rad);
                 i++;
             }
@@ -650,6 +646,71 @@ namespace opengl3
                 }
             return max_dz;
         }
+
+        static public double max_dz_neigh_ang(Point3d_GL[,] surf)
+        {
+            var max_dz = 0d;
+            var w = surf.GetLength(0);
+            var h = surf.GetLength(1);
+            for (int x = 1; x < w - 2; x++)
+                for (int y = 1; y < h - 2; y++)
+                {
+                    if (surf[x, y].exist && surf[x - 1, y].exist && surf[x + 1, y].exist)
+                    {
+                        var v1 = surf[x + 1, y] - surf[x, y];
+                        var v2 = surf[x, y] - surf[x - 1, y];
+                        var ang = RobotFrame.arccos(v1 ^ v2);
+                        if (ang > max_dz) max_dz = ang;
+                    }
+
+                    if (surf[x, y].exist && surf[x , y - 1].exist && surf[x , y + 1].exist)
+                    {
+                        var v1 = surf[x , y + 1] - surf[x, y];
+                        var v2 = surf[x , y] - surf[x, y - 1];
+                        var ang = RobotFrame.arccos(v1 ^ v2);
+                        if (ang > max_dz) max_dz = ang;
+                    }
+                   // Console.WriteLine(max_dz);
+                }
+            return max_dz;
+        }
+
+
+        static public Point3d_GL[] divide_nearest(Point3d_GL[,] surf_up, Point3d_GL[,][] grid_sub,Point p)
+        {
+            var w = grid_sub.GetLength(0);
+            var h = grid_sub.GetLength(1);
+            if(p.X>=w || p.X<0 || p.Y>=h || p.Y<0) return null;
+
+            double min_dist = double.MaxValue;
+            var p_min = new Point(0,0);
+            for (int x = 0; x < w; x++)
+                for (int y = 0; y < h; y++)
+                {
+                    if(grid_sub[x, y]!=null)
+                    {
+                        var dist = Math.Abs(p.X - x)  + Math.Abs(p.Y - y) ;
+                        if (dist < min_dist)
+                        {
+                            min_dist = dist;
+                            p_min = new Point(x, y);
+                        }
+                    }
+                }
+
+            var p_up = surf_up[p.X, p.Y];
+            var dz = p_up - grid_sub[p_min.X, p_min.Y][0];
+            var div_up = Point3d_GL.add_arr(grid_sub[p_min.X, p_min.Y], dz);
+            //Console.WriteLine(p_up+"; "+grid_sub[p_min.X, p_min.Y][0] + "; " + dz + "; " +div_up[0]  + "; ");
+            return div_up;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="grids">down,up(biggest)</param>
+        /// <param name="dz"></param>
+        /// <param name="ddz"></param>
+        /// <returns></returns>
         static public Point3d_GL[][,] subsurf_betw_grids_dz(Point3d_GL[][,] grids, double dz, double ddz)
         {
             var w = grids[0].GetLength(0);
@@ -663,10 +724,21 @@ namespace opengl3
                 {
                     if (grids[0][x, y].exist && grids[1][x, y].exist)
                     {
-                        grid_sub[x, y] = Point3d_GL.divide_sect_dz(grids[0][x, y], grids[1][x, y], aver_num, dz, ddz);
+                        grid_sub[x, y] = Point3d_GL.divide_sect_dz(grids[1][x, y], grids[0][x, y], aver_num, dz, ddz);
                         if (grid_sub[x, y].Length > max_num) max_num = grid_sub[x, y].Length;
+                    }                      
+                }
+
+            var grid_sub_c =(Point3d_GL[,][]) grid_sub.Clone();
+
+            for (int x = 0; x < w; x++)
+                for (int y = 0; y < h; y++)
+                {
+                    if (grid_sub[x, y] == null && grids[1][x, y].exist) 
+                    {
+                        grid_sub_c[x, y] = divide_nearest(grids[1],grid_sub,new Point(x,y));
+                        //Console.WriteLine(x + " " + y + " null");
                     }
-                       
                 }
 
             var subsurfs = new Point3d_GL[max_num][,];
@@ -677,19 +749,22 @@ namespace opengl3
                     for (int y = 0; y < h; y++)
                     {
                         subsurfs[i][x, y] = Point3d_GL.notExistP();
-
                     }
             }
 
             for (int x = 0; x < w; x++)
                 for (int y = 0; y < h; y++)
                 {
-                    if (grid_sub[x, y]!=null)
+                    if (grid_sub_c[x, y]!=null)
                     {
-                        for (int z = 0; z < grid_sub[x,y].Length; z++)
+                        for (int z = 0; z < grid_sub_c[x,y].Length; z++)
                         {
-                            subsurfs[z][x, y] = grid_sub[x, y][z];
+                            subsurfs[z][x, y] = grid_sub_c[x, y][z];
                         }
+                    }
+                    else
+                    {
+                        //Console.WriteLine(x + " " + y + " null");
                     }
                         
                 }

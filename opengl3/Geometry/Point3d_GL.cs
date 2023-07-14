@@ -619,7 +619,7 @@ namespace opengl3
             var traj_div = new List<Point3d_GL>();
             var delt = p2 - p1;
             var d_delt = (delt / (double)num);
-            if(d_delt.magnitude() > dz+ddz)
+            if(d_delt.magnitude() > dz + ddz)
             {
                 num = (int)(delt.magnitude() / (dz + ddz));
             }
@@ -627,7 +627,7 @@ namespace opengl3
             {
                 num = (int)(delt.magnitude() / (dz + ddz));
             }
-            for (int i = 0; i < num; i++)
+            for (int i = 0; i <= num; i++)
             {
                 traj_div.Add(p1 + delt * ((double)i / num));
             }

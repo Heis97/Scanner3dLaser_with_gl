@@ -147,6 +147,8 @@ namespace opengl3
         }
         static public Polygon3d_GL[] triangulate_two_lines_xy(Point3d_GL[] ps1, Point3d_GL[] ps2)
         {
+            if (ps1 == null || ps2 == null) return null;
+            if(ps1.Length<2 || ps1.Length < 2) return null;
             var ps_or = Point3d_GL.order_points(ps1);
             var dp = ps_or[ps_or.Length - 1] - ps_or[0]; 
             Ax ax;
@@ -401,9 +403,10 @@ namespace opengl3
             ps = ps_f.ToArray();
             for (int i=1; i<ps.Length; i++)
             {
-                polygons.AddRange(triangulate_two_lines_xy(ps[i - 1], ps[i]));
+                var line = triangulate_two_lines_xy(ps[i - 1], ps[i]);
+                if(line == null) continue;
+                polygons.AddRange(line);
             }
-            Console.WriteLine("triangulated.");
             return polygons.ToArray();
         }
 
@@ -661,15 +664,26 @@ namespace opengl3
         }
 
 
-        public static Point3d_GL[] get_points(Polygon3d_GL[] pn1)
+        public static Point3d_GL[] get_uniq_points(Polygon3d_GL[] pn)
         {
-            return null;
+            var ind_mesh = new IndexedMesh(pn);
+            return ind_mesh.ps_uniq;
         }
-
+        public static Point3d_GL[] get_points(Polygon3d_GL[] pn)
+        {
+            var ps = new List<Point3d_GL>();
+            for (int i = 0; i < pn.Length; i++)
+            {
+                ps.AddRange(pn[i].ps);
+            }
+            return ps.ToArray();
+        }
         public static Polygon3d_GL[] from_points(Point3d_GL[] ps1)
         {
             return null;
         }
+
+
     }
 
     public class IndexedMesh
