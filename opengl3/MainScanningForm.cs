@@ -1236,7 +1236,7 @@ namespace opengl3
             //add_points_cal();
             load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
             //test_cross_line_triang();
-            test_surf_rec();
+            //test_surf_rec();
         }
 
 

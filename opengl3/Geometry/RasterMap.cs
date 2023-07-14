@@ -20,7 +20,7 @@ namespace opengl3
         {
             switch (type)
             {
-                case type_map.XY: rasterxy_surface_xy(surface, resolution); break;
+                case type_map.XY: rasterxy_surface_xy(surface, resolution,Point3d_GL.notExistP(),Point3d_GL.notExistP()); break;
                 case type_map.XYZ: rasterxy_surface_xyz(surface, resolution); break;
                 default: break;
             }
@@ -43,21 +43,44 @@ namespace opengl3
             this.pt_len_i = p_len_i;
             this.len = len;
         }
-        void rasterxy_surface_xy(Polygon3d_GL[] surface, double resolution)
+
+        public RasterMap(int[,][] map, double resolution, Point3d_GL p_len_i, Point3d_GL p_min, Point3d_GL p_max, int len)
+        {
+            this.map = map;
+            this.res = resolution;
+            this.pt_min = p_min;
+            this.pt_minmax =new Point3d_GL[] { p_min, p_max };
+            this.pt_len_i = p_len_i;
+            this.len = len;
+        }
+        static RasterMap rasterxy_surface_xy(Polygon3d_GL[] surface, double resolution,Point3d_GL p_len_v,Point3d_GL p_min_v)
         {
             if (resolution < 0)
             {
                 resolution = Polygon3d_GL.aver_dim(new Polygon3d_GL[][] { surface });
             }
-            var p_minmax = Polygon3d_GL.get_dimens_minmax_arr_full(surface);
-            pt_minmax = p_minmax;
-            var p_min = p_minmax[0]; var p_max = p_minmax[1];
+            var p_min = new Point3d_GL();
+            var p_max = new Point3d_GL();
+            var p_len = new Point3d_GL();
+            if (p_len_v.exist && p_min_v.exist)
+            {
+                p_min = p_min_v;
+                p_len = p_len_v;
+            }
+            else
+            {
 
-            var p_med = (p_minmax[1] + p_minmax[0]) / 2;
-            var p_del = (p_minmax[1] - p_minmax[0]) / 2;
-            p_min = p_med - p_del * 1.2;
-            p_max = p_med + p_del * 1.2;
-            var p_len = (p_max - p_min) / resolution;
+
+                var p_minmax = Polygon3d_GL.get_dimens_minmax_arr_full(surface);
+                p_min = p_minmax[0]; p_max = p_minmax[1];
+
+                var p_med = (p_minmax[1] + p_minmax[0]) / 2;
+                var p_del = (p_minmax[1] - p_minmax[0]) / 2;
+                p_min = p_med - p_del * 1.2;
+                p_max = p_med + p_del * 1.2;
+                p_len = (p_max - p_min) / resolution;
+            }
+
             var x_len = (int)(p_len.x);
             var y_len = (int)(p_len.y);
             var map_xy = new int[x_len, y_len][];
@@ -93,10 +116,11 @@ namespace opengl3
                 }
             }
 
-            map = uniq_map(map_xy);
-            pt_min = p_min;
-            pt_max = p_max;
-            res = resolution;
+            var map = uniq_map(map_xy);
+            var pt_min = p_min;
+            var pt_max = p_max;
+            var res = resolution;
+            return new RasterMap(map, resolution, p_len, p_min,pt_max, surface.Length);
         }
 
         static int[,][] uniq_map(int[,][] map)
@@ -288,6 +312,8 @@ namespace opengl3
             return matches;
         }
 
+
+
         static double comp_resol(Point3d_GL[] points)
         {
             var p_min = Point3d_GL.Min(points);
@@ -323,6 +349,26 @@ namespace opengl3
             var map1 = raster_mesh_xyz(surface1, new Point3d_GL(x_len, y_len, z_len), p_min, resolution);
             var map2 = raster_mesh_xyz(surface2, new Point3d_GL(x_len, y_len, z_len), p_min, resolution);
             return new RasterMap[] {map1, map2};    
+
+        }
+
+        static RasterMap[] map_two_mesh_xy(Polygon3d_GL[] surface1, Polygon3d_GL[] surface2, double resolution)
+        {
+            var p_minmax1 = Polygon3d_GL.get_dimens_minmax_arr(surface1);
+            var p_minmax2 = Polygon3d_GL.get_dimens_minmax_arr(surface2);
+            var p_min = Point3d_GL.Min(p_minmax1[0], p_minmax2[0]);
+            var p_max = Point3d_GL.Max(p_minmax1[1], p_minmax2[1]);
+
+
+            var p_med = (p_max + p_min) / 2;
+            var p_del = (p_max - p_min) / 2;
+            p_min = p_med - p_del * 1.2;
+            p_max = p_med + p_del * 1.2;
+            var p_len = (p_max - p_min) / resolution;
+
+            var map1 = rasterxy_surface_xy(surface1, resolution , p_len, p_min);
+            var map2 = rasterxy_surface_xy(surface2, resolution ,p_len, p_min);
+            return new RasterMap[] { map1, map2 };
 
         }
         static RasterMap[] map_two_cloud(Point3d_GL[] points1, Point3d_GL[] points2, double resolution)
@@ -584,6 +630,31 @@ namespace opengl3
             }
             if (rets.Count == 0) return null;
             return rets.ToArray();
+        }
+
+        public Point3d_GL proj_point_xy(Point3d_GL p, Polygon3d_GL[] surface)
+        {
+            var polyg_inds = get_polyg_ind_prec_xy(p, surface);
+            if (polyg_inds == null) return Point3d_GL.notExistP();
+            var polyg_ind = fing_high_polyg(polyg_inds, p, surface);
+            var p_proj = surface[polyg_ind].project_point_xy(p);
+            return p_proj;
+        }
+        public static int fing_high_polyg(int[] inds, Point3d_GL p, Polygon3d_GL[] surface)
+        {
+            if (inds == null) return 0;
+            int num = 0;
+            double z = double.MinValue;
+            for (int i = 0; i < inds.Length; i++)
+            {
+                var p_p = surface[inds[i]].project_point_xy(p);
+                if (p_p.z > z)
+                {
+                    num = i;
+                    z = p_p.z;
+                }
+            }
+            return inds[num];
         }
 
         public enum type_out { inside, outside };

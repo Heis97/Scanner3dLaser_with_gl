@@ -434,7 +434,7 @@ namespace PathPlanning
             for (int i = 0; i < layer.Count; i++)
             {
                 var polyg_inds = map_xy.get_polyg_ind_prec_xy(layer[i], surface);
-                var polyg_ind = fing_high_polyg(polyg_inds, layer[i], surface);
+                var polyg_ind =RasterMap.fing_high_polyg(polyg_inds, layer[i], surface);
                 var proj_matr = proj_point(surface[polyg_ind], layer[i], vec_x_dir);
                 if(proj_matr!=null)
                     layer_3d.Add(proj_matr);          
@@ -442,22 +442,7 @@ namespace PathPlanning
             return layer_3d;
         }
 
-        static int fing_high_polyg(int[] inds, Point3d_GL p, Polygon3d_GL[] surface)
-        {
-            if(inds == null) return 0;
-            int num = 0;
-            double z = double.MinValue;
-            for (int i = 0; i < inds.Length; i++)
-            {
-                var p_p = surface[inds[i]].project_point_xy(p);
-                if(p_p.z>z)
-                {
-                    num = i;
-                    z = p_p.z;
-                }
-            }
-            return inds[num];
-        }
+        
 
         static List<List<Matrix<double>>> add_transit(List<List<Matrix<double>>> traj, double trans_h)
         {
