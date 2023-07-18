@@ -496,7 +496,7 @@ namespace opengl3
         public static double operator ^(Point3d_GL p1, Point3d_GL p2)
         {
             return (p1.x * p2.x + p1.y * p2.y + p1.z * p2.z)/(p1.magnitude()*p2.magnitude());
-        }
+        }//scalar mult
         public Point3d_GL Clone()
         {
             return new Point3d_GL(x, y, z, color);
