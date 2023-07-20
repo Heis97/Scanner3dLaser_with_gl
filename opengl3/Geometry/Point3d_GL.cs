@@ -497,6 +497,32 @@ namespace opengl3
         {
             return (p1.x * p2.x + p1.y * p2.y + p1.z * p2.z)/(p1.magnitude()*p2.magnitude());
         }//scalar mult
+        static double arccos(double cos)
+        {
+            double _cos = cos;
+            if (_cos >= 1) _cos = 1;
+            if (_cos <= -1) _cos = -1;
+            return Math.Acos(_cos);
+
+        }
+        public static double ang(Point3d_GL p1, Point3d_GL p2)
+        {
+            return arccos(p1 ^ p2);
+        }
+        public static bool one_dir(Point3d_GL p1, Point3d_GL p2)
+        {
+            if (ang(p1, p2) < Math.PI / 2) return true;
+            else return false;
+        }
+        public static int sign_r_v(Point3d_GL p1, Point3d_GL p2, Point3d_GL p3)
+        {
+            var sign = 1;
+            var t_v3 = p1 | p2;
+            if (!one_dir(p3, t_v3))
+                sign = -1;
+            return sign;
+        }
+
         public Point3d_GL Clone()
         {
             return new Point3d_GL(x, y, z, color);
@@ -774,7 +800,18 @@ namespace opengl3
             return p / ps.Length;
         }
 
+        public static Point3d_GL vec_perpend_2_vecs(Point3d_GL v1, Point3d_GL v2)
+        {
+            double d = Math.Pow(v1.x, 2) * Math.Pow(v2.y, 2) + Math.Pow(v1.x, 2) * Math.Pow(v2.z, 2)
+                - 2 * v1.x * v1.y * v2.x * v2.y - 2 * v1.x * v2.x * v1.z * v2.z + Math.Pow(v1.y, 2) * Math.Pow(v2.x, 2)
+                + Math.Pow(v1.y, 2) * Math.Pow(v2.z, 2) - 2 * v1.y * v1.z * v2.y * v2.z + Math.Pow(v2.x, 2) * Math.Pow(v1.z, 2)
+                + Math.Pow(v1.z, 2) * Math.Pow(v2.y, 2);
+            double vx = (v1.y * v2.z - v1.z * v2.y) * Math.Sqrt(1 / d);
+            double vy = -(v1.x * v2.z - v2.x * v1.z) * Math.Sqrt(1 / d);
+            double vz = (v1.x * v2.y - v1.y * v2.x) * Math.Sqrt(1 / d);
 
+            return new Point3d_GL(vx, vy, vz);
+        }
 
     }
 

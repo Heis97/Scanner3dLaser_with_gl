@@ -15,7 +15,7 @@ namespace PathPlanning
     public class PathPlanner
     {
 
-        public static List<Point3d_GL> traj_to_matr(List<Matrix<double>> matrs)
+        public static List<Point3d_GL> matr_to_traj(List<Matrix<double>> matrs)
         {
             var traj_m = new List<Point3d_GL>();
             for (int i = 0; i < matrs.Count; i++)
@@ -49,7 +49,7 @@ namespace PathPlanning
             var traj_j = new List<Point3d_GL>();
             for (int i = 0; i < traj.Count; i++)
             {
-                traj_j.AddRange(traj_to_matr(traj[i]));
+                traj_j.AddRange(matr_to_traj(traj[i]));
             }
             return traj_j;
         }
@@ -495,6 +495,7 @@ namespace PathPlanning
             traj_3d = add_transit(traj_3d, trajParams.h_transf);
             return traj_3d;
         }
+
         public static List<Point3d_GL> project_contour_on_surface(Polygon3d_GL[] surface, List<Point3d_GL> contour)
         {
             var cont_proj = new List<Point3d_GL>();
@@ -510,15 +511,22 @@ namespace PathPlanning
             return matr_to_ps(proj_c);
         }
 
-        public static string generate_robot_traj(List<Matrix<double>> traj, RobotFrame.RobotType type_robot)
+        public static string generate_robot_traj(List<Matrix<double>> traj, RobotFrame.RobotType type_robot,TrajParams trajParams = null)
         {
             var traj_rob = new List<RobotFrame>();
-            double v = 20;
+            var r_syr = 18.5/2;
+            var v = trajParams.Vel;
+            //s_syr*f = s_nos*v
+            var f = ((trajParams.dz * trajParams.line_width) * v) / (3.1415 * r_syr * r_syr);
             for (int i = 0; i < traj.Count; i++)
             {
-                traj_rob.Add(new RobotFrame(traj[i], v,type_robot));
+                var fr = new RobotFrame(traj[i],type_robot);
+                fr.V = v;
+                fr.F = f;
+                traj_rob.Add(fr);
             }
             traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
+            traj_rob = RobotFrame.decrease_angle(traj_rob, 0.5);
 
             return RobotFrame.generate_string(traj_rob.ToArray());
         }
@@ -529,7 +537,7 @@ namespace PathPlanning
 
             for (int i = 0; i < traj.Count; i++)
             {
-                var f = new RobotFrame(traj[i], 20);
+                var f = new RobotFrame(traj[i]);
                 traj_rob.Add(new Point3d_GL(f.X, f.Y, f.Z));
             }
 

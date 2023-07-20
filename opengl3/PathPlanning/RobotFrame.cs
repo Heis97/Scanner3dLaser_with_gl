@@ -7,15 +7,30 @@ using Emgu.CV;
 
 namespace opengl3
 {
+
+    public struct PositionRob
+    {
+        public Point3d_GL pos;
+        public Point3d_GL rot;
+        public PositionRob(Point3d_GL pos, Point3d_GL rot)
+        {
+            this.pos = pos;
+            this.rot = rot;
+        }
+    }
+
     public class RobotFrame
     {
-        public double X, Y, Z, A, B, C, V, D;
+        public double X, Y, Z, A, B, C, V, D,F;
+        public double[] q;
+        public PositionRob pos;
+        public int[] turn;
         public enum RobotType { KUKA = 1, PULSE = 2};
 
         public RobotType robotType;
 
 
-        public RobotFrame(double x, double y, double z, double a, double b, double c, double v, double d, RobotType robotType)
+        public RobotFrame(double x, double y, double z, double a, double b, double c, double v, double d, double f, RobotType robotType)
         {
             X = x;
             Y = y;
@@ -25,6 +40,7 @@ namespace opengl3
             C = c;
             V = v;
             D = d;
+            F = f;
             this.robotType = robotType;
         }
 
@@ -46,10 +62,15 @@ namespace opengl3
 
         public Matrix<double>  getMatrix(RobotType robotType = RobotType.PULSE)
         {
+
             return ABCmatr(X, Y, Z, A, B, C, robotType);
         }
+        static public Matrix<double> getMatrixPos (PositionRob pos, RobotType robotType = RobotType.PULSE)
+        {
 
-        public RobotFrame(Matrix<double> m, double v, RobotType type = RobotType.KUKA)
+            return ABCmatr(pos.pos.x, pos.pos.y, pos.pos.z, pos.rot.x, pos.rot.y, pos.rot.z, robotType);
+        }
+        public RobotFrame(Matrix<double> m, RobotType type = RobotType.KUKA)
         {
             robotType = type;
             switch (type)
@@ -81,7 +102,6 @@ namespace opengl3
                         A = Rz;
                         B = -Ry;
                         C = Rx;
-                        V = v;
                         D = d;
                     }
                     break;
@@ -112,21 +132,14 @@ namespace opengl3
                         A = -Rx;
                         B = Ry;
                         C = Rz;
-                        V = v;
                         D = d;
                     }
                     break;
-            }            
+            }
+            pos = new PositionRob(new Point3d_GL(X, Y, Z), new Point3d_GL(A, B, C));
         }
 
-        public static double arccos(double cos)
-        {
-            double _cos = cos;
-            if (_cos >= 1) _cos = 1;
-            if (_cos <= -1) _cos = -1;
-            return Math.Acos(_cos);
-
-        }
+        
         
        
 
@@ -151,7 +164,7 @@ namespace opengl3
         {
             return del+"X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) +
                     del + "A" + round(A) + del + "B" + round(B) + del + "C" + round(C) +
-                    del + "V" + round(V) + del + "D" + D + " \n";
+                    del + "F" + round(F) + del + "V" + round(V) + del + "D" + D + " \n";
         }
 
         static double round(double val)
@@ -161,7 +174,7 @@ namespace opengl3
 
         public RobotFrame Clone()
         {
-            return new RobotFrame(X, Y, Z, A, B, C, V, D,robotType);
+            return new RobotFrame(X, Y, Z, A, B, C, V, D,F,robotType);
         }
         //---------------------------------------------------------------------------------------
 
@@ -180,6 +193,23 @@ namespace opengl3
             return smooth_frames;
         }
 
+        static public List<RobotFrame> decrease_angle(List<RobotFrame> frames, double k_decr)//1 full ang,0 const ang
+        {
+            var aver_fr = new RobotFrame(0,0,0,0,0,0,0,0,0,RobotType.PULSE);
+            aver_fr = get_average_angle(frames, aver_fr);
+            var frames_decrease = new List<RobotFrame>();
+            for (int i = 0; i < frames.Count; i++)
+            {
+                var fr = frames[i].Clone();
+                fr.A = aver_fr.A + k_decr * (frames[i].A - aver_fr.A);
+                fr.B = aver_fr.B + k_decr * (frames[i].B - aver_fr.B);
+                fr.C = aver_fr.C + k_decr * (frames[i].C - aver_fr.C);
+
+                frames_decrease.Add(fr);
+            }
+            return frames_decrease;
+        }
+
         static RobotFrame get_average_angle(List<RobotFrame> frames, RobotFrame target_frame )
         {
             double a = 0, b=0, c = 0;
@@ -194,6 +224,8 @@ namespace opengl3
             target_frame.C = c / frames.Count;
             return target_frame;
         }
+
+
 
         static public Matrix<double> RotZmatr(double alpha)
         {
@@ -256,6 +288,232 @@ namespace opengl3
         {
             return Math.Sin(alpha);
         }
+        public static double arccos(double cos)
+        {
+            double _cos = cos;
+            if (_cos >= 1) _cos = 1;
+            if (_cos <= -1) _cos = -1;
+            return Math.Acos(_cos);
+
+        }
+        static public Matrix<double> create_dhmatr(double[] vals)
+        {
+            var theta = vals[0];
+            var alpha = vals[1];
+            var a = vals[2];
+            var d = vals[3];
+
+            double cosQ = Math.Cos(theta);
+            double sinQ = Math.Sin(theta);
+            double cosA = Math.Cos(alpha);
+            double sinA = Math.Sin(alpha);
+            var matr = new double[,]
+            {{ cosQ,-sinQ*cosA,sinQ*sinA,a*cosQ },
+            { sinQ, cosQ*cosA,-cosQ*sinA,a*sinQ },
+            { 0   , sinA     , cosA    ,  d },
+            { 0   , 0        , 0       ,  1 } };
+            return new Matrix<double>(matr);
+        }
+        static Matrix<double> eye_matr(int w)
+        {
+            var matr = new double[w, w];
+            for(int i = 0; i < w; i++)
+                for(int j = 0; j < w; j++)
+                {
+                    if (i == j) matr[i, j] = 1;
+                    else matr[i, j] = 0;
+                }
+            return new Matrix<double>(matr);
+        }
+        static public Matrix<double> calc_pos(double[][] vals)
+        {
+            var matrs = new List<Matrix<double>>();
+            foreach(var val in vals)            
+                matrs.Add(create_dhmatr(val));
+            
+            var matr_res = eye_matr(4);
+            foreach(var matr in matrs)
+                matr_res *= matr;
+
+            return matr_res;
+        }
+        static double[] to_rad(double[] q)
+        {
+            var q_r = new double[q.Length];
+            for(int i =0; i<q.Length;i++)
+            {
+                q_r[i] = q[i] * Math.PI / 180;
+            }
+            return q_r;
+        }
+        static public PositionRob comp_forv_kinem(double[] q,bool rad = true, RobotType robotType = RobotType.PULSE)
+        {
+            if(robotType==RobotType.PULSE)
+            {
+                var L1 = 0.2311;
+                var L2 = 0.45;
+                var L3 = 0.37;
+                var L4 = 0.1351;
+                var L5 = 0.1825;
+                var L6 = 0.1325;
+
+                if(!rad)
+                    q = to_rad(q);
+
+                var dh_params = new double[][] {
+                    new double[]{ q[0], Math.PI / 2, 0, L1},
+                    new double[]{ q[1],  0, -L2, 0},
+                    new double[]{ q[2],  0, -L3, 0},
+                    new double[]{ q[3], Math.PI / 2, 0, L4},
+                    new double[]{ q[4], -Math.PI / 2, 0, L5},
+                    new double[]{ q[5],  0, 0, L6}
+                };
+
+                var fr = new RobotFrame(calc_pos(dh_params), robotType);
+                var pos = fr.pos;
+                return pos;
+            }
+
+            return new PositionRob();
+        }
+
+        public double[][] comp_inv_kinem(PositionRob pos)
+        {
+            var solvs = new List<double[]>();
+            var turns = new int[][]
+            {
+               new int[] { -1, -1, -1 },
+                new int[]{-1, -1, 1 },
+                new int[]{-1, 1, -1 },
+                new int[]{-1, 1, 1},
+                new int[]{1, -1, -1},
+                new int[]{1, -1, 1},
+                new int[]{1, 1, -1},
+                new int[]{1, 1, 1}
+            };
+            foreach (var turn in turns)
+                solvs.Add(comp_inv_kinem_priv(pos, turn));
+
+            return solvs.ToArray();
+        }
+        public static Point3d_GL calc_inters_2circ(double x1, double y1, double x2, double y2, double R1, double R2, double sign)
+        {
+            var p1 = new Point3d_GL(x1, y1);
+            var p2 = new Point3d_GL(x2, y2);
+            if ((p2 - p1).magnitude() > R1 + R2) return Point3d_GL.notExistP();
+            x2 -= x1;
+            y2 -= y1;
+            double sD = sign * Math.Sqrt((R1 * R1 + 2 * R1 * R2 + R2 * R2 - x2 * x2 - y2 * y2) * (2 * R1 * R2 - R1 * R1 - R2 * R2 + x2 * x2 + y2 * y2));
+            double x = (R1 * R1 - R2 * R2 + x2 * x2 + y2 * y2 - ((y2 * (R1 * R1 * y2 - R2 * R2 * y2 + x2 * x2 * y2 + y2 * y2 * y2 + x2 * sD)) / (x2 * x2 + y2 * y2))) / (2 * x2);
+            double y = (R1 * R1 * y2 - R2 * R2 * y2 + x2 * x2 * y2 + y2 * y2 * y2 + x2 * sD) / (2 * (x2 * x2 + y2 * y2));
+            x += x1;
+            y += y1;
+            return new Point3d_GL(x, y);
+        }
+        static public double[] comp_inv_kinem_priv(PositionRob pos, int[] turn)
+        {
+            var pm = getMatrixPos(pos);
+            var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
+            var L1 = 0.2311;
+            var L2 = 0.45;
+            var L3 = 0.37;
+            var L4 = 0.1351;
+            var L5 = 0.1825;
+            var L6 = 0.1325;
+
+            var dz = eye_matr(4);
+            dz[2, 3] = -L6;
+            var p0 = pm * dz;
+            var p0p = new Point3d_GL(p0[0, 3], p0[1, 3], p0[2, 3]);
+            var vz = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
+            var xy_d = p0p.magnitude_xy();
+            if (Math.Abs(L4) > Math.Abs(xy_d)) return null;
+            var aa_d = Math.Sqrt(xy_d * xy_d - L4 * L4);
+            var p_circ_cross = calc_inters_2circ(0, 0, p0p.x, p0p.y, aa_d, L4, turn[0]);
+            if (!p.exist) return null;
+            var x2 = p_circ_cross.x;
+            var y2 = p_circ_cross.y;
+            var vf = new Point3d_GL(x2 - p0p.x, y2 - p0p.y);
+            vf = vf.normalize();
+            var ax5y = Point3d_GL.vec_perpend_2_vecs(vz, vf);
+            ax5y *= turn[1];
+
+            var p1 = p0p + ax5y * L5;
+            var p2 = p1 + vf * L4;
+
+            var scara = p2 - new Point3d_GL(0, 0, L1);
+            var sq1 = -scara.y / scara.magnitude_xy();
+            var cq1 = -scara.x / scara.magnitude_xy();
+
+            var q1 = Math.Sign(sq1) * arccos(cq1);
+
+
+            var Ls = scara.magnitude_xy();
+            var Lt = scara.magnitude();
+
+
+            var omega = Math.Atan(scara.z / Ls);
+            var theta = arccos((L2 * L2 + L3 * L3 - Lt * Lt) / (2 * L2 * L3));
+            var omega_ext = arccos((L2 * L2 + Lt * Lt - L3 * L3) / (2 * L2 * Lt));
+            omega += omega_ext * turn[2];
+
+            var q2 = -omega;
+            var q3 = Math.PI - theta;
+
+            if (turn[0] > 0) {
+                q1 += Math.PI;
+
+
+                q2 *= -1;
+                q2 -= Math.PI;
+                q3 *= -1;
+            }
+
+            if (turn[2] < 0) {
+                q3 *= turn[2];
+            }
+            var ax4z = -ax5y;
+            var ax4y = -vf;
+            var ax4x = ax4y | ax4z;
+
+            var dh_params = new double[][]
+                {
+              new double[]{  q1, Math.PI / 2, 0, L1 },
+                 new double[] { q2,  0, -L2, 0 },
+                    new double[]{ q3,  0, -L3, 0 } };
+
+            var pm3 = calc_pos(dh_params);
+            var ax3x = new Point3d_GL(pm3[0,0], pm3[1,0], pm3[2,0]);
+            var s4 = Point3d_GL.sign_r_v(ax3x, ax4x, ax4y);
+            var q4 = s4 * Point3d_GL.ang(ax3x ,ax4x); 
+
+
+            var ax6y = new Point3d_GL(pm[0,1], pm[1,1], pm[2,1]);
+            var ax6z = new Point3d_GL(pm[0,2], pm[1,2], pm[2,2]);
+
+            var s6 = Point3d_GL.sign_r_v(ax5y, ax6y, ax6z);
+            var q6 = s6 *  Point3d_GL.ang(ax5y ,ax6y);
+
+
+
+            var s5 = Point3d_GL.sign_r_v(ax4y, ax6z, ax4z);
+            var q5 = s5 *  Point3d_GL.ang(ax4y ,ax6z);
+
+            q6 += Math.PI;
+
+            var q = new double[]{q1, q2, q3, q4, q5, q6};
+            for (int i=0 ;i<q.Length;i++){
+                var qi = q[i];
+                if (qi > Math.PI) qi -= 2 * Math.PI;
+                if (qi < -Math.PI) qi += 2 * Math.PI;
+                q[i] = qi;
+            }
+
+            return q;
+        }
+
+
+        //---------------------------------------------------------------------
         static public Matrix<double> mult_frame(Matrix<double> rob_base, Matrix<double> frame)
         {
             var transl = rob_base * frame;

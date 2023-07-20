@@ -75,6 +75,11 @@ namespace opengl3
             }            
         }
 
+        public bool is_connect()
+        {
+            return _client.Connected;
+        }
+
 
         public void connect_leg(string send_prog)
         {

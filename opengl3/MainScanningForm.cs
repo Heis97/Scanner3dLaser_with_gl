@@ -154,7 +154,10 @@ namespace opengl3
              foreach (string filename in paths_sort)
                  //File.GetCreationTime(filename);
                  Console.WriteLine(filename+" " +File.GetCreationTime(filename));*/
-           // resize();
+            // resize();
+            var pos = new PositionRob(new Point3d_GL(0.1, 0.1, 0.1), new Point3d_GL());
+            var q = RobotFrame.comp_inv_kinem_priv(pos, new int[] { -1, -1, 1 });
+            prin.t(q);
         }
         static int[] frames_max(int[,] data)
         {
@@ -1234,9 +1237,9 @@ namespace opengl3
             //test_smooth();
             //test_remesh();
             //add_points_cal();
-            load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
+            //load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
             //test_cross_line_triang();
-            test_surf_rec();
+            //test_surf_rec();
         }
 
 
@@ -2035,7 +2038,37 @@ namespace opengl3
             string pulse = "localhost";
             port_tcp = Convert.ToInt32(tb_port_tcp.Text);
             con1.Connection(port_tcp,pulse );
+
+            Thread tcp_thread = new Thread(recieve_tcp);
+            tcp_thread.Start(con1);
+
         }
+
+        void recieve_tcp(object obj)
+        {
+            var con = (TCPclient)obj;
+            while (con.is_connect())
+            {
+                var res = con.reseav();
+                resend_rob_to_ard_extr(res, laserLine);
+                // Console.WriteLine(res);
+                Thread.Sleep(10);
+            }
+        }
+
+        void resend_rob_to_ard_extr(string mes, LaserLine ard)
+        {
+            if (ard == null) return;
+            if (mes == null) return;
+            if (mes.Length < 2) return;
+            var vals_str = mes.Split(' ');
+            if (vals_str.Length != 2) return;
+            var vel = Convert.ToInt32(vals_str[0]);
+            var dir = Convert.ToInt32(vals_str[1]);
+            ard.set_dir_disp(dir);
+            ard.set_div_disp(vel);
+        }
+
         private void but_res_pos1_Click(object sender, EventArgs e)
         {
             var posRob = positionFromRobot(con1);
@@ -3922,7 +3955,7 @@ namespace opengl3
                 var _traj = PathPlanner.Generate_multiLayer3d_mesh(mesh, conts, param_tr);
 
                 rob_traj = PathPlanner.join_traj(_traj);
-                var ps = PathPlanner.traj_to_matr(rob_traj);
+                var ps = PathPlanner.matr_to_traj(rob_traj);
 
                 if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
 
@@ -4036,7 +4069,7 @@ namespace opengl3
             var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, param_tr);
 
             rob_traj = PathPlanner.join_traj(_traj);
-            var ps = PathPlanner.traj_to_matr(rob_traj);
+            var ps = PathPlanner.matr_to_traj(rob_traj);
 
             if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
 

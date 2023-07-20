@@ -49,6 +49,18 @@ namespace opengl3
             get { return step; }
             set { step = value; }
         }
+        public double vel;
+        public double Vel
+        {
+            get { return vel; }
+            set { vel = value; }
+        }
+        public double line_width;
+        public double Line_width
+        {
+            get { return line_width; }
+            set { line_width = value; }
+        }
         public double off_z;
         public double Off_z
         {
