@@ -451,7 +451,8 @@ namespace opengl3
             var Ls = scara.magnitude_xy();
             var Lt = scara.magnitude();
 
-
+            if (Ls == 0) return null;
+            if (Lt == 0) return null;
             var omega = Math.Atan(scara.z / Ls);
             var theta = arccos((L2 * L2 + L3 * L3 - Lt * Lt) / (2 * L2 * L3));
             var omega_ext = arccos((L2 * L2 + Lt * Lt - L3 * L3) / (2 * L2 * Lt));
@@ -478,8 +479,8 @@ namespace opengl3
 
             var dh_params = new double[][]
                 {
-              new double[]{  q1, Math.PI / 2, 0, L1 },
-                 new double[] { q2,  0, -L2, 0 },
+                    new double[]{ q1, Math.PI / 2, 0, L1 },
+                    new double[]{ q2,  0, -L2, 0 },
                     new double[]{ q3,  0, -L3, 0 } };
 
             var pm3 = calc_pos(dh_params);
