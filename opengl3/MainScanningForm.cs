@@ -360,6 +360,8 @@ namespace opengl3
                 layers = 2,
                 layers_angle = 0.47,// Math.PI / 4,
                 step = 0.4 * 4,
+                vel = 20,
+               
             };
             propGrid_traj.SelectedObject = param_tr;
 
@@ -1240,6 +1242,7 @@ namespace opengl3
             //load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
             //test_cross_line_triang();
             //test_surf_rec();
+            //test_surf_cross();
         }
 
 
@@ -1260,7 +1263,18 @@ namespace opengl3
                 GL1.addMesh(Polygon3d_GL.toMesh(layers[i])[0], PrimitiveType.Triangles);
             }
         }
-         
+        void test_surf_cross()
+        {
+            var scan_stla = new Model3d("flat.stl", false);
+            GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def1a");
+            var scan_stlb = new Model3d("wall.stl", false);
+            GL1.add_buff_gl(scan_stlb.mesh, scan_stlb.color, scan_stlb.normale, PrimitiveType.Triangles, "def1b");
+
+            // SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);
+            var ps = RasterMap.intersec_line_of_two_mesh(scan_stla.mesh, scan_stlb.mesh);
+            GL1.addLineMeshTraj(ps, new Color3d_GL(1, 0, 0), "intersec");
+
+        }
         void test_pr()
         {
             var ps_2 = FileManage.loadFromJson("settings_pulse.json");
@@ -1310,6 +1324,34 @@ namespace opengl3
                 new Point3d_GL(0, 5,0),
                 new Point3d_GL(5, 5, 0),
                 new Point3d_GL(5, 0, 5)};*/
+            var transf = UtilMatr.calcTransformMatr_cv(basis1, basis2);
+            prin.t(transf);
+        }
+
+        void test_get_conts()
+        {
+
+            var basis1 = new Point3d_GL[] {
+                new Point3d_GL(0, 0, 0),
+                new Point3d_GL(1, 0, 0),
+                new Point3d_GL(1, 1, 0),
+                new Point3d_GL(0, 1, 0.5)};
+            var basis2 = new Point3d_GL[] {
+                new Point3d_GL(-6.33, -9.64, 3.82),
+                new Point3d_GL(-6.3, -7.84,3.82),
+                new Point3d_GL(-4.56, -7.87,3.82),
+                new Point3d_GL(-4.56, -9.64, 3.32)};
+
+            /* var basis1 = new Point3d_GL[] {
+                 new Point3d_GL(0, 0, 0),
+                 new Point3d_GL(0, 10, 0),
+                 new Point3d_GL(10, 10, 0),
+                 new Point3d_GL(10, 0, 10)};
+             var basis2 = new Point3d_GL[] {
+                 new Point3d_GL(0, 0, 0),
+                 new Point3d_GL(0, 5,0),
+                 new Point3d_GL(5, 5, 0),
+                 new Point3d_GL(5, 0, 5)};*/
             var transf = UtilMatr.calcTransformMatr_cv(basis1, basis2);
             prin.t(transf);
         }
@@ -3962,7 +4004,7 @@ namespace opengl3
                 //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
 
                 traj_i = GL1.addLineMeshTraj(ps.ToArray(),new Color3d_GL(0.9f),"gen_traj");
-                var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType);
+                var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType,param_tr);
                 return traj_rob;
 
             }
@@ -4059,10 +4101,10 @@ namespace opengl3
             {
                 var mesh_sm_tr = GL1.translateMesh(mesh_sm, 0, 0,-1+( i*-1f));
                 surfs.Add(Polygon3d_GL.polygs_from_mesh(mesh_sm_tr));
-               // var rec = GL1.add_buff_gl(mesh_sm_tr, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_cut_"+i);
-               // cuts.Add(rec);
+                //var rec = GL1.add_buff_gl(mesh_sm_tr, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_cut_"+i);
+                //cuts.Add(rec);
                 var ps_inter = RasterMap.intersec_line_of_two_mesh(mesh_sm_tr, GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
-                 GL1.addLineMeshTraj(ps_inter, new Color3d_GL(1, 0, 0), "intersec_cut_" + i);
+                GL1.addLineMeshTraj(ps_inter, new Color3d_GL(1, 0, 0), "intersec_cut_" + i);
                 conts.Add(ps_inter.ToList());
             }
 
@@ -4076,7 +4118,7 @@ namespace opengl3
             //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
 
             traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
-            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE);
+            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, param_tr);
            // return traj_rob;
 
 

@@ -99,7 +99,7 @@ namespace opengl3
             zRot = 0;
             off_x = 0;
             off_y = 0;
-            off_z = -10;
+            off_z = -2;
             rect = _rect;
             id = _id;
             type = TRZtype.Master;

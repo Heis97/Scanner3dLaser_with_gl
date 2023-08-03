@@ -565,6 +565,66 @@ namespace opengl3
 
             return ps_or.ToArray();
         }
+
+        public static Point3d_GL[][] get_contours(Point3d_GL[] ps)
+        {
+            if (ps == null) return null;
+            var contours = new List<int[]>();
+            var ps_cl =(Point3d_GL[])ps.Clone();
+
+            var cont = new List<int>();
+            cont.Add(0);
+            for (int i = 0;  i < ps.Length ; i++)
+            {
+                if (cont.Count < 3) ps_cl[cont[0]] = Point3d_GL.notExistP();
+                else ps_cl[cont[0]] = ps[cont[0]];
+
+                var i_n = nearest_point(ps_cl, ps[cont[cont.Count - 1]]);
+                cont.Add(i_n);
+                ps_cl[i_n] = Point3d_GL.notExistP();
+                if(i_n == cont[0])
+                {
+                    contours.Add(cont.ToArray());
+                    cont = new List<int>();
+                    cont.Add(first_exist(ps_cl));
+                }               
+            }
+            return null;
+        }
+
+        public static int nearest_point(Point3d_GL[] ps, Point3d_GL p)
+        {
+            if (ps == null || !p.exist) return -1;
+            var d_min = double.MaxValue;
+            int i_min = 0;
+
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if(ps[i].exist)
+                {
+                    var d = (ps[i] - p).magnitude();
+                    if(d<d_min)
+                    {
+                        d_min = d;
+                        i_min = i;
+                    }
+                }
+            }
+            return i_min;
+        }
+        public static int first_exist(Point3d_GL[] ps)
+        {
+            if (ps == null) return -1;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if (ps[i].exist)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         public static int[] remote_element(Point3d_GL[] ps)
         {
             var max = double.MinValue;

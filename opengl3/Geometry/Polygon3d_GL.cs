@@ -589,30 +589,50 @@ namespace opengl3
             }
             return dim_all / len;
         }
-        
 
-        static Point3d_GL cross_line_triang_arc(Polygon3d_GL polygon, Line3d_GL line)
+
+        public static Point3d_GL cross_line_triang(Polygon3d_GL polygon, Line3d_GL line)
         {
             var p_cross = line.calcCrossFlat(polygon.flat3D);
-            var v_c = p_cross - polygon.ps[2];
-            var a1 = RobotFrame.arccos((polygon.ps[0]- polygon.ps[2])^ v_c);
-            var a2 = RobotFrame.arccos((polygon.ps[1] - polygon.ps[2]) ^ v_c);
-            var b1 = RobotFrame.arccos((polygon.ps[0] - polygon.ps[2]) ^ (polygon.ps[1] - polygon.ps[2]));
-            if (a1 > b1 || a2 > b1)
-            {
+            var ps_in1 = ps_in_triang_3d(polygon,p_cross);
+            if (ps_in1)
+                return p_cross;
+            else
                 return Point3d_GL.notExistP();
-            }
-            v_c = p_cross - polygon.ps[1];
-            a1 = RobotFrame.arccos((polygon.ps[0] - polygon.ps[1]) ^ v_c);
-            a2 = RobotFrame.arccos((polygon.ps[2] - polygon.ps[1]) ^ v_c);
-            b1 = RobotFrame.arccos((polygon.ps[0] - polygon.ps[1]) ^ (polygon.ps[2] - polygon.ps[1]));
-            if (a1 > b1 || a2 > b1)
-            {
-                return Point3d_GL.notExistP();
-            }
-            return p_cross;
         }
-        public static Point3d_GL cross_line_triang(Polygon3d_GL polygon, Line3d_GL line)
+
+        public static Point3d_GL cross_line_triang_2(Polygon3d_GL polygon1, Polygon3d_GL polygon2, Line3d_GL line)
+        {
+            var p_cross = line.calcCrossFlat(polygon1.flat3D);
+            var ps_in1 = ps_in_triang_3d(polygon1, p_cross);
+            var ps_in2 = ps_in_triang_3d(polygon2, p_cross);
+            if (ps_in1 && ps_in2)
+                return p_cross;
+            else
+                return Point3d_GL.notExistP();
+        }
+
+        public static bool ps_in_triang_3d(Polygon3d_GL polygon, Point3d_GL p)
+        {
+            var v_c = p - polygon.ps[2];
+            var a1 = (polygon.ps[0] - polygon.ps[2]) ^ v_c;
+            var a2 = (polygon.ps[1] - polygon.ps[2]) ^ v_c;
+            var b1 = (polygon.ps[0] - polygon.ps[2]) ^ (polygon.ps[1] - polygon.ps[2]);
+            if (a1 < b1 || a2 < b1)
+            {
+                return false;
+            }
+            v_c = p - polygon.ps[1];
+            a1 = (polygon.ps[0] - polygon.ps[1]) ^ v_c;
+            a2 = (polygon.ps[2] - polygon.ps[1]) ^ v_c;
+            b1 = (polygon.ps[0] - polygon.ps[1]) ^ (polygon.ps[2] - polygon.ps[1]);
+            if (a1 < b1 || a2 < b1)
+            {
+                return false;
+            }
+            return true;
+        }
+        public static Point3d_GL cross_line_triang_arc(Polygon3d_GL polygon, Line3d_GL line)
         {
             var p_cross = line.calcCrossFlat(polygon.flat3D);
             var v_c = p_cross - polygon.ps[2];
@@ -643,13 +663,13 @@ namespace opengl3
             var ps1 = new List<Point3d_GL>();
             Point3d_GL[] ps2 = new Point3d_GL[6];
 
-            ps2[0] = cross_line_triang(pn1, new Line3d_GL(pn2.ps[0], pn2.ps[1]));
-            ps2[1] = cross_line_triang(pn1, new Line3d_GL(pn2.ps[1], pn2.ps[2]));
-            ps2[2] = cross_line_triang(pn1, new Line3d_GL(pn2.ps[2], pn2.ps[0]));
+            ps2[0] = cross_line_triang_2(pn1, pn2, new Line3d_GL(pn2.ps[0], pn2.ps[1]));
+            ps2[1] = cross_line_triang_2(pn1, pn2, new Line3d_GL(pn2.ps[1], pn2.ps[2]));
+            ps2[2] = cross_line_triang_2(pn1, pn2, new Line3d_GL(pn2.ps[2], pn2.ps[0]));
 
-            ps2[3] = cross_line_triang(pn2, new Line3d_GL(pn1.ps[0], pn1.ps[1]));
-            ps2[4] = cross_line_triang(pn2, new Line3d_GL(pn1.ps[1], pn1.ps[2]));
-            ps2[5] = cross_line_triang(pn2, new Line3d_GL(pn1.ps[2], pn1.ps[0]));
+            ps2[3] = cross_line_triang_2(pn2, pn1, new Line3d_GL(pn1.ps[0], pn1.ps[1]));
+            ps2[4] = cross_line_triang_2(pn2, pn1, new Line3d_GL(pn1.ps[1], pn1.ps[2]));
+            ps2[5] = cross_line_triang_2(pn2, pn1, new Line3d_GL(pn1.ps[2], pn1.ps[0]));
 
             for (int i = 0; i < 6; i++)
             {
@@ -658,8 +678,8 @@ namespace opengl3
                     ps1.Add(ps2[i]);
                     ind++;
                 }
-            } 
-
+            }
+            //Console.WriteLine(ps1.Count);
             return ps1.ToArray();
         }
 
