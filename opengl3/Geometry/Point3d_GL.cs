@@ -581,6 +581,7 @@ namespace opengl3
 
                 var i_n = nearest_point(ps_cl, ps[cont[cont.Count - 1]]);
                 cont.Add(i_n);
+                
                 ps_cl[i_n] = Point3d_GL.notExistP();
                 if(i_n == cont[0])
                 {
@@ -589,7 +590,19 @@ namespace opengl3
                     cont.Add(first_exist(ps_cl));
                 }               
             }
-            return null;
+
+            var conts_ret = new List<Point3d_GL[]>();
+            for (int i = 0; i < contours.Count; i++)
+            {
+                var cont_ret = new Point3d_GL[contours[i].Length];
+                for (int j = 0; j < contours[i].Length; j++)
+                {
+                    cont_ret[j] = ps[contours[i][j]];
+                }
+                conts_ret.Add(cont_ret);
+            }
+
+            return conts_ret.ToArray();
         }
 
         public static int nearest_point(Point3d_GL[] ps, Point3d_GL p)

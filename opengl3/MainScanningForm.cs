@@ -155,9 +155,11 @@ namespace opengl3
                  //File.GetCreationTime(filename);
                  Console.WriteLine(filename+" " +File.GetCreationTime(filename));*/
             // resize();
-            var pos = new PositionRob(new Point3d_GL(0.1, 0.1, 0.1), new Point3d_GL());
-            var q = RobotFrame.comp_inv_kinem_priv(pos, new int[] { -1, -1, 1 });
-            prin.t(q);
+            //var pos = new PositionRob(new Point3d_GL(0.1, 0.1, 0.1), new Point3d_GL());
+            //var q = RobotFrame.comp_inv_kinem_priv(pos, new int[] { -1, -1, 1 });
+            //prin.t(q);
+
+            //test_get_conts();
         }
         static int[] frames_max(int[,] data)
         {
@@ -1243,6 +1245,7 @@ namespace opengl3
             //test_cross_line_triang();
             //test_surf_rec();
             //test_surf_cross();
+            test_get_conts_3d();
         }
 
 
@@ -1269,7 +1272,6 @@ namespace opengl3
             GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def1a");
             var scan_stlb = new Model3d("wall.stl", false);
             GL1.add_buff_gl(scan_stlb.mesh, scan_stlb.color, scan_stlb.normale, PrimitiveType.Triangles, "def1b");
-
             // SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);
             var ps = RasterMap.intersec_line_of_two_mesh(scan_stla.mesh, scan_stlb.mesh);
             GL1.addLineMeshTraj(ps, new Color3d_GL(1, 0, 0), "intersec");
@@ -1331,29 +1333,47 @@ namespace opengl3
         void test_get_conts()
         {
 
-            var basis1 = new Point3d_GL[] {
+
+
+            var cont1 = new Point3d_GL[] {
                 new Point3d_GL(0, 0, 0),
+                new Point3d_GL(1+10, 0, 0),
+                new Point3d_GL(1+10, 1, 0),
+                new Point3d_GL(0, 1, 0.5)};
+            var cont2 = new Point3d_GL[] {
+                 new Point3d_GL(0+10, 0, 0),
                 new Point3d_GL(1, 0, 0),
                 new Point3d_GL(1, 1, 0),
-                new Point3d_GL(0, 1, 0.5)};
-            var basis2 = new Point3d_GL[] {
-                new Point3d_GL(-6.33, -9.64, 3.82),
-                new Point3d_GL(-6.3, -7.84,3.82),
-                new Point3d_GL(-4.56, -7.87,3.82),
-                new Point3d_GL(-4.56, -9.64, 3.32)};
+                new Point3d_GL(0+10, 1, 0.5)};
 
-            /* var basis1 = new Point3d_GL[] {
-                 new Point3d_GL(0, 0, 0),
-                 new Point3d_GL(0, 10, 0),
-                 new Point3d_GL(10, 10, 0),
-                 new Point3d_GL(10, 0, 10)};
-             var basis2 = new Point3d_GL[] {
-                 new Point3d_GL(0, 0, 0),
-                 new Point3d_GL(0, 5,0),
-                 new Point3d_GL(5, 5, 0),
-                 new Point3d_GL(5, 0, 5)};*/
-            var transf = UtilMatr.calcTransformMatr_cv(basis1, basis2);
-            prin.t(transf);
+            var conts_or = cont1.ToList();
+            conts_or.AddRange(cont2);
+            prin.t(conts_or.ToArray());
+            prin.t("+++++++++++++++++++++++++");
+            var conts_det = Point3d_GL.get_contours(conts_or.ToArray());
+            foreach(var cont in conts_det)
+            {
+                prin.t(cont);
+                prin.t("______________");
+            }
+
+        }
+
+        void test_get_conts_3d()
+        {
+
+            var scan_stla = new Model3d("test\\cont_2a.stl", false);
+            GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def1a");
+            var scan_stlb = new Model3d("test\\cont_2b.stl", false);
+            GL1.add_buff_gl(scan_stlb.mesh, scan_stlb.color, scan_stlb.normale, PrimitiveType.Triangles, "def1b");
+
+            var conts_det = RasterMap.intersec_conts_of_two_mesh(scan_stla.mesh, scan_stlb.mesh);
+            
+            foreach (var cont in conts_det)
+            {
+                GL1.addLineMeshTraj(cont, new Color3d_GL(1, 0, 0), "intersec");
+            }
+
         }
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
