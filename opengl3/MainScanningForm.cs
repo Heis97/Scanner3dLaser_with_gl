@@ -1245,7 +1245,7 @@ namespace opengl3
             //test_cross_line_triang();
             //test_surf_rec();
             //test_surf_cross();
-            test_get_conts_3d();
+            //test_get_conts_3d();
         }
 
 

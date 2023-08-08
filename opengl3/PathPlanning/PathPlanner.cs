@@ -14,6 +14,7 @@ namespace PathPlanning
 {
     public class PathPlanner
     {
+        public enum PatternType { Lines}
 
         public static List<Point3d_GL> matr_to_traj(List<Matrix<double>> matrs)
         {
@@ -178,6 +179,29 @@ namespace PathPlanning
             }
             return new List<Point3d_GL>();
         }
+
+
+        static List<Point3d_GL> gen_pattern_in_contour(double[] settings,PatternType type)
+        {
+            switch (type)
+            {
+                case PatternType.Lines:
+                    if (settings == null) return null;
+                    if (settings.Length<2) return null;
+                    var step = settings[0];
+                    var angle = settings[1];
+
+                    break;
+            }
+            return null;
+        }
+        static List<Point3d_GL> cut_pattern_in_contour(List<Point3d_GL> contour, List<Point3d_GL> pattern)
+        {
+
+            return null;
+        }
+
+
         static List<Point3d_GL> GeneratePositionTrajectory(List<Point3d_GL> contour, double step)
         {
             var traj = new List<Point3d_GL>();
