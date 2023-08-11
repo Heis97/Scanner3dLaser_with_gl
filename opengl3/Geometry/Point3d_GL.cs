@@ -885,6 +885,13 @@ namespace opengl3
 
             return new Point3d_GL(vx, vy, vz);
         }
+        public static Point3d_GL vec_perpend_vec(Point3d_GL v1)
+        {
+            var x1 = -v1.y;
+            var y1 = v1.x;
+
+            return new Point3d_GL(x1, y1);
+        }
 
     }
 

@@ -16,6 +16,11 @@ namespace PathPlanning
     {
         public enum PatternType { Lines}
 
+        public static List<Point3d_GL> gen_arc_sect_xy(Point3d_GL p1, Point3d_GL p2, double r, double min_dist, bool right = true)
+        {
+
+            return null;
+        }
         public static List<Point3d_GL> matr_to_traj(List<Matrix<double>> matrs)
         {
             var traj_m = new List<Point3d_GL>();
