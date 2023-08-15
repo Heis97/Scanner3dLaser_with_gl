@@ -186,7 +186,7 @@ namespace PathPlanning
         }
 
 
-        static List<Point3d_GL> gen_pattern_in_contour(double[] settings,PatternType type)
+        static List<Point3d_GL> gen_pattern_in_square_xy(double[] settings,PatternType type,Point3d_GL p_min, Point3d_GL p_max)
         {
             switch (type)
             {
@@ -195,6 +195,8 @@ namespace PathPlanning
                     if (settings.Length<2) return null;
                     var step = settings[0];
                     var angle = settings[1];
+
+
 
                     break;
             }
