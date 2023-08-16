@@ -86,6 +86,10 @@ namespace opengl3
         {
             return new Vector3d_GL(p.x * k, p.y * k, p.z * k);
         }
+        public static Vector3d_GL operator /(Vector3d_GL p, double k)
+        {
+            return new Vector3d_GL(p.x / k, p.y / k, p.z / k);
+        }
         public static Vector3d_GL operator *(Vector3d_GL p, float k)
         {
             return new Vector3d_GL(p.x * k, p.y * k, p.z * k);

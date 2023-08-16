@@ -15,11 +15,39 @@ namespace PathPlanning
     public class PathPlanner
     {
         public enum PatternType { Lines}
-
+        static double pi = 3.1415926535;
+        static double cos(double ang)
+        {
+            return Math.Cos(ang);
+        }
+        static double sin(double ang)
+        {
+            return Math.Sin(ang);
+        }
         public static List<Point3d_GL> gen_arc_sect_xy(Point3d_GL p1, Point3d_GL p2, double r, double min_dist, bool right = true)
         {
-
-            return null;
+            var v1 = p2 - p1;
+            var v2 = v1 / 2;
+            var v3_len = Math.Sqrt(r * r - (v2.magnitude() * v2.magnitude()));
+            var v3 = Point3d_GL.vec_perpend_xy(v2).normalize()* v3_len;
+            double sign = 1;
+            if(right) sign = -1;
+            var p3 = p1 + v2 + v3 * sign;
+            var v_beg = p1 - p3;
+            var v_end = p2 - p3;
+            var ps = new List<Point3d_GL>();
+            var alph = Point3d_GL.ang(v_beg, v_end);
+            var min_alph = min_dist / r;
+            var delim = (int)(alph/min_alph);
+            ps.Add(p1);
+            for(int i = 0; i < delim; i++)
+            {
+                var fi = (i * pi) / 2*(double)delim;
+                var v_med = (v_beg.normalize() * cos(fi) + v_end.normalize() * sin(fi))*r ;
+                ps.Add(p3+v_med);
+            }
+            ps.Add(p2);
+            return ps;
         }
         public static List<Point3d_GL> matr_to_traj(List<Matrix<double>> matrs)
         {

@@ -1246,6 +1246,7 @@ namespace opengl3
             //test_surf_rec();
             //test_surf_cross();
             //test_get_conts_3d();
+            test_arc();
         }
 
 
@@ -1358,7 +1359,14 @@ namespace opengl3
             }
 
         }
+        void test_arc()
+        {
 
+
+
+            var ps = PathPlanner.gen_arc_sect_xy(new Point3d_GL(0, 0, 0), new Point3d_GL(1, 0), 2.51, 0.01,false).ToArray();
+            GL1.addLineMeshTraj(ps, new Color3d_GL(1, 0, 0), "intersec");
+        }
         void test_get_conts_3d()
         {
 
@@ -1375,6 +1383,7 @@ namespace opengl3
             }
 
         }
+
         private void but_cross_flat_Click(object sender, EventArgs e)
         {
 
