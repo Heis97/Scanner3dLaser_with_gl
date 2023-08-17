@@ -800,6 +800,30 @@ namespace opengl3
             }
             return ret;
         }
+        public static List<Point3d_GL> add_arr(List<Point3d_GL> ps, Point3d_GL p)
+        {
+            var ret = new Point3d_GL[ps.Count];
+            for (int i = 0; i < ps.Count; i++)
+            {
+                ret[i] = ps[i] + p;
+            }
+            return ret.ToList();
+        }
+        public static Point3d_GL rotate_point(Point3d_GL p, double angle)
+        {
+            var x_r = p.x * Math.Cos(angle) - p.y * Math.Sin(angle);
+            var y_r = p.x * Math.Sin(angle) + p.y * Math.Cos(angle);
+            return new Point3d_GL(x_r, y_r, p.z);
+        }
+        public static List<Point3d_GL> rotate_points(List<Point3d_GL> traj, double angle)
+        {
+            var traj_rot = new List<Point3d_GL>();
+            for (int i = 0; i < traj.Count; i++)
+            {
+                traj_rot.Add(rotate_point(traj[i], angle));
+            }
+            return traj_rot;
+        }
         public static double[] dist_ps(Point3d_GL[] ps1, Point3d_GL[] ps2)
         {
             if (ps1 == null || ps2 == null) return null;

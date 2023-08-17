@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.Design;
 using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
+using Emgu.CV.UI;
+using Emgu.CV.Util;
 using opengl3;
 
 namespace PathPlanning
 {
     public class PathPlanner
     {
-        public enum PatternType { Lines}
+        public enum PatternType { Lines, Harmonic}
         static double pi = 3.1415926535;
         static double cos(double ang)
         {
@@ -27,6 +32,7 @@ namespace PathPlanning
         public static List<Point3d_GL> gen_arc_sect_xy(Point3d_GL p1, Point3d_GL p2, double r, double min_dist, bool right = true)
         {
             var v1 = p2 - p1;
+            if (v1.magnitude() > 2 * r) return new List<Point3d_GL>(new Point3d_GL[] { p1, p2 });
             var v2 = v1 / 2;
             var v3_len = Math.Sqrt(r * r - (v2.magnitude() * v2.magnitude()));
             var v3 = Point3d_GL.vec_perpend_xy(v2).normalize()* v3_len;
@@ -40,15 +46,37 @@ namespace PathPlanning
             var min_alph = min_dist / r;
             var delim = (int)(alph/min_alph);
             ps.Add(p1);
-            for(int i = 0; i < delim; i++)
+
+            for(int i = 1; i < delim; i++)
             {
-                var fi = (i * pi) / 2*(double)delim;
-                var v_med = (v_beg.normalize() * cos(fi) + v_end.normalize() * sin(fi))*r ;
+                var fi = (i/(double)delim)* (pi / 2);
+                var v_med = ((v_beg.normalize() * cos(fi) + v_end.normalize() * sin(fi)).normalize()) *r ;
                 ps.Add(p3+v_med);
             }
             ps.Add(p2);
             return ps;
         }
+
+        public static List<Point3d_GL> gen_harmonic_line_xy(Point3d_GL p1, Point3d_GL p2, double r, double min_dist, double dist_arc, bool start_dir_is_right = true)
+        {
+            var ps = new List<Point3d_GL>();
+            var dist = (p2 - p1).magnitude();
+            var len_arc = (int)(dist / dist_arc);
+            var p = p1.Clone();
+            var pv = (p2 - p1).normalize() * dist_arc;
+            bool dir = start_dir_is_right;
+            for(int i=0; i<len_arc;i++)
+            {
+                ps.AddRange(gen_arc_sect_xy(p, p + pv, r, min_dist, dir));
+                p += pv;
+                dir = !dir;
+            }
+            return ps;
+        }
+
+
+
+
         public static List<Point3d_GL> matr_to_traj(List<Matrix<double>> matrs)
         {
             var traj_m = new List<Point3d_GL>();
@@ -214,29 +242,105 @@ namespace PathPlanning
         }
 
 
-        static List<Point3d_GL> gen_pattern_in_square_xy(double[] settings,PatternType type,Point3d_GL p_min, Point3d_GL p_max)
+        public static List<Point3d_GL> gen_pattern_in_square_xy(PatternSettings settings,Point3d_GL p_min, Point3d_GL p_max)
         {
-            switch (type)
+            if (settings == null) return null;
+            var pattern = new List<Point3d_GL>();
+            var p_cent = new Point3d_GL(p_min, p_max);
+            p_min = p_cent + (p_min - p_cent) * 1.5;
+            p_max = p_cent + (p_max - p_cent) * 1.5;
+            switch (settings.patternType)
             {
                 case PatternType.Lines:
-                    if (settings == null) return null;
-                    if (settings.Length<2) return null;
-                    var step = settings[0];
-                    var angle = settings[1];
-
-
-
+                    {
+                        bool dir = false;
+                        for (double y = p_min.y; y < p_max.y;y+=settings.step)
+                        {
+                            var p1 = new Point3d_GL(p_min.x, y);
+                            var p2 = new Point3d_GL(p_max.x, y);
+                            if (dir) { pattern.Add(p1); pattern.Add(p2); }
+                            else { pattern.Add(p2); pattern.Add(p1); }
+                            dir = !dir;
+                        }
+                    }
                     break;
+                case PatternType.Harmonic:
+                    {
+                        bool dir_r = settings.start_dir_r;
+                        bool dir = false;
+                        for (double y = p_min.y; y < p_max.y; y += settings.step)
+                        {
+                            var p1 = new Point3d_GL(p_min.x, y);
+                            var p2 = new Point3d_GL(p_max.x, y);
+                            if(dir) pattern.AddRange(gen_harmonic_line_xy(p1, p2, settings.r, settings.min_dist, settings.arc_dist, dir_r));
+                            else pattern.AddRange(gen_harmonic_line_xy(p2, p1, settings.r, settings.min_dist, settings.arc_dist, dir_r));
+                            dir_r = !dir_r;
+                            dir = !dir;
+                        }
+                    }
+                    break;
+                default: break;
             }
-            return null;
+
+            var p_tr = Point3d_GL.add_arr(pattern,-p_cent);
+            var p_rot = Point3d_GL.rotate_points(p_tr, settings.angle);
+            pattern = Point3d_GL.add_arr(p_rot, p_cent);
+            return pattern;
         }
-        static List<Point3d_GL> cut_pattern_in_contour(List<Point3d_GL> contour, List<Point3d_GL> pattern)
+
+
+        public static List<Point3d_GL> cut_pattern_in_contour_xy_cv(List<Point3d_GL> contour, List<Point3d_GL> pattern)
         {
+            var size_im = new Size(1000, 1000);
+            var min_p = Point3d_GL.Min(contour.ToArray());
+            var cont_nz = Point3d_GL.add_arr(contour, -min_p+new Point3d_GL(1,1,1));
+            var max_pz = Point3d_GL.Max(cont_nz.ToArray()) + new Point3d_GL(1, 1, 1);
+            var k =  size_im.Width/Math.Max(max_pz.x, max_pz.x);
 
-            return null;
+            var cont_im = new VectorOfPoint();
+            for(int i=0; i<contour.Count;i++)
+            {
+                var p = cont_nz[i] * k;
+                cont_im.Push(new Point[] { new Point((int)p.x, (int)p.y) });
+            }
+            var im = new Image<Gray, Byte>(size_im);
+            var im_patt = new Image<Gray, Byte>(size_im);
+            CvInvoke.FillPoly(im, cont_im, new MCvScalar(255));
+            CvInvoke.FillPoly(im_patt, cont_im, new MCvScalar(127));
+            //CvInvoke.Imshow("cont", im);
+            var patt_cut = new List<Point3d_GL>();
+            for (int i = 0; i < pattern.Count; i++)
+            {
+                var p = (pattern[i] - min_p + new Point3d_GL(1, 1, 1))*k;
+                var p_i = new Point((int)p.x, (int)p.y);
+                //CvInvoke.Circle(im_patt, p_i, 0, new MCvScalar(255));
+                if (p_i.X < 0 || p_i.Y < 0 || p_i.X >= size_im.Width || p_i.Y >= size_im.Height) continue;
+                if (im.Data[p_i.Y, p_i.X, 0] > 0) patt_cut.Add(pattern[i]);
+            }
+
+            //CvInvoke.Imshow("cont", im_patt);
+            return patt_cut;
         }
 
+        public static List<Point3d_GL> gen_traj_3d_pores(PatternSettings settings,Point3d_GL dim,TrajParams trajParams)
+        {
+            var traj = new List<Point3d_GL>();
+            for(int i=0; i<trajParams.layers;i++)
+            {
+                if (i > trajParams.layers / 2) settings.start_dir_r = false;
+                if (i%2==0) settings.angle = pi / 2;
+                else settings.angle = 0;
+                var layer = gen_pattern_in_square_xy(settings, new Point3d_GL(), dim);
+                layer = Point3d_GL.add_arr(layer, new Point3d_GL(0,0,trajParams.dz * i));
+                traj.AddRange(layer);
+                
+                //settings.angle += pi / 2;
+            }
 
+
+           
+            return traj;
+        }
         static List<Point3d_GL> GeneratePositionTrajectory(List<Point3d_GL> contour, double step)
         {
             var traj = new List<Point3d_GL>();
@@ -286,26 +390,12 @@ namespace PathPlanning
             }
             return traj;
         }
-        static Point3d_GL rotate_point(Point3d_GL p, double angle)
-        {
-            var x_r = p.x * Math.Cos(angle) - p.y * Math.Sin(angle);
-            var y_r = p.x * Math.Sin(angle) + p.y * Math.Cos(angle);
-            return new Point3d_GL(x_r,y_r,p.z);
-        }
-        static List<Point3d_GL> rotate_list_points (List<Point3d_GL>  traj, double angle)
-        {
-            var traj_rot = new List<Point3d_GL>();
-            for (int i = 0; i < traj.Count; i++)
-            {
-                traj_rot.Add(rotate_point(traj[i], angle));
-            }
-            return traj_rot;
-        }
+        
         static List<Point3d_GL> GeneratePositionTrajectory_angle(List<Point3d_GL> contour, double step, double angle)
         {
-            var contour_rotate = rotate_list_points(contour, angle);
+            var contour_rotate = Point3d_GL.rotate_points(contour, angle);
             var traj = GeneratePositionTrajectory(contour_rotate, step);
-            var traj_rotate = rotate_list_points(traj, -angle);
+            var traj_rotate = Point3d_GL.rotate_points(traj, -angle);
             return traj_rotate;
         }
         static List<Point3d_GL> set_z_layer(List<Point3d_GL> traj, double z)
@@ -589,7 +679,26 @@ namespace PathPlanning
 
             return RobotFrame.generate_string(traj_rob.ToArray());
         }
+       /* public static string generate_printer_prog(List<Matrix<double>> traj,  TrajParams trajParams = null)
+        {
+            var traj_rob = new List<RobotFrame>();
+            var r_syr = 18.5 / 2;
+            var v = trajParams.Vel;
+            //s_syr*f = s_nos*v
+            var f = ((trajParams.dz * trajParams.line_width) * v) / (3.1415 * r_syr * r_syr);
+            for (int i = 0; i < traj.Count; i++)
+            {
+                var fr = new RobotFrame(traj[i], type_robot);
+                fr.V = v;
+                fr.F = f;
+                traj_rob.Add(fr);
+            }
+            traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
+            traj_rob = RobotFrame.decrease_angle(traj_rob, 0.5);
 
+            return RobotFrame.generate_string(traj_rob.ToArray());
+        }
+        */
         public static List<Point3d_GL> matr_to_ps(List<Matrix<double>> traj)
         {
             var traj_rob = new List<Point3d_GL>();
@@ -867,4 +976,18 @@ namespace PathPlanning
             return (p1 - p2).magnitude();
         }
     }
+
+
+    public  class PatternSettings
+    {
+        public double min_dist;
+        public double arc_dist;
+        public double r;
+        public double step;
+        public double angle;
+        public PathPlanner.PatternType patternType;
+        public bool start_dir_r;
+    }
+
+
 }

@@ -1246,7 +1246,10 @@ namespace opengl3
             //test_surf_rec();
             //test_surf_cross();
             //test_get_conts_3d();
-            test_arc();
+            //test_arc();
+            //test_patt();
+            //test_cut();
+            test_traj_3d_pores();
         }
 
 
@@ -1361,11 +1364,64 @@ namespace opengl3
         }
         void test_arc()
         {
+            var ps = PathPlanner.gen_arc_sect_xy(new Point3d_GL(0, 0, 0), new Point3d_GL(2, 2), 1.91, 0.6,false).ToArray();
+            prin.t(Point3d_GL.dist_betw_ps(ps));
+            var ps_l = PathPlanner.gen_harmonic_line_xy(new Point3d_GL(0, 0, 0), new Point3d_GL(20, 2), 2.91, 0.1,2, false).ToArray();
+            
+            GL1.addLineMeshTraj(ps_l, new Color3d_GL(1, 0, 0), "arc_test");
+        }
+
+        void test_patt()
+        {
+            var sett = new PatternSettings
+            {
+                step = 1,
+                angle = PI / 4,
+                min_dist = 0.1,
+                arc_dist = 1,
+                r = 2,
+                patternType = PathPlanner.PatternType.Harmonic
+            };
+            var ps = PathPlanner.gen_pattern_in_square_xy(sett,new Point3d_GL(10, 10, 0), new Point3d_GL(20, 20)).ToArray();
+
+            GL1.addLineMeshTraj(ps, new Color3d_GL(1, 0, 0), "patt_test");
+        }
+
+        void test_cut()
+        {
+            var sett = new PatternSettings
+            {
+                step = 1,
+                angle = PI / 6,
+                min_dist = 0.1,
+                arc_dist = 1,
+                r = 2,
+                patternType = PathPlanner.PatternType.Harmonic
+            };
+            var contour = new Point3d_GL[] { new Point3d_GL(0, 0), new Point3d_GL(10, 10), new Point3d_GL(0, 20), new Point3d_GL(-10, 10) };
+            var pattern = PathPlanner.gen_pattern_in_square_xy(sett, new Point3d_GL(-10, 0, 0), new Point3d_GL(10, 20));
+
+            var ps_cut = PathPlanner.cut_pattern_in_contour_xy_cv(contour.ToList(), pattern);
 
 
-
-            var ps = PathPlanner.gen_arc_sect_xy(new Point3d_GL(0, 0, 0), new Point3d_GL(1, 0), 2.51, 0.01,false).ToArray();
-            GL1.addLineMeshTraj(ps, new Color3d_GL(1, 0, 0), "intersec");
+            GL1.addLineMeshTraj(ps_cut.ToArray(), new Color3d_GL(1, 0, 0), "cut_test");
+        }
+        void test_traj_3d_pores()
+        {
+            var sett = new PatternSettings
+            {
+                step = 2,
+                angle = 0,
+                min_dist = 0.1,
+                arc_dist = 2,
+                r = 2,
+                start_dir_r = true,
+                patternType = PathPlanner.PatternType.Harmonic
+            };
+            param_tr.layers = 10;
+            var contour = new Point3d_GL[] { new Point3d_GL(0, 0), new Point3d_GL(10, 10), new Point3d_GL(0, 20), new Point3d_GL(-10, 10) };
+            var pattern = PathPlanner.gen_traj_3d_pores(sett, new Point3d_GL(10, 10),param_tr);
+            GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "pores_test");
         }
         void test_get_conts_3d()
         {
