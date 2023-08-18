@@ -38,6 +38,7 @@ namespace opengl3
         string scan_i = "emp";
         string traj_i = "emp";
         TrajParams param_tr = new TrajParams();
+        PatternSettings param_patt = new PatternSettings();
         FormSettings formSettings = new FormSettings();
         Polygon3d_GL[] mesh = null;
         List<Matrix<double>> rob_traj = null;
@@ -363,9 +364,25 @@ namespace opengl3
                 layers_angle = 0.47,// Math.PI / 4,
                 step = 0.4 * 4,
                 vel = 20,
+                line_width = 0.4
                
             };
             propGrid_traj.SelectedObject = param_tr;
+
+            param_patt = new PatternSettings
+            {
+                step = 2,
+                angle = 0,
+                min_dist = 0.1,
+                arc_dist = 2,
+                r = 2,
+                start_dir_r = true,
+                patternType = PathPlanner.PatternType.Harmonic,
+                dim_x = 10,
+                dim_y = 10
+
+            };
+            propGrid_pattern.SelectedObject = param_patt;
 
             debugBox.Text = "0.3 0.3 1";
 
@@ -1249,7 +1266,7 @@ namespace opengl3
             //test_arc();
             //test_patt();
             //test_cut();
-            test_traj_3d_pores();
+            //test_traj_3d_pores();
         }
 
 
@@ -1362,7 +1379,7 @@ namespace opengl3
             }
 
         }
-        void test_arc()
+       /* void test_arc()
         {
             var ps = PathPlanner.gen_arc_sect_xy(new Point3d_GL(0, 0, 0), new Point3d_GL(2, 2), 1.91, 0.6,false).ToArray();
             prin.t(Point3d_GL.dist_betw_ps(ps));
@@ -1408,21 +1425,14 @@ namespace opengl3
         }
         void test_traj_3d_pores()
         {
-            var sett = new PatternSettings
-            {
-                step = 2,
-                angle = 0,
-                min_dist = 0.1,
-                arc_dist = 2,
-                r = 2,
-                start_dir_r = true,
-                patternType = PathPlanner.PatternType.Harmonic
-            };
             param_tr.layers = 10;
             var contour = new Point3d_GL[] { new Point3d_GL(0, 0), new Point3d_GL(10, 10), new Point3d_GL(0, 20), new Point3d_GL(-10, 10) };
-            var pattern = PathPlanner.gen_traj_3d_pores(sett, new Point3d_GL(10, 10),param_tr);
+            var pattern = PathPlanner.gen_traj_3d_pores(param_patt,param_tr);
+            var traj = PathPlanner.ps_to_matr(pattern);
+            var prog = PathPlanner.generate_printer_prog(traj,param_tr);
+            debugBox.Text = prog;
             GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "pores_test");
-        }
+        }*/
         void test_get_conts_3d()
         {
 
@@ -4834,7 +4844,15 @@ namespace opengl3
             laserLine?.set_div_disp(div);
         }
 
-       
+        private void but_printer_traj_fab_Click(object sender, EventArgs e)
+        {
+            var pattern = PathPlanner.gen_traj_3d_pores(param_patt, param_tr);
+            var traj = PathPlanner.ps_to_matr(pattern);
+            var prog = PathPlanner.generate_printer_prog(traj, param_tr);
+            debugBox.Text = prog;
+            if (GL1.buffersGl.objs.Keys.Contains("prog")) GL1.buffersGl.removeObj("prog");
+            GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
+        }
     }
 }
 

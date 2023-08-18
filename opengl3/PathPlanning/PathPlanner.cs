@@ -17,6 +17,70 @@ using opengl3;
 
 namespace PathPlanning
 {
+    public class LinePath
+    {
+        public List<Point3d_GL> ps;
+        public void add(Point3d_GL p)  { ps = Point3d_GL.add_arr(ps, p); }
+        public void rotate(double angle)  {  ps = Point3d_GL.rotate_points(ps, angle);  }
+    }
+    public class LayerPath
+    {
+        public List<LinePath> lines;
+        public void ReverseLines()
+        {
+            for(int i = 0; i < lines.Count; i++)
+                lines[i].ps.Reverse();
+        }
+        public Point3d_GL getPoint(int ind)
+        {
+            switch (ind)
+            {
+                case -2:
+                    return lines[lines.Count - 1].ps[0];
+                case -1:
+                    return lines[lines.Count - 1].ps[lines[lines.Count - 1].ps.Count - 1];
+                case 0:
+                    return lines[0].ps[0];
+                case 1:
+                    return lines[0].ps[lines[0].ps.Count-1];
+                default:
+                    return Point3d_GL.notExistP();
+            }
+        }
+        public void add(Point3d_GL p)
+        {
+            foreach(LinePath l in lines)
+                l.add(p);
+        }
+        public void rotate(double angle)
+        {
+            foreach (LinePath l in lines)
+                l.rotate(angle);
+        }
+    }
+    public class TrajectoryPath
+    {
+        public List<LayerPath> layers;
+        public void add(Point3d_GL p)
+        {
+            foreach (var l in layers)
+                l.add(p);
+        }
+        public void rotate(double angle)
+        {
+            foreach (var l in layers)
+                l.rotate(angle);
+        }
+        public List<Point3d_GL> to_ps()
+        {
+            var ps = new List<Point3d_GL>();
+            foreach (var layer in layers)
+                foreach (var line in layer.lines)
+                    ps.AddRange(line.ps);
+            return ps;
+        }
+
+    }
     public class PathPlanner
     {
         public enum PatternType { Lines, Harmonic}
@@ -29,10 +93,10 @@ namespace PathPlanning
         {
             return Math.Sin(ang);
         }
-        public static List<Point3d_GL> gen_arc_sect_xy(Point3d_GL p1, Point3d_GL p2, double r, double min_dist, bool right = true)
+        public static LinePath gen_arc_sect_xy(Point3d_GL p1, Point3d_GL p2, double r, double min_dist, bool right = true)
         {
             var v1 = p2 - p1;
-            if (v1.magnitude() > 2 * r) return new List<Point3d_GL>(new Point3d_GL[] { p1, p2 });
+            if (v1.magnitude() > 2 * r) return new LinePath { ps = new List<Point3d_GL>(new Point3d_GL[] { p1, p2 }) };
             var v2 = v1 / 2;
             var v3_len = Math.Sqrt(r * r - (v2.magnitude() * v2.magnitude()));
             var v3 = Point3d_GL.vec_perpend_xy(v2).normalize()* v3_len;
@@ -46,18 +110,19 @@ namespace PathPlanning
             var min_alph = min_dist / r;
             var delim = (int)(alph/min_alph);
             ps.Add(p1);
-
-            for(int i = 1; i < delim; i++)
+            var v_beg_n = v_beg.normalize();
+            var v_end_n = v_end.normalize();
+            for (int i = 1; i < delim; i++)
             {
                 var fi = (i/(double)delim)* (pi / 2);
-                var v_med = ((v_beg.normalize() * cos(fi) + v_end.normalize() * sin(fi)).normalize()) *r ;
+                var v_med = (v_beg_n * cos(fi) + v_end_n * sin(fi)).normalize() *r ;
                 ps.Add(p3+v_med);
             }
             ps.Add(p2);
-            return ps;
+            return new LinePath { ps = ps};
         }
 
-        public static List<Point3d_GL> gen_harmonic_line_xy(Point3d_GL p1, Point3d_GL p2, double r, double min_dist, double dist_arc, bool start_dir_is_right = true)
+        public static LinePath gen_harmonic_line_xy(Point3d_GL p1, Point3d_GL p2, double r, double min_dist, double dist_arc, bool start_dir_is_right = true)
         {
             var ps = new List<Point3d_GL>();
             var dist = (p2 - p1).magnitude();
@@ -67,11 +132,11 @@ namespace PathPlanning
             bool dir = start_dir_is_right;
             for(int i=0; i<len_arc;i++)
             {
-                ps.AddRange(gen_arc_sect_xy(p, p + pv, r, min_dist, dir));
+                ps.AddRange(gen_arc_sect_xy(p, p + pv, r, min_dist, dir).ps);
                 p += pv;
                 dir = !dir;
             }
-            return ps;
+            return new LinePath { ps = ps };
         }
 
 
@@ -242,24 +307,25 @@ namespace PathPlanning
         }
 
 
-        public static List<Point3d_GL> gen_pattern_in_square_xy(PatternSettings settings,Point3d_GL p_min, Point3d_GL p_max)
+        public static LayerPath gen_pattern_in_square_xy(PatternSettings settings,Point3d_GL p_min, Point3d_GL p_max)
         {
             if (settings == null) return null;
-            var pattern = new List<Point3d_GL>();
+            var pattern = new List<LinePath>();
             var p_cent = new Point3d_GL(p_min, p_max);
-            p_min = p_cent + (p_min - p_cent) * 1.5;
-            p_max = p_cent + (p_max - p_cent) * 1.5;
+            p_min = p_cent + (p_min - p_cent) * 1;
+            p_max = p_cent + (p_max - p_cent) * 1;
             switch (settings.patternType)
             {
                 case PatternType.Lines:
                     {
                         bool dir = false;
-                        for (double y = p_min.y; y < p_max.y;y+=settings.step)
+                        for (double y = p_min.y; y <= p_max.y;y+=settings.step)
                         {
                             var p1 = new Point3d_GL(p_min.x, y);
                             var p2 = new Point3d_GL(p_max.x, y);
-                            if (dir) { pattern.Add(p1); pattern.Add(p2); }
-                            else { pattern.Add(p2); pattern.Add(p1); }
+
+                            if (dir) { pattern.Add(new LinePath { ps = new List<Point3d_GL>(new Point3d_GL[] { p1, p2 }) }); }
+                            else { pattern.Add(new LinePath { ps = new List<Point3d_GL>(new Point3d_GL[] { p2, p1 }) }); }
                             dir = !dir;
                         }
                     }
@@ -268,24 +334,25 @@ namespace PathPlanning
                     {
                         bool dir_r = settings.start_dir_r;
                         bool dir = false;
-                        for (double y = p_min.y; y < p_max.y; y += settings.step)
+                        for (double y = p_min.y; y <= p_max.y; y += settings.step)
                         {
                             var p1 = new Point3d_GL(p_min.x, y);
                             var p2 = new Point3d_GL(p_max.x, y);
-                            if(dir) pattern.AddRange(gen_harmonic_line_xy(p1, p2, settings.r, settings.min_dist, settings.arc_dist, dir_r));
-                            else pattern.AddRange(gen_harmonic_line_xy(p2, p1, settings.r, settings.min_dist, settings.arc_dist, dir_r));
+                            var line = gen_harmonic_line_xy(p1, p2, settings.r, settings.min_dist, settings.arc_dist, dir_r);
+                            if (dir) line.ps.Reverse();
                             dir_r = !dir_r;
                             dir = !dir;
+                            pattern.Add(line);
                         }
                     }
                     break;
                 default: break;
             }
-
-            var p_tr = Point3d_GL.add_arr(pattern,-p_cent);
-            var p_rot = Point3d_GL.rotate_points(p_tr, settings.angle);
-            pattern = Point3d_GL.add_arr(p_rot, p_cent);
-            return pattern;
+            var layer = new LayerPath { lines = pattern };
+            layer.add(-p_cent);
+            layer.rotate(settings.angle);
+            layer.add(p_cent);
+            return layer;
         }
 
 
@@ -322,24 +389,26 @@ namespace PathPlanning
             return patt_cut;
         }
 
-        public static List<Point3d_GL> gen_traj_3d_pores(PatternSettings settings,Point3d_GL dim,TrajParams trajParams)
+        public static List<Point3d_GL> gen_traj_3d_pores(PatternSettings settings,TrajParams trajParams)
         {
-            var traj = new List<Point3d_GL>();
-            for(int i=0; i<trajParams.layers;i++)
+            var traj_layers = new List<LayerPath>();
+            var dim_cur = new Point3d_GL(settings.dim_x, settings.dim_y);
+            for (int i=0; i<trajParams.layers;i++)
             {
                 if (i > trajParams.layers / 2) settings.start_dir_r = false;
-                if (i%2==0) settings.angle = pi / 2;
-                else settings.angle = 0;
-                var layer = gen_pattern_in_square_xy(settings, new Point3d_GL(), dim);
-                layer = Point3d_GL.add_arr(layer, new Point3d_GL(0,0,trajParams.dz * i));
-                traj.AddRange(layer);
+                else settings.start_dir_r = true;
+                if (i % 2 == 0) { settings.angle = pi / 2; dim_cur = new Point3d_GL(settings.dim_x, settings.dim_y); }
+                else { settings.angle = 0; dim_cur = new Point3d_GL(settings.dim_y, settings.dim_x); }
+                var layer = gen_pattern_in_square_xy(settings, new Point3d_GL(), dim_cur);
+                layer.add(new Point3d_GL(0,0,trajParams.dz * (i+1)));
+                traj_layers.Add(layer);
                 
                 //settings.angle += pi / 2;
             }
-
-
-           
-            return traj;
+            var traj = new TrajectoryPath { layers = traj_layers };
+           // traj = Trajectory.OptimizeTranzitions2LayerPath(traj);
+            var traj_ps = traj.to_ps();
+            return traj_ps;
         }
         static List<Point3d_GL> GeneratePositionTrajectory(List<Point3d_GL> contour, double step)
         {
@@ -679,26 +748,25 @@ namespace PathPlanning
 
             return RobotFrame.generate_string(traj_rob.ToArray());
         }
-       /* public static string generate_printer_prog(List<Matrix<double>> traj,  TrajParams trajParams = null)
+        public static string generate_printer_prog(List<Matrix<double>> traj,  TrajParams trajParams = null)
         {
             var traj_rob = new List<RobotFrame>();
-            var r_syr = 18.5 / 2;
-            var v = trajParams.Vel;
+            var f = trajParams.Vel;
             //s_syr*f = s_nos*v
-            var f = ((trajParams.dz * trajParams.line_width) * v) / (3.1415 * r_syr * r_syr);
-            for (int i = 0; i < traj.Count; i++)
+            for (int i = 1; i < traj.Count; i++)
             {
-                var fr = new RobotFrame(traj[i], type_robot);
-                fr.V = v;
-                fr.F = f;
-                traj_rob.Add(fr);
+                var fr1 = new RobotFrame(traj[i-1], RobotFrame.RobotType.FABION2);
+                var fr2 = new RobotFrame(traj[i], RobotFrame.RobotType.FABION2);
+                fr1.V = RobotFrame.dist(fr1,fr2)*trajParams.line_width*trajParams.dz;
+                fr1.F = f;
+                traj_rob.Add(fr1);
             }
             traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
             traj_rob = RobotFrame.decrease_angle(traj_rob, 0.5);
 
-            return RobotFrame.generate_string(traj_rob.ToArray());
+            return RobotFrame.generate_string_fabion(traj_rob.ToArray());
         }
-        */
+        
         public static List<Point3d_GL> matr_to_ps(List<Matrix<double>> traj)
         {
             var traj_rob = new List<Point3d_GL>();
@@ -707,6 +775,23 @@ namespace PathPlanning
             {
                 var f = new RobotFrame(traj[i]);
                 traj_rob.Add(new Point3d_GL(f.X, f.Y, f.Z));
+            }
+
+            return traj_rob;
+        }
+        public static List<Matrix<double>> ps_to_matr(List<Point3d_GL> ps)
+        {
+            var traj_rob = new List<Matrix<double>>();
+
+            for (int i = 0; i < ps.Count; i++)
+            {
+                traj_rob.Add(new Matrix<double>(new double[,]
+                {
+                    { 1,0,0,ps[i].x},
+                    { 0,1,0,ps[i].y},
+                    { 0,0,1,ps[i].z},
+                    { 0,0,0,1 }
+                }));
             }
 
             return traj_rob;
@@ -871,6 +956,77 @@ namespace PathPlanning
             return traj;
         }
 
+        static public TrajectoryPath OptimizeTranzitions2LayerPath(TrajectoryPath traj)
+        {
+            List<int[][]> approach = new List<int[][]>();
+
+            for (int i = 0; i < traj.layers.Count; i++)
+            {
+                int s1 = 0;
+                int s2 = 1;
+                int e1 = -1;
+                int e2 = -2;
+                approach.Add(new int[][] { new int[] { s1, e1 }, new int[] { s2, e2 }, new int[] { e1, s1 }, new int[] { e2, s2 } });
+            }
+
+            List<double[][]> dists = new List<double[][]>();
+
+            for (int i = 0; i < approach.Count; i++)
+            {
+                double[][] b = new double[approach[i].Length][];
+
+                for (int j = 0; j < approach[i].Length; j++)
+                {
+                    double[] c = new double[approach[i].Length];
+                    for (int k = 0; k < approach[i].Length; k++)
+                    {
+                        c[k] = 1000000000.0f;
+                    }
+
+                    b[j] = c;
+                }
+
+                dists.Add(b);
+            }
+
+            for (int i = 0; i < traj.layers.Count - 1; i++)
+            {
+                for (int layer1 = 0; layer1 < approach[i].Length; layer1++)
+                {
+                    for (int layer2 = 0; layer2 < approach[i + 1].Length; layer2++)
+                    {
+                        if (traj.layers[i] != null && traj.layers[i + 1] != null)
+                        {
+                            var p1 = traj.layers[i].getPoint(approach[i][layer1][1]);
+                            var p2 = traj.layers[i+1].getPoint(approach[i + 1][layer2][0]);
+                            dists[i][layer1][layer2] =
+                                Distance(p1, p2);
+                        }
+                    }
+                }
+            }
+
+            List<int> fastWay = new List<int>();
+
+            for (int i = 0; i < dists.Count; i++)
+            {
+                int low, up;
+                if (i == 0)
+                {
+                    (low, up) = FindBestWayFirst(dists[i]);
+                    fastWay = new List<int> { low, up };
+                }
+                else
+                {
+                    (low, up) = FindBestWayCont(dists[i], fastWay[fastWay.Count - 1]);
+                    fastWay.Add(up);
+                }
+            }
+
+            OptimizeTransPath(traj, approach.ToList(), fastWay);
+            return traj;
+        }
+
         static  public (int,int) FindBestWayFirst(double[][] trans_map)
         {
             int low = 0;
@@ -916,7 +1072,15 @@ namespace PathPlanning
             }
             return optTraj;
         }
-
+        public static TrajectoryPath OptimizeTransPath(TrajectoryPath traj, List<int[][]> approach, List<int> fastWay)
+        {
+            var optTraj = new List<LayerPath>();
+            for (int i = 0; i < traj.layers.Count; i++)
+            {
+                optTraj.Add( SetLayerDirectionPath(traj.layers[i], approach[i][fastWay[i]]));
+            }
+            return new TrajectoryPath { layers = optTraj };
+        }
         public static void CompTrans(List<Point3d_GL>[] traj)
         {
             var trans = new List<double>();
@@ -954,6 +1118,28 @@ namespace PathPlanning
             }
             return layer;
         }
+        public static LayerPath SetLayerDirectionPath(LayerPath layer, int[] inds)
+        {
+            if (inds[0] == 0)
+            {
+                //nothing
+            }
+            else if (inds[0] == -1)
+            {
+                layer.lines.Reverse();
+                layer.ReverseLines();
+            }
+            else if (inds[0] == 1)
+            {
+                layer.ReverseLines();
+            }
+            else if (inds[0] == -2)
+            {
+                layer.lines.Reverse();
+            }
+            return layer;
+        }
+
         public static List<Point3d_GL> ReverseLineDirect(List<Point3d_GL> layer)
         {
             int i = 0;
@@ -981,12 +1167,60 @@ namespace PathPlanning
     public  class PatternSettings
     {
         public double min_dist;
+        public double Min_dist
+        {
+            get { return min_dist; }
+            set { min_dist = value; }
+        }
+        public double dim_x;
+        public double Dim_x
+        {
+            get { return dim_x; }
+            set { dim_x = value; }
+        }
+        public double dim_y;
+        public double Dim_y
+        {
+            get { return dim_y; }
+            set { dim_y = value; }
+        }
         public double arc_dist;
+        public double Arc_dist
+        {
+            get { return arc_dist; }
+            set { arc_dist = value; }
+        }
         public double r;
+        public double R
+        {
+            get { return r; }
+            set { r = value; }
+        }
         public double step;
+        public double Step
+        {
+            get { return step; }
+            set { step = value; }
+        }
         public double angle;
+
+        public double Angle
+        {
+            get { return angle; }
+            set { angle = value; }
+        }
         public PathPlanner.PatternType patternType;
+        public PathPlanner.PatternType PatternType
+        {
+            get { return patternType; }
+            set { patternType = value; }
+        }
         public bool start_dir_r;
+        public bool Start_dir_r
+        {
+            get { return start_dir_r; }
+            set { start_dir_r = value; }
+        }
     }
 
 

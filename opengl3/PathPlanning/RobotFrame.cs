@@ -25,7 +25,7 @@ namespace opengl3
         public double[] q;
         public PositionRob pos;
         public int[] turn;
-        public enum RobotType { KUKA = 1, PULSE = 2};
+        public enum RobotType { KUKA = 1, PULSE = 2, FABION2 = 3};
 
         public RobotType robotType;
 
@@ -135,23 +135,77 @@ namespace opengl3
                         D = d;
                     }
                     break;
+                case RobotType.FABION2:
+                    {
+                        var x = m[0, 3];
+                        var y = m[1, 3];
+                        var z = m[2, 3];
+
+
+                        X = x;
+                        Y = y;
+                        Z = z;
+                        A = 0;
+                        B = 0;
+                        C = 0;
+                        D = 3;
+                    }
+                    break;
             }
             pos = new PositionRob(new Point3d_GL(X, Y, Z), new Point3d_GL(A, B, C));
         }
 
-        
-        
-       
+
+
+        static public double dist(RobotFrame fr1, RobotFrame fr2)
+        {
+            return Math.Sqrt((fr1.X - fr2.X) * (fr1.X - fr2.X) +
+                (fr1.Y - fr2.Y) * (fr1.Y - fr2.Y) +
+                (fr1.Z - fr2.Z) * (fr1.Z - fr2.Z));
+        }
 
         static public string generate_string(RobotFrame[] frames)
         {
+            
             var traj_rob = new StringBuilder();
+
+
             for (int i = 0; i < frames.Length; i++)
             {
                 traj_rob.Append("G1"+frames[i].ToStr());
             }
             return traj_rob.ToString();
         }
+        static public string generate_string_fabion(RobotFrame[] frames)
+        {
+
+            var traj_rob = new StringBuilder();
+
+            var num = 1;
+
+            for (int i = 0; i < frames.Length; i++)
+            {
+                if(i==0)
+                {
+                    traj_rob.Append(frames[i].ToStr_start(num));
+                    num += 3;
+                }
+                else if(i==frames.Length-1)
+                {
+                    traj_rob.Append(frames[i].ToStr_stop(num));
+                }
+                else
+                {
+
+                    traj_rob.Append(frames[i].ToStr_prog(num));
+                    num++;
+
+                }
+                
+            }
+            return traj_rob.ToString();
+        }
+
 
         public override string ToString()
         {
@@ -162,11 +216,30 @@ namespace opengl3
 
         public string ToStr(string del = " ")
         {
-            return del+"X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) +
+            var str = del + "X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) +
                     del + "A" + round(A) + del + "B" + round(B) + del + "C" + round(C) +
                     del + "F" + round(F) + del + "V" + round(V) + del + "D" + D + " \n";
-        }
 
+            return str;
+        }
+        public string ToStr_start(int num, string del = " ")
+        {
+            var str = "N"+(num*5)+ del + " G11 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z+10)+" D3 \n"; num++;
+            str += "N" + (num * 5) + del + " G11 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) + " D3 \n"; num++;
+            str += "N" + (num * 5) + " G87 P0 P3 P0.1 \n"; 
+            return str;
+        }
+        public string ToStr_stop(int num, string del = " ")
+        {
+            var str = "N" + (num * 5) + del + " G11 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z + 10) + " D3 \n"; num++;
+            return str;
+        }
+        public string ToStr_prog(int num, string del = " ")
+        {
+            var str = "N" + (num * 5) + del + " G88 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) + del + "F" + round(F) + del + "V" + round(V) + " D3 Q0 T1 I0 J0\n";
+
+            return str;
+        }
         static double round(double val)
         {
             return Math.Round(val, 4);
