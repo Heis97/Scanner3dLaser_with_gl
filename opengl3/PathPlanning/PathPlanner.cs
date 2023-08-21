@@ -22,6 +22,19 @@ namespace PathPlanning
         public List<Point3d_GL> ps;
         public void add(Point3d_GL p)  { ps = Point3d_GL.add_arr(ps, p); }
         public void rotate(double angle)  {  ps = Point3d_GL.rotate_points(ps, angle);  }
+        public void reverse()//for dotted color
+        {
+            var ps_rev = new List<Point3d_GL>();
+            for (int i = 0; i < ps.Count; i+=2)
+            {
+                var p1 = ps[ps.Count - 1 - i];
+                var p2 = ps[ps.Count - 2 - i];
+                p1.color = ps[ps.Count - 2 - i].color;
+                p2.color = ps[ps.Count - 1 - i].color;
+                ps_rev.Add(p1); ps_rev.Add(p2);
+            }
+            ps = ps_rev;
+        }
     }
     public class LayerPath
     {
@@ -29,7 +42,7 @@ namespace PathPlanning
         public void ReverseLines()
         {
             for(int i = 0; i < lines.Count; i++)
-                lines[i].ps.Reverse();
+                lines[i].reverse();
         }
         public Point3d_GL getPoint(int ind)
         {
@@ -83,7 +96,7 @@ namespace PathPlanning
     }
     public class PathPlanner
     {
-        public enum PatternType { Lines, Harmonic}
+        public enum PatternType { Lines, Harmonic,Dotted}
         static double pi = 3.1415926535;
         static double cos(double ang)
         {
@@ -139,7 +152,26 @@ namespace PathPlanning
             return new LinePath { ps = ps };
         }
 
-
+        public static LinePath gen_dotted_line_xy(Point3d_GL p1, Point3d_GL p2, double step, double filling)
+        {
+            var ps = new List<Point3d_GL>();
+            var dist = (p2 - p1).magnitude();
+            var len_arc = (int)(dist / step);
+            var p = p1.Clone();
+            var pvn = (p2 - p1).normalize();
+            var pv = pvn * step;
+            var len_dot_2 = step * filling / 2;
+            for (int i = 0; i <= len_arc; i++)
+            {
+                var p_a = p - pvn * len_dot_2;
+                p_a.color = new Color3d_GL(1, 0, 0);
+                var p_b = p + pvn * len_dot_2;
+                p_b.color = new Color3d_GL(0, 0, 0);
+                ps.Add(p_a); ps.Add(p_b);
+                p += pv;
+            }
+            return new LinePath { ps = ps };
+        }
 
 
         public static List<Point3d_GL> matr_to_traj(List<Matrix<double>> matrs)
@@ -323,10 +355,10 @@ namespace PathPlanning
                         {
                             var p1 = new Point3d_GL(p_min.x, y);
                             var p2 = new Point3d_GL(p_max.x, y);
-
-                            if (dir) { pattern.Add(new LinePath { ps = new List<Point3d_GL>(new Point3d_GL[] { p1, p2 }) }); }
-                            else { pattern.Add(new LinePath { ps = new List<Point3d_GL>(new Point3d_GL[] { p2, p1 }) }); }
+                            var line = new LinePath { ps = new List<Point3d_GL>(new Point3d_GL[] { p1, p2 }) };
+                            if (dir) line.ps.Reverse();
                             dir = !dir;
+                            pattern.Add(line);
                         }
                     }
                     break;
@@ -346,12 +378,28 @@ namespace PathPlanning
                         }
                     }
                     break;
+                case PatternType.Dotted:
+                    {
+                        bool dir = false;
+
+                        for (double y = p_min.y + settings.step/2; y <= p_max.y; y += settings.step)
+                        {
+                            var p1 = new Point3d_GL(p_min.x, y);
+                            var p2 = new Point3d_GL(p_max.x, y);
+                            var line = gen_dotted_line_xy(p1, p2, settings.step,settings.filling);
+                            if (dir) line.reverse();
+                            dir = !dir;
+                            pattern.Add(line);
+                        }
+                    }
+                    break;
                 default: break;
             }
             var layer = new LayerPath { lines = pattern };
             layer.add(-p_cent);
             layer.rotate(settings.angle);
-            layer.add(p_cent);
+
+            //layer.add(p_cent);
             return layer;
         }
 
@@ -393,20 +441,29 @@ namespace PathPlanning
         {
             var traj_layers = new List<LayerPath>();
             var dim_cur = new Point3d_GL(settings.dim_x, settings.dim_y);
+            var dim_const = new Point3d_GL(settings.dim_x, settings.dim_y);
+            var A_filling = settings.filling;
+            settings.filling = 0;
+            var df = A_filling / (trajParams.layers / 3);
             for (int i=0; i<trajParams.layers;i++)
             {
                 if (i > trajParams.layers / 2) settings.start_dir_r = false;
                 else settings.start_dir_r = true;
-                if (i % 2 == 0) { settings.angle = pi / 2; dim_cur = new Point3d_GL(settings.dim_x, settings.dim_y); }
-                else { settings.angle = 0; dim_cur = new Point3d_GL(settings.dim_y, settings.dim_x); }
+                if (i % 2 == 0) { settings.angle = pi / 2; dim_cur = new Point3d_GL(settings.dim_y, settings.dim_x); }
+                else { settings.angle = 0; dim_cur = new Point3d_GL(settings.dim_x, settings.dim_y); }
+
+                if (i < trajParams.layers / 3) settings.filling += df;
+                else if((i < 2*trajParams.layers / 3) && (i >=   trajParams.layers / 3)) settings.filling -= df;
+                else settings.filling =0;
+
                 var layer = gen_pattern_in_square_xy(settings, new Point3d_GL(), dim_cur);
-                layer.add(new Point3d_GL(0,0,trajParams.dz * (i+1)));
+                layer.add(new Point3d_GL(0,0,trajParams.dz * ((int)(i/2)+1))+ dim_const / 2);
                 traj_layers.Add(layer);
-                
+                //Console.WriteLine(settings.filling);
                 //settings.angle += pi / 2;
             }
             var traj = new TrajectoryPath { layers = traj_layers };
-           // traj = Trajectory.OptimizeTranzitions2LayerPath(traj);
+            traj = Trajectory.OptimizeTranzitions2LayerPath(traj);
             var traj_ps = traj.to_ps();
             return traj_ps;
         }
@@ -752,17 +809,17 @@ namespace PathPlanning
         {
             var traj_rob = new List<RobotFrame>();
             var f = trajParams.Vel;
-            //s_syr*f = s_nos*v
+
             for (int i = 1; i < traj.Count; i++)
             {
                 var fr1 = new RobotFrame(traj[i-1], RobotFrame.RobotType.FABION2);
                 var fr2 = new RobotFrame(traj[i], RobotFrame.RobotType.FABION2);
-                fr1.V = RobotFrame.dist(fr1,fr2)*trajParams.line_width*trajParams.dz;
-                fr1.F = f;
-                traj_rob.Add(fr1);
+                fr2.V = RobotFrame.dist(fr1,fr2)*trajParams.line_width*trajParams.dz;
+                fr2.F = f;
+                traj_rob.Add(fr2);
             }
-            traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
-            traj_rob = RobotFrame.decrease_angle(traj_rob, 0.5);
+            //traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
+            //traj_rob = RobotFrame.decrease_angle(traj_rob, 0.5);
 
             return RobotFrame.generate_string_fabion(traj_rob.ToArray());
         }
@@ -785,12 +842,15 @@ namespace PathPlanning
 
             for (int i = 0; i < ps.Count; i++)
             {
+                var color_cur = new Color3d_GL(0,0,0);
+                if (ps[i].color != null) color_cur = ps[i].color;
                 traj_rob.Add(new Matrix<double>(new double[,]
                 {
+                    
                     { 1,0,0,ps[i].x},
                     { 0,1,0,ps[i].y},
                     { 0,0,1,ps[i].z},
-                    { 0,0,0,1 }
+                    { color_cur.r,color_cur.g,color_cur.b,1 }
                 }));
             }
 
@@ -1208,6 +1268,13 @@ namespace PathPlanning
         {
             get { return angle; }
             set { angle = value; }
+        }
+        public double filling;
+
+        public double Filling
+        {
+            get { return filling; }
+            set { filling = value; }
         }
         public PathPlanner.PatternType patternType;
         public PathPlanner.PatternType PatternType

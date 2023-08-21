@@ -1909,7 +1909,9 @@ namespace opengl3
         public string addLineMeshTraj(Point3d_GL[] points, Color3d_GL color = null, string name = "new LineMesh")
         {
             var mesh = new List<float>();
-            for(int i=1; i<points.Length;i++)
+            //Gl.LineStipple(2, 58360);
+            // Gl.Enable(EnableCap.LineStipple);
+            for (int i=1; i<points.Length;i++)
             {
                 mesh.Add((float)points[i - 1].x);
                 mesh.Add((float)points[i - 1].y);
@@ -1920,6 +1922,68 @@ namespace opengl3
                 mesh.Add((float)points[i].z);
             }
             return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
+        }
+
+        public string addTraj(Point3d_GL[] points, string name = "new LineMesh")
+        {
+            var mesh = new List<float>();
+            var color = new List<float>();
+
+            for (int i = 1; i < points.Length; i++)
+            {
+                mesh.Add((float)points[i - 1].x);
+                mesh.Add((float)points[i - 1].y);
+                mesh.Add((float)points[i - 1].z);
+
+                mesh.Add((float)points[i].x);
+                mesh.Add((float)points[i].y);
+                mesh.Add((float)points[i].z);
+
+                var color_cur = Color3d_GL.yellow();
+                if (points[i].color != null) color_cur = points[i].color;
+                color.Add(color_cur.r);
+                color.Add(color_cur.g);
+                color.Add(color_cur.b);
+
+               // color_cur = Color3d_GL.red();
+                //if (points[i-1].color != null) color_cur = points[i-1].color;
+                color.Add(color_cur.r);
+                color.Add(color_cur.g);
+                color.Add(color_cur.b);
+
+            }
+            return addMeshWithoutNormDiff(mesh.ToArray(), color.ToArray(), PrimitiveType.Lines, name);
+        }
+
+        public string addTrajPoint(Point3d_GL[] points, string name = "new LineMesh")
+        {
+            var mesh = new List<float>();
+            var color = new List<float>();
+
+            for (int i = 1; i < points.Length; i++)
+            {
+                mesh.Add((float)points[i - 1].x);
+                mesh.Add((float)points[i - 1].y);
+                mesh.Add((float)points[i - 1].z);
+
+                mesh.Add((float)points[i].x);
+                mesh.Add((float)points[i].y);
+                mesh.Add((float)points[i].z);
+
+                var color_cur = Color3d_GL.yellow();
+                if (points[i].color != null) color_cur = points[i].color;
+                color.Add(color_cur.r);
+                color.Add(color_cur.g);
+                color.Add(color_cur.b);
+
+                 color_cur = Color3d_GL.yellow();
+                if (points[i-1].color != null) color_cur = points[i-1].color;
+                color.Add(color_cur.r);
+                color.Add(color_cur.g);
+                color.Add(color_cur.b);
+
+            }
+            return addMeshWithoutNormDiff(mesh.ToArray(), color.ToArray(), PrimitiveType.Lines, name);
         }
         public string addLineMesh(Vertex4f[] points, Color3d_GL color = null, string name = "new LineMesh")
         {
@@ -1950,6 +2014,19 @@ namespace opengl3
             }
 
             return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType,name);
+        }
+        public string addMeshWithoutNormDiff(float[] gl_vertex_buffer_data, float[] color_buffer_data, PrimitiveType primitiveType, string name = "new mesh without norm")
+        {
+            var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
+            for (int i = 0; i < color_buffer_data.Length; i += 3)
+            {
+
+                normal_buffer_data[i] = 0.1f;
+                normal_buffer_data[i + 1] = 0.1f;
+                normal_buffer_data[i + 2] = 0.1f;
+            }
+
+            return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType, name);
         }
         public string addMeshColor(float[] gl_vertex_buffer_data, float[] gl_color_buffer_data, PrimitiveType primitiveType,string name= "new mesh color")
         {

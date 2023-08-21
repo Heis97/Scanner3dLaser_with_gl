@@ -379,8 +379,8 @@ namespace opengl3
                 start_dir_r = true,
                 patternType = PathPlanner.PatternType.Harmonic,
                 dim_x = 10,
-                dim_y = 10
-
+                dim_y = 10,
+                filling = 0.7
             };
             propGrid_pattern.SelectedObject = param_patt;
 
@@ -1269,7 +1269,12 @@ namespace opengl3
             //test_traj_3d_pores();
         }
 
-
+        void test_traj_color()
+        {
+           // var ps = new Point3d_GL[] {new Point3d_GL(1,1,0), new Point3d_GL(1, 10, 0) , new Point3d_GL(10, 10, 0) , new Point3d_GL(1, 1, 0) };
+            //GL1.addTraj()
+            
+        }
         void test_surf_rec()
         {
             var scan_stla = new Model3d("defects\\def1c.stl", false);
@@ -4851,7 +4856,9 @@ namespace opengl3
             var prog = PathPlanner.generate_printer_prog(traj, param_tr);
             debugBox.Text = prog;
             if (GL1.buffersGl.objs.Keys.Contains("prog")) GL1.buffersGl.removeObj("prog");
-            GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
+            //GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
+            GL1.addTraj(pattern.ToArray(), "prog");
+            //GL1.addTrajPoint(pattern.ToArray(), "prog");
         }
     }
 }

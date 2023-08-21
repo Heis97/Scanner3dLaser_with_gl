@@ -24,6 +24,7 @@ namespace opengl3
         public double X, Y, Z, A, B, C, V, D,F;
         public double[] q;
         public PositionRob pos;
+        public Color3d_GL color;
         public int[] turn;
         public enum RobotType { KUKA = 1, PULSE = 2, FABION2 = 3};
 
@@ -150,6 +151,7 @@ namespace opengl3
                         C = 0;
                         D = 3;
                     }
+                    color = new Color3d_GL((float)m[3, 0], (float)m[3, 1], (float)m[3, 2]);
                     break;
             }
             pos = new PositionRob(new Point3d_GL(X, Y, Z), new Point3d_GL(A, B, C));
@@ -224,21 +226,31 @@ namespace opengl3
         }
         public string ToStr_start(int num, string del = " ")
         {
-            var str = "N"+(num*5)+ del + " G11 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z+10)+" D3 \n"; num++;
-            str += "N" + (num * 5) + del + " G11 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) + " D3 \n"; num++;
+            var str = "N"+(num*5)+ del + " G11 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z+10) +  " D3 \n"; num++;
+            str += "N" + (num * 5) + del + " G11 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) +  " D3 \n"; num++;
             str += "N" + (num * 5) + " G87 P0 P3 P0.1 \n"; 
             return str;
         }
         public string ToStr_stop(int num, string del = " ")
         {
-            var str = "N" + (num * 5) + del + " G11 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z + 10) + " D3 \n"; num++;
+            var str = "N" + (num * 5) + del + " G11 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z + 10) +  " D3 \n"; 
             return str;
         }
         public string ToStr_prog(int num, string del = " ")
         {
-            var str = "N" + (num * 5) + del + " G88 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) + del + "F" + round(F) + del + "V" + round(V) + " D3 Q0 T1 I0 J0\n";
+            if (color.r > 0)
+            {
+                var str = "N" + (num * 5) + del + " G88 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) + del + "F" + round(F) + del + "V" + round(V) + " D3 Q0 T1 I0 J0\n";
 
-            return str;
+                return str;
+            }
+            else
+            {
+                var str = "N" + (num * 5) + del + " G88 X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) + del + "F" + round(F) + del + "V0 D3 Q0 T1 I0 J0\n";
+                return str;
+            }
+
+            
         }
         static double round(double val)
         {

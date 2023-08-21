@@ -813,7 +813,7 @@ namespace opengl3
         {
             var x_r = p.x * Math.Cos(angle) - p.y * Math.Sin(angle);
             var y_r = p.x * Math.Sin(angle) + p.y * Math.Cos(angle);
-            return new Point3d_GL(x_r, y_r, p.z);
+            return new Point3d_GL(x_r, y_r, p.z,p.color);
         }
         public static List<Point3d_GL> rotate_points(List<Point3d_GL> traj, double angle)
         {
