@@ -1267,6 +1267,7 @@ namespace opengl3
             //test_patt();
             //test_cut();
             //test_traj_3d_pores();
+            GL1.addFlat3d_XY_zero();
         }
 
         void test_traj_color()

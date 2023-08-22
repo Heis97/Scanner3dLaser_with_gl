@@ -131,6 +131,7 @@ namespace opengl3
         public int textureVisID;
         public int lightVisID;
         public int LightPowerID;
+        public int LightVecID;
         public int MaterialDiffuseID;
         public int MaterialAmbientID;
         public int currentMonitor = 1;
@@ -199,6 +200,7 @@ namespace opengl3
         public Matrix4x4f[] VPs;
         public Matrix4x4f[] Vs;
         public Matrix4x4f[] Ps;
+        Vertex3f lightVec = new Vertex3f(0.0f, 0.0f, 1.0f);
         Vertex3f lightPos = new Vertex3f(0.0f, 0.0f, 123.0f);
         Vertex3f MaterialDiffuse = new Vertex3f(0.1f, 0.1f, 0.1f);
         Vertex3f MaterialAmbient = new Vertex3f(0.1f, 0.1f, 0.1f);
@@ -459,6 +461,7 @@ namespace opengl3
             ids.MaterialSpecularID = Gl.GetUniformLocation(ids.programID, "MaterialSpecular");
             ids.LightID = Gl.GetUniformLocation(ids.programID, "LightPosition_world");
             ids.LightPowerID = Gl.GetUniformLocation(ids.programID, "lightPower");
+            ids.LightVecID = Gl.GetUniformLocation(ids.programID, "LightVec_world");
 
             ids.textureVisID = Gl.GetUniformLocation(ids.programID, "textureVis");
             ids.lightVisID = Gl.GetUniformLocation(ids.programID, "lightVis");
@@ -522,6 +525,7 @@ namespace opengl3
             Gl.Uniform1i(ids.inv_norm_ID, 1, inv_norm);
 
             Gl.Uniform4f(ids.surf_crossID, 1, surf_cross);
+            Gl.Uniform3f(ids.LightVecID, 1, lightVec);
 
         }
 
@@ -1682,11 +1686,11 @@ namespace opengl3
         public void addFlat3d_XY_zero(double z = 0,Color3d_GL color = null, string name = "new Flat XZ")
         {
             Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, z), new Point3d_GL(10, 10, z), new Point3d_GL(0, 10, z));
-            var p0 = (new Line3d_GL(new Vector3d_GL(0, 0, 10), new Point3d_GL(-50,  -10,0))).calcCrossFlat(flat3D_GL);
-            var p1 = (new Line3d_GL(new Vector3d_GL(0, 0, 10), new Point3d_GL(50,  -10,0))).calcCrossFlat(flat3D_GL);
+            var p0 = (new Line3d_GL(new Vector3d_GL(-50, -50, 50), new Point3d_GL(-50,  -50,0))).calcCrossFlat(flat3D_GL);
+            var p1 = (new Line3d_GL(new Vector3d_GL(50, -50, 50), new Point3d_GL(50,  -50,0))).calcCrossFlat(flat3D_GL);
 
-            var p2 = (new Line3d_GL(new Vector3d_GL(0, 0, 10), new Point3d_GL(-50,  100,0))).calcCrossFlat(flat3D_GL);
-            var p3 = (new Line3d_GL(new Vector3d_GL(0, 0, 10), new Point3d_GL(50, 100,0))).calcCrossFlat(flat3D_GL);
+            var p2 = (new Line3d_GL(new Vector3d_GL(-50, 50, 50), new Point3d_GL(-50,  50,0))).calcCrossFlat(flat3D_GL);
+            var p3 = (new Line3d_GL(new Vector3d_GL(50, 50, 50), new Point3d_GL(50, 50,0))).calcCrossFlat(flat3D_GL);
 
             var ps = new Point3d_GL[]
             {
