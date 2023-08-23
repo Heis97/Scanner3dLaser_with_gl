@@ -270,6 +270,9 @@
     <None Include="Graphic\Shaders_face\Comp\CompSh_Test1.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Graphic\Shaders_face\Frag\FragmSh_light_v3.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Graphic\Shaders_face\Frag\FragmSh_light_v2.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

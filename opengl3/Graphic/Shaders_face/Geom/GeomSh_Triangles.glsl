@@ -19,28 +19,30 @@ uniform int surfs_len;
 
 in VS_GS_INTERFACE
 {
-vec3 vertexPosition_world;
-vec3 vertexNormal_world;
-vec3 vertexColor;
-vec2 vertexTexture;
+	vec3 vertexPosition_world;
+	vec3 vertexNormal_world;
+	vec3 vertexColor;
+	vec2 vertexTexture;
 }vs_out[];
 
 out GS_FS_INTERFACE
 {
-vec3 Position_world;
-vec3 Color;
-vec3 Normal_camera;
-vec3 EyeDirection_camera;
-vec3 LightDirection_camera;
-vec3 LightVec_camera;
-vec2 TextureUV;
+	vec3 Position_world;
+	vec3 Color;
+	vec3 Normal_camera;
+	vec3 EyeDirection_camera;
+	vec3 LightDirection_camera;
+	vec3 LightVec_camera;
+	vec2 TextureUV;
+	mat4 Vs[4];
+	int gl_ind;
 } fs_in;
 
 
 void main() 
 {
 	
-	gl_ViewportIndex = gl_InvocationID;
+   gl_ViewportIndex = gl_InvocationID;
 
    for (int i = 0; i < gl_in.length(); i++)
    { 	    
@@ -62,6 +64,8 @@ void main()
 		}
 	    fs_in.Color = vs_out[i].vertexColor;
 		fs_in.TextureUV = vs_out[i].vertexTexture;
+		fs_in.Vs = Vs;
+		fs_in.gl_ind = gl_InvocationID;
 	    EmitVertex();
 	}
 }

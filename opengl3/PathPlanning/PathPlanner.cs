@@ -656,7 +656,7 @@ namespace PathPlanning
         static Matrix<double> proj_point(Polygon3d_GL polyg, Point3d_GL point,Vector3d_GL vec_x_dir)
         {
 
-            /* var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
+             /*var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
              //Console.WriteLine(vec_y);
              var vec_x = (vec_y | polyg.flat3D.n).normalize();
              //Console.WriteLine(vec_x);

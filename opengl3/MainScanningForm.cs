@@ -1232,10 +1232,10 @@ namespace opengl3
             }
             
            /* */
-          // GL1.transRotZooms[1].xRot = 33;
+            //GL1.transRotZooms[1].xRot = 33;
             //GL1.transRotZooms[1].off_x = -25;
             //GL1.transRotZooms[1].off_y = 31;
-           // GL1.transRotZooms[1].zoom = 2.6699;
+            //GL1.transRotZooms[1].zoom = 2.6699;
             
             addButForMonitor(GL1, send.Size, send.Location);
             GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
