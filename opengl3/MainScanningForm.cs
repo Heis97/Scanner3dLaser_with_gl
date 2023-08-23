@@ -99,9 +99,9 @@ namespace opengl3
         const int scanning_len = 330;
         volatile int videoframe_count = 0;
 
-        volatile int[] videoframe_counts = new int[2] { -1, -1 };
+        volatile int[] videoframe_counts = new int[5] { -1, -1,-1,-1,-1 };
 
-        volatile int[] videoframe_counts_stop = new int[2] { 0, 0 };
+        volatile int[] videoframe_counts_stop = new int[5] { 0, 0,0,0,0};
 
         double minArea = 1;
         double maxArea = 10;
@@ -1216,9 +1216,9 @@ namespace opengl3
             var w = send.Width;
             var h = send.Height;
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-            //generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
+            generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
             //GL1.SortObj();
-            int monitor_num = 1;
+            int monitor_num = 4;
             if(monitor_num==4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -1267,7 +1267,9 @@ namespace opengl3
             //test_patt();
             //test_cut();
             //test_traj_3d_pores();
-            GL1.addFlat3d_XY_zero();
+
+            //GL1.addFlat3d_XY_zero_s(0);
+            //GL1.addFlat3d_XZ_zero_s(50);
         }
 
         void test_traj_color()
@@ -1539,7 +1541,7 @@ namespace opengl3
              {
                  UtilOpenCV.SaveMonitor(GL1);
              }*/
-            bool find_gl = false;
+            bool find_gl = true;
             if(find_gl)
             {
                 var mat1_or = GL1.matFromMonitor(0);
@@ -1552,10 +1554,15 @@ namespace opengl3
                 {
                     CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
                 }
+                imProcess_virt(mat1, 1);
+                imProcess_virt(mat2, 2);
+
                 var corn = new System.Drawing.PointF[0];
                 //var mat3 = UtilOpenCV.remapDistImOpenCvCentr(mat2, new Matrix<double>(new double[] { -0.5, 0, 0, 0, 0 }));
-                imBox_mark1.Image = FindCircles.findCircles(mat1_or, ref corn,chess_size);
-                imBox_mark2.Image = FindCircles.findCircles(mat2_or, ref corn, chess_size);
+                //imBox_mark1.Image = FindCircles.findCircles(mat1_or, ref corn, chess_size);
+                //imBox_mark2.Image = FindCircles.findCircles(mat2_or, ref corn, chess_size);
+
+
             }
             
 
@@ -2775,7 +2782,7 @@ namespace opengl3
             }
             if (videoframe_counts[ind - 1] == 0)
             {
-                initWrite(ind);
+                initWrite(ind,cameraSize.Width,cameraSize.Height);
                 videoframe_counts[ind - 1]++;
             }
 
@@ -2815,13 +2822,34 @@ namespace opengl3
             }
 
         }
-
-        void initWrite(int ind)
+        void imProcess_virt(Mat mat, int ind)
         {
-            int fcc = VideoWriter.Fourcc('m', 'p', '4', 'v'); //'M', 'J', 'P', 'G'
+
+            if (videoframe_counts[ind - 1] == 0)
+            {
+                initWrite(ind, GL1.transRotZooms[ind-1].rect.Width, GL1.transRotZooms[ind - 1].rect.Height);
+                videoframe_counts[ind - 1]++;
+            }
+
+            if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
+            {
+                video_writer[ind - 1]?.Write(mat);
+                videoframe_counts[ind - 1]++;
+                
+            }
+            else
+            {
+                video_writer[ind - 1]?.Dispose();
+            }
+        }
+
+        void initWrite(int ind,int w, int h)
+        {
+            int fcc = VideoWriter.Fourcc('m', 'p', '4', 'v'); //'M', 'J', 'P', 'G';'m', 'p', '4', 'v';'M', 'P', '4', 'V';'H', '2', '6', '4'
             int fps = 30;
+            Directory.CreateDirectory("cam" + ind.ToString() + "\\" + box_scanFolder.Text);
             string name ="cam"+ind.ToString()+"\\"+ box_scanFolder.Text + "\\"+video_scan_name+".mp4";
-            video_writer[ind - 1] = new VideoWriter(name, fcc, fps, new Size(cameraSize.Width, cameraSize.Height), true);
+            video_writer[ind - 1] = new VideoWriter(name, fcc, fps, new Size(w, h), true);
         }
 
         void startWrite(int ind,int count)
@@ -2864,6 +2892,8 @@ namespace opengl3
             capture.ImageGrabbed += capturingVideo;
             capture.Start();
         }
+
+
         #endregion
 
         #region Mesh
@@ -4860,6 +4890,13 @@ namespace opengl3
             //GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
             GL1.addTraj(pattern.ToArray(), "prog");
             //GL1.addTrajPoint(pattern.ToArray(), "prog");
+        }
+
+        private void but_scan_virt_Click(object sender, EventArgs e)
+        {
+            var n = Convert.ToInt32(boxN.Text);
+            startWrite(1,n);
+            startWrite(2,n);
         }
     }
 }

@@ -149,6 +149,8 @@ namespace opengl3
         public int[] surfs_cross_ID = new int[30];
         public int surfs_len_ID;
         public int surf_crossID;
+
+        public int[] light_source_ID = new int[30];
     }
     public class GraphicGL
     {
@@ -159,7 +161,7 @@ namespace opengl3
         public int inv_norm = 0;
         public int show_faces = 0;
 
-
+        string light_name = "light source";
         IDs idsPs = new IDs();
         IDs idsLs = new IDs();
         IDs idsTs = new IDs();
@@ -185,7 +187,7 @@ namespace opengl3
         public int texture_vis = 0;
 
         int currentMonitor = 0;
-        float LightPower = 1000000.0f;
+        float LightPower = 100000.0f;//1000000.0f
         Label Label_cor;
         Label Label_cor_cur;
         Label Label_trz_cur;
@@ -200,7 +202,7 @@ namespace opengl3
         public Matrix4x4f[] VPs;
         public Matrix4x4f[] Vs;
         public Matrix4x4f[] Ps;
-        Vertex3f lightVec = new Vertex3f(0.0f, 0.0f, 1.0f);
+        Vertex3f lightVec = new Vertex3f(0.0f, 1.0f, 0.0f);
         Vertex3f lightPos = new Vertex3f(0.0f, 0.0f, 123.0f);
         Vertex3f MaterialDiffuse = new Vertex3f(0.1f, 0.1f, 0.1f);
         Vertex3f MaterialAmbient = new Vertex3f(0.1f, 0.1f, 0.1f);
@@ -219,8 +221,8 @@ namespace opengl3
         public Vertex2f MouseLocGL;
         public int lightVis = 0;
         public int textureVis = 0;
-        public TextureGL isolines_data,mesh_data;
-
+        public TextureGL debug_data, isolines_data,mesh_data;
+        public LightSourceGL[] lightSources = new LightSourceGL[30];
 
         #endregion
 
@@ -313,6 +315,8 @@ namespace opengl3
                 rendercout = 0;
             }
             update_tree();
+
+            //Console.WriteLine(toStringBuf(debug_data.getData(), 100, 4, "debug_D"));
         }
         
         void renderGlobj(openGlobj opgl_obj)
@@ -394,7 +398,7 @@ namespace opengl3
             var VertexSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Vert\VertexSh_Models.glsl" });
             var VertexOneSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Vert\VertexSh_ModelsOne.glsl" });
 
-            var FragmentSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Frag\FragmSh.glsl" });
+            var FragmentSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Frag\FragmSh_light_v2.glsl" });
             var FragmentSimpleSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Frag\FragmSh_Simple.glsl" });
 
             var GeometryShaderPointsGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Points.glsl" });
@@ -439,10 +443,12 @@ namespace opengl3
             //Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(5, 1), new Size(400, 400));
             cameraCV.distortmatrix[0,0] = -0.1;
-
-            
-
-
+            init_texture();
+            addLight();
+            /*var matr = Matrix4x4f.Identity;
+            matr[3, 0] = 100;
+            matr[3, 1] = 50;
+            buffersGl.setMatrobj(light_name, 0, matr);*/
         }
         private void init_vars_gl(IDs ids)
         {
@@ -479,6 +485,11 @@ namespace opengl3
 
             ids.surf_crossID = Gl.GetUniformLocation(ids.programID, "surf_cross");
 
+            for (int i = 0; i < 30; i++)
+            {
+                ids.light_source_ID[i] = Gl.GetUniformLocation(ids.programID, "LightSource[" + i + "]");
+            }
+
         }
         private void load_vars_gl(IDs ids, openGlobj openGlobj)
         {
@@ -487,6 +498,7 @@ namespace opengl3
             if (openGlobj.count == 1)
             {
                 var ModelMatr = openGlobj.trsc[0].getModelMatrix();
+                //Console.WriteLine(openGlobj.name+" "+ ModelMatr);
                 Gl.UniformMatrix4f(ids.LocationM, 1, false, ModelMatr);
             }
 
@@ -527,10 +539,22 @@ namespace opengl3
             Gl.Uniform4f(ids.surf_crossID, 1, surf_cross);
             Gl.Uniform3f(ids.LightVecID, 1, lightVec);
 
+            for (int i = 0; i < 30; i++)
+            {
+                if(lightSources[i]!=null)
+                    Gl.UniformMatrix4f(ids.light_source_ID[i], 1, false, lightSources[i].to_mat4());
+            }
+        }
+
+        void init_texture()
+        {
+
+            debug_data = new TextureGL(3, 100 / 4, 4, PixelFormat.Rgba);
+
         }
 
         #endregion
-       
+
         #region comp_gpu
         public Point3d_GL[] cross_flat_gpu(float[] ps1, float[] ps2)
         {
@@ -1353,16 +1377,19 @@ namespace opengl3
         
         public void lightXscroll(int value)
         {
-            lightPos.x = (float)value * 10;
+            lightPos.x = (float)value * 5;
+            buffersGl.setXobj(light_name, 0, lightPos.x);
+
         }
         public void lightYscroll(int value)
         {
-            lightPos.y = (float)value * 10;
-
+            lightPos.y = (float)value * 5;
+            buffersGl.setYobj(light_name, 0, lightPos.y);
         }
         public void lightZscroll(int value)
         {
-            lightPos.z = (float)value * 10;
+            lightPos.z = (float)value * 5;
+            buffersGl.setZobj(light_name, 0, lightPos.z);
         }
         public void orientXscroll(int value)
         {
@@ -1445,8 +1472,13 @@ namespace opengl3
         #endregion
 
         #region mesh
+        void addLight()
+        {
+            addPointMesh(new Point3d_GL[] { new Point3d_GL() }, Color3d_GL.red(), "light source");
+        }
         void addCams()
         {
+
             for(int i=0; i<transRotZooms.Count;i++)
             {
                 addCamView(i);
@@ -1683,14 +1715,50 @@ namespace opengl3
             addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
 
         }
-        public void addFlat3d_XY_zero(double z = 0,Color3d_GL color = null, string name = "new Flat XZ")
+        public void addFlat3d_XY_zero(double z = 0,Color3d_GL color = null, string name = "new Flat XY")
         {
+            var d = 50;
             Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, z), new Point3d_GL(10, 10, z), new Point3d_GL(0, 10, z));
-            var p0 = (new Line3d_GL(new Vector3d_GL(-50, -50, 50), new Point3d_GL(-50,  -50,0))).calcCrossFlat(flat3D_GL);
-            var p1 = (new Line3d_GL(new Vector3d_GL(50, -50, 50), new Point3d_GL(50,  -50,0))).calcCrossFlat(flat3D_GL);
+            var p0 = (new Line3d_GL(new Vector3d_GL(-d, -d, 10), new Point3d_GL(-d,  -d, 0))).calcCrossFlat(flat3D_GL);
+            var p1 = (new Line3d_GL(new Vector3d_GL(d, -d, 10), new Point3d_GL(d,  -d, 0))).calcCrossFlat(flat3D_GL);
 
-            var p2 = (new Line3d_GL(new Vector3d_GL(-50, 50, 50), new Point3d_GL(-50,  50,0))).calcCrossFlat(flat3D_GL);
-            var p3 = (new Line3d_GL(new Vector3d_GL(50, 50, 50), new Point3d_GL(50, 50,0))).calcCrossFlat(flat3D_GL);
+            var p2 = (new Line3d_GL(new Vector3d_GL(-d, d, 10), new Point3d_GL(-d, d, 0))).calcCrossFlat(flat3D_GL);
+            var p3 = (new Line3d_GL(new Vector3d_GL(d, d, 10), new Point3d_GL(d, d, 0))).calcCrossFlat(flat3D_GL);
+
+            var ps = new Point3d_GL[]
+            {
+                p1,p3,p2,
+                p2,p0,p1
+            };
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
+
+        }
+        public void addFlat3d_XY_zero_s(double z = 0, Color3d_GL color = null, string name = "new Flat XY")
+        {
+            var d = 50;
+            var p0 = new Point3d_GL(-d, -d, z);
+            var p1 = new Point3d_GL(d, -d, z);
+
+            var p2 =  new Point3d_GL(-d, d, z);
+            var p3 =  new Point3d_GL(d, d, z);
+
+            var ps = new Point3d_GL[]
+            {
+                p1,p3,p2,
+                p2,p0,p1
+            };
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
+
+        }
+        public void addFlat3d_XZ_zero(double y = 0,Color3d_GL color = null,string name = "new Flat XZ")
+        {
+            var d = 50;
+            Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, y, 0), new Point3d_GL(10, y, 10), new Point3d_GL(0, y, 10));
+            var p0 = (new Line3d_GL(new Vector3d_GL(-d, 10, -d), new Point3d_GL(-d, 0, -d))).calcCrossFlat(flat3D_GL);
+            var p1 = (new Line3d_GL(new Vector3d_GL(d,10, -d), new Point3d_GL(d, 0, -d))).calcCrossFlat(flat3D_GL);
+
+            var p2 = (new Line3d_GL(new Vector3d_GL(-d, 10, d), new Point3d_GL(-d, 0, d))).calcCrossFlat(flat3D_GL);
+            var p3 = (new Line3d_GL(new Vector3d_GL(d, 10, d), new Point3d_GL(d, 0, d))).calcCrossFlat(flat3D_GL);
 
             var ps = new Point3d_GL[]
             {
@@ -1701,21 +1769,21 @@ namespace opengl3
 
         }
 
-        public void addFlat3d_XZ_zero(Color3d_GL color = null,string name = "new Flat XZ")
+        public void addFlat3d_XZ_zero_s(double y = 0, Color3d_GL color = null, string name = "new Flat XZ")
         {
-            Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, 0), new Point3d_GL(10, 0, 10), new Point3d_GL(0, 0, 10));
-            var p0 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, -10))).calcCrossFlat(flat3D_GL);
-            var p1 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, -10))).calcCrossFlat(flat3D_GL);
+            var d = 50;
+            var p0 = new Point3d_GL(-d, y, -d);
+            var p1 = new Point3d_GL(d, y, -d);
 
-            var p2 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, 100))).calcCrossFlat(flat3D_GL);
-            var p3 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, 100))).calcCrossFlat(flat3D_GL);
+            var p2 = new Point3d_GL(-d, y, d);
+            var p3 = new Point3d_GL(d, y, d);
 
             var ps = new Point3d_GL[]
             {
                 p1,p3,p2,
                 p2,p0,p1
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
+            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
 
         }
         public void addFrame_Cam(CameraCV cam, int frame_len = 15)

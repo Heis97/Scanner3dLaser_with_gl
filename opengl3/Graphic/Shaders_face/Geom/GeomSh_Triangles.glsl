@@ -1,8 +1,7 @@
 ﻿#version 430 core
 layout (triangles, invocations = 4) in;
 layout (triangle_strip, max_vertices = 3) out;
-layout(rgba32f, binding = 3) uniform  image2D isolines;
-
+layout (rgba32f, binding = 3) uniform  image2D debugdata;
 uniform vec3 LightPosition_world;
 uniform vec3 LightVec_world;
 uniform mat4 VPs[4];
@@ -51,7 +50,7 @@ void main()
 	    vec3 vertexPosition_camera = (Vs[gl_InvocationID] * vec4(vs_out[i].vertexPosition_world, 1.0)).xyz;
 	    fs_in.EyeDirection_camera = vec3(0,0,0) - vertexPosition_camera;
 	    vec3 LightPosition_camera = ( Vs[gl_InvocationID] * vec4(LightPosition_world,1)).xyz;
-		fs_in.LightVec_camera = (Vs[gl_InvocationID] * vec4(LightVec_world, 1)).xyz;
+		fs_in.LightVec_camera = normalize(-(Vs[gl_InvocationID] * vec4(LightVec_world, 0)).xyz);
 	    fs_in.LightDirection_camera = LightPosition_camera + fs_in.EyeDirection_camera;
 	    fs_in.Normal_camera = ( Vs[gl_InvocationID] * vec4(vs_out[i].vertexNormal_world, 0)).xyz;
 		if (show_faces == 1)

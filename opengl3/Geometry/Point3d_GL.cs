@@ -787,9 +787,9 @@ namespace opengl3
             return ps_max;
         }
 
-        public void setx(double x) { this.x = x; }
-        public void sety(double y) { this.y = y; }
-        public void setz(double z) { this.z = z; }
+        public Point3d_GL setx(double x) { this.x = x;return this; }
+        public Point3d_GL sety(double y) { this.y = y; return this; }
+        public Point3d_GL setz(double z) { this.z = z; return this; }
 
         public static Point3d_GL[] add_arr(Point3d_GL[] ps, Point3d_GL p)
         {
@@ -909,6 +909,18 @@ namespace opengl3
 
             return new Point3d_GL(vx, vy, vz);
         }
+       /* public static Point3d_GL vec_perpend_vec_p(Point3d_GL v1, Point3d_GL v2, Point3d_GL p)
+        {
+            double d = Math.Pow(v1.x, 2) * Math.Pow(v2.y, 2) + Math.Pow(v1.x, 2) * Math.Pow(v2.z, 2)
+                - 2 * v1.x * v1.y * v2.x * v2.y - 2 * v1.x * v2.x * v1.z * v2.z + Math.Pow(v1.y, 2) * Math.Pow(v2.x, 2)
+                + Math.Pow(v1.y, 2) * Math.Pow(v2.z, 2) - 2 * v1.y * v1.z * v2.y * v2.z + Math.Pow(v2.x, 2) * Math.Pow(v1.z, 2)
+                + Math.Pow(v1.z, 2) * Math.Pow(v2.y, 2);
+            double vx = (v1.y * v2.z - v1.z * v2.y) * Math.Sqrt(1 / d);
+            double vy = -(v1.x * v2.z - v2.x * v1.z) * Math.Sqrt(1 / d);
+            double vz = (v1.x * v2.y - v1.y * v2.x) * Math.Sqrt(1 / d);
+
+            return new Point3d_GL(vx, vy, vz);
+        }*/
         public static Point3d_GL vec_perpend_xy(Point3d_GL v1)
         {
             var x1 = -v1.y;

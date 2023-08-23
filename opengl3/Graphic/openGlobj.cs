@@ -31,6 +31,7 @@ namespace opengl3
 
 
         public trsc[] trsc { get; set; }
+
         public int count;
         Vertex4f cross_flat;
         public int comp_flat;
@@ -51,6 +52,7 @@ namespace opengl3
             transparency = 1f;
             trsc = new trsc[_count];
             this.name = name;
+
             for (int i=0;i<trsc.Length;i++)
             {
                 trsc[i] = new trsc(Matrix4x4f.Identity);
@@ -232,32 +234,32 @@ namespace opengl3
         }
         public openGlobj setX(int i, double x)
         {
-            trsc[i].transl.setx(x);
+            trsc[i].transl = trsc[i].transl.setx(x);
             return this;
         }
         public openGlobj setY(int i, double y)
         {
-            trsc[i].transl.sety(y);
+            trsc[i].transl = trsc[i].transl.sety(y);
             return this;
         }
         public openGlobj setZ(int i, double z)
         {
-            trsc[i].transl.setz(z);
+            trsc[i].transl = trsc[i].transl.setz(z);
             return this;
         }
         public openGlobj setRotX(int i, double x)
         {
-            trsc[i].rotate.setx(x);
+            trsc[i].rotate = trsc[i].rotate.setx(x);
             return this;
         }
         public openGlobj setRotY(int i, double y)
         {
-            trsc[i].rotate.sety(y);
+            trsc[i].rotate = trsc[i].rotate.sety(y);
             return this;
         }
         public openGlobj setRotZ(int i, double z)
         {
-            trsc[i].rotate.setz(z);
+            trsc[i].rotate = trsc[i].rotate.setz(z);
             return this;
         }
 

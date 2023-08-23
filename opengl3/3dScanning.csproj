@@ -146,6 +146,7 @@
     <Compile Include="Geometry\Flat3d_GL.cs" />
     <Compile Include="Geometry\Flat_4P.cs" />
     <Compile Include="Geometry\Line3d_GL.cs" />
+    <Compile Include="Graphic\LightSourceGL.cs" />
     <Compile Include="PathPlanning\PathPlanner.cs" />
     <Compile Include="PathPlanning\RobotFrame.cs" />
     <Compile Include="PathPlanning\RozumPoint.cs" />
@@ -267,6 +268,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Graphic\Shaders_face\Comp\CompSh_Test1.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Frag\FragmSh_light_v2.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Graphic\Shaders_face\Frag\FragmSh.glsl">

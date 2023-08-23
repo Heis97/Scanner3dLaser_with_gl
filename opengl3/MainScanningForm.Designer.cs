@@ -89,6 +89,8 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.but_scan_virt = new System.Windows.Forms.Button();
+            this.but_printer_traj_fab = new System.Windows.Forms.Button();
             this.propGrid_pattern = new System.Windows.Forms.PropertyGrid();
             this.but_dist_same_ps = new System.Windows.Forms.Button();
             this.but_stereo_3dp = new System.Windows.Forms.Button();
@@ -341,7 +343,6 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.but_printer_traj_fab = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -993,6 +994,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_scan_virt);
             this.tabOpenGl.Controls.Add(this.but_printer_traj_fab);
             this.tabOpenGl.Controls.Add(this.propGrid_pattern);
             this.tabOpenGl.Controls.Add(this.but_dist_same_ps);
@@ -1114,6 +1116,26 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // but_scan_virt
+            // 
+            this.but_scan_virt.Location = new System.Drawing.Point(14, 973);
+            this.but_scan_virt.Name = "but_scan_virt";
+            this.but_scan_virt.Size = new System.Drawing.Size(96, 34);
+            this.but_scan_virt.TabIndex = 164;
+            this.but_scan_virt.Text = "Сканирование GL";
+            this.but_scan_virt.UseVisualStyleBackColor = true;
+            this.but_scan_virt.Click += new System.EventHandler(this.but_scan_virt_Click);
+            // 
+            // but_printer_traj_fab
+            // 
+            this.but_printer_traj_fab.Location = new System.Drawing.Point(813, 734);
+            this.but_printer_traj_fab.Name = "but_printer_traj_fab";
+            this.but_printer_traj_fab.Size = new System.Drawing.Size(106, 34);
+            this.but_printer_traj_fab.TabIndex = 163;
+            this.but_printer_traj_fab.Text = "Заполнение Фабион";
+            this.but_printer_traj_fab.UseVisualStyleBackColor = true;
+            this.but_printer_traj_fab.Click += new System.EventHandler(this.but_printer_traj_fab_Click);
             // 
             // propGrid_pattern
             // 
@@ -1241,7 +1263,7 @@ namespace opengl3
             // 
             // prop_grid_model
             // 
-            this.prop_grid_model.Location = new System.Drawing.Point(996, 6);
+            this.prop_grid_model.Location = new System.Drawing.Point(830, 116);
             this.prop_grid_model.Name = "prop_grid_model";
             this.prop_grid_model.Size = new System.Drawing.Size(183, 400);
             this.prop_grid_model.TabIndex = 150;
@@ -1249,7 +1271,7 @@ namespace opengl3
             // tree_models
             // 
             this.tree_models.BackColor = System.Drawing.SystemColors.Window;
-            this.tree_models.Location = new System.Drawing.Point(813, 6);
+            this.tree_models.Location = new System.Drawing.Point(1035, 135);
             this.tree_models.Name = "tree_models";
             this.tree_models.Size = new System.Drawing.Size(177, 271);
             this.tree_models.TabIndex = 149;
@@ -1549,7 +1571,7 @@ namespace opengl3
             // 
             // propGrid_traj
             // 
-            this.propGrid_traj.Location = new System.Drawing.Point(807, 283);
+            this.propGrid_traj.Location = new System.Drawing.Point(623, 354);
             this.propGrid_traj.Name = "propGrid_traj";
             this.propGrid_traj.Size = new System.Drawing.Size(183, 343);
             this.propGrid_traj.TabIndex = 119;
@@ -1733,9 +1755,9 @@ namespace opengl3
             // 
             // debugBox
             // 
-            this.debugBox.Location = new System.Drawing.Point(1218, 6);
+            this.debugBox.Location = new System.Drawing.Point(1218, 409);
             this.debugBox.Name = "debugBox";
-            this.debugBox.Size = new System.Drawing.Size(402, 784);
+            this.debugBox.Size = new System.Drawing.Size(402, 381);
             this.debugBox.TabIndex = 62;
             this.debugBox.Text = "";
             // 
@@ -3040,7 +3062,7 @@ namespace opengl3
             this.boxN.Name = "boxN";
             this.boxN.Size = new System.Drawing.Size(69, 26);
             this.boxN.TabIndex = 31;
-            this.boxN.Text = "10";
+            this.boxN.Text = "50";
             // 
             // nameC
             // 
@@ -3072,7 +3094,7 @@ namespace opengl3
             this.box_scanFolder.Name = "box_scanFolder";
             this.box_scanFolder.Size = new System.Drawing.Size(130, 26);
             this.box_scanFolder.TabIndex = 57;
-            this.box_scanFolder.Text = "test";
+            this.box_scanFolder.Text = "test_virt";
             // 
             // box_photoFolder
             // 
@@ -3665,16 +3687,6 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // but_printer_traj_fab
-            // 
-            this.but_printer_traj_fab.Location = new System.Drawing.Point(813, 734);
-            this.but_printer_traj_fab.Name = "but_printer_traj_fab";
-            this.but_printer_traj_fab.Size = new System.Drawing.Size(106, 34);
-            this.but_printer_traj_fab.TabIndex = 163;
-            this.but_printer_traj_fab.Text = "Заполнение Фабион";
-            this.but_printer_traj_fab.UseVisualStyleBackColor = true;
-            this.but_printer_traj_fab.Click += new System.EventHandler(this.but_printer_traj_fab_Click);
-            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -4074,6 +4086,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_dist_same_ps;
         private System.Windows.Forms.PropertyGrid propGrid_pattern;
         private System.Windows.Forms.Button but_printer_traj_fab;
+        private System.Windows.Forms.Button but_scan_virt;
     }
 }
 

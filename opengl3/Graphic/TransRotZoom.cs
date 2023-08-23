@@ -15,8 +15,6 @@ namespace opengl3
         public Point3d_GL rotate { get; set; }
         public float scale { get; set; }
         public Matrix4x4f matr { get; set; }
-
-
         public trsc(Point3d_GL _transl, Point3d_GL _rotate, float _scale)
         {
             transl = _transl.Clone();
@@ -33,7 +31,7 @@ namespace opengl3
         }
         public trsc(Matrix4x4f _matr)
         {
-            transl = Point3d_GL.notExistP();
+            transl = new Point3d_GL(0, 0, 0);//notExist
 
             rotate = new Point3d_GL(0, 0, 0);
             scale = 1;
