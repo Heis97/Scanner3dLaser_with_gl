@@ -291,7 +291,10 @@
     <None Include="Graphic\Shaders_face\Geom\GeomSh_Points.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Graphic\Shaders_face\Geom\GeomSh_Triangles.glsl">
+    <None Include="Graphic\Shaders_face\Geom\GeomSh_Triangles_v3.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Graphic\Shaders_face\Geom\GeomSh_Triangles_v2.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Graphic\Shaders_face\Vert\TestSh.glsl">

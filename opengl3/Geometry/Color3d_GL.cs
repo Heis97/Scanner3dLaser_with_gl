@@ -30,6 +30,7 @@ namespace opengl3
 
         public static Color3d_GL aqua() { return new Color3d_GL(0, 1, 1); }
 
+        public static Color3d_GL white() { return new Color3d_GL(1, 1, 1); }
 
     }
 }

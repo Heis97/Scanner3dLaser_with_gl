@@ -383,7 +383,7 @@ namespace opengl3
                 filling = 0.7
             };
             propGrid_pattern.SelectedObject = param_patt;
-
+            prop_gr_light.SelectedObject = GL1.lightSources_obj;
             debugBox.Text = "0.3 0.3 1";
 
             scan_dist = ch_b_dist.Checked;
@@ -1272,6 +1272,58 @@ namespace opengl3
             //GL1.addFlat3d_XZ_zero_s(50);
         }
 
+        private void glControl1_Render(object sender, GlControlEventArgs e)
+        {
+
+            GL1.glControl_Render(sender, e);
+            /* if (GL1.rendercout == 0)
+             {
+                 UtilOpenCV.SaveMonitor(GL1);
+             }*/
+            bool find_gl = true;
+            if (find_gl)
+            {
+                var mat1_or = GL1.matFromMonitor(0);
+                var mat2_or = GL1.matFromMonitor(1);
+
+                var mat1 = new Mat();
+                var mat2 = new Mat();
+                CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
+                if (mat2_or != null)
+                {
+                    CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
+                }
+                imProcess_virt(mat1, 1);
+                imProcess_virt(mat2, 2);
+
+                var corn = new System.Drawing.PointF[0];
+                //var mat3 = UtilOpenCV.remapDistImOpenCvCentr(mat2, new Matrix<double>(new double[] { -0.5, 0, 0, 0, 0 }));
+                //imBox_mark1.Image = FindCircles.findCircles(mat1_or, ref corn, chess_size);
+                //imBox_mark2.Image = FindCircles.findCircles(mat2_or, ref corn, chess_size);
+
+
+            }
+
+            prop_gr_light.Update();
+            /*var mat1_or = GL1.matFromMonitor(0);
+            CvInvoke.Flip(mat1_or, mat1_or, FlipType.Vertical);
+            System.Drawing.PointF[] corn = null;
+            var err = UtilOpenCV.calcSubpixelPrec(chess_size, GL1, markSize, 0,PatternType.Mesh);
+            Console.WriteLine(err[0].X +" "+ err[0].Y);*/
+            //imBox_mark2.Image = imBox_mark2.Image;
+
+
+
+            //GL1.printDebug(debugBox);
+
+            /* var mat1 = UtilOpenCV.remapDistImOpenCvCentr(UtilOpenCV.GLnoise(mat1_or, 0, 10), cameraDistortionCoeffs_dist);
+             var mat2 = UtilOpenCV.GLnoise(mat2_or, 0, 10);
+             imBox_mark1.Image = mat2;
+             imBox_mark2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));*/
+
+            //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
+
+        }
         void test_traj_color()
         {
            // var ps = new Point3d_GL[] {new Point3d_GL(1,1,0), new Point3d_GL(1, 10, 0) , new Point3d_GL(10, 10, 0) , new Point3d_GL(1, 1, 0) };
@@ -1533,58 +1585,7 @@ namespace opengl3
             cameraCV.prjmatrix = prjCam;
             return cameraCV;
         }
-        private void glControl1_Render(object sender, GlControlEventArgs e)
-        {
-
-            GL1.glControl_Render(sender, e);
-            /* if (GL1.rendercout == 0)
-             {
-                 UtilOpenCV.SaveMonitor(GL1);
-             }*/
-            bool find_gl = true;
-            if(find_gl)
-            {
-                var mat1_or = GL1.matFromMonitor(0);
-                var mat2_or = GL1.matFromMonitor(1);
-
-                var mat1 = new Mat();
-                var mat2 = new Mat();
-                CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
-                if (mat2_or != null)
-                {
-                    CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
-                }
-                imProcess_virt(mat1, 1);
-                imProcess_virt(mat2, 2);
-
-                var corn = new System.Drawing.PointF[0];
-                //var mat3 = UtilOpenCV.remapDistImOpenCvCentr(mat2, new Matrix<double>(new double[] { -0.5, 0, 0, 0, 0 }));
-                //imBox_mark1.Image = FindCircles.findCircles(mat1_or, ref corn, chess_size);
-                //imBox_mark2.Image = FindCircles.findCircles(mat2_or, ref corn, chess_size);
-
-
-            }
-            
-
-            /*var mat1_or = GL1.matFromMonitor(0);
-            CvInvoke.Flip(mat1_or, mat1_or, FlipType.Vertical);
-            System.Drawing.PointF[] corn = null;
-            var err = UtilOpenCV.calcSubpixelPrec(chess_size, GL1, markSize, 0,PatternType.Mesh);
-            Console.WriteLine(err[0].X +" "+ err[0].Y);*/
-            //imBox_mark2.Image = imBox_mark2.Image;
-
-
-
-            //GL1.printDebug(debugBox);
-
-            /* var mat1 = UtilOpenCV.remapDistImOpenCvCentr(UtilOpenCV.GLnoise(mat1_or, 0, 10), cameraDistortionCoeffs_dist);
-             var mat2 = UtilOpenCV.GLnoise(mat2_or, 0, 10);
-             imBox_mark1.Image = mat2;
-             imBox_mark2.Image = UtilOpenCV.drawChessboard(mat2, new Size(6, 7));*/
-
-            //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
-
-        }
+        
 
 
         void load_subpix()

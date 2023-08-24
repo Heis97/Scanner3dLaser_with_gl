@@ -151,6 +151,7 @@ namespace opengl3
         public int surf_crossID;
 
         public int[] light_source_ID = new int[30];
+        public int light_count_ID;
     }
     public class GraphicGL
     {
@@ -160,7 +161,7 @@ namespace opengl3
         public int surfs_len = 0;
         public int inv_norm = 0;
         public int show_faces = 0;
-
+        const int light_len = 30;
         string light_name = "light source";
         IDs idsPs = new IDs();
         IDs idsLs = new IDs();
@@ -222,8 +223,9 @@ namespace opengl3
         public int lightVis = 0;
         public int textureVis = 0;
         public TextureGL debug_data, isolines_data,mesh_data;
-        public LightSourceGL[] lightSources = new LightSourceGL[30];
-
+        public List<LightSourceGL> lightSources = new List<LightSourceGL>();
+        public LightSourceGL[] lightSources_arr;
+        public LightSourcesGL lightSources_obj = new LightSourcesGL();
         #endregion
 
         #region main
@@ -315,7 +317,8 @@ namespace opengl3
                 rendercout = 0;
             }
             update_tree();
-
+            lightSources_arr = lightSources.ToArray();
+            lightSources_obj.lightSources = lightSources.ToArray();
             //Console.WriteLine(toStringBuf(debug_data.getData(), 100, 4, "debug_D"));
         }
         
@@ -398,12 +401,12 @@ namespace opengl3
             var VertexSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Vert\VertexSh_Models.glsl" });
             var VertexOneSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Vert\VertexSh_ModelsOne.glsl" });
 
-            var FragmentSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Frag\FragmSh_light_v2.glsl" });
+            var FragmentSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Frag\FragmSh_light_v3.glsl" });
             var FragmentSimpleSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Frag\FragmSh_Simple.glsl" });
 
             var GeometryShaderPointsGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Points.glsl" });
             var GeometryShaderLinesGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Lines.glsl" });
-            var GeometryShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Triangles.glsl" });
+            var GeometryShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Triangles_v3.glsl" });
             var GeometryShaderTrianglesSliceGL = assembCode(new string[] { @"Graphic\Shaders\Geom\slice_shader_one.glsl" });
 
             var CompShaderGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo_f.glsl" });
@@ -445,10 +448,47 @@ namespace opengl3
             cameraCV.distortmatrix[0,0] = -0.1;
             init_texture();
             addLight();
+
+            lightSources.Add(new LightSourceGL
+            {
+                position_z = 100,
+                direction_x = 1,
+                direction_z = 0.5f,
+                color_r = 1,
+                power = 100000,
+                cut_off = 0.99999f,
+                type_light = LightSourceGL.type.Disc
+            
+            });
+
+            lightSources.Add(new LightSourceGL
+            {
+                position_z = 1000,
+                direction_z = -1,
+                color_r = 0.6f,
+                color_g = 0.6f,
+                color_b = 0.6f,
+                power = 1000000,
+                cut_off = 0.9999f,
+                type_light = LightSourceGL.type.Point
+
+            });
+            /* lightSources.Add(new LightSourceGL
+             {
+                 position_z = 10,
+                 position_x = 50,
+
+                 color_b = 1,
+                 power = 10000,
+                 type_light = LightSourceGL.type.Point
+
+             });*/
             /*var matr = Matrix4x4f.Identity;
             matr[3, 0] = 100;
             matr[3, 1] = 50;
             buffersGl.setMatrobj(light_name, 0, matr);*/
+
+            addFlat3d_XY_zero_s(-0.1,Color3d_GL.white());
         }
         private void init_vars_gl(IDs ids)
         {
@@ -485,10 +525,11 @@ namespace opengl3
 
             ids.surf_crossID = Gl.GetUniformLocation(ids.programID, "surf_cross");
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < light_len; i++)
             {
                 ids.light_source_ID[i] = Gl.GetUniformLocation(ids.programID, "LightSource[" + i + "]");
             }
+            ids.light_count_ID = Gl.GetUniformLocation(ids.programID, "light_count");
 
         }
         private void load_vars_gl(IDs ids, openGlobj openGlobj)
@@ -539,18 +580,19 @@ namespace opengl3
             Gl.Uniform4f(ids.surf_crossID, 1, surf_cross);
             Gl.Uniform3f(ids.LightVecID, 1, lightVec);
 
-            for (int i = 0; i < 30; i++)
+
+
+            var light_count = Math.Min(lightSources.Count, light_len);
+            for (int i = 0; i < light_count; i++)
             {
-                if(lightSources[i]!=null)
-                    Gl.UniformMatrix4f(ids.light_source_ID[i], 1, false, lightSources[i].to_mat4());
+                if(lightSources[i]!=null) Gl.UniformMatrix4f(ids.light_source_ID[i], 1, false, lightSources[i].to_mat4());
             }
+            Gl.Uniform1i(ids.light_count_ID, 1, light_count);
         }
 
         void init_texture()
         {
-
             debug_data = new TextureGL(3, 100 / 4, 4, PixelFormat.Rgba);
-
         }
 
         #endregion
@@ -1735,7 +1777,7 @@ namespace opengl3
         }
         public void addFlat3d_XY_zero_s(double z = 0, Color3d_GL color = null, string name = "new Flat XY")
         {
-            var d = 50;
+            var d = 100;
             var p0 = new Point3d_GL(-d, -d, z);
             var p1 = new Point3d_GL(d, -d, z);
 

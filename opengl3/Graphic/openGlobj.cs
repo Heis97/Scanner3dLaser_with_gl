@@ -39,7 +39,7 @@ namespace opengl3
         public openGlobj(float[] v_buf, float[] c_buf, float[] n_buf, float[] t_buf=null, PrimitiveType type=PrimitiveType.Triangles,string name = "name", int _count = 1, int textureId = -1)
         {
             selected = false;
-            text_vis = false;
+            text_vis = true;
             light_vis = false;
             if(type == PrimitiveType.Triangles) light_vis = true;
             cross_flat = new Vertex4f();

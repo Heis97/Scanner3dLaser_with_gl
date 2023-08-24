@@ -287,7 +287,7 @@ namespace opengl3
             var _Vm = Matrix4x4f.Identity;
             if (trz.viewType_ == viewType.Perspective)
             {
-                _Pm = Matrix4x4f.Perspective((float)trz.fovx, (float)trz.rect.Width / trz.rect.Height, 0.01f, 1000f);
+                _Pm = Matrix4x4f.Perspective((float)trz.fovx, (float)trz.rect.Width / trz.rect.Height, 1f, 10000f);
                 _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.zoom * (float)trz.off_z) *
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *

@@ -26,8 +26,6 @@ in GS_FS_INTERFACE
 	vec3 LightDirection_camera;
 	vec3 LightVec_camera;
 	vec2 TextureUV;
-	mat4 Vs[4];
-	int gl_ind;
 }fs_in;
 out vec4 color;
 
