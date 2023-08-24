@@ -114,8 +114,17 @@ vec3 comp_color_disk_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_c,
 	
 	if(cosGamma<cos_ang)
 	{
-		//MaterialDiffuseColor *= (cosGamma-cut_off *10) * 50;
-		MaterialDiffuseColor = vec3(0);
+		
+		
+		if (cosGamma > cos_ang - 0.01)
+		{
+			//MaterialDiffuseColor *= (cosGamma - cut_off)*10;
+			MaterialDiffuseColor = vec3(0);
+		}
+		else
+		{
+			MaterialDiffuseColor = vec3(0);
+		}
 	}
 
 	//imageStore(debugdata, ivec2(0,0), vec4(LightVec_c,111));

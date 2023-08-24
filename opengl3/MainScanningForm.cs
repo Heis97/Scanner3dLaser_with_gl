@@ -1270,6 +1270,9 @@ namespace opengl3
 
             //GL1.addFlat3d_XY_zero_s(0);
             //GL1.addFlat3d_XZ_zero_s(50);
+            var scan_stla = new Model3d("def2.stl", false);
+            scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
+            GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def2");
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -4898,6 +4901,11 @@ namespace opengl3
             var n = Convert.ToInt32(boxN.Text);
             startWrite(1,n);
             startWrite(2,n);
+        }
+
+        private void but_start_anim_Click(object sender, EventArgs e)
+        {
+            GL1.start_animation(100);
         }
     }
 }

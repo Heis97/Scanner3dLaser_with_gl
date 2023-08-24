@@ -156,7 +156,9 @@ namespace opengl3
     public class GraphicGL
     {
         #region vars
-        
+        int cur_time_an = 0;
+        int end_time_an = 0;
+        bool anim_is_go = false;
 
         public int surfs_len = 0;
         public int inv_norm = 0;
@@ -317,9 +319,31 @@ namespace opengl3
                 rendercout = 0;
             }
             update_tree();
+            comp_cur_animation();
             lightSources_arr = lightSources.ToArray();
             lightSources_obj.lightSources = lightSources.ToArray();
             //Console.WriteLine(toStringBuf(debug_data.getData(), 100, 4, "debug_D"));
+        }
+
+        public void start_animation(int end = 0)
+        {
+            anim_is_go = true;
+            cur_time_an = 0;
+            end_time_an = end;
+        }
+
+        void comp_cur_animation()
+        {
+            if(anim_is_go)
+            {
+                lightSources[0].direction_z = -0.5f+ (float)cur_time_an/end_time_an;
+
+
+
+                cur_time_an++;
+                if (cur_time_an > end_time_an) anim_is_go = false;
+            }
+            
         }
         
         void renderGlobj(openGlobj opgl_obj)
@@ -453,7 +477,7 @@ namespace opengl3
             {
                 position_z = 100,
                 direction_x = 1,
-                direction_z = 0.5f,
+                direction_z = 0f,
                 color_r = 1,
                 power = 100000,
                 cut_off = 0.99999f,

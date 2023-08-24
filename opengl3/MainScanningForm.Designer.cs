@@ -353,6 +353,8 @@ namespace opengl3
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.but_start_anim = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1381,6 +1383,7 @@ namespace opengl3
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.but_start_anim);
             this.tabPage3.Controls.Add(this.but_rob_auto_sc);
             this.tabPage3.Controls.Add(this.but_rob_send_sc);
             this.tabPage3.Controls.Add(this.but_rob_discon_sc);
@@ -3808,9 +3811,19 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // but_start_anim
+            // 
+            this.but_start_anim.Location = new System.Drawing.Point(15, 223);
+            this.but_start_anim.Name = "but_start_anim";
+            this.but_start_anim.Size = new System.Drawing.Size(106, 30);
+            this.but_start_anim.TabIndex = 146;
+            this.but_start_anim.Text = "Старт анимации";
+            this.but_start_anim.UseVisualStyleBackColor = true;
+            this.but_start_anim.Click += new System.EventHandler(this.but_start_anim_Click);
+            // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.ClientSize = new System.Drawing.Size(1370, 749);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
@@ -4228,6 +4241,8 @@ namespace opengl3
         private System.Windows.Forms.TabPage tabPage7;
         private System.Windows.Forms.PropertyGrid prop_gr_light;
         private System.Windows.Forms.TreeView treeV_light;
+        private System.Windows.Forms.Button but_start_anim;
+        private System.Windows.Forms.Timer timer2;
     }
 }
 
