@@ -1409,6 +1409,13 @@ namespace opengl3
 
             var und_pic = new Mat();
             CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
+            double k = 0.8;
+            var nw = (int)(size.Width * k);
+            var nh = (int)(size.Height * k);
+            var x = (size.Width - nw) / 2;
+            var y = (size.Height - nh) / 2;
+            und_pic = new Mat(und_pic,new Rectangle(x,y,nw,nh));
+            CvInvoke.Resize(und_pic, und_pic,size);
             return und_pic;
         }
         static public Mat remapDistImOpenCv(Mat mat, Matrix<double> matrixCamera, Matrix<double> matrixDistCoef)

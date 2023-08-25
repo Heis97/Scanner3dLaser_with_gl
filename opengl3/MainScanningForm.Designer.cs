@@ -101,7 +101,6 @@ namespace opengl3
             this.debugBox = new System.Windows.Forms.RichTextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.prop_grid_model = new System.Windows.Forms.PropertyGrid();
-            this.but_scan_virt = new System.Windows.Forms.Button();
             this.tree_models = new System.Windows.Forms.TreeView();
             this.but_load_stl = new System.Windows.Forms.Button();
             this.but_save_stl = new System.Windows.Forms.Button();
@@ -185,36 +184,39 @@ namespace opengl3
             this.label4 = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.but_photo_gl = new System.Windows.Forms.Button();
             this.imBox_mark1 = new Emgu.CV.UI.ImageBox();
             this.imBox_mark2 = new Emgu.CV.UI.ImageBox();
+            this.but_scan_virt = new System.Windows.Forms.Button();
             this.imBox_disparity = new Emgu.CV.UI.ImageBox();
             this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
-            this.ch_b_im_s = new System.Windows.Forms.CheckBox();
-            this.ch_b_dist = new System.Windows.Forms.CheckBox();
-            this.ch_b_sync = new System.Windows.Forms.CheckBox();
-            this.but_scan_stereo_rob = new System.Windows.Forms.Button();
-            this.tb_rob_pos_sc = new System.Windows.Forms.TextBox();
-            this.but_load_sing_calib = new System.Windows.Forms.Button();
-            this.but_scan_load_sing = new System.Windows.Forms.Button();
-            this.tp_smooth_scan = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
             this.but_load_fr_cal = new System.Windows.Forms.Button();
+            this.ch_b_im_s = new System.Windows.Forms.CheckBox();
+            this.but_scan_load_ex = new System.Windows.Forms.Button();
+            this.ch_b_dist = new System.Windows.Forms.CheckBox();
+            this.textB_cam1_conf = new System.Windows.Forms.TextBox();
+            this.ch_b_sync = new System.Windows.Forms.CheckBox();
+            this.textB_cam2_conf = new System.Windows.Forms.TextBox();
+            this.but_scan_stereo_rob = new System.Windows.Forms.Button();
+            this.but_load_conf_cam1 = new System.Windows.Forms.Button();
+            this.tb_rob_pos_sc = new System.Windows.Forms.TextBox();
+            this.but_load_conf_cam2 = new System.Windows.Forms.Button();
+            this.but_load_sing_calib = new System.Windows.Forms.Button();
+            this.textB_stereo_cal_path = new System.Windows.Forms.TextBox();
+            this.but_scan_load_sing = new System.Windows.Forms.Button();
+            this.but_stereo_cal_path = new System.Windows.Forms.Button();
+            this.tp_smooth_scan = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.tb_strip_scan = new System.Windows.Forms.TextBox();
+            this.textB_scan_path = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
+            this.but_scan_path = new System.Windows.Forms.Button();
             this.but_calibr_Bfs = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
-            this.but_scan_path = new System.Windows.Forms.Button();
-            this.textB_scan_path = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.but_stereo_cal_path = new System.Windows.Forms.Button();
-            this.textB_stereo_cal_path = new System.Windows.Forms.TextBox();
-            this.but_load_conf_cam2 = new System.Windows.Forms.Button();
-            this.but_load_conf_cam1 = new System.Windows.Forms.Button();
-            this.textB_cam2_conf = new System.Windows.Forms.TextBox();
-            this.textB_cam1_conf = new System.Windows.Forms.TextBox();
-            this.but_scan_load_ex = new System.Windows.Forms.Button();
             this.glControl1 = new OpenGL.GlControl();
             this.tabMain = new System.Windows.Forms.TabPage();
             this.combo_robot_ch = new System.Windows.Forms.ComboBox();
@@ -356,8 +358,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.tabPage9 = new System.Windows.Forms.TabPage();
-            this.but_photo_gl = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -414,6 +414,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).BeginInit();
+            this.tabPage9.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).BeginInit();
@@ -433,7 +434,6 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).BeginInit();
             this.windowsTabs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
-            this.tabPage9.SuspendLayout();
             this.SuspendLayout();
             // 
             // comboImages
@@ -1138,9 +1138,7 @@ namespace opengl3
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.but_photo_gl);
             this.tabPage2.Controls.Add(this.prop_grid_model);
-            this.tabPage2.Controls.Add(this.but_scan_virt);
             this.tabPage2.Controls.Add(this.tree_models);
             this.tabPage2.Controls.Add(this.but_load_stl);
             this.tabPage2.Controls.Add(this.but_save_stl);
@@ -1173,16 +1171,6 @@ namespace opengl3
             this.prop_grid_model.Name = "prop_grid_model";
             this.prop_grid_model.Size = new System.Drawing.Size(183, 400);
             this.prop_grid_model.TabIndex = 150;
-            // 
-            // but_scan_virt
-            // 
-            this.but_scan_virt.Location = new System.Drawing.Point(6, 585);
-            this.but_scan_virt.Name = "but_scan_virt";
-            this.but_scan_virt.Size = new System.Drawing.Size(96, 34);
-            this.but_scan_virt.TabIndex = 164;
-            this.but_scan_virt.Text = "Сканирование GL";
-            this.but_scan_virt.UseVisualStyleBackColor = true;
-            this.but_scan_virt.Click += new System.EventHandler(this.but_scan_virt_Click);
             // 
             // tree_models
             // 
@@ -1497,7 +1485,7 @@ namespace opengl3
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(635, 899);
+            this.tabPage4.Size = new System.Drawing.Size(642, 899);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "old";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -1578,7 +1566,7 @@ namespace opengl3
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(635, 899);
+            this.tabPage5.Size = new System.Drawing.Size(642, 899);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "sgbm";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -1810,7 +1798,7 @@ namespace opengl3
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(635, 899);
+            this.tabPage6.Size = new System.Drawing.Size(642, 899);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Тест";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -1963,7 +1951,7 @@ namespace opengl3
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(635, 899);
+            this.tabPage7.Size = new System.Drawing.Size(642, 899);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Освещение";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -2068,8 +2056,10 @@ namespace opengl3
             // 
             // tabPage8
             // 
+            this.tabPage8.Controls.Add(this.but_photo_gl);
             this.tabPage8.Controls.Add(this.imBox_mark1);
             this.tabPage8.Controls.Add(this.imBox_mark2);
+            this.tabPage8.Controls.Add(this.but_scan_virt);
             this.tabPage8.Controls.Add(this.imBox_disparity);
             this.tabPage8.Controls.Add(this.imBox_3dDebug);
             this.tabPage8.Location = new System.Drawing.Point(4, 22);
@@ -2080,21 +2070,41 @@ namespace opengl3
             this.tabPage8.Text = "mat_gl";
             this.tabPage8.UseVisualStyleBackColor = true;
             // 
+            // but_photo_gl
+            // 
+            this.but_photo_gl.Location = new System.Drawing.Point(108, 818);
+            this.but_photo_gl.Name = "but_photo_gl";
+            this.but_photo_gl.Size = new System.Drawing.Size(96, 34);
+            this.but_photo_gl.TabIndex = 165;
+            this.but_photo_gl.Text = "Фото GL";
+            this.but_photo_gl.UseVisualStyleBackColor = true;
+            this.but_photo_gl.Click += new System.EventHandler(this.but_photo_gl_Click);
+            // 
             // imBox_mark1
             // 
             this.imBox_mark1.Location = new System.Drawing.Point(6, 6);
             this.imBox_mark1.Name = "imBox_mark1";
-            this.imBox_mark1.Size = new System.Drawing.Size(400, 400);
+            this.imBox_mark1.Size = new System.Drawing.Size(778, 400);
             this.imBox_mark1.TabIndex = 2;
             this.imBox_mark1.TabStop = false;
             // 
             // imBox_mark2
             // 
-            this.imBox_mark2.Location = new System.Drawing.Point(412, 6);
+            this.imBox_mark2.Location = new System.Drawing.Point(6, 412);
             this.imBox_mark2.Name = "imBox_mark2";
-            this.imBox_mark2.Size = new System.Drawing.Size(400, 400);
+            this.imBox_mark2.Size = new System.Drawing.Size(738, 400);
             this.imBox_mark2.TabIndex = 71;
             this.imBox_mark2.TabStop = false;
+            // 
+            // but_scan_virt
+            // 
+            this.but_scan_virt.Location = new System.Drawing.Point(6, 818);
+            this.but_scan_virt.Name = "but_scan_virt";
+            this.but_scan_virt.Size = new System.Drawing.Size(96, 34);
+            this.but_scan_virt.TabIndex = 164;
+            this.but_scan_virt.Text = "Сканирование GL";
+            this.but_scan_virt.UseVisualStyleBackColor = true;
+            this.but_scan_virt.Click += new System.EventHandler(this.but_scan_virt_Click);
             // 
             // imBox_disparity
             // 
@@ -2112,6 +2122,52 @@ namespace opengl3
             this.imBox_3dDebug.TabIndex = 97;
             this.imBox_3dDebug.TabStop = false;
             // 
+            // tabPage9
+            // 
+            this.tabPage9.Controls.Add(this.but_load_fr_cal);
+            this.tabPage9.Controls.Add(this.ch_b_im_s);
+            this.tabPage9.Controls.Add(this.but_scan_load_ex);
+            this.tabPage9.Controls.Add(this.ch_b_dist);
+            this.tabPage9.Controls.Add(this.textB_cam1_conf);
+            this.tabPage9.Controls.Add(this.ch_b_sync);
+            this.tabPage9.Controls.Add(this.textB_cam2_conf);
+            this.tabPage9.Controls.Add(this.but_scan_stereo_rob);
+            this.tabPage9.Controls.Add(this.but_load_conf_cam1);
+            this.tabPage9.Controls.Add(this.tb_rob_pos_sc);
+            this.tabPage9.Controls.Add(this.but_load_conf_cam2);
+            this.tabPage9.Controls.Add(this.but_load_sing_calib);
+            this.tabPage9.Controls.Add(this.textB_stereo_cal_path);
+            this.tabPage9.Controls.Add(this.but_scan_load_sing);
+            this.tabPage9.Controls.Add(this.but_stereo_cal_path);
+            this.tabPage9.Controls.Add(this.tp_smooth_scan);
+            this.tabPage9.Controls.Add(this.label3);
+            this.tabPage9.Controls.Add(this.label19);
+            this.tabPage9.Controls.Add(this.label11);
+            this.tabPage9.Controls.Add(this.label12);
+            this.tabPage9.Controls.Add(this.tb_strip_scan);
+            this.tabPage9.Controls.Add(this.textB_scan_path);
+            this.tabPage9.Controls.Add(this.label18);
+            this.tabPage9.Controls.Add(this.but_scan_path);
+            this.tabPage9.Controls.Add(this.but_calibr_Bfs);
+            this.tabPage9.Controls.Add(this.label13);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage9.Size = new System.Drawing.Size(642, 899);
+            this.tabPage9.TabIndex = 8;
+            this.tabPage9.Text = "Загрузка скана";
+            this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // but_load_fr_cal
+            // 
+            this.but_load_fr_cal.Location = new System.Drawing.Point(14, 202);
+            this.but_load_fr_cal.Name = "but_load_fr_cal";
+            this.but_load_fr_cal.Size = new System.Drawing.Size(149, 20);
+            this.but_load_fr_cal.TabIndex = 124;
+            this.but_load_fr_cal.Text = "Загрузить калиборовку";
+            this.but_load_fr_cal.UseVisualStyleBackColor = true;
+            this.but_load_fr_cal.Click += new System.EventHandler(this.but_load_fr_cal_Click);
+            // 
             // ch_b_im_s
             // 
             this.ch_b_im_s.AutoSize = true;
@@ -2121,6 +2177,16 @@ namespace opengl3
             this.ch_b_im_s.TabIndex = 156;
             this.ch_b_im_s.Text = "Сохранять изображения";
             this.ch_b_im_s.UseVisualStyleBackColor = true;
+            // 
+            // but_scan_load_ex
+            // 
+            this.but_scan_load_ex.Location = new System.Drawing.Point(92, 234);
+            this.but_scan_load_ex.Name = "but_scan_load_ex";
+            this.but_scan_load_ex.Size = new System.Drawing.Size(111, 42);
+            this.but_scan_load_ex.TabIndex = 105;
+            this.but_scan_load_ex.Text = "Загрузить скан стерео";
+            this.but_scan_load_ex.UseVisualStyleBackColor = true;
+            this.but_scan_load_ex.Click += new System.EventHandler(this.but_scan_load_ex_Click);
             // 
             // ch_b_dist
             // 
@@ -2134,6 +2200,14 @@ namespace opengl3
             this.ch_b_dist.Text = "Дисторсия";
             this.ch_b_dist.UseVisualStyleBackColor = true;
             // 
+            // textB_cam1_conf
+            // 
+            this.textB_cam1_conf.Location = new System.Drawing.Point(118, 115);
+            this.textB_cam1_conf.Name = "textB_cam1_conf";
+            this.textB_cam1_conf.Size = new System.Drawing.Size(509, 20);
+            this.textB_cam1_conf.TabIndex = 106;
+            this.textB_cam1_conf.Text = "\"\"";
+            // 
             // ch_b_sync
             // 
             this.ch_b_sync.AutoSize = true;
@@ -2146,6 +2220,14 @@ namespace opengl3
             this.ch_b_sync.Text = "Синхронизация";
             this.ch_b_sync.UseVisualStyleBackColor = true;
             // 
+            // textB_cam2_conf
+            // 
+            this.textB_cam2_conf.Location = new System.Drawing.Point(118, 141);
+            this.textB_cam2_conf.Name = "textB_cam2_conf";
+            this.textB_cam2_conf.Size = new System.Drawing.Size(509, 20);
+            this.textB_cam2_conf.TabIndex = 107;
+            this.textB_cam2_conf.Text = "\"\"";
+            // 
             // but_scan_stereo_rob
             // 
             this.but_scan_stereo_rob.Location = new System.Drawing.Point(208, 235);
@@ -2156,6 +2238,16 @@ namespace opengl3
             this.but_scan_stereo_rob.UseVisualStyleBackColor = true;
             this.but_scan_stereo_rob.Click += new System.EventHandler(this.but_scan_stereo_rob_Click);
             // 
+            // but_load_conf_cam1
+            // 
+            this.but_load_conf_cam1.Location = new System.Drawing.Point(49, 115);
+            this.but_load_conf_cam1.Name = "but_load_conf_cam1";
+            this.but_load_conf_cam1.Size = new System.Drawing.Size(72, 20);
+            this.but_load_conf_cam1.TabIndex = 108;
+            this.but_load_conf_cam1.Text = "Выбрать";
+            this.but_load_conf_cam1.UseVisualStyleBackColor = true;
+            this.but_load_conf_cam1.Click += new System.EventHandler(this.but_load_conf_cam1_Click);
+            // 
             // tb_rob_pos_sc
             // 
             this.tb_rob_pos_sc.Location = new System.Drawing.Point(72, 38);
@@ -2163,6 +2255,16 @@ namespace opengl3
             this.tb_rob_pos_sc.Size = new System.Drawing.Size(247, 20);
             this.tb_rob_pos_sc.TabIndex = 141;
             this.tb_rob_pos_sc.Text = "0";
+            // 
+            // but_load_conf_cam2
+            // 
+            this.but_load_conf_cam2.Location = new System.Drawing.Point(49, 141);
+            this.but_load_conf_cam2.Name = "but_load_conf_cam2";
+            this.but_load_conf_cam2.Size = new System.Drawing.Size(72, 20);
+            this.but_load_conf_cam2.TabIndex = 109;
+            this.but_load_conf_cam2.Text = "Выбрать";
+            this.but_load_conf_cam2.UseVisualStyleBackColor = true;
+            this.but_load_conf_cam2.Click += new System.EventHandler(this.but_load_conf_cam2_Click);
             // 
             // but_load_sing_calib
             // 
@@ -2174,6 +2276,14 @@ namespace opengl3
             this.but_load_sing_calib.UseVisualStyleBackColor = true;
             this.but_load_sing_calib.Click += new System.EventHandler(this.but_load_sing_calib_Click);
             // 
+            // textB_stereo_cal_path
+            // 
+            this.textB_stereo_cal_path.Location = new System.Drawing.Point(118, 89);
+            this.textB_stereo_cal_path.Name = "textB_stereo_cal_path";
+            this.textB_stereo_cal_path.Size = new System.Drawing.Size(509, 20);
+            this.textB_stereo_cal_path.TabIndex = 110;
+            this.textB_stereo_cal_path.Text = "\"\"";
+            // 
             // but_scan_load_sing
             // 
             this.but_scan_load_sing.Location = new System.Drawing.Point(92, 282);
@@ -2184,6 +2294,16 @@ namespace opengl3
             this.but_scan_load_sing.UseVisualStyleBackColor = true;
             this.but_scan_load_sing.Click += new System.EventHandler(this.but_scan_load_sing_Click);
             // 
+            // but_stereo_cal_path
+            // 
+            this.but_stereo_cal_path.Location = new System.Drawing.Point(49, 89);
+            this.but_stereo_cal_path.Name = "but_stereo_cal_path";
+            this.but_stereo_cal_path.Size = new System.Drawing.Size(72, 20);
+            this.but_stereo_cal_path.TabIndex = 111;
+            this.but_stereo_cal_path.Text = "Выбрать";
+            this.but_stereo_cal_path.UseVisualStyleBackColor = true;
+            this.but_stereo_cal_path.Click += new System.EventHandler(this.but_stereo_cal_path_Click);
+            // 
             // tp_smooth_scan
             // 
             this.tp_smooth_scan.Location = new System.Drawing.Point(225, 64);
@@ -2191,6 +2311,15 @@ namespace opengl3
             this.tp_smooth_scan.Size = new System.Drawing.Size(68, 20);
             this.tp_smooth_scan.TabIndex = 127;
             this.tp_smooth_scan.Text = "-1";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(2, 93);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(56, 13);
+            this.label3.TabIndex = 112;
+            this.label3.Text = "stereo_cal";
             // 
             // label19
             // 
@@ -2201,15 +2330,23 @@ namespace opengl3
             this.label19.TabIndex = 126;
             this.label19.Text = "smooth, mm";
             // 
-            // but_load_fr_cal
+            // label11
             // 
-            this.but_load_fr_cal.Location = new System.Drawing.Point(14, 202);
-            this.but_load_fr_cal.Name = "but_load_fr_cal";
-            this.but_load_fr_cal.Size = new System.Drawing.Size(149, 20);
-            this.but_load_fr_cal.TabIndex = 124;
-            this.but_load_fr_cal.Text = "Загрузить калиборовку";
-            this.but_load_fr_cal.UseVisualStyleBackColor = true;
-            this.but_load_fr_cal.Click += new System.EventHandler(this.but_load_fr_cal_Click);
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(2, 119);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(60, 13);
+            this.label11.TabIndex = 113;
+            this.label11.Text = "cam1_conf";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(2, 144);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(60, 13);
+            this.label12.TabIndex = 114;
+            this.label12.Text = "cam2_conf";
             // 
             // tb_strip_scan
             // 
@@ -2219,6 +2356,14 @@ namespace opengl3
             this.tb_strip_scan.TabIndex = 123;
             this.tb_strip_scan.Text = "5";
             // 
+            // textB_scan_path
+            // 
+            this.textB_scan_path.Location = new System.Drawing.Point(118, 167);
+            this.textB_scan_path.Name = "textB_scan_path";
+            this.textB_scan_path.Size = new System.Drawing.Size(509, 20);
+            this.textB_scan_path.TabIndex = 115;
+            this.textB_scan_path.Text = "\"\"";
+            // 
             // label18
             // 
             this.label18.AutoSize = true;
@@ -2227,6 +2372,16 @@ namespace opengl3
             this.label18.Size = new System.Drawing.Size(26, 13);
             this.label18.TabIndex = 122;
             this.label18.Text = "strip";
+            // 
+            // but_scan_path
+            // 
+            this.but_scan_path.Location = new System.Drawing.Point(49, 167);
+            this.but_scan_path.Name = "but_scan_path";
+            this.but_scan_path.Size = new System.Drawing.Size(72, 20);
+            this.but_scan_path.TabIndex = 116;
+            this.but_scan_path.Text = "Выбрать";
+            this.but_scan_path.UseVisualStyleBackColor = true;
+            this.but_scan_path.Click += new System.EventHandler(this.but_scan_path_Click);
             // 
             // but_calibr_Bfs
             // 
@@ -2241,120 +2396,11 @@ namespace opengl3
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(36, 170);
+            this.label13.Location = new System.Drawing.Point(13, 170);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(30, 13);
             this.label13.TabIndex = 117;
             this.label13.Text = "scan";
-            // 
-            // but_scan_path
-            // 
-            this.but_scan_path.Location = new System.Drawing.Point(14, 303);
-            this.but_scan_path.Name = "but_scan_path";
-            this.but_scan_path.Size = new System.Drawing.Size(72, 20);
-            this.but_scan_path.TabIndex = 116;
-            this.but_scan_path.Text = "Выбрать";
-            this.but_scan_path.UseVisualStyleBackColor = true;
-            this.but_scan_path.Click += new System.EventHandler(this.but_scan_path_Click);
-            // 
-            // textB_scan_path
-            // 
-            this.textB_scan_path.Location = new System.Drawing.Point(72, 167);
-            this.textB_scan_path.Name = "textB_scan_path";
-            this.textB_scan_path.Size = new System.Drawing.Size(555, 20);
-            this.textB_scan_path.TabIndex = 115;
-            this.textB_scan_path.Text = "\"\"";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(10, 144);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(60, 13);
-            this.label12.TabIndex = 114;
-            this.label12.Text = "cam2_conf";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(10, 119);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(60, 13);
-            this.label11.TabIndex = 113;
-            this.label11.Text = "cam1_conf";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 93);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 13);
-            this.label3.TabIndex = 112;
-            this.label3.Text = "stereo_cal";
-            // 
-            // but_stereo_cal_path
-            // 
-            this.but_stereo_cal_path.Location = new System.Drawing.Point(14, 226);
-            this.but_stereo_cal_path.Name = "but_stereo_cal_path";
-            this.but_stereo_cal_path.Size = new System.Drawing.Size(72, 20);
-            this.but_stereo_cal_path.TabIndex = 111;
-            this.but_stereo_cal_path.Text = "Выбрать";
-            this.but_stereo_cal_path.UseVisualStyleBackColor = true;
-            this.but_stereo_cal_path.Click += new System.EventHandler(this.but_stereo_cal_path_Click);
-            // 
-            // textB_stereo_cal_path
-            // 
-            this.textB_stereo_cal_path.Location = new System.Drawing.Point(72, 89);
-            this.textB_stereo_cal_path.Name = "textB_stereo_cal_path";
-            this.textB_stereo_cal_path.Size = new System.Drawing.Size(555, 20);
-            this.textB_stereo_cal_path.TabIndex = 110;
-            this.textB_stereo_cal_path.Text = "\"\"";
-            // 
-            // but_load_conf_cam2
-            // 
-            this.but_load_conf_cam2.Location = new System.Drawing.Point(14, 277);
-            this.but_load_conf_cam2.Name = "but_load_conf_cam2";
-            this.but_load_conf_cam2.Size = new System.Drawing.Size(72, 20);
-            this.but_load_conf_cam2.TabIndex = 109;
-            this.but_load_conf_cam2.Text = "Выбрать";
-            this.but_load_conf_cam2.UseVisualStyleBackColor = true;
-            this.but_load_conf_cam2.Click += new System.EventHandler(this.but_load_conf_cam2_Click);
-            // 
-            // but_load_conf_cam1
-            // 
-            this.but_load_conf_cam1.Location = new System.Drawing.Point(14, 252);
-            this.but_load_conf_cam1.Name = "but_load_conf_cam1";
-            this.but_load_conf_cam1.Size = new System.Drawing.Size(72, 20);
-            this.but_load_conf_cam1.TabIndex = 108;
-            this.but_load_conf_cam1.Text = "Выбрать";
-            this.but_load_conf_cam1.UseVisualStyleBackColor = true;
-            this.but_load_conf_cam1.Click += new System.EventHandler(this.but_load_conf_cam1_Click);
-            // 
-            // textB_cam2_conf
-            // 
-            this.textB_cam2_conf.Location = new System.Drawing.Point(72, 141);
-            this.textB_cam2_conf.Name = "textB_cam2_conf";
-            this.textB_cam2_conf.Size = new System.Drawing.Size(555, 20);
-            this.textB_cam2_conf.TabIndex = 107;
-            this.textB_cam2_conf.Text = "\"\"";
-            // 
-            // textB_cam1_conf
-            // 
-            this.textB_cam1_conf.Location = new System.Drawing.Point(72, 115);
-            this.textB_cam1_conf.Name = "textB_cam1_conf";
-            this.textB_cam1_conf.Size = new System.Drawing.Size(555, 20);
-            this.textB_cam1_conf.TabIndex = 106;
-            this.textB_cam1_conf.Text = "\"\"";
-            // 
-            // but_scan_load_ex
-            // 
-            this.but_scan_load_ex.Location = new System.Drawing.Point(92, 234);
-            this.but_scan_load_ex.Name = "but_scan_load_ex";
-            this.but_scan_load_ex.Size = new System.Drawing.Size(111, 42);
-            this.but_scan_load_ex.TabIndex = 105;
-            this.but_scan_load_ex.Text = "Загрузить скан стерео";
-            this.but_scan_load_ex.UseVisualStyleBackColor = true;
-            this.but_scan_load_ex.Click += new System.EventHandler(this.but_scan_load_ex_Click);
             // 
             // glControl1
             // 
@@ -3813,51 +3859,6 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // tabPage9
-            // 
-            this.tabPage9.Controls.Add(this.but_load_fr_cal);
-            this.tabPage9.Controls.Add(this.ch_b_im_s);
-            this.tabPage9.Controls.Add(this.but_scan_load_ex);
-            this.tabPage9.Controls.Add(this.ch_b_dist);
-            this.tabPage9.Controls.Add(this.textB_cam1_conf);
-            this.tabPage9.Controls.Add(this.ch_b_sync);
-            this.tabPage9.Controls.Add(this.textB_cam2_conf);
-            this.tabPage9.Controls.Add(this.but_scan_stereo_rob);
-            this.tabPage9.Controls.Add(this.but_load_conf_cam1);
-            this.tabPage9.Controls.Add(this.tb_rob_pos_sc);
-            this.tabPage9.Controls.Add(this.but_load_conf_cam2);
-            this.tabPage9.Controls.Add(this.but_load_sing_calib);
-            this.tabPage9.Controls.Add(this.textB_stereo_cal_path);
-            this.tabPage9.Controls.Add(this.but_scan_load_sing);
-            this.tabPage9.Controls.Add(this.but_stereo_cal_path);
-            this.tabPage9.Controls.Add(this.tp_smooth_scan);
-            this.tabPage9.Controls.Add(this.label3);
-            this.tabPage9.Controls.Add(this.label19);
-            this.tabPage9.Controls.Add(this.label11);
-            this.tabPage9.Controls.Add(this.label12);
-            this.tabPage9.Controls.Add(this.tb_strip_scan);
-            this.tabPage9.Controls.Add(this.textB_scan_path);
-            this.tabPage9.Controls.Add(this.label18);
-            this.tabPage9.Controls.Add(this.but_scan_path);
-            this.tabPage9.Controls.Add(this.but_calibr_Bfs);
-            this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
-            this.tabPage9.Name = "tabPage9";
-            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(642, 899);
-            this.tabPage9.TabIndex = 8;
-            this.tabPage9.Text = "Загрузка скана";
-            this.tabPage9.UseVisualStyleBackColor = true;
-            // 
-            // but_photo_gl
-            // 
-            this.but_photo_gl.Location = new System.Drawing.Point(108, 585);
-            this.but_photo_gl.Name = "but_photo_gl";
-            this.but_photo_gl.Size = new System.Drawing.Size(96, 34);
-            this.but_photo_gl.TabIndex = 165;
-            this.but_photo_gl.Text = "Фото GL";
-            this.but_photo_gl.UseVisualStyleBackColor = true;
-            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1884, 938);
@@ -3930,6 +3931,8 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).EndInit();
+            this.tabPage9.ResumeLayout(false);
+            this.tabPage9.PerformLayout();
             this.tabMain.ResumeLayout(false);
             this.tabMain.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -3951,8 +3954,6 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).EndInit();
             this.windowsTabs.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
-            this.tabPage9.ResumeLayout(false);
-            this.tabPage9.PerformLayout();
             this.ResumeLayout(false);
 
         }

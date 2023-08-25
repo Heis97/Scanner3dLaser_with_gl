@@ -147,7 +147,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-            // load_camers_v2();
+             //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -332,7 +332,7 @@ namespace opengl3
             #region important
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "Ничего" });
 
-            cameraDistortionCoeffs_dist[0, 0] = -0.1;
+            cameraDistortionCoeffs_dist[0, 0] = -0.3;
 
             mat_global[0] = new Mat();
             mat_global[1] = new Mat();
@@ -702,11 +702,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 6.2273f;
-            chess_size = new Size(10, 11);
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
+            markSize = 10f;//6.2273f
+            chess_size = new Size(6, 7);//new Size(10, 11);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\virt_cam_cal_250823_2", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("cam1_conf_190623_2a.txt");            
+            cam1.save_camera("virt_cam_conf_cal_250823_2.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_130523_2", FrameType.Pattern, PatternType.Mesh);
@@ -1220,7 +1220,7 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            //GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
             //GL1.SortObj();
             int monitor_num = 2;
@@ -1309,6 +1309,9 @@ namespace opengl3
                 //Console.WriteLine
                 mat1 = UtilOpenCV.remapDistImOpenCvCentr(mat1, cameraDistortionCoeffs_dist);
                 mat2 = UtilOpenCV.remapDistImOpenCvCentr(mat2, cameraDistortionCoeffs_dist);
+                imBox_mark1.Image = mat1;
+                imBox_mark2.Image = mat2;
+
                 imProcess_virt(mat1, 1);
                 imProcess_virt(mat2, 2);
 
@@ -3705,7 +3708,7 @@ namespace opengl3
             var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
             //capture1.SetCaptureProperty(CapProp.);
         }
-        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
         {
 
             videoframe_count = 0;
@@ -3840,7 +3843,7 @@ namespace opengl3
             if (buff.Count > len) buff.RemoveAt(0);
             return buff;
         }
-        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner = null, int strip = 1)
         {
 
             videoframe_count = 0;
@@ -4916,6 +4919,9 @@ namespace opengl3
         private void but_scan_virt_Click(object sender, EventArgs e)
         {
             var n = Convert.ToInt32(boxN.Text);
+            GL1.start_animation(100);
+            var folder_scan = box_scanFolder.Text;
+            UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, "1.png", folder_scan + "\\orig");
             startWrite(1,n);
             startWrite(2,n);
         }
@@ -4923,6 +4929,13 @@ namespace opengl3
         private void but_start_anim_Click(object sender, EventArgs e)
         {
             GL1.start_animation(100);
+        }
+
+        private void but_photo_gl_Click(object sender, EventArgs e)
+        {
+
+            UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, txBx_photoName.Text + "_" + photo_number.ToString() + ".png", box_photoFolder.Text);
+            photo_number++;
         }
     }
 }

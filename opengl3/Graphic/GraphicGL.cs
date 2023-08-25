@@ -469,7 +469,7 @@ namespace opengl3
             Gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             //Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(5, 1), new Size(400, 400));
-            cameraCV.distortmatrix[0,0] = -0.1;
+            cameraCV.distortmatrix[0,0] = -0.3;
             init_texture();
            // addLight();
 
@@ -1804,7 +1804,7 @@ namespace opengl3
         }
         public void addFlat3d_XY_zero_s(double z = 0, Color3d_GL color = null, string name = "new Flat XY")
         {
-            var d = 100;
+            var d = 1000;
             var p0 = new Point3d_GL(-d, -d, z);
             var p1 = new Point3d_GL(d, -d, z);
 
