@@ -311,6 +311,21 @@ namespace opengl3
             return line;
         }
 
+        public static int[][] takeLineFromMat(Image<Bgr, byte> im, int y)
+        {
+            var line = new int[im.Width][];
+            for (int i = 0; i < line.Length; i++)
+            {
+                line[i] = new int[3];
+                line[i][0] = im.Data[y, i, 0];
+                line[i][1] = im.Data[y, i, 1];
+                line[i][2] = im.Data[y, i, 2];
+                Console.WriteLine(i+" "+line[i][0]+" "+ line[i][2] + " " + line[i][1] + " " );
+            }
+            
+            return line;
+        }
+
         public static Image<Bgr, byte>[] PaintLines(Image<Gray, byte> im1, Image<Gray, byte> im2, int y, Features features)
         {
             var disp = Features.disparMap_3d(im1.Mat, im2.Mat, 40, 3);

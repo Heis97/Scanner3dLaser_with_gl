@@ -139,6 +139,11 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
+            //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");
+
+            //CvInvoke.Imshow("im1", im_las);
+
+            //UtilOpenCV.takeLineFromMat(im_las, 1);
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
@@ -1218,13 +1223,18 @@ namespace opengl3
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
             //GL1.SortObj();
-            int monitor_num = 4;
+            int monitor_num = 2;
             if(monitor_num==4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
                 GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 60,0), new Vertex3d(100, 0, -60), 0);               
                 GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
                 GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
+            }
+            else if (monitor_num == 2)
+            {
+                GL1.addMonitor(new Rectangle(0 , 0, w , h / 2), 0);
+                GL1.addMonitor(new Rectangle(0 , h / 2, w , h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
             }
             else
             {
@@ -1270,9 +1280,9 @@ namespace opengl3
 
             //GL1.addFlat3d_XY_zero_s(0);
             //GL1.addFlat3d_XZ_zero_s(50);
-            var scan_stla = new Model3d("def2.stl", false);
+            /*var scan_stla = new Model3d("def2.stl", false);
             scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
-            GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def2");
+            GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def2");*/
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1296,8 +1306,13 @@ namespace opengl3
                 {
                     CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
                 }
+                //Console.WriteLine
+                mat1 = UtilOpenCV.remapDistImOpenCvCentr(mat1, cameraDistortionCoeffs_dist);
+                mat2 = UtilOpenCV.remapDistImOpenCvCentr(mat2, cameraDistortionCoeffs_dist);
                 imProcess_virt(mat1, 1);
                 imProcess_virt(mat2, 2);
+
+                
 
                 var corn = new System.Drawing.PointF[0];
                 //var mat3 = UtilOpenCV.remapDistImOpenCvCentr(mat2, new Matrix<double>(new double[] { -0.5, 0, 0, 0, 0 }));
@@ -2837,9 +2852,10 @@ namespace opengl3
 
             if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
             {
+                //Console.WriteLine("mat" + " " + mat.Width + " " + mat.Height);
                 video_writer[ind - 1]?.Write(mat);
                 videoframe_counts[ind - 1]++;
-                
+                //Console.WriteLine(ind+" "+videoframe_counts[ind - 1]);
             }
             else
             {
@@ -2853,6 +2869,7 @@ namespace opengl3
             int fps = 30;
             Directory.CreateDirectory("cam" + ind.ToString() + "\\" + box_scanFolder.Text);
             string name ="cam"+ind.ToString()+"\\"+ box_scanFolder.Text + "\\"+video_scan_name+".mp4";
+            Console.WriteLine("wr" + " " + w + " " + h);
             video_writer[ind - 1] = new VideoWriter(name, fcc, fps, new Size(w, h), true);
         }
 

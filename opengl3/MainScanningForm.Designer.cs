@@ -98,6 +98,7 @@ namespace opengl3
             this.but_rob_traj_kuka = new System.Windows.Forms.Button();
             this.but_gl_clear = new System.Windows.Forms.Button();
             this.but_traj_clear = new System.Windows.Forms.Button();
+            this.debugBox = new System.Windows.Forms.RichTextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.prop_grid_model = new System.Windows.Forms.PropertyGrid();
             this.but_scan_virt = new System.Windows.Forms.Button();
@@ -120,6 +121,7 @@ namespace opengl3
             this.lab_TRZ = new System.Windows.Forms.Label();
             this.but_point_type = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.but_start_anim = new System.Windows.Forms.Button();
             this.but_rob_auto_sc = new System.Windows.Forms.Button();
             this.but_rob_send_sc = new System.Windows.Forms.Button();
             this.but_rob_discon_sc = new System.Windows.Forms.Button();
@@ -174,6 +176,19 @@ namespace opengl3
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.prop_gr_light = new System.Windows.Forms.PropertyGrid();
             this.treeV_light = new System.Windows.Forms.TreeView();
+            this.trackOz = new System.Windows.Forms.TrackBar();
+            this.trackOy = new System.Windows.Forms.TrackBar();
+            this.trackX_light = new System.Windows.Forms.TrackBar();
+            this.trackOx = new System.Windows.Forms.TrackBar();
+            this.trackZ_light = new System.Windows.Forms.TrackBar();
+            this.trackY_light = new System.Windows.Forms.TrackBar();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.imBox_mark1 = new Emgu.CV.UI.ImageBox();
+            this.imBox_mark2 = new Emgu.CV.UI.ImageBox();
+            this.imBox_disparity = new Emgu.CV.UI.ImageBox();
+            this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
             this.ch_b_im_s = new System.Windows.Forms.CheckBox();
             this.ch_b_dist = new System.Windows.Forms.CheckBox();
             this.ch_b_sync = new System.Windows.Forms.CheckBox();
@@ -200,20 +215,7 @@ namespace opengl3
             this.textB_cam2_conf = new System.Windows.Forms.TextBox();
             this.textB_cam1_conf = new System.Windows.Forms.TextBox();
             this.but_scan_load_ex = new System.Windows.Forms.Button();
-            this.debugBox = new System.Windows.Forms.RichTextBox();
             this.glControl1 = new OpenGL.GlControl();
-            this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
-            this.imBox_disparity = new Emgu.CV.UI.ImageBox();
-            this.imBox_mark2 = new Emgu.CV.UI.ImageBox();
-            this.imBox_mark1 = new Emgu.CV.UI.ImageBox();
-            this.label27 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.trackOz = new System.Windows.Forms.TrackBar();
-            this.trackY_light = new System.Windows.Forms.TrackBar();
-            this.trackZ_light = new System.Windows.Forms.TrackBar();
-            this.trackOx = new System.Windows.Forms.TrackBar();
-            this.trackX_light = new System.Windows.Forms.TrackBar();
-            this.trackOy = new System.Windows.Forms.TrackBar();
             this.tabMain = new System.Windows.Forms.TabPage();
             this.combo_robot_ch = new System.Windows.Forms.ComboBox();
             this.tb_port_tcp = new System.Windows.Forms.TextBox();
@@ -354,7 +356,8 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_start_anim = new System.Windows.Forms.Button();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.but_photo_gl = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -400,16 +403,17 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.trackBar10)).BeginInit();
             this.tabPage6.SuspendLayout();
             this.tabPage7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOz)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackY_light)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackZ_light)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackOx)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackX_light)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackX_light)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackOx)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackZ_light)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackY_light)).BeginInit();
+            this.tabPage8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).BeginInit();
             this.tabMain.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).BeginInit();
@@ -429,6 +433,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).BeginInit();
             this.windowsTabs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
+            this.tabPage9.SuspendLayout();
             this.SuspendLayout();
             // 
             // comboImages
@@ -471,7 +476,7 @@ namespace opengl3
             this.tabCalibMonit.Location = new System.Drawing.Point(4, 22);
             this.tabCalibMonit.Name = "tabCalibMonit";
             this.tabCalibMonit.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCalibMonit.Size = new System.Drawing.Size(1882, 1003);
+            this.tabCalibMonit.Size = new System.Drawing.Size(1861, 1003);
             this.tabCalibMonit.TabIndex = 5;
             this.tabCalibMonit.Text = "Калибровка";
             this.tabCalibMonit.UseVisualStyleBackColor = true;
@@ -745,7 +750,7 @@ namespace opengl3
             this.tabDistort.Location = new System.Drawing.Point(4, 22);
             this.tabDistort.Name = "tabDistort";
             this.tabDistort.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDistort.Size = new System.Drawing.Size(1882, 1003);
+            this.tabDistort.Size = new System.Drawing.Size(1861, 1003);
             this.tabDistort.TabIndex = 4;
             this.tabDistort.Text = "Камера";
             this.tabDistort.UseVisualStyleBackColor = true;
@@ -942,7 +947,7 @@ namespace opengl3
             this.tabDebug.Location = new System.Drawing.Point(4, 22);
             this.tabDebug.Name = "tabDebug";
             this.tabDebug.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDebug.Size = new System.Drawing.Size(1882, 1003);
+            this.tabDebug.Size = new System.Drawing.Size(1861, 1003);
             this.tabDebug.TabIndex = 3;
             this.tabDebug.Text = "Отладка";
             this.tabDebug.UseVisualStyleBackColor = true;
@@ -1015,50 +1020,11 @@ namespace opengl3
             // tabOpenGl
             // 
             this.tabOpenGl.Controls.Add(this.win_tab_diff);
-            this.tabOpenGl.Controls.Add(this.ch_b_im_s);
-            this.tabOpenGl.Controls.Add(this.ch_b_dist);
-            this.tabOpenGl.Controls.Add(this.ch_b_sync);
-            this.tabOpenGl.Controls.Add(this.but_scan_stereo_rob);
-            this.tabOpenGl.Controls.Add(this.tb_rob_pos_sc);
-            this.tabOpenGl.Controls.Add(this.but_load_sing_calib);
-            this.tabOpenGl.Controls.Add(this.but_scan_load_sing);
-            this.tabOpenGl.Controls.Add(this.tp_smooth_scan);
-            this.tabOpenGl.Controls.Add(this.label19);
-            this.tabOpenGl.Controls.Add(this.but_load_fr_cal);
-            this.tabOpenGl.Controls.Add(this.tb_strip_scan);
-            this.tabOpenGl.Controls.Add(this.label18);
-            this.tabOpenGl.Controls.Add(this.but_calibr_Bfs);
-            this.tabOpenGl.Controls.Add(this.label13);
-            this.tabOpenGl.Controls.Add(this.but_scan_path);
-            this.tabOpenGl.Controls.Add(this.textB_scan_path);
-            this.tabOpenGl.Controls.Add(this.label12);
-            this.tabOpenGl.Controls.Add(this.label11);
-            this.tabOpenGl.Controls.Add(this.label3);
-            this.tabOpenGl.Controls.Add(this.but_stereo_cal_path);
-            this.tabOpenGl.Controls.Add(this.textB_stereo_cal_path);
-            this.tabOpenGl.Controls.Add(this.but_load_conf_cam2);
-            this.tabOpenGl.Controls.Add(this.but_load_conf_cam1);
-            this.tabOpenGl.Controls.Add(this.textB_cam2_conf);
-            this.tabOpenGl.Controls.Add(this.textB_cam1_conf);
-            this.tabOpenGl.Controls.Add(this.but_scan_load_ex);
-            this.tabOpenGl.Controls.Add(this.debugBox);
             this.tabOpenGl.Controls.Add(this.glControl1);
-            this.tabOpenGl.Controls.Add(this.imBox_3dDebug);
-            this.tabOpenGl.Controls.Add(this.imBox_disparity);
-            this.tabOpenGl.Controls.Add(this.imBox_mark2);
-            this.tabOpenGl.Controls.Add(this.imBox_mark1);
-            this.tabOpenGl.Controls.Add(this.label27);
-            this.tabOpenGl.Controls.Add(this.label4);
-            this.tabOpenGl.Controls.Add(this.trackOz);
-            this.tabOpenGl.Controls.Add(this.trackY_light);
-            this.tabOpenGl.Controls.Add(this.trackZ_light);
-            this.tabOpenGl.Controls.Add(this.trackOx);
-            this.tabOpenGl.Controls.Add(this.trackX_light);
-            this.tabOpenGl.Controls.Add(this.trackOy);
             this.tabOpenGl.Location = new System.Drawing.Point(4, 22);
             this.tabOpenGl.Name = "tabOpenGl";
             this.tabOpenGl.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOpenGl.Size = new System.Drawing.Size(1882, 1003);
+            this.tabOpenGl.Size = new System.Drawing.Size(1861, 1003);
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
@@ -1072,10 +1038,12 @@ namespace opengl3
             this.win_tab_diff.Controls.Add(this.tabPage5);
             this.win_tab_diff.Controls.Add(this.tabPage6);
             this.win_tab_diff.Controls.Add(this.tabPage7);
-            this.win_tab_diff.Location = new System.Drawing.Point(1125, 364);
+            this.win_tab_diff.Controls.Add(this.tabPage8);
+            this.win_tab_diff.Controls.Add(this.tabPage9);
+            this.win_tab_diff.Location = new System.Drawing.Point(1213, 6);
             this.win_tab_diff.Name = "win_tab_diff";
             this.win_tab_diff.SelectedIndex = 0;
-            this.win_tab_diff.Size = new System.Drawing.Size(751, 639);
+            this.win_tab_diff.Size = new System.Drawing.Size(650, 925);
             this.win_tab_diff.TabIndex = 165;
             // 
             // tabPage1
@@ -1087,10 +1055,11 @@ namespace opengl3
             this.tabPage1.Controls.Add(this.but_rob_traj_kuka);
             this.tabPage1.Controls.Add(this.but_gl_clear);
             this.tabPage1.Controls.Add(this.but_traj_clear);
+            this.tabPage1.Controls.Add(this.debugBox);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(743, 613);
+            this.tabPage1.Size = new System.Drawing.Size(642, 899);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Траектория";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -1104,14 +1073,14 @@ namespace opengl3
             // 
             // propGrid_traj
             // 
-            this.propGrid_traj.Location = new System.Drawing.Point(204, 6);
+            this.propGrid_traj.Location = new System.Drawing.Point(15, 355);
             this.propGrid_traj.Name = "propGrid_traj";
             this.propGrid_traj.Size = new System.Drawing.Size(183, 343);
             this.propGrid_traj.TabIndex = 119;
             // 
             // but_printer_traj_fab
             // 
-            this.but_printer_traj_fab.Location = new System.Drawing.Point(47, 457);
+            this.but_printer_traj_fab.Location = new System.Drawing.Point(15, 794);
             this.but_printer_traj_fab.Name = "but_printer_traj_fab";
             this.but_printer_traj_fab.Size = new System.Drawing.Size(106, 34);
             this.but_printer_traj_fab.TabIndex = 163;
@@ -1121,7 +1090,7 @@ namespace opengl3
             // 
             // but_rob_traj_pulse
             // 
-            this.but_rob_traj_pulse.Location = new System.Drawing.Point(47, 355);
+            this.but_rob_traj_pulse.Location = new System.Drawing.Point(15, 714);
             this.but_rob_traj_pulse.Name = "but_rob_traj_pulse";
             this.but_rob_traj_pulse.Size = new System.Drawing.Size(106, 34);
             this.but_rob_traj_pulse.TabIndex = 147;
@@ -1131,7 +1100,7 @@ namespace opengl3
             // 
             // but_rob_traj_kuka
             // 
-            this.but_rob_traj_kuka.Location = new System.Drawing.Point(47, 391);
+            this.but_rob_traj_kuka.Location = new System.Drawing.Point(15, 754);
             this.but_rob_traj_kuka.Name = "but_rob_traj_kuka";
             this.but_rob_traj_kuka.Size = new System.Drawing.Size(106, 34);
             this.but_rob_traj_kuka.TabIndex = 146;
@@ -1141,9 +1110,9 @@ namespace opengl3
             // 
             // but_gl_clear
             // 
-            this.but_gl_clear.Location = new System.Drawing.Point(172, 397);
+            this.but_gl_clear.Location = new System.Drawing.Point(25, 843);
             this.but_gl_clear.Name = "but_gl_clear";
-            this.but_gl_clear.Size = new System.Drawing.Size(96, 28);
+            this.but_gl_clear.Size = new System.Drawing.Size(96, 23);
             this.but_gl_clear.TabIndex = 118;
             this.but_gl_clear.Text = "Очистить";
             this.but_gl_clear.UseVisualStyleBackColor = true;
@@ -1151,16 +1120,25 @@ namespace opengl3
             // 
             // but_traj_clear
             // 
-            this.but_traj_clear.Location = new System.Drawing.Point(172, 431);
+            this.but_traj_clear.Location = new System.Drawing.Point(25, 868);
             this.but_traj_clear.Name = "but_traj_clear";
-            this.but_traj_clear.Size = new System.Drawing.Size(96, 24);
+            this.but_traj_clear.Size = new System.Drawing.Size(96, 19);
             this.but_traj_clear.TabIndex = 128;
             this.but_traj_clear.Text = "Очистить траек";
             this.but_traj_clear.UseVisualStyleBackColor = true;
             this.but_traj_clear.Click += new System.EventHandler(this.but_traj_clear_Click);
             // 
+            // debugBox
+            // 
+            this.debugBox.Location = new System.Drawing.Point(204, 6);
+            this.debugBox.Name = "debugBox";
+            this.debugBox.Size = new System.Drawing.Size(435, 887);
+            this.debugBox.TabIndex = 62;
+            this.debugBox.Text = "";
+            // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.but_photo_gl);
             this.tabPage2.Controls.Add(this.prop_grid_model);
             this.tabPage2.Controls.Add(this.but_scan_virt);
             this.tabPage2.Controls.Add(this.tree_models);
@@ -1184,7 +1162,7 @@ namespace opengl3
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(743, 613);
+            this.tabPage2.Size = new System.Drawing.Size(642, 899);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Объекты сцены";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -1198,7 +1176,7 @@ namespace opengl3
             // 
             // but_scan_virt
             // 
-            this.but_scan_virt.Location = new System.Drawing.Point(26, 573);
+            this.but_scan_virt.Location = new System.Drawing.Point(6, 585);
             this.but_scan_virt.Name = "but_scan_virt";
             this.but_scan_virt.Size = new System.Drawing.Size(96, 34);
             this.but_scan_virt.TabIndex = 164;
@@ -1259,7 +1237,7 @@ namespace opengl3
             // 
             // butSaveOpenGlIm
             // 
-            this.butSaveOpenGlIm.Location = new System.Drawing.Point(17, 525);
+            this.butSaveOpenGlIm.Location = new System.Drawing.Point(6, 730);
             this.butSaveOpenGlIm.Name = "butSaveOpenGlIm";
             this.butSaveOpenGlIm.Size = new System.Drawing.Size(121, 42);
             this.butSaveOpenGlIm.TabIndex = 20;
@@ -1396,10 +1374,20 @@ namespace opengl3
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(743, 613);
+            this.tabPage3.Size = new System.Drawing.Size(642, 899);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Управление роботом";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // but_start_anim
+            // 
+            this.but_start_anim.Location = new System.Drawing.Point(15, 223);
+            this.but_start_anim.Name = "but_start_anim";
+            this.but_start_anim.Size = new System.Drawing.Size(106, 30);
+            this.but_start_anim.TabIndex = 146;
+            this.but_start_anim.Text = "Старт анимации";
+            this.but_start_anim.UseVisualStyleBackColor = true;
+            this.but_start_anim.Click += new System.EventHandler(this.but_start_anim_Click);
             // 
             // but_rob_auto_sc
             // 
@@ -1509,7 +1497,7 @@ namespace opengl3
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(743, 613);
+            this.tabPage4.Size = new System.Drawing.Size(635, 899);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "old";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -1590,7 +1578,7 @@ namespace opengl3
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(743, 613);
+            this.tabPage5.Size = new System.Drawing.Size(635, 899);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "sgbm";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -1822,7 +1810,7 @@ namespace opengl3
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(743, 613);
+            this.tabPage6.Size = new System.Drawing.Size(635, 899);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Тест";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -1964,10 +1952,18 @@ namespace opengl3
             // 
             this.tabPage7.Controls.Add(this.prop_gr_light);
             this.tabPage7.Controls.Add(this.treeV_light);
+            this.tabPage7.Controls.Add(this.trackOz);
+            this.tabPage7.Controls.Add(this.trackOy);
+            this.tabPage7.Controls.Add(this.trackX_light);
+            this.tabPage7.Controls.Add(this.trackOx);
+            this.tabPage7.Controls.Add(this.trackZ_light);
+            this.tabPage7.Controls.Add(this.trackY_light);
+            this.tabPage7.Controls.Add(this.label4);
+            this.tabPage7.Controls.Add(this.label27);
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(743, 613);
+            this.tabPage7.Size = new System.Drawing.Size(635, 899);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Освещение";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -1982,15 +1978,144 @@ namespace opengl3
             // treeV_light
             // 
             this.treeV_light.BackColor = System.Drawing.SystemColors.Window;
-            this.treeV_light.Location = new System.Drawing.Point(510, 3);
+            this.treeV_light.Location = new System.Drawing.Point(423, 0);
             this.treeV_light.Name = "treeV_light";
             this.treeV_light.Size = new System.Drawing.Size(174, 400);
             this.treeV_light.TabIndex = 151;
             // 
+            // trackOz
+            // 
+            this.trackOz.Location = new System.Drawing.Point(6, 485);
+            this.trackOz.Maximum = 300;
+            this.trackOz.Minimum = -300;
+            this.trackOz.Name = "trackOz";
+            this.trackOz.Size = new System.Drawing.Size(252, 45);
+            this.trackOz.TabIndex = 55;
+            this.trackOz.Value = 12;
+            this.trackOz.Scroll += new System.EventHandler(this.trackOz_Scroll);
+            // 
+            // trackOy
+            // 
+            this.trackOy.Location = new System.Drawing.Point(6, 536);
+            this.trackOy.Maximum = 300;
+            this.trackOy.Minimum = -300;
+            this.trackOy.Name = "trackOy";
+            this.trackOy.Size = new System.Drawing.Size(252, 45);
+            this.trackOy.TabIndex = 54;
+            this.trackOy.Value = 12;
+            this.trackOy.Scroll += new System.EventHandler(this.trackOy_Scroll);
+            // 
+            // trackX_light
+            // 
+            this.trackX_light.Location = new System.Drawing.Point(6, 622);
+            this.trackX_light.Maximum = 100;
+            this.trackX_light.Minimum = -100;
+            this.trackX_light.Name = "trackX_light";
+            this.trackX_light.Size = new System.Drawing.Size(252, 45);
+            this.trackX_light.TabIndex = 49;
+            this.trackX_light.Value = 60;
+            this.trackX_light.Scroll += new System.EventHandler(this.trackX_light_Scroll);
+            // 
+            // trackOx
+            // 
+            this.trackOx.Location = new System.Drawing.Point(6, 434);
+            this.trackOx.Maximum = 300;
+            this.trackOx.Minimum = -300;
+            this.trackOx.Name = "trackOx";
+            this.trackOx.Size = new System.Drawing.Size(252, 45);
+            this.trackOx.TabIndex = 53;
+            this.trackOx.Value = 12;
+            this.trackOx.Scroll += new System.EventHandler(this.trackOx_Scroll);
+            // 
+            // trackZ_light
+            // 
+            this.trackZ_light.Location = new System.Drawing.Point(6, 724);
+            this.trackZ_light.Maximum = 100;
+            this.trackZ_light.Minimum = -100;
+            this.trackZ_light.Name = "trackZ_light";
+            this.trackZ_light.Size = new System.Drawing.Size(252, 45);
+            this.trackZ_light.TabIndex = 51;
+            this.trackZ_light.Value = 12;
+            this.trackZ_light.Scroll += new System.EventHandler(this.trackZ_light_Scroll);
+            // 
+            // trackY_light
+            // 
+            this.trackY_light.Location = new System.Drawing.Point(6, 673);
+            this.trackY_light.Maximum = 100;
+            this.trackY_light.Minimum = -100;
+            this.trackY_light.Name = "trackY_light";
+            this.trackY_light.Size = new System.Drawing.Size(252, 45);
+            this.trackY_light.TabIndex = 50;
+            this.trackY_light.Scroll += new System.EventHandler(this.trackY_light_Scroll);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(84, 418);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(111, 13);
+            this.label4.TabIndex = 56;
+            this.label4.Text = "Ориентация камеры";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(67, 595);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(152, 13);
+            this.label27.TabIndex = 57;
+            this.label27.Text = "Положение источника света";
+            // 
+            // tabPage8
+            // 
+            this.tabPage8.Controls.Add(this.imBox_mark1);
+            this.tabPage8.Controls.Add(this.imBox_mark2);
+            this.tabPage8.Controls.Add(this.imBox_disparity);
+            this.tabPage8.Controls.Add(this.imBox_3dDebug);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(642, 899);
+            this.tabPage8.TabIndex = 7;
+            this.tabPage8.Text = "mat_gl";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // imBox_mark1
+            // 
+            this.imBox_mark1.Location = new System.Drawing.Point(6, 6);
+            this.imBox_mark1.Name = "imBox_mark1";
+            this.imBox_mark1.Size = new System.Drawing.Size(400, 400);
+            this.imBox_mark1.TabIndex = 2;
+            this.imBox_mark1.TabStop = false;
+            // 
+            // imBox_mark2
+            // 
+            this.imBox_mark2.Location = new System.Drawing.Point(412, 6);
+            this.imBox_mark2.Name = "imBox_mark2";
+            this.imBox_mark2.Size = new System.Drawing.Size(400, 400);
+            this.imBox_mark2.TabIndex = 71;
+            this.imBox_mark2.TabStop = false;
+            // 
+            // imBox_disparity
+            // 
+            this.imBox_disparity.Location = new System.Drawing.Point(6, 412);
+            this.imBox_disparity.Name = "imBox_disparity";
+            this.imBox_disparity.Size = new System.Drawing.Size(400, 400);
+            this.imBox_disparity.TabIndex = 73;
+            this.imBox_disparity.TabStop = false;
+            // 
+            // imBox_3dDebug
+            // 
+            this.imBox_3dDebug.Location = new System.Drawing.Point(412, 412);
+            this.imBox_3dDebug.Name = "imBox_3dDebug";
+            this.imBox_3dDebug.Size = new System.Drawing.Size(400, 400);
+            this.imBox_3dDebug.TabIndex = 97;
+            this.imBox_3dDebug.TabStop = false;
+            // 
             // ch_b_im_s
             // 
             this.ch_b_im_s.AutoSize = true;
-            this.ch_b_im_s.Location = new System.Drawing.Point(357, 868);
+            this.ch_b_im_s.Location = new System.Drawing.Point(360, 64);
             this.ch_b_im_s.Name = "ch_b_im_s";
             this.ch_b_im_s.Size = new System.Drawing.Size(150, 17);
             this.ch_b_im_s.TabIndex = 156;
@@ -2002,7 +2127,7 @@ namespace opengl3
             this.ch_b_dist.AutoSize = true;
             this.ch_b_dist.Checked = true;
             this.ch_b_dist.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ch_b_dist.Location = new System.Drawing.Point(357, 850);
+            this.ch_b_dist.Location = new System.Drawing.Point(360, 46);
             this.ch_b_dist.Name = "ch_b_dist";
             this.ch_b_dist.Size = new System.Drawing.Size(82, 17);
             this.ch_b_dist.TabIndex = 155;
@@ -2014,7 +2139,7 @@ namespace opengl3
             this.ch_b_sync.AutoSize = true;
             this.ch_b_sync.Checked = true;
             this.ch_b_sync.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ch_b_sync.Location = new System.Drawing.Point(357, 832);
+            this.ch_b_sync.Location = new System.Drawing.Point(360, 28);
             this.ch_b_sync.Name = "ch_b_sync";
             this.ch_b_sync.Size = new System.Drawing.Size(104, 17);
             this.ch_b_sync.TabIndex = 154;
@@ -2023,7 +2148,7 @@ namespace opengl3
             // 
             // but_scan_stereo_rob
             // 
-            this.but_scan_stereo_rob.Location = new System.Drawing.Point(824, 901);
+            this.but_scan_stereo_rob.Location = new System.Drawing.Point(208, 235);
             this.but_scan_stereo_rob.Name = "but_scan_stereo_rob";
             this.but_scan_stereo_rob.Size = new System.Drawing.Size(111, 42);
             this.but_scan_stereo_rob.TabIndex = 148;
@@ -2033,7 +2158,7 @@ namespace opengl3
             // 
             // tb_rob_pos_sc
             // 
-            this.tb_rob_pos_sc.Location = new System.Drawing.Point(69, 842);
+            this.tb_rob_pos_sc.Location = new System.Drawing.Point(72, 38);
             this.tb_rob_pos_sc.Name = "tb_rob_pos_sc";
             this.tb_rob_pos_sc.Size = new System.Drawing.Size(247, 20);
             this.tb_rob_pos_sc.TabIndex = 141;
@@ -2041,7 +2166,7 @@ namespace opengl3
             // 
             // but_load_sing_calib
             // 
-            this.but_load_sing_calib.Location = new System.Drawing.Point(825, 949);
+            this.but_load_sing_calib.Location = new System.Drawing.Point(209, 283);
             this.but_load_sing_calib.Name = "but_load_sing_calib";
             this.but_load_sing_calib.Size = new System.Drawing.Size(111, 42);
             this.but_load_sing_calib.TabIndex = 133;
@@ -2051,7 +2176,7 @@ namespace opengl3
             // 
             // but_scan_load_sing
             // 
-            this.but_scan_load_sing.Location = new System.Drawing.Point(708, 948);
+            this.but_scan_load_sing.Location = new System.Drawing.Point(92, 282);
             this.but_scan_load_sing.Name = "but_scan_load_sing";
             this.but_scan_load_sing.Size = new System.Drawing.Size(111, 42);
             this.but_scan_load_sing.TabIndex = 132;
@@ -2061,7 +2186,7 @@ namespace opengl3
             // 
             // tp_smooth_scan
             // 
-            this.tp_smooth_scan.Location = new System.Drawing.Point(222, 868);
+            this.tp_smooth_scan.Location = new System.Drawing.Point(225, 64);
             this.tp_smooth_scan.Name = "tp_smooth_scan";
             this.tp_smooth_scan.Size = new System.Drawing.Size(68, 20);
             this.tp_smooth_scan.TabIndex = 127;
@@ -2070,7 +2195,7 @@ namespace opengl3
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(153, 871);
+            this.label19.Location = new System.Drawing.Point(156, 67);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(63, 13);
             this.label19.TabIndex = 126;
@@ -2078,7 +2203,7 @@ namespace opengl3
             // 
             // but_load_fr_cal
             // 
-            this.but_load_fr_cal.Location = new System.Drawing.Point(630, 868);
+            this.but_load_fr_cal.Location = new System.Drawing.Point(14, 202);
             this.but_load_fr_cal.Name = "but_load_fr_cal";
             this.but_load_fr_cal.Size = new System.Drawing.Size(149, 20);
             this.but_load_fr_cal.TabIndex = 124;
@@ -2088,7 +2213,7 @@ namespace opengl3
             // 
             // tb_strip_scan
             // 
-            this.tb_strip_scan.Location = new System.Drawing.Point(69, 868);
+            this.tb_strip_scan.Location = new System.Drawing.Point(72, 64);
             this.tb_strip_scan.Name = "tb_strip_scan";
             this.tb_strip_scan.Size = new System.Drawing.Size(68, 20);
             this.tb_strip_scan.TabIndex = 123;
@@ -2097,7 +2222,7 @@ namespace opengl3
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(33, 871);
+            this.label18.Location = new System.Drawing.Point(36, 67);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(26, 13);
             this.label18.TabIndex = 122;
@@ -2105,7 +2230,7 @@ namespace opengl3
             // 
             // but_calibr_Bfs
             // 
-            this.but_calibr_Bfs.Location = new System.Drawing.Point(528, 853);
+            this.but_calibr_Bfs.Location = new System.Drawing.Point(531, 49);
             this.but_calibr_Bfs.Name = "but_calibr_Bfs";
             this.but_calibr_Bfs.Size = new System.Drawing.Size(96, 34);
             this.but_calibr_Bfs.TabIndex = 120;
@@ -2116,7 +2241,7 @@ namespace opengl3
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(33, 974);
+            this.label13.Location = new System.Drawing.Point(36, 170);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(30, 13);
             this.label13.TabIndex = 117;
@@ -2124,7 +2249,7 @@ namespace opengl3
             // 
             // but_scan_path
             // 
-            this.but_scan_path.Location = new System.Drawing.Point(630, 969);
+            this.but_scan_path.Location = new System.Drawing.Point(14, 303);
             this.but_scan_path.Name = "but_scan_path";
             this.but_scan_path.Size = new System.Drawing.Size(72, 20);
             this.but_scan_path.TabIndex = 116;
@@ -2134,7 +2259,7 @@ namespace opengl3
             // 
             // textB_scan_path
             // 
-            this.textB_scan_path.Location = new System.Drawing.Point(69, 971);
+            this.textB_scan_path.Location = new System.Drawing.Point(72, 167);
             this.textB_scan_path.Name = "textB_scan_path";
             this.textB_scan_path.Size = new System.Drawing.Size(555, 20);
             this.textB_scan_path.TabIndex = 115;
@@ -2143,7 +2268,7 @@ namespace opengl3
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(7, 948);
+            this.label12.Location = new System.Drawing.Point(10, 144);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(60, 13);
             this.label12.TabIndex = 114;
@@ -2152,7 +2277,7 @@ namespace opengl3
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(7, 923);
+            this.label11.Location = new System.Drawing.Point(10, 119);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(60, 13);
             this.label11.TabIndex = 113;
@@ -2161,7 +2286,7 @@ namespace opengl3
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 897);
+            this.label3.Location = new System.Drawing.Point(10, 93);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(56, 13);
             this.label3.TabIndex = 112;
@@ -2169,7 +2294,7 @@ namespace opengl3
             // 
             // but_stereo_cal_path
             // 
-            this.but_stereo_cal_path.Location = new System.Drawing.Point(630, 892);
+            this.but_stereo_cal_path.Location = new System.Drawing.Point(14, 226);
             this.but_stereo_cal_path.Name = "but_stereo_cal_path";
             this.but_stereo_cal_path.Size = new System.Drawing.Size(72, 20);
             this.but_stereo_cal_path.TabIndex = 111;
@@ -2179,7 +2304,7 @@ namespace opengl3
             // 
             // textB_stereo_cal_path
             // 
-            this.textB_stereo_cal_path.Location = new System.Drawing.Point(69, 893);
+            this.textB_stereo_cal_path.Location = new System.Drawing.Point(72, 89);
             this.textB_stereo_cal_path.Name = "textB_stereo_cal_path";
             this.textB_stereo_cal_path.Size = new System.Drawing.Size(555, 20);
             this.textB_stereo_cal_path.TabIndex = 110;
@@ -2187,7 +2312,7 @@ namespace opengl3
             // 
             // but_load_conf_cam2
             // 
-            this.but_load_conf_cam2.Location = new System.Drawing.Point(630, 943);
+            this.but_load_conf_cam2.Location = new System.Drawing.Point(14, 277);
             this.but_load_conf_cam2.Name = "but_load_conf_cam2";
             this.but_load_conf_cam2.Size = new System.Drawing.Size(72, 20);
             this.but_load_conf_cam2.TabIndex = 109;
@@ -2197,7 +2322,7 @@ namespace opengl3
             // 
             // but_load_conf_cam1
             // 
-            this.but_load_conf_cam1.Location = new System.Drawing.Point(630, 918);
+            this.but_load_conf_cam1.Location = new System.Drawing.Point(14, 252);
             this.but_load_conf_cam1.Name = "but_load_conf_cam1";
             this.but_load_conf_cam1.Size = new System.Drawing.Size(72, 20);
             this.but_load_conf_cam1.TabIndex = 108;
@@ -2207,7 +2332,7 @@ namespace opengl3
             // 
             // textB_cam2_conf
             // 
-            this.textB_cam2_conf.Location = new System.Drawing.Point(69, 945);
+            this.textB_cam2_conf.Location = new System.Drawing.Point(72, 141);
             this.textB_cam2_conf.Name = "textB_cam2_conf";
             this.textB_cam2_conf.Size = new System.Drawing.Size(555, 20);
             this.textB_cam2_conf.TabIndex = 107;
@@ -2215,7 +2340,7 @@ namespace opengl3
             // 
             // textB_cam1_conf
             // 
-            this.textB_cam1_conf.Location = new System.Drawing.Point(69, 919);
+            this.textB_cam1_conf.Location = new System.Drawing.Point(72, 115);
             this.textB_cam1_conf.Name = "textB_cam1_conf";
             this.textB_cam1_conf.Size = new System.Drawing.Size(555, 20);
             this.textB_cam1_conf.TabIndex = 106;
@@ -2223,21 +2348,13 @@ namespace opengl3
             // 
             // but_scan_load_ex
             // 
-            this.but_scan_load_ex.Location = new System.Drawing.Point(708, 900);
+            this.but_scan_load_ex.Location = new System.Drawing.Point(92, 234);
             this.but_scan_load_ex.Name = "but_scan_load_ex";
             this.but_scan_load_ex.Size = new System.Drawing.Size(111, 42);
             this.but_scan_load_ex.TabIndex = 105;
             this.but_scan_load_ex.Text = "Загрузить скан стерео";
             this.but_scan_load_ex.UseVisualStyleBackColor = true;
             this.but_scan_load_ex.Click += new System.EventHandler(this.but_scan_load_ex_Click);
-            // 
-            // debugBox
-            // 
-            this.debugBox.Location = new System.Drawing.Point(1218, 409);
-            this.debugBox.Name = "debugBox";
-            this.debugBox.Size = new System.Drawing.Size(402, 381);
-            this.debugBox.TabIndex = 62;
-            this.debugBox.Text = "";
             // 
             // glControl1
             // 
@@ -2251,7 +2368,7 @@ namespace opengl3
             this.glControl1.Margin = new System.Windows.Forms.Padding(4);
             this.glControl1.MultisampleBits = ((uint)(8u));
             this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(800, 800);
+            this.glControl1.Size = new System.Drawing.Size(1200, 1000);
             this.glControl1.StencilBits = ((uint)(0u));
             this.glControl1.TabIndex = 65;
             this.glControl1.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_ContextCreated);
@@ -2260,121 +2377,6 @@ namespace opengl3
             this.glControl1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControl1_MouseMove);
             this.glControl1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Form1_mousewheel);
             this.glControl1.Resize += new System.EventHandler(this.glControl1_Resize);
-            // 
-            // imBox_3dDebug
-            // 
-            this.imBox_3dDebug.Location = new System.Drawing.Point(1218, 411);
-            this.imBox_3dDebug.Name = "imBox_3dDebug";
-            this.imBox_3dDebug.Size = new System.Drawing.Size(400, 400);
-            this.imBox_3dDebug.TabIndex = 97;
-            this.imBox_3dDebug.TabStop = false;
-            // 
-            // imBox_disparity
-            // 
-            this.imBox_disparity.Location = new System.Drawing.Point(812, 412);
-            this.imBox_disparity.Name = "imBox_disparity";
-            this.imBox_disparity.Size = new System.Drawing.Size(400, 400);
-            this.imBox_disparity.TabIndex = 73;
-            this.imBox_disparity.TabStop = false;
-            // 
-            // imBox_mark2
-            // 
-            this.imBox_mark2.Location = new System.Drawing.Point(1218, 6);
-            this.imBox_mark2.Name = "imBox_mark2";
-            this.imBox_mark2.Size = new System.Drawing.Size(400, 400);
-            this.imBox_mark2.TabIndex = 71;
-            this.imBox_mark2.TabStop = false;
-            // 
-            // imBox_mark1
-            // 
-            this.imBox_mark1.Location = new System.Drawing.Point(812, 6);
-            this.imBox_mark1.Name = "imBox_mark1";
-            this.imBox_mark1.Size = new System.Drawing.Size(400, 400);
-            this.imBox_mark1.TabIndex = 2;
-            this.imBox_mark1.TabStop = false;
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(1685, 186);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(152, 13);
-            this.label27.TabIndex = 57;
-            this.label27.Text = "Положение источника света";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1702, 9);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(111, 13);
-            this.label4.TabIndex = 56;
-            this.label4.Text = "Ориентация камеры";
-            // 
-            // trackOz
-            // 
-            this.trackOz.Location = new System.Drawing.Point(1624, 76);
-            this.trackOz.Maximum = 300;
-            this.trackOz.Minimum = -300;
-            this.trackOz.Name = "trackOz";
-            this.trackOz.Size = new System.Drawing.Size(252, 45);
-            this.trackOz.TabIndex = 55;
-            this.trackOz.Value = 12;
-            this.trackOz.Scroll += new System.EventHandler(this.trackOz_Scroll);
-            // 
-            // trackY_light
-            // 
-            this.trackY_light.Location = new System.Drawing.Point(1624, 264);
-            this.trackY_light.Maximum = 100;
-            this.trackY_light.Minimum = -100;
-            this.trackY_light.Name = "trackY_light";
-            this.trackY_light.Size = new System.Drawing.Size(252, 45);
-            this.trackY_light.TabIndex = 50;
-            this.trackY_light.Scroll += new System.EventHandler(this.trackY_light_Scroll);
-            // 
-            // trackZ_light
-            // 
-            this.trackZ_light.Location = new System.Drawing.Point(1624, 315);
-            this.trackZ_light.Maximum = 100;
-            this.trackZ_light.Minimum = -100;
-            this.trackZ_light.Name = "trackZ_light";
-            this.trackZ_light.Size = new System.Drawing.Size(252, 45);
-            this.trackZ_light.TabIndex = 51;
-            this.trackZ_light.Value = 12;
-            this.trackZ_light.Scroll += new System.EventHandler(this.trackZ_light_Scroll);
-            // 
-            // trackOx
-            // 
-            this.trackOx.Location = new System.Drawing.Point(1624, 25);
-            this.trackOx.Maximum = 300;
-            this.trackOx.Minimum = -300;
-            this.trackOx.Name = "trackOx";
-            this.trackOx.Size = new System.Drawing.Size(252, 45);
-            this.trackOx.TabIndex = 53;
-            this.trackOx.Value = 12;
-            this.trackOx.Scroll += new System.EventHandler(this.trackOx_Scroll);
-            // 
-            // trackX_light
-            // 
-            this.trackX_light.Location = new System.Drawing.Point(1624, 213);
-            this.trackX_light.Maximum = 100;
-            this.trackX_light.Minimum = -100;
-            this.trackX_light.Name = "trackX_light";
-            this.trackX_light.Size = new System.Drawing.Size(252, 45);
-            this.trackX_light.TabIndex = 49;
-            this.trackX_light.Value = 60;
-            this.trackX_light.Scroll += new System.EventHandler(this.trackX_light_Scroll);
-            // 
-            // trackOy
-            // 
-            this.trackOy.Location = new System.Drawing.Point(1624, 127);
-            this.trackOy.Maximum = 300;
-            this.trackOy.Minimum = -300;
-            this.trackOy.Name = "trackOy";
-            this.trackOy.Size = new System.Drawing.Size(252, 45);
-            this.trackOy.TabIndex = 54;
-            this.trackOy.Value = 12;
-            this.trackOy.Scroll += new System.EventHandler(this.trackOy_Scroll);
             // 
             // tabMain
             // 
@@ -2478,7 +2480,7 @@ namespace opengl3
             this.tabMain.Location = new System.Drawing.Point(4, 22);
             this.tabMain.Name = "tabMain";
             this.tabMain.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMain.Size = new System.Drawing.Size(1882, 1003);
+            this.tabMain.Size = new System.Drawing.Size(1861, 1003);
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
@@ -3802,7 +3804,7 @@ namespace opengl3
             this.windowsTabs.Location = new System.Drawing.Point(12, 0);
             this.windowsTabs.Name = "windowsTabs";
             this.windowsTabs.SelectedIndex = 0;
-            this.windowsTabs.Size = new System.Drawing.Size(1890, 1029);
+            this.windowsTabs.Size = new System.Drawing.Size(1869, 1029);
             this.windowsTabs.TabIndex = 92;
             // 
             // timer1
@@ -3811,19 +3813,54 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // but_start_anim
+            // tabPage9
             // 
-            this.but_start_anim.Location = new System.Drawing.Point(15, 223);
-            this.but_start_anim.Name = "but_start_anim";
-            this.but_start_anim.Size = new System.Drawing.Size(106, 30);
-            this.but_start_anim.TabIndex = 146;
-            this.but_start_anim.Text = "Старт анимации";
-            this.but_start_anim.UseVisualStyleBackColor = true;
-            this.but_start_anim.Click += new System.EventHandler(this.but_start_anim_Click);
+            this.tabPage9.Controls.Add(this.but_load_fr_cal);
+            this.tabPage9.Controls.Add(this.ch_b_im_s);
+            this.tabPage9.Controls.Add(this.but_scan_load_ex);
+            this.tabPage9.Controls.Add(this.ch_b_dist);
+            this.tabPage9.Controls.Add(this.textB_cam1_conf);
+            this.tabPage9.Controls.Add(this.ch_b_sync);
+            this.tabPage9.Controls.Add(this.textB_cam2_conf);
+            this.tabPage9.Controls.Add(this.but_scan_stereo_rob);
+            this.tabPage9.Controls.Add(this.but_load_conf_cam1);
+            this.tabPage9.Controls.Add(this.tb_rob_pos_sc);
+            this.tabPage9.Controls.Add(this.but_load_conf_cam2);
+            this.tabPage9.Controls.Add(this.but_load_sing_calib);
+            this.tabPage9.Controls.Add(this.textB_stereo_cal_path);
+            this.tabPage9.Controls.Add(this.but_scan_load_sing);
+            this.tabPage9.Controls.Add(this.but_stereo_cal_path);
+            this.tabPage9.Controls.Add(this.tp_smooth_scan);
+            this.tabPage9.Controls.Add(this.label3);
+            this.tabPage9.Controls.Add(this.label19);
+            this.tabPage9.Controls.Add(this.label11);
+            this.tabPage9.Controls.Add(this.label12);
+            this.tabPage9.Controls.Add(this.tb_strip_scan);
+            this.tabPage9.Controls.Add(this.textB_scan_path);
+            this.tabPage9.Controls.Add(this.label18);
+            this.tabPage9.Controls.Add(this.but_scan_path);
+            this.tabPage9.Controls.Add(this.but_calibr_Bfs);
+            this.tabPage9.Controls.Add(this.label13);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage9.Size = new System.Drawing.Size(642, 899);
+            this.tabPage9.TabIndex = 8;
+            this.tabPage9.Text = "Загрузка скана";
+            this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // but_photo_gl
+            // 
+            this.but_photo_gl.Location = new System.Drawing.Point(108, 585);
+            this.but_photo_gl.Name = "but_photo_gl";
+            this.but_photo_gl.Size = new System.Drawing.Size(96, 34);
+            this.but_photo_gl.TabIndex = 165;
+            this.but_photo_gl.Text = "Фото GL";
+            this.but_photo_gl.UseVisualStyleBackColor = true;
             // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1370, 749);
+            this.ClientSize = new System.Drawing.Size(1884, 938);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
@@ -3861,7 +3898,6 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.histogramBox1)).EndInit();
             this.tabOpenGl.ResumeLayout(false);
-            this.tabOpenGl.PerformLayout();
             this.win_tab_diff.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
@@ -3882,16 +3918,18 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.trackBar10)).EndInit();
             this.tabPage6.ResumeLayout(false);
             this.tabPage7.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).EndInit();
+            this.tabPage7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackOz)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackY_light)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackZ_light)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackOx)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackX_light)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackX_light)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackOx)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackZ_light)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackY_light)).EndInit();
+            this.tabPage8.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).EndInit();
             this.tabMain.ResumeLayout(false);
             this.tabMain.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -3913,6 +3951,8 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).EndInit();
             this.windowsTabs.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
+            this.tabPage9.ResumeLayout(false);
+            this.tabPage9.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -4243,6 +4283,9 @@ namespace opengl3
         private System.Windows.Forms.TreeView treeV_light;
         private System.Windows.Forms.Button but_start_anim;
         private System.Windows.Forms.Timer timer2;
+        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.TabPage tabPage9;
+        private System.Windows.Forms.Button but_photo_gl;
     }
 }
 

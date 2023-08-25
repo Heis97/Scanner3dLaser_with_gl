@@ -471,14 +471,16 @@ namespace opengl3
             cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(5, 1), new Size(400, 400));
             cameraCV.distortmatrix[0,0] = -0.1;
             init_texture();
-            addLight();
+           // addLight();
 
             lightSources.Add(new LightSourceGL
             {
                 position_z = 100,
                 direction_x = 1,
                 direction_z = 0f,
-                color_r = 1,
+                color_r = 0.3f,
+                color_g = 0.20f,
+                color_b = 0.25f,
                 power = 100000,
                 cut_off = 0.99999f,
                 type_light = LightSourceGL.type.Disc
@@ -879,11 +881,12 @@ namespace opengl3
             }
             var trz = transRotZooms[selectTRZ_id(id)];
             var recTRZ = trz.rect;
-            var data = new Mat(recTRZ.Width, recTRZ.Height, Emgu.CV.CvEnum.DepthType.Cv8U, 3);
-            //Console.WriteLine("recTRZ.Width " + recTRZ.X + " " + recTRZ.Y + " " + recTRZ.Width + " " + recTRZ.Height);
+            var data = new Mat(recTRZ.Height, recTRZ.Width, Emgu.CV.CvEnum.DepthType.Cv8U, 3);
+            //Console.WriteLine("recTRZ.Width " + recTRZ.Width + " " + recTRZ.Height);
            // Console.WriteLine(data.DataPointer);
            // Console.WriteLine(trz);
             Gl.ReadPixels(recTRZ.X, recTRZ.Y, recTRZ.Width, recTRZ.Height, PixelFormat.Bgr, PixelType.UnsignedByte, data.DataPointer);
+            //Console.WriteLine("data " + data.Width + " " + data.Height);
             //CvInvoke.Rotate(data, data, Emgu.CV.CvEnum.RotateFlags.Rotate180);
             //CvInvoke.Flip(data, data, Emgu.CV.CvEnum.FlipType.Vertical);
             return data;

@@ -115,23 +115,18 @@ vec3 comp_color_disk_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_c,
 	if(cosGamma<cos_ang)
 	{
 		
+		//MaterialDiffuseColor = vec3(0);
 		
-		if (cosGamma > cos_ang - 0.01)
-		{
-			//MaterialDiffuseColor *= (cosGamma - cut_off)*10;
-			MaterialDiffuseColor = vec3(0);
-		}
-		else
-		{
-			MaterialDiffuseColor = vec3(0);
-		}
 	}
-
+	LightColor *= 1 -  pow(1-cosGamma,2)*1e9;
+	LightColor = clamp(LightColor, 0, 1);
+	//if(LightColor
 	//imageStore(debugdata, ivec2(0,0), vec4(LightVec_c,111));
 	//imageStore(debugdata, ivec2(1,0), vec4(LightVec_c,222));
-	return(MaterialAmbientColor/distance +
+	return(LightColor);
+	/*return(MaterialAmbientColor/distance +
 		MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance * distance) +
-		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha, 5) / (distance * distance));
+		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha, 5) / (distance * distance));*/
 
 }
 
@@ -148,7 +143,7 @@ vec3 comp_light(mat4 light,vec3 MaterialAmbientColor, vec3 MaterialDiffuseColor,
 	vec3 LightPosition_camera = (fs_in.Vs[fs_in.invoc] * vec4(position, 1)).xyz;
 	vec3 LightFall_camera = LightPosition_camera + fs_in.EyeDirection_camera;
 
-	if(length( LightFall_camera.xy)<1) return(color_light);
+	//if(length( LightFall_camera.xy)<1) return(color_light);
 
 	if(type == 1)
 	{
