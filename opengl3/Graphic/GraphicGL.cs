@@ -1447,18 +1447,18 @@ namespace opengl3
         public void lightXscroll(int value)
         {
             lightPos.x = (float)value * 5;
-            buffersGl.setXobj(light_name, 0, lightPos.x);
+           // buffersGl.setXobj(light_name, 0, lightPos.x);
 
         }
         public void lightYscroll(int value)
         {
             lightPos.y = (float)value * 5;
-            buffersGl.setYobj(light_name, 0, lightPos.y);
+            //buffersGl.setYobj(light_name, 0, lightPos.y);
         }
         public void lightZscroll(int value)
         {
             lightPos.z = (float)value * 5;
-            buffersGl.setZobj(light_name, 0, lightPos.z);
+           // buffersGl.setZobj(light_name, 0, lightPos.z);
         }
         public void orientXscroll(int value)
         {
