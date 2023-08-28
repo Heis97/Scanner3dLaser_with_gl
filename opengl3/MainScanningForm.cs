@@ -147,7 +147,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-             load_camers_v2();
+             //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -2641,13 +2641,14 @@ namespace opengl3
         }
         private void but_robMod_Click(object sender, EventArgs e)
         {
-            RobotModel_1 = new RobotModel(new robFrame(600, 100, 150, 0.3, 0.1, 1.4), 8888);
-            Thread.Sleep(1430);
-            RobotModel_1.move(new robFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 30);
-            RobotModel_1.move(new robFrame(590, 110, 150, 0.3, 0.1, 1.4), 30, 30);
-            Thread.Sleep(500);
+            RobotModel_1 = new RobotModel(new RobotFrame(600, 120, 150, 0.3, 0.1, 1.4), 8888);
+            Thread.Sleep(100);
+            RobotModel_1.move(new RobotFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 600);
+            RobotModel_1.move(new RobotFrame(620, 150, 150, 0.3, 0.1, 1.4), 30, 600);
+            //RobotModel_1.move(new robFrame(590, 110, 150, 0.3, 0.1, 1.4), 30, 30);
+            //Thread.Sleep(500);
 
-            RobotModel_1.move(new robFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 30);
+            //RobotModel_1.move(new robFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 30);
             //con1 = new TCPclient();
             // con1.Connection(8888, "127.0.0.1");
             // Thread.Sleep(400);

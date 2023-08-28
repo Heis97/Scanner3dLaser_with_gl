@@ -3517,7 +3517,7 @@ namespace opengl3
             // but_robMod
             // 
             this.but_robMod.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_robMod.Location = new System.Drawing.Point(1550, 27);
+            this.but_robMod.Location = new System.Drawing.Point(1110, 687);
             this.but_robMod.Name = "but_robMod";
             this.but_robMod.Size = new System.Drawing.Size(106, 33);
             this.but_robMod.TabIndex = 92;

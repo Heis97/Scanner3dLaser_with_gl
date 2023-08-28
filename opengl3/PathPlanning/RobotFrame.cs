@@ -10,20 +10,20 @@ namespace opengl3
 
     public struct PositionRob
     {
-        public Point3d_GL pos;
-        public Point3d_GL rot;
+        public Point3d_GL position;
+        public Point3d_GL rotation;
         public PositionRob(Point3d_GL pos, Point3d_GL rot)
         {
-            this.pos = pos;
-            this.rot = rot;
+            this.position = pos;
+            this.rotation = rot;
         }
     }
 
     public class RobotFrame
     {
-        public double X, Y, Z, A, B, C, V, D,F;
+        public double X , Y, Z, A, B, C, V, D,F;
         public double[] q;
-        public PositionRob pos;
+        public PositionRob frame;
         public Color3d_GL color;
         public int[] turn;
         public enum RobotType { KUKA = 1, PULSE = 2, FABION2 = 3};
@@ -31,7 +31,7 @@ namespace opengl3
         public RobotType robotType;
 
 
-        public RobotFrame(double x, double y, double z, double a, double b, double c, double v, double d, double f, RobotType robotType)
+        public RobotFrame(double x, double y, double z, double a, double b, double c, double v = 0, double d = 0, double f = 0, RobotType robotType = RobotType.PULSE)
         {
             X = x;
             Y = y;
@@ -60,7 +60,8 @@ namespace opengl3
             D = 0;
             this.robotType = robotType;
         }
-
+        public Point3d_GL get_pos() { return new Point3d_GL(X, Y, Z); }
+        public Point3d_GL get_rot() { return new Point3d_GL(A, B, C); }
         public Matrix<double>  getMatrix(RobotType robotType = RobotType.PULSE)
         {
 
@@ -69,7 +70,7 @@ namespace opengl3
         static public Matrix<double> getMatrixPos (PositionRob pos, RobotType robotType = RobotType.PULSE)
         {
 
-            return ABCmatr(pos.pos.x, pos.pos.y, pos.pos.z, pos.rot.x, pos.rot.y, pos.rot.z, robotType);
+            return ABCmatr(pos.position.x, pos.position.y, pos.position.z, pos.rotation.x, pos.rotation.y, pos.rotation.z, robotType);
         }
         public RobotFrame(Matrix<double> m, RobotType type = RobotType.KUKA)
         {
@@ -154,7 +155,7 @@ namespace opengl3
                     color = new Color3d_GL((float)m[3, 0], (float)m[3, 1], (float)m[3, 2]);
                     break;
             }
-            pos = new PositionRob(new Point3d_GL(X, Y, Z), new Point3d_GL(A, B, C));
+            frame = new PositionRob(new Point3d_GL(X, Y, Z), new Point3d_GL(A, B, C));
         }
 
 
@@ -455,7 +456,7 @@ namespace opengl3
                 };
 
                 var fr = new RobotFrame(calc_pos(dh_params), robotType);
-                var pos = fr.pos;
+                var pos = fr.frame;
                 return pos;
             }
 

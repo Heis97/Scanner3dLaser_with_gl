@@ -151,6 +151,7 @@
     <Compile Include="PathPlanning\RobotFrame.cs" />
     <Compile Include="PathPlanning\RozumPoint.cs" />
     <Compile Include="PathPlanning\TrajParams.cs" />
+    <Compile Include="Robot\RobotModel_old.cs" />
     <Compile Include="ScannerHandle\GeometryAnalyse.cs" />
     <Compile Include="ScannerHandle\LaserSurface.cs" />
     <Compile Include="ScannerHandle\Detection.cs" />
