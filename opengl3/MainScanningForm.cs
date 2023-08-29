@@ -2644,7 +2644,7 @@ namespace opengl3
             RobotModel_1 = new RobotModel(new RobotFrame(600, 120, 150, 0.3, 0.1, 1.4), 8888);
             Thread.Sleep(100);
             RobotModel_1.move(new RobotFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 600);
-            RobotModel_1.move(new RobotFrame(620, 150, 150, 0.3, 0.1, 1.4), 30, 600);
+            RobotModel_1.move(new RobotFrame(620, 150, 150, 0.3, 0.5, 1.4), 30, 600);
             //RobotModel_1.move(new robFrame(590, 110, 150, 0.3, 0.1, 1.4), 30, 30);
             //Thread.Sleep(500);
 

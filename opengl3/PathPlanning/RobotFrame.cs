@@ -42,6 +42,7 @@ namespace opengl3
             V = v;
             D = d;
             F = f;
+            frame = new PositionRob(new Point3d_GL(x, y, z), new Point3d_GL(a, b, c));
             this.robotType = robotType;
         }
 
@@ -209,7 +210,13 @@ namespace opengl3
             return traj_rob.ToString();
         }
 
-
+        static public RobotFrame operator +(RobotFrame fr1, RobotFrame fr2)
+        {
+            var fr = fr1.Clone();
+            fr.X += fr2.X; fr.Y += fr2.Y; fr.Z += fr2.Z;
+            fr.A += fr2.A; fr.B += fr2.B; fr.C += fr2.C;
+            return fr;
+        }
         public override string ToString()
         {
             return " X" + round(X) + ", Y" + round(Y) + ", Z" + round(Z) +

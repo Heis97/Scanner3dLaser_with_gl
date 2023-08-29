@@ -9,7 +9,6 @@ namespace opengl3
 {
     class RobotModel
     {
-        RobotFrame _RobotFrame;
         RobLine _RobLine;
         TCPserver _TCPserver;
         double _time_cur = 0;
@@ -25,10 +24,8 @@ namespace opengl3
             _TCPserver = new TCPserver(port);
             server_thread = new Thread(_TCPserver.startServer);
             server_thread.Start();
-            _RobotFrame = start_frame;
-            _RobLine = new RobLine(this, _msToSec);
-           
-            tm = new TimerCallback(compPosic);
+            _RobLine = new RobLine(this, start_frame, _msToSec);
+             tm = new TimerCallback(compPosic);
             timer = new Timer(tm, 0, 0, _t_per);
         }
 
@@ -63,13 +60,13 @@ namespace opengl3
                 _RobLine.compLineMove(_time_cur);
             }
             //Console.WriteLine(_RobotFrame.x+ " "+ _RobotFrame.y + " " + _RobotFrame.z + " " );
-            Console.WriteLine(_time_cur + " " + _RobotFrame.X+ " " + _RobotFrame.Y);
+            Console.WriteLine(_time_cur + " " + _RobLine?._RobotFrame?.ToStr());
         }
         
         public RobotFrame getFrame()
         {
             //Console.WriteLine("ROB_FRAME: "+_RobotFrame);
-            return _RobotFrame;
+            return _RobLine._RobotFrame;
         }
         public double getTimeCur()
         {
@@ -83,7 +80,7 @@ namespace opengl3
         RobotFrame _firstFrame;
         RobotFrame _RobotFrameEnd;
         RobotFrame _RobotFrameBegin;
-        RobotFrame _RobotFrame;
+        public RobotFrame _RobotFrame;
         RobotFrame _lastFrame;
 
         SimpleMove _simpleMove;
@@ -95,11 +92,11 @@ namespace opengl3
         double _dist;
         double _correction;
         
-        public RobLine(RobotModel robotModel, double correction)
+        public RobLine(RobotModel robotModel, RobotFrame RobotFrame, double correction)
         {
             _correction = correction;           
             _simpleMove = new SimpleMove();
-            _lastFrame = robotModel.getFrame().Clone();
+            _lastFrame = RobotFrame.Clone();
             _firstFrame = _lastFrame.Clone();
            // Console.WriteLine("Last_FRAME: "+ _lastFrame);
         }
@@ -116,10 +113,10 @@ namespace opengl3
             _dist = RobotFrame.dist(_RobotFrameBegin,_RobotFrameEnd);
 
             _vectorPosition = new Vector3d_GL(_RobotFrameBegin.get_pos(), _RobotFrameEnd.get_pos());
-            _vectorPosition.normalize();
+           // _vectorPosition.normalize();
 
             _vectorRotation = new Vector3d_GL(_RobotFrameBegin.get_rot(), _RobotFrameEnd.get_rot());
-            _vectorRotation.normalize();
+           // _vectorRotation.normalize();
 
             _lastFrame = _RobotFrameEnd.Clone();
 
@@ -131,12 +128,7 @@ namespace opengl3
         public void compLineMove(double time_cur)
         {
             var S = _simpleMove.compCoord(_correction * time_cur);
-            
-
-            _RobotFrame.X = _firstFrame.X + S.x;
-            _RobotFrame.Y = _firstFrame.Y + S.y;
-            _RobotFrame.Z = _firstFrame.Z + S.z;
-
+            _RobotFrame = _firstFrame + S;
         }
        
     }
@@ -166,6 +158,7 @@ namespace opengl3
             _acsel = acsel;
             _dist = dist;
             _vect_pos = vec_pos;
+            _vect_rot = vec_rot;
             //Console.WriteLine("DIST "+_dist);
             _t_start = t_cur;
             //Console.WriteLine("T_ST_1:  " + _t_start);
@@ -190,16 +183,18 @@ namespace opengl3
                 return ShapeMove.Triangle;
             }
         }
-        public Vector3d_GL compCoord(double t_cur)
+        public RobotFrame compCoord(double t_cur)
         {
             Vector3d_GL rasst = new Vector3d_GL(0,0,0);
+            Vector3d_GL rot = new Vector3d_GL(0, 0, 0);
             foreach (var seg in shapeSegments)
             {
-                var ras = seg.compSegment(t_cur);
-                //if(ras>0)
-                rasst += ras;
+                rasst += seg.vec_pos* seg.compSegment(t_cur);
+                rot += seg.vec_rot * seg.compSegment(t_cur);
+                //Console.WriteLine(seg.compSegment(t_cur) + " " + seg.dist_seg);
             }
-            return rasst;     
+            return new RobotFrame(rasst.x, rasst.y, rasst.z,
+                rot.x, rot.y, rot.z);
         }
         List<SegmentMove> createPlane()
         {
@@ -207,16 +202,22 @@ namespace opengl3
             
             if(_shapeMove == ShapeMove.Trapezoid)
             {
-                //Console.WriteLine("TRAP");
+                //Console.WriteLine("TRAPEZ");
                 t_ac_m = _veloc / _acsel;
                 S_ac_m = _acsel * t_ac_m * t_ac_m;
                 S_unm = _dist - S_ac_m;
                // Console.WriteLine("Sa_Sun " + S_ac_m + " " + S_unm);
                 t_un_m = S_unm / _veloc;
                 _t_end = _t_start + 2 * t_ac_m + t_un_m;
-                _shapeSegments.Add(new SegmentMove(_t_start, _t_start + t_ac_m, _veloc, _acsel, _vect_pos, SegmentMove.ShapeSegment.Acceleration));
-                _shapeSegments.Add(new SegmentMove(_t_start + t_ac_m, _t_start + t_ac_m + t_un_m, _veloc, _acsel, _vect_pos, SegmentMove.ShapeSegment.Uniform));
-                _shapeSegments.Add(new SegmentMove(_t_start + t_ac_m + t_un_m, _t_start + 2*t_ac_m + t_un_m, _veloc, _acsel, _vect_pos, SegmentMove.ShapeSegment.Deceleration));
+
+                var t_all = _t_end - _t_start;
+                var part1 = t_ac_m/ t_all ;
+                var part2 = t_un_m / t_all;
+                var part3 = t_ac_m / t_all;
+                _shapeSegments.Add(new SegmentMove(_t_start, _t_start + t_ac_m, _veloc, _acsel, _vect_pos*part1, _vect_rot * part1, SegmentMove.ShapeSegment.Acceleration));
+                _shapeSegments.Add(new SegmentMove(_t_start + t_ac_m, _t_start + t_ac_m + t_un_m, _veloc, _acsel, _vect_pos * part2, _vect_rot * part2, SegmentMove.ShapeSegment.Uniform));
+                _shapeSegments.Add(new SegmentMove(_t_start + t_ac_m + t_un_m, _t_start + 2*t_ac_m + t_un_m, _veloc, _acsel, _vect_pos * part3, _vect_rot* part3, SegmentMove.ShapeSegment.Deceleration));
+                
             }
             else
             {
@@ -225,8 +226,8 @@ namespace opengl3
                 _veloc = _acsel * _t_half;
                 //Console.WriteLine("_vel_max = " + _veloc);
                 _t_end = _t_start + 2 * _t_half;
-                _shapeSegments.Add(new SegmentMove(_t_start, _t_start + _t_half,_veloc,_acsel, _vect_pos, SegmentMove.ShapeSegment.Acceleration));
-                _shapeSegments.Add(new SegmentMove(_t_start + _t_half, _t_start + 2*_t_half, _veloc, _acsel, _vect_pos, SegmentMove.ShapeSegment.Deceleration));
+                _shapeSegments.Add(new SegmentMove(_t_start, _t_start + _t_half,_veloc,_acsel, _vect_pos, _vect_rot, SegmentMove.ShapeSegment.Acceleration));
+                _shapeSegments.Add(new SegmentMove(_t_start + _t_half, _t_start + 2*_t_half, _veloc, _acsel, _vect_pos, _vect_rot, SegmentMove.ShapeSegment.Deceleration));
             }
             return _shapeSegments;
         }
@@ -241,9 +242,11 @@ namespace opengl3
         double t_all;
         double vel_max;
         double acs;
+        public double dist_seg;
         ShapeSegment shapeSegment;
-        Vector3d_GL vector;
-        public SegmentMove(double _t_start,double _t_stop,double _vel_max,double _acs,Vector3d_GL vector3D_GL, ShapeSegment _shapeSegment)
+        public Vector3d_GL vec_pos;
+        public Vector3d_GL vec_rot;
+        public SegmentMove(double _t_start,double _t_stop,double _vel_max,double _acs,Vector3d_GL vec_pos, Vector3d_GL vec_rot, ShapeSegment _shapeSegment)
         {
             t_start = _t_start;
             t_stop = _t_stop;
@@ -251,11 +254,13 @@ namespace opengl3
             //Console.WriteLine("T_STR_STP " + t_start + " " + t_stop);
             vel_max = _vel_max;
             acs = _acs;
-            vector = vector3D_GL;
+            this.vec_pos = vec_pos;
+            this.vec_rot = vec_rot;
             shapeSegment = _shapeSegment;
+            dist_seg = compDist(t_stop - t_start, shapeSegment);
         }
 
-        public Vector3d_GL compSegment(double t_cur)
+        public double compSegment(double t_cur)
         {          
             if(t_cur>t_stop)
             {
@@ -266,37 +271,29 @@ namespace opengl3
                 t_cur = t_start;
             }
             var _t_cur = t_cur - t_start;
+            var dist = compDist(_t_cur, shapeSegment);
+            return dist/ dist_seg;
+        }
+        double compDist(double t_cur, ShapeSegment shapeSegment)
+        {
+
             switch (shapeSegment)
             {
                 case ShapeSegment.Acceleration:
-                    //Console.WriteLine("ACS: " + compDistAcs(_t_cur));
-                    return vector * compDistAcs(_t_cur);
-                case ShapeSegment.Deceleration:
-                    //Console.WriteLine("DES: " + compDistDec(_t_cur));
-                    return vector * compDistDec(_t_cur);
+                    {
+                        var vel_cur = acs * t_cur;
+                        return vel_cur * t_cur / 2;
+                    }
                 case ShapeSegment.Uniform:
-                    //Console.WriteLine("UNI: " + compDistUni(_t_cur));
-                    return vector * compDistUni(_t_cur);
+                    return vel_max * t_cur;
+                case ShapeSegment.Deceleration:
+                    {
+                        var vel_cur = vel_max - acs * t_cur;
+                        return (vel_max * t_all / 2) - (vel_cur * (t_all - t_cur)) / 2;
+                    }
                 default:
-                    return new Vector3d_GL(0,0,0);
+                    return 0;
             }
-        }
-        double compDistAcs(double t_cur)
-        {
-            
-            var vel_cur = acs * t_cur;
-            return vel_cur * t_cur / 2;
-        }
-
-        double compDistUni(double t_cur)
-        {
-            return vel_max * t_cur;
-        }
-
-        double compDistDec(double t_cur)
-        {
-            var vel_cur = vel_max - acs*t_cur;
-            return (vel_max * t_all / 2) - (vel_cur*(t_all-t_cur))/2;
         }
 
     }
