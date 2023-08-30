@@ -2642,11 +2642,15 @@ namespace opengl3
         private void but_robMod_Click(object sender, EventArgs e)
         {
             RobotModel_1 = new RobotModel(new RobotFrame(600, 120, 150, 0.3, 0.1, 1.4), 8888);
-            Thread.Sleep(100);
-            RobotModel_1.move(new RobotFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 600);
-            RobotModel_1.move(new RobotFrame(620, 150, 150, 0.3, 0.5, 1.4), 30, 600);
-            //RobotModel_1.move(new robFrame(590, 110, 150, 0.3, 0.1, 1.4), 30, 30);
-            //Thread.Sleep(500);
+            //Thread.Sleep(1000);
+            RobotModel_1.move(new RobotFrame(620, 120, 150, 0.3, 0.1, 1.4), 10, 60);
+            //Thread.Sleep(5500);
+            RobotModel_1.move(new RobotFrame(620, 150, 150, 0.3, 0.5, 1.4), 10, 60,true);
+
+            var frms = new RobotFrame[] { new RobotFrame(620, 120, 150, 0.3, 0.1, 1.4), new RobotFrame(620, 150, 150, 0.3, 0.5, 1.4) };
+            //RobotModel_1.move(frms)
+        //RobotModel_1.move(new robFrame(590, 110, 150, 0.3, 0.1, 1.4), 30, 30);
+        //Thread.Sleep(500);
 
             //RobotModel_1.move(new robFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 30);
             //con1 = new TCPclient();

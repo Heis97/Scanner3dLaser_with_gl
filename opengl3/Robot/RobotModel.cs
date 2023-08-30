@@ -11,13 +11,15 @@ namespace opengl3
     {
         RobLine _RobLine;
         TCPserver _TCPserver;
-        double _time_cur = 0;
+        long _time_cur_2 = 0;
+        public double _time_last_2 = 0;
         bool _isMove = false;
-        public double _time_last = 0;
         const int _t_per = 10;
         const double _msToSec = 0.001;
         TimerCallback tm;
         Thread server_thread;
+
+        int count = 0;
         Timer timer;
         public RobotModel(RobotFrame start_frame, int port)
         {
@@ -27,22 +29,23 @@ namespace opengl3
             _RobLine = new RobLine(this, start_frame, _msToSec);
              tm = new TimerCallback(compPosic);
             timer = new Timer(tm, 0, 0, _t_per);
+
+            Console.WriteLine(_isMove + " " + get_cur_time() + " " + _RobLine?._RobotFrame?.ToStr(" ", true));
         }
 
-        public void move(RobotFrame RobotFrame,double veloc, double acsel)
+        public void move(RobotFrame RobotFrame,double veloc, double acsel,bool unif = false)
         {
-            //Console.WriteLine("--------------------");
-            //Console.WriteLine("LAST_TIME1: " + _time_last);
-            //Console.WriteLine("CURR_TIME1: " + _time_cur);
-            if (_time_last< _msToSec * _time_cur)
-            {
-                _time_last =_msToSec* _time_cur;
-            }
-
-            _time_last =_RobLine.addMove(this, RobotFrame, veloc, acsel);          
-           
-           // Console.WriteLine("LAST_TIME2: " + _time_last);
+            if (_time_last_2 < _msToSec * _time_cur_2)  _time_last_2 = _msToSec * _time_cur_2;
+            _time_last_2 = _RobLine.addMove(this, RobotFrame, veloc, acsel,unif);
             _isMove = true;
+            Console.WriteLine(_isMove + " " + _time_last_2 + " " + _RobLine?._RobotFrame?.ToStr(" ", true));
+        }
+        public void move(RobotFrame[] RobotFrames, double veloc, double acsel, bool unif = false)
+        {
+            if (_time_last_2 < _msToSec * _time_cur_2) _time_last_2 = _msToSec * _time_cur_2;
+            _time_last_2 = _RobLine.addMoves(this, RobotFrames, veloc, acsel, unif);
+            _isMove = true;
+            Console.WriteLine(_isMove + " " + _time_last_2 + " " + _RobLine?._RobotFrame?.ToStr(" ",true));
         }
         public void sendMes(string mes)
         {
@@ -54,15 +57,20 @@ namespace opengl3
         }
         void compPosic(object obj)
         {
-            _time_cur += _t_per;
-            if(_isMove == true)
+            count++;
+            if(count % 10 == 0) Console.WriteLine(_isMove + " " + _time_last_2 + " " + _RobLine?._RobotFrame?.ToStr(" ", true));
+            if (_time_last_2< _msToSec * _time_cur_2)
             {
-                _RobLine.compLineMove(_time_cur);
+                _time_last_2 = _msToSec * _time_cur_2;
+                _isMove = false;
             }
-            //Console.WriteLine(_RobotFrame.x+ " "+ _RobotFrame.y + " " + _RobotFrame.z + " " );
-            Console.WriteLine(_time_cur + " " + _RobLine?._RobotFrame?.ToStr());
+            _time_cur_2 = get_cur_time();
+            if (_isMove == true)  _RobLine.compLineMove(_time_cur_2);           
         }
-        
+        long get_cur_time()
+        {
+            return 60000*60 * (long)DateTime.Now.Hour + 60000 * (long)DateTime.Now.Minute + 1000 * (long)DateTime.Now.Second + (long)DateTime.Now.Millisecond;
+        }
         public RobotFrame getFrame()
         {
             //Console.WriteLine("ROB_FRAME: "+_RobotFrame);
@@ -70,7 +78,7 @@ namespace opengl3
         }
         public double getTimeCur()
         {
-            return _time_cur;
+            return _time_cur_2;
         }
 
     }
@@ -100,28 +108,33 @@ namespace opengl3
             _firstFrame = _lastFrame.Clone();
            // Console.WriteLine("Last_FRAME: "+ _lastFrame);
         }
-        public double addMove(RobotModel robotModel, RobotFrame RobotFrame, double veloc, double acsel)
+        public double addMove(RobotModel robotModel, RobotFrame RobotFrame, double veloc, double acsel,bool unif= false)
         {
             _RobotFrameEnd = RobotFrame;
             _RobotFrameBegin = _lastFrame.Clone();
             _RobotFrame = robotModel.getFrame();
             _veloc = veloc;
             _acsel = acsel;
-            _time_start = robotModel._time_last;
-           // Console.WriteLine("TIME_L_1: " + _time_start);
-           // Console.WriteLine("B_E: " + _RobotFrameBegin+ " | "+_RobotFrameEnd);
+            _time_start = robotModel._time_last_2;
             _dist = RobotFrame.dist(_RobotFrameBegin,_RobotFrameEnd);
 
             _vectorPosition = new Vector3d_GL(_RobotFrameBegin.get_pos(), _RobotFrameEnd.get_pos());
-           // _vectorPosition.normalize();
-
             _vectorRotation = new Vector3d_GL(_RobotFrameBegin.get_rot(), _RobotFrameEnd.get_rot());
-           // _vectorRotation.normalize();
-
             _lastFrame = _RobotFrameEnd.Clone();
 
-            var t_move = _simpleMove.addMove(_veloc, _acsel, _dist, _time_start, _vectorPosition, _vectorRotation);
+            var t_move = _simpleMove.addMove(_veloc, _acsel, _dist, _time_start, _vectorPosition, _vectorRotation,unif);
 
+
+            return t_move;
+        }
+
+        public double addMoves(RobotModel robotModel, RobotFrame[] RobotFrames, double veloc, double acsel, bool unif = false)
+        {
+            var t_move = 0d;
+            for (int i = 0; i < RobotFrames.Length; i++)
+            {
+                t_move = addMove(robotModel, RobotFrames[i],veloc,acsel, unif);
+            }
 
             return t_move;
         }
@@ -134,7 +147,7 @@ namespace opengl3
     }
     public class SimpleMove
     {
-        enum ShapeMove { Triangle, Trapezoid }
+        enum ShapeMove { Triangle, Trapezoid, Uniform }
         enum ShapeSegment { Acceleration, Deceleration, Uniform }
         double _veloc;
         double _acsel;
@@ -152,7 +165,7 @@ namespace opengl3
         {
             shapeSegments = new List<SegmentMove>();
         }
-        public double addMove(double veloc,double acsel, double dist, double t_cur, Vector3d_GL vec_pos, Vector3d_GL vec_rot)
+        public double addMove(double veloc,double acsel, double dist, double t_cur, Vector3d_GL vec_pos, Vector3d_GL vec_rot,bool unif = false)
         {
             _veloc = veloc;
             _acsel = acsel;
@@ -162,13 +175,14 @@ namespace opengl3
             //Console.WriteLine("DIST "+_dist);
             _t_start = t_cur;
             //Console.WriteLine("T_ST_1:  " + _t_start);
-            _shapeMove = checkShape();
+            _shapeMove = checkShape(unif);
             shapeSegments.AddRange(createPlane());
             return _t_end;
         }
         
-        ShapeMove checkShape()
+        ShapeMove checkShape(bool unif = false)
         {
+            if (unif) return ShapeMove.Uniform;
             var half_dist = _dist / 2;
             var t = _veloc / _acsel;
             var triang = _veloc * t / 2;
@@ -219,7 +233,7 @@ namespace opengl3
                 _shapeSegments.Add(new SegmentMove(_t_start + t_ac_m + t_un_m, _t_start + 2*t_ac_m + t_un_m, _veloc, _acsel, _vect_pos * part3, _vect_rot* part3, SegmentMove.ShapeSegment.Deceleration));
                 
             }
-            else
+            else if(_shapeMove == ShapeMove.Triangle)
             {
                // Console.WriteLine("TRIANG");
                 var _t_half = Math.Sqrt(_dist / _acsel) ;
@@ -228,6 +242,11 @@ namespace opengl3
                 _t_end = _t_start + 2 * _t_half;
                 _shapeSegments.Add(new SegmentMove(_t_start, _t_start + _t_half,_veloc,_acsel, _vect_pos, _vect_rot, SegmentMove.ShapeSegment.Acceleration));
                 _shapeSegments.Add(new SegmentMove(_t_start + _t_half, _t_start + 2*_t_half, _veloc, _acsel, _vect_pos, _vect_rot, SegmentMove.ShapeSegment.Deceleration));
+            }
+            else 
+            {
+                _t_end = _t_start + _vect_pos.norm/_veloc;
+                _shapeSegments.Add(new SegmentMove(_t_start, _t_end, _veloc, _acsel, _vect_pos, _vect_rot, SegmentMove.ShapeSegment.Uniform));
             }
             return _shapeSegments;
         }
