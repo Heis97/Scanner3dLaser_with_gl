@@ -58,7 +58,7 @@ namespace opengl3
         void compPosic(object obj)
         {
             count++;
-            if(count % 10 == 0) Console.WriteLine(_isMove + " " + _time_last_2 + " " + _RobLine?._RobotFrame?.ToStr(" ", true));
+            if(count % 10 == 0) Console.WriteLine( _time_last_2 + " " + _RobLine?._RobotFrame?.ToStr(" ", true));
             if (_time_last_2< _msToSec * _time_cur_2)
             {
                 _time_last_2 = _msToSec * _time_cur_2;
