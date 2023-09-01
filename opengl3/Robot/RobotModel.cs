@@ -12,12 +12,14 @@ namespace opengl3
         RobLine _RobLine;
         TCPserver _TCPserver;
         long _time_cur_2 = 0;
+        double model_res = 0.01;
         public double _time_last_2 = 0;
         bool _isMove = false;
         const int _t_per = 10;
         const double _msToSec = 0.001;
         TimerCallback tm;
         Thread server_thread;
+        int smooth = 1000;
 
         int count = 0;
         Timer timer;
@@ -26,10 +28,10 @@ namespace opengl3
             _TCPserver = new TCPserver(port);
             server_thread = new Thread(_TCPserver.startServer);
             server_thread.Start();
-            _RobLine = new RobLine(this, start_frame, _msToSec);
+            _RobLine = new RobLine(start_frame, _msToSec);
              tm = new TimerCallback(compPosic);
             timer = new Timer(tm, 0, 0, _t_per);
-
+            Thread.Sleep(1);
             Console.WriteLine(_isMove + " " + get_cur_time() + " " + _RobLine?._RobotFrame?.ToStr(" ", true));
         }
 
@@ -38,14 +40,25 @@ namespace opengl3
             if (_time_last_2 < _msToSec * _time_cur_2)  _time_last_2 = _msToSec * _time_cur_2;
             _time_last_2 = _RobLine.addMove(this, RobotFrame, veloc, acsel,unif);
             _isMove = true;
-            Console.WriteLine(_isMove + " " + _time_last_2 + " " + _RobLine?._RobotFrame?.ToStr(" ", true));
+            //Console.WriteLine(_isMove + " " + _time_last_2 + " " + _RobLine?._RobotFrame?.ToStr(" ", true));
         }
-        public void move(RobotFrame[] RobotFrames, double veloc, double acsel, bool unif = false)
+        public void move(RobotFrame[] RobotFrames, double veloc, double acsel, bool unif = false,bool blend = false)
         {
-            if (_time_last_2 < _msToSec * _time_cur_2) _time_last_2 = _msToSec * _time_cur_2;
-            _time_last_2 = _RobLine.addMoves(this, RobotFrames, veloc, acsel, unif);
-            _isMove = true;
-            Console.WriteLine(_isMove + " " + _time_last_2 + " " + _RobLine?._RobotFrame?.ToStr(" ",true));
+            var frms_c = new List<RobotFrame>();
+            frms_c.Add(_RobLine._RobotFrame);
+            frms_c.AddRange((RobotFrame[]) RobotFrames.Clone());
+            
+            var frms = frms_c.ToArray();
+            if (blend)
+            {
+                frms = RobotFrame.divide_line(frms, model_res);
+                frms = RobotFrame.smooth_frames(frms.ToList(), smooth).ToArray();
+                //RobotFrame.comp_acs(frms,)
+            }
+            foreach(var move in frms)
+            {
+                this.move(move, veloc, acsel, unif);
+            }
         }
         public void sendMes(string mes)
         {
@@ -58,7 +71,8 @@ namespace opengl3
         void compPosic(object obj)
         {
             count++;
-            if(count % 10 == 0) Console.WriteLine( _time_last_2 + " " + _RobLine?._RobotFrame?.ToStr(" ", true));
+            if(count % 3 == 0) 
+                Console.WriteLine( _time_cur_2 + " " + _RobLine?._RobotFrame?.ToStr(" ", true));
             if (_time_last_2< _msToSec * _time_cur_2)
             {
                 _time_last_2 = _msToSec * _time_cur_2;
@@ -100,13 +114,14 @@ namespace opengl3
         double _dist;
         double _correction;
         
-        public RobLine(RobotModel robotModel, RobotFrame RobotFrame, double correction)
+        public RobLine(RobotFrame RobotFrame, double correction)
         {
             _correction = correction;           
             _simpleMove = new SimpleMove();
             _lastFrame = RobotFrame.Clone();
             _firstFrame = _lastFrame.Clone();
-           // Console.WriteLine("Last_FRAME: "+ _lastFrame);
+            _RobotFrame = RobotFrame.Clone();
+            // Console.WriteLine("Last_FRAME: "+ _lastFrame);
         }
         public double addMove(RobotModel robotModel, RobotFrame RobotFrame, double veloc, double acsel,bool unif= false)
         {
@@ -124,17 +139,6 @@ namespace opengl3
 
             var t_move = _simpleMove.addMove(_veloc, _acsel, _dist, _time_start, _vectorPosition, _vectorRotation,unif);
 
-
-            return t_move;
-        }
-
-        public double addMoves(RobotModel robotModel, RobotFrame[] RobotFrames, double veloc, double acsel, bool unif = false)
-        {
-            var t_move = 0d;
-            for (int i = 0; i < RobotFrames.Length; i++)
-            {
-                t_move = addMove(robotModel, RobotFrames[i],veloc,acsel, unif);
-            }
 
             return t_move;
         }
@@ -201,11 +205,12 @@ namespace opengl3
         {
             Vector3d_GL rasst = new Vector3d_GL(0,0,0);
             Vector3d_GL rot = new Vector3d_GL(0, 0, 0);
-            foreach (var seg in shapeSegments)
+            var shapes = (SegmentMove[]) shapeSegments.ToArray().Clone();
+            foreach (var seg in shapes)
             {
                 rasst += seg.vec_pos* seg.compSegment(t_cur);
                 rot += seg.vec_rot * seg.compSegment(t_cur);
-                //Console.WriteLine(seg.compSegment(t_cur) + " " + seg.dist_seg);
+                //Console.WriteLine("seg "+seg.compSegment(t_cur) + " " + seg.dist_seg);
             }
             return new RobotFrame(rasst.x, rasst.y, rasst.z,
                 rot.x, rot.y, rot.z);
@@ -291,6 +296,7 @@ namespace opengl3
             }
             var _t_cur = t_cur - t_start;
             var dist = compDist(_t_cur, shapeSegment);
+            if (dist==0) return 0;
             return dist/ dist_seg;
         }
         double compDist(double t_cur, ShapeSegment shapeSegment)

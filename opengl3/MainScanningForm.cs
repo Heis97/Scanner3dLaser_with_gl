@@ -2641,22 +2641,23 @@ namespace opengl3
         }
         private void but_robMod_Click(object sender, EventArgs e)
         {
-            RobotModel_1 = new RobotModel(new RobotFrame(600, 120, 150, 0.3, 0.1, 1.4), 8888);
-            //Thread.Sleep(1000);
-            RobotModel_1.move(new RobotFrame(620, 120, 150, 0.3, 0.1, 1.4), 10, 60);
+            RobotModel_1 = new RobotModel(new RobotFrame(500, 520, 150, 0.3, 0.1, 1.4), 8888);
+            //RobotModel_1.move(new RobotFrame(620, 120, 150, 0.3, 0.1, 1.4), 10, 5);
             //Thread.Sleep(5500);
-            RobotModel_1.move(new RobotFrame(620, 150, 150, 0.3, 0.5, 1.4), 10, 60,true);
+            //RobotModel_1.move(new RobotFrame(620, 120, 150, 0.3, 0.5, 1.4), 10, 5,true);
+            //RobotModel_1.move(new RobotFrame(620, 150, 150, 0.3, 0.5, 1.4), 10, 5, true);
+            //var frms_2 = RobotFrame.divide_line(new RobotFrame(600, 120, 150, 0.3, 0.1, 1.4), new RobotFrame(620, 120, 150, 0.3, 0.1, 1.4),0.1);
 
-            var frms = new RobotFrame[] { new RobotFrame(620, 120, 150, 0.3, 0.1, 1.4), new RobotFrame(620, 150, 150, 0.3, 0.5, 1.4) };
-            //RobotModel_1.move(frms)
-        //RobotModel_1.move(new robFrame(590, 110, 150, 0.3, 0.1, 1.4), 30, 30);
-        //Thread.Sleep(500);
+            var frms = new RobotFrame[] { new RobotFrame(520, 520, 150, 0.3, 0.1, 1.4), new RobotFrame(520, 550, 150, 0.3, 0.5, 1.4) };
+            RobotModel_1.move(frms,10, 5,true,true);
+            //RobotModel_1.move(new robFrame(590, 110, 150, 0.3, 0.1, 1.4), 30, 30);
+            //Thread.Sleep(500);
 
             //RobotModel_1.move(new robFrame(620, 120, 150, 0.3, 0.1, 1.4), 30, 30);
             //con1 = new TCPclient();
-            // con1.Connection(8888, "127.0.0.1");
-            // Thread.Sleep(400);
-            // var mes = con1.reseav();
+            //con1.Connection(8888, "127.0.0.1");
+            //Thread.Sleep(400);
+            //var mes = con1.reseav();
             //Console.WriteLine(mes);
         }
 

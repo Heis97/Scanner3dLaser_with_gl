@@ -21,7 +21,7 @@ namespace opengl3
 
     public class RobotFrame
     {
-        public double X , Y, Z, A, B, C, V, D,F;
+        public double X , Y, Z, A, B, C, V, D,F;//v - rob vel, f - disp vel
         public double[] q;
         public PositionRob frame;
         public Color3d_GL color;
@@ -31,7 +31,7 @@ namespace opengl3
         public RobotType robotType;
 
 
-        public RobotFrame(double x, double y, double z, double a, double b, double c, double v = 0, double d = 0, double f = 0, RobotType robotType = RobotType.PULSE)
+        public RobotFrame(double x = 0, double y = 0, double z = 0, double a = 0, double b = 0, double c = 0, double v = 0, double d = 0, double f = 0, RobotType robotType = RobotType.PULSE)
         {
             X = x;
             Y = y;
@@ -217,6 +217,27 @@ namespace opengl3
             fr.A += fr2.A; fr.B += fr2.B; fr.C += fr2.C;
             return fr;
         }
+        static public RobotFrame operator -(RobotFrame fr1, RobotFrame fr2)
+        {
+            var fr = fr1.Clone();
+            fr.X -= fr2.X; fr.Y -= fr2.Y; fr.Z -= fr2.Z;
+            fr.A -= fr2.A; fr.B -= fr2.B; fr.C -= fr2.C;
+            return fr;
+        }
+        static public RobotFrame operator *(RobotFrame fr1, double k)
+        {
+            var fr = fr1.Clone();
+            fr.X *= k; fr.Y *= k; fr.Z *= k;
+            fr.A *= k; fr.B *= k; fr.C *= k;
+            return fr;
+        }
+        static public RobotFrame operator /(RobotFrame fr1, double k)
+        {
+            var fr = fr1.Clone();
+            fr.X /= k; fr.Y /= k; fr.Z /= k;
+            fr.A /= k; fr.B /= k; fr.C /= k;
+            return fr;
+        }
         public override string ToString()
         {
             return " X" + round(X) + ", Y" + round(Y) + ", Z" + round(Z) +
@@ -233,7 +254,7 @@ namespace opengl3
             {
                 str = del +  round(X) + del +  round(Y) + del + round(Z) +
                     del +  round(A) + del +  round(B) + del +  round(C) +
-                    del +  round(F) + del +  round(V) + del +  D + " \n";
+                    del +  round(F) + del +  round(V) + del +  D;
             }
             return str;
         }
@@ -275,7 +296,47 @@ namespace opengl3
             return new RobotFrame(X, Y, Z, A, B, C, V, D,F,robotType);
         }
         //---------------------------------------------------------------------------------------
+        static public List<RobotFrame> divide_line(RobotFrame frame1, RobotFrame frame2, double d)
+        {
+            var divide_frames = new List<RobotFrame>();
+            var delt_fr = frame2 - frame1;
+            var dist_fr = dist(frame1, frame2);
+            var count = (int)(dist_fr / d);
+            divide_frames.Add(frame1);
+            for (int i = 1; i < count; i++)
+            {
+                var fr = frame1 + delt_fr * ((double)i / count);
+                fr.V = frame2.V; fr.F = frame2.F; fr.D = frame2.D;
+                divide_frames.Add(fr);
+            }
+            divide_frames.Add(frame2);
+            return divide_frames;
+        }
+        static public RobotFrame[] divide_line(RobotFrame[] frames, double d)
+        {
+            var divide_frames = new List<RobotFrame>();
+            for(int i=1; i< frames.Length; i++)
+            {
+                var frms = divide_line(frames[i-1], frames[i],d);
+                divide_frames.AddRange(frms);
+            }
+            return divide_frames.ToArray();
+        }
+        static public List<RobotFrame> smooth_frames(List<RobotFrame> frames, int w)
+        {
+            var smooth_frames = new List<RobotFrame>();
+            for (int i = 0; i < frames.Count; i++)
+            {
+                int start_i = i - w;
+                int count = 2 * w;
+                if (start_i < 0) start_i = 0;
+                if (start_i + count > frames.Count) count = frames.Count - 1 - start_i;
+                var wind = frames.GetRange(start_i, count);
+                smooth_frames.Add(get_average_frame(wind));
+            }
 
+            return smooth_frames;
+        }
         static public  List<RobotFrame> smooth_angle(List<RobotFrame> frames, int w)
         {
             var smooth_frames = new List<RobotFrame>();
@@ -290,7 +351,18 @@ namespace opengl3
             }
             return smooth_frames;
         }
-
+        static public RobotFrame[] comp_acs(List<RobotFrame> frames, double dt)
+        {
+            var smooth_frames = new List<RobotFrame>();
+            for (int i = 1; i < frames.Count; i++)
+            {
+                var d = frames[i] - frames[i-1];
+                var a = d/(dt*dt);
+                smooth_frames.Add(a);
+                Console.WriteLine(a.ToStr(" ", true));
+            }
+            return smooth_frames.ToArray();
+        }
         static public List<RobotFrame> decrease_angle(List<RobotFrame> frames, double k_decr)//1 full ang,0 const ang
         {
             var aver_fr = new RobotFrame(0,0,0,0,0,0,0,0,0,RobotType.PULSE);
@@ -322,7 +394,20 @@ namespace opengl3
             target_frame.C = c / frames.Count;
             return target_frame;
         }
-
+        static RobotFrame get_average_frame(List<RobotFrame> frames)
+        {
+            var fr_last = frames[frames.Count-1];
+            var fr_av = new RobotFrame();
+            for (int i = 0; i < frames.Count; i++)
+            {
+                fr_av += frames[i];
+            }
+            fr_av /= frames.Count;
+            fr_av.F = fr_last.F;
+            fr_av.V = fr_last.V;
+            fr_av.D = fr_last.D;
+            return fr_av;
+        }
 
 
         static public Matrix<double> RotZmatr(double alpha)
