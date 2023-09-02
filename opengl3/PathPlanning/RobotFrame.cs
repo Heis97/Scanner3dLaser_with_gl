@@ -353,14 +353,18 @@ namespace opengl3
         }
         static public RobotFrame[] comp_acs(List<RobotFrame> frames, double dt)
         {
+            Console.WriteLine("COMP ACS: ");
             var smooth_frames = new List<RobotFrame>();
-            for (int i = 1; i < frames.Count; i++)
+            for (int i = 2; i < frames.Count; i++)
             {
-                var d = frames[i] - frames[i-1];
+                var d1 = frames[i] - frames[i-1];
+                var d2 = frames[i-1] - frames[i - 2];
+                var d = d1 - d2;
                 var a = d/(dt*dt);
                 smooth_frames.Add(a);
                 Console.WriteLine(a.ToStr(" ", true));
             }
+            Console.WriteLine("/END COMP ACS ");
             return smooth_frames.ToArray();
         }
         static public List<RobotFrame> decrease_angle(List<RobotFrame> frames, double k_decr)//1 full ang,0 const ang

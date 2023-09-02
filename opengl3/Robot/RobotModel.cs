@@ -53,7 +53,7 @@ namespace opengl3
             {
                 frms = RobotFrame.divide_line(frms, model_res);
                 frms = RobotFrame.smooth_frames(frms.ToList(), smooth).ToArray();
-                //RobotFrame.comp_acs(frms,)
+                RobotFrame.comp_acs(frms.ToList(),model_res/10);
             }
             foreach(var move in frms)
             {
