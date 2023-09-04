@@ -19,7 +19,7 @@ namespace opengl3
         const double _msToSec = 0.001;
         TimerCallback tm;
         Thread server_thread;
-        int smooth = 1000;
+        int smooth = 100;
 
         int count = 0;
         Timer timer;

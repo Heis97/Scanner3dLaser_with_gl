@@ -361,12 +361,19 @@ namespace opengl3
                 var d2 = frames[i-1] - frames[i - 2];
                 var d = d1 - d2;
                 var a = d/(dt*dt);
+
+                var p1 = frames[i - 2].get_pos();
+                var p2 = frames[i - 1].get_pos();
+                var p3 = frames[i].get_pos();
+                var circ  = Camera.calcCirc(p1, p2, p3);
                 smooth_frames.Add(a);
-                Console.WriteLine(a.ToStr(" ", true));
+                Console.WriteLine(circ[2] + d1.ToStr(" ", true));// + " "+ a.ToStr(" ", true));
             }
             Console.WriteLine("/END COMP ACS ");
             return smooth_frames.ToArray();
         }
+
+
         static public List<RobotFrame> decrease_angle(List<RobotFrame> frames, double k_decr)//1 full ang,0 const ang
         {
             var aver_fr = new RobotFrame(0,0,0,0,0,0,0,0,0,RobotType.PULSE);

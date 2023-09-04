@@ -59,7 +59,7 @@ namespace opengl3
         {
             return (180 * rad) / Math.PI;
         }
-        private double[] calcCirc(Point3d_GL p1, Point3d_GL p2, Point3d_GL p3)
+        static public double[] calcCirc(Point3d_GL p1, Point3d_GL p2, Point3d_GL p3)
         {
             double mx1 = p1.x;
             double my1 = p1.y;
