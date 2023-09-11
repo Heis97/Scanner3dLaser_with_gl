@@ -135,6 +135,52 @@ namespace PathPlanning
             return new LinePath { ps = ps};
         }
 
+        public static LinePath gen_smooth_arc(Point3d_GL[] ps, double r, double min_dist)
+        {
+            var ps_sm = new List<Point3d_GL>();
+            ps_sm.Add(ps[0]);
+            for (int i = 1; i < ps.Length-1; i++)
+            {
+                ps_sm.AddRange(gen_arc_sect(ps[i-1], ps[i], ps[i + 1],r,min_dist).ps);
+            }
+            ps_sm.Add(ps[ps.Length-1]);
+            return new LinePath { ps = ps_sm };
+        }
+
+        public static LinePath gen_arc_sect(Point3d_GL p1, Point3d_GL p2, Point3d_GL p3, double r, double min_dist)
+        {
+            var v1 = p1 - p2;
+            var v2 = p3 - p2;
+            if (v1.magnitude() < 2 * r || v2.magnitude() < 2 * r) return new LinePath { ps = new List<Point3d_GL>(new Point3d_GL[] { p2 }) };
+            var v1_n = v1.normalize();
+            var v2_n = v2.normalize();
+            var vc_n = ((v1_n+v2_n)/2).normalize();
+            var alpha  = Point3d_GL.ang(v1_n, v2_n)/2;
+            var d1 = r / Math.Sin(alpha);
+            var d2 = r / Math.Tan(alpha);
+            var p3_c = p2 + vc_n * d1;
+            var p1_c = p2 + v1 * d2;
+            var p2_c = p2 + v2 * d2;
+            //----------------------------------
+            var v_beg = p1_c - p3_c;
+            var v_end = p2_c - p3_c;
+            var ps = new List<Point3d_GL>();
+            var alph = Point3d_GL.ang(v_beg, v_end);
+            var min_alph = min_dist / r;
+            var delim = (int)(alph / min_alph);
+            ps.Add(p1_c);
+            var v_beg_n = v_beg.normalize();
+            var v_end_n = v_end.normalize();
+            for (int i = 1; i < delim; i++)
+            {
+                var fi = (i / (double)delim) * (pi / 2);
+                var v_med = (v_beg_n * cos(fi) + v_end_n * sin(fi)).normalize() * r;
+                ps.Add(p3_c + v_med);
+            }
+            ps.Add(p2_c);
+            return new LinePath { ps = ps };
+        }
+
         public static LinePath gen_harmonic_line_xy(Point3d_GL p1, Point3d_GL p2, double r, double min_dist, double dist_arc, bool start_dir_is_right = true)
         {
             var ps = new List<Point3d_GL>();

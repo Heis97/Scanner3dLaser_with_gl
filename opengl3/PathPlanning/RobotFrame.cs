@@ -343,7 +343,7 @@ namespace opengl3
             for (int i = 0; i < frames.Count; i++)
             {
                 int start_i = i - w;
-                int count =  2*w;
+                int count =  2 * w;
                 if(start_i < 0) start_i = 0;
                 if(start_i + count > frames.Count) count = frames.Count - 1 - start_i;
                 var wind = frames.GetRange(start_i, count);

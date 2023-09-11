@@ -514,7 +514,7 @@ namespace opengl3
             matr[3, 1] = 50;
             buffersGl.setMatrobj(light_name, 0, matr);*/
 
-            addFlat3d_XY_zero_s(-0.1,Color3d_GL.white());
+            
         }
         private void init_vars_gl(IDs ids)
         {
