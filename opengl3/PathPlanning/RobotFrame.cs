@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Emgu.CV;
+using PathPlanning;
 
 namespace opengl3
 {
@@ -63,6 +64,24 @@ namespace opengl3
         }
         public Point3d_GL get_pos() { return new Point3d_GL(X, Y, Z); }
         public Point3d_GL get_rot() { return new Point3d_GL(A, B, C); }
+
+        public RobotFrame set_pos(Point3d_GL p) 
+        {
+            frame.position = p;
+            X = p.x;
+            Y = p.y;
+            Z = p.z;
+            return this;
+        }
+
+        public RobotFrame set_rot(Point3d_GL r)
+        {
+            frame.position = r;
+            A = r.x;
+            B = r.y;
+            C = r.z;
+            return this;
+        }
         public Matrix<double>  getMatrix(RobotType robotType = RobotType.PULSE)
         {
 
@@ -322,7 +341,7 @@ namespace opengl3
             }
             return divide_frames.ToArray();
         }
-        static public List<RobotFrame> smooth_frames(List<RobotFrame> frames, int w)
+        static public List<RobotFrame> smooth_frames_gauss(List<RobotFrame> frames, int w)
         {
             var smooth_frames = new List<RobotFrame>();
             for (int i = 0; i < frames.Count; i++)
@@ -335,6 +354,24 @@ namespace opengl3
                 smooth_frames.Add(get_average_frame(wind));
             }
 
+            return smooth_frames;
+        }
+
+        static public List<RobotFrame> smooth_frames_radius(List<RobotFrame> frames, double r,double min_dist)
+        {
+
+            var smooth_frames = new List<RobotFrame>();
+            var ps = new List<Point3d_GL>();
+            for(int i=0;i<frames.Count;i++)
+            {
+                ps.Add(frames[i].get_pos());
+            }
+
+            var smooth_ps = PathPlanner.gen_smooth_arc(ps.ToArray(), r, min_dist).ps;
+            for (int i = 0; i < frames.Count; i++)
+            {
+                smooth_frames.Add(frames[i].set_pos(smooth_ps[i]));
+            }
             return smooth_frames;
         }
         static public  List<RobotFrame> smooth_angle(List<RobotFrame> frames, int w)

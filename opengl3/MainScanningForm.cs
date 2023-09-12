@@ -2661,7 +2661,7 @@ namespace opengl3
             //RobotModel_1.move(new RobotFrame(620, 150, 150, 0.3, 0.5, 1.4), 10, 5, true);
             //var frms_2 = RobotFrame.divide_line(new RobotFrame(600, 120, 150, 0.3, 0.1, 1.4), new RobotFrame(620, 120, 150, 0.3, 0.1, 1.4),0.1);
 
-            var frms = new RobotFrame[] { new RobotFrame(520, 520, 150, 0.3, 0.1, 1.4), new RobotFrame(520, 550, 150, 0.3, 0.5, 1.4) };
+            var frms = new RobotFrame[] { new RobotFrame(520, 520, 150, 0.3, 0.1, 1.4), new RobotFrame(520, 550, 150, 0.3, 0.5, 1.4), new RobotFrame(550, 550, 150, 0.3, 0.5, 1.4) };
             RobotModel_1.move(frms,10, 5,true,true);
             //RobotModel_1.move(new robFrame(590, 110, 150, 0.3, 0.1, 1.4), 30, 30);
             //Thread.Sleep(500);

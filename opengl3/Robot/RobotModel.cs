@@ -19,7 +19,7 @@ namespace opengl3
         const double _msToSec = 0.001;
         TimerCallback tm;
         Thread server_thread;
-        int smooth = 100;
+        int smooth = 1;
 
         int count = 0;
         Timer timer;
@@ -51,8 +51,8 @@ namespace opengl3
             var frms = frms_c.ToArray();
             if (blend)
             {
-                frms = RobotFrame.divide_line(frms, model_res);
-                frms = RobotFrame.smooth_frames(frms.ToList(), smooth).ToArray();
+                //frms = RobotFrame.divide_line(frms, model_res);
+                frms = RobotFrame.smooth_frames_radius(frms.ToList(), smooth,model_res).ToArray();
                 RobotFrame.comp_acs(frms.ToList(),model_res/10);
             }
             foreach(var move in frms)
