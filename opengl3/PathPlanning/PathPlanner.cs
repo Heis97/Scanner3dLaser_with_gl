@@ -147,6 +147,24 @@ namespace PathPlanning
             return new LinePath { ps = ps_sm };
         }
 
+        public static List<RobotFrame> gen_smooth_arc(List<RobotFrame> ps, double r, double min_dist)
+        {
+            var ps_sm = new List<RobotFrame>();
+            ps_sm.Add(ps[0]);
+            for (int i = 1; i < ps.Count - 1; i++)
+            {
+                var ps_sec = gen_arc_sect(ps[i - 1].get_pos(), ps[i].get_pos(), ps[i + 1].get_pos(), r, min_dist).ps;
+                for (int j = 0; j < ps_sec.Count; j++)
+                {
+                    var fr = ps[i].Clone();
+                    fr.set_pos(ps_sec[j]);
+                    ps_sm.Add(fr);
+                }
+            }
+            ps_sm.Add(ps[ps.Count - 1]);
+            return ps_sm;
+        }
+
         public static LinePath gen_arc_sect(Point3d_GL p1, Point3d_GL p2, Point3d_GL p3, double r, double min_dist)
         {
             var v1 = p1 - p2;

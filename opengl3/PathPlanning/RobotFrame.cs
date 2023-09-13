@@ -358,21 +358,8 @@ namespace opengl3
         }
 
         static public List<RobotFrame> smooth_frames_radius(List<RobotFrame> frames, double r,double min_dist)
-        {
-
-            var smooth_frames = new List<RobotFrame>();
-            var ps = new List<Point3d_GL>();
-            for(int i=0;i<frames.Count;i++)
-            {
-                ps.Add(frames[i].get_pos());
-            }
-
-            var smooth_ps = PathPlanner.gen_smooth_arc(ps.ToArray(), r, min_dist).ps;
-            for (int i = 0; i < frames.Count; i++)
-            {
-                smooth_frames.Add(frames[i].set_pos(smooth_ps[i]));
-            }
-            return smooth_frames;
+        {         
+            return PathPlanner.gen_smooth_arc(frames,r,min_dist);
         }
         static public  List<RobotFrame> smooth_angle(List<RobotFrame> frames, int w)
         {

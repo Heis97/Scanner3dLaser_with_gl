@@ -1224,7 +1224,7 @@ namespace opengl3
             //generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
             //GL1.addFlat3d_XY_zero_s(-0.1, Color3d_GL.white());
             //GL1.SortObj();
-            int monitor_num = 2;
+            int monitor_num = 1;
             if(monitor_num==4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -1284,7 +1284,7 @@ namespace opengl3
             /*var scan_stla = new Model3d("def2.stl", false);
             scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
             GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def2");*/
-            test_arc();
+            //test_arc();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1295,8 +1295,9 @@ namespace opengl3
              {
                  UtilOpenCV.SaveMonitor(GL1);
              }*/
+
             bool find_gl = true;
-            if (find_gl)
+            if (find_gl && GL1.transRotZooms.Count>1)
             {
                 var mat1_or = GL1.matFromMonitor(0);
                 var mat2_or = GL1.matFromMonitor(1);
