@@ -2775,8 +2775,8 @@ namespace opengl3
                     }
                     if(camera_frame_time.Count== fps_c)
                     {
-                            var dt = (int)(camera_frame_time[camera_frame_time.Count - 1] - camera_frame_time[0]);
-                          fps1=Math.Round(  (double)fps_c*1000 / dt,1);
+                        var dt = (int)(camera_frame_time[camera_frame_time.Count - 1] - camera_frame_time[0]);
+                        fps1=Math.Round((double)fps_c*1000 / dt,1);
                     }
                     
                     imageBox1.Image = mat_global[0];  
@@ -2866,6 +2866,7 @@ namespace opengl3
                 if (sb_enc!=null)
                 {
                     laserLine?.laserOff();
+
                     
                     string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
                     using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
