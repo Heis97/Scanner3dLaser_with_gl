@@ -869,11 +869,17 @@ namespace opengl3
             return val - ((float)Math.Round(val / 10))*10;
         }
 
-
+        string scan_fold_name = "test";
         public void startScanLaser(int typeScan)//0 - defolt, 1 - dif,2 - marl,3 - stereo, 4 - sing
         {
             try
             {
+                scan_fold_name = box_scanFolder.Text;
+                box_scanFolder.Text += "_" + DateTime.Now.Month.ToString() + "_"
+                + DateTime.Now.Day.ToString() + "_" +
+                DateTime.Now.Hour.ToString() + "_"
+                + DateTime.Now.Minute.ToString() + "_"
+                + DateTime.Now.Second.ToString();
                 Thread robot_thread = new Thread(scan_resLaser);
                 robot_thread.Start(typeScan);
             }
@@ -884,9 +890,10 @@ namespace opengl3
 
         private void scan_resLaser(object obj)
         {
+            Thread.Sleep(100);
             int typescan = (int)obj;
             int counts = Convert.ToInt32(boxN.Text);
-
+            
             string folder_scan = box_scanFolder.Text;
             var p1_cur_scan = robFrameFromTextBox(nameX, nameY, nameZ, nameA, nameB, nameC);
             var p2_cur_scan = robFrameFromTextBox(nameX2, nameY2, nameZ2, nameA, nameB, nameC);
@@ -901,6 +908,8 @@ namespace opengl3
             }
             laserLine?.laserOff();
             Thread.Sleep(300);
+            var dir_scan =Path.Combine( Directory.GetCurrentDirectory(), "cam1\\" + folder_scan);
+            Console.WriteLine(dir_scan);
             makePhotoLaser(
                     new float[] { x },
                     new string[] { "cam1\\" + folder_scan+ "\\orig", "cam2\\" + folder_scan + "\\orig" },
@@ -912,11 +921,15 @@ namespace opengl3
 
             if (typescan == 3)
             {
-                var t_video =(double)counts / fps;
+                var t_video = (double)counts / fps;
                 var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
                 laserLine?.laserOn();
+                Thread.Sleep(100);
+                laserLine?.setShvpVel(200);
                 Thread.Sleep(200);
-               
+
+                laserLine?.setShvpPos((int)p1_cur_scan.x);
+                Thread.Sleep(1000);
                 startWrite(1, counts);
                 startWrite(2, counts);
                 laserLine?.setShvpVel(v_laser);
@@ -2234,10 +2247,14 @@ namespace opengl3
         void recieve_tcp(object obj)
         {
             var con = (TCPclient)obj;
+            bool printing = false;
             while (con.is_connect())
             {
-                var res = con.reseav();
-                resend_rob_to_ard_extr(res, laserLine);
+                if (printing)
+                {
+                    var res = con.reseav();
+                    resend_rob_to_ard_extr(res, laserLine);
+                }                
                 // Console.WriteLine(res);
                 Thread.Sleep(10);
             }
@@ -2845,8 +2862,11 @@ namespace opengl3
             }
             else
             {
+
                 if (sb_enc!=null)
                 {
+                    laserLine?.laserOff();
+                    
                     string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
                     using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
                     {
@@ -2929,7 +2949,7 @@ namespace opengl3
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-            capture.SetCaptureProperty(CapProp.Fps, 30);
+            //capture.SetCaptureProperty(CapProp.Fps, 30);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
@@ -4957,6 +4977,19 @@ namespace opengl3
 
             UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, txBx_photoName.Text + "_" + photo_number.ToString() + ".png", box_photoFolder.Text);
             photo_number++;
+        }
+
+        private void but_con_scan_Click(object sender, EventArgs e)
+        {
+            videoStart(2);
+            videoStart(1);
+            find_ports(); Thread.Sleep(100);
+            laserLine = new LaserLine(portArd); Thread.Sleep(1000);
+            laserLine?.setShvpVel(200); Thread.Sleep(100);
+            laserLine?.laserOn(); Thread.Sleep(100);
+            laserLine?.set_home_laser(); Thread.Sleep(1000);
+            laserLine?.setShvpPos(350); Thread.Sleep(100);
+
         }
     }
 }

@@ -358,6 +358,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.but_con_scan = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2426,6 +2427,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.but_con_scan);
             this.tabMain.Controls.Add(this.combo_robot_ch);
             this.tabMain.Controls.Add(this.tb_port_tcp);
             this.tabMain.Controls.Add(this.lab_fps_cam1);
@@ -3138,7 +3140,7 @@ namespace opengl3
             this.nameX.Name = "nameX";
             this.nameX.Size = new System.Drawing.Size(69, 26);
             this.nameX.TabIndex = 11;
-            this.nameX.Text = "0";
+            this.nameX.Text = "250";
             // 
             // nameY
             // 
@@ -3186,7 +3188,7 @@ namespace opengl3
             this.nameX2.Name = "nameX2";
             this.nameX2.Size = new System.Drawing.Size(69, 26);
             this.nameX2.TabIndex = 25;
-            this.nameX2.Text = "1";
+            this.nameX2.Text = "450";
             // 
             // nameZ_in
             // 
@@ -3234,7 +3236,7 @@ namespace opengl3
             this.boxN.Name = "boxN";
             this.boxN.Size = new System.Drawing.Size(69, 26);
             this.boxN.TabIndex = 31;
-            this.boxN.Text = "50";
+            this.boxN.Text = "200";
             // 
             // nameC
             // 
@@ -3266,7 +3268,7 @@ namespace opengl3
             this.box_scanFolder.Name = "box_scanFolder";
             this.box_scanFolder.Size = new System.Drawing.Size(130, 26);
             this.box_scanFolder.TabIndex = 57;
-            this.box_scanFolder.Text = "test_virt";
+            this.box_scanFolder.Text = "scan";
             // 
             // box_photoFolder
             // 
@@ -3859,6 +3861,17 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // but_con_scan
+            // 
+            this.but_con_scan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_scan.Location = new System.Drawing.Point(1295, 295);
+            this.but_con_scan.Name = "but_con_scan";
+            this.but_con_scan.Size = new System.Drawing.Size(106, 57);
+            this.but_con_scan.TabIndex = 138;
+            this.but_con_scan.Text = "Connect scanner";
+            this.but_con_scan.UseVisualStyleBackColor = true;
+            this.but_con_scan.Click += new System.EventHandler(this.but_con_scan_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1884, 938);
@@ -4287,6 +4300,7 @@ namespace opengl3
         private System.Windows.Forms.TabPage tabPage8;
         private System.Windows.Forms.TabPage tabPage9;
         private System.Windows.Forms.Button but_photo_gl;
+        private System.Windows.Forms.Button but_con_scan;
     }
 }
 
