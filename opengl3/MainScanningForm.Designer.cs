@@ -219,6 +219,7 @@ namespace opengl3
             this.label13 = new System.Windows.Forms.Label();
             this.glControl1 = new OpenGL.GlControl();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_con_scan = new System.Windows.Forms.Button();
             this.combo_robot_ch = new System.Windows.Forms.ComboBox();
             this.tb_port_tcp = new System.Windows.Forms.TextBox();
             this.lab_fps_cam1 = new System.Windows.Forms.Label();
@@ -358,7 +359,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_con_scan = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2533,6 +2533,17 @@ namespace opengl3
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
             // 
+            // but_con_scan
+            // 
+            this.but_con_scan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_scan.Location = new System.Drawing.Point(1295, 295);
+            this.but_con_scan.Name = "but_con_scan";
+            this.but_con_scan.Size = new System.Drawing.Size(106, 57);
+            this.but_con_scan.TabIndex = 138;
+            this.but_con_scan.Text = "Connect scanner";
+            this.but_con_scan.UseVisualStyleBackColor = true;
+            this.but_con_scan.Click += new System.EventHandler(this.but_con_scan_Click);
+            // 
             // combo_robot_ch
             // 
             this.combo_robot_ch.FormattingEnabled = true;
@@ -3860,17 +3871,6 @@ namespace opengl3
             this.timer1.Enabled = true;
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // but_con_scan
-            // 
-            this.but_con_scan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_con_scan.Location = new System.Drawing.Point(1295, 295);
-            this.but_con_scan.Name = "but_con_scan";
-            this.but_con_scan.Size = new System.Drawing.Size(106, 57);
-            this.but_con_scan.TabIndex = 138;
-            this.but_con_scan.Text = "Connect scanner";
-            this.but_con_scan.UseVisualStyleBackColor = true;
-            this.but_con_scan.Click += new System.EventHandler(this.but_con_scan_Click);
             // 
             // MainScanningForm
             // 

@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Accord.Statistics.Models.Regression;
 using Accord.Statistics.Models.Regression.Linear;
-
 using Accord.Math;
 using Accord.Math.Optimization.Losses;
 using System.Threading;
@@ -870,6 +869,7 @@ namespace opengl3
         }
 
         string scan_fold_name = "test";
+        string scan_fold_path = @"C:\";
         public void startScanLaser(int typeScan)//0 - defolt, 1 - dif,2 - marl,3 - stereo, 4 - sing
         {
             try
@@ -880,6 +880,7 @@ namespace opengl3
                 DateTime.Now.Hour.ToString() + "_"
                 + DateTime.Now.Minute.ToString() + "_"
                 + DateTime.Now.Second.ToString();
+                
                 Thread robot_thread = new Thread(scan_resLaser);
                 robot_thread.Start(typeScan);
             }
@@ -899,7 +900,7 @@ namespace opengl3
             var p2_cur_scan = robFrameFromTextBox(nameX2, nameY2, nameZ2, nameA, nameB, nameC);
             var fps = Convert.ToInt32(tB_fps_scan.Text);
             float x = (float)p1_cur_scan.x;
-
+            
             var delx = (float)(p2_cur_scan.x - p1_cur_scan.x) / (float)counts;
             if (laserLine == null)
             {
@@ -909,7 +910,8 @@ namespace opengl3
             laserLine?.laserOff();
             Thread.Sleep(300);
             var dir_scan =Path.Combine( Directory.GetCurrentDirectory(), "cam1\\" + folder_scan);
-            Console.WriteLine(dir_scan);
+            scan_fold_path = dir_scan;
+            //Console.WriteLine(dir_scan);
             makePhotoLaser(
                     new float[] { x },
                     new string[] { "cam1\\" + folder_scan+ "\\orig", "cam2\\" + folder_scan + "\\orig" },
@@ -996,7 +998,7 @@ namespace opengl3
                 }               
                 x += delx;
             }
-
+            
         }
 
 
@@ -2866,8 +2868,8 @@ namespace opengl3
                 if (sb_enc!=null)
                 {
                     laserLine?.laserOff();
-
-                    
+                    box_scanFolder.BeginInvoke((MethodInvoker)(() => box_scanFolder.Text = scan_fold_name));
+                    textB_scan_path.BeginInvoke((MethodInvoker)(() => textB_scan_path.Text = scan_fold_path));
                     string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
                     using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
                     {
@@ -4983,7 +4985,7 @@ namespace opengl3
         private void but_con_scan_Click(object sender, EventArgs e)
         {
             videoStart(2);
-            videoStart(1);
+            videoStart(1); Thread.Sleep(5000);
             find_ports(); Thread.Sleep(100);
             laserLine = new LaserLine(portArd); Thread.Sleep(1000);
             laserLine?.setShvpVel(200); Thread.Sleep(100);
