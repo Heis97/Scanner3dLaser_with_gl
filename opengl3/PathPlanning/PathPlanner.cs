@@ -717,7 +717,7 @@ namespace PathPlanning
         }
 
 
-        static Matrix<double> proj_point(Polygon3d_GL polyg, Point3d_GL point,Vector3d_GL vec_x_dir)
+        static Matrix<double> proj_point(Polygon3d_GL polyg, Point3d_GL point,Vector3d_GL vec_x_dir)//only xy scans
         {
 
              /*var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
@@ -729,6 +729,7 @@ namespace PathPlanning
              //Console.WriteLine("_________________");
              */
             var n = polyg.flat3D.n;
+            if (n.z < 0) n *= -1;
             var vec_x = comp_vecx(vec_x_dir,n);
             var vec_z = comp_vecz(vec_x,n);
             var vec_y = (vec_z | vec_x).normalize();
@@ -787,13 +788,23 @@ namespace PathPlanning
         {
             for(int i=0; i< traj.Count;i++)
             {
+                traj[i][0][3, 3] = 0;
                 var last = traj[i][traj[i].Count - 1].Clone();
                 last[2, 3] += trans_h;
+                last[3, 3] = 0;
                 traj[i].Add(last);
                 var first = traj[i][0].Clone();
                 first[2, 3] += trans_h;
+                first[3, 3] = 0;
                 traj[i].Insert(0, first);
             }
+            return traj;
+        }
+
+        static List<List<Matrix<double>>> add_transit_out(List<List<Matrix<double>>> traj, double trans_h)
+        {
+            traj[0][0][2, 3] +=trans_h;
+            traj[traj.Count-1][traj[traj.Count - 1].Count-1][2, 3] += trans_h;
             return traj;
         }
         public static List<List<Matrix<double>>> Generate_multiLayer3d_mesh(Polygon3d_GL[] surface, List<List<Point3d_GL>> contour, TrajParams trajParams)
@@ -812,6 +823,7 @@ namespace PathPlanning
                 traj_3d.Add(project_layer(surface, traj_df, map_xy, vec_x));
             }
             traj_3d = add_transit(traj_3d, trajParams.h_transf);
+            traj_3d = add_transit_out(traj_3d, trajParams.h_transf_out);
             return traj_3d;
         }
 
@@ -864,8 +876,8 @@ namespace PathPlanning
                 fr.F = f;
                 traj_rob.Add(fr);
             }
-            traj_rob = RobotFrame.smooth_angle(traj_rob, 5);
-            traj_rob = RobotFrame.decrease_angle(traj_rob, 0.5);
+            traj_rob = RobotFrame.smooth_angle(traj_rob, trajParams.w_smooth_ang);
+            traj_rob = RobotFrame.decrease_angle(traj_rob, trajParams.k_decr_ang);
 
             return RobotFrame.generate_string(traj_rob.ToArray());
         }

@@ -121,9 +121,9 @@ namespace opengl3
                         X = x;
                         Y = y;
                         Z = z;
-                        A = Rz;
-                        B = -Ry;
-                        C = Rx;
+                        A = cut_off_2pi(Rz);
+                        B = -cut_off_2pi(Ry);
+                        C = cut_off_2pi(Rx);
                         D = d;
                     }
                     break;
@@ -151,9 +151,9 @@ namespace opengl3
                         X = x;
                         Y = y;
                         Z = z;
-                        A = -Rx;
-                        B = Ry;
-                        C = Rz;
+                        A = -cut_off_2pi(Rx);
+                        B = cut_off_2pi(Ry);
+                        C = cut_off_2pi(Rz);
                         D = d;
                     }
                     break;
@@ -178,7 +178,12 @@ namespace opengl3
             frame = new PositionRob(new Point3d_GL(X, Y, Z), new Point3d_GL(A, B, C));
         }
 
-
+        static public double cut_off_2pi(double angle)
+        {
+            if (angle > Math.PI) angle -= 2 * Math.PI;
+            else if (angle < -Math.PI) angle += 2 * Math.PI;
+            return angle;
+        }
 
         static public double dist(RobotFrame fr1, RobotFrame fr2)
         {

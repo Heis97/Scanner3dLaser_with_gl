@@ -471,9 +471,10 @@ namespace opengl3
             cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(5, 1), new Size(400, 400));
             cameraCV.distortmatrix[0,0] = -0.3;
             init_texture();
-           // addLight();
+            // addLight();
 
-            lightSources.Add(new LightSourceGL
+            //scan_light
+            /*lightSources.Add(new LightSourceGL
             {
                 position_z = 100,
                 direction_x = 1,
@@ -498,7 +499,22 @@ namespace opengl3
                 cut_off = 0.9999f,
                 type_light = LightSourceGL.type.Point
 
-            });
+            });*/
+
+            lightSources.Add(new LightSourceGL
+            {
+                /* position_z = 1000,
+                 position_x = -500,
+                 position_y = 200,*/
+                direction_z = -1,
+                color_r = 0.9f,
+                color_g = 0.9f,
+                color_b = 0.9f,
+                power = 500000,
+                cut_off = 0.9999f,
+                type_light = LightSourceGL.type.Point
+
+            }) ;
             /* lightSources.Add(new LightSourceGL
              {
                  position_z = 10,
@@ -514,7 +530,7 @@ namespace opengl3
             matr[3, 1] = 50;
             buffersGl.setMatrobj(light_name, 0, matr);*/
 
-            
+
         }
         private void init_vars_gl(IDs ids)
         {

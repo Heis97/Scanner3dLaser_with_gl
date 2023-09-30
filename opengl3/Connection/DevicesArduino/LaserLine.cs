@@ -153,7 +153,7 @@ namespace opengl3
             double vel = (vel_nos * d_nos * d_nos) / (d_syr * d_syr);//vel pist
             double nT = 5000;  //  #timer freq
             double p = 0.8;//     #step mm
-            double rev = 200 * 16 * (60d/16d); //# - reduct steps per revol
+            double rev = 100 * 16 * (60d/16d); //# - reduct steps per revol
             int st = (int)((nT * p) / (vel * rev));
             //vel = (nT * p) / (st * rev);
             return st;

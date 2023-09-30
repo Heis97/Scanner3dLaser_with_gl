@@ -91,7 +91,7 @@ namespace opengl3
 
         public TransRotZoom(Rectangle _rect, int _id)
         {
-            zoom = 1;
+            zoom = 200;
             xRot = 0;
             yRot = 0;
             zRot = 0;
@@ -101,7 +101,7 @@ namespace opengl3
             rect = _rect;
             id = _id;
             type = TRZtype.Master;
-            viewType_ = viewType.Perspective;
+            viewType_ = viewType.Ortho;
             visible = false;
             cameraCV =  new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), fovx), new Matrix<double>(5, 1), new Size(rect.Width, rect.Height));
         }
@@ -120,7 +120,7 @@ namespace opengl3
             id_m = _idMast;
             type = TRZtype.Slave;
             consttransf = new TransRotZoom(rotVer, transVer);
-            viewType_ = viewType.Perspective;
+            viewType_ = viewType.Ortho;
             visible = false;
             const_trz = new trsc(transVer.x, transVer.y, transVer.z, rotVer.x, rotVer.y, rotVer.z, 1).getModelMatrix();
             cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), fovx), new Matrix<double>(5, 1), new Size(rect.Width, rect.Height));
@@ -298,12 +298,12 @@ namespace opengl3
                 float window = (float)trz.zoom;
                 float aspec = (float)trz.rect.Width / trz.rect.Height;
                 _Pm = Matrix4x4f.Ortho(-window * aspec, window * aspec, -window, window, -1000f, 1000f);
-               /* _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z) *
-                    Matrix4x4f.RotatedX((float)trz.xRot) *
-                    Matrix4x4f.RotatedY((float)trz.yRot) *
-                    Matrix4x4f.RotatedZ((float)trz.zRot);*/
+                /* _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z) *
+                     Matrix4x4f.RotatedX((float)trz.xRot) *
+                     Matrix4x4f.RotatedY((float)trz.yRot) *
+                     Matrix4x4f.RotatedZ((float)trz.zRot);*/
 
-                _Vm = 
+                _Vm =
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
                     Matrix4x4f.RotatedZ((float)trz.zRot) * Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z);

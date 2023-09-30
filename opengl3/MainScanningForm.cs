@@ -363,12 +363,15 @@ namespace opengl3
             {
                 dz = 0.4,
                 div_step = 1.3,
-                h_transf = 10,
+                h_transf = 1,
+                h_transf_out = 10,
                 layers = 2,
-                layers_angle = 0.47,// Math.PI / 4,
+                layers_angle = Math.PI / 2,// Math.PI / 4,
                 step = 0.4 * 4,
                 vel = 20,
-                line_width = 0.4
+                line_width = 0.4,
+                k_decr_ang = 0.5,
+                w_smooth_ang = 15
                
             };
             propGrid_traj.SelectedObject = param_tr;
@@ -2245,19 +2248,19 @@ namespace opengl3
             tcp_thread.Start(con1);
 
         }
-
+        bool printing = false;
         void recieve_tcp(object obj)
         {
             var con = (TCPclient)obj;
-            bool printing = false;
+            
             while (con.is_connect())
             {
                 if (printing)
                 {
                     var res = con.reseav();
+                    //Console.WriteLine(res);
                     resend_rob_to_ard_extr(res, laserLine);
-                }                
-                // Console.WriteLine(res);
+                }  
                 Thread.Sleep(10);
             }
         }
@@ -2269,10 +2272,11 @@ namespace opengl3
             if (mes.Length < 2) return;
             var vals_str = mes.Split(' ');
             if (vals_str.Length != 2) return;
-            var vel = Convert.ToInt32(vals_str[0]);
-            var dir = Convert.ToInt32(vals_str[1]);
-            ard.set_dir_disp(dir);
-            ard.set_div_disp(vel);
+            var vel = Convert.ToDouble(vals_str[0]);
+            var dir = Convert.ToDouble(vals_str[1]);
+            Console.WriteLine(vel + " " + dir);
+            ard.set_dir_disp((int)-dir);
+            //ard.set_div_disp(vel);
         }
 
         private void but_res_pos1_Click(object sender, EventArgs e)
@@ -4557,7 +4561,8 @@ namespace opengl3
             var stereo_cal_path = textB_stereo_cal_path.Text;
 
             int strip = Convert.ToInt32(tb_strip_scan.Text);
-            double smooth = Convert.ToDouble(tp_smooth_scan.Text);
+            //double smooth = Convert.ToDouble(tp_smooth_scan.Text);
+            double smooth = -1;
             string bfs_path = "bfs_cal.txt";
 
             var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path);
@@ -4807,12 +4812,14 @@ namespace opengl3
 
         private void but_rob_auto_sc_Click(object sender, EventArgs e)
         {
-            try_send_rob("a\n");           
+            try_send_rob("a\n");
+            printing = true;
         }
 
         private void but_rob_manual_sc_Click(object sender, EventArgs e)
         {
             try_send_rob("m\n");
+            printing = false;
         }
 
         private void but_rob_clear_sc_Click(object sender, EventArgs e)
