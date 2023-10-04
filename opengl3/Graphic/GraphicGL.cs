@@ -503,9 +503,9 @@ namespace opengl3
 
             lightSources.Add(new LightSourceGL
             {
-                 position_z = 100,
-                /* position_x = -500,
-                 position_y = 200,*/
+                 position_z = 50,
+                position_x = -500,
+                 position_y = 500,
                 direction_z = -1,
                 color_r = 0.9f,
                 color_g = 0.9f,

@@ -367,7 +367,7 @@ namespace opengl3
                 h_transf_out = 10,
                 layers = 2,
                 layers_angle = Math.PI / 2,// Math.PI / 4,
-                step = 0.4 * 4,
+                step = 2.6,
                 vel = 20,
                 line_width = 0.4,
                 k_decr_ang = 0.5,
@@ -1289,7 +1289,7 @@ namespace opengl3
             //add_points_cal();
             //load_ps_from_pulse("settings_pulse.json", new string[] { "b_2806a", "b_2806b", "b_2806c" });
             //test_cross_line_triang();
-            test_surf_rec();
+            //test_surf_rec();
             //test_surf_cross();
             //test_get_conts_3d();
             //test_arc();
