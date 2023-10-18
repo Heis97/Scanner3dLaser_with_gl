@@ -504,13 +504,13 @@ namespace opengl3
             lightSources.Add(new LightSourceGL
             {
                  position_z = 50,
-                position_x = -500,
-                 position_y = 500,
-                direction_z = -1,
+                position_x = -250,
+                 position_y = 200,
+                direction_z = 300,
                 color_r = 0.9f,
                 color_g = 0.9f,
                 color_b = 0.9f,
-                power = 500000,
+                power = 1e7f,
                 cut_off = 0.9999f,
                 type_light = LightSourceGL.type.Point
 

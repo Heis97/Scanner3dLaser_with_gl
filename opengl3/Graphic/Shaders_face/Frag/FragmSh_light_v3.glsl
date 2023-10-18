@@ -35,7 +35,7 @@ vec3 comp_color_point_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_c
 	float cut_off = settings.z;
 	vec3 LightColor = color_light;
 	float LightPower = power_cut;
-
+	
 	float distance = length(LightPosition_w - Position_w);
 	vec3 n = normalize(Normal_c);
 	vec3 l = normalize(LightDirection_c);
