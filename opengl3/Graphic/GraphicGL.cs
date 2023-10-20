@@ -500,7 +500,7 @@ namespace opengl3
                 type_light = LightSourceGL.type.Point
 
             });*/
-
+/*
             lightSources.Add(new LightSourceGL
             {
                  position_z = 50,
@@ -514,7 +514,24 @@ namespace opengl3
                 cut_off = 0.9999f,
                 type_light = LightSourceGL.type.Point
 
-            }) ;
+            }) ;*/
+
+            lightSources.Add(new LightSourceGL
+            {
+                position_x = -370,
+                position_y = 230,
+                position_z = -100,
+                
+                
+                direction_z = 300,
+                color_r = 0.9f,
+                color_g = 0.9f,
+                color_b = 0.9f,
+                power = 10000f,
+                cut_off = 0.9999f,
+                type_light = LightSourceGL.type.Point
+
+            });
             /* lightSources.Add(new LightSourceGL
              {
                  position_z = 10,

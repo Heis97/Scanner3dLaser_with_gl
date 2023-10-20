@@ -760,7 +760,7 @@ namespace opengl3
             this.scanner = scanner;
 
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            if(scan_stl != null) scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"scan_stereo");
+            if(scan_stl != null) scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
            // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
             
             Console.WriteLine("Loading end.");
@@ -1272,7 +1272,7 @@ namespace opengl3
             GL1.add_TreeView(tree_models);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-            /* var p1 = new Point3d_GL(0, 0, 20);
+             /*var p1 = new Point3d_GL(0, 0, 20);
              var p2 = new Point3d_GL(30, 0, 0);
              var p3 = new Point3d_GL(30, 30, 0);
              var p4 = new Point3d_GL(0, 30, 0);
@@ -1281,6 +1281,7 @@ namespace opengl3
              var ps = new Point3d_GL[] { p1, p2, p3 };
              GL1.addFrame(m1);
              GL1.addLineMesh(ps);*/
+
             // startGenerate();
             //trB_SGBM_Enter();
             // test_cross_triag();
@@ -3872,7 +3873,7 @@ namespace opengl3
 
                 }                
                 videoframe_count++;
-                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+                //Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
             comboImages.Items.AddRange(frames_show.ToArray());
             scanner.compPointsStereoLas_2d();
@@ -4591,7 +4592,7 @@ namespace opengl3
             load_calib_sing(scanner,scan_path, strip, smooth);
         }
 
-        string save_file_name(string init_direct, string extns)
+        string save_file_name(string init_direct,string init_name, string extns)
         {
             var filePath = string.Empty;
             using (SaveFileDialog openFileDialog = new SaveFileDialog())
@@ -4601,6 +4602,7 @@ namespace opengl3
                 openFileDialog.Filter = extns + " files (*." + extns + ")|*." + extns;
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
+                openFileDialog.FileName = init_name;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -4746,7 +4748,8 @@ namespace opengl3
 
         private void but_save_stl_Click(object sender, EventArgs e)
         {
-            var stl_name = save_file_name(Directory.GetCurrentDirectory(), "stl");
+
+            var stl_name = save_file_name(Directory.GetCurrentDirectory(), tree_models.SelectedNode.Text, "stl");
             //var scan_stl = Polygon3d_GL.toMesh(mesh);
             if(stl_name == null) return;
             STLmodel.saveMesh(GL1.buffersGl.objs[tree_models.SelectedNode.Text].vertex_buffer_data, stl_name);

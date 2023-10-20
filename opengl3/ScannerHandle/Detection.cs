@@ -972,7 +972,7 @@ namespace opengl3
             return avY / ps1.Length;
         }
 
-        static float averageXps(PointF[] ps1)
+        public static float averageXps(PointF[] ps1)
         {
             float avX = 0;
             for (int i = 0; i < ps1.Length; i++)

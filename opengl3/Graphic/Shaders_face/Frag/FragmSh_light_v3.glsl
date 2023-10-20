@@ -27,29 +27,7 @@ in GS_FS_INTERFACE
 }fs_in;
 out vec4 color;
 
-vec3 comp_color_point_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_c,
-	vec3 LightDirection_c, vec3 EyeDirection_c,vec3 LightVec_c,
-	vec3 MaterialAmbientColor, vec3 MaterialDiffuseColor, vec3 MaterialSpecularColor,vec3 settings,vec3 color_light)
-{
-	float power_cut = settings.y;
-	float cut_off = settings.z;
-	vec3 LightColor = color_light;
-	float LightPower = power_cut;
-	
-	float distance = length(LightPosition_w - Position_w);
-	vec3 n = normalize(Normal_c);
-	vec3 l = normalize(LightDirection_c);
-	float cosTheta = clamp(dot(n, l), 0, 1);
-	vec3 E = normalize(EyeDirection_c);
-	vec3 R = reflect(-l, n);
-	float cosAlpha = clamp(dot(E, R), 0, 1);
-	
 
-	return(MaterialAmbientColor+
-		MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance * distance)+
-		 MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha, 5) / (distance * distance));
-
-}
 
 vec3 comp_color_direct_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_c,
 	vec3 LightDirection_c, vec3 EyeDirection_c, vec3 LightVec_c,
@@ -129,7 +107,29 @@ vec3 comp_color_disk_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_c,
 		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha, 5) / (distance * distance));*/
 
 }
+vec3 comp_color_point_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_c,
+	vec3 LightDirection_c, vec3 EyeDirection_c,vec3 LightVec_c,
+	vec3 MaterialAmbientColor, vec3 MaterialDiffuseColor, vec3 MaterialSpecularColor,vec3 settings,vec3 color_light)
+{
+	float power_cut = settings.y;
+	float cut_off = settings.z;
+	vec3 LightColor = color_light;
+	float LightPower = power_cut;
+	
+	float distance = length(LightPosition_w - Position_w);
+	vec3 n = normalize(Normal_c);
+	vec3 l = normalize(LightDirection_c);
+	float cosTheta = clamp(dot(n, l), 0, 1);
+	vec3 E = normalize(EyeDirection_c);
+	vec3 R = reflect(-l, n);
+	float cosAlpha = clamp(dot(E, R), 0, 1);
+	
 
+	return(MaterialAmbientColor+
+		MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance * distance)+
+		 MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha, 5) / (distance * distance));
+
+}
 vec3 comp_light(mat4 light,vec3 MaterialAmbientColor, vec3 MaterialDiffuseColor, vec3 MaterialSpecularColor)
 {
 	vec3 direction = light[0].xyz;
@@ -171,7 +171,7 @@ vec3 comp_light(mat4 light,vec3 MaterialAmbientColor, vec3 MaterialDiffuseColor,
 void main() {
 	vec3 MaterialDiffuseColor = fs_in.Color;
 	vec3 MaterialAmbientColor = MaterialAmbient;
-	vec3 MaterialSpecularColor = MaterialSpecular;
+	vec3 MaterialSpecularColor =  MaterialSpecular;
 	
 	if (textureVis == 1)
 	{
@@ -189,7 +189,7 @@ void main() {
 		/*color.xyz = comp_color_point_light(LightPosition_world, fs_in.Position_world,
 		fs_in.Normal_camera, fs_in.LightDirection_camera, fs_in.EyeDirection_camera,
 		MaterialAmbientColor, MaterialDiffuseColor,MaterialSpecularColor);*/
-		vec3 MaterialSpecularColor = vec3(0.01);
+		vec3 MaterialSpecularColor = vec3(0.0000001);
 		for(int i=0; i< light_count; i++)
 		{
 			color.xyz += comp_light(LightSource[i],
