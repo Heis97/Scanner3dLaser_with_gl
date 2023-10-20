@@ -2853,7 +2853,8 @@ namespace opengl3
 
             if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
             {
-               // sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                // sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+               // if (sb_enc == null) Console.WriteLine("NULL!");
                 sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("\n");
@@ -2871,9 +2872,10 @@ namespace opengl3
                 if (sb_enc!=null)
                 {
                     laserLine?.laserOff();
+                    
+                    string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
                     box_scanFolder.BeginInvoke((MethodInvoker)(() => box_scanFolder.Text = scan_fold_name));
                     textB_scan_path.BeginInvoke((MethodInvoker)(() => textB_scan_path.Text = scan_fold_path));
-                    string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
                     using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
                     {
                         if(sb_enc!=null)
