@@ -2872,10 +2872,10 @@ namespace opengl3
                 if (sb_enc!=null)
                 {
                     laserLine?.laserOff();
-                    
-                    string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
                     box_scanFolder.BeginInvoke((MethodInvoker)(() => box_scanFolder.Text = scan_fold_name));
                     textB_scan_path.BeginInvoke((MethodInvoker)(() => textB_scan_path.Text = scan_fold_path));
+                    string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
+                    
                     using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
                     {
                         if(sb_enc!=null)
