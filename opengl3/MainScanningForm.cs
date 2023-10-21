@@ -934,7 +934,7 @@ namespace opengl3
                 Thread.Sleep(200);
 
                 laserLine?.setShvpPos((int)p1_cur_scan.x);
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
                 startWrite(1, counts);
                 startWrite(2, counts);
                 laserLine?.setShvpVel(v_laser);
@@ -2772,6 +2772,7 @@ namespace opengl3
                 {
                     
                     cap.Retrieve(mat_global[0]);
+                   // CvInvoke.Imshow("im1", mat_global[0]);
                     camera_frame_time.Add(DateTime.Now.Ticks / 10000);
                     int fps_c = 100;
                     if(camera_frame_time.Count> fps_c)
@@ -2810,7 +2811,7 @@ namespace opengl3
 
                 case FrameType.Test:
                     //laserLine?.offLaserSensor();
-                    imb_base[ind-1].Image = mat;
+                    //imb_base[ind-1].Image = mat;
                     break;
                 case FrameType.MarkBoard:
                     imb_base[ind - 1].Image = UtilOpenCV.drawChessboard(mat, chess_size, false,false,CalibCbType.FastCheck);
@@ -2872,10 +2873,10 @@ namespace opengl3
                 if (sb_enc!=null)
                 {
                     laserLine?.laserOff();
+                    
+                    string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
                     box_scanFolder.BeginInvoke((MethodInvoker)(() => box_scanFolder.Text = scan_fold_name));
                     textB_scan_path.BeginInvoke((MethodInvoker)(() => textB_scan_path.Text = scan_fold_path));
-                    string path = "cam1" +  "\\" + box_scanFolder.Text + "\\enc.txt";
-                    
                     using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
                     {
                         if(sb_enc!=null)
@@ -2957,7 +2958,7 @@ namespace opengl3
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-            //capture.SetCaptureProperty(CapProp.Fps, 30);
+            capture.SetCaptureProperty(CapProp.Fps, 30);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
@@ -3757,7 +3758,7 @@ namespace opengl3
             var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
             //capture1.SetCaptureProperty(CapProp.);
         }
-        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner = null, int strip = 1)
         {
 
             videoframe_count = 0;
@@ -3892,7 +3893,7 @@ namespace opengl3
             if (buff.Count > len) buff.RemoveAt(0);
             return buff;
         }
-        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
         {
 
             videoframe_count = 0;
@@ -3988,7 +3989,7 @@ namespace opengl3
                             CvInvoke.Rotate(im_max, im_max, RotateFlags.Rotate180);
                             CvInvoke.Rotate(im_max_prev, im_max_prev, RotateFlags.Rotate180);
                         }
-                        Console.WriteLine(f1 + " " + f2);
+                        //Console.WriteLine(f1 + " " + f2);
 
                         
                         //CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
@@ -4004,7 +4005,7 @@ namespace opengl3
                     }
                 }
                 videoframe_count++;
-                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+                //Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
             comboImages.Items.AddRange(frames_show.ToArray());
             scanner.compPointsStereoLas_2d();

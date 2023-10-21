@@ -157,6 +157,10 @@ namespace opengl3
 
 
             var points_im2 = PointF.averX(points_im_max_prev, points_im_max, k);
+
+            var srx1 = Detection.averageXps(points_im1);
+            var srx2 = Detection.averageXps(points_im2);
+            Console.WriteLine(srx1 + " " + srx2);
             /*var m1 = mat[0].Clone();
             var m2 = mat[1].Clone();
             m1 = UtilOpenCV.drawPointsF(m1, points_im1, 0, 255, 0, 1);
@@ -172,7 +176,7 @@ namespace opengl3
                    // Console.WriteLine("add_sync");
                     stereocamera.cameraCVs[cam_min - 1].scan_points.Add(points_im1);
                     stereocamera.cameraCVs[cam_max - 1].scan_points.Add(points_im2);
-                    Console.WriteLine(points_im1.Length + " " + points_im2.Length);
+                    //Console.WriteLine(points_im1.Length + " " + points_im2.Length);
                 }
 
             return true;
