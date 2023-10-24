@@ -1383,7 +1383,7 @@ namespace opengl3
 
             //SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);            
             var layers = SurfaceReconstraction.find_sub_surf_xy(scan_stlb.pols, scan_stla.pols, 0.5,2.5, 0.2,0.1);
-
+            
             for (int i = 0; i < layers.Length; i++)
             {
                 GL1.addMesh(Polygon3d_GL.toMesh(layers[i])[0], PrimitiveType.Triangles);

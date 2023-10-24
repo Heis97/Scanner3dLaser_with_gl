@@ -15,6 +15,10 @@ namespace opengl3
     static class SurfaceReconstraction
     {
 
+
+        
+
+
         static public Point3d_GL[] order_ps_by_ax(Point3d_GL[] ps, Ax ax)
         {
             var ps_or = new Point3d_GL[ps.Length];
