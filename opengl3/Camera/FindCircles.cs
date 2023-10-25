@@ -61,7 +61,7 @@ namespace opengl3
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
             CvInvoke.FindContours(mat, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
-
+            if (contours.Size == 0) return null;
             var size_m = 0d;
             var int_m = 0;
             for(int i=0;i<contours.Size;i++)
@@ -73,6 +73,7 @@ namespace opengl3
                     int_m = i;
                 }
             }
+
             return contours[int_m];
         }
         public static Mat findCircles(Mat mat,ref System.Drawing.PointF[]  corn,Size pattern_size,bool order = true)

@@ -165,7 +165,7 @@ namespace opengl3
             //prin.t(q);
 
             //test_get_conts();
-            loadVideo_test_laser("v1_test.mp4");
+            loadVideo_test_laser("v2_test.mp4");
         }
         static int[] frames_max(int[,] data)
         {
@@ -4144,16 +4144,21 @@ namespace opengl3
         {
 
             ImageViewer viewer = new ImageViewer(); //create an image viewer
-            viewer.SetBounds(0, 0, 1920, 1080);
+            viewer.SetBounds(0, 0, 1620, 1080);
             VideoCapture capture = new VideoCapture(filepath); //create a camera captue
+            var mat_f = new Mat();
+            bool first = true;
             Application.Idle += new EventHandler(delegate (object sender, EventArgs e)
             {  //run this until application closed (close button click on image viewer)
                 var mat = capture.QueryFrame();
-                var bin = new Mat();
-                var gr = new Mat();
-                CvInvoke.CvtColor(mat, gr, ColorConversion.Bgr2Gray);
-                CvInvoke.Threshold(gr, bin, 245, 255, ThresholdType.Binary);
-                viewer.Image = bin; //draw the image obtained from camera
+                if (first) { mat_f = mat.Clone(); first = false; }
+
+                var pf = Detection.detectLineSensor(mat)[0];
+                var p = new System.Drawing.Point((int)pf.X, (int)pf.Y);
+                Console.WriteLine(pf.X);
+                CvInvoke.DrawMarker(mat, p, new MCvScalar(255, 0, 0), MarkerTypes.TiltedCross, 10);
+                viewer.Image = mat; //draw the image obtained from camera
+                
             });
             viewer.ShowDialog();
 

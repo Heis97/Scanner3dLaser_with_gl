@@ -20,20 +20,20 @@ namespace opengl3
             var mat_data = mat.Clone();
 
             CvInvoke.CvtColor(mat_data, mat_data, ColorConversion.Bgr2Gray);
-            CvInvoke.GaussianBlur(mat_data, mat_data, new Size(5,5), -1);
+            CvInvoke.GaussianBlur(mat_data, mat_data, new Size(5, 5), -1);
             var data = (byte[,])mat_data.GetData();
-            
-            int j = (int)(data.GetLength(0)/2);
+
+            int j = (int)(data.GetLength(0) / 2);
             float br = 0;
             int i_m = 0;
             var ps_b = new List<PointF>();
             for (int i = 0; i < data.GetLength(1); i++)
             {
-                
+
                 int br_sum = 0;
-                for (int k = -wind; k < wind ; k++)
+                for (int k = -wind; k < wind; k++)
                     br_sum += data[j + k, i];
-                float br_cur = br_sum/(wind*2);
+                float br_cur = br_sum / (wind * 2);
                 ps_b.Add(new PointF(i, 480 - br_cur));
                 if (br_cur > br)
                 {
@@ -53,7 +53,7 @@ namespace opengl3
             var b = koef[1];
             var x_cent = (-b / (2 * a));
 
-            var ps = new PointF[] { new PointF(x_cent, j)};
+            var ps = new PointF[] { new PointF(x_cent, j) };
 
             /*return Regression.paintRegression(mat, vals_regr.ToArray(),2);
 
@@ -64,6 +64,27 @@ namespace opengl3
             return ps;
         }
 
+        public static Mat findLaserPoint(Mat mat, Mat mat_f)
+        {
+            var bin = new Mat();
+            var gr = new Mat();
+            mat -= mat_f;
+            CvInvoke.CvtColor(mat, gr, ColorConversion.Bgr2Gray);
+            CvInvoke.GaussianBlur(gr, gr, new Size(13, 13), 0);
+
+            CvInvoke.Threshold(gr, bin, 20, 255, ThresholdType.Binary);
+            var cont = FindCircles.find_max_contour(bin);
+            if (cont != null)
+            {
+                var pf = FindCircles.findCentrCont(cont);
+                var p = new System.Drawing.Point((int)pf.X, (int)pf.Y);
+                Console.WriteLine(pf.X);
+                CvInvoke.DrawMarker(mat, p, new MCvScalar(255, 0, 0), MarkerTypes.TiltedCross, 10);
+                CvInvoke.DrawContours(mat, new VectorOfVectorOfPoint(new VectorOfPoint[] { cont }), -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
+              
+            }
+            return mat;
+        }
         public static PointF[] detectLineSensor_old(Mat mat, int wind = 20)
         {
             var mat_data = mat.Clone();
