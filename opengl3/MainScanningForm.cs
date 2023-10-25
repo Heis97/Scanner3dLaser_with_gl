@@ -146,7 +146,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-             //load_camers_v2();
+            //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -165,6 +165,7 @@ namespace opengl3
             //prin.t(q);
 
             //test_get_conts();
+            loadVideo_test_laser("v1_test.mp4");
         }
         static int[] frames_max(int[,] data)
         {
@@ -4136,6 +4137,41 @@ namespace opengl3
             //UtilOpenCV.drawPointsF(orig1, corn, 255, 0, 0, 2, true);
             //CvInvoke.Imshow("corn", orig1);
             return scanner;
+        }
+
+
+        public void loadVideo_test_laser(string filepath)
+        {
+
+            ImageViewer viewer = new ImageViewer(); //create an image viewer
+            viewer.SetBounds(0, 0, 1920, 1080);
+            VideoCapture capture = new VideoCapture(filepath); //create a camera captue
+            Application.Idle += new EventHandler(delegate (object sender, EventArgs e)
+            {  //run this until application closed (close button click on image viewer)
+                var mat = capture.QueryFrame();
+                var bin = new Mat();
+                var gr = new Mat();
+                CvInvoke.CvtColor(mat, gr, ColorConversion.Bgr2Gray);
+                CvInvoke.Threshold(gr, bin, 245, 255, ThresholdType.Binary);
+                viewer.Image = bin; //draw the image obtained from camera
+            });
+            viewer.ShowDialog();
+
+
+            /*string video_path = filepath;
+            var capture1 = new VideoCapture(video_path);
+            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
+            Console.WriteLine(all_frames1);
+            while (capture1.IsOpened)
+            {
+                Mat im1 = new Mat();
+                var ok = capture1.Read(im1);
+                if(ok)  CvInvoke.Imshow("v1", im1);
+                
+               
+               // videoframe_count++;
+                //Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames1);
+            }*/
         }
         #endregion
 
