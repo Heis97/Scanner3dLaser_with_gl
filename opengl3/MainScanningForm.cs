@@ -165,7 +165,9 @@ namespace opengl3
             //prin.t(q);
 
             //test_get_conts();
-            loadVideo_test_laser("v2_test.mp4");
+            //loadVideo_test_laser("v4_test.mp4");
+
+            frames_sync_from_file("enc_v1.txt");
         }
         static int[] frames_max(int[,] data)
         {
@@ -220,7 +222,7 @@ namespace opengl3
                 if (data_s[cam_max, i] != null && data_s[cam_min, i] != null)
                     if (data_s[cam_max, i].Length > 1 && data_s[cam_min, i].Length > 1)
                     { 
-                        Console.WriteLine(data_s[cam_max, i][1] + "  " + data_s[cam_min, i][1]); 
+                        Console.WriteLine(data_s[cam_max, i][0] + "  " + data_s[cam_min, i][0]); 
                     }
             }
             var prs = compare_frames(data_s, fr_min, fr_max, cam_min, cam_max);
@@ -270,7 +272,9 @@ namespace opengl3
             int ind = 0;
             int st_time = 0;
             foreach (var line in lines)
+            //for (int l = lines.Length-1; l>=0; l--)
             {
+                //var line = lines[l];
                 if (line.Length > 0)
                 {
                     var vals = line.Trim().Split(' ');
@@ -278,6 +282,7 @@ namespace opengl3
                     if (vals.Length == 6)
                     {
                         for (int i = 0; i < vals.Length; i++)
+                        //for (int i = vals.Length - 1; i >= 0; i--)
                         {
                             if (i == 3)
                             {
