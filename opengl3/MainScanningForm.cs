@@ -165,9 +165,9 @@ namespace opengl3
             //prin.t(q);
 
             //test_get_conts();
-            //loadVideo_test_laser("v4_test.mp4");
+            //loadVideo_test_laser("test_sync_1\\v3b.mp4");
 
-            frames_sync_from_file("enc_v1.txt");
+           // frames_sync_from_file("enc_v1.txt");
         }
         static int[] frames_max(int[,] data)
         {
@@ -267,7 +267,7 @@ namespace opengl3
             }
 
             enc = enc.Replace("\r", "");
-            var lines = enc.Split('\n');
+            var lines = enc.Split('\n'); 
             var enc_pos = new int[lines.Length, 8];
             int ind = 0;
             int st_time = 0;
