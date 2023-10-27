@@ -943,6 +943,7 @@ namespace opengl3
                 Thread.Sleep(2000);
                 startWrite(1, counts);
                 startWrite(2, counts);
+                Console.WriteLine(v_laser + " v_las");
                 laserLine?.setShvpVel(v_laser);
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
                 sb_enc = new StringBuilder();
@@ -2925,11 +2926,14 @@ namespace opengl3
         void initWrite(int ind,int w, int h)
         {
             int fcc = VideoWriter.Fourcc('m', 'p', '4', 'v'); //'M', 'J', 'P', 'G';'m', 'p', '4', 'v';'M', 'P', '4', 'V';'H', '2', '6', '4'
+            
             int fps = 30;
             Directory.CreateDirectory("cam" + ind.ToString() + "\\" + box_scanFolder.Text);
             string name ="cam"+ind.ToString()+"\\"+ box_scanFolder.Text + "\\"+video_scan_name+".mp4";
             Console.WriteLine("wr" + " " + w + " " + h);
             video_writer[ind - 1] = new VideoWriter(name, fcc, fps, new Size(w, h), true);
+            var reswr = video_writer[ind - 1].Set(VideoWriter.WriterProperty.Quality, 1);
+            Console.WriteLine(reswr);
         }
 
         void startWrite(int ind,int count)
