@@ -2355,7 +2355,7 @@ namespace opengl3
             this.tb_strip_scan.Name = "tb_strip_scan";
             this.tb_strip_scan.Size = new System.Drawing.Size(68, 20);
             this.tb_strip_scan.TabIndex = 123;
-            this.tb_strip_scan.Text = "5";
+            this.tb_strip_scan.Text = "10";
             // 
             // textB_scan_path
             // 

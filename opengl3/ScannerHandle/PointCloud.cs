@@ -131,7 +131,7 @@ namespace opengl3
 
             var srx1 = Detection.detectLineSensor(mat[0], 7)[0];
             var srx2 = Detection.detectLineSensor(mat[1], 7)[0];
-            Console.WriteLine(srx1.X + " " + srx2.X);
+            //Console.WriteLine(srx1.X + " " + srx2.X);
             if (points_im1 != null && points_im2 != null)
                 if(points_im1.Length == points_im2.Length)
                 {
@@ -161,7 +161,7 @@ namespace opengl3
 
             var srx1 = Detection.detectLineSensor(mat[0], 7)[0];
             var srx2 = Detection.detectLineSensor(mat[1], 7)[0];
-            Console.WriteLine(srx1.X + " " + srx2.X+ " " + points_im2[(int)points_im2.Length/2].X);
+           // Console.WriteLine(srx1.X + " " + srx2.X+ " " + points_im2[(int)points_im2.Length/2].X);
             /*var m1 = mat[0].Clone();
             var m2 = mat[1].Clone();
             m1 = UtilOpenCV.drawPointsF(m1, points_im1, 0, 255, 0, 1);

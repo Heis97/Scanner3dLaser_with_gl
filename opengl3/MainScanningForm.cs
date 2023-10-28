@@ -219,16 +219,40 @@ namespace opengl3
                 data_s[cam_n, fr_n] = l.ToArray();
             }
 
+            var find_prec1 = new List<double>();
+            var find_prec2 = new List<double>();
+
             for (int i = 1; i < data_s.GetLength(1); i++)
             {
-                if (data_s[cam_max, i] != null && data_s[cam_min, i] != null)
-                    if (data_s[cam_max, i].Length > 1 && data_s[cam_min, i].Length > 1)
+                if (data_s[cam_max, i] != null && data_s[cam_min, i] != null && data_s[cam_max, i-1] != null && data_s[cam_min, i-1] != null)
+                    if (data_s[cam_max, i].Length > 1 && data_s[cam_min, i].Length > 1 && data_s[cam_max, i-1].Length > 1 && data_s[cam_min, i-1].Length > 1)
                     { 
-                        Console.WriteLine(data_s[cam_max, i][0] + "  " + data_s[cam_min, i][0]); 
+                        Console.WriteLine(i+" "+data_s[cam_max, i][0] + "  " + data_s[cam_min, i][0]+" "+ 
+                            (data_s[cam_max, i][1]-data_s[cam_max, i][0]) + "  " + (data_s[cam_min, i][1]- data_s[cam_min, i][0]) + " "+
+                            (data_s[cam_max, i][0] - data_s[cam_max, i-1][0]) + " "+ (data_s[cam_min, i][0] - data_s[cam_min, i - 1][0])+" "+
+                            (data_s[cam_max, i][1] - data_s[cam_max, i - 1][1]) + " " + (data_s[cam_min, i][1] - data_s[cam_min, i - 1][1]) + " " );
+                        find_prec1.Add(data_s[cam_max, i][0] - data_s[cam_max, i - 1][0]);
+                        find_prec2.Add(data_s[cam_min, i][0] - data_s[cam_min, i - 1][0]);
                     }
             }
+            var prec1 = find_aver_dev( find_prec1.ToArray());
+            var prec2 = find_aver_dev(find_prec2.ToArray());
+            Console.WriteLine(prec1 + " " + prec2+ " PREC");
             var prs = compare_frames(data_s, fr_min, fr_max, cam_min, cam_max);
             return prs;
+        }
+
+        static double find_aver_dev(double[] vals)
+        {
+            double len = vals.Length;
+            var aver = vals.Sum() / len;
+            var sq_arr = new double[vals.Length];
+            for (int i = 0; i < sq_arr.Length; i++)
+            {
+                sq_arr[i] = (vals[i] - aver) * (vals[i] - aver);
+            }
+            var sq_aver = sq_arr.Sum() / len;
+            return Math.Sqrt(sq_aver);
         }
 
         static  double[][] compare_frames(int[,][] data, int frame_min, int frame_max, int cam_min, int cam_max)
@@ -250,7 +274,7 @@ namespace opengl3
 
                         var d1 = data[cam_max, i][0];
                         var d2 = data[cam_max, j][0] - (data[cam_max, j][0] - data[cam_max, j - 1][0]) * (1 - df);
-                        Console.WriteLine(d1 + " " + d2);
+                        //Console.WriteLine(d1 + " " + d2);
                     }
                     pairs[i] = new double[] { j, df };
                    
