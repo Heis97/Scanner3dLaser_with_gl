@@ -63,14 +63,16 @@ namespace opengl3
         private const float PI = 3.14159265358979f;
         // private Size cameraSize = new Size(1280, 960);
          private Size cameraSize = new Size(1184, 656);
+       // private Size cameraSize = new Size(1184, 656);
         //private Size cameraSize = new Size(1920, 1080);
-        // private Size cameraSize = new Size(640, 480);
+         //private Size cameraSize = new Size(640, 480);
         public GraphicGL GL1 = new GraphicGL();
         private VideoCapture myCapture1 = null;
         VideoWriter writer = null;
         double fps1 = 0;
 
         VideoWriter[] video_writer = new VideoWriter[2];
+        List<Mat>[] video_mats = new List<Mat>[2];
 
 
         private float z_mult_cam = 0.2f;
@@ -165,7 +167,7 @@ namespace opengl3
             //prin.t(q);
 
             //test_get_conts();
-            //loadVideo_test_laser("test_sync_1\\v3b.mp4");
+          // loadVideo_test_laser("test_sync_1\\v2810_2.avi");
 
            // frames_sync_from_file("enc_v1.txt");
         }
@@ -2777,8 +2779,12 @@ namespace opengl3
 
                 if ((camera_ind.Count > 0) && (cap.Ptr == camera_ind[0]))
                 {
+                    /*var mat = new Mat();
+                    cap.Retrieve(mat);
+                    imProcess(mat, 1);*/
                     
                     cap.Retrieve(mat_global[0]);
+                    
                    // CvInvoke.Imshow("im1", mat_global[0]);
                     camera_frame_time.Add(DateTime.Now.Ticks / 10000);
                     int fps_c = 100;
@@ -2795,16 +2801,19 @@ namespace opengl3
                     imageBox1.Image = mat_global[0];  
                     
                     imProcess(mat_global[0],1);
-
+                   
 
                 }
                 else if ((camera_ind.Count > 1) && (cap.Ptr == camera_ind[1]))
                 {
+                    /*var mat = new Mat();
+                    cap.Retrieve(mat);
+                    imProcess(mat, 2);*/
                     cap.Retrieve(mat_global[1]);                                      
                     imageBox2.Image = mat_global[1];
 
                     imProcess(mat_global[1],2);
-
+                    
                     //imBox_base.Image = stereoProc(mat_global[0], mat_global[1]);
                 }
             }
@@ -2855,7 +2864,8 @@ namespace opengl3
             }
             if (videoframe_counts[ind - 1] == 0)
             {
-                initWrite(ind,cameraSize.Width,cameraSize.Height);
+                //initWrite(ind,cameraSize.Width,cameraSize.Height);
+                video_mats[ind - 1] = new List<Mat>();
                 videoframe_counts[ind - 1]++;
             }
 
@@ -2866,7 +2876,10 @@ namespace opengl3
                 sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("\n");
-                video_writer[ind - 1]?.Write(mat);
+                //video_writer[ind - 1]?.Write(mat);
+                video_mats[ind-1].Add(mat.Clone());
+                //var p = Detection.detectLineSensor(mat)[0];
+                //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
                // sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
@@ -2876,7 +2889,7 @@ namespace opengl3
             }
             else
             {
-
+                if (video_mats[ind-1]!=null) save_video( ind, cameraSize.Width, cameraSize.Height);
                 if (sb_enc!=null)
                 {
                     laserLine?.laserOff();
@@ -2897,7 +2910,7 @@ namespace opengl3
                 }
 
 
-                video_writer[ind - 1]?.Dispose();
+               // video_writer[ind - 1]?.Dispose();
             }
 
         }
@@ -2932,10 +2945,30 @@ namespace opengl3
             string name ="cam"+ind.ToString()+"\\"+ box_scanFolder.Text + "\\"+video_scan_name+".mp4";
             Console.WriteLine("wr" + " " + w + " " + h);
             video_writer[ind - 1] = new VideoWriter(name, fcc, fps, new Size(w, h), true);
-            var reswr = video_writer[ind - 1].Set(VideoWriter.WriterProperty.Quality, 1);
-            Console.WriteLine(reswr);
+            //var reswr = video_writer[ind - 1].Set(VideoWriter.WriterProperty.Quality, 1);
+            //Console.WriteLine(reswr);
         }
+        void save_video(int ind, int w, int h)
+        {
+            int fcc = VideoWriter.Fourcc('h', '2', '6', '4'); //'M', 'J', 'P', 'G';'m', 'p', '4', 'v';'M', 'P', '4', 'V';'H', '2', '6', '4'
+            
+            int fps = 30;
+            Directory.CreateDirectory("cam" + ind.ToString() + "\\" + box_scanFolder.Text);
+            string name = "cam" + ind.ToString() + "\\" + box_scanFolder.Text + "\\" + video_scan_name + ".mp4";
+            Console.WriteLine("wr" + " " + w + " " + h);
+            video_writer[ind - 1] = new VideoWriter(name, -1, fps, new Size(w, h), true);
+            var reswr = video_writer[ind - 1].Set(VideoWriter.WriterProperty.Quality, 100);
+            Console.WriteLine(reswr);
+            for (int i=0;i< video_mats[ind-1].Count;i++)
+            {
+                video_writer[ind - 1].Write(video_mats[ind - 1][i]);
+                //var p = Detection.detectLineSensor(video_mats[ind - 1][i])[0];
+                //Console.WriteLine(ind + " "  + p);
+            }
+            video_mats[ind - 1] = null;
+            video_writer[ind - 1].Dispose();
 
+        }
         void startWrite(int ind,int count)
         {
             videoframe_counts_stop[ind - 1] = count;
@@ -2968,7 +3001,7 @@ namespace opengl3
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-            capture.SetCaptureProperty(CapProp.Fps, 30);
+            //capture.SetCaptureProperty(CapProp.Fps, 30);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
