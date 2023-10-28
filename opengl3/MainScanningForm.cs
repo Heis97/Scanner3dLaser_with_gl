@@ -183,7 +183,7 @@ namespace opengl3
                         orderby d[0] descending
                         select d).ToArray();
             var i_min = 0;
-            for(int i=1; i_min==0 && i<analyse_len;i++)
+            for(int i=1; i_min==0 && i<analyse_len-2;i++)
             {
                 if (ed_s[i][1] != ed_s[0][1]) i_min = i;
             }
@@ -227,10 +227,10 @@ namespace opengl3
                 if (data_s[cam_max, i] != null && data_s[cam_min, i] != null && data_s[cam_max, i-1] != null && data_s[cam_min, i-1] != null)
                     if (data_s[cam_max, i].Length > 1 && data_s[cam_min, i].Length > 1 && data_s[cam_max, i-1].Length > 1 && data_s[cam_min, i-1].Length > 1)
                     { 
-                        Console.WriteLine(i+" "+data_s[cam_max, i][0] + "  " + data_s[cam_min, i][0]+" "+ 
+                       /* Console.WriteLine(i+" "+data_s[cam_max, i][0] + "  " + data_s[cam_min, i][0]+" "+ 
                             (data_s[cam_max, i][1]-data_s[cam_max, i][0]) + "  " + (data_s[cam_min, i][1]- data_s[cam_min, i][0]) + " "+
                             (data_s[cam_max, i][0] - data_s[cam_max, i-1][0]) + " "+ (data_s[cam_min, i][0] - data_s[cam_min, i - 1][0])+" "+
-                            (data_s[cam_max, i][1] - data_s[cam_max, i - 1][1]) + " " + (data_s[cam_min, i][1] - data_s[cam_min, i - 1][1]) + " " );
+                            (data_s[cam_max, i][1] - data_s[cam_max, i - 1][1]) + " " + (data_s[cam_min, i][1] - data_s[cam_min, i - 1][1]) + " " );*/
                         find_prec1.Add(data_s[cam_max, i][0] - data_s[cam_max, i - 1][0]);
                         find_prec2.Add(data_s[cam_min, i][0] - data_s[cam_min, i - 1][0]);
                     }
