@@ -504,6 +504,7 @@ namespace opengl3
         static public object[] parsingStl_GL4(string path, out Point3d_GL _center)
         {
             string file1;
+
             using (StreamReader sr = new StreamReader(path, ASCIIEncoding.ASCII))
             {
                 file1 = sr.ReadToEnd();

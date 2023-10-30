@@ -1406,7 +1406,7 @@ namespace opengl3
 
         void test_reconstr()
         {
-            var scan_stla = new Model3d("def1.stl", false);
+            var scan_stla = new Model3d("def1c.stl", false);
             var pols = scan_stla.pols;
             
             var pols2 = SurfaceReconstraction.get_conts_from_defect(pols);

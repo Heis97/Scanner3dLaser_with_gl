@@ -21,7 +21,7 @@ namespace opengl3
             for(int i = 0; i<pols.Length;i++)
             {
                 pols_color[i] = pols[i].Clone();
-                if(pols[i].flat3D.n.z<0.5)
+                if(pols[i].flat3D.n.z<0.95)
                 {
                     pols_color[i].set_color(Color3d_GL.green());
                 }
