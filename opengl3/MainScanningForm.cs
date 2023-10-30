@@ -1278,15 +1278,15 @@ namespace opengl3
             GL1.add_TreeView(tree_models);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
-             /*var p1 = new Point3d_GL(0, 0, 20);
-             var p2 = new Point3d_GL(30, 0, 0);
-             var p3 = new Point3d_GL(30, 30, 0);
-             var p4 = new Point3d_GL(0, 30, 0);
-             var polygs = new Polygon3d_GL[] { new Polygon3d_GL(p1, p2, p3), new Polygon3d_GL(p1, p4, p3) };
-             var m1 = PathPlanner.proj_point_test(polygs[0], new Vector3d_GL(1, 0, 0));
-             var ps = new Point3d_GL[] { p1, p2, p3 };
-             GL1.addFrame(m1);
-             GL1.addLineMesh(ps);*/
+            /*var p1 = new Point3d_GL(0, 0, 20);
+            var p2 = new Point3d_GL(30, 0, 0);
+            var p3 = new Point3d_GL(30, 30, 0);
+            var p4 = new Point3d_GL(0, 30, 0);
+            var polygs = new Polygon3d_GL[] { new Polygon3d_GL(p1, p2, p3), new Polygon3d_GL(p1, p4, p3) };
+            var m1 = PathPlanner.proj_point_test(polygs[0], new Vector3d_GL(1, 0, 0));
+            var ps = new Point3d_GL[] { p1, p2, p3 };
+            GL1.addFrame(m1);
+            GL1.addLineMesh(ps);*/
 
             // startGenerate();
             //trB_SGBM_Enter();
@@ -1310,6 +1310,8 @@ namespace opengl3
             scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
             GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def2");*/
             //test_arc();
+
+            test_reconstr();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1373,6 +1375,20 @@ namespace opengl3
 
             //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
 
+        }
+
+        void test_reconstr()
+        {
+            var scan_stla = new Model3d("def1.stl", false);
+            var pols = scan_stla.pols;
+            
+            var pols2 = SurfaceReconstraction.get_conts_from_defect(pols);
+            var meshs = Polygon3d_GL.toMesh(pols2);
+            //scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
+            GL1.add_buff_gl(meshs[0], meshs[1], meshs[2], PrimitiveType.Triangles, "def2");
+
+            
+           // scan_stla.pols
         }
         void test_traj_color()
         {

@@ -139,14 +139,12 @@ namespace opengl3
             pols = null;
             if (format == "obj")
             {
-                var triang = new TriangleGl[0];
-
-                var arrays = parsingObj(path, out triang, out center1, scale, ref matrix_norm);
+                var arrays = parsingObj(path, out pols, out center1, scale, ref matrix_norm);
                 mesh = arrays[0];
                 texture = arrays[1];
                 normale = arrays[2];
                 color = new float[mesh.Length];
-                triangles = triang;
+                triangles = null;
                 center = center1;
 
 
@@ -515,7 +513,7 @@ namespace opengl3
         }
 
 
-        static public float[][] parsingObj(string path, out TriangleGl[] triangleGl, out Point3d_GL _center, float scale, ref Matrix<double> matrix)
+        static public float[][] parsingObj(string path, out Polygon3d_GL[] triangleGl, out Point3d_GL _center, float scale, ref Matrix<double> matrix)
         {
             var ret = new List<float[]>();
             string file1;

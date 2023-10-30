@@ -24,7 +24,8 @@ namespace opengl3
             y = _y;
             z = _z;
             exist = true;
-            color = _color;
+            if (_color != null) color = _color;
+            else color = new Color3d_GL(0.5f, 0.5f, 0.5f);
         }
 
         public Point3d_GL(Vertex4f vertex, Color3d_GL _color = null)

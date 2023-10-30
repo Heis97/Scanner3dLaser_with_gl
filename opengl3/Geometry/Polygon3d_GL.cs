@@ -59,6 +59,14 @@ namespace opengl3
             return pols_mul;
         }
 
+        public Polygon3d_GL set_color(Color3d_GL color)
+        {
+            ps[0].color = color;
+            ps[1].color = color;
+            ps[2].color = color;
+            return this;
+        }
+
         public bool affilationPoint_xy(Point3d_GL p)
         {
             if (ps.Length < 3)
@@ -410,7 +418,11 @@ namespace opengl3
             return polygons.ToArray();
         }
 
-
+        /// <summary>
+        /// mesh,color,normal
+        /// </summary>
+        /// <param name="polygons"></param>
+        /// <returns></returns>
         static public float[][] toMesh(Polygon3d_GL[] polygons)
         {
             if (polygons == null) return null;
@@ -703,7 +715,10 @@ namespace opengl3
             return null;
         }
 
-
+        public Polygon3d_GL Clone()
+        {
+            return new Polygon3d_GL(ps[0].Clone(), ps[1].Clone(), ps[2].Clone(), special_point_ind);
+        }
     }
 
     public class IndexedMesh

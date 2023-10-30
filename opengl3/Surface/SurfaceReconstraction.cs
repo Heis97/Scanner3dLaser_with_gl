@@ -15,7 +15,23 @@ namespace opengl3
     static class SurfaceReconstraction
     {
 
-
+        static public Polygon3d_GL[] get_conts_from_defect(Polygon3d_GL[] pols)
+        {
+            var pols_color = new Polygon3d_GL[pols.Length];
+            for(int i = 0; i<pols.Length;i++)
+            {
+                pols_color[i] = pols[i].Clone();
+                if(pols[i].flat3D.n.z<0.5)
+                {
+                    pols_color[i].set_color(Color3d_GL.green());
+                }
+                else
+                {
+                    pols_color[i].set_color(new Color3d_GL(0.5f,0.5f,0.5f));
+                }
+            }
+            return pols_color;
+        }
         
 
 
