@@ -124,15 +124,15 @@ namespace opengl3
             this.but_point_type = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.but_start_anim = new System.Windows.Forms.Button();
-            this.but_rob_auto_sc = new System.Windows.Forms.Button();
-            this.but_rob_send_sc = new System.Windows.Forms.Button();
-            this.but_rob_discon_sc = new System.Windows.Forms.Button();
-            this.but_rob_con_sc = new System.Windows.Forms.Button();
-            this.but_rob_res_sc = new System.Windows.Forms.Button();
-            this.but_rob_manual_sc = new System.Windows.Forms.Button();
-            this.but_rob_clear_sc = new System.Windows.Forms.Button();
-            this.but_rob_start_sc = new System.Windows.Forms.Button();
             this.but_send_traj = new System.Windows.Forms.Button();
+            this.but_rob_discon_sc = new System.Windows.Forms.Button();
+            this.but_rob_auto_sc = new System.Windows.Forms.Button();
+            this.but_rob_res_sc = new System.Windows.Forms.Button();
+            this.but_rob_clear_sc = new System.Windows.Forms.Button();
+            this.but_rob_send_sc = new System.Windows.Forms.Button();
+            this.but_rob_con_sc = new System.Windows.Forms.Button();
+            this.but_rob_manual_sc = new System.Windows.Forms.Button();
+            this.but_rob_start_sc = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.but_gl_cam_calib = new System.Windows.Forms.Button();
             this.but_swapMonit = new System.Windows.Forms.Button();
@@ -442,7 +442,7 @@ namespace opengl3
             this.comboImages.FormattingEnabled = true;
             this.comboImages.Location = new System.Drawing.Point(646, -2);
             this.comboImages.Name = "comboImages";
-            this.comboImages.Size = new System.Drawing.Size(431, 24);
+            this.comboImages.Size = new System.Drawing.Size(431, 21);
             this.comboImages.TabIndex = 24;
             this.comboImages.SelectionChangeCommitted += new System.EventHandler(this.comboImages_SelectionChangeCommitted);
             // 
@@ -474,10 +474,10 @@ namespace opengl3
             this.tabCalibMonit.Controls.Add(this.imBox_input_2);
             this.tabCalibMonit.Controls.Add(this.imBox_input_1);
             this.tabCalibMonit.Controls.Add(this.imBox_pattern);
-            this.tabCalibMonit.Location = new System.Drawing.Point(4, 25);
+            this.tabCalibMonit.Location = new System.Drawing.Point(4, 22);
             this.tabCalibMonit.Name = "tabCalibMonit";
             this.tabCalibMonit.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCalibMonit.Size = new System.Drawing.Size(1861, 1000);
+            this.tabCalibMonit.Size = new System.Drawing.Size(1861, 1003);
             this.tabCalibMonit.TabIndex = 5;
             this.tabCalibMonit.Text = "Калибровка";
             this.tabCalibMonit.UseVisualStyleBackColor = true;
@@ -491,7 +491,7 @@ namespace opengl3
             this.lab_pos_mouse.AutoSize = true;
             this.lab_pos_mouse.Location = new System.Drawing.Point(1519, 494);
             this.lab_pos_mouse.Name = "lab_pos_mouse";
-            this.lab_pos_mouse.Size = new System.Drawing.Size(104, 16);
+            this.lab_pos_mouse.Size = new System.Drawing.Size(81, 13);
             this.lab_pos_mouse.TabIndex = 120;
             this.lab_pos_mouse.Text = "lab_pos_mouse";
             // 
@@ -531,7 +531,7 @@ namespace opengl3
             // 
             this.textBoxK_8.Location = new System.Drawing.Point(1749, 439);
             this.textBoxK_8.Name = "textBoxK_8";
-            this.textBoxK_8.Size = new System.Drawing.Size(100, 22);
+            this.textBoxK_8.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_8.TabIndex = 22;
             this.textBoxK_8.Text = "1";
             // 
@@ -539,7 +539,7 @@ namespace opengl3
             // 
             this.textBoxK_7.Location = new System.Drawing.Point(1749, 388);
             this.textBoxK_7.Name = "textBoxK_7";
-            this.textBoxK_7.Size = new System.Drawing.Size(100, 22);
+            this.textBoxK_7.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_7.TabIndex = 20;
             this.textBoxK_7.Text = "1";
             // 
@@ -547,7 +547,7 @@ namespace opengl3
             // 
             this.textBoxK_6.Location = new System.Drawing.Point(1749, 337);
             this.textBoxK_6.Name = "textBoxK_6";
-            this.textBoxK_6.Size = new System.Drawing.Size(100, 22);
+            this.textBoxK_6.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_6.TabIndex = 18;
             this.textBoxK_6.Text = "1";
             // 
@@ -555,7 +555,7 @@ namespace opengl3
             // 
             this.textBoxK_5.Location = new System.Drawing.Point(1749, 286);
             this.textBoxK_5.Name = "textBoxK_5";
-            this.textBoxK_5.Size = new System.Drawing.Size(100, 22);
+            this.textBoxK_5.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_5.TabIndex = 16;
             this.textBoxK_5.Text = "0.01";
             // 
@@ -563,7 +563,7 @@ namespace opengl3
             // 
             this.textBoxK_4.Location = new System.Drawing.Point(1749, 235);
             this.textBoxK_4.Name = "textBoxK_4";
-            this.textBoxK_4.Size = new System.Drawing.Size(100, 22);
+            this.textBoxK_4.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_4.TabIndex = 14;
             this.textBoxK_4.Text = "1";
             // 
@@ -571,7 +571,7 @@ namespace opengl3
             // 
             this.textBoxK_3.Location = new System.Drawing.Point(1749, 184);
             this.textBoxK_3.Name = "textBoxK_3";
-            this.textBoxK_3.Size = new System.Drawing.Size(100, 22);
+            this.textBoxK_3.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_3.TabIndex = 12;
             this.textBoxK_3.Text = "1";
             // 
@@ -579,7 +579,7 @@ namespace opengl3
             // 
             this.textBoxK_2.Location = new System.Drawing.Point(1749, 133);
             this.textBoxK_2.Name = "textBoxK_2";
-            this.textBoxK_2.Size = new System.Drawing.Size(100, 22);
+            this.textBoxK_2.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_2.TabIndex = 10;
             this.textBoxK_2.Text = "0.01";
             // 
@@ -587,7 +587,7 @@ namespace opengl3
             // 
             this.textBoxK_1.Location = new System.Drawing.Point(1749, 82);
             this.textBoxK_1.Name = "textBoxK_1";
-            this.textBoxK_1.Size = new System.Drawing.Size(100, 22);
+            this.textBoxK_1.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_1.TabIndex = 8;
             this.textBoxK_1.Text = "1";
             // 
@@ -595,7 +595,7 @@ namespace opengl3
             // 
             this.textBoxK_0.Location = new System.Drawing.Point(1749, 31);
             this.textBoxK_0.Name = "textBoxK_0";
-            this.textBoxK_0.Size = new System.Drawing.Size(100, 22);
+            this.textBoxK_0.Size = new System.Drawing.Size(100, 20);
             this.textBoxK_0.TabIndex = 6;
             this.textBoxK_0.Text = "1";
             // 
@@ -748,10 +748,10 @@ namespace opengl3
             this.tabDistort.Controls.Add(this.label29);
             this.tabDistort.Controls.Add(this.label28);
             this.tabDistort.Controls.Add(this.imageBox_cameraDist);
-            this.tabDistort.Location = new System.Drawing.Point(4, 25);
+            this.tabDistort.Location = new System.Drawing.Point(4, 22);
             this.tabDistort.Name = "tabDistort";
             this.tabDistort.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDistort.Size = new System.Drawing.Size(1861, 1000);
+            this.tabDistort.Size = new System.Drawing.Size(1861, 1003);
             this.tabDistort.TabIndex = 4;
             this.tabDistort.Text = "Камера";
             this.tabDistort.UseVisualStyleBackColor = true;
@@ -777,7 +777,7 @@ namespace opengl3
             this.label_corPic.AutoSize = true;
             this.label_corPic.Location = new System.Drawing.Point(1294, 162);
             this.label_corPic.Name = "label_corPic";
-            this.label_corPic.Size = new System.Drawing.Size(26, 16);
+            this.label_corPic.Size = new System.Drawing.Size(22, 13);
             this.label_corPic.TabIndex = 19;
             this.label_corPic.Text = "cor";
             // 
@@ -795,7 +795,7 @@ namespace opengl3
             // 
             this.textBox_P2deg.Location = new System.Drawing.Point(1447, 122);
             this.textBox_P2deg.Name = "textBox_P2deg";
-            this.textBox_P2deg.Size = new System.Drawing.Size(100, 22);
+            this.textBox_P2deg.Size = new System.Drawing.Size(100, 20);
             this.textBox_P2deg.TabIndex = 18;
             this.textBox_P2deg.Text = "0";
             // 
@@ -803,7 +803,7 @@ namespace opengl3
             // 
             this.textBox_P1deg.Location = new System.Drawing.Point(1447, 96);
             this.textBox_P1deg.Name = "textBox_P1deg";
-            this.textBox_P1deg.Size = new System.Drawing.Size(100, 22);
+            this.textBox_P1deg.Size = new System.Drawing.Size(100, 20);
             this.textBox_P1deg.TabIndex = 17;
             this.textBox_P1deg.Text = "0";
             // 
@@ -811,7 +811,7 @@ namespace opengl3
             // 
             this.textBox_K3deg.Location = new System.Drawing.Point(1447, 70);
             this.textBox_K3deg.Name = "textBox_K3deg";
-            this.textBox_K3deg.Size = new System.Drawing.Size(100, 22);
+            this.textBox_K3deg.Size = new System.Drawing.Size(100, 20);
             this.textBox_K3deg.TabIndex = 16;
             this.textBox_K3deg.Text = "0";
             // 
@@ -819,7 +819,7 @@ namespace opengl3
             // 
             this.textBox_K2deg.Location = new System.Drawing.Point(1447, 44);
             this.textBox_K2deg.Name = "textBox_K2deg";
-            this.textBox_K2deg.Size = new System.Drawing.Size(100, 22);
+            this.textBox_K2deg.Size = new System.Drawing.Size(100, 20);
             this.textBox_K2deg.TabIndex = 15;
             this.textBox_K2deg.Text = "0";
             // 
@@ -827,7 +827,7 @@ namespace opengl3
             // 
             this.textBox_K1deg.Location = new System.Drawing.Point(1447, 18);
             this.textBox_K1deg.Name = "textBox_K1deg";
-            this.textBox_K1deg.Size = new System.Drawing.Size(100, 22);
+            this.textBox_K1deg.Size = new System.Drawing.Size(100, 20);
             this.textBox_K1deg.TabIndex = 14;
             this.textBox_K1deg.Text = "0";
             // 
@@ -835,7 +835,7 @@ namespace opengl3
             // 
             this.textBox_P2.Location = new System.Drawing.Point(1320, 122);
             this.textBox_P2.Name = "textBox_P2";
-            this.textBox_P2.Size = new System.Drawing.Size(100, 22);
+            this.textBox_P2.Size = new System.Drawing.Size(100, 20);
             this.textBox_P2.TabIndex = 12;
             this.textBox_P2.Text = "0";
             // 
@@ -843,7 +843,7 @@ namespace opengl3
             // 
             this.textBox_P1.Location = new System.Drawing.Point(1320, 96);
             this.textBox_P1.Name = "textBox_P1";
-            this.textBox_P1.Size = new System.Drawing.Size(100, 22);
+            this.textBox_P1.Size = new System.Drawing.Size(100, 20);
             this.textBox_P1.TabIndex = 10;
             this.textBox_P1.Text = "0";
             // 
@@ -851,7 +851,7 @@ namespace opengl3
             // 
             this.textBox_K3.Location = new System.Drawing.Point(1320, 70);
             this.textBox_K3.Name = "textBox_K3";
-            this.textBox_K3.Size = new System.Drawing.Size(100, 22);
+            this.textBox_K3.Size = new System.Drawing.Size(100, 20);
             this.textBox_K3.TabIndex = 8;
             this.textBox_K3.Text = "0";
             // 
@@ -859,7 +859,7 @@ namespace opengl3
             // 
             this.textBox_K2.Location = new System.Drawing.Point(1320, 44);
             this.textBox_K2.Name = "textBox_K2";
-            this.textBox_K2.Size = new System.Drawing.Size(100, 22);
+            this.textBox_K2.Size = new System.Drawing.Size(100, 20);
             this.textBox_K2.TabIndex = 6;
             this.textBox_K2.Text = "0";
             // 
@@ -867,7 +867,7 @@ namespace opengl3
             // 
             this.textBox_K1.Location = new System.Drawing.Point(1320, 18);
             this.textBox_K1.Name = "textBox_K1";
-            this.textBox_K1.Size = new System.Drawing.Size(100, 22);
+            this.textBox_K1.Size = new System.Drawing.Size(100, 20);
             this.textBox_K1.TabIndex = 4;
             this.textBox_K1.Text = "-1";
             // 
@@ -886,7 +886,7 @@ namespace opengl3
             this.label32.AutoSize = true;
             this.label32.Location = new System.Drawing.Point(1294, 125);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(23, 16);
+            this.label32.Size = new System.Drawing.Size(20, 13);
             this.label32.TabIndex = 11;
             this.label32.Text = "P2";
             // 
@@ -895,7 +895,7 @@ namespace opengl3
             this.label31.AutoSize = true;
             this.label31.Location = new System.Drawing.Point(1294, 99);
             this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(23, 16);
+            this.label31.Size = new System.Drawing.Size(20, 13);
             this.label31.TabIndex = 9;
             this.label31.Text = "P1";
             // 
@@ -904,7 +904,7 @@ namespace opengl3
             this.label30.AutoSize = true;
             this.label30.Location = new System.Drawing.Point(1294, 73);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(22, 16);
+            this.label30.Size = new System.Drawing.Size(20, 13);
             this.label30.TabIndex = 7;
             this.label30.Text = "K3";
             // 
@@ -913,7 +913,7 @@ namespace opengl3
             this.label29.AutoSize = true;
             this.label29.Location = new System.Drawing.Point(1294, 47);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(22, 16);
+            this.label29.Size = new System.Drawing.Size(20, 13);
             this.label29.TabIndex = 5;
             this.label29.Text = "K2";
             // 
@@ -922,7 +922,7 @@ namespace opengl3
             this.label28.AutoSize = true;
             this.label28.Location = new System.Drawing.Point(1294, 21);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(22, 16);
+            this.label28.Size = new System.Drawing.Size(20, 13);
             this.label28.TabIndex = 3;
             this.label28.Text = "K1";
             // 
@@ -945,10 +945,10 @@ namespace opengl3
             this.tabDebug.Controls.Add(this.imageBox8);
             this.tabDebug.Controls.Add(this.pictureBox1);
             this.tabDebug.Controls.Add(this.histogramBox1);
-            this.tabDebug.Location = new System.Drawing.Point(4, 25);
+            this.tabDebug.Location = new System.Drawing.Point(4, 22);
             this.tabDebug.Name = "tabDebug";
             this.tabDebug.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDebug.Size = new System.Drawing.Size(1861, 1000);
+            this.tabDebug.Size = new System.Drawing.Size(1861, 1003);
             this.tabDebug.TabIndex = 3;
             this.tabDebug.Text = "Отладка";
             this.tabDebug.UseVisualStyleBackColor = true;
@@ -1022,10 +1022,10 @@ namespace opengl3
             // 
             this.tabOpenGl.Controls.Add(this.win_tab_diff);
             this.tabOpenGl.Controls.Add(this.glControl1);
-            this.tabOpenGl.Location = new System.Drawing.Point(4, 25);
+            this.tabOpenGl.Location = new System.Drawing.Point(4, 22);
             this.tabOpenGl.Name = "tabOpenGl";
             this.tabOpenGl.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOpenGl.Size = new System.Drawing.Size(1861, 1000);
+            this.tabOpenGl.Size = new System.Drawing.Size(1861, 1003);
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
@@ -1057,10 +1057,10 @@ namespace opengl3
             this.tabPage1.Controls.Add(this.but_gl_clear);
             this.tabPage1.Controls.Add(this.but_traj_clear);
             this.tabPage1.Controls.Add(this.debugBox);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(642, 896);
+            this.tabPage1.Size = new System.Drawing.Size(642, 899);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Траектория";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -1161,10 +1161,10 @@ namespace opengl3
             this.tabPage2.Controls.Add(this.textBox_monitor_id);
             this.tabPage2.Controls.Add(this.lab_TRZ);
             this.tabPage2.Controls.Add(this.but_point_type);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(642, 896);
+            this.tabPage2.Size = new System.Drawing.Size(642, 899);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Объекты сцены";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -1191,7 +1191,7 @@ namespace opengl3
             // 
             this.tp_smooth_scan.Location = new System.Drawing.Point(451, 310);
             this.tp_smooth_scan.Name = "tp_smooth_scan";
-            this.tp_smooth_scan.Size = new System.Drawing.Size(68, 22);
+            this.tp_smooth_scan.Size = new System.Drawing.Size(68, 20);
             this.tp_smooth_scan.TabIndex = 127;
             this.tp_smooth_scan.Text = "-1";
             // 
@@ -1200,7 +1200,7 @@ namespace opengl3
             this.label19.AutoSize = true;
             this.label19.Location = new System.Drawing.Point(382, 313);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(79, 16);
+            this.label19.Size = new System.Drawing.Size(63, 13);
             this.label19.TabIndex = 126;
             this.label19.Text = "smooth, mm";
             // 
@@ -1310,7 +1310,7 @@ namespace opengl3
             this.lab_kor.AutoSize = true;
             this.lab_kor.Location = new System.Drawing.Point(151, 444);
             this.lab_kor.Name = "lab_kor";
-            this.lab_kor.Size = new System.Drawing.Size(26, 16);
+            this.lab_kor.Size = new System.Drawing.Size(22, 13);
             this.lab_kor.TabIndex = 64;
             this.lab_kor.Text = "cor";
             // 
@@ -1319,7 +1319,7 @@ namespace opengl3
             this.lab_curCor.AutoSize = true;
             this.lab_curCor.Location = new System.Drawing.Point(258, 444);
             this.lab_curCor.Name = "lab_curCor";
-            this.lab_curCor.Size = new System.Drawing.Size(46, 16);
+            this.lab_curCor.Size = new System.Drawing.Size(38, 13);
             this.lab_curCor.TabIndex = 66;
             this.lab_curCor.Text = "curCor";
             // 
@@ -1328,7 +1328,7 @@ namespace opengl3
             this.label33.AutoSize = true;
             this.label33.Location = new System.Drawing.Point(147, 409);
             this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(71, 16);
+            this.label33.Size = new System.Drawing.Size(58, 13);
             this.label33.TabIndex = 69;
             this.label33.Text = "ID_monitor";
             // 
@@ -1347,7 +1347,7 @@ namespace opengl3
             this.lab_check.AutoSize = true;
             this.lab_check.Location = new System.Drawing.Point(331, 409);
             this.lab_check.Name = "lab_check";
-            this.lab_check.Size = new System.Drawing.Size(46, 16);
+            this.lab_check.Size = new System.Drawing.Size(38, 13);
             this.lab_check.TabIndex = 70;
             this.lab_check.Text = "curCor";
             // 
@@ -1355,7 +1355,7 @@ namespace opengl3
             // 
             this.textBox_monitor_id.Location = new System.Drawing.Point(225, 406);
             this.textBox_monitor_id.Name = "textBox_monitor_id";
-            this.textBox_monitor_id.Size = new System.Drawing.Size(100, 22);
+            this.textBox_monitor_id.Size = new System.Drawing.Size(100, 20);
             this.textBox_monitor_id.TabIndex = 68;
             this.textBox_monitor_id.Text = "0 1";
             // 
@@ -1364,7 +1364,7 @@ namespace opengl3
             this.lab_TRZ.AutoSize = true;
             this.lab_TRZ.Location = new System.Drawing.Point(292, 484);
             this.lab_TRZ.Name = "lab_TRZ";
-            this.lab_TRZ.Size = new System.Drawing.Size(26, 16);
+            this.lab_TRZ.Size = new System.Drawing.Size(22, 13);
             this.lab_TRZ.TabIndex = 99;
             this.lab_TRZ.Text = "cor";
             // 
@@ -1390,10 +1390,10 @@ namespace opengl3
             this.tabPage3.Controls.Add(this.but_rob_con_sc);
             this.tabPage3.Controls.Add(this.but_rob_manual_sc);
             this.tabPage3.Controls.Add(this.but_rob_start_sc);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(642, 896);
+            this.tabPage3.Size = new System.Drawing.Size(642, 899);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Управление роботом";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -1408,27 +1408,15 @@ namespace opengl3
             this.but_start_anim.UseVisualStyleBackColor = true;
             this.but_start_anim.Click += new System.EventHandler(this.but_start_anim_Click);
             // 
-            // but_rob_auto_sc
+            // but_send_traj
             // 
-            this.but_rob_auto_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_auto_sc.Location = new System.Drawing.Point(127, 13);
-            this.but_rob_auto_sc.Name = "but_rob_auto_sc";
-            this.but_rob_auto_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_auto_sc.TabIndex = 142;
-            this.but_rob_auto_sc.Text = "Auto";
-            this.but_rob_auto_sc.UseVisualStyleBackColor = true;
-            this.but_rob_auto_sc.Click += new System.EventHandler(this.but_rob_auto_sc_Click);
-            // 
-            // but_rob_send_sc
-            // 
-            this.but_rob_send_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_send_sc.Location = new System.Drawing.Point(15, 101);
-            this.but_rob_send_sc.Name = "but_rob_send_sc";
-            this.but_rob_send_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_send_sc.TabIndex = 139;
-            this.but_rob_send_sc.Text = "Send robot";
-            this.but_rob_send_sc.UseVisualStyleBackColor = true;
-            this.but_rob_send_sc.Click += new System.EventHandler(this.but_rob_send_sc_Click);
+            this.but_send_traj.Location = new System.Drawing.Point(15, 437);
+            this.but_send_traj.Name = "but_send_traj";
+            this.but_send_traj.Size = new System.Drawing.Size(96, 34);
+            this.but_send_traj.TabIndex = 104;
+            this.but_send_traj.Text = "Отправить траекторию";
+            this.but_send_traj.UseVisualStyleBackColor = true;
+            this.but_send_traj.Click += new System.EventHandler(this.but_send_traj_Click);
             // 
             // but_rob_discon_sc
             // 
@@ -1441,16 +1429,16 @@ namespace opengl3
             this.but_rob_discon_sc.UseVisualStyleBackColor = true;
             this.but_rob_discon_sc.Click += new System.EventHandler(this.but_rob_discon_sc_Click);
             // 
-            // but_rob_con_sc
+            // but_rob_auto_sc
             // 
-            this.but_rob_con_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_con_sc.Location = new System.Drawing.Point(15, 13);
-            this.but_rob_con_sc.Name = "but_rob_con_sc";
-            this.but_rob_con_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_con_sc.TabIndex = 137;
-            this.but_rob_con_sc.Text = "Connect robot";
-            this.but_rob_con_sc.UseVisualStyleBackColor = true;
-            this.but_rob_con_sc.Click += new System.EventHandler(this.but_rob_con_sc_Click);
+            this.but_rob_auto_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_auto_sc.Location = new System.Drawing.Point(127, 13);
+            this.but_rob_auto_sc.Name = "but_rob_auto_sc";
+            this.but_rob_auto_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_auto_sc.TabIndex = 142;
+            this.but_rob_auto_sc.Text = "Auto";
+            this.but_rob_auto_sc.UseVisualStyleBackColor = true;
+            this.but_rob_auto_sc.Click += new System.EventHandler(this.but_rob_auto_sc_Click);
             // 
             // but_rob_res_sc
             // 
@@ -1463,17 +1451,6 @@ namespace opengl3
             this.but_rob_res_sc.UseVisualStyleBackColor = true;
             this.but_rob_res_sc.Click += new System.EventHandler(this.but_rob_res_sc_Click);
             // 
-            // but_rob_manual_sc
-            // 
-            this.but_rob_manual_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_manual_sc.Location = new System.Drawing.Point(127, 57);
-            this.but_rob_manual_sc.Name = "but_rob_manual_sc";
-            this.but_rob_manual_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_manual_sc.TabIndex = 143;
-            this.but_rob_manual_sc.Text = "Manual";
-            this.but_rob_manual_sc.UseVisualStyleBackColor = true;
-            this.but_rob_manual_sc.Click += new System.EventHandler(this.but_rob_manual_sc_Click);
-            // 
             // but_rob_clear_sc
             // 
             this.but_rob_clear_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -1484,6 +1461,39 @@ namespace opengl3
             this.but_rob_clear_sc.Text = "Clear buf";
             this.but_rob_clear_sc.UseVisualStyleBackColor = true;
             this.but_rob_clear_sc.Click += new System.EventHandler(this.but_rob_clear_sc_Click);
+            // 
+            // but_rob_send_sc
+            // 
+            this.but_rob_send_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_send_sc.Location = new System.Drawing.Point(15, 101);
+            this.but_rob_send_sc.Name = "but_rob_send_sc";
+            this.but_rob_send_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_send_sc.TabIndex = 139;
+            this.but_rob_send_sc.Text = "Send robot";
+            this.but_rob_send_sc.UseVisualStyleBackColor = true;
+            this.but_rob_send_sc.Click += new System.EventHandler(this.but_rob_send_sc_Click);
+            // 
+            // but_rob_con_sc
+            // 
+            this.but_rob_con_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_con_sc.Location = new System.Drawing.Point(15, 13);
+            this.but_rob_con_sc.Name = "but_rob_con_sc";
+            this.but_rob_con_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_con_sc.TabIndex = 137;
+            this.but_rob_con_sc.Text = "Connect robot";
+            this.but_rob_con_sc.UseVisualStyleBackColor = true;
+            this.but_rob_con_sc.Click += new System.EventHandler(this.but_rob_con_sc_Click);
+            // 
+            // but_rob_manual_sc
+            // 
+            this.but_rob_manual_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_manual_sc.Location = new System.Drawing.Point(127, 57);
+            this.but_rob_manual_sc.Name = "but_rob_manual_sc";
+            this.but_rob_manual_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_manual_sc.TabIndex = 143;
+            this.but_rob_manual_sc.Text = "Manual";
+            this.but_rob_manual_sc.UseVisualStyleBackColor = true;
+            this.but_rob_manual_sc.Click += new System.EventHandler(this.but_rob_manual_sc_Click);
             // 
             // but_rob_start_sc
             // 
@@ -1496,16 +1506,6 @@ namespace opengl3
             this.but_rob_start_sc.UseVisualStyleBackColor = true;
             this.but_rob_start_sc.Click += new System.EventHandler(this.but_rob_start_sc_Click);
             // 
-            // but_send_traj
-            // 
-            this.but_send_traj.Location = new System.Drawing.Point(15, 437);
-            this.but_send_traj.Name = "but_send_traj";
-            this.but_send_traj.Size = new System.Drawing.Size(96, 34);
-            this.but_send_traj.TabIndex = 104;
-            this.but_send_traj.Text = "Отправить траекторию";
-            this.but_send_traj.UseVisualStyleBackColor = true;
-            this.but_send_traj.Click += new System.EventHandler(this.but_send_traj_Click);
-            // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.but_gl_cam_calib);
@@ -1513,10 +1513,10 @@ namespace opengl3
             this.tabPage4.Controls.Add(this.but_imGen);
             this.tabPage4.Controls.Add(this.but_text_vis);
             this.tabPage4.Controls.Add(this.but_gl_light);
-            this.tabPage4.Location = new System.Drawing.Point(4, 25);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(642, 896);
+            this.tabPage4.Size = new System.Drawing.Size(642, 899);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "old";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -1594,10 +1594,10 @@ namespace opengl3
             this.tabPage5.Controls.Add(this.label43);
             this.tabPage5.Controls.Add(this.trackBar10);
             this.tabPage5.Controls.Add(this.label44);
-            this.tabPage5.Location = new System.Drawing.Point(4, 25);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(642, 896);
+            this.tabPage5.Size = new System.Drawing.Size(642, 899);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "sgbm";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -1618,7 +1618,7 @@ namespace opengl3
             this.label34.AutoSize = true;
             this.label34.Location = new System.Drawing.Point(130, 13);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(120, 16);
+            this.label34.Size = new System.Drawing.Size(96, 13);
             this.label34.TabIndex = 75;
             this.label34.Text = "Настройки SGBM";
             // 
@@ -1627,7 +1627,7 @@ namespace opengl3
             this.label35.AutoSize = true;
             this.label35.Location = new System.Drawing.Point(51, 118);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(61, 16);
+            this.label35.Size = new System.Drawing.Size(48, 13);
             this.label35.TabIndex = 77;
             this.label35.Text = "manDisp";
             // 
@@ -1647,7 +1647,7 @@ namespace opengl3
             this.label36.AutoSize = true;
             this.label36.Location = new System.Drawing.Point(42, 180);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(66, 16);
+            this.label36.Size = new System.Drawing.Size(53, 13);
             this.label36.TabIndex = 79;
             this.label36.Text = "blockSize";
             // 
@@ -1667,7 +1667,7 @@ namespace opengl3
             this.label37.AutoSize = true;
             this.label37.Location = new System.Drawing.Point(69, 225);
             this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(22, 16);
+            this.label37.Size = new System.Drawing.Size(19, 13);
             this.label37.TabIndex = 81;
             this.label37.Text = "p1";
             // 
@@ -1687,7 +1687,7 @@ namespace opengl3
             this.label38.AutoSize = true;
             this.label38.Location = new System.Drawing.Point(69, 279);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(22, 16);
+            this.label38.Size = new System.Drawing.Size(19, 13);
             this.label38.TabIndex = 83;
             this.label38.Text = "p2";
             // 
@@ -1707,7 +1707,7 @@ namespace opengl3
             this.label39.AutoSize = true;
             this.label39.Location = new System.Drawing.Point(26, 334);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(91, 16);
+            this.label39.Size = new System.Drawing.Size(73, 13);
             this.label39.TabIndex = 85;
             this.label39.Text = "Disp12maxdiff";
             // 
@@ -1727,7 +1727,7 @@ namespace opengl3
             this.label40.AutoSize = true;
             this.label40.Location = new System.Drawing.Point(58, 384);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(51, 16);
+            this.label40.Size = new System.Drawing.Size(41, 13);
             this.label40.TabIndex = 87;
             this.label40.Text = "prefilter";
             // 
@@ -1747,7 +1747,7 @@ namespace opengl3
             this.label41.AutoSize = true;
             this.label41.Location = new System.Drawing.Point(51, 443);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(44, 16);
+            this.label41.Size = new System.Drawing.Size(37, 13);
             this.label41.TabIndex = 89;
             this.label41.Text = "unuqe";
             // 
@@ -1767,7 +1767,7 @@ namespace opengl3
             this.label42.AutoSize = true;
             this.label42.Location = new System.Drawing.Point(39, 482);
             this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(70, 16);
+            this.label42.Size = new System.Drawing.Size(56, 13);
             this.label42.TabIndex = 91;
             this.label42.Text = "specleWS";
             // 
@@ -1787,7 +1787,7 @@ namespace opengl3
             this.label43.AutoSize = true;
             this.label43.Location = new System.Drawing.Point(222, 572);
             this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(89, 16);
+            this.label43.Size = new System.Drawing.Size(70, 13);
             this.label43.TabIndex = 93;
             this.label43.Text = "specleRange";
             // 
@@ -1807,7 +1807,7 @@ namespace opengl3
             this.label44.AutoSize = true;
             this.label44.Location = new System.Drawing.Point(51, 67);
             this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(56, 16);
+            this.label44.Size = new System.Drawing.Size(44, 13);
             this.label44.TabIndex = 95;
             this.label44.Text = "minDisp";
             // 
@@ -1825,10 +1825,10 @@ namespace opengl3
             this.tabPage6.Controls.Add(this.but_keep_area);
             this.tabPage6.Controls.Add(this.but_reconstruc_area);
             this.tabPage6.Controls.Add(this.but_SubpixPrec);
-            this.tabPage6.Location = new System.Drawing.Point(4, 25);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(642, 896);
+            this.tabPage6.Size = new System.Drawing.Size(642, 899);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Тест";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -1968,10 +1968,10 @@ namespace opengl3
             this.tabPage7.Controls.Add(this.trackY_light);
             this.tabPage7.Controls.Add(this.label4);
             this.tabPage7.Controls.Add(this.label27);
-            this.tabPage7.Location = new System.Drawing.Point(4, 25);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(642, 896);
+            this.tabPage7.Size = new System.Drawing.Size(642, 899);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Освещение";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -2061,7 +2061,7 @@ namespace opengl3
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(84, 418);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(139, 16);
+            this.label4.Size = new System.Drawing.Size(111, 13);
             this.label4.TabIndex = 56;
             this.label4.Text = "Ориентация камеры";
             // 
@@ -2070,7 +2070,7 @@ namespace opengl3
             this.label27.AutoSize = true;
             this.label27.Location = new System.Drawing.Point(67, 595);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(195, 16);
+            this.label27.Size = new System.Drawing.Size(152, 13);
             this.label27.TabIndex = 57;
             this.label27.Text = "Положение источника света";
             // 
@@ -2082,10 +2082,10 @@ namespace opengl3
             this.tabPage8.Controls.Add(this.but_scan_virt);
             this.tabPage8.Controls.Add(this.imBox_disparity);
             this.tabPage8.Controls.Add(this.imBox_3dDebug);
-            this.tabPage8.Location = new System.Drawing.Point(4, 25);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(642, 896);
+            this.tabPage8.Size = new System.Drawing.Size(642, 899);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "mat_gl";
             this.tabPage8.UseVisualStyleBackColor = true;
@@ -2168,10 +2168,10 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 25);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(642, 896);
+            this.tabPage9.Size = new System.Drawing.Size(642, 899);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -2191,7 +2191,7 @@ namespace opengl3
             this.ch_b_im_s.AutoSize = true;
             this.ch_b_im_s.Location = new System.Drawing.Point(360, 64);
             this.ch_b_im_s.Name = "ch_b_im_s";
-            this.ch_b_im_s.Size = new System.Drawing.Size(185, 20);
+            this.ch_b_im_s.Size = new System.Drawing.Size(150, 17);
             this.ch_b_im_s.TabIndex = 156;
             this.ch_b_im_s.Text = "Сохранять изображения";
             this.ch_b_im_s.UseVisualStyleBackColor = true;
@@ -2213,7 +2213,7 @@ namespace opengl3
             this.ch_b_dist.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ch_b_dist.Location = new System.Drawing.Point(360, 46);
             this.ch_b_dist.Name = "ch_b_dist";
-            this.ch_b_dist.Size = new System.Drawing.Size(95, 20);
+            this.ch_b_dist.Size = new System.Drawing.Size(82, 17);
             this.ch_b_dist.TabIndex = 155;
             this.ch_b_dist.Text = "Дисторсия";
             this.ch_b_dist.UseVisualStyleBackColor = true;
@@ -2222,7 +2222,7 @@ namespace opengl3
             // 
             this.textB_cam1_conf.Location = new System.Drawing.Point(118, 115);
             this.textB_cam1_conf.Name = "textB_cam1_conf";
-            this.textB_cam1_conf.Size = new System.Drawing.Size(509, 22);
+            this.textB_cam1_conf.Size = new System.Drawing.Size(509, 20);
             this.textB_cam1_conf.TabIndex = 106;
             this.textB_cam1_conf.Text = "\"\"";
             // 
@@ -2233,7 +2233,7 @@ namespace opengl3
             this.ch_b_sync.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ch_b_sync.Location = new System.Drawing.Point(360, 28);
             this.ch_b_sync.Name = "ch_b_sync";
-            this.ch_b_sync.Size = new System.Drawing.Size(128, 20);
+            this.ch_b_sync.Size = new System.Drawing.Size(104, 17);
             this.ch_b_sync.TabIndex = 154;
             this.ch_b_sync.Text = "Синхронизация";
             this.ch_b_sync.UseVisualStyleBackColor = true;
@@ -2242,7 +2242,7 @@ namespace opengl3
             // 
             this.textB_cam2_conf.Location = new System.Drawing.Point(118, 141);
             this.textB_cam2_conf.Name = "textB_cam2_conf";
-            this.textB_cam2_conf.Size = new System.Drawing.Size(509, 22);
+            this.textB_cam2_conf.Size = new System.Drawing.Size(509, 20);
             this.textB_cam2_conf.TabIndex = 107;
             this.textB_cam2_conf.Text = "\"\"";
             // 
@@ -2270,7 +2270,7 @@ namespace opengl3
             // 
             this.tb_rob_pos_sc.Location = new System.Drawing.Point(72, 38);
             this.tb_rob_pos_sc.Name = "tb_rob_pos_sc";
-            this.tb_rob_pos_sc.Size = new System.Drawing.Size(247, 22);
+            this.tb_rob_pos_sc.Size = new System.Drawing.Size(247, 20);
             this.tb_rob_pos_sc.TabIndex = 141;
             this.tb_rob_pos_sc.Text = "0";
             // 
@@ -2298,7 +2298,7 @@ namespace opengl3
             // 
             this.textB_stereo_cal_path.Location = new System.Drawing.Point(118, 89);
             this.textB_stereo_cal_path.Name = "textB_stereo_cal_path";
-            this.textB_stereo_cal_path.Size = new System.Drawing.Size(509, 22);
+            this.textB_stereo_cal_path.Size = new System.Drawing.Size(509, 20);
             this.textB_stereo_cal_path.TabIndex = 110;
             this.textB_stereo_cal_path.Text = "\"\"";
             // 
@@ -2327,7 +2327,7 @@ namespace opengl3
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(2, 93);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(70, 16);
+            this.label3.Size = new System.Drawing.Size(56, 13);
             this.label3.TabIndex = 112;
             this.label3.Text = "stereo_cal";
             // 
@@ -2336,7 +2336,7 @@ namespace opengl3
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(2, 119);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(72, 16);
+            this.label11.Size = new System.Drawing.Size(60, 13);
             this.label11.TabIndex = 113;
             this.label11.Text = "cam1_conf";
             // 
@@ -2345,7 +2345,7 @@ namespace opengl3
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(2, 144);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(72, 16);
+            this.label12.Size = new System.Drawing.Size(60, 13);
             this.label12.TabIndex = 114;
             this.label12.Text = "cam2_conf";
             // 
@@ -2353,15 +2353,15 @@ namespace opengl3
             // 
             this.tb_strip_scan.Location = new System.Drawing.Point(72, 64);
             this.tb_strip_scan.Name = "tb_strip_scan";
-            this.tb_strip_scan.Size = new System.Drawing.Size(68, 22);
+            this.tb_strip_scan.Size = new System.Drawing.Size(68, 20);
             this.tb_strip_scan.TabIndex = 123;
-            this.tb_strip_scan.Text = "5";
+            this.tb_strip_scan.Text = "10";
             // 
             // textB_scan_path
             // 
             this.textB_scan_path.Location = new System.Drawing.Point(118, 167);
             this.textB_scan_path.Name = "textB_scan_path";
-            this.textB_scan_path.Size = new System.Drawing.Size(509, 22);
+            this.textB_scan_path.Size = new System.Drawing.Size(509, 20);
             this.textB_scan_path.TabIndex = 115;
             this.textB_scan_path.Text = "\"\"";
             // 
@@ -2370,7 +2370,7 @@ namespace opengl3
             this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point(36, 67);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(32, 16);
+            this.label18.Size = new System.Drawing.Size(26, 13);
             this.label18.TabIndex = 122;
             this.label18.Text = "strip";
             // 
@@ -2399,7 +2399,7 @@ namespace opengl3
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(13, 170);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(36, 16);
+            this.label13.Size = new System.Drawing.Size(30, 13);
             this.label13.TabIndex = 117;
             this.label13.Text = "scan";
             // 
@@ -2412,7 +2412,7 @@ namespace opengl3
             this.glControl1.ColorBits = ((uint)(24u));
             this.glControl1.DepthBits = ((uint)(24u));
             this.glControl1.Location = new System.Drawing.Point(4, 4);
-            this.glControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.glControl1.Margin = new System.Windows.Forms.Padding(4);
             this.glControl1.MultisampleBits = ((uint)(8u));
             this.glControl1.Name = "glControl1";
             this.glControl1.Size = new System.Drawing.Size(1200, 1000);
@@ -2525,10 +2525,10 @@ namespace opengl3
             this.tabMain.Controls.Add(this.label9);
             this.tabMain.Controls.Add(this.imBox_base);
             this.tabMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tabMain.Location = new System.Drawing.Point(4, 25);
+            this.tabMain.Location = new System.Drawing.Point(4, 22);
             this.tabMain.Name = "tabMain";
             this.tabMain.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMain.Size = new System.Drawing.Size(1861, 1000);
+            this.tabMain.Size = new System.Drawing.Size(1861, 1003);
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
@@ -3868,7 +3868,6 @@ namespace opengl3
             // 
             // timer1
             // 
-            this.timer1.Enabled = true;
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 

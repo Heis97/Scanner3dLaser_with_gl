@@ -34,7 +34,7 @@ namespace opengl3
                 for (int k = -wind; k < wind; k++)
                     br_sum += data[j + k, i];
                 float br_cur = br_sum / (wind * 2);
-                ps_b.Add(new PointF(i, 480 - br_cur));
+                ps_b.Add(new PointF(i, 480 - br_cur));//480
                 if (br_cur > br)
                 {
                     br = br_cur;
