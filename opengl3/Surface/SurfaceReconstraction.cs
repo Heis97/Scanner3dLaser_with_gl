@@ -200,8 +200,11 @@ namespace opengl3
                     {
                         ps[i] = Point3d_GL.order_points(ps[i]);
                         // var i_c = i % (colors.GetLength(0));
-                        // GL1.addLineMeshTraj(ps[i], colors[i_c,0], colors[i_c, 1], colors[i_c, 2]);
-                        ps_rec.Add(Regression.spline3DLine(ps[i], ds));
+                        
+                        var ps_spl = Regression.spline3DLine(ps[i], ds);
+                        graphicGL.addLineMeshTraj(ps_spl, Color3d_GL.green());
+                        ps_rec.Add(ps_spl);
+
                     }
                 }
             }

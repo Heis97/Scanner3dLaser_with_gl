@@ -1337,8 +1337,9 @@ namespace opengl3
             scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
             GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def2");*/
             //test_arc();
-
-            test_reconstr();
+           test_traj_def();
+            //test_reconstr();
+           // test_surf_rec_2();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1404,9 +1405,21 @@ namespace opengl3
 
         }
 
+
+        void test_traj_def()
+        {
+            var scan_stla = new Model3d("leg_wound4.stl", false);
+            var pols = scan_stla.pols;
+
+            //var pols2 = SurfaceReconstraction.get_conts_from_defect(pols);
+            var meshs = Polygon3d_GL.toMesh(pols);
+            //scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
+            GL1.add_buff_gl(meshs[0], meshs[1], meshs[2], PrimitiveType.Triangles, "def2");
+        }
+
         void test_reconstr()
         {
-            var scan_stla = new Model3d("def1c.stl", false);
+            var scan_stla = new Model3d("def1.stl", false);
             var pols = scan_stla.pols;
             
             var pols2 = SurfaceReconstraction.get_conts_from_defect(pols);
@@ -1433,10 +1446,57 @@ namespace opengl3
             //SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);            
             var layers = SurfaceReconstraction.find_sub_surf_xy(scan_stlb.pols, scan_stla.pols, 0.5,2.5, 0.2,0.1);
             
+
+
             for (int i = 0; i < layers.Length; i++)
             {
                 GL1.addMesh(Polygon3d_GL.toMesh(layers[i])[0], PrimitiveType.Triangles);
             }
+        }
+
+        void test_surf_rec_2()
+        {
+            var scan_stl_up = new Model3d("defects\\def_up2a.stl", false);
+            GL1.add_buff_gl(scan_stl_up.mesh, scan_stl_up.color, scan_stl_up.normale, PrimitiveType.Triangles, "def_up2a");
+            var scan_stl_down = new Model3d("defects\\def_down2a.stl", false);
+            GL1.add_buff_gl(scan_stl_down.mesh, scan_stl_down.color, scan_stl_down.normale, PrimitiveType.Triangles, "def_down2a");
+            var scan_stl_orig = new Model3d("defects\\def_orig.stl", false);
+            GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
+
+            //SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);            
+            var layers = SurfaceReconstraction.find_sub_surf_xy(scan_stl_up.pols, scan_stl_down.pols, 0.5, 2.5, 0.2, 0.1);
+
+            var cuts = new List<string>();
+
+            var conts = new List<List<Point3d_GL>>();
+            var surfs = new List<Polygon3d_GL[]>();
+            for (int i = 0; i < layers.Length; i++)
+            {
+                
+                var meshs = Polygon3d_GL.toMesh(layers[i]);
+                
+                var mesh_sm_tr = meshs[0];
+                if (i == 0) mesh_sm_tr = GL1.translateMesh(mesh_sm_tr, 0, 0, -0.5f);
+                surfs.Add(Polygon3d_GL.polygs_from_mesh(mesh_sm_tr));
+                var rec = GL1.add_buff_gl(mesh_sm_tr, meshs[1], meshs[2], PrimitiveType.Triangles,  "_cut_"+i);
+                //cuts.Add(rec);
+                var ps_inter = RasterMap.intersec_line_of_two_mesh(mesh_sm_tr, scan_stl_orig.mesh);
+                if (ps_inter == null) continue;
+                GL1.addLineMeshTraj(ps_inter, new Color3d_GL(1, 0, 0), "intersec_cut_" + i);
+                conts.Add(ps_inter.ToList());
+            }
+
+            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, param_tr);
+
+            rob_traj = PathPlanner.join_traj(_traj);
+            var ps = PathPlanner.matr_to_traj(rob_traj);
+
+            if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
+
+            //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
+
+            traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
+            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, param_tr);
         }
         void test_surf_cross()
         {
@@ -4382,17 +4442,134 @@ namespace opengl3
 
         private void but_reconstruc_area_Click(object sender, EventArgs e)
         {
-            /*var selected_obj = selected_object(); if (selected_obj == null) return;
+            reconstrust_area();
+        }
+        private void reconstrust_area()
+        {
+
+            var selected_obj = selected_object(); if (selected_obj == null) return;//выбор объекта
             //cut_area(RasterMap.type_out.outside, selected_obj);
             //var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
+            var cut_obj = selected_obj + "_cut";
+            var ret = cut_area(RasterMap.type_out.outside, selected_obj, cut_obj);//вырез отверстия раны
+            if (ret == null) { Console.WriteLine("not cut"); return; };
+            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[cut_obj].vertex_buffer_data);
+            var polyg_sm = RasterMap.smooth_mesh(polygs, 1);
+            var mesh = Polygon3d_GL.toMesh(polyg_sm);
+            var smooth_mesh = cut_obj + "_smooth";
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, smooth_mesh);//сгаживание окрестности
+
+
             var fi = 1.5;
             var df = 1;
             var ds = 1;
-            var ps = cross_obj_flats(GL1.buffersGl.objs[selected_obj].vertex_buffer_data, df,ds,fi);
+            var ps_cr = SurfaceReconstraction.cross_obj_flats(GL1.buffersGl.objs[smooth_mesh].vertex_buffer_data, df, ds, GL1, fi);//реконструирование отверстия
             //ps = Polygon3d_GL.smooth_lines_xy(ps, 2);
-            var pols = Polygon3d_GL.triangulate_lines_xy(ps);
+            var pols = Polygon3d_GL.triangulate_lines_xy(ps_cr);
             var scan_stl = Polygon3d_GL.toMesh(pols);
-            var rec = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"reconstruct");*/
+            var mesh_sm = scan_stl[0];
+            GL1.add_buff_gl(mesh_sm, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_rec");
+            //GL1.buffersGl.removeObj(cut_obj);
+            //GL1.buffersGl.removeObj(smooth_mesh);
+
+             var cuts = new List<string>();
+
+             var conts = new List<List<Point3d_GL>>();
+             var surfs = new List<Polygon3d_GL[]>();
+             for (int i = 0; i < 3; i++)
+             {
+                 var mesh_sm_tr = GL1.translateMesh(mesh_sm, 0, 0, -1f + (i * -1f));
+                 surfs.Add(Polygon3d_GL.polygs_from_mesh(mesh_sm_tr));
+                 //var rec = GL1.add_buff_gl(mesh_sm_tr, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_cut_"+i);
+                 //cuts.Add(rec);
+                 var ps_inter = RasterMap.intersec_line_of_two_mesh(mesh_sm_tr, GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+                 if (ps_inter == null) continue;
+                 GL1.addLineMeshTraj(ps_inter, new Color3d_GL(1, 0, 0), "intersec_cut_" + i);
+                 conts.Add(ps_inter.ToList());
+             }
+
+             var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, param_tr);
+
+             rob_traj = PathPlanner.join_traj(_traj);
+             var ps = PathPlanner.matr_to_traj(rob_traj);
+
+             if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
+
+             //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
+
+             traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
+             var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, param_tr);
+            // return traj_rob;
+
+        }
+
+        private void reconstrust_up_surf()
+        {
+
+            var selected_obj = selected_object(); if (selected_obj == null) return;//выбор объекта
+            //cut_area(RasterMap.type_out.outside, selected_obj);
+            //var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
+            var cut_obj = selected_obj + "_cut";
+            var ret = cut_area(RasterMap.type_out.outside, selected_obj, cut_obj);//вырез отверстия раны
+            if (ret == null) { Console.WriteLine("not cut"); return; };
+            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[cut_obj].vertex_buffer_data);
+            var polyg_sm = RasterMap.smooth_mesh(polygs, 1);
+            var mesh = Polygon3d_GL.toMesh(polyg_sm);
+            var smooth_mesh = cut_obj + "_smooth";
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, smooth_mesh);//сгаживание окрестности
+
+
+            var fi = 1.5;
+            var df = 1;
+            var ds = 1;
+            var ps_cr = SurfaceReconstraction.cross_obj_flats(GL1.buffersGl.objs[smooth_mesh].vertex_buffer_data, df, ds, GL1, fi);//реконструирование отверстия
+            //ps = Polygon3d_GL.smooth_lines_xy(ps, 2);
+            var pols = Polygon3d_GL.triangulate_lines_xy(ps_cr);
+            var scan_stl = Polygon3d_GL.toMesh(pols);
+            var mesh_sm = scan_stl[0];
+            GL1.add_buff_gl(mesh_sm, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_rec");
+
+        }
+        private void reconstrust_down_surf()
+        {
+
+            var selected_obj = selected_object(); if (selected_obj == null) return;//выбор объекта
+            //cut_area(RasterMap.type_out.outside, selected_obj);
+            //var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
+            var cut_obj = selected_obj + "_cut";
+            var ret = cut_area(RasterMap.type_out.outside, selected_obj, cut_obj);//вырез отверстия раны
+            if (ret == null) { Console.WriteLine("not cut"); return; };
+            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[cut_obj].vertex_buffer_data);
+            var polyg_sm = RasterMap.smooth_mesh(polygs, 1);
+            var mesh = Polygon3d_GL.toMesh(polyg_sm);
+            var smooth_mesh = cut_obj + "_smooth";
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, smooth_mesh);//сгаживание окрестности
+
+
+            var fi = 1.5;
+            var df = 1;
+            var ds = 1;
+            var ps_cr = SurfaceReconstraction.cross_obj_flats(GL1.buffersGl.objs[smooth_mesh].vertex_buffer_data, df, ds, GL1, fi);//реконструирование отверстия
+            //ps = Polygon3d_GL.smooth_lines_xy(ps, 2);
+            var pols = Polygon3d_GL.triangulate_lines_xy(ps_cr);
+            var scan_stl = Polygon3d_GL.toMesh(pols);
+            var mesh_sm = scan_stl[0];
+            GL1.add_buff_gl(mesh_sm, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_rec");
+
+        }
+        private void reconstrust_area_first()
+        {
+            /*var selected_obj = selected_object(); if (selected_obj == null) return;
+           //cut_area(RasterMap.type_out.outside, selected_obj);
+           //var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
+           var fi = 1.5;
+           var df = 1;
+           var ds = 1;
+           var ps = cross_obj_flats(GL1.buffersGl.objs[selected_obj].vertex_buffer_data, df,ds,fi);
+           //ps = Polygon3d_GL.smooth_lines_xy(ps, 2);
+           var pols = Polygon3d_GL.triangulate_lines_xy(ps);
+           var scan_stl = Polygon3d_GL.toMesh(pols);
+           var rec = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"reconstruct");*/
 
 
 
@@ -4400,7 +4577,7 @@ namespace opengl3
             //cut_area(RasterMap.type_out.outside, selected_obj);
             //var fi = cross_obj_flats_find_ang_z(GL1.buffersGl.objs_dynamic[scan_i].vertex_buffer_data, 20, 1);
             var cut_obj = selected_obj + "_cut";
-            var ret = cut_area(RasterMap.type_out.outside, selected_obj,cut_obj);//вырез отверстия раны
+            var ret = cut_area(RasterMap.type_out.outside, selected_obj, cut_obj);//вырез отверстия раны
             if (ret == null) { Console.WriteLine("not cut"); return; };
             var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[cut_obj].vertex_buffer_data);
             var polyg_sm = RasterMap.smooth_mesh(polygs, 1);
@@ -4425,9 +4602,9 @@ namespace opengl3
 
             var conts = new List<List<Point3d_GL>>();
             var surfs = new List<Polygon3d_GL[]>();
-            for(int i=0; i<3;i++)
+            for (int i = 0; i < 3; i++)
             {
-                var mesh_sm_tr = GL1.translateMesh(mesh_sm, 0, 0,-1+( i*-1f));
+                var mesh_sm_tr = GL1.translateMesh(mesh_sm, 0, 0, -1 + (i * -1f));
                 surfs.Add(Polygon3d_GL.polygs_from_mesh(mesh_sm_tr));
                 //var rec = GL1.add_buff_gl(mesh_sm_tr, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_cut_"+i);
                 //cuts.Add(rec);
@@ -4447,9 +4624,7 @@ namespace opengl3
 
             traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
             var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, param_tr);
-           // return traj_rob;
-
-
+            // return traj_rob;
 
         }
 

@@ -91,7 +91,7 @@ namespace opengl3
                 z = 0;
             }
 
-            return new Point3d_GL(x, y, z,color);
+            return new Point3d_GL(x, y, z, color);
         }
         public static float[] toData(Point3d_GL[] ps)
         {
@@ -130,7 +130,7 @@ namespace opengl3
         public static Point3d_GL[][] dataToPoints2d(float[][] data)
         {
 
-            var ps = new List< Point3d_GL[]>();
+            var ps = new List<Point3d_GL[]>();
             for (int i = 0; i < data.Length; i++)
             {
                 ps.Add(dataToPoints_ex(data[i]));
@@ -148,10 +148,10 @@ namespace opengl3
                 result[i] = new float[w];
                 for (int j = 0; j < w; j++)
                 {
-                    result[i][j] = data[w*i + j];
+                    result[i][j] = data[w * i + j];
                 }
             }
-           
+
             return result;
         }
 
@@ -159,9 +159,9 @@ namespace opengl3
         public static Point3d_GL[] dataToPoints_ex(float[] data)
         {
             var ps = new List<Point3d_GL>();
-            for (int i = 0; i < data.Length/4; i++)
+            for (int i = 0; i < data.Length / 4; i++)
             {
-                if(data[4 * i + 3]>0)
+                if (data[4 * i + 3] > 0)
                 {
                     ps.Add(new Point3d_GL(data[4 * i], data[4 * i + 1], data[4 * i + 2]));
                 }
@@ -174,7 +174,7 @@ namespace opengl3
         }
 
         public static Point3d_GL[][] colorPoints2d(Point3d_GL[][] ps_color, Point3d_GL[][] ps)
-        {           
+        {
             for (int i = 0; i < ps_color.Length; i++)
             {
                 for (int j = 0; j < ps_color[i].Length; j++)
@@ -193,7 +193,7 @@ namespace opengl3
                 var list = new List<Point3d_GL>();
                 for (int j = 0; j < ps[0].Length; j++)
                 {
-                    if(ps[i][j].exist) list.Add(ps[i][j]);
+                    if (ps[i][j].exist) list.Add(ps[i][j]);
                 }
 
                 ps_fil.Add(list.ToArray());
@@ -204,7 +204,7 @@ namespace opengl3
         public static Point3d_GL[][] reshape(Point3d_GL[][] ps)
         {
             var ps_re = new List<List<Point3d_GL>>();
-            for(int i = 0; i < ps[0].Length; i++)
+            for (int i = 0; i < ps[0].Length; i++)
             {
                 ps_re.Add(new List<Point3d_GL>());
                 for (int j = 0; j < ps.Length; j++)
@@ -224,14 +224,14 @@ namespace opengl3
             var ps_fil = new List<Point3d_GL>();
             for (int i = 0; i < ps.Length; i++)
             {
-                if (ps[i]!=null)
+                if (ps[i] != null)
                 {
                     for (int j = 0; j < ps[i].Length; j++)
                     {
                         ps_fil.Add(ps[i][j]);
                     }
                 }
-                           
+
             }
             return ps_fil.ToArray();
         }
@@ -243,31 +243,31 @@ namespace opengl3
 
         public double magnitude_xy()
         {
-            return Math.Sqrt(x * x + y * y );
+            return Math.Sqrt(x * x + y * y);
         }
 
         public double magnitude_ax(Ax ax)
         {
-            if(ax==Ax.X) return Math.Abs(x);
+            if (ax == Ax.X) return Math.Abs(x);
             if (ax == Ax.Y) return Math.Abs(y);
             else return Math.Abs(z);
         }
         public static float[] toMesh(Point3d_GL[] point3Ds)
         {
             var mesh = new float[point3Ds.Length * 3];
-            for(int i=0; i<point3Ds.Length;i++)
+            for (int i = 0; i < point3Ds.Length; i++)
             {
-                mesh[3 * i] =  (float)point3Ds[i].x;
-                mesh[3 * i +1] = (float)point3Ds[i].y;
-                mesh[3 * i +2] = (float)point3Ds[i].z;
+                mesh[3 * i] = (float)point3Ds[i].x;
+                mesh[3 * i + 1] = (float)point3Ds[i].y;
+                mesh[3 * i + 2] = (float)point3Ds[i].z;
             }
             return mesh;
         }
         public static Point3d_GL[] fromMesh(float[] mesh)
         {
-            if(mesh==null) return null;
+            if (mesh == null) return null;
             var ps = new List<Point3d_GL>();
-            for (int i = 0; i < mesh.Length; i+=3)
+            for (int i = 0; i < mesh.Length; i += 3)
             {
                 ps.Add(new Point3d_GL(mesh[i], mesh[i + 1], mesh[i + 2]));
             }
@@ -275,8 +275,8 @@ namespace opengl3
         }
         public static float[] mesh3to4(float[] mesh3)
         {
-            var mesh = new float[mesh3.Length * 4/3];
-            for (int i = 0; i < mesh.Length/4; i++)
+            var mesh = new float[mesh3.Length * 4 / 3];
+            for (int i = 0; i < mesh.Length / 4; i++)
             {
                 mesh[4 * i] = mesh3[3 * i];
                 mesh[4 * i + 1] = mesh3[3 * i + 1];
@@ -297,7 +297,7 @@ namespace opengl3
         public static Point3d_GL[] toPoints(Vertex4f[] vertexs)
         {
             var ps = new Point3d_GL[vertexs.Length];
-            for(int i=0; i<vertexs.Length;i++)
+            for (int i = 0; i < vertexs.Length; i++)
             {
                 ps[i] = new Point3d_GL(vertexs[i]);
             }
@@ -308,7 +308,7 @@ namespace opengl3
             var ps3d = new Point3d_GL[ps.Length];
             for (int i = 0; i < ps.Length; i++)
             {
-                ps3d[i] = new Point3d_GL(ps[i].X,ps[i].Y,0);
+                ps3d[i] = new Point3d_GL(ps[i].X, ps[i].Y, 0);
             }
             return ps3d;
         }
@@ -323,10 +323,10 @@ namespace opengl3
             return new double[,] { { x }, { y }, { z }, { 1 } };
         }
 
-        public static Point3d_GL[] multMatr(Point3d_GL[] ps,Matrix<double> matrix)
+        public static Point3d_GL[] multMatr(Point3d_GL[] ps, Matrix<double> matrix)
         {
             var ps_ret = new Point3d_GL[ps.Length];
-            for(int i=0; i<ps_ret.Length; i++)
+            for (int i = 0; i < ps_ret.Length; i++)
             {
                 ps_ret[i] = matrix * ps[i];
             }
@@ -338,7 +338,7 @@ namespace opengl3
             var ps_ret = new Point3d_GL[ps.Length];
             for (int i = 0; i < ps_ret.Length; i++)
             {
-                ps_ret[i] = ps[i]*k;
+                ps_ret[i] = ps[i] * k;
             }
             return ps_ret;
         }
@@ -349,7 +349,7 @@ namespace opengl3
 
             for (int i = 0; i < ps_ret.Length; i++)
             {
-                ps_ret[i] = multMatr(ps[i],matrix);
+                ps_ret[i] = multMatr(ps[i], matrix);
             }
             return ps_ret;
         }
@@ -359,21 +359,21 @@ namespace opengl3
         }
         public static Point3d_GL operator *(Point3d_GL p, double k)
         {
-            return new Point3d_GL(p.x * k, p.y * k, p.z * k,p.color);
+            return new Point3d_GL(p.x * k, p.y * k, p.z * k, p.color);
         }
 
         public static Point3d_GL operator /(Point3d_GL p, double k)
         {
-            return new Point3d_GL(p.x / k, p.y / k, p.z / k,p.color);
+            return new Point3d_GL(p.x / k, p.y / k, p.z / k, p.color);
         }
 
         public static Point3d_GL operator *(Point3d_GL p1, Point3d_GL p2)
         {
-            return new Point3d_GL(p1.x * p2.x, p1.y * p2.y, p1.z * p2.z,p1.color);
+            return new Point3d_GL(p1.x * p2.x, p1.y * p2.y, p1.z * p2.z, p1.color);
         }
         public static Point3d_GL operator *(Point3d_GL p, Flat3d_GL f)
         {
-            return new Point3d_GL(p.x * f.A, p.y * f.B, p.z * f.C,p.color);
+            return new Point3d_GL(p.x * f.A, p.y * f.B, p.z * f.C, p.color);
         }
         public static Point3d_GL operator *(double[,] matrixA, Point3d_GL p)
         {
@@ -427,7 +427,7 @@ namespace opengl3
 
         static double[,] Matrix4x4ToDouble(Matrix<double> matrixA)
         {
-           // prin.t(matrixA);
+            // prin.t(matrixA);
             var ret = new double[matrixA.Cols, matrixA.Rows];
             for (var i = 0; i < ret.GetLength(0); i++)
             {
@@ -445,7 +445,7 @@ namespace opengl3
             return new Point3d_GL(
                   p1.y * p2.z - p1.z * p2.y,
                   p1.z * p2.x - p1.x * p2.z,
-                  p1.x * p2.y - p1.y * p2.x,p1.color);
+                  p1.x * p2.y - p1.y * p2.x, p1.color);
         }
         public static Point3d_GL operator *(Matrix4x4f matrixA, Point3d_GL p)
         {
@@ -474,11 +474,11 @@ namespace opengl3
         }
         public static Point3d_GL matrix_to_p(Matrix<double> m)
         {
-            return new Point3d_GL(m[0,3], m[1,3], m[2,3]);
+            return new Point3d_GL(m[0, 3], m[1, 3], m[2, 3]);
         }
         public static Point3d_GL operator +(Point3d_GL p, Vector3d_GL v1)
         {
-            return new Point3d_GL(p.x + v1.x, p.y + v1.y, p.z + v1.z,p.color);
+            return new Point3d_GL(p.x + v1.x, p.y + v1.y, p.z + v1.z, p.color);
         }
         public static Point3d_GL operator +(Point3d_GL p1, Point3d_GL p2)
         {
@@ -492,11 +492,11 @@ namespace opengl3
 
         public static Point3d_GL operator -(Point3d_GL p)
         {
-            return new Point3d_GL(-p.x, -p.y, -p.z,p.color);
+            return new Point3d_GL(-p.x, -p.y, -p.z, p.color);
         }
         public static double operator ^(Point3d_GL p1, Point3d_GL p2)
         {
-            return (p1.x * p2.x + p1.y * p2.y + p1.z * p2.z)/(p1.magnitude()*p2.magnitude());
+            return (p1.x * p2.x + p1.y * p2.y + p1.z * p2.z) / (p1.magnitude() * p2.magnitude());
         }//scalar mult
         static double arccos(double cos)
         {
@@ -539,6 +539,7 @@ namespace opengl3
                       orderby p.z
                       select p).ToArray();*/
             if (ps == null) return null;
+            if (ps.Length == 0) return null;
             var inds_rem = remote_element(ps);
 
             

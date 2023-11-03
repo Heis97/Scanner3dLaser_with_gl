@@ -419,7 +419,8 @@ namespace opengl3
             locationBox = contr.Location;
             Gl.Initialize();
             Gl.Enable(EnableCap.Multisample);
-            Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
+            //Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
+            Gl.ClearColor(1f, 1f, 1f, 0.0f);
             Gl.PointSize(2f);
             
             var VertexSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Vert\VertexSh_Models.glsl" });
@@ -2119,6 +2120,8 @@ namespace opengl3
             var mesh = new List<float>();
             //Gl.LineStipple(2, 58360);
             // Gl.Enable(EnableCap.LineStipple);
+            if (points == null) return "null";
+            if (points.Length == 0) return "null";
             for (int i=1; i<points.Length;i++)
             {
                 mesh.Add((float)points[i - 1].x);
