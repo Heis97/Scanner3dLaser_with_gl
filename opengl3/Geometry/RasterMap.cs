@@ -657,6 +657,7 @@ namespace opengl3
                         if (surface[inds[i]].affilationPoint_xy(p) && Math.Abs( surface[inds[i]].v3.z)> 0.001)
                         {
                             rets.Add(inds[i]);
+
                         }
                     }
                 }

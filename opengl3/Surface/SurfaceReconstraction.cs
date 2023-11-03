@@ -518,10 +518,13 @@ namespace opengl3
 
         static public Polygon3d_GL[][] find_sub_surf_xy(Polygon3d_GL[] surf_up, Polygon3d_GL[] surf_down, double dz, double ddz, double res_xy,double max_ang)
         {
+            Console.WriteLine("remesh_gridxy");
             var surfs = remesh_gridxy(surf_up, surf_down, res_xy);
+            Console.WriteLine("surf_xy_simp");
             var surf_d_sm = surf_xy_simp(surfs[1], max_ang);
+            Console.WriteLine("subsurf_betw_grids_dz");
             var sub = subsurf_betw_grids_dz(new Point3d_GL[][,] { surf_d_sm , surfs[0] }, dz, ddz);
-
+            Console.WriteLine("triangl_subsurf");
             var layrs = triangl_subsurf(sub);
             return layrs;
         }
@@ -739,9 +742,10 @@ namespace opengl3
             var w = grids[0].GetLength(0);
             var h = grids[0].GetLength(1);
             var grid_sub = new Point3d_GL[w, h][];
+            Console.WriteLine("aver_num");
             var aver_num = aver_num_layer(grids, dz);
             int max_num = 0;
-
+            Console.WriteLine("sectz");
             for (int x = 0; x < w; x++)
                 for (int y = 0; y < h; y++)
                 {
@@ -753,7 +757,7 @@ namespace opengl3
                 }
 
             var grid_sub_c =(Point3d_GL[,][]) grid_sub.Clone();
-
+            Console.WriteLine("divide");
             for (int x = 0; x < w; x++)
                 for (int y = 0; y < h; y++)
                 {
@@ -763,7 +767,7 @@ namespace opengl3
                         //Console.WriteLine(x + " " + y + " null");
                     }
                 }
-
+            Console.WriteLine("not_ex");
             var subsurfs = new Point3d_GL[max_num][,];
             for(int i =0; i<subsurfs.Length;i++)
             {
@@ -774,7 +778,7 @@ namespace opengl3
                         subsurfs[i][x, y] = Point3d_GL.notExistP();
                     }
             }
-
+            Console.WriteLine("reshape");
             for (int x = 0; x < w; x++)
                 for (int y = 0; y < h; y++)
                 {

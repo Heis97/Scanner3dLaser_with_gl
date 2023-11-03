@@ -240,6 +240,7 @@ namespace PathPlanning
 
         public static List<Point3d_GL> matr_to_traj(List<Matrix<double>> matrs)
         {
+            if(matrs == null) return null;
             var traj_m = new List<Point3d_GL>();
             for (int i = 0; i < matrs.Count; i++)
             {
@@ -259,6 +260,7 @@ namespace PathPlanning
 
         public static List<Matrix<double>> join_traj(List<List<Matrix<double>>> traj)
         {
+            if (traj == null) return null;
             var traj_j = new List<Matrix<double>>();
             for (int i = 0; i < traj.Count; i++)
             {
@@ -774,11 +776,22 @@ namespace PathPlanning
             for (int i = 0; i < layer.Count; i++)
             {
                 var polyg_inds = map_xy.get_polyg_ind_prec_xy(layer[i], surface);
+                if (polyg_inds == null) { 
+                    layer_3d.Add(new Matrix<double>(new double[,]
+                    {
+                        {1, 0,0 , layer[i].x },
+                        {0,1 , 0, layer[i].y },
+                        {0,0 , 1, layer[i].z },
+                        {0,0 ,0 ,  1}
+                    }));
+                    continue;
+                }
                 var polyg_ind =RasterMap.fing_high_polyg(polyg_inds, layer[i], surface);
                 var proj_matr = proj_point(surface[polyg_ind], layer[i], vec_x_dir);
                 if(proj_matr!=null)
                     layer_3d.Add(proj_matr);          
             }
+            if (layer_3d.Count == 0) return null;
             return layer_3d;
         }
 
@@ -786,6 +799,7 @@ namespace PathPlanning
 
         static List<List<Matrix<double>>> add_transit(List<List<Matrix<double>>> traj, double trans_h)
         {
+            if(traj.Count < 2) return traj;
             for(int i=0; i< traj.Count;i++)
             {
                 traj[i][0][3, 3] = 0;
@@ -841,8 +855,11 @@ namespace PathPlanning
             {
                 var map_xy = new RasterMap(surface[i], resolut, RasterMap.type_map.XY);
                 var traj_df = filter_traj(divide_traj(traj_2d[i], trajParams.div_step), trajParams.div_step / 2);
-                traj_3d.Add(project_layer(surface[i], traj_df, map_xy, vec_x));
+                var proj_layer = project_layer(surface[i], traj_df, map_xy, vec_x);
+                if (proj_layer == null) continue;
+                traj_3d.Add(proj_layer);
             }
+            
             traj_3d = add_transit(traj_3d, trajParams.h_transf);
             return traj_3d;
         }
