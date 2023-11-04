@@ -14,6 +14,7 @@ namespace opengl3
         public Vector3d_GL v1,v2,v3;
         int special_point_ind;
         public double dim;
+        public Point3d_GL centr;
 
         public Polygon3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3, int _special_point_ind = 0)
         {
@@ -22,7 +23,7 @@ namespace opengl3
             v1 = new Vector3d_GL(P1, P2).normalize();
             v2 = new Vector3d_GL(P1, P3).normalize();
             v3 = v1 | v2;//vector multiply
-
+            centr = (P1 + P2 + P3) / 3;
             /*if(v3.z<0)
             {
                 v1 = -v1;
@@ -78,7 +79,15 @@ namespace opengl3
             var b = ps[1] - ps[0];
             var c = ps[2] - ps[0];
 
+            if (b.x==0)
+            {
+                var lam = b.Clone();
+                b = c.Clone();
+                c = lam.Clone();
+            }
+            if ((c.x * b.y - b.x * c.y) == 0) return false;
             var m = (p.x * b.y - b.x * p.y) / (c.x * b.y - b.x * c.y);
+            
             if (m >= 0 && m <= 1)
             {
                 var l = (p.x - m * c.x) / b.x;
@@ -718,6 +727,35 @@ namespace opengl3
         public Polygon3d_GL Clone()
         {
             return new Polygon3d_GL(ps[0].Clone(), ps[1].Clone(), ps[2].Clone(), special_point_ind);
+        }
+
+        public static Polygon3d_GL operator -(Polygon3d_GL pol, Point3d_GL p)
+        {
+            var p1 = pol.ps[0] - p;
+            var p2 = pol.ps[1] - p;
+            var p3 = pol.ps[2] - p;
+            return new Polygon3d_GL(p1, p2, p3);
+        }
+        public static Polygon3d_GL operator +(Polygon3d_GL pol, Point3d_GL p)
+        {
+            var p1 = pol.ps[0] + p;
+            var p2 = pol.ps[1] + p;
+            var p3 = pol.ps[2] + p;
+            return new Polygon3d_GL(p1, p2, p3);
+        }
+        public static Polygon3d_GL operator *(Polygon3d_GL pol, double k)
+        {
+            var p1 = pol.ps[0] * k;
+            var p2 = pol.ps[1] * k;
+            var p3 = pol.ps[2] * k;
+            return new Polygon3d_GL(p1, p2, p3);
+        }
+        public static Polygon3d_GL operator /(Polygon3d_GL pol, double k)
+        {
+            var p1 = pol.ps[0] / k;
+            var p2 = pol.ps[1] / k;
+            var p3 = pol.ps[2] / k;
+            return new Polygon3d_GL(p1, p2, p3);
         }
     }
 

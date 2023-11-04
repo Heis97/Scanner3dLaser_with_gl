@@ -80,9 +80,9 @@ namespace opengl3
             this.label28 = new System.Windows.Forms.Label();
             this.imageBox_cameraDist = new Emgu.CV.UI.ImageBox();
             this.tabDebug = new System.Windows.Forms.TabPage();
+            this.imageBox3 = new Emgu.CV.UI.ImageBox();
             this.imageBox6 = new Emgu.CV.UI.ImageBox();
             this.imageBox5 = new Emgu.CV.UI.ImageBox();
-            this.imageBox3 = new Emgu.CV.UI.ImageBox();
             this.imageBox7 = new Emgu.CV.UI.ImageBox();
             this.imageBox4 = new Emgu.CV.UI.ImageBox();
             this.imageBox8 = new Emgu.CV.UI.ImageBox();
@@ -377,9 +377,9 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).BeginInit();
             this.tabDebug.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox7)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox8)).BeginInit();
@@ -937,9 +937,9 @@ namespace opengl3
             // 
             // tabDebug
             // 
+            this.tabDebug.Controls.Add(this.imageBox3);
             this.tabDebug.Controls.Add(this.imageBox6);
             this.tabDebug.Controls.Add(this.imageBox5);
-            this.tabDebug.Controls.Add(this.imageBox3);
             this.tabDebug.Controls.Add(this.imageBox7);
             this.tabDebug.Controls.Add(this.imageBox4);
             this.tabDebug.Controls.Add(this.imageBox8);
@@ -952,6 +952,14 @@ namespace opengl3
             this.tabDebug.TabIndex = 3;
             this.tabDebug.Text = "Отладка";
             this.tabDebug.UseVisualStyleBackColor = true;
+            // 
+            // imageBox3
+            // 
+            this.imageBox3.Location = new System.Drawing.Point(6, 6);
+            this.imageBox3.Name = "imageBox3";
+            this.imageBox3.Size = new System.Drawing.Size(1900, 1200);
+            this.imageBox3.TabIndex = 19;
+            this.imageBox3.TabStop = false;
             // 
             // imageBox6
             // 
@@ -968,14 +976,6 @@ namespace opengl3
             this.imageBox5.Size = new System.Drawing.Size(640, 480);
             this.imageBox5.TabIndex = 22;
             this.imageBox5.TabStop = false;
-            // 
-            // imageBox3
-            // 
-            this.imageBox3.Location = new System.Drawing.Point(6, 6);
-            this.imageBox3.Name = "imageBox3";
-            this.imageBox3.Size = new System.Drawing.Size(640, 480);
-            this.imageBox3.TabIndex = 19;
-            this.imageBox3.TabStop = false;
             // 
             // imageBox7
             // 
@@ -3902,9 +3902,9 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_debug1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_cameraDist)).EndInit();
             this.tabDebug.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox7)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox8)).EndInit();

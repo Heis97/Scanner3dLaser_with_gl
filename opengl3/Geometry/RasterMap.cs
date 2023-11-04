@@ -5,16 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using PathPlanning;
 
+
 namespace opengl3
 {
     public class RasterMap
     {
-        int[,][] map;
-        int[,,][] map_xyz;
-        double res;
-        Point3d_GL pt_min, pt_max,pt_len_i;
+        public int[,][] map;
+        public int[,,][] map_xyz;
+        public double res;
+        public Point3d_GL pt_min, pt_max,pt_len_i;
         public Point3d_GL[] pt_minmax;
-        int len;
+        public int len;
         public enum type_map { XY,XYZ};
         public RasterMap(Polygon3d_GL[] surface, double resolution=-1,type_map type = type_map.XY)
         {
@@ -65,7 +66,7 @@ namespace opengl3
         {
             if (resolution < 0)
             {
-                resolution = Polygon3d_GL.aver_dim(new Polygon3d_GL[][] { surface });
+                resolution =Polygon3d_GL.aver_dim(new Polygon3d_GL[][] { surface });
             }
             var p_min = new Point3d_GL();
             var p_max = new Point3d_GL();
@@ -93,7 +94,7 @@ namespace opengl3
             var y_len = (int)(p_len.y);
             var map_xy = new int[x_len, y_len][];
 
-            int triangle_overlay = 1;
+            int triangle_overlay = 0;
             for (int i = 0; i < surface.Length; i++)
             {
                 var pol_minmax = surface[i].get_dimens_minmax();
@@ -104,7 +105,7 @@ namespace opengl3
                 {
                     int y_b = (int)(pol_min.y / resolution) - triangle_overlay;
                     int y_e = (int)(pol_max.y / resolution) + triangle_overlay;
-                    for (int y = y_b; y < y_e; y++)
+                    for (int y = y_b; y <= y_e; y++)
                     {
                         var x_i = x;
                         var y_i = y;
@@ -130,6 +131,8 @@ namespace opengl3
             var res = resolution;
             return new RasterMap(map, resolution, p_len, p_min,pt_max, surface.Length);
         }
+
+       
 
         static int[,][] uniq_map(int[,][] map)
         {

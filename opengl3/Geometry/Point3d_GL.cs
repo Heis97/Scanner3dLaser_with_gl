@@ -303,6 +303,10 @@ namespace opengl3
             }
             return ps;
         }
+        public System.Drawing.Point get_syst_p()
+        {
+            return new System.Drawing.Point((int)x, (int)y);
+        }
         public static Point3d_GL[] toPoints(System.Drawing.PointF[] ps)
         {
             var ps3d = new Point3d_GL[ps.Length];
