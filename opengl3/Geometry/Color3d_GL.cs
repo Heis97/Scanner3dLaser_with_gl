@@ -32,5 +32,15 @@ namespace opengl3
 
         public static Color3d_GL white() { return new Color3d_GL(1, 1, 1); }
 
+        static public Color3d_GL random()
+        {
+            var rand = Accord.Math.Random.Generator.Random;
+            var r = (float)rand.NextDouble();
+            var g = (float)rand.NextDouble();
+            var b = (float)rand.NextDouble();
+            //Console.WriteLine(r + " " + g + " " + b);
+            return new Color3d_GL(b, g, r);
+        }
+
     }
 }

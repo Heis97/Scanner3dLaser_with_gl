@@ -553,24 +553,62 @@ namespace opengl3
 
             for (int j = 0; j < ps_or.Count && ps.Length > 0; j++)
             {
-                int i_min = 0;
-                double min = double.MaxValue;
-                for (int i = 0; i < ps.Length; i++)
-                {
-
-                    var d = (ps_or[j] - ps[i]).magnitude();
-                    if (d < min)
-                    {
-                        min = d;
-                        i_min = i;
-                    }
-                }                   
+                var i_min = nearest_point(ps, ps_or[ps_or.Count - 1]);             
                 ps_or.Add(ps[i_min]);
                 ps = remove_element(ps, i_min);
             }
 
             return ps_or.ToArray();
         }
+
+        public static Point3d_GL[] order_points_by_dist(Point3d_GL[] ps, double max_dist)
+        {
+            if (ps == null) return null;
+            if (ps.Length == 0) return null;
+            var inds_rem = remote_element(ps);
+
+
+            var ps_or = new List<Point3d_GL>();
+            ps_or.Add(ps[inds_rem[0]]);
+            ps = remove_element(ps, inds_rem[0]);
+
+            for (;ps.Length > 0;)
+            {
+                var i_min = nearest_point(ps, ps_or[ps_or.Count - 1]);
+                if((ps[i_min]- ps_or[ps_or.Count - 1]).magnitude()>max_dist)
+                {
+                    ps = order_points(ps);
+                    ps_or.Add(ps[0]);
+                    ps = remove_element(ps, 0);
+                }
+                else
+                {
+                    ps_or.Add(ps[i_min]);
+                    ps = remove_element(ps, i_min);
+                }
+                
+            }
+
+            return ps_or.ToArray();
+        }
+
+        public static int point_count_in_neighborhood(Point3d_GL[] ps, Point3d_GL p, double max_dist)
+        {
+            var count = 0;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if (ps[i].exist)
+                {
+                    var d = (ps[i] - p).magnitude();
+                    if (d < max_dist)
+                    {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
 
         public static Point3d_GL[][] get_contours(Point3d_GL[] ps)
         {
@@ -631,6 +669,8 @@ namespace opengl3
             }
             return i_min;
         }
+
+
         public static int first_exist(Point3d_GL[] ps)
         {
             if (ps == null) return -1;
@@ -782,7 +822,24 @@ namespace opengl3
             }
             return ps_max;
         }
-
+        public static Point3d_GL Min(List<List<Point3d_GL>> ps)
+        {
+            var ps_max = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);
+            for (int i = 0; i < ps.Count; i++)
+            {
+                ps_max = Min(ps_max, Min(ps[i].ToArray()));
+            }
+            return ps_max;
+        }
+        public static Point3d_GL Max(List<List<Point3d_GL>> ps)
+        {
+            var ps_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue);
+            for (int i = 0; i < ps.Count; i++)
+            {
+                ps_max = Max(ps_max, Max(ps[i].ToArray()));
+            }
+            return ps_max;
+        }
         public static Point3d_GL Min(Point3d_GL[] ps)
         {
             var ps_max = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);

@@ -403,8 +403,7 @@ namespace opengl3
                 vel = 20,
                 line_width = 0.4,
                 k_decr_ang = 0.5,
-                w_smooth_ang = 15
-               
+                w_smooth_ang = 15               
             };
             propGrid_traj.SelectedObject = param_tr;
 
@@ -412,11 +411,12 @@ namespace opengl3
             {
                 step = 2,
                 angle = 0,
+                angle_layers = PI/2,
                 min_dist = 0.1,
                 arc_dist = 2,
                 r = 2,
                 start_dir_r = true,
-                patternType = PathPlanner.PatternType.Harmonic,
+                patternType = PathPlanner.PatternType.Lines,
                 dim_x = 10,
                 dim_y = 10,
                 filling = 0.7
@@ -1465,7 +1465,7 @@ namespace opengl3
             GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
             Console.WriteLine("find_sub_surf_xy");
             //SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);            
-            var layers = SurfaceReconstraction.find_sub_surf_xy(scan_stl_up.pols, scan_stl_down.pols,0.2, 2.5, 0.5, 0.3);
+            var layers = SurfaceReconstraction.find_sub_surf_xy(scan_stl_up.pols, scan_stl_down.pols,1, 2.5, 0.5, 0.3);
             
             var cuts = new List<string>();
 
@@ -1473,7 +1473,8 @@ namespace opengl3
             var surfs = new List<Polygon3d_GL[]>();
             for (int i = 0; i < layers.Length; i++)
             {
-                
+               // if(i==0)
+                {
                     Console.WriteLine("intersect: " + i);
                     var meshs = Polygon3d_GL.toMesh(layers[i]);
 
@@ -1484,13 +1485,12 @@ namespace opengl3
                     //cuts.Add(rec);
                     var ps_inter = RasterMap.intersec_line_of_two_mesh(Polygon3d_GL.toMesh(surfs[surfs.Count - 1])[0], scan_stl_orig.mesh);
                     if (ps_inter == null) continue;
-                    GL1.addLineMeshTraj(ps_inter, new Color3d_GL(1, 0, 0), "intersec_cut_" + i);
+                    //GL1.addLineMeshTraj(ps_inter, new Color3d_GL(1, 0, 0), "intersec_cut_" + i);
                     conts.Add(ps_inter.ToList());
-                
-                
+                }
             }
             Console.WriteLine("gen_traj3d");
-            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, param_tr,imageBox3);
+            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, param_tr,param_patt,GL1);
             
             rob_traj = PathPlanner.join_traj(_traj);
             var ps = PathPlanner.matr_to_traj(rob_traj);

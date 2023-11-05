@@ -103,6 +103,9 @@ namespace opengl3
             return im;
         }
 
+
+       
+
         public static void draw_polyg_xy(Mat im, Polygon3d_GL polyg,MCvScalar color)
         {
             CvInvoke.Line(im, polyg.ps[0].get_syst_p(), polyg.ps[1].get_syst_p(), color);
