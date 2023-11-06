@@ -615,6 +615,7 @@ namespace PathPlanning
                 default: break;
             }
             var layer = new LayerPath { lines = pattern };
+            p_cent.z = 0;
             layer.add(-p_cent);
             layer.rotate(settings.angle);
 
@@ -625,9 +626,13 @@ namespace PathPlanning
         public static LayerPath gen_pattern_in_contour_xy(PatternSettings settings, TrajParams trajParams, List<Point3d_GL> contour, Point3d_GL p_min, Point3d_GL p_max, GraphicGL gl = null)
         {
             var layer_sq = gen_pattern_in_square_xy(settings, p_min, p_max).to_ps();
+            //Console.WriteLine("layer_sq z"+layer_sq[0].z + " " + layer_sq[1].z + " ");
+            //gl.addLineMeshTraj(layer_sq.ToArray(), Color3d_GL.aqua());
             var ps_div = divide_traj(layer_sq, trajParams.div_step);
             var cont_layer = cut_pattern_in_contour_xy_cv(contour, ps_div);
+            //gl.addLineMeshTraj(cont_layer.ToArray(), Color3d_GL.red());
             var layer = parse_layerpath_from_ps(cont_layer, trajParams.div_step,settings.step, gl);//step
+            //gl.addLineMeshTraj(layer.to_ps().ToArray(), Color3d_GL.black());
             return layer;
         }
 
@@ -803,10 +808,13 @@ namespace PathPlanning
             for (int i = 0; i < contour.Count; i++)
             {
                 var layer = gen_pattern_in_contour_xy(settings, trajParams, contour[i].ToList(), min_p, max_p, gl);
-                layer.add(new Point3d_GL(0, 0, trajParams.dz * i));
+                layer.add(new Point3d_GL(0, 0, trajParams.dz * 0));
                 traj_layers.Add(layer);
                 settings.angle += settings.angle_layers;
+                
+
             }
+           
             var traj = new TrajectoryPath { layers = traj_layers };
             traj = Trajectory.OptimizeTranzitions2LayerPath(traj);
             var traj_ps = traj.to_ps_by_layers();
@@ -1140,6 +1148,7 @@ namespace PathPlanning
                 var traj_df = filter_traj(divide_traj(traj_2d[i], trajParams.div_step), trajParams.div_step / 2);
                 //if (imb != null) imb.Image = UtilOpenCV.draw_map_xy(map_xy, surface[i], traj_df.ToArray());
                 var proj_layer = project_layer(surface[i], traj_df, map_xy, vec_x);
+                //gl.addLineMeshTraj(matr_to_traj(proj_layer).ToArray(), Color3d_GL.purple());
                 if (proj_layer == null) continue;
                 traj_3d.Add(proj_layer);
             }

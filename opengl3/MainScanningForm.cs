@@ -1479,13 +1479,13 @@ namespace opengl3
                     var meshs = Polygon3d_GL.toMesh(layers[i]);
 
                     var mesh_sm_tr = meshs[0];
-                    mesh_sm_tr = GL1.translateMesh(mesh_sm_tr, 0, 0, -0.5f);
+                    if (i==0) mesh_sm_tr = GL1.translateMesh(mesh_sm_tr, 0, 0, -0.5f);
                     surfs.Add(Polygon3d_GL.polygs_from_mesh(mesh_sm_tr));
                     //var rec = GL1.add_buff_gl(mesh_sm_tr, meshs[1], meshs[2], PrimitiveType.Triangles, "_cut_" + i);
                     //cuts.Add(rec);
                     var ps_inter = RasterMap.intersec_line_of_two_mesh(Polygon3d_GL.toMesh(surfs[surfs.Count - 1])[0], scan_stl_orig.mesh);
                     if (ps_inter == null) continue;
-                    //GL1.addLineMeshTraj(ps_inter, new Color3d_GL(1, 0, 0), "intersec_cut_" + i);
+                    GL1.addLineMeshTraj(ps_inter, new Color3d_GL(1, 0, 0), "intersec_cut_" + i);
                     conts.Add(ps_inter.ToList());
                 }
             }
