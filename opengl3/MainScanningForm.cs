@@ -1339,7 +1339,7 @@ namespace opengl3
             //test_arc();
            //test_traj_def();
             //test_reconstr();
-            test_surf_rec_2();
+            //test_surf_rec_2();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
