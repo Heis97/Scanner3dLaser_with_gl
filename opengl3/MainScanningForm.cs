@@ -167,7 +167,7 @@ namespace opengl3
             //prin.t(q);
 
             //test_get_conts();
-          // loadVideo_test_laser("test_sync_1\\v2810_2.avi");
+           //loadVideo_test_laser("test_sync_1\\v2810_2.avi");
 
            // frames_sync_from_file("enc_v1.txt");
         }
@@ -1339,7 +1339,7 @@ namespace opengl3
             //test_arc();
            //test_traj_def();
             //test_reconstr();
-            //test_surf_rec_2();
+            test_surf_rec_2();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1453,15 +1453,21 @@ namespace opengl3
                 GL1.addMesh(Polygon3d_GL.toMesh(layers[i])[0], PrimitiveType.Triangles);
             }
         }
-
+        void test_find_cont_1()
+        {
+            Console.WriteLine("load models");
+            var scan_stl_orig = new Model3d("models\\defects\\def_orig.stl", false);
+            GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
+            Console.WriteLine("find_sub_surf_xy");
+        }
         void test_surf_rec_2()
         {
             Console.WriteLine("load models");
-            var scan_stl_up = new Model3d("defects\\def_up2a.stl", false);
+            var scan_stl_up = new Model3d("models\\defects\\def_up2a.stl", false);
             //GL1.add_buff_gl(scan_stl_up.mesh, scan_stl_up.color, scan_stl_up.normale, PrimitiveType.Triangles, "def_up2a");
-            var scan_stl_down = new Model3d("defects\\def_down2a.stl", false);
+            var scan_stl_down = new Model3d("models\\defects\\def_down2a.stl", false);
             //GL1.add_buff_gl(scan_stl_down.mesh, scan_stl_down.color, scan_stl_down.normale, PrimitiveType.Triangles, "def_down2a");
-            var scan_stl_orig = new Model3d("defects\\def_orig.stl", false);
+            var scan_stl_orig = new Model3d("models\\defects\\def_orig.stl", false);
             GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
             Console.WriteLine("find_sub_surf_xy");
             //SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);            

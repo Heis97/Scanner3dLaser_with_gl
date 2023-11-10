@@ -871,7 +871,7 @@ namespace opengl3
             }
             return pns.ToArray();
         }
-        public int[][] get_poligs_inds()
+        int[][] get_poligs_inds()
         {
             var pns = new List<int[]>();
             for (int i = 0; i < inds_uniq.Length / 3; i++)
@@ -882,7 +882,7 @@ namespace opengl3
 
             return pns.ToArray();
         }
-        public List<int>[] get_points_on_triang()
+        List<int>[] get_points_triang_inds()
         {
             var points_on_triang = new List<int>[ps_uniq.Length];
             for (int i = 0; i < inds_uniq.Length / 3; i++)
@@ -899,15 +899,41 @@ namespace opengl3
             return points_on_triang;
         }
 
-        public int[] points_on_board()
+        public int[][] points_on_board()
         {
             var pols_inds = get_poligs_inds();
-            var points_on_triang = get_points_on_triang();
+            var points_on_triang = get_points_triang_inds();
+
+            var start_pol_ind = get_ind_pol_on_board(pols_inds, points_on_triang);
 
             return null;
         }
 
+        int get_ind_pol_on_board(int[][] pols_inds, List<int>[] ps_on_triang)
+        {
+            bool find = false;
+            for(int i=0; i< pols_inds.Length && !find; i++)
+            {
+                var inds = pols_inds[i];
+                if(inds==null) continue;
+                if(inds.Length<3) continue;
 
+                var l_0 = ps_on_triang[inds[0]];
+                var l_1 = ps_on_triang[inds[1]];
+                var l_2 = ps_on_triang[inds[2]];
+
+                var l_cross_0 = l_0.Intersect(l_1);
+                var l_cross_1 = l_1.Intersect(l_2);
+                var l_cross_2 = l_2.Intersect(l_0);
+
+                if(l_cross_0!=null && l_cross_1!=null && l_cross_2 != null)
+                {
+                    Console.WriteLine(l_cross_0.ToArray().Length + " " + l_cross_1.ToArray().Length + " " + l_cross_2.ToArray().Length + " ");
+                }
+            }
+
+            return 0;
+        }
 
 
     }
