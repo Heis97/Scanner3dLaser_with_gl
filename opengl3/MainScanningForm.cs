@@ -1337,9 +1337,9 @@ namespace opengl3
             scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
             GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def2");*/
             //test_arc();
-           //test_traj_def();
+            //test_traj_def();
             //test_reconstr();
-            test_surf_rec_2();
+            test_find_cont_1();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1456,9 +1456,12 @@ namespace opengl3
         void test_find_cont_1()
         {
             Console.WriteLine("load models");
-            var scan_stl_orig = new Model3d("models\\defects\\def_orig.stl", false);
+            var scan_stl_orig = new Model3d("models\\defects\\ring3.stl", false);
             GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
-            Console.WriteLine("find_sub_surf_xy");
+            var mesh = new IndexedMesh(scan_stl_orig.pols);
+            var board = mesh.points_on_board();
+            var mesh_board = Polygon3d_GL.toMesh(board);
+            GL1.add_buff_gl(mesh_board[0], mesh_board[1], mesh_board[2], PrimitiveType.Triangles, "def_board");
         }
         void test_surf_rec_2()
         {
@@ -3108,7 +3111,7 @@ namespace opengl3
             var capture = new VideoCapture(number);
            
             //capture.SetCaptureProperty(CapProp.
-            capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
+            //capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Fps, 30);
