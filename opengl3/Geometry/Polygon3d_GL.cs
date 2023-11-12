@@ -762,12 +762,19 @@ namespace opengl3
         }
     }
 
+
+
     public class IndexedMesh
     {
         public Point3d_GL[] ps_uniq;
         public int[] inds_uniq;
+        int[][] check_arr;
+        int[][] pols_inds;
+        List<int>[] ps_on_triang;
+        int triangles_on_board;
         public IndexedMesh(Polygon3d_GL[] pns)
         {
+            triangles_on_board = 0;
             var ps = new List<Point3d_GL>();
             var pn_l = new List<int>();
             for (int i = 0; i < pns.Length; i++)
@@ -899,86 +906,109 @@ namespace opengl3
             return points_on_triang;
         }
 
-        public Polygon3d_GL[] points_on_board_2()
+        public Point3d_GL[][] points_on_board()
         {
-            var pols_inds = get_poligs_inds();
-            var points_on_triang = get_points_triang_inds();
-            var first_ind = get_first_pol_on_board(pols_inds, points_on_triang);
-            var start_pol_ind = get_ps_on_board(first_ind, pols_inds, points_on_triang);
-            var pns = new List<Polygon3d_GL>();
-            for (int i = 0; i < start_pol_ind.Length; i += 1)
-            {
-                pns.Add(new Polygon3d_GL(ps_uniq[pols_inds[start_pol_ind[i]][0]], ps_uniq[pols_inds[start_pol_ind[i]][1]], ps_uniq[pols_inds[start_pol_ind[i]][2]]));
-            }
-            return pns.ToArray();
-        }
-        public Polygon3d_GL[] points_on_board()
-        {
-            var pols_inds = get_poligs_inds();
-            var points_on_triang = get_points_triang_inds();
+            pols_inds = get_poligs_inds();
+            ps_on_triang = get_points_triang_inds();
+            check_arr = check_board_all_poligs();
 
-            var start_pol_ind = get_pol_on_board(pols_inds, points_on_triang);
+            var board_conts = get_ps_on_board();
 
-            var pns = new List<Polygon3d_GL>();
-            for (int i = 0; i < start_pol_ind.Length; i += 1)
+            var pss = new List<Point3d_GL[]>();
+            for (int i = 0; i < board_conts.Length; i ++)
             {
-                pns.Add(new Polygon3d_GL(ps_uniq[pols_inds[start_pol_ind[i]][0]], ps_uniq[pols_inds[start_pol_ind[i]][1]], ps_uniq[pols_inds[start_pol_ind[i]][2]]));
+                if (board_conts[i]!=null)
+                {
+                    var ps = new List<Point3d_GL>();
+                    for (int j = 0; j < board_conts[i].Length; j++)
+                    {
+                        ps.Add(ps_uniq[board_conts[i][j]]);
+                    }
+                    pss.Add(ps.ToArray());
+                }
+                
             }
-            return pns.ToArray();
-        }
-        int[] get_pol_on_board(int[][] pols_inds, List<int>[] ps_on_triang)
-        {
-            List<int> pols = new List<int>();
-            for(int i=0; i< pols_inds.Length; i++)
-            {
-                var ps = check_polig_on_board(i, pols_inds, ps_on_triang);
-                if (ps != null) pols.Add(i);
-            }
-            return pols.ToArray();
+
+            return pss.ToArray();
         }
 
-        int get_first_pol_on_board(int[][] pols_inds, List<int>[] ps_on_triang)
+        int get_first_pol_on_board(int[][] check_arr)
         {
-            for (int i = 0; i < pols_inds.Length; i++)
+            for (int i = 0; i < check_arr.Length; i++)
             {
-                var ps = check_polig_on_board(i, pols_inds, ps_on_triang);
-                if (ps != null) return i;                                 
+                if (check_arr[i] != null) return i;
             }
             return -1;
         }
-        int[] get_ps_on_board(int first_pol, int[][] pols_inds, List<int>[] ps_on_triang)
+        int[][] get_ps_on_board()
         {
-            var board = new List<int>();
-
+            var board_p = new List<int>();
+            var board_ps = new List<int[]>();
             var cur_ind = -1;
-            var cur_triang = first_pol;
-            bool cont_done = false;
-            
-            while(!cont_done)
+            int first = get_first_pol_on_board(check_arr);
+            int cur_triang = first;
+            var ps_c = check_arr[cur_triang];
+            board_p.Add(ps_c[1]);
+            board_p.Add(ps_c[0]);
+            check_arr[cur_triang] = null;
+            triangles_on_board--;
+            while (triangles_on_board>0)
             {
-                var ps = check_polig_on_board(cur_triang, pols_inds, ps_on_triang);
-                var triang = ps_on_triang[ps[0]];
-                cur_ind = ps[0];
+                cur_ind = board_p[board_p.Count - 1];
+                var triang = ps_on_triang[cur_ind];  
                 var ps1 = new int[] { };
                 for (int i= 0; i < triang.Count ; i++)
                 {
-                    ps1 = check_polig_on_board(triang[i], pols_inds, ps_on_triang);
+                    ps1 = check_arr[triang[i]];
                      
-                    if (ps1 != null && cur_triang != triang[i])
+                    if (ps1 != null)
                     {
                         cur_triang = triang[i];
                         break; 
                     } 
                 };
-                if (board.Count>2 && cur_triang==first_pol) { cont_done = true; }
-                if (ps1[0] == cur_ind) cur_ind = ps1[1];
-                else cur_ind = ps1[0];
-                board.Add(cur_triang);
+                if(ps1!=null)
+                {
+                    if (ps1[0] == cur_ind) cur_ind = ps1[1];
+                    else cur_ind = ps1[0];
+                    board_p.Add(cur_ind);
+                    check_arr[cur_triang] = null;
+                    triangles_on_board--;
+                }              
+                if ((board_p.Count > 2 && cur_triang == first) || ps1 == null || triangles_on_board==0)
+                {
+                    board_ps.Add(board_p.ToArray());
+                    board_p = new List<int>();
+                    first = get_first_pol_on_board(check_arr);
+                    if(first>0)
+                    {
+                        cur_triang = first;
+                        ps_c = check_arr[cur_triang];  
+                        board_p.Add(ps_c[1]);
+                        board_p.Add(ps_c[0]);
+                        check_arr[cur_triang] = null;
+                        triangles_on_board--;
+                    }
+                    
+                }
             }
-            return board.ToArray();
+            return board_ps.ToArray();
+        }
+       
+        int[][] check_board_all_poligs()
+        {
+            triangles_on_board = 0;
+            var check_arr = new int[pols_inds.Length][];
+            for (int i = 0; i < pols_inds.Length; i++)
+            {
+                var ps = check_polig_on_board(i);
+                check_arr[i] = ps;
+                if (ps != null) triangles_on_board++;
+            }
+            return check_arr;
         }
 
-        int[] check_polig_on_board(int i,int[][] pols_inds, List<int>[] ps_on_triang)
+        int[] check_polig_on_board(int i)
         {
             if (pols_inds[i] == null) return null;
             if (pols_inds[i].Length < 3) return null;
@@ -993,6 +1023,10 @@ namespace opengl3
 
             if (l_cross_0 != null && l_cross_1 != null && l_cross_2 != null)
             {
+                if (l_cross_1.ToArray().Length < 2 && l_cross_2.ToArray().Length < 2) return new int[] { inds[0], inds[1] };
+                if (l_cross_0.ToArray().Length < 2 && l_cross_2.ToArray().Length < 2) return new int[] { inds[1], inds[2] };
+                if (l_cross_0.ToArray().Length < 2 && l_cross_1.ToArray().Length < 2) return new int[] { inds[2], inds[0] };
+
                 if (l_cross_0.ToArray().Length < 2) return new int[] { inds[0], inds[1] };
                 if (l_cross_1.ToArray().Length < 2) return new int[] { inds[1], inds[2] };
                 if (l_cross_2.ToArray().Length < 2) return new int[] { inds[2], inds[0] };

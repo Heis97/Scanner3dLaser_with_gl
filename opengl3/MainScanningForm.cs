@@ -1339,6 +1339,7 @@ namespace opengl3
             //test_arc();
             //test_traj_def();
             //test_reconstr();
+            //test_surf_rec_2();
             test_find_cont_1();
         }
 
@@ -1426,8 +1427,6 @@ namespace opengl3
             var meshs = Polygon3d_GL.toMesh(pols2);
             //scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
             GL1.add_buff_gl(meshs[0], meshs[1], meshs[2], PrimitiveType.Triangles, "def2");
-
-            
            // scan_stla.pols
         }
         void test_traj_color()
@@ -1456,12 +1455,15 @@ namespace opengl3
         void test_find_cont_1()
         {
             Console.WriteLine("load models");
-            var scan_stl_orig = new Model3d("models\\defects\\ring3.stl", false);
+            var scan_stl_orig = new Model3d("models\\defects\\ring4.stl", false);
             GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
             var mesh = new IndexedMesh(scan_stl_orig.pols);
-            var board = mesh.points_on_board_2();
-            var mesh_board = Polygon3d_GL.toMesh(board);
-            GL1.add_buff_gl(mesh_board[0], mesh_board[1], mesh_board[2], PrimitiveType.Triangles, "def_board");
+            var board = mesh.points_on_board();
+            foreach (var cont in board)
+            {
+                var color = Color3d_GL.random();
+                GL1.addLineMeshTraj(cont,color );
+            }
         }
         void test_surf_rec_2()
         {
