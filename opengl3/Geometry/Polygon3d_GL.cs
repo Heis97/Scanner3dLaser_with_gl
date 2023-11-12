@@ -899,14 +899,18 @@ namespace opengl3
             return points_on_triang;
         }
 
-        public int[][] points_on_board_2()
+        public Polygon3d_GL[] points_on_board_2()
         {
             var pols_inds = get_poligs_inds();
             var points_on_triang = get_points_triang_inds();
-
-           // var start_pol_ind = get_ind_pol_on_board(pols_inds, points_on_triang);
-
-            return null;
+            var first_ind = get_first_pol_on_board(pols_inds, points_on_triang);
+            var start_pol_ind = get_ps_on_board(first_ind, pols_inds, points_on_triang);
+            var pns = new List<Polygon3d_GL>();
+            for (int i = 0; i < start_pol_ind.Length; i += 1)
+            {
+                pns.Add(new Polygon3d_GL(ps_uniq[pols_inds[start_pol_ind[i]][0]], ps_uniq[pols_inds[start_pol_ind[i]][1]], ps_uniq[pols_inds[start_pol_ind[i]][2]]));
+            }
+            return pns.ToArray();
         }
         public Polygon3d_GL[] points_on_board()
         {
@@ -927,29 +931,9 @@ namespace opengl3
             List<int> pols = new List<int>();
             for(int i=0; i< pols_inds.Length; i++)
             {
-                
-                if(pols_inds[i] == null) continue;
-                if(pols_inds[i].Length<3) continue;
-                var inds = pols_inds[i];
-                var l_0 = ps_on_triang[inds[0]];
-                var l_1 = ps_on_triang[inds[1]];
-                var l_2 = ps_on_triang[inds[2]];
-
-                var l_cross_0 = l_0.Intersect(l_1);
-                var l_cross_1 = l_1.Intersect(l_2);
-                var l_cross_2 = l_2.Intersect(l_0);
-
-                if(l_cross_0!=null && l_cross_1!=null && l_cross_2 != null)
-                {
-                    if (l_cross_0.ToArray().Length < 2 || l_cross_1.ToArray().Length < 2 || l_cross_2.ToArray().Length < 2)
-                    {
-                        pols.Add(i);
-                        //Console.WriteLine(l_cross_0.ToArray().Length + " " + l_cross_1.ToArray().Length + " " + l_cross_2.ToArray().Length + " ");
-                    }
-                    //Console.WriteLine(l_cross_0.ToArray().Length + " " + l_cross_1.ToArray().Length + " " + l_cross_2.ToArray().Length + " ");
-                }
+                var ps = check_polig_on_board(i, pols_inds, ps_on_triang);
+                if (ps != null) pols.Add(i);
             }
-
             return pols.ToArray();
         }
 
@@ -957,50 +941,64 @@ namespace opengl3
         {
             for (int i = 0; i < pols_inds.Length; i++)
             {
-
-                if (pols_inds[i] == null) continue;
-                if (pols_inds[i].Length < 3) continue;
-                var inds = pols_inds[i];
-                var l_0 = ps_on_triang[inds[0]];
-                var l_1 = ps_on_triang[inds[1]];
-                var l_2 = ps_on_triang[inds[2]];
-
-                var l_cross_0 = l_0.Intersect(l_1);
-                var l_cross_1 = l_1.Intersect(l_2);
-                var l_cross_2 = l_2.Intersect(l_0);
-
-                if (l_cross_0 != null && l_cross_1 != null && l_cross_2 != null)                
-                    if (l_cross_0.ToArray().Length < 2 || l_cross_1.ToArray().Length < 2 || l_cross_2.ToArray().Length < 2)                    
-                        return i;
-                                  
+                var ps = check_polig_on_board(i, pols_inds, ps_on_triang);
+                if (ps != null) return i;                                 
             }
             return -1;
         }
         int[] get_ps_on_board(int first_pol, int[][] pols_inds, List<int>[] ps_on_triang)
         {
-            for (int i = 0; i < pols_inds.Length; i++)
+            var board = new List<int>();
+
+            var cur_ind = -1;
+            var cur_triang = first_pol;
+            bool cont_done = false;
+            
+            while(!cont_done)
             {
-
-                if (pols_inds[i] == null) continue;
-                if (pols_inds[i].Length < 3) continue;
-                var inds = pols_inds[i];
-                var l_0 = ps_on_triang[inds[0]];
-                var l_1 = ps_on_triang[inds[1]];
-                var l_2 = ps_on_triang[inds[2]];
-
-                var l_cross_0 = l_0.Intersect(l_1);
-                var l_cross_1 = l_1.Intersect(l_2);
-                var l_cross_2 = l_2.Intersect(l_0);
-
-                if (l_cross_0 != null && l_cross_1 != null && l_cross_2 != null)
-                    if (l_cross_0.ToArray().Length < 2 || l_cross_1.ToArray().Length < 2 || l_cross_2.ToArray().Length < 2)
+                var ps = check_polig_on_board(cur_triang, pols_inds, ps_on_triang);
+                var triang = ps_on_triang[ps[0]];
+                cur_ind = ps[0];
+                var ps1 = new int[] { };
+                for (int i= 0; i < triang.Count ; i++)
+                {
+                    ps1 = check_polig_on_board(triang[i], pols_inds, ps_on_triang);
+                     
+                    if (ps1 != null && cur_triang != triang[i])
                     {
-                        continue;
-                    }
-                        //return i;
-
+                        cur_triang = triang[i];
+                        break; 
+                    } 
+                };
+                if (board.Count>2 && cur_triang==first_pol) { cont_done = true; }
+                if (ps1[0] == cur_ind) cur_ind = ps1[1];
+                else cur_ind = ps1[0];
+                board.Add(cur_triang);
             }
-            return null;
+            return board.ToArray();
+        }
+
+        int[] check_polig_on_board(int i,int[][] pols_inds, List<int>[] ps_on_triang)
+        {
+            if (pols_inds[i] == null) return null;
+            if (pols_inds[i].Length < 3) return null;
+            var inds = pols_inds[i];
+            var l_0 = ps_on_triang[inds[0]];
+            var l_1 = ps_on_triang[inds[1]];
+            var l_2 = ps_on_triang[inds[2]];
+
+            var l_cross_0 = l_0.Intersect(l_1);
+            var l_cross_1 = l_1.Intersect(l_2);
+            var l_cross_2 = l_2.Intersect(l_0);
+
+            if (l_cross_0 != null && l_cross_1 != null && l_cross_2 != null)
+            {
+                if (l_cross_0.ToArray().Length < 2) return new int[] { inds[0], inds[1] };
+                if (l_cross_1.ToArray().Length < 2) return new int[] { inds[1], inds[2] };
+                if (l_cross_2.ToArray().Length < 2) return new int[] { inds[2], inds[0] };
+            }
+
+             return null;
         }
     }
 
