@@ -1455,7 +1455,7 @@ namespace opengl3
         void test_find_cont_1()
         {
             Console.WriteLine("load models");
-            var scan_stl_orig = new Model3d("models\\defects\\ring4.stl", false);
+            var scan_stl_orig = new Model3d("models\\defects\\ring3.stl", false);
             GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
             var mesh = new IndexedMesh(scan_stl_orig.pols);
             var board = mesh.points_on_board();
