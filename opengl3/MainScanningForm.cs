@@ -141,6 +141,40 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
+            //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");
+
+            //CvInvoke.Imshow("im1", im_las);
+
+            //UtilOpenCV.takeLineFromMat(im_las, 1);
+
+            // test_basis();
+            //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
+            //load_camers_v2();
+
+            /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
+             var paths = Directory.GetDirectories(path);
+
+             var paths_sort = (from f in paths
+                              orderby File.GetCreationTime(f) descending
+                              select f).ToList().GetRange(0,27);
+
+
+             foreach (string filename in paths_sort)
+                 //File.GetCreationTime(filename);
+                 Console.WriteLine(filename+" " +File.GetCreationTime(filename));*/
+            // resize();
+            //var pos = new PositionRob(new Point3d_GL(0.1, 0.1, 0.1), new Point3d_GL());
+            //var q = RobotFrame.comp_inv_kinem_priv(pos, new int[] { -1, -1, 1 });
+            //prin.t(q);
+
+            //test_get_conts();
+            //loadVideo_test_laser("test_sync_1\\v2810_2.avi");
+
+            // frames_sync_from_file("enc_v1.txt");
+        }
+        static void analys_sph()
+        {
+
             var ps1 = new PointF[]
             {
                 new PointF(16,8),
@@ -234,46 +268,17 @@ namespace opengl3
                 new PointF(246,209)
             };
 
-            var vals1 = analyse_points_2(ps1,3);
-            var vals2 = analyse_points_2(ps2,3);
+
+
+            var vals1 = analyse_points_2(ps1, 3);
+            var vals2 = analyse_points_2(ps2, 3);
 
             var max_v = Math.Max(vals1.Max(), vals2.Max());
 
-            var gist1 = create_gist(vals1,20,max_v);
+            var gist1 = create_gist(vals1, 20, max_v);
             var gist2 = create_gist(vals2, 20, max_v);
 
-            print_gists(gist1 , gist2);
-
-            //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");
-
-            //CvInvoke.Imshow("im1", im_las);
-
-            //UtilOpenCV.takeLineFromMat(im_las, 1);
-
-            // test_basis();
-            //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-            //load_camers_v2();
-
-            /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
-             var paths = Directory.GetDirectories(path);
-
-             var paths_sort = (from f in paths
-                              orderby File.GetCreationTime(f) descending
-                              select f).ToList().GetRange(0,27);
-
-
-             foreach (string filename in paths_sort)
-                 //File.GetCreationTime(filename);
-                 Console.WriteLine(filename+" " +File.GetCreationTime(filename));*/
-            // resize();
-            //var pos = new PositionRob(new Point3d_GL(0.1, 0.1, 0.1), new Point3d_GL());
-            //var q = RobotFrame.comp_inv_kinem_priv(pos, new int[] { -1, -1, 1 });
-            //prin.t(q);
-
-            //test_get_conts();
-            //loadVideo_test_laser("test_sync_1\\v2810_2.avi");
-
-            // frames_sync_from_file("enc_v1.txt");
+            print_gists(gist1, gist2);
         }
         static int[] create_gist(double[] vals,int N, double max_v)//n - number of sections
         {
@@ -1527,7 +1532,7 @@ namespace opengl3
             //test_traj_def();
             //test_reconstr();
             //test_surf_rec_2();
-            test_find_cont_1();
+            //test_find_cont_1();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -3300,7 +3305,7 @@ namespace opengl3
             var capture = new VideoCapture(number);
            
             //capture.SetCaptureProperty(CapProp.
-            //capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
+            capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Fps, 30);
