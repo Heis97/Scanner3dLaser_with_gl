@@ -383,7 +383,7 @@ namespace opengl3
             ed_l.AddRange(ed_s[i_min]);
             return  ed_l.ToArray();
         }
-        static public double[][] frames_sync_from_file(string enc_path)
+        static public double[][] frames_sync_from_file(string enc_path,Label label=null)
         {
             var data = analys_sync(enc_path);
             var frms_max = frames_max(data);
@@ -429,7 +429,8 @@ namespace opengl3
             }
             var prec1 = find_aver_dev( find_prec1.ToArray());
             var prec2 = find_aver_dev(find_prec2.ToArray());
-            Console.WriteLine(prec1 + " " + prec2+ " PREC");
+            if(label!=null) label.Text = Math.Round(prec1).ToString() + " " + Math.Round(prec2).ToString() + " PREC"; 
+
             var prs = compare_frames(data_s, fr_min, fr_max, cam_min, cam_max);
             return prs;
         }
@@ -4262,7 +4263,7 @@ namespace opengl3
             // string enc_path2 = ve_paths2[1];
 
             string enc_path = ve_paths1[1];
-            var pairs = frames_sync_from_file(enc_path);
+            var pairs = frames_sync_from_file(enc_path,lab_scan_pres);
             var cam_min = (int)pairs[0][0];
             var cam_max = (int)pairs[0][1];
             var frame_min = (int)pairs[0][2];
@@ -5509,6 +5510,23 @@ namespace opengl3
             laserLine?.set_home_laser(); Thread.Sleep(1000);
             laserLine?.setShvpPos(350); Thread.Sleep(100);
 
+        }
+
+        private void but_scan_pres_Click(object sender, EventArgs e)
+        {
+            var scan_path = textB_scan_path.Text;
+            var filepath = scan_path.Split('\\').Reverse().ToArray()[0];
+            var ve_paths1 = get_video_path(1, filepath);
+            string video_path1 = ve_paths1[0];
+
+            // string enc_path1 = ve_paths1[1];
+
+            var ve_paths2 = get_video_path(2, filepath);
+            string video_path2 = ve_paths2[0];
+            // string enc_path2 = ve_paths2[1];
+
+            string enc_path = ve_paths1[1];
+            var pairs = frames_sync_from_file(enc_path, lab_scan_pres);
         }
     }
 }
