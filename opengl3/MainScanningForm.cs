@@ -171,7 +171,7 @@ namespace opengl3
             //loadVideo_test_laser("test_sync_1\\v2810_2.avi");
 
             // frames_sync_from_file("enc_v1.txt");
-            analys_sph();
+            //analys_sph();
         }
         static void analys_sph()
         {
@@ -5543,6 +5543,21 @@ namespace opengl3
 
             string enc_path = ve_paths1[1];
             var pairs = frames_sync_from_file(enc_path, lab_scan_pres);
+        }
+
+        private void but_set_z_pos_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_z_pos(Convert.ToInt32(textB_set_z_pos.Text));
+        }
+
+        private void but_z_home_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_home_z();
+        }
+
+        private void but_set_z_div_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_z_div(Convert.ToInt32(textB_set_z_div.Text));
         }
     }
 }

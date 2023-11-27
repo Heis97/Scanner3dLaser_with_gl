@@ -193,6 +193,7 @@ namespace opengl3
             this.imBox_disparity = new Emgu.CV.UI.ImageBox();
             this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.lab_scan_pres = new System.Windows.Forms.Label();
             this.but_scan_pres = new System.Windows.Forms.Button();
             this.but_load_fr_cal = new System.Windows.Forms.Button();
             this.ch_b_im_s = new System.Windows.Forms.CheckBox();
@@ -221,6 +222,10 @@ namespace opengl3
             this.glControl1 = new OpenGL.GlControl();
             this.tabMain = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.but_set_z_pos = new System.Windows.Forms.Button();
+            this.textB_set_z_pos = new System.Windows.Forms.TextBox();
+            this.label58 = new System.Windows.Forms.Label();
+            this.but_z_home = new System.Windows.Forms.Button();
             this.but_extr_st = new System.Windows.Forms.Button();
             this.but_div_disp = new System.Windows.Forms.Button();
             this.label57 = new System.Windows.Forms.Label();
@@ -366,7 +371,8 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.lab_scan_pres = new System.Windows.Forms.Label();
+            this.but_set_z_div = new System.Windows.Forms.Button();
+            this.textB_set_z_div = new System.Windows.Forms.TextBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2192,6 +2198,15 @@ namespace opengl3
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
             // 
+            // lab_scan_pres
+            // 
+            this.lab_scan_pres.AutoSize = true;
+            this.lab_scan_pres.Location = new System.Drawing.Point(453, 297);
+            this.lab_scan_pres.Name = "lab_scan_pres";
+            this.lab_scan_pres.Size = new System.Drawing.Size(54, 13);
+            this.lab_scan_pres.TabIndex = 158;
+            this.lab_scan_pres.Text = "Точность";
+            // 
             // but_scan_pres
             // 
             this.but_scan_pres.Location = new System.Drawing.Point(516, 235);
@@ -2514,6 +2529,12 @@ namespace opengl3
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.but_set_z_div);
+            this.groupBox2.Controls.Add(this.textB_set_z_div);
+            this.groupBox2.Controls.Add(this.but_set_z_pos);
+            this.groupBox2.Controls.Add(this.textB_set_z_pos);
+            this.groupBox2.Controls.Add(this.label58);
+            this.groupBox2.Controls.Add(this.but_z_home);
             this.groupBox2.Controls.Add(this.but_extr_st);
             this.groupBox2.Controls.Add(this.but_div_disp);
             this.groupBox2.Controls.Add(this.label57);
@@ -2532,11 +2553,49 @@ namespace opengl3
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Ручное управление диспенсером";
             // 
+            // but_set_z_pos
+            // 
+            this.but_set_z_pos.Location = new System.Drawing.Point(11, 273);
+            this.but_set_z_pos.Name = "but_set_z_pos";
+            this.but_set_z_pos.Size = new System.Drawing.Size(148, 51);
+            this.but_set_z_pos.TabIndex = 138;
+            this.but_set_z_pos.Text = "Установить положение";
+            this.but_set_z_pos.UseVisualStyleBackColor = true;
+            this.but_set_z_pos.Click += new System.EventHandler(this.but_set_z_pos_Click);
+            // 
+            // textB_set_z_pos
+            // 
+            this.textB_set_z_pos.Location = new System.Drawing.Point(165, 285);
+            this.textB_set_z_pos.Name = "textB_set_z_pos";
+            this.textB_set_z_pos.Size = new System.Drawing.Size(110, 26);
+            this.textB_set_z_pos.TabIndex = 137;
+            this.textB_set_z_pos.Text = "0";
+            // 
+            // label58
+            // 
+            this.label58.AutoSize = true;
+            this.label58.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label58.Location = new System.Drawing.Point(7, 244);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(52, 20);
+            this.label58.TabIndex = 146;
+            this.label58.Text = "Ось Z";
+            // 
+            // but_z_home
+            // 
+            this.but_z_home.Location = new System.Drawing.Point(130, 379);
+            this.but_z_home.Name = "but_z_home";
+            this.but_z_home.Size = new System.Drawing.Size(148, 36);
+            this.but_z_home.TabIndex = 145;
+            this.but_z_home.Text = "Ноль";
+            this.but_z_home.UseVisualStyleBackColor = true;
+            this.but_z_home.Click += new System.EventHandler(this.but_z_home_Click);
+            // 
             // but_extr_st
             // 
-            this.but_extr_st.Location = new System.Drawing.Point(157, 259);
+            this.but_extr_st.Location = new System.Drawing.Point(94, 211);
             this.but_extr_st.Name = "but_extr_st";
-            this.but_extr_st.Size = new System.Drawing.Size(110, 55);
+            this.but_extr_st.Size = new System.Drawing.Size(178, 29);
             this.but_extr_st.TabIndex = 144;
             this.but_extr_st.Text = "Выдавливание";
             this.but_extr_st.UseVisualStyleBackColor = true;
@@ -2544,9 +2603,9 @@ namespace opengl3
             // 
             // but_div_disp
             // 
-            this.but_div_disp.Location = new System.Drawing.Point(20, 34);
+            this.but_div_disp.Location = new System.Drawing.Point(6, 31);
             this.but_div_disp.Name = "but_div_disp";
-            this.but_div_disp.Size = new System.Drawing.Size(110, 55);
+            this.but_div_disp.Size = new System.Drawing.Size(189, 28);
             this.but_div_disp.TabIndex = 135;
             this.but_div_disp.Text = "Установить скорость";
             this.but_div_disp.UseVisualStyleBackColor = true;
@@ -2556,7 +2615,7 @@ namespace opengl3
             // 
             this.label57.AutoSize = true;
             this.label57.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label57.Location = new System.Drawing.Point(16, 230);
+            this.label57.Location = new System.Drawing.Point(21, 182);
             this.label57.Name = "label57";
             this.label57.Size = new System.Drawing.Size(139, 20);
             this.label57.TabIndex = 143;
@@ -2564,7 +2623,7 @@ namespace opengl3
             // 
             // tb_div_disp
             // 
-            this.tb_div_disp.Location = new System.Drawing.Point(131, 48);
+            this.tb_div_disp.Location = new System.Drawing.Point(201, 32);
             this.tb_div_disp.Name = "tb_div_disp";
             this.tb_div_disp.Size = new System.Drawing.Size(71, 26);
             this.tb_div_disp.TabIndex = 134;
@@ -2572,7 +2631,7 @@ namespace opengl3
             // 
             // tb_print_syr_d
             // 
-            this.tb_print_syr_d.Location = new System.Drawing.Point(157, 227);
+            this.tb_print_syr_d.Location = new System.Drawing.Point(162, 179);
             this.tb_print_syr_d.Name = "tb_print_syr_d";
             this.tb_print_syr_d.Size = new System.Drawing.Size(110, 26);
             this.tb_print_syr_d.TabIndex = 142;
@@ -2580,7 +2639,7 @@ namespace opengl3
             // 
             // tb_dir_disp
             // 
-            this.tb_dir_disp.Location = new System.Drawing.Point(131, 108);
+            this.tb_dir_disp.Location = new System.Drawing.Point(201, 72);
             this.tb_dir_disp.Name = "tb_dir_disp";
             this.tb_dir_disp.Size = new System.Drawing.Size(71, 26);
             this.tb_dir_disp.TabIndex = 137;
@@ -2590,7 +2649,7 @@ namespace opengl3
             // 
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label23.Location = new System.Drawing.Point(15, 198);
+            this.label23.Location = new System.Drawing.Point(20, 150);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(139, 20);
             this.label23.TabIndex = 141;
@@ -2598,9 +2657,9 @@ namespace opengl3
             // 
             // but_dir_disp
             // 
-            this.but_dir_disp.Location = new System.Drawing.Point(20, 94);
+            this.but_dir_disp.Location = new System.Drawing.Point(6, 69);
             this.but_dir_disp.Name = "but_dir_disp";
-            this.but_dir_disp.Size = new System.Drawing.Size(110, 55);
+            this.but_dir_disp.Size = new System.Drawing.Size(189, 33);
             this.but_dir_disp.TabIndex = 138;
             this.but_dir_disp.Text = "Установить направ.";
             this.but_dir_disp.UseVisualStyleBackColor = true;
@@ -2610,7 +2669,7 @@ namespace opengl3
             // 
             this.label22.AutoSize = true;
             this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label22.Location = new System.Drawing.Point(28, 166);
+            this.label22.Location = new System.Drawing.Point(33, 118);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(126, 20);
             this.label22.TabIndex = 138;
@@ -2618,7 +2677,7 @@ namespace opengl3
             // 
             // tb_print_nozzle_d
             // 
-            this.tb_print_nozzle_d.Location = new System.Drawing.Point(157, 163);
+            this.tb_print_nozzle_d.Location = new System.Drawing.Point(162, 115);
             this.tb_print_nozzle_d.Name = "tb_print_nozzle_d";
             this.tb_print_nozzle_d.Size = new System.Drawing.Size(110, 26);
             this.tb_print_nozzle_d.TabIndex = 139;
@@ -2626,7 +2685,7 @@ namespace opengl3
             // 
             // tb_print_vel
             // 
-            this.tb_print_vel.Location = new System.Drawing.Point(157, 195);
+            this.tb_print_vel.Location = new System.Drawing.Point(162, 147);
             this.tb_print_vel.Name = "tb_print_vel";
             this.tb_print_vel.Size = new System.Drawing.Size(110, 26);
             this.tb_print_vel.TabIndex = 140;
@@ -3947,14 +4006,23 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // lab_scan_pres
+            // but_set_z_div
             // 
-            this.lab_scan_pres.AutoSize = true;
-            this.lab_scan_pres.Location = new System.Drawing.Point(453, 297);
-            this.lab_scan_pres.Name = "lab_scan_pres";
-            this.lab_scan_pres.Size = new System.Drawing.Size(54, 13);
-            this.lab_scan_pres.TabIndex = 158;
-            this.lab_scan_pres.Text = "Точность";
+            this.but_set_z_div.Location = new System.Drawing.Point(11, 328);
+            this.but_set_z_div.Name = "but_set_z_div";
+            this.but_set_z_div.Size = new System.Drawing.Size(148, 51);
+            this.but_set_z_div.TabIndex = 148;
+            this.but_set_z_div.Text = "Установить скорость";
+            this.but_set_z_div.UseVisualStyleBackColor = true;
+            this.but_set_z_div.Click += new System.EventHandler(this.but_set_z_div_Click);
+            // 
+            // textB_set_z_div
+            // 
+            this.textB_set_z_div.Location = new System.Drawing.Point(165, 340);
+            this.textB_set_z_div.Name = "textB_set_z_div";
+            this.textB_set_z_div.Size = new System.Drawing.Size(110, 26);
+            this.textB_set_z_div.TabIndex = 147;
+            this.textB_set_z_div.Text = "0";
             // 
             // MainScanningForm
             // 
@@ -4404,6 +4472,12 @@ namespace opengl3
         private System.Windows.Forms.TabPage tabPage13;
         private System.Windows.Forms.Button but_scan_pres;
         private System.Windows.Forms.Label lab_scan_pres;
+        private System.Windows.Forms.Button but_set_z_pos;
+        private System.Windows.Forms.TextBox textB_set_z_pos;
+        private System.Windows.Forms.Label label58;
+        private System.Windows.Forms.Button but_z_home;
+        private System.Windows.Forms.Button but_set_z_div;
+        private System.Windows.Forms.TextBox textB_set_z_div;
     }
 }
 

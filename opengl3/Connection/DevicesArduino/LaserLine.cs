@@ -24,7 +24,10 @@ namespace opengl3
             send_pos_las = 11,
             div_disp = 12,
             dir_disp = 13,
-            home_laser = 14;
+            home_laser = 14,
+            div_z = 15,
+            posit_z = 16,
+            home_z = 17;
 
         int on = 1, off = 2;
         public LaserLine(string _port)
@@ -146,6 +149,18 @@ namespace opengl3
         public void set_home_laser()
         {
             send(0, home_laser);
+        }
+        public void set_z_pos(int _pos)
+        {
+            send(_pos + 5000, posit_z);
+        }
+        public void set_z_div(int _vel)
+        {
+            if (_vel >= 0) send(_vel, div_z);
+        }
+        public void set_home_z()
+        {
+            send(0, home_z);
         }
 
         public static int vel_div(double vel_nos, double d_nos, double d_syr)
