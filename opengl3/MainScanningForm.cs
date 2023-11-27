@@ -171,6 +171,7 @@ namespace opengl3
             //loadVideo_test_laser("test_sync_1\\v2810_2.avi");
 
             // frames_sync_from_file("enc_v1.txt");
+            analys_sph();
         }
         static void analys_sph()
         {
@@ -278,8 +279,23 @@ namespace opengl3
             var gist1 = create_gist(vals1, 20, max_v);
             var gist2 = create_gist(vals2, 20, max_v);
 
+
+
             print_gists(gist1, gist2);
         }
+
+        static int comp_centr_mass(int[] arr)
+        {
+            var m = 0;
+            var mr = 0;
+            for (var i = 0; i < arr.Length; i++)
+            {
+                m+=arr[i];
+                mr+=arr[i]*i;
+            }
+            return mr / m;
+        }
+
         static int[] create_gist(double[] vals,int N, double max_v)//n - number of sections
         {
             var gist = new int[N+1];
