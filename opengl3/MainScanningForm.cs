@@ -173,211 +173,8 @@ namespace opengl3
             // frames_sync_from_file("enc_v1.txt");
             //analys_sph();
         }
-        static void analys_sph()
-        {
+        
 
-            var ps1 = new PointF[]
-            {
-                new PointF(16,8),
-                new PointF(6,34),
-                new PointF(20,30),
-                new PointF(56,1),
-                new PointF(43,12),
-
-                new PointF(45,17),
-                new PointF(42,23),
-                new PointF(30,36),
-                new PointF(15,45),
-                new PointF(17,51),
-
-                new PointF(16,76),
-                new PointF(28,85),
-                new PointF(6,106),
-                new PointF(63,37),
-                new PointF(62,45),
-
-                new PointF(84,10),
-                new PointF(94,5),
-                new PointF(109,9),
-                new PointF(123,13),
-                new PointF(116,21),
-
-                new PointF(140,33),
-                new PointF(161,24),
-                new PointF(157,21),
-                new PointF(187,24),
-                new PointF(215,31),
-
-                new PointF(171,59),
-                new PointF(152,71),
-                new PointF(95,59),
-                new PointF(114,60),
-                new PointF(123,74),
-
-                new PointF(73,81),
-                new PointF(87,89),
-                new PointF(155,79),
-                new PointF(40,112),
-                new PointF(74,108),
-
-                new PointF(158,93),
-                new PointF(177,64),
-                new PointF(212,53),
-                new PointF(225,60),
-                new PointF(221,79),
-
-                new PointF(210,78),
-                new PointF(192,85),
-                new PointF(193,88),
-                new PointF(212,102),
-                new PointF(218,102),
-
-                new PointF(202,115),
-                new PointF(212,92)
-            };
-
-            var ps2 = new PointF[]
-            {
-                new PointF(69,35),
-                new PointF(113,36),
-                new PointF(154,34),
-                new PointF(200,35),
-                new PointF(244,34),
-
-                new PointF(68,79),
-                new PointF(114,79),
-                new PointF(156,79),
-                new PointF(202,77),
-                new PointF(246,77),
-
-                new PointF(66,124),
-                new PointF(111,124),
-                new PointF(157,123),
-                new PointF(199,122),
-                new PointF(247,120),
-
-                new PointF(68,167),
-                new PointF(114,168),
-                new PointF(154,168),
-                new PointF(200,166),
-                new PointF(245,163),
-
-                new PointF(70,214),
-                new PointF(112,212),
-                new PointF(159,210),
-                new PointF(203,214),
-                new PointF(246,209)
-            };
-
-
-
-            var vals1 = analyse_points_2(ps1, 3);
-            var vals2 = analyse_points_2(ps2, 3);
-
-            var max_v = Math.Max(vals1.Max(), vals2.Max());
-
-            var gist1 = create_gist(vals1, 20, max_v);
-            var gist2 = create_gist(vals2, 20, max_v);
-
-
-
-            print_gists(gist1, gist2);
-        }
-
-        static int comp_centr_mass(int[] arr)
-        {
-            var m = 0;
-            var mr = 0;
-            for (var i = 0; i < arr.Length; i++)
-            {
-                m+=arr[i];
-                mr+=arr[i]*i;
-            }
-            return mr / m;
-        }
-
-        static int[] create_gist(double[] vals,int N, double max_v)//n - number of sections
-        {
-            var gist = new int[N+1];
-            var k = max_v / N;
-            Console.WriteLine("k: "+k);
-            for (int i = 0; i < vals.Length; i++)
-            {
-                gist[(int)((vals[i]) / k)]++;
-            }
-            return gist;
-        }
-
-        static void print_gists(int[] gist1, int[] gist2)
-        {
-            var len1 = gist1.Length;
-            var len2 = gist2.Length;
-            if(len1!=len2)
-            {
-                if (len1 > len2)
-                {
-                    var d = len1 - len2;
-                    var d_arr = new int[d];
-                    var len2_l = new List<int>(len2);
-                    len2_l.AddRange(d_arr);
-                    gist2 = len2_l.ToArray();
-                }
-                else
-                {
-                    var d = len2 - len1;
-                    var d_arr = new int[d];
-                    var len1_l = new List<int>(len1);
-                    len1_l.AddRange(d_arr);
-                    gist1 = len1_l.ToArray();
-                }
-            }
-
-            for(int i=0; i<gist1.Length;i++)
-            {
-                Console.WriteLine(i + " " + gist1[i] + " " + gist2[i]);
-            }
-            
-        }
-
-
-        static double[] analyse_points(PointF[] ps)//aver dist of every two points
-        {
-
-            var vals = new List<double>();
-            for(int i=0; i<ps.Length;i++)
-            {
-                for (int j = i; j < ps.Length; j++)
-                {
-                    if(i!=j)
-                    {
-                        var dist = (ps[i] - ps[j]).norm;
-                        vals.Add((double)dist);
-                    }
-                }
-            }
-            return vals.ToArray();
-        }
-
-        static double[] analyse_points_2(PointF[] ps,int n)//aver dist for n nearest points
-        {
-            var vals = new List<double>();
-            
-            for (int i = 0; i < ps.Length; i++)
-            {
-                var vals_1 = new List<double>();
-                for (int j = 0; j < ps.Length; j++)
-                {
-                    if (i != j)
-                    {
-                        var dist = (ps[i] - ps[j]).norm;
-                        vals_1.Add((double)dist);
-                    }
-                }
-                vals_1.Sort();
-                vals.AddRange(vals_1.GetRange(0, n));
-            }
-            return vals.ToArray();
-        }
 
         static int[] frames_max(int[,] data)
         {
@@ -1550,6 +1347,16 @@ namespace opengl3
             //test_reconstr();
             //test_surf_rec_2();
             //test_find_cont_1();
+
+            var ps = SurfaceReconstraction.gen_random_cont_XY(20, 40, 2,new Point3d_GL(20,10));
+            /*ps = new Point3d_GL[]
+            {
+
+            }*/
+            var ps_circ = SurfaceReconstraction.ps_fit_circ_XY(ps);
+            GL1.addTraj(ps);
+            GL1.addTraj(ps_circ);
+
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
