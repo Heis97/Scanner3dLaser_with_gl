@@ -1353,7 +1353,7 @@ namespace opengl3
             {
 
             }*/
-            var ps_circ = SurfaceReconstraction.ps_fit_circ_XY(ps);
+            var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
             GL1.addTraj(ps);
             GL1.addTraj(ps_circ);
 
