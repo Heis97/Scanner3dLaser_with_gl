@@ -1348,14 +1348,11 @@ namespace opengl3
             //test_surf_rec_2();
             //test_find_cont_1();
 
-            var ps = SurfaceReconstraction.gen_random_cont_XY(20, 40, 2,new Point3d_GL(20,10));
-            /*ps = new Point3d_GL[]
-            {
+           /* var ps = SurfaceReconstraction.gen_random_cont_XY(20, 40, 2,new Point3d_GL(20,10));
 
-            }*/
             var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
             GL1.addTraj(ps);
-            GL1.addTraj(ps_circ);
+            GL1.addTraj(ps_circ);*/
 
         }
 
