@@ -1182,6 +1182,8 @@ namespace PathPlanning
             for (int i = 0; i < traj.Count; i++)
             {
                 var fr = new RobotFrame(traj[i],type_robot);
+                fr.X += trajParams.off_x;
+                fr.Y += trajParams.off_y;
                 fr.V = v;
                 fr.F = f;
                 traj_rob.Add(fr);

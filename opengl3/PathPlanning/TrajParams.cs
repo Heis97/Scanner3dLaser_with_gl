@@ -83,6 +83,18 @@ namespace opengl3
             get { return off_z; }
             set {off_z = value; }
         }
+        public double off_x;
+        public double Off_x
+        {
+            get { return off_x; }
+            set { off_x = value; }
+        }
+        public double off_y;
+        public double Off_y
+        {
+            get { return off_y; }
+            set { off_y = value; }
+        }
         //------------------------
         public double div_step;
         [Description("Разбиение траектории")]
