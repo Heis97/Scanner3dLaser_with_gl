@@ -701,7 +701,7 @@ namespace opengl3
         {
             return drawLines(im, PointF.toPoint(points1), r, g, b, size);
         }
-        static public Mat drawLines(Mat im, System.Drawing.Point[] points1, int r, int g, int b, int size = 1)
+        static public Mat drawLines(Mat im, System.Drawing.Point[] points1, int r, int g, int b, int size = 1,int size_c = 1)
         {
             int ind = 0;
             var color = new MCvScalar(b, g, r);//bgr
@@ -711,10 +711,10 @@ namespace opengl3
             }
             if (points1.Length != 0 )
             {
-                for (int i = 0; i < points1.Length-1; i++)
+                for (int i = 1; i < points1.Length; i++)
                 {                  
-                    CvInvoke.Circle(im, points1[i], 2*size, color, 1);
-                    CvInvoke.Line(im, points1[i], points1[i+1], randomColor(), size);
+                    CvInvoke.Circle(im, points1[i], size_c, color, 1);
+                    CvInvoke.Line(im, points1[i-1], points1[i], randomColor(), size);
                     ind++;
                 }
             }

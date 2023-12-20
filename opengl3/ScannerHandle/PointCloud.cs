@@ -152,15 +152,15 @@ namespace opengl3
                 mat[1] = stereocamera.cameraCVs[cam_max - 1].undist(mat[1]);
                 mat[2] = stereocamera.cameraCVs[cam_max - 1].undist(mat[2]);
             }
-            var points_im1 = Detection.detectLineDiff(mat[0], 7);
-            var points_im_max = Detection.detectLineDiff(mat[1], 7);
-            var points_im_max_prev = Detection.detectLineDiff(mat[2], 7);
+            var points_im1 = Detection.detectLineDiff(mat[0]);
+            var points_im_max = Detection.detectLineDiff(mat[1]);
+            var points_im_max_prev = Detection.detectLineDiff(mat[2]);
 
 
             var points_im2 = PointF.averX(points_im_max_prev, points_im_max, k);
 
-            var srx1 = Detection.detectLineSensor(mat[0], 7)[0];
-            var srx2 = Detection.detectLineSensor(mat[1], 7)[0];
+            //var srx1 = Detection.detectLineSensor(mat[0], 7)[0];
+            //var srx2 = Detection.detectLineSensor(mat[1], 7)[0];
            // Console.WriteLine(srx1.X + " " + srx2.X+ " " + points_im2[(int)points_im2.Length/2].X);
             /*var m1 = mat[0].Clone();
             var m2 = mat[1].Clone();
@@ -175,6 +175,7 @@ namespace opengl3
                 {
                     //PointF.check_exist(points_im1);
                    // Console.WriteLine("add_sync");
+                   //Console.WriteLine()
                     stereocamera.cameraCVs[cam_min - 1].scan_points.Add(points_im1);
                     stereocamera.cameraCVs[cam_max - 1].scan_points.Add(points_im2);
                     //Console.WriteLine(points_im1.Length + " " + points_im2.Length);

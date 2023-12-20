@@ -85,6 +85,18 @@ namespace opengl3
 
             }
         }
+
+        public static PointF[] filter_exist(PointF[] ps)
+        {
+            var ps_ex = new List<PointF>();
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if (ps[i].exist) ps_ex.Add(ps[i]);
+            }
+            return ps_ex.ToArray();
+        }
+
+ 
         public static Point[] toPoint(System.Drawing.PointF[] ps)
         {
             if (ps == null)

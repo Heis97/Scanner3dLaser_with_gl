@@ -1475,7 +1475,7 @@ namespace opengl3
             foreach (var cont in board)
             {
                 var color = Color3d_GL.random();
-                GL1.addLineMeshTraj(cont,color );
+                GL1.addLineMeshTraj(cont,color);
             }
         }
         void test_surf_rec_2()
@@ -1904,19 +1904,23 @@ namespace opengl3
 
                     var ps1 = Detection.detectLineDiff(fr_im_cl);
                     var ps2 = Detection.detectLineDiff(fr_im_sec_cl);
-                    var ps1_dr = PointF.toSystemPoint_d(ps1);
-                    var ps2_dr = PointF.toSystemPoint_d(ps2);
+                    var ps1_filtr = PointF.filter_exist(ps1);
+                    var ps2_filtr = PointF.filter_exist(ps2);
+                    var ps1_dr = PointF.toSystemPoint_d(ps1_filtr);
+                    var ps2_dr = PointF.toSystemPoint_d(ps2_filtr);
 
 
                     //var fr_im_cl = fr.im.Clone();
                     //var fr_im_sec_cl = fr.im_sec.Clone();
-                    if (ps1_dr == null || ps2_dr == null) return;
-                    CvInvoke.Line(fr_im_cl, ps1_dr[0], ps1_dr[ps1_dr.Length - 1], new MCvScalar(255, 0, 0));
-                    CvInvoke.Line(fr_im_sec_cl, ps2_dr[0], ps2_dr[ps2_dr.Length - 1], new MCvScalar(255, 0, 0));
-                    imBox_base_1.Image = UtilOpenCV.drawPoints(fr_im_cl, ps1_dr, 0, 255, 0, 1);
-                    imBox_base_2.Image = UtilOpenCV.drawPoints(fr_im_sec_cl, ps2_dr, 0, 255, 0, 1);
-                    
-                    
+                    if (ps1_dr == null || ps2_dr == null) { Console.WriteLine("NULL ps1 ps2"); return; }
+                    Console.WriteLine(ps1_dr[0].X + " " + ps1_dr[0].Y+"; "+ ps1_dr[ps1_dr.Length - 1].X + " " + ps1_dr[ps1_dr.Length - 1].Y);
+                    //CvInvoke.Line(fr_im_cl, ps1_dr[0], ps1_dr[ps1_dr.Length - 1], new MCvScalar(255, 0, 255),2);
+                    //CvInvoke.Line(fr_im_sec_cl, ps2_dr[0], ps2_dr[ps2_dr.Length - 1], new MCvScalar(255, 0, 255),2);
+                    //imBox_base_1.Image = UtilOpenCV.drawPoints(fr_im_cl, ps1_dr, 0, 255, 0, 2);
+                    //imBox_base_2.Image = UtilOpenCV.drawPoints(fr_im_sec_cl, ps2_dr, 0, 255, 0, 2);
+
+                    imBox_base_1.Image = UtilOpenCV.drawLines(fr_im_cl, ps1_dr, 0, 255, 0, 2,0);
+                    imBox_base_2.Image = UtilOpenCV.drawLines(fr_im_sec_cl, ps2_dr, 0, 255, 0, 2,0);
                 }
                     
 
@@ -4110,7 +4114,7 @@ namespace opengl3
             fr_st_vid.stereo = true;
             //comboImages.Items.Add(fr_st_vid);
 
-            int buff_diff = 10;
+            int buff_diff = 5;
             int buff_len = buff_diff + 1;
             if(ch_b_dist.Checked)
             {
@@ -4164,15 +4168,19 @@ namespace opengl3
 
                         
                         //CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                        if(ch_b_im_s.Checked)
-                        {
-                            var frame_d = new Frame(im_min.Clone(), im_max.Clone(), videoframe_count.ToString(), FrameType.LasDif);
-                            frame_d.stereo = true;
-                            frames_show.Add(frame_d);
-                        }
                         
-
-                        scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min,  im_max, im_max_prev }, k,cam_min, cam_max, ch_b_dist.Checked);
+                        
+                        //if(videoframe_count!= 100 && videoframe_count != 103 && videoframe_count != 104 && videoframe_count != 145 && videoframe_count != 146 && videoframe_count <149 && videoframe_count > 100)
+                        {
+                            if (ch_b_im_s.Checked)
+                            {
+                                var frame_d = new Frame(im_min.Clone(), im_max.Clone(), videoframe_count.ToString(), FrameType.LasDif);
+                                frame_d.stereo = true;
+                                frames_show.Add(frame_d);
+                            }
+                            scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min, im_max, im_max_prev }, k, cam_min, cam_max, ch_b_dist.Checked);
+                        }
+                            
                     }
                 }
                 videoframe_count++;

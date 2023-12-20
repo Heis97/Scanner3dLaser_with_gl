@@ -103,7 +103,7 @@ void main()
 	vec4 p1_1_a = imageLoad(ps1,pos);
 	vec3 p1_1 = p1_1_a.xyz;
 	float line_exist = p1_1_a.w;
-	vec4 p_test = imageLoad(ps1,pos);
+	//vec4 p_test = imageLoad(ps1,pos);
 	Line line = Line(p1_1-p1_0,p1_0);
 
 	vec4 p2_0 = imageLoad(ps2,ivec2(0,gl_GlobalInvocationID.y));
@@ -113,7 +113,7 @@ void main()
 		vec4 p2_1 = imageLoad(ps2,ivec2(i-1,gl_GlobalInvocationID.y));
 		vec4 p2_2 = imageLoad(ps2,ivec2(i,gl_GlobalInvocationID.y));
 		Polygon polygon = create_polygon(p2_0.xyz,p2_1.xyz,p2_2.xyz);
-		vec4 crossl =  calc_cross_flat(line, polygon.flat3d);
+		//vec4 crossl =  calc_cross_flat(line, polygon.flat3d);
 		vec4 p_cross = cross_line(polygon, line);
 		if(p_cross.w>0 && p2_1.w>0 && p2_2.w>0 && line_exist>0)
 		{

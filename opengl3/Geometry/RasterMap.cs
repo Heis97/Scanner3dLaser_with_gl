@@ -216,7 +216,7 @@ namespace opengl3
             if (resolution < 0)
             {
 
-                resolution = d_max/Math.Sqrt(points.Length);
+                resolution = 4* d_max/Math.Sqrt(points.Length);
                 Console.WriteLine(resolution);
             }
             var p_len = (p_max - p_min) / resolution;

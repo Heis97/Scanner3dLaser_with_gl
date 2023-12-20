@@ -464,7 +464,7 @@ namespace opengl3
                 //for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
                    // vals_regr.Add(new double[] { data[k1, i],k1 });
                 
-                var threshold = 10;
+                var threshold = 20;
                 var koef = Regression.regression(vals_regr.ToArray(), 2);
                 var a = koef[2];
                 var b = koef[1];
@@ -491,6 +491,7 @@ namespace opengl3
             }
             if (add_count < 5) return null;
             ps = ps_list.ToArray();
+            //ps = PointF.filter_exist(ps);
             if(!orig)
             {                
                 ps = medianFilter_real(ps, 10);

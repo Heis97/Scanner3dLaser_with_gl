@@ -222,6 +222,8 @@ namespace opengl3
             this.glControl1 = new OpenGL.GlControl();
             this.tabMain = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.but_set_z_div = new System.Windows.Forms.Button();
+            this.textB_set_z_div = new System.Windows.Forms.TextBox();
             this.but_set_z_pos = new System.Windows.Forms.Button();
             this.textB_set_z_pos = new System.Windows.Forms.TextBox();
             this.label58 = new System.Windows.Forms.Label();
@@ -371,8 +373,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_set_z_div = new System.Windows.Forms.Button();
-            this.textB_set_z_div = new System.Windows.Forms.TextBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2553,6 +2553,24 @@ namespace opengl3
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Ручное управление диспенсером";
             // 
+            // but_set_z_div
+            // 
+            this.but_set_z_div.Location = new System.Drawing.Point(11, 328);
+            this.but_set_z_div.Name = "but_set_z_div";
+            this.but_set_z_div.Size = new System.Drawing.Size(148, 51);
+            this.but_set_z_div.TabIndex = 148;
+            this.but_set_z_div.Text = "Установить скорость";
+            this.but_set_z_div.UseVisualStyleBackColor = true;
+            this.but_set_z_div.Click += new System.EventHandler(this.but_set_z_div_Click);
+            // 
+            // textB_set_z_div
+            // 
+            this.textB_set_z_div.Location = new System.Drawing.Point(165, 340);
+            this.textB_set_z_div.Name = "textB_set_z_div";
+            this.textB_set_z_div.Size = new System.Drawing.Size(110, 26);
+            this.textB_set_z_div.TabIndex = 147;
+            this.textB_set_z_div.Text = "0";
+            // 
             // but_set_z_pos
             // 
             this.but_set_z_pos.Location = new System.Drawing.Point(11, 273);
@@ -3461,7 +3479,7 @@ namespace opengl3
             // 
             // but_home_las
             // 
-            this.but_home_las.Location = new System.Drawing.Point(171, 80);
+            this.but_home_las.Location = new System.Drawing.Point(45, 355);
             this.but_home_las.Name = "but_home_las";
             this.but_home_las.Size = new System.Drawing.Size(110, 46);
             this.but_home_las.TabIndex = 136;
@@ -3490,7 +3508,7 @@ namespace opengl3
             // 
             // but_setShvpPos
             // 
-            this.but_setShvpPos.Location = new System.Drawing.Point(42, 324);
+            this.but_setShvpPos.Location = new System.Drawing.Point(45, 294);
             this.but_setShvpPos.Name = "but_setShvpPos";
             this.but_setShvpPos.Size = new System.Drawing.Size(110, 55);
             this.but_setShvpPos.TabIndex = 9;
@@ -3500,7 +3518,7 @@ namespace opengl3
             // 
             // textBox_shvpPos
             // 
-            this.textBox_shvpPos.Location = new System.Drawing.Point(158, 338);
+            this.textBox_shvpPos.Location = new System.Drawing.Point(161, 308);
             this.textBox_shvpPos.Name = "textBox_shvpPos";
             this.textBox_shvpPos.Size = new System.Drawing.Size(110, 26);
             this.textBox_shvpPos.TabIndex = 8;
@@ -3548,7 +3566,7 @@ namespace opengl3
             // 
             // but_setPower
             // 
-            this.but_setPower.Location = new System.Drawing.Point(42, 259);
+            this.but_setPower.Location = new System.Drawing.Point(45, 229);
             this.but_setPower.Name = "but_setPower";
             this.but_setPower.Size = new System.Drawing.Size(110, 50);
             this.but_setPower.TabIndex = 4;
@@ -3579,7 +3597,7 @@ namespace opengl3
             // 
             // textBox_powerLaser
             // 
-            this.textBox_powerLaser.Location = new System.Drawing.Point(159, 273);
+            this.textBox_powerLaser.Location = new System.Drawing.Point(162, 243);
             this.textBox_powerLaser.Name = "textBox_powerLaser";
             this.textBox_powerLaser.Size = new System.Drawing.Size(110, 26);
             this.textBox_powerLaser.TabIndex = 5;
@@ -4005,24 +4023,6 @@ namespace opengl3
             // 
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // but_set_z_div
-            // 
-            this.but_set_z_div.Location = new System.Drawing.Point(11, 328);
-            this.but_set_z_div.Name = "but_set_z_div";
-            this.but_set_z_div.Size = new System.Drawing.Size(148, 51);
-            this.but_set_z_div.TabIndex = 148;
-            this.but_set_z_div.Text = "Установить скорость";
-            this.but_set_z_div.UseVisualStyleBackColor = true;
-            this.but_set_z_div.Click += new System.EventHandler(this.but_set_z_div_Click);
-            // 
-            // textB_set_z_div
-            // 
-            this.textB_set_z_div.Location = new System.Drawing.Point(165, 340);
-            this.textB_set_z_div.Name = "textB_set_z_div";
-            this.textB_set_z_div.Size = new System.Drawing.Size(110, 26);
-            this.textB_set_z_div.TabIndex = 147;
-            this.textB_set_z_div.Text = "0";
             // 
             // MainScanningForm
             // 
