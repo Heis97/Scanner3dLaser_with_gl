@@ -143,18 +143,20 @@ namespace opengl3
             return true;
         }
 
-        public bool addPoints2dStereoLas_sync(Mat[] mat, StereoCamera stereocamera, double k, int cam_min, int cam_max, bool undist)
+        public bool addPoints2dStereoLas_sync(Mat[] mat, StereoCamera stereocamera, double k, int cam_min, int cam_max,ScannerConfig config)
         {
 
-            if (undist)
+            if (config.distort)
             {
                 mat[0] = stereocamera.cameraCVs[cam_min - 1].undist(mat[0]);
                 mat[1] = stereocamera.cameraCVs[cam_max - 1].undist(mat[1]);
                 mat[2] = stereocamera.cameraCVs[cam_max - 1].undist(mat[2]);
             }
-            var points_im1 = Detection.detectLineDiff(mat[0]);
-            var points_im_max = Detection.detectLineDiff(mat[1]);
-            var points_im_max_prev = Detection.detectLineDiff(mat[2]);
+
+            
+            var points_im1 = Detection.detectLineDiff(mat[0], config);
+            var points_im_max = Detection.detectLineDiff(mat[1], config);
+            var points_im_max_prev = Detection.detectLineDiff(mat[2], config);
 
 
             var points_im2 = PointF.averX(points_im_max_prev, points_im_max, k);

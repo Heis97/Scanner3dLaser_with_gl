@@ -2,33 +2,28 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.UI;
-using Emgu.CV.Util;
 using OpenGL;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Accord.Statistics.Models.Regression;
-using Accord.Statistics.Models.Regression.Linear;
 using Accord.Math;
-using Accord.Math.Optimization.Losses;
 using System.Threading;
 using System.IO.Ports;
 using PathPlanning;
-using Accord.Statistics.Distributions.Univariate;
+using Newtonsoft.Json;
 
 namespace opengl3
 {
     public partial class MainScanningForm : Form
     {
         #region var
+        
         bool scan_dist = false;
         bool scan_sync = false;
         int port_tcp = 30005;
@@ -36,8 +31,9 @@ namespace opengl3
         string video_scan_name = "1";
         string scan_i = "emp";
         string traj_i = "emp";
-        TrajParams param_tr = new TrajParams();
-        PatternSettings param_patt = new PatternSettings();
+        TrajParams traj_config = new TrajParams();
+        PatternSettings patt_config = new PatternSettings();
+        ScannerConfig scanner_config = new ScannerConfig();
         FormSettings formSettings = new FormSettings();
         Polygon3d_GL[] mesh = null;
         List<Matrix<double>> rob_traj = null;
@@ -397,7 +393,7 @@ namespace opengl3
             //var model_mesh = STLmodel.parsingStl_GL4(@"curve_test_asc.STL");
             //GL1.addMesh(model_mesh, PrimitiveType.Triangles);
 
-            param_tr = new TrajParams
+            /*traj_config = new TrajParams
             {
                 dz = 0.4,
                 div_step = 1.3,
@@ -411,9 +407,9 @@ namespace opengl3
                 k_decr_ang = 0.5,
                 w_smooth_ang = 15               
             };
-            propGrid_traj.SelectedObject = param_tr;
+            
 
-            param_patt = new PatternSettings
+            patt_config = new PatternSettings
             {
                 step = 2,
                 angle = 0,
@@ -427,12 +423,37 @@ namespace opengl3
                 dim_y = 10,
                 filling = 0.7
             };
-            propGrid_pattern.SelectedObject = param_patt;
+
+            scanner_config = new ScannerConfig
+            {
+                board = 0,
+                orig = false,
+                reverse = false,
+                rotate = true,
+                threshold = 20,
+                wind_regr = 7,
+
+                buff_delt = 10,
+                distort = true,
+                save_im = false,
+                smooth = 1,
+                strip = 3,
+                syncr = true,
+                gauss_kern = 7
+            };
+            */
+            (scanner_config, traj_config, patt_config) = formSettings.load_confs();
+
+
+            prop_gr_scan.SelectedObject = scanner_config;
+            propGrid_pattern.SelectedObject = patt_config;
+            propGrid_traj.SelectedObject = traj_config;
+
             prop_gr_light.SelectedObject = GL1.lightSources_obj;
             debugBox.Text = "0.3 0.3 1";
 
-            scan_dist = ch_b_dist.Checked;
-            scan_sync = ch_b_sync.Checked;
+            //scan_dist = ch_b_dist.Checked;
+           // scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
             //load_camers_v2();
@@ -780,28 +801,40 @@ namespace opengl3
 
             return scanner;
         }
-        void load_scan_v2(Scanner scanner,string scan_path, int strip = 1, double smooth = 0.8)
+        void load_scan_v2(Scanner scanner,string scan_path, ScannerConfig config)
         {
 
 
 
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //
-            if(ch_b_sync.Checked)
-                scanner = loadVideo_stereo(scan_path_1, scanner, strip);
+            if(scanner_config.syncr)
+                scanner = loadVideo_stereo(scan_path_1, scanner, config);
             else
-                scanner = loadVideo_stereo_not_sync(scan_path_1, scanner, strip);
+                scanner = loadVideo_stereo_not_sync(scan_path_1, scanner, config);
 
-            var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), smooth);
-
+            var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), -1);
+            
+            var scan_stl = Polygon3d_GL.toMesh(mesh);
             //mesh = GL1.addNormals(mesh, 1);
             this.scanner = scanner;
 
-            var scan_stl = Polygon3d_GL.toMesh(mesh);
             if(scan_stl != null) scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
+            smooth_mesh(scan_i, config.smooth);
            // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
-            
+
             Console.WriteLine("Loading end.");
+        }
+
+        void smooth_mesh(string mesh_id, double rad)
+        {
+            
+            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[mesh_id].vertex_buffer_data, GL1.buffersGl.objs[mesh_id].color_buffer_data);
+            var polyg_sm = RasterMap.smooth_mesh(polygs, rad);
+            //polyg_sm = GL1.addNormals(polyg_sm, 0.5);
+            var mesh = Polygon3d_GL.toMesh(polyg_sm);
+            GL1.remove_buff_gl_id(mesh_id);
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, mesh_id);
         }
         //----------------------------------------------------------------------------------------------------------
         Scanner loadScanner_sing(string conf1, string laser_line = null)
@@ -885,7 +918,7 @@ namespace opengl3
 
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,10f);
 
-            loadVideo_stereo(scand_path, scanner, strip);
+            loadVideo_stereo(scand_path, scanner, scanner_config);
             var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
             var scan_stl = Polygon3d_GL.toMesh(mesh);
              GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
@@ -1277,7 +1310,7 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            //GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             //generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
             //GL1.addFlat3d_XY_zero_s(-0.1, Color3d_GL.white());
             //GL1.SortObj();
@@ -1348,12 +1381,12 @@ namespace opengl3
             //test_surf_rec_2();
             //test_find_cont_1();
 
-           /* var ps = SurfaceReconstraction.gen_random_cont_XY(20, 40, 2,new Point3d_GL(20,10));
+            /* var ps = SurfaceReconstraction.gen_random_cont_XY(20, 40, 2,new Point3d_GL(20,10));
 
-            var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
-            GL1.addTraj(ps);
-            GL1.addTraj(ps_circ);*/
-
+             var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
+             GL1.addTraj(ps);
+             GL1.addTraj(ps_circ);*/
+            test_traj_2d();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1419,7 +1452,38 @@ namespace opengl3
 
         }
 
+        void test_traj_2d()
+        {
+            Console.WriteLine("load models");
+            var scan_stl = new Model3d("models\\defects\\plan_1.stl", false);
+            //GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles, "flat");
+            
+            var ps_cont = SurfaceReconstraction.gen_random_cont_XY(15, 40, 0.1, new Point3d_GL(0, 0));
+            GL1.addLineMeshTraj(ps_cont,Color3d_GL.green());
+            var conts = new List<List<Point3d_GL>>();
+            var surfs = new List<Polygon3d_GL[]>();
 
+
+            conts.Add(ps_cont.ToList());
+            surfs.Add(scan_stl.pols);
+
+            var pols2 = Polygon3d_GL.plus(scan_stl.pols, new Point3d_GL(0, 0, 0.5));
+            conts.Add(ps_cont.ToList());
+            surfs.Add(pols2);
+
+            Console.WriteLine("gen_traj3d");
+            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, traj_config, patt_config, GL1);
+
+            rob_traj = PathPlanner.join_traj(_traj);
+            var ps = PathPlanner.matr_to_traj(rob_traj);
+
+            if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
+
+            //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
+            if (ps == null) return;
+            traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
+            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, traj_config);
+        }
         void test_traj_def()
         {
             var scan_stla = new Model3d("leg_wound4.stl", false);
@@ -1514,7 +1578,7 @@ namespace opengl3
                 }
             }
             Console.WriteLine("gen_traj3d");
-            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, param_tr,param_patt,GL1);
+            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, traj_config,patt_config,GL1);
             
             rob_traj = PathPlanner.join_traj(_traj);
             var ps = PathPlanner.matr_to_traj(rob_traj);
@@ -1524,7 +1588,7 @@ namespace opengl3
             //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
             if (ps == null) return;
             traj_i = GL1.addLineMeshTraj( ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
-            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, param_tr);
+            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, traj_config);
         }
         void test_surf_cross()
         {
@@ -1683,7 +1747,7 @@ namespace opengl3
          debugBox.Text = prog;
          GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "pores_test");
      }*/
-    void test_get_conts_3d()
+        void test_get_conts_3d()
         {
 
             var scan_stla = new Model3d("test\\cont_2a.stl", false);
@@ -1913,7 +1977,7 @@ namespace opengl3
                     //var fr_im_cl = fr.im.Clone();
                     //var fr_im_sec_cl = fr.im_sec.Clone();
                     if (ps1_dr == null || ps2_dr == null) { Console.WriteLine("NULL ps1 ps2"); return; }
-                    Console.WriteLine(ps1_dr[0].X + " " + ps1_dr[0].Y+"; "+ ps1_dr[ps1_dr.Length - 1].X + " " + ps1_dr[ps1_dr.Length - 1].Y);
+                    //Console.WriteLine(ps1_dr[0].X + " " + ps1_dr[0].Y+"; "+ ps1_dr[ps1_dr.Length - 1].X + " " + ps1_dr[ps1_dr.Length - 1].Y);
                     //CvInvoke.Line(fr_im_cl, ps1_dr[0], ps1_dr[ps1_dr.Length - 1], new MCvScalar(255, 0, 255),2);
                     //CvInvoke.Line(fr_im_sec_cl, ps2_dr[0], ps2_dr[ps2_dr.Length - 1], new MCvScalar(255, 0, 255),2);
                     //imBox_base_1.Image = UtilOpenCV.drawPoints(fr_im_cl, ps1_dr, 0, 255, 0, 2);
@@ -2778,7 +2842,9 @@ namespace opengl3
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
+            
+
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
             if (con1 != null)
             {
                 
@@ -3933,7 +3999,7 @@ namespace opengl3
             var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
             //capture1.SetCaptureProperty(CapProp.);
         }
-        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner, ScannerConfig config)
         {
 
             videoframe_count = 0;
@@ -3971,7 +4037,7 @@ namespace opengl3
             //comboImages.Items.Add(fr_st_vid);
 
             
-            int buff_diff = 9;
+            int buff_diff = config.buff_delt;
             int buff_len = buff_diff+1;
             var all_frames = Math.Min(all_frames1, all_frames2);
             if (scanner != null)
@@ -4001,7 +4067,7 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     var buffer_mat2 = im2.Clone();
-                    if (videoframe_count % strip == 0 && videoframe_count> buff_len)
+                    if (videoframe_count % config.strip == 0 && videoframe_count> buff_len)
                     {
                         // im1 -= orig1;
                         // im2 -= orig2;
@@ -4018,7 +4084,7 @@ namespace opengl3
                        // CvInvoke.WaitKey();
                         
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                        if (ch_b_im_s.Checked)
+                        if (config.save_im)
                         {
                              var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                              frame_d.stereo = true;
@@ -4032,7 +4098,7 @@ namespace opengl3
                             imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                             //CvInvoke.Imshow("im2", im2);                       
 
-                            scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, ch_b_dist.Checked);
+                            scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, config.distort);
                     }
                     
                     im1_buff = buffer_mat1.Clone();
@@ -4068,7 +4134,7 @@ namespace opengl3
             if (buff.Count > len) buff.RemoveAt(0);
             return buff;
         }
-        public Scanner loadVideo_stereo(string filepath, Scanner scanner = null, int strip = 1)
+        public Scanner loadVideo_stereo(string filepath, Scanner scanner, ScannerConfig config)
         {
 
             videoframe_count = 0;
@@ -4116,7 +4182,7 @@ namespace opengl3
 
             int buff_diff = 5;
             int buff_len = buff_diff + 1;
-            if(ch_b_dist.Checked)
+            if(config.distort)
             {
                 orig1 = scanner.stereoCamera.cameraCVs[0].undist(orig1);
                 orig2 = scanner.stereoCamera.cameraCVs[1].undist(orig2);
@@ -4135,7 +4201,9 @@ namespace opengl3
             int f2 = 0;
             //f1 = 70;
             //while (f1 < frame_min-1)
-            while (f1 < frame_min - 1 )
+            
+
+            while (f1 < frame_min - 1- config.las_offs)
             //while (f1 < 200)
             {
                 im_min_buff_list = read_frame(captures[cam_min-1], im_min_buff_list, buff_len); f1++;
@@ -4148,7 +4216,7 @@ namespace opengl3
                 } 
                 if (scanner != null)
                 {
-                    if (f1% strip == 0 && f1 > buff_len)
+                    if (f1% config.strip == 0 && f1 > buff_len)
                     {
                         var im_min = im_min_buff_list[buff_len - 1] - im_min_buff_list[buff_len - buff_diff];
 
@@ -4172,19 +4240,20 @@ namespace opengl3
                         
                         //if(videoframe_count!= 100 && videoframe_count != 103 && videoframe_count != 104 && videoframe_count != 145 && videoframe_count != 146 && videoframe_count <149 && videoframe_count > 100)
                         {
-                            if (ch_b_im_s.Checked)
+                            if (config.save_im)
                             {
                                 var frame_d = new Frame(im_min.Clone(), im_max.Clone(), videoframe_count.ToString(), FrameType.LasDif);
                                 frame_d.stereo = true;
                                 frames_show.Add(frame_d);
                             }
-                            scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min, im_max, im_max_prev }, k, cam_min, cam_max, ch_b_dist.Checked);
+                            
+                            scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min, im_max, im_max_prev }, k, cam_min, cam_max,config);
                         }
                             
                     }
                 }
                 videoframe_count++;
-                //Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
             comboImages.Items.AddRange(frames_show.ToArray());
             scanner.compPointsStereoLas_2d();
@@ -4415,10 +4484,10 @@ namespace opengl3
             if (mesh != null && cont != null)
             {
                 List<List<Point3d_GL>> conts = new List<List<Point3d_GL>>();
-                for (int i = 0; i < param_tr.layers; i++)
+                for (int i = 0; i < traj_config.layers; i++)
                     conts.Add(cont);
                 
-                var _traj = PathPlanner.Generate_multiLayer3d_mesh(mesh, conts, param_tr);
+                var _traj = PathPlanner.Generate_multiLayer3d_mesh(mesh, conts, traj_config);
 
                 rob_traj = PathPlanner.join_traj(_traj);
                 var ps = PathPlanner.matr_to_traj(rob_traj);
@@ -4428,7 +4497,7 @@ namespace opengl3
                 //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
 
                 traj_i = GL1.addLineMeshTraj(ps.ToArray(),new Color3d_GL(0.9f),"gen_traj");
-                var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType,param_tr);
+                var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType,traj_config);
                 return traj_rob;
 
             }
@@ -4524,7 +4593,7 @@ namespace opengl3
                  conts.Add(ps_inter.ToList());
              }
 
-             var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, param_tr);
+             var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, traj_config);
 
              rob_traj = PathPlanner.join_traj(_traj);
              var ps = PathPlanner.matr_to_traj(rob_traj);
@@ -4534,7 +4603,7 @@ namespace opengl3
              //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
 
              traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
-             var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, param_tr);
+             var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, traj_config);
             // return traj_rob;
 
         }
@@ -4649,7 +4718,7 @@ namespace opengl3
                 conts.Add(ps_inter.ToList());
             }
 
-            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, param_tr);
+            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, traj_config);
 
             rob_traj = PathPlanner.join_traj(_traj);
             var ps = PathPlanner.matr_to_traj(rob_traj);
@@ -4659,7 +4728,7 @@ namespace opengl3
             //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
 
             traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
-            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, param_tr);
+            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, traj_config);
             // return traj_rob;
 
         }
@@ -4667,13 +4736,8 @@ namespace opengl3
         private void but_remesh_test_Click(object sender, EventArgs e)
         {
             var selected_obj = selected_object(); if (selected_obj == null) return;
+            smooth_mesh(selected_obj, Convert.ToDouble(tp_smooth_scan.Text));
 
-            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data, GL1.buffersGl.objs[selected_obj].color_buffer_data);
-            var polyg_sm = RasterMap.smooth_mesh(polygs, Convert.ToDouble(tp_smooth_scan.Text));
-            //polyg_sm = GL1.addNormals(polyg_sm, 0.5);
-            var mesh = Polygon3d_GL.toMesh(polyg_sm);
-            GL1.remove_buff_gl_id(selected_obj);
-            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, selected_obj);
         }
         private void but_intersec_obj_Click(object sender, EventArgs e)
         {
@@ -4774,7 +4838,7 @@ namespace opengl3
             var corn2 = new System.Drawing.PointF[0];
             var mat1 = fr.im;
             var mat2 = fr.im_sec;
-            if(ch_b_dist.Checked)
+            if(scanner_config.distort)
             {
                 mat1 = scanner.stereoCamera.cameraCVs[0].undist(mat1);
                 mat2 = scanner.stereoCamera.cameraCVs[1].undist(mat2);
@@ -4798,7 +4862,7 @@ namespace opengl3
             var corn2 = new System.Drawing.PointF[0];
             var mat1 = fr.im;
             var mat2 = fr.im_sec;
-            if (ch_b_dist.Checked)
+            if (scanner_config.distort)
             {
                 mat1 = scanner.stereoCamera.cameraCVs[0].undist(mat1);
                 mat2 = scanner.stereoCamera.cameraCVs[1].undist(mat2);
@@ -4880,12 +4944,9 @@ namespace opengl3
             var cam2_conf_path = textB_cam2_conf.Text;
             var stereo_cal_path = textB_stereo_cal_path.Text;
 
-            int strip = Convert.ToInt32(tb_strip_scan.Text);
-            double smooth = Convert.ToDouble(tp_smooth_scan.Text);
-
             var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
             this.scanner = scanner;
-            load_scan_v2(scanner,scan_path, strip,smooth);
+            load_scan_v2(scanner,scan_path, scanner_config);
 
         }
 
@@ -4895,14 +4956,11 @@ namespace opengl3
             var cam1_conf_path = textB_cam1_conf.Text;
             var cam2_conf_path = textB_cam2_conf.Text;
             var stereo_cal_path = textB_stereo_cal_path.Text;
-
-            int strip = Convert.ToInt32(tb_strip_scan.Text);
-            //double smooth = Convert.ToDouble(tp_smooth_scan.Text);
-            double smooth = -1;
             string bfs_path = "bfs_cal.txt";
 
             var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path);
-            load_scan_v2(scanner, scan_path, strip, smooth);
+            this.scanner = scanner;
+            load_scan_v2(scanner, scan_path, scanner_config);
         }
 
         private void but_scan_load_sing_Click(object sender, EventArgs e)
@@ -4911,7 +4969,7 @@ namespace opengl3
             var cam1_conf_path = textB_cam1_conf.Text;
             var laser_line_path = textB_cam2_conf.Text;
 
-            int strip = Convert.ToInt32(tb_strip_scan.Text);
+            int strip = scanner_config.strip;
             double smooth = Convert.ToDouble(tp_smooth_scan.Text);
 
             var scanner = loadScanner_sing(cam1_conf_path,laser_line_path);
@@ -4922,7 +4980,7 @@ namespace opengl3
             var scan_path = textB_scan_path.Text;
             var cam1_conf_path = textB_cam1_conf.Text;
 
-            int strip = Convert.ToInt32(tb_strip_scan.Text);
+            int strip = scanner_config.strip;
             double smooth = Convert.ToDouble(tp_smooth_scan.Text);
 
             var scanner = loadScanner_sing(cam1_conf_path);
@@ -4988,25 +5046,25 @@ namespace opengl3
         private void but_load_conf_cam1_Click(object sender, EventArgs e)
         {
             textB_cam1_conf.Text =  get_file_name(Directory.GetCurrentDirectory(),"txt");
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
         }
 
         private void but_load_conf_cam2_Click(object sender, EventArgs e)
         {
             textB_cam2_conf.Text = get_file_name(Directory.GetCurrentDirectory(), "txt");
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
         }
 
         private void but_stereo_cal_path_Click(object sender, EventArgs e)
         {
             textB_stereo_cal_path.Text = get_folder_name(Directory.GetCurrentDirectory());
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
         }
 
         private void but_scan_path_Click(object sender, EventArgs e)
         {
             textB_scan_path.Text = get_folder_name(Directory.GetCurrentDirectory());
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
         }
 
         private void MainScanningForm_Load(object sender, EventArgs e)
@@ -5295,9 +5353,9 @@ namespace opengl3
 
         private void but_printer_traj_fab_Click(object sender, EventArgs e)
         {
-            var pattern = PathPlanner.gen_traj_3d_pores(param_patt, param_tr);
+            var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
             var traj = PathPlanner.ps_to_matr(pattern);
-            var prog = PathPlanner.generate_printer_prog(traj, param_tr);
+            var prog = PathPlanner.generate_printer_prog(traj, traj_config);
             debugBox.Text = prog;
             if (GL1.buffersGl.objs.Keys.Contains("prog")) GL1.buffersGl.removeObj("prog");
             //GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");

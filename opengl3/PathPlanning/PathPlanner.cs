@@ -1687,6 +1687,7 @@ namespace PathPlanning
             get { return min_dist; }
             set { min_dist = value; }
         }
+
         public double dim_x;
         public double Dim_x
         {

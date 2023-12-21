@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
@@ -11,6 +12,149 @@ using Emgu.CV.UI;
 
 namespace opengl3
 {
+    public class ScannerConfig
+    {
+
+        public int strip;
+        [Description("Разреженность скана")]
+        [Category("Настройки скана")]
+        [DisplayName("strip")]
+        public int Strip
+        {
+            get { return strip; }
+            set { strip = value; }
+        }
+
+        public double smooth;
+        [Description("Сглаживание, мм")]
+        [Category("Настройки скана")]
+        [DisplayName("smooth")]
+        public double Smooth
+        {
+            get { return smooth; }
+            set { smooth = value; }
+        }
+        public bool distort;
+        [Description("Дисторсия")]
+        [Category("Видео")]
+        [DisplayName("distort")]
+        public bool Distort
+        {
+            get { return distort; }
+            set { distort = value; }
+        }
+
+        public bool save_im;
+        [Description("Сохранять изображения")]
+        [Category("Видео")]
+        [DisplayName("save_im")]
+        public bool Save_im
+        {
+            get { return save_im; }
+            set { save_im = value; }
+        }
+
+        public bool syncr;
+        [Description("Синхронизировать изображения")]
+        [Category("Видео")]
+        [DisplayName("syncr")]
+        public bool Syncr
+        {
+            get { return syncr; }
+            set { syncr = value; }
+        }
+
+        public int buff_delt;
+        [Description("Разница кадров")]
+        [Category("Видео")]
+        [DisplayName("buff_delt")]
+        public int Buff_delt
+        {
+            get { return buff_delt; }
+            set { buff_delt = value; }
+        }
+
+        public int las_offs;
+        [Description("Отсеч кадров")]
+        [Category("Видео")]
+        [DisplayName("las_offs")]
+        public int Las_offs
+        {
+            get { return las_offs; }
+            set { las_offs = value; }
+        }
+
+        public int wind_regr;
+        [Description("Окно регрессии")]
+        [Category("Лазерная линия")]
+        [DisplayName("wind_regr")]
+        public int Wind_regr
+        {
+            get { return wind_regr; }
+            set { wind_regr = value; }
+        }
+
+        public float board;
+        [Description("Боковая рамка")]
+        [Category("Лазерная линия")]
+        [DisplayName("board")]
+        public float Board
+        {
+            get { return board; }
+            set { board = value; }
+        }
+
+        public bool reverse;
+        [Description("Обратный поиск")]
+        [Category("Лазерная линия")]
+        [DisplayName("reverse")]
+        public bool Reverse
+        {
+            get { return reverse; }
+            set { reverse = value; }
+        }
+
+        public bool rotate;
+        [Description("Поворот")]
+        [Category("Лазерная линия")]
+        [DisplayName("rotate")]
+        public bool Rotate
+        {
+            get { return rotate; }
+            set { rotate = value; }
+        }
+
+        public bool orig;
+        [Description("Ориг")]
+        [Category("Лазерная линия")]
+        [DisplayName("orig")]
+        public bool Orig
+        {
+            get { return orig; }
+            set { orig = value; }
+        }
+
+        public int threshold;
+        [Description("Минимальная яркость")]
+        [Category("Лазерная линия")]
+        [DisplayName("threshold")]
+        public int Threshold
+        {
+            get { return threshold; }
+            set { threshold = value; }
+        }
+
+        public int gauss_kern;
+        [Description("Сглаживание")]
+        [Category("Лазерная линия")]
+        [DisplayName("gauss_kern")]
+        public int Gauss_kern
+        {
+            get { return gauss_kern; }
+            set { gauss_kern = value; }
+        }
+    }
+
     public class Scanner
     {
         LaserSurface laserSurface;
@@ -108,9 +252,9 @@ namespace opengl3
             pointCloud.addPoints2dStereoLas(mats, stereoCamera, undist);
         }
 
-        public void addPointsStereoLas_2d_sync(Mat[] mats, double k, int cam_min, int cam_max, bool undist = true)
+        public void addPointsStereoLas_2d_sync(Mat[] mats, double k, int cam_min, int cam_max, ScannerConfig config)
         {
-            pointCloud.addPoints2dStereoLas_sync(mats, stereoCamera,k,cam_min,cam_max, undist);
+            pointCloud.addPoints2dStereoLas_sync(mats, stereoCamera,k,cam_min,cam_max, config);
         }
         public void addPointsSingLas_2d(Mat mat, bool undist = true, bool orig =false)
         {
