@@ -968,7 +968,7 @@ namespace opengl3
                 var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
                 laserLine?.laserOn();
                 Thread.Sleep(100);
-                laserLine?.setShvpVel(200);
+                laserLine?.setShvpVel(2000);
                 Thread.Sleep(200);
 
                 laserLine?.setShvpPos((int)p1_cur_scan.x);

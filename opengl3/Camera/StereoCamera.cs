@@ -153,16 +153,18 @@ namespace opengl3
                 cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, pattern_size, markSize);
                 var Bsm = cameraCVs[0].matrixCS.Clone();
                 var Bbf = new RobotFrame(pos[i].name).getMatrix(robotType);
-
+                //var Bft = new RobotFrame("-0.1709395 0.0687465 0.0480957 1.55116 1.1946166 0.0").getMatrix(robotType);
+                //Bbf *= Bft;
                 //prin.t(pos[i].name);
-               // prin.t(Bbf);
+                // prin.t(Bbf);
                 //var Bbm = new RobotFrame("510.9 6.4 55.4 1.5 -0.002 -0.1").getMatrix(robotType);
 
                 //var Bbm = new RobotFrame("-193.677 -334.085 -30.528 -0.01515 -0.00087 -1.54447").getMatrix(robotType);
                 //var Bbm = new RobotFrame("-199.191 -350.3198 5.9134 -0.00519 -0.00268 -1.52663").getMatrix(robotType);
                 //var Bbm = new RobotFrame("-218.37 -239.51 -33.85 -0.014 -0.0058 -1.5658").getMatrix(robotType);
 
-                var Bbm = new RobotFrame("-227.8394 -380.7143 -33.724 -0.00703 -0.00259 -1.569604").getMatrix(robotType);
+                //var Bbm = new RobotFrame("-227.8394 -380.7143 -33.724 -0.00703 -0.00259 -1.569604").getMatrix(robotType);
+                var Bbm = new RobotFrame("-226.7156 -339.505 -33.46688 -0.00779 -0.00117 -1.552798").getMatrix(robotType);
 
                 /* prin.t("--------------------------------");
                  prin.t("Bsm");
