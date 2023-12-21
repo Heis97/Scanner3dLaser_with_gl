@@ -373,6 +373,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.but_rob_ph = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2468,6 +2469,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.but_rob_ph);
             this.tabMain.Controls.Add(this.groupBox2);
             this.tabMain.Controls.Add(this.tabControl1);
             this.tabMain.Controls.Add(this.lab_fps_cam1);
@@ -4024,6 +4026,17 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // but_rob_ph
+            // 
+            this.but_rob_ph.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_ph.Location = new System.Drawing.Point(132, 483);
+            this.but_rob_ph.Name = "but_rob_ph";
+            this.but_rob_ph.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_ph.TabIndex = 146;
+            this.but_rob_ph.Text = "photo rob";
+            this.but_rob_ph.UseVisualStyleBackColor = true;
+            this.but_rob_ph.Click += new System.EventHandler(this.but_photo_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1884, 938);
@@ -4478,6 +4491,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_z_home;
         private System.Windows.Forms.Button but_set_z_div;
         private System.Windows.Forms.TextBox textB_set_z_div;
+        private System.Windows.Forms.Button but_rob_ph;
     }
 }
 
