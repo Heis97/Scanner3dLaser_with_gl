@@ -748,7 +748,7 @@ namespace opengl3
             {
                 pols.Add(pol[i] + p);
             }
-            return pol;
+            return pols.ToArray();
         }
         public static Polygon3d_GL operator -(Polygon3d_GL pol, Point3d_GL p)
         {

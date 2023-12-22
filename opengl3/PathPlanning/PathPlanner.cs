@@ -53,6 +53,17 @@ namespace PathPlanning
             return ps[ps.Count-1];
         }
 
+        public double dist()
+        {
+            var ps_f = get_first();
+            var ps_l = get_last();
+            if(ps_f.exist && ps_l.exist)
+            {
+                return (ps_f - ps_l).magnitude();
+            }
+            return -1;
+        }
+
         static public int nearest_end_line(LinePath[] lines, LinePath line)
         {
             var min_d = double.MaxValue;
@@ -677,12 +688,12 @@ namespace PathPlanning
         {
 
             var dirty_ls = parse_linepath_from_ps_dirty(ps, div);
-           /* foreach (var line in dirty_ls)
+            foreach (var line in dirty_ls)
             {
                 var color = Color3d_GL.random();
                 gl.addLineMeshTraj(line.ps.ToArray(), color, "lines");
                 gl.addPointMesh(new Point3d_GL[] { line.ps[0], line.ps[line.ps.Count-1] }, color, "ps");
-            }*/
+            }
             var ls = linepath_from_dirty_linepath(dirty_ls, div);  
             return ls;
         }
@@ -715,6 +726,7 @@ namespace PathPlanning
         public static LinePath[] linepath_from_dirty_linepath(LinePath[] ls, double div)//!!!
         {
             var ls_unioned = new List<LinePath>();
+
             ls_unioned.Add(ls[0]);
             for (int i = 0; i < ls.Length; i++)
             {
@@ -734,6 +746,34 @@ namespace PathPlanning
                 }
             }
             return ls_unioned.ToArray();
+        }
+
+        public static int find_ind_first_linepath(LinePath[] ls)
+        {
+            int i_max = 0;
+            double dist_max = 0;
+            for (int i = 0; i < ls.Length; i++)
+            {
+                var dist = ls[i].dist();
+                if(dist > dist_max)
+                {
+                    i_max = i;
+                    dist_max = dist;
+                }
+            }
+            var sin_alpha = (ls[i_max].get_last().y - ls[i_max].get_first().y) / (ls[i_max].get_last() - ls[i_max].get_first()).magnitude();
+            var alpha = RobotFrame.arcsin(sin_alpha);
+
+            var ps_f = new Point3d_GL[ls.Length];
+            for (int i = 0; i < ls.Length; i++)
+            {
+                ps_f[i] = ls[i].get_first();
+            }
+
+
+
+
+            return 0;
         }
 
         public static List<Point3d_GL> cut_pattern_in_contour_xy_cv(List<Point3d_GL> contour, List<Point3d_GL> pattern)

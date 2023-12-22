@@ -519,6 +519,14 @@ namespace opengl3
             return Math.Acos(_cos);
 
         }
+        public static double arcsin(double sin)
+        {
+            double _sin = sin;
+            if (_sin >= 1) _sin = 1;
+            if (_sin <= -1) _sin = -1;
+            return Math.Asin(_sin);
+
+        }
         static public Matrix<double> create_dhmatr(double[] vals)
         {
             var theta = vals[0];

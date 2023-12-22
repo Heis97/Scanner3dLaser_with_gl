@@ -1386,7 +1386,7 @@ namespace opengl3
              var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
              GL1.addTraj(ps);
              GL1.addTraj(ps_circ);*/
-            test_traj_2d();
+            //test_traj_2d();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1459,7 +1459,7 @@ namespace opengl3
             //GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles, "flat");
             
             var ps_cont = SurfaceReconstraction.gen_random_cont_XY(15, 40, 0.1, new Point3d_GL(0, 0));
-            GL1.addLineMeshTraj(ps_cont,Color3d_GL.green());
+            //GL1.addLineMeshTraj(ps_cont,Color3d_GL.green());
             var conts = new List<List<Point3d_GL>>();
             var surfs = new List<Polygon3d_GL[]>();
 
@@ -1467,8 +1467,8 @@ namespace opengl3
             conts.Add(ps_cont.ToList());
             surfs.Add(scan_stl.pols);
 
-            var pols2 = Polygon3d_GL.plus(scan_stl.pols, new Point3d_GL(0, 0, 0.5));
-            conts.Add(ps_cont.ToList());
+            var pols2 = Polygon3d_GL.plus(scan_stl.pols, new Point3d_GL(0, 0, 1));
+           conts.Add(ps_cont.ToList());
             surfs.Add(pols2);
 
             Console.WriteLine("gen_traj3d");
@@ -1481,7 +1481,7 @@ namespace opengl3
 
             //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
             if (ps == null) return;
-            traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
+            //traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
             var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, traj_config);
         }
         void test_traj_def()
