@@ -536,7 +536,21 @@ namespace opengl3
         {
             return Math.Round(x, 4).ToString() + " " + Math.Round(y, 4).ToString() + " " + Math.Round(z, 4).ToString();
         }
-
+        public string ToString_fool()
+        {
+            return "new Point3d_GL ("+x+","+y+","+z+")";
+        }
+        static public string ToString_fool_arr(Point3d_GL[] ps)
+        {
+            var sb = new StringBuilder();
+            sb.Append("new Point3d_GL[]{");
+            foreach (var p in ps)
+            {
+                sb.Append(p.ToString_fool() + ",\n");
+            }
+            sb.Append("};");
+            return sb.ToString();
+        }
         public static Point3d_GL[] order_points(Point3d_GL[] ps)
         {
             /*ps = (from p in ps
@@ -1077,6 +1091,11 @@ namespace opengl3
             var r_okr = Math.Sqrt(Math.Pow((my1 - y_okr), 2) + Math.Pow((mx1 - x_okr), 2));
             return new Point3d_GL(x_okr, y_okr, r_okr);
         }
+
+        
+
+
+
     }
 
     

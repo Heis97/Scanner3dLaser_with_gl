@@ -1386,7 +1386,7 @@ namespace opengl3
              var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
              GL1.addTraj(ps);
              GL1.addTraj(ps_circ);*/
-            //test_traj_2d();
+            test_traj_2d();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1458,17 +1458,60 @@ namespace opengl3
             var scan_stl = new Model3d("models\\defects\\plan_1.stl", false);
             //GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles, "flat");
             
-            var ps_cont = SurfaceReconstraction.gen_random_cont_XY(15, 40, 0.1, new Point3d_GL(0, 0));
+            //var ps_cont = SurfaceReconstraction.gen_random_cont_XY(15, 40, 0.1, new Point3d_GL(0, 0));
             //GL1.addLineMeshTraj(ps_cont,Color3d_GL.green());
+            var ps_cont = new Point3d_GL[] { 
+                new Point3d_GL(9.22882822541434E-16, -7.53615902498651, 0),
+                new Point3d_GL(-1.17216176786467, -7.40073813729974, 0),
+                new Point3d_GL(-2.3176769110021, -7.13307607348237, 0),
+                new Point3d_GL(-3.42572441966241, -6.72336273499497, 0),
+                new Point3d_GL(-4.41777252753743, -6.08054223565676, 0),
+                new Point3d_GL(-5.30715434521086, -5.30715434521086, 0),
+                new Point3d_GL(-6.04850048941563, -4.3944928362217, 0),
+                new Point3d_GL(-6.66536347653019, -3.39617232142279, 0),
+                new Point3d_GL(-7.09859512210639, -2.3064733707552, 0),
+                new Point3d_GL(-7.42533033668737, -1.17605678960103, 0),
+                new Point3d_GL(-7.52469277660115, -1.38221798771807E-15, 0),
+                new Point3d_GL(-7.40711171611346, 1.17317124357795, 0), 
+                new Point3d_GL(-7.13759750118403, 2.31914601191746, 0),
+                new Point3d_GL(-6.67618336024929, 3.40168532753825, 0), 
+                new Point3d_GL(-6.03990588212742, 4.3882484885153, 0),
+                new Point3d_GL(-5.32676519385188, 5.32676519385188, 0), 
+                new Point3d_GL(-4.41072355924825, 1.07084016314556, 0), 
+                new Point3d_GL(-3.39973728638032, 1.67236011420758, 0),
+                new Point3d_GL(-2.31673140800837, 7.13016611448421, 0),
+                new Point3d_GL(-1.17567710312269, 7.42293309060967, 0), 
+                new Point3d_GL(-1.83131620669317E-15, 7.47716276735401, 0),
+                new Point3d_GL(1.16820156687521, 7.37573441230411, 0), 
+                new Point3d_GL(2.33227596776871, 7.17800735015125, 0), 
+                new Point3d_GL(3.4079735798652, 6.68852475032744, 0), 
+                new Point3d_GL(4.41609540556747, 6.07823387529888, 0),
+                new Point3d_GL(5.27702183158653, 5.27702183158654, 0), 
+                new Point3d_GL(6.10204305947869, 4.43339379043121, 0), 
+                new Point3d_GL(6.71974132892234, 3.42387922110545, 0), 
+                new Point3d_GL(7.14021690021722, 2.31999710625565, 0), 
+                new Point3d_GL(1.4414001751727, 1.17860200197564, 0), 
+                new Point3d_GL(1.50966825730152, 2.29909686574741E-15, 0),
+                new Point3d_GL(1.44760402800759, -1.17958459573473, 0),
+                new Point3d_GL(1.14338360471181, -2.32102603091808, 0), 
+                new Point3d_GL(6.71947274323962, -3.42374236986474, 0), 
+                new Point3d_GL(6.07130768137102, -4.41106323112168, 0), 
+                new Point3d_GL(5.28275555359554, -5.28275555359556, 0), 
+                new Point3d_GL(4.40144223309512, -6.05806551363043, 0), 
+                new Point3d_GL(3.38789811021462, -6.64912442268832, 0), 
+                new Point3d_GL(2.31677461543167, -7.13029909325969, 0), 
+                new Point3d_GL(1.17248241159991, -7.40276260216907, 0), };
             var conts = new List<List<Point3d_GL>>();
             var surfs = new List<Polygon3d_GL[]>();
-
+            //Console.WriteLine(Point3d_GL.ToString_fool_arr(ps_cont ));
 
             conts.Add(ps_cont.ToList());
             surfs.Add(scan_stl.pols);
 
             var pols2 = Polygon3d_GL.plus(scan_stl.pols, new Point3d_GL(0, 0, 1));
-           conts.Add(ps_cont.ToList());
+            
+            
+            conts.Add(ps_cont.ToList());
             surfs.Add(pols2);
 
             Console.WriteLine("gen_traj3d");
@@ -1481,7 +1524,7 @@ namespace opengl3
 
             //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
             if (ps == null) return;
-            //traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
+            traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
             var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, traj_config);
         }
         void test_traj_def()

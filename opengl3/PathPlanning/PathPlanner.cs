@@ -111,8 +111,8 @@ namespace PathPlanning
 
         static public (LinePath, LinePath,bool) try_connect_lines(LinePath line1, LinePath line2,double min_dist)
         {
-            var i_min = 0;
-            var min_d = double.NaN;
+            double min_d;
+            int i_min;
             (i_min, min_d) = min_dist_ends(line1, line2);
             if (min_d > min_dist) return (line1, line2, false);
             switch(i_min)
@@ -156,6 +156,37 @@ namespace PathPlanning
             }
             if (min_d < min_dist) ret = true;
             return (layer, line, ret);
+        }
+
+        public LinePath Clone()
+        {
+            var ps_cl = ((Point3d_GL[])ps.ToArray().Clone()).ToList();
+            return new LinePath() { ps = ps_cl};
+        }
+
+        public LinePath divide_traj(double div_step)
+        {
+            var traj_div = new List<Point3d_GL>();
+            for (int i = 0; i < ps.Count - 1; i++)
+            {
+                traj_div.Add(ps[i]);
+                var dist = (ps[i + 1] - ps[i]).magnitude();
+                if (2 * dist > div_step)
+                {
+                    var n = (int)(dist / div_step);
+                    for (int j = 0; j < n; j++)
+                    {
+                        traj_div.Add(
+                            new Point3d_GL(
+                            ps[i].x + (div_step * j * (ps[i + 1].x - ps[i].x)) / dist,
+                            ps[i].y + (div_step * j * (ps[i + 1].y - ps[i].y)) / dist,
+                            ps[i].z + (div_step * j * (ps[i + 1].z - ps[i].z)) / dist
+                            ));
+                    }
+                }
+            }
+            ps =((Point3d_GL[]) traj_div.ToArray().Clone()).ToList();
+            return this;
         }
     }
     public class LayerPath
@@ -212,6 +243,21 @@ namespace PathPlanning
                 ps.AddRange(line.ps);
             return ps;
         }
+        public LayerPath Clone()
+        {
+            var layers_cl = new List<LinePath>();
+            foreach (var line in lines)
+                layers_cl.Add(line.Clone());
+            return new LayerPath() { lines = layers_cl };
+        }
+        public LayerPath divide_traj(double div)
+        {
+            var layers_cl = new List<LinePath>();
+            foreach (var line in lines)
+                layers_cl.Add(line.divide_traj(div));
+            return new LayerPath() { lines = layers_cl };
+        }
+
     }
     public class TrajectoryPath
     {
@@ -252,7 +298,13 @@ namespace PathPlanning
                
             return ps_list;
         }
-
+        public TrajectoryPath Clone()
+        {
+            var layers_cl = new List<LayerPath>();
+            foreach (var layer in layers)
+                layers_cl.Add(layer.Clone());
+            return new TrajectoryPath() { layers = layers_cl };
+        }
     }
     public class PathPlanner
     {
@@ -636,40 +688,57 @@ namespace PathPlanning
 
         public static LayerPath gen_pattern_in_contour_xy(PatternSettings settings, TrajParams trajParams, List<Point3d_GL> contour, Point3d_GL p_min, Point3d_GL p_max, GraphicGL gl = null)
         {
-            var layer_sq = gen_pattern_in_square_xy(settings, p_min, p_max).to_ps();
+            var layer_sq = gen_pattern_in_square_xy(settings, p_min, p_max);
             //Console.WriteLine("layer_sq z"+layer_sq[0].z + " " + layer_sq[1].z + " ");
             //gl.addLineMeshTraj(layer_sq.ToArray(), Color3d_GL.aqua());
-            var ps_div = divide_traj(layer_sq, trajParams.div_step);
+
+            // var ps_div = divide_traj(layer_sq, trajParams.div_step);
+            var ps_div = layer_sq.divide_traj(settings.min_dist).to_ps();
             var cont_layer = cut_pattern_in_contour_xy_cv(contour, ps_div);
             //gl.addLineMeshTraj(cont_layer.ToArray(), Color3d_GL.red());
-            var layer = parse_layerpath_from_ps(cont_layer, trajParams.div_step,settings.step, gl);//step
-            //gl.addLineMeshTraj(layer.to_ps().ToArray(), Color3d_GL.black());
+            var layer = parse_layerpath_from_ps(cont_layer, settings.min_dist, settings.step, gl);//step
+            //gl.addLineMeshTraj(layer.to_ps().ToArray(), Color3d_GL.random());
             return layer;
         }
 
 
         public static LayerPath parse_layerpath_from_ps(List<Point3d_GL> ps, double div, double step, GraphicGL gl = null)
         {
-            var lines = parse_linepath_from_ps(ps, div,gl);
+            var lines = parse_linepath_from_ps(ps, div,step,gl);
+
             var areas = layerpaths_from_linepaths(lines, step);
+            /*foreach (var ls in areas)
+            {
+                var color = Color3d_GL.random();
+                foreach (var line in ls.lines)
+                {
+                    
+                    gl.addLineMeshTraj(line.ps.ToArray(), color, "lines");
+                    gl.addPointMesh(new Point3d_GL[] { line.ps[0], line.ps[line.ps.Count - 1] }, color, "ps");
+                }
+            }*/
+                
             var traj = new TrajectoryPath{ layers = areas.ToList()};
+
             traj = Trajectory.OptimizeTranzitions2LayerPath(traj);
             return new LayerPath(traj);
         }
-        public static LayerPath[] layerpaths_from_linepaths(LinePath[] ls, double step)
+        
+
+        public static LayerPath[] layerpaths_from_linepaths(LinePath[] ls, double step)//!!!!!!
         {
             var ls_unioned = new List<LayerPath>();
             var ls_list = ls.ToList();
             ls_unioned.Add(new LayerPath());
             ls_unioned[ls_unioned.Count - 1].lines.Add(ls[0]);
             ls_list.RemoveAt(0);
-            for (; ls_list.Count >0;)
+            for (; ls_list.Count > 0;)
             {
                 var i_min = LinePath.nearest_end_line(ls_list.ToArray(), ls_unioned[ls_unioned.Count - 1].lines[ls_unioned[ls_unioned.Count - 1].lines.Count - 1]);
                 LinePath line1, line2;
                 LayerPath layerPath;
                 bool ret;
-                (layerPath, line2, ret) = LinePath.try_connect_lines(ls_unioned[ls_unioned.Count - 1], ls_list[i_min], step * 1.7);
+                (layerPath, line2, ret) = LinePath.try_connect_lines(ls_unioned[ls_unioned.Count - 1], ls_list[i_min], step * 5);
                 if (ret)
                 {
                     ls_unioned[ls_unioned.Count - 1] = layerPath;
@@ -684,22 +753,38 @@ namespace PathPlanning
             }
             return ls_unioned.ToArray();
         }
-        public static LinePath[] parse_linepath_from_ps(List<Point3d_GL> ps, double div, GraphicGL gl = null)
+        public static LinePath[] parse_linepath_from_ps(List<Point3d_GL> ps, double div, double step, GraphicGL gl = null)
         {
 
-            var dirty_ls = parse_linepath_from_ps_dirty(ps, div);
-            foreach (var line in dirty_ls)
+            var dirty_ls = parse_linepath_from_ps_dirty(ps, div,gl);
+            dirty_ls = filter_linepath_dist(dirty_ls,step);
+            
+            var ls = linepath_from_dirty_linepath(dirty_ls, div);
+            /*foreach (var line in ls)
             {
                 var color = Color3d_GL.random();
                 gl.addLineMeshTraj(line.ps.ToArray(), color, "lines");
                 gl.addPointMesh(new Point3d_GL[] { line.ps[0], line.ps[line.ps.Count-1] }, color, "ps");
-            }
-            var ls = linepath_from_dirty_linepath(dirty_ls, div);  
+            }*/
             return ls;
         }
-        public static LinePath[] parse_linepath_from_ps_dirty(List<Point3d_GL> ps, double div)
+        public static LinePath[] filter_linepath_dist(LinePath[] lps, double dist, GraphicGL gl = null)
         {
-            var ps_ord = Point3d_GL.order_points_by_dist(ps.ToArray(),div*1.3).ToList();
+            var lps_fil = new List<LinePath>();
+            foreach (var line in lps)
+            {
+                if(line.dist()>dist) lps_fil.Add(line);
+            }
+            return lps_fil.ToArray();
+        }
+        public static LinePath[] parse_linepath_from_ps_dirty(List<Point3d_GL> ps, double div, GraphicGL gl = null)
+        {
+            //var ps_ord = Point3d_GL.order_points_by_dist(ps.ToArray(),div*1.3).ToList();
+            //var ps_ord = Point3d_GL.order_points(ps.ToArray()).ToList();
+            var ps_ord = ps;
+            //gl.addLineMeshTraj(ps.ToArray(), Color3d_GL.yellow(), "lines");
+            //gl.addLineMeshTraj(ps_ord.ToArray(), Color3d_GL.aqua(), "lines2");
+            //gl.addPointMesh(new Point3d_GL[] { ps_ord[0], ps_ord[1] },Color3d_GL.black(), "ps");
             var lines = new List<LinePath>();
             var ps_loc = new List<Point3d_GL>();
             ps_loc.Add(ps_ord[0]);
@@ -856,7 +941,9 @@ namespace PathPlanning
             }
            
             var traj = new TrajectoryPath { layers = traj_layers };
+            Console.WriteLine("Layers__________");
             traj = Trajectory.OptimizeTranzitions2LayerPath(traj);
+            Console.WriteLine("Layers----------");
             var traj_ps = traj.to_ps_by_layers();
             return traj_ps;
         }
@@ -1030,7 +1117,7 @@ namespace PathPlanning
             }
             return traj_div;
         }
-
+        
 
         static Vector3d_GL comp_vecx(Vector3d_GL vec_x_dir, Vector3d_GL n)
         {
@@ -1540,8 +1627,9 @@ namespace PathPlanning
                     fastWay.Add(up);
                 }
             }*/
-
-            for(int f = 0; f < 4; f++)
+            TrajectoryPath traj_opt = traj.Clone();
+            double dist_min = double.MaxValue;
+            for (int f = 0; f < 4; f++)
             {
                 for (int i = 0; i < dists.Count; i++)
                 {
@@ -1557,10 +1645,17 @@ namespace PathPlanning
                         fastWay.Add(up);
                     }
                 }
-                OptimizeTransPath(traj, approach.ToList(), fastWay);
+                var traj_cur = OptimizeTransPath(traj.Clone(), approach.ToList(), fastWay);
+                var len = CompTrans(traj_cur.layers.ToArray());
+                if(len<dist_min)
+                {
+                    dist_min = len;
+                    traj_opt = traj_cur;
+                }
+                Console.WriteLine(len);
             }
             
-            return traj;
+            return traj_opt;
         }
 
         static  public (int,int) FindBestWayFirst(double[][] trans_map,int first)
@@ -1645,6 +1740,22 @@ namespace PathPlanning
                 if (traj[i] != null && traj[i + 1] != null)
                 {
                     double dist = Distance(traj[i][traj[i].Count - 1], traj[i + 1][0]);
+                    trans.Add(dist);
+                    allTR += dist;
+                }
+            }
+            return allTR;
+        }
+
+        public static double CompTrans(LayerPath[] traj)
+        {
+            var trans = new List<double>();
+            double allTR = 0;
+            for (int i = 0; i < traj.Length - 1; i++)
+            {
+                if (traj[i] != null && traj[i + 1] != null)
+                {
+                    double dist = Distance(traj[i].getPoint(-1), traj[i + 1].getPoint(0));
                     trans.Add(dist);
                     allTR += dist;
                 }
