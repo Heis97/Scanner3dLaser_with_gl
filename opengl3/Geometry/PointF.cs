@@ -88,6 +88,7 @@ namespace opengl3
 
         public static PointF[] filter_exist(PointF[] ps)
         {
+            if (ps == null) return null;
             var ps_ex = new List<PointF>();
             for (int i = 0; i < ps.Length; i++)
             {

@@ -58,9 +58,10 @@ namespace opengl3
         TCPclient con1;
         private const float PI = 3.14159265358979f;
         // private Size cameraSize = new Size(1280, 960);
-         private Size cameraSize = new Size(1184, 656);
-       // private Size cameraSize = new Size(1184, 656);
-        //private Size cameraSize = new Size(1920, 1080);
+        //private Size cameraSize = new Size(1184, 656);
+        // private Size cameraSize = new Size(1184, 656);
+         //private Size cameraSize = new Size(1024, 576);
+        private Size cameraSize = new Size(1920, 1080);
          //private Size cameraSize = new Size(640, 480);
         public GraphicGL GL1 = new GraphicGL();
         private VideoCapture myCapture1 = null;
@@ -174,7 +175,7 @@ namespace opengl3
 
         static int[] frames_max(int[,] data)
         {
-            int analyse_len = 10;
+            int analyse_len = 40;
             var end_data = new List<int[]>();
             for(int i= data.GetLength(0)-analyse_len;i < data.GetLength(0) - 1;i++)
             {
@@ -228,16 +229,17 @@ namespace opengl3
                 if (data_s[cam_max, i] != null && data_s[cam_min, i] != null && data_s[cam_max, i-1] != null && data_s[cam_min, i-1] != null)
                     if (data_s[cam_max, i].Length > 1 && data_s[cam_min, i].Length > 1 && data_s[cam_max, i-1].Length > 1 && data_s[cam_min, i-1].Length > 1)
                     { 
-                       /* Console.WriteLine(i+" "+data_s[cam_max, i][0] + "  " + data_s[cam_min, i][0]+" "+ 
+                        Console.WriteLine(i+" "+data_s[cam_max, i][0] + "  " + data_s[cam_min, i][0]+" "+ 
                             (data_s[cam_max, i][1]-data_s[cam_max, i][0]) + "  " + (data_s[cam_min, i][1]- data_s[cam_min, i][0]) + " "+
                             (data_s[cam_max, i][0] - data_s[cam_max, i-1][0]) + " "+ (data_s[cam_min, i][0] - data_s[cam_min, i - 1][0])+" "+
-                            (data_s[cam_max, i][1] - data_s[cam_max, i - 1][1]) + " " + (data_s[cam_min, i][1] - data_s[cam_min, i - 1][1]) + " " );*/
+                            (data_s[cam_max, i][1] - data_s[cam_max, i - 1][1]) + " " + (data_s[cam_min, i][1] - data_s[cam_min, i - 1][1]) + " " );
                         find_prec1.Add(data_s[cam_max, i][0] - data_s[cam_max, i - 1][0]);
                         find_prec2.Add(data_s[cam_min, i][0] - data_s[cam_min, i - 1][0]);
                     }
             }
             var prec1 = find_aver_dev( find_prec1.ToArray());
             var prec2 = find_aver_dev(find_prec2.ToArray());
+            Console.WriteLine(Math.Round(prec1).ToString() + " " + Math.Round(prec2).ToString() + " PREC");
             if(label!=null) label.Text = Math.Round(prec1).ToString() + " " + Math.Round(prec2).ToString() + " PREC"; 
 
             var prs = compare_frames(data_s, fr_min, fr_max, cam_min, cam_max);
@@ -813,15 +815,20 @@ namespace opengl3
             else
                 scanner = loadVideo_stereo_not_sync(scan_path_1, scanner, config);
 
-            var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), -1);
-            
-            var scan_stl = Polygon3d_GL.toMesh(mesh);
-            //mesh = GL1.addNormals(mesh, 1);
-            this.scanner = scanner;
+            var load_3d = true;
+            if(load_3d)
+            {
+                var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), -1);
 
-            if(scan_stl != null) scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
-            smooth_mesh(scan_i, config.smooth);
-           // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
+                var scan_stl = Polygon3d_GL.toMesh(mesh);
+                //mesh = GL1.addNormals(mesh, 1);
+                this.scanner = scanner;
+
+                if (scan_stl != null) scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
+                smooth_mesh(scan_i, config.smooth);
+                // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
+
+            }
 
             Console.WriteLine("Loading end.");
         }
@@ -1386,7 +1393,7 @@ namespace opengl3
              var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
              GL1.addTraj(ps);
              GL1.addTraj(ps_circ);*/
-            test_traj_2d();
+           // test_traj_2d();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -2009,8 +2016,8 @@ namespace opengl3
                     var fr_im_cl = scanner.stereoCamera.cameraCVs[0].undist(fr.im);
                     var fr_im_sec_cl = scanner.stereoCamera.cameraCVs[1].undist(fr.im_sec);
 
-                    var ps1 = Detection.detectLineDiff(fr_im_cl);
-                    var ps2 = Detection.detectLineDiff(fr_im_sec_cl);
+                    var ps1 = Detection.detectLineDiff(fr_im_cl,scanner_config);
+                    var ps2 = Detection.detectLineDiff(fr_im_sec_cl,scanner_config);
                     var ps1_filtr = PointF.filter_exist(ps1);
                     var ps2_filtr = PointF.filter_exist(ps2);
                     var ps1_dr = PointF.toSystemPoint_d(ps1_filtr);
@@ -2774,7 +2781,7 @@ namespace opengl3
         }
         
 
-        private void butSave_Click(object sender, EventArgs e)
+        private void butSave_Click(object sender, EventArgs e) 
         {
             string name = " " + nameX.Text + " " + nameY.Text + " " + nameZ.Text + " " + boxN.Text + " .png";
             UtilOpenCV.saveImage(imageBox1, imageBox2, name, "single");
@@ -3113,15 +3120,15 @@ namespace opengl3
             if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
             {
                 // sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
-               // if (sb_enc == null) Console.WriteLine("NULL!");
+                //if (sb_enc == null) Console.WriteLine("NULL!");
                 sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("\n");
                 //video_writer[ind - 1]?.Write(mat);
-                video_mats[ind-1].Add(mat.Clone());
+                video_mats[ind-1].Add(mat);
                 //var p = Detection.detectLineSensor(mat)[0];
                 //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
-               // sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                //sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("\n");
@@ -3130,7 +3137,7 @@ namespace opengl3
             }
             else
             {
-                if (video_mats[ind-1]!=null) save_video( ind, cameraSize.Width, cameraSize.Height);
+                //if (video_mats[ind-1]!=null) save_video( ind, cameraSize.Width, cameraSize.Height);
                 if (sb_enc!=null)
                 {
                     laserLine?.laserOff();
@@ -3242,7 +3249,8 @@ namespace opengl3
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-            //capture.SetCaptureProperty(CapProp.Fps, 30);
+           // capture.SetCaptureProperty(CapProp.Exposure, -4);
+            capture.SetCaptureProperty(CapProp.Fps, 60);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
@@ -4218,6 +4226,7 @@ namespace opengl3
             var captures = new VideoCapture[] { capture1, capture2 };
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
             var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
+            Console.WriteLine(all_frames1 + " " + all_frames2);
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
@@ -4244,8 +4253,9 @@ namespace opengl3
             int f2 = 0;
             //f1 = 70;
             //while (f1 < frame_min-1)
-            
-
+            //int fr_c1 = 0;
+            //int fr_c1 = 0;
+            Console.WriteLine(cam_min + " " + cam_max);
             while (f1 < frame_min - 1- config.las_offs)
             //while (f1 < 200)
             {
@@ -4256,7 +4266,8 @@ namespace opengl3
                 //while (f2 != f2_ind)
                 {
                     im_max_buff_list = read_frame(captures[cam_max - 1], im_max_buff_list, buff_len); f2++;
-                } 
+                }
+                //Console.WriteLine(f1 + " " + f2);
                 if (scanner != null)
                 {
                     if (f1% config.strip == 0 && f1 > buff_len)
@@ -5471,6 +5482,11 @@ namespace opengl3
         private void but_set_z_div_Click(object sender, EventArgs e)
         {
             laserLine?.set_z_div(Convert.ToInt32(textB_set_z_div.Text));
+        }
+
+        private void prop_gr_scan_SelectedGridItemChanged(object sender, SelectedGridItemChangedEventArgs e)
+        {
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
         }
     }
 }

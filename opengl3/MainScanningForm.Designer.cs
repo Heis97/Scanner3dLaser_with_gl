@@ -216,6 +216,8 @@ namespace opengl3
             this.label13 = new System.Windows.Forms.Label();
             this.glControl1 = new OpenGL.GlControl();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_setShvpVel = new System.Windows.Forms.Button();
+            this.textBox_shvpVel = new System.Windows.Forms.TextBox();
             this.but_rob_ph = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.but_set_z_div = new System.Windows.Forms.Button();
@@ -289,7 +291,6 @@ namespace opengl3
             this.but_scan_start = new System.Windows.Forms.Button();
             this.but_photo = new System.Windows.Forms.Button();
             this.tabPage13 = new System.Windows.Forms.TabPage();
-            this.but_setShvpVel = new System.Windows.Forms.Button();
             this.but_marl_setShvpPos = new System.Windows.Forms.Button();
             this.textBox_marl_shcpPos = new System.Windows.Forms.TextBox();
             this.butset_kvp = new System.Windows.Forms.Button();
@@ -301,7 +302,6 @@ namespace opengl3
             this.textBox_set_kpp = new System.Windows.Forms.TextBox();
             this.but_marl_receav = new System.Windows.Forms.Button();
             this.but_laser_dest = new System.Windows.Forms.Button();
-            this.textBox_shvpVel = new System.Windows.Forms.TextBox();
             this.textBox_laser_dest = new System.Windows.Forms.TextBox();
             this.lab_fps_cam1 = new System.Windows.Forms.Label();
             this.label_timer = new System.Windows.Forms.Label();
@@ -2195,6 +2195,7 @@ namespace opengl3
             this.prop_gr_scan.Name = "prop_gr_scan";
             this.prop_gr_scan.Size = new System.Drawing.Size(403, 580);
             this.prop_gr_scan.TabIndex = 171;
+            this.prop_gr_scan.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.prop_gr_scan_SelectedGridItemChanged);
             // 
             // lab_scan_pres
             // 
@@ -2466,6 +2467,24 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // but_setShvpVel
+            // 
+            this.but_setShvpVel.Location = new System.Drawing.Point(22, 248);
+            this.but_setShvpVel.Name = "but_setShvpVel";
+            this.but_setShvpVel.Size = new System.Drawing.Size(110, 55);
+            this.but_setShvpVel.TabIndex = 148;
+            this.but_setShvpVel.Text = "Установить скорость";
+            this.but_setShvpVel.UseVisualStyleBackColor = true;
+            this.but_setShvpVel.Click += new System.EventHandler(this.but_setShvpVel_Click);
+            // 
+            // textBox_shvpVel
+            // 
+            this.textBox_shvpVel.Location = new System.Drawing.Point(139, 261);
+            this.textBox_shvpVel.Name = "textBox_shvpVel";
+            this.textBox_shvpVel.Size = new System.Drawing.Size(110, 26);
+            this.textBox_shvpVel.TabIndex = 147;
+            this.textBox_shvpVel.Text = "0";
             // 
             // but_rob_ph
             // 
@@ -3227,7 +3246,6 @@ namespace opengl3
             // 
             // tabPage13
             // 
-            this.tabPage13.Controls.Add(this.but_setShvpVel);
             this.tabPage13.Controls.Add(this.but_marl_setShvpPos);
             this.tabPage13.Controls.Add(this.textBox_marl_shcpPos);
             this.tabPage13.Controls.Add(this.butset_kvp);
@@ -3239,7 +3257,6 @@ namespace opengl3
             this.tabPage13.Controls.Add(this.textBox_set_kpp);
             this.tabPage13.Controls.Add(this.but_marl_receav);
             this.tabPage13.Controls.Add(this.but_laser_dest);
-            this.tabPage13.Controls.Add(this.textBox_shvpVel);
             this.tabPage13.Controls.Add(this.textBox_laser_dest);
             this.tabPage13.Location = new System.Drawing.Point(4, 29);
             this.tabPage13.Name = "tabPage13";
@@ -3248,16 +3265,6 @@ namespace opengl3
             this.tabPage13.TabIndex = 3;
             this.tabPage13.Text = "Отладка 2";
             this.tabPage13.UseVisualStyleBackColor = true;
-            // 
-            // but_setShvpVel
-            // 
-            this.but_setShvpVel.Location = new System.Drawing.Point(208, 92);
-            this.but_setShvpVel.Name = "but_setShvpVel";
-            this.but_setShvpVel.Size = new System.Drawing.Size(110, 55);
-            this.but_setShvpVel.TabIndex = 119;
-            this.but_setShvpVel.Text = "Установить скорость";
-            this.but_setShvpVel.UseVisualStyleBackColor = true;
-            this.but_setShvpVel.Click += new System.EventHandler(this.but_setShvpVel_Click);
             // 
             // but_marl_setShvpPos
             // 
@@ -3362,14 +3369,6 @@ namespace opengl3
             this.but_laser_dest.UseVisualStyleBackColor = true;
             this.but_laser_dest.Click += new System.EventHandler(this.but_laser_dest_Click);
             // 
-            // textBox_shvpVel
-            // 
-            this.textBox_shvpVel.Location = new System.Drawing.Point(319, 106);
-            this.textBox_shvpVel.Name = "textBox_shvpVel";
-            this.textBox_shvpVel.Size = new System.Drawing.Size(71, 26);
-            this.textBox_shvpVel.TabIndex = 118;
-            this.textBox_shvpVel.Text = "0";
-            // 
             // textBox_laser_dest
             // 
             this.textBox_laser_dest.Location = new System.Drawing.Point(319, 27);
@@ -3408,7 +3407,9 @@ namespace opengl3
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.but_setShvpVel);
             this.groupBox1.Controls.Add(this.but_home_las);
+            this.groupBox1.Controls.Add(this.textBox_shvpVel);
             this.groupBox1.Controls.Add(this.but_las_enc);
             this.groupBox1.Controls.Add(this.label20);
             this.groupBox1.Controls.Add(this.but_setShvpPos);
@@ -3430,7 +3431,7 @@ namespace opengl3
             // 
             // but_home_las
             // 
-            this.but_home_las.Location = new System.Drawing.Point(45, 355);
+            this.but_home_las.Location = new System.Drawing.Point(139, 366);
             this.but_home_las.Name = "but_home_las";
             this.but_home_las.Size = new System.Drawing.Size(110, 46);
             this.but_home_las.TabIndex = 136;
@@ -3451,7 +3452,7 @@ namespace opengl3
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(184, 153);
+            this.label20.Location = new System.Drawing.Point(196, 82);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(56, 20);
             this.label20.TabIndex = 132;
@@ -3459,7 +3460,7 @@ namespace opengl3
             // 
             // but_setShvpPos
             // 
-            this.but_setShvpPos.Location = new System.Drawing.Point(45, 294);
+            this.but_setShvpPos.Location = new System.Drawing.Point(23, 309);
             this.but_setShvpPos.Name = "but_setShvpPos";
             this.but_setShvpPos.Size = new System.Drawing.Size(110, 55);
             this.but_setShvpPos.TabIndex = 9;
@@ -3469,7 +3470,7 @@ namespace opengl3
             // 
             // textBox_shvpPos
             // 
-            this.textBox_shvpPos.Location = new System.Drawing.Point(161, 308);
+            this.textBox_shvpPos.Location = new System.Drawing.Point(139, 328);
             this.textBox_shvpPos.Name = "textBox_shvpPos";
             this.textBox_shvpPos.Size = new System.Drawing.Size(110, 26);
             this.textBox_shvpPos.TabIndex = 8;
@@ -3477,7 +3478,7 @@ namespace opengl3
             // 
             // but_open
             // 
-            this.but_open.Location = new System.Drawing.Point(22, 122);
+            this.but_open.Location = new System.Drawing.Point(23, 109);
             this.but_open.Name = "but_open";
             this.but_open.Size = new System.Drawing.Size(143, 38);
             this.but_open.TabIndex = 0;
@@ -3487,7 +3488,7 @@ namespace opengl3
             // 
             // but_close
             // 
-            this.but_close.Location = new System.Drawing.Point(22, 166);
+            this.but_close.Location = new System.Drawing.Point(23, 150);
             this.but_close.Name = "but_close";
             this.but_close.Size = new System.Drawing.Size(143, 36);
             this.but_close.TabIndex = 1;
@@ -3497,7 +3498,7 @@ namespace opengl3
             // 
             // but_laserOn
             // 
-            this.but_laserOn.Location = new System.Drawing.Point(176, 176);
+            this.but_laserOn.Location = new System.Drawing.Point(188, 105);
             this.but_laserOn.Name = "but_laserOn";
             this.but_laserOn.Size = new System.Drawing.Size(110, 26);
             this.but_laserOn.TabIndex = 2;
@@ -3507,7 +3508,7 @@ namespace opengl3
             // 
             // but_laserOff
             // 
-            this.but_laserOff.Location = new System.Drawing.Point(176, 205);
+            this.but_laserOff.Location = new System.Drawing.Point(188, 134);
             this.but_laserOff.Name = "but_laserOff";
             this.but_laserOff.Size = new System.Drawing.Size(110, 26);
             this.but_laserOff.TabIndex = 3;
@@ -3517,7 +3518,7 @@ namespace opengl3
             // 
             // but_setPower
             // 
-            this.but_setPower.Location = new System.Drawing.Point(45, 229);
+            this.but_setPower.Location = new System.Drawing.Point(23, 192);
             this.but_setPower.Name = "but_setPower";
             this.but_setPower.Size = new System.Drawing.Size(110, 50);
             this.but_setPower.TabIndex = 4;
@@ -3548,7 +3549,7 @@ namespace opengl3
             // 
             // textBox_powerLaser
             // 
-            this.textBox_powerLaser.Location = new System.Drawing.Point(162, 243);
+            this.textBox_powerLaser.Location = new System.Drawing.Point(139, 204);
             this.textBox_powerLaser.Name = "textBox_powerLaser";
             this.textBox_powerLaser.Size = new System.Drawing.Size(110, 26);
             this.textBox_powerLaser.TabIndex = 5;
@@ -3972,8 +3973,13 @@ namespace opengl3
             // 
             // timer1
             // 
+            this.timer1.Enabled = true;
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // timer2
+            // 
+            this.timer2.Enabled = true;
             // 
             // MainScanningForm
             // 
@@ -4295,8 +4301,6 @@ namespace opengl3
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button but_stereo_cal_path;
         private System.Windows.Forms.TextBox textB_stereo_cal_path;
-        private System.Windows.Forms.Button but_setShvpVel;
-        private System.Windows.Forms.TextBox textBox_shvpVel;
         private System.Windows.Forms.Button but_gl_clear;
         private System.Windows.Forms.PropertyGrid propGrid_traj;
         private System.Windows.Forms.Label label_timer;
@@ -4425,6 +4429,8 @@ namespace opengl3
         private System.Windows.Forms.TextBox textB_set_z_div;
         private System.Windows.Forms.Button but_rob_ph;
         private System.Windows.Forms.PropertyGrid prop_gr_scan;
+        private System.Windows.Forms.Button but_setShvpVel;
+        private System.Windows.Forms.TextBox textBox_shvpVel;
     }
 }
 
