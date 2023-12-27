@@ -1235,11 +1235,17 @@ namespace PathPlanning
             traj[traj.Count-1][traj[traj.Count - 1].Count-1][2, 3] += trans_h;
             return traj;
         }
-        public static List<List<Matrix<double>>> Generate_multiLayer3d_mesh(Polygon3d_GL[] surface, List<List<Point3d_GL>> contour, TrajParams trajParams)
+        public static List<List<Matrix<double>>> Generate_multiLayer3d_mesh(Polygon3d_GL[] surface, List<List<Point3d_GL>> contour, TrajParams trajParams, GraphicGL gl = null)
         {
             trajParams.comp_z();
             var traj_2d = Generate_multiLayer2d_mesh(contour, trajParams);
+
             traj_2d = Trajectory.OptimizeTranzitions2Layer(traj_2d);
+
+            foreach(var v in traj_2d)
+            {
+                gl?.addTrajPoint(v.ToArray());
+            }
             var traj_3d = new List<List<Matrix<double>>>();
             double resolut = 0.2;
             var map_xy = new RasterMap(surface, resolut,RasterMap.type_map.XY);

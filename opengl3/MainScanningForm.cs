@@ -4541,7 +4541,7 @@ namespace opengl3
                 for (int i = 0; i < traj_config.layers; i++)
                     conts.Add(cont);
                 
-                var _traj = PathPlanner.Generate_multiLayer3d_mesh(mesh, conts, traj_config);
+                var _traj = PathPlanner.Generate_multiLayer3d_mesh(mesh, conts, traj_config, GL1);
 
                 rob_traj = PathPlanner.join_traj(_traj);
                 var ps = PathPlanner.matr_to_traj(rob_traj);
