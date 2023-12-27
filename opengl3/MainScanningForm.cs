@@ -229,15 +229,15 @@ namespace opengl3
                 if (data_s[cam_max, i] != null && data_s[cam_min, i] != null && data_s[cam_max, i-1] != null && data_s[cam_min, i-1] != null)
                     if (data_s[cam_max, i].Length > 1 && data_s[cam_min, i].Length > 1 && data_s[cam_max, i-1].Length > 1 && data_s[cam_min, i-1].Length > 1)
                     { 
-                        Console.WriteLine(i+" "+data_s[cam_max, i][0] + "  " + data_s[cam_min, i][0]+" "+ 
-                            (data_s[cam_max, i][1]-data_s[cam_max, i][0]) + "  " + (data_s[cam_min, i][1]- data_s[cam_min, i][0]) + " "+
-                            (data_s[cam_max, i][0] - data_s[cam_max, i-1][0]) + " "+ (data_s[cam_min, i][0] - data_s[cam_min, i - 1][0])+" "+
-                            (data_s[cam_max, i][1] - data_s[cam_max, i - 1][1]) + " " + (data_s[cam_min, i][1] - data_s[cam_min, i - 1][1]) + " " );
+                        Console.WriteLine(i+" "+data_s[cam_max, i][0] + "  " + data_s[cam_min, i][0]+" "+ //текущее время
+                            (data_s[cam_max, i][1]-data_s[cam_max, i][0]) + "  " + (data_s[cam_min, i][1]- data_s[cam_min, i][0]) + " "+//дельта между началом кадра и концом
+                            (data_s[cam_max, i][0] - data_s[cam_max, i-1][0]) + " "+ (data_s[cam_min, i][0] - data_s[cam_min, i - 1][0])+" " +//дельта между началами соседних кадров
+                            (data_s[cam_max, i][1] - data_s[cam_max, i - 1][1]) + " " + (data_s[cam_min, i][1] - data_s[cam_min, i - 1][1]) + " " );//дельта между концами соседних кадров
                         find_prec1.Add(data_s[cam_max, i][0] - data_s[cam_max, i - 1][0]);
                         find_prec2.Add(data_s[cam_min, i][0] - data_s[cam_min, i - 1][0]);
                     }
             }
-            var prec1 = find_aver_dev( find_prec1.ToArray());
+            var prec1 = find_aver_dev(find_prec1.ToArray());
             var prec2 = find_aver_dev(find_prec2.ToArray());
             Console.WriteLine(Math.Round(prec1).ToString() + " " + Math.Round(prec2).ToString() + " PREC");
             if(label!=null) label.Text = Math.Round(prec1).ToString() + " " + Math.Round(prec2).ToString() + " PREC"; 
@@ -3125,7 +3125,7 @@ namespace opengl3
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("\n");
                 //video_writer[ind - 1]?.Write(mat);
-                video_mats[ind-1].Add(mat);
+                video_mats[ind-1].Add(mat.Clone());
                 //var p = Detection.detectLineSensor(mat)[0];
                 //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
                 //sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
@@ -3137,7 +3137,7 @@ namespace opengl3
             }
             else
             {
-                //if (video_mats[ind-1]!=null) save_video( ind, cameraSize.Width, cameraSize.Height);
+                if (video_mats[ind-1]!=null) save_video( ind, cameraSize.Width, cameraSize.Height);
                 if (sb_enc!=null)
                 {
                     laserLine?.laserOff();
@@ -3249,7 +3249,7 @@ namespace opengl3
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-           // capture.SetCaptureProperty(CapProp.Exposure, -4);
+            capture.SetCaptureProperty(CapProp.Exposure, -4);
             capture.SetCaptureProperty(CapProp.Fps, 60);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
