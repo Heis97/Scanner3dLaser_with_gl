@@ -58,10 +58,10 @@ namespace opengl3
         TCPclient con1;
         private const float PI = 3.14159265358979f;
         // private Size cameraSize = new Size(1280, 960);
-        //private Size cameraSize = new Size(1184, 656);
+        private Size cameraSize = new Size(1184, 656);
         // private Size cameraSize = new Size(1184, 656);
          //private Size cameraSize = new Size(1024, 576);
-        private Size cameraSize = new Size(1920, 1080);
+        //private Size cameraSize = new Size(1920, 1080);
          //private Size cameraSize = new Size(640, 480);
         public GraphicGL GL1 = new GraphicGL();
         private VideoCapture myCapture1 = null;
@@ -3249,8 +3249,8 @@ namespace opengl3
             capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-            capture.SetCaptureProperty(CapProp.Exposure, -4);
-            capture.SetCaptureProperty(CapProp.Fps, 60);
+            //capture.SetCaptureProperty(CapProp.Exposure, -4);
+            //capture.SetCaptureProperty(CapProp.Fps, 60);
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
