@@ -216,8 +216,6 @@ namespace opengl3
             this.label13 = new System.Windows.Forms.Label();
             this.glControl1 = new OpenGL.GlControl();
             this.tabMain = new System.Windows.Forms.TabPage();
-            this.but_setShvpVel = new System.Windows.Forms.Button();
-            this.textBox_shvpVel = new System.Windows.Forms.TextBox();
             this.but_rob_ph = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.but_set_z_div = new System.Windows.Forms.Button();
@@ -307,7 +305,9 @@ namespace opengl3
             this.label_timer = new System.Windows.Forms.Label();
             this.but_load_scan = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.but_setShvpVel = new System.Windows.Forms.Button();
             this.but_home_las = new System.Windows.Forms.Button();
+            this.textBox_shvpVel = new System.Windows.Forms.TextBox();
             this.but_las_enc = new System.Windows.Forms.Button();
             this.label20 = new System.Windows.Forms.Label();
             this.but_setShvpPos = new System.Windows.Forms.Button();
@@ -369,6 +369,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.but_flange_calib_basis = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2160,6 +2161,7 @@ namespace opengl3
             // 
             // tabPage9
             // 
+            this.tabPage9.Controls.Add(this.but_flange_calib_basis);
             this.tabPage9.Controls.Add(this.prop_gr_scan);
             this.tabPage9.Controls.Add(this.lab_scan_pres);
             this.tabPage9.Controls.Add(this.but_scan_pres);
@@ -2467,24 +2469,6 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
-            // 
-            // but_setShvpVel
-            // 
-            this.but_setShvpVel.Location = new System.Drawing.Point(22, 248);
-            this.but_setShvpVel.Name = "but_setShvpVel";
-            this.but_setShvpVel.Size = new System.Drawing.Size(110, 55);
-            this.but_setShvpVel.TabIndex = 148;
-            this.but_setShvpVel.Text = "Установить скорость";
-            this.but_setShvpVel.UseVisualStyleBackColor = true;
-            this.but_setShvpVel.Click += new System.EventHandler(this.but_setShvpVel_Click);
-            // 
-            // textBox_shvpVel
-            // 
-            this.textBox_shvpVel.Location = new System.Drawing.Point(139, 261);
-            this.textBox_shvpVel.Name = "textBox_shvpVel";
-            this.textBox_shvpVel.Size = new System.Drawing.Size(110, 26);
-            this.textBox_shvpVel.TabIndex = 147;
-            this.textBox_shvpVel.Text = "0";
             // 
             // but_rob_ph
             // 
@@ -3429,6 +3413,16 @@ namespace opengl3
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Ручное управление лазером";
             // 
+            // but_setShvpVel
+            // 
+            this.but_setShvpVel.Location = new System.Drawing.Point(22, 248);
+            this.but_setShvpVel.Name = "but_setShvpVel";
+            this.but_setShvpVel.Size = new System.Drawing.Size(110, 55);
+            this.but_setShvpVel.TabIndex = 148;
+            this.but_setShvpVel.Text = "Установить скорость";
+            this.but_setShvpVel.UseVisualStyleBackColor = true;
+            this.but_setShvpVel.Click += new System.EventHandler(this.but_setShvpVel_Click);
+            // 
             // but_home_las
             // 
             this.but_home_las.Location = new System.Drawing.Point(139, 366);
@@ -3438,6 +3432,14 @@ namespace opengl3
             this.but_home_las.Text = "Ноль";
             this.but_home_las.UseVisualStyleBackColor = true;
             this.but_home_las.Click += new System.EventHandler(this.but_home_las_Click);
+            // 
+            // textBox_shvpVel
+            // 
+            this.textBox_shvpVel.Location = new System.Drawing.Point(139, 261);
+            this.textBox_shvpVel.Name = "textBox_shvpVel";
+            this.textBox_shvpVel.Size = new System.Drawing.Size(110, 26);
+            this.textBox_shvpVel.TabIndex = 147;
+            this.textBox_shvpVel.Text = "0";
             // 
             // but_las_enc
             // 
@@ -3981,6 +3983,16 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
+            // but_flange_calib_basis
+            // 
+            this.but_flange_calib_basis.Location = new System.Drawing.Point(487, 663);
+            this.but_flange_calib_basis.Name = "but_flange_calib_basis";
+            this.but_flange_calib_basis.Size = new System.Drawing.Size(149, 35);
+            this.but_flange_calib_basis.TabIndex = 172;
+            this.but_flange_calib_basis.Text = "Калибровка относит фланца через базисы";
+            this.but_flange_calib_basis.UseVisualStyleBackColor = true;
+            this.but_flange_calib_basis.Click += new System.EventHandler(this.but_flange_calib_basis_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1884, 938);
@@ -4431,6 +4443,7 @@ namespace opengl3
         private System.Windows.Forms.PropertyGrid prop_gr_scan;
         private System.Windows.Forms.Button but_setShvpVel;
         private System.Windows.Forms.TextBox textBox_shvpVel;
+        private System.Windows.Forms.Button but_flange_calib_basis;
     }
 }
 

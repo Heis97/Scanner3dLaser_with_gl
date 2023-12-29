@@ -283,6 +283,7 @@ namespace opengl3
         }
         public static void t(Matrix<double> matr)
         {
+            if(matr == null) return;
             Console.WriteLine("cols x rows: " + matr.Rows + " x " + matr.Cols);
             if (matr.Cols != 1)
             {

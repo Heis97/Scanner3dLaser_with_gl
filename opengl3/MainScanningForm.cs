@@ -788,7 +788,6 @@ namespace opengl3
             }
             else
             {
-
                 var stereo_cam = new StereoCamera(new CameraCV[] { cam1, cam2 },bfs_file);
                 scanner = new Scanner(stereo_cam);
                 stereocam_scan = stereo_cam;
@@ -5487,6 +5486,26 @@ namespace opengl3
         private void prop_gr_scan_SelectedGridItemChanged(object sender, SelectedGridItemChangedEventArgs e)
         {
             formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+        }
+
+        private void but_flange_calib_basis_Click(object sender, EventArgs e)
+        {
+            var stereo_cal_1 = textB_stereo_cal_path.Text.Split('\\').Reverse().ToArray()[0];
+            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
+            //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
+            var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
+
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var cam1 = CameraCV.load_camera(cam1_conf_path);
+            var cam2 = CameraCV.load_camera(cam2_conf_path);
+            var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
+            stereocam_scan = stereo;
+            //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
+            chess_size = new Size(6, 7);
+            var markSize = 10f;
+            stereocam_scan.calibrate_basis_rob(frms_stereo, PatternType.Mesh, chess_size, markSize);
+            comboImages.Items.AddRange(frms_stereo);
         }
     }
 }

@@ -142,6 +142,48 @@ namespace opengl3
             }
         }
 
+
+        public void calibrate_basis_rob(Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize)
+        {
+
+            if (cameraCVs.Length == 2)
+            {
+                var p_rob = new List<Point3d_GL>();
+                var p_cam = new List<Point3d_GL>();
+                Console.WriteLine("calibrate_basis_rob");
+
+                for (int i = 0; i < frames.Length; i++)
+                {
+                    var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, pattern_size, markSize);
+                    if (pos1)
+                    {
+                        var c1 = cameraCVs[0].matrixCS;
+                        var rob_pos = new RobotFrame(frames[i].name);
+                        var r1 = rob_pos.getMatrix();
+                        var p1 = new Point3d_GL(r1[0, 3], r1[1, 3], r1[2, 3]);
+                        var p2 = new Point3d_GL(c1[0, 3], c1[1, 3], c1[2, 3]);
+                        p_rob.Add(p1);
+                        p_cam.Add(p2);
+
+                        //Console.WriteLine(i + " " + r1[0, 3] + " " + r1[1, 3] + " " + r1[2, 3]+" ");// + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");
+                        //Console.WriteLine(R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");// + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
+                        GC.Collect();
+                    }
+                    
+                }
+                var matr1 = UtilMatr.calcTransformMatr_cv(p_rob.ToArray(), p_cam.ToArray());
+                prin.t(matr1);
+                prin.t("____________");
+
+                for (int i = 1; i < p_cam.Count; i++)
+                {
+                    Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
+                }
+
+            }
+        }
+
+
         public Matrix<double> calibrateBfs(Frame[] pos,System.Drawing.Size pattern_size, float markSize,string file_name = "bfs_cal.txt")
         {
             var Bfs_l = new List<Matrix<double>>();
