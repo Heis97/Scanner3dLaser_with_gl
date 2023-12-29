@@ -152,7 +152,7 @@ namespace opengl3
                         Y = y;
                         Z = z;
                         A = -cut_off_2pi(Rx);
-                        B = cut_off_2pi(Ry);
+                        B = -cut_off_2pi(Ry);
                         C = cut_off_2pi(Rz);
                         D = d;
                     }
