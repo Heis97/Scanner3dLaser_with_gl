@@ -72,6 +72,7 @@ namespace opengl3
         List<Mat>[] video_mats = new List<Mat>[2];
 
 
+
         private float z_mult_cam = 0.2f;
         private float[] vertex_buffer_data = { 0.0f };
         private float[] normal_buffer_data = { 0.0f };
@@ -120,6 +121,7 @@ namespace opengl3
         bool writ = false;
         int bin_pos = 40;
 
+        Mat mat0 = new Mat();
         List<Mat> cap_mats = new List<Mat>();
         Features features = new Features();
         MCvPoint3D32f[] points3D = new MCvPoint3D32f[]
@@ -169,6 +171,8 @@ namespace opengl3
 
             // frames_sync_from_file("enc_v1.txt");
             //analys_sph();
+            loadVideo_def(@"D:\stars24\1\vid.mp4");
+            //load_frms(@"D:\stars24");
         }
         
 
@@ -558,6 +562,17 @@ namespace opengl3
             var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms, chess_size_real, mark_size, null);
             cameraCVcommon = cam1;
+            comboImages.Items.AddRange(frms);
+
+        }
+
+        void load_frms(string path)
+        {
+            var frms = FrameLoader.loadImages_test(path);
+            foreach(var m in frms) { 
+                m.im *= 8;
+                m.im.Save(m.name + "_x8.png");
+            }
             comboImages.Items.AddRange(frms);
 
         }
@@ -3763,7 +3778,35 @@ namespace opengl3
             return new VideoFrame(cap_mats.ToArray(), new Mat(orig_path), name);
         }
 
-       
+        public void loadVideo_def(string filepath)
+        {
+            videoframe_count = 0;
+            Console.WriteLine(filepath + "   ");
+            cap_mats = new List<Mat>();
+            var capture = new VideoCapture(filepath);
+            var all_frames = capture.GetCaptureProperty(CapProp.FrameCount);
+            all_frames = 10;
+            capture.Start();
+
+            Console.WriteLine("vframe: " + videoframe_count + "/" + capture.GetCaptureProperty(CapProp.FrameCount));
+            capture.ImageGrabbed += loadingVideo_s;
+            while (videoframe_count < all_frames)
+            {
+               
+            }
+            capture.ImageGrabbed -= loadingVideo_s;
+            capture.Stop();
+
+           /* var mat1 = cap_mats[0].Clone();
+            for (int i = 1; i < cap_mats.Count; i++)
+            {
+                mat1+=cap_mats[i].Clone();
+            }*/
+            CvInvoke.Imshow("vid", mat0);
+            string name = Path.GetFileName(filepath);
+
+
+        }
         Mat takeImage(VideoCapture capture)
         {
             Mat im = new Mat();
@@ -3771,19 +3814,39 @@ namespace opengl3
             return im;
         }
 
+        void loadingVideo_s(object sender, EventArgs e)
+        {
+            //Console.WriteLine(filepath + "   " + videoframe_count);
+            Mat im = new Mat();
+            var cap = (VideoCapture)sender;
+            cap.Retrieve(im);
+           // var mat_c = new Mat();
+           // im.CopyTo(mat_c);
+           if(videoframe_count==0)
+            {
+                mat0 = im.Clone();
+            }
+           else
+            {
+                mat0 += im;
+            }
+            //cap_mats.Add(im.Clone());
+            videoframe_count++;
+            Console.WriteLine("vframe: " + videoframe_count + "/" + cap.GetCaptureProperty(CapProp.FrameCount));
+        }
         void loadingVideo(object sender, EventArgs e)
         {
             //Console.WriteLine(filepath + "   " + videoframe_count);
             Mat im = new Mat();
             var cap = (VideoCapture)sender;
             cap.Retrieve(im);
-            var mat_c = new Mat();
-            im.CopyTo(mat_c);
-            cap_mats.Add(mat_c);
+            // var mat_c = new Mat();
+            // im.CopyTo(mat_c);
+
+            cap_mats.Add(im.Clone());
             videoframe_count++;
             Console.WriteLine("vframe: " + videoframe_count + "/" + cap.GetCaptureProperty(CapProp.FrameCount));
         }
-
         void streaming(object sender, EventArgs e)
         {
             binImage(imageBox1, red_c, green_c);
