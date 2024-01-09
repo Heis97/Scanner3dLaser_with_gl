@@ -171,8 +171,6 @@ namespace opengl3
 
             // frames_sync_from_file("enc_v1.txt");
             //analys_sph();
-            loadVideo_def(@"D:\stars24\1\vid.mp4");
-            //load_frms(@"D:\stars24");
         }
         
 
