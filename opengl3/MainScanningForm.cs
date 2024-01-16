@@ -172,183 +172,6 @@ namespace opengl3
             // frames_sync_from_file("enc_v1.txt");
             //analys_sph();
         }
-        
-
-
-        static int[] frames_max(int[,] data)
-        {
-            int analyse_len = 40;
-            var end_data = new List<int[]>();
-            for(int i= data.GetLength(0)-analyse_len;i < data.GetLength(0) - 1;i++)
-            {
-                end_data.Add(new int[] { data[i, 1], data[i, 2] });
-            }
-            var ed_s = (from d in end_data
-                        orderby d[0] descending
-                        select d).ToArray();
-            var i_min = 0;
-            for(int i=1; i_min==0 && i<analyse_len-2;i++)
-            {
-                if (ed_s[i][1] != ed_s[0][1]) i_min = i;
-            }
-            var ed_l = ed_s[0].ToList();
-            ed_l.AddRange(ed_s[i_min]);
-            return  ed_l.ToArray();
-        }
-        static public double[][] frames_sync_from_file(string enc_path,Label label=null)
-        {
-            var data = analys_sync(enc_path);
-            var frms_max = frames_max(data);
-
-            var fr_max = frms_max[0];
-            var cam_max = frms_max[1];
-            var fr_min = frms_max[2];
-            var cam_min = frms_max[3];
-
-
-            Console.WriteLine("fr_cnt = "+fr_max);
-            Console.WriteLine("fr_cnt_m = " + fr_min);
-            var data_s = new int[3, fr_max + 1][];
-            for(int i = 0; i < data.GetLength(0); i++)
-            {
-                var fr_n = data[i,1];
-                var cam_n = data[i, 2];
-                var time = data[i, 3];
-                if( data_s[cam_n,fr_n]==null)
-                {
-                    data_s[cam_n, fr_n] = new int[0];
-                }
-                var l = data_s[cam_n, fr_n].ToList();
-                l.Add(time);
-                data_s[cam_n, fr_n] = l.ToArray();
-            }
-
-            var find_prec1 = new List<double>();
-            var find_prec2 = new List<double>();
-
-            for (int i = 1; i < data_s.GetLength(1); i++)
-            {
-                if (data_s[cam_max, i] != null && data_s[cam_min, i] != null && data_s[cam_max, i-1] != null && data_s[cam_min, i-1] != null)
-                    if (data_s[cam_max, i].Length > 1 && data_s[cam_min, i].Length > 1 && data_s[cam_max, i-1].Length > 1 && data_s[cam_min, i-1].Length > 1)
-                    { 
-                        Console.WriteLine(i+" "+data_s[cam_max, i][0] + "  " + data_s[cam_min, i][0]+" "+ //текущее время
-                            (data_s[cam_max, i][1]-data_s[cam_max, i][0]) + "  " + (data_s[cam_min, i][1]- data_s[cam_min, i][0]) + " "+//дельта между началом кадра и концом
-                            (data_s[cam_max, i][0] - data_s[cam_max, i-1][0]) + " "+ (data_s[cam_min, i][0] - data_s[cam_min, i - 1][0])+" " +//дельта между началами соседних кадров
-                            (data_s[cam_max, i][1] - data_s[cam_max, i - 1][1]) + " " + (data_s[cam_min, i][1] - data_s[cam_min, i - 1][1]) + " " );//дельта между концами соседних кадров
-                        find_prec1.Add(data_s[cam_max, i][0] - data_s[cam_max, i - 1][0]);
-                        find_prec2.Add(data_s[cam_min, i][0] - data_s[cam_min, i - 1][0]);
-                    }
-            }
-            var prec1 = find_aver_dev(find_prec1.ToArray());
-            var prec2 = find_aver_dev(find_prec2.ToArray());
-            Console.WriteLine(Math.Round(prec1).ToString() + " " + Math.Round(prec2).ToString() + " PREC");
-            if(label!=null) label.Text = Math.Round(prec1).ToString() + " " + Math.Round(prec2).ToString() + " PREC"; 
-
-            var prs = compare_frames(data_s, fr_min, fr_max, cam_min, cam_max);
-            return prs;
-        }
-
-        static double find_aver_dev(double[] vals)
-        {
-            double len = vals.Length;
-            var aver = vals.Sum() / len;
-            var sq_arr = new double[vals.Length];
-            for (int i = 0; i < sq_arr.Length; i++)
-            {
-                sq_arr[i] = (vals[i] - aver) * (vals[i] - aver);
-            }
-            var sq_aver = sq_arr.Sum() / len;
-            return Math.Sqrt(sq_aver);
-        }
-
-        static  double[][] compare_frames(int[,][] data, int frame_min, int frame_max, int cam_min, int cam_max)
-        {
-            int j = 1;
-            var pairs = new double[frame_min][];
-            for(int i=1; i<frame_min;i++)
-            {
-                if(data[cam_min, i]!=null && data[cam_max, j]!=null)
-                {
-                    while (data[cam_min, i][0] > data[cam_max, j][0] && j < frame_max)
-                    {
-                        j++;
-                    }
-                    double df = 0;//на какую часть нужно сместиться относительно j-1 кадра чтобы совпасть по времени
-                    if(j>1)
-                    {
-                        df = (double)(data[cam_max, i][0] - data[cam_max, j - 1][0]) /(data[cam_max, j][0] - data[cam_max, j - 1][0]) ;
-
-                        var d1 = data[cam_max, i][0];
-                        var d2 = data[cam_max, j][0] - (data[cam_max, j][0] - data[cam_max, j - 1][0]) * (1 - df);
-                        //Console.WriteLine(d1 + " " + d2);
-                    }
-                    pairs[i] = new double[] { j, df };
-                   
-                }
-                //Console.WriteLine(i + " " + j);
-            }
-            pairs[0] = new double[] { cam_min, cam_max ,frame_min, frame_max};
-            return pairs;
-        }
-        static int[,] analys_sync(string enc_path)
-        {
-            string enc;
-            using (StreamReader sr = new StreamReader(enc_path))
-            {
-                enc = sr.ReadToEnd();
-            }
-
-            enc = enc.Replace("\r", "");
-            var lines = enc.Split('\n'); 
-            var enc_pos = new int[lines.Length, 8];
-            int ind = 0;
-            int st_time = 0;
-            foreach (var line in lines)
-            //for (int l = lines.Length-1; l>=0; l--)
-            {
-                //var line = lines[l];
-                if (line.Length > 0)
-                {
-                    var vals = line.Trim().Split(' ');
-
-                    if (vals.Length == 6)
-                    {
-                        for (int i = 0; i < vals.Length; i++)
-                        //for (int i = vals.Length - 1; i >= 0; i--)
-                        {
-                            if (i == 3)
-                            {
-                                string time = "";
-                                for (int j = vals[i].Length / 2; j < vals[i].Length; j++)
-                                {
-                                    time += vals[i][j];
-                                }
-                                vals[i] = time;
-                            }
-                            enc_pos[ind, i] = Convert.ToInt32(vals[i]);
-                            if (i == 3)
-                            {
-                                enc_pos[ind, i] -= st_time;
-                                if (ind == 0)
-                                {
-                                    st_time = enc_pos[ind, i];
-                                    enc_pos[ind, i] = 0;
-                                }
-
-                            }
-                        }
-                       /*Console.Write(enc_pos[ind, 3] + ";");
-                        if (enc_pos[ind, 5] == 1) Console.Write(enc_pos[ind, 4] + ";" + ";");
-                        if (enc_pos[ind, 5] == 2) Console.Write(";" + enc_pos[ind, 4] + ";");
-
-
-                        Console.WriteLine(' ');*/
-                    }
-                }
-                ind++;
-            }
-            return enc_pos;
-        }
 
         void python_c_sh()
         {
@@ -466,73 +289,6 @@ namespace opengl3
             var fr = new Frame(m_test, "sdf", FrameType.MarkBoard);
             CameraCV.findPoints(fr, new Size(9, 10));*/
 
-        }
-
-        void test_smooth()
-        {
-            var p1 = new Point3d_GL(0,0,0);
-            var p2 = new Point3d_GL(10, 0, 0);
-            var p3 = new Point3d_GL(10, 10, 10);
-            var traj = new List<Point3d_GL>();
-            traj.Add(p1);
-            traj.Add(p2);
-            traj.Add(p3);
-            var div = PathPlanner.divide_traj(traj, 0.05);
-            var line_s1 = Point3d_GL.line_aver(div.ToArray(), 20);
-            var line_s2 = Point3d_GL.line_laplace(div.ToArray(), 200);
-            GL1.addLineMeshTraj(line_s1,Color3d_GL.red(),"aver");
-            GL1.addLineMeshTraj(line_s2, Color3d_GL.blue(), "lapl");
-
-        }
-
-        void test_remesh()
-        {
-           /* var p1 = new Point3d_GL(1, 1, 1);
-            var p2 = new Point3d_GL(2, 2, 2);
-            var p3 = new Point3d_GL(3, 3, 3);
-            var p4 = new Point3d_GL(4, 4, 4);*/
-
-            var p1 = new Point3d_GL(0, 0, 0);
-            var p2 = new Point3d_GL(10, 0, 0);
-            var p3 = new Point3d_GL(10, 10, 0);
-            var p4 = new Point3d_GL(0, 10, 0);
-            var polygs = new Polygon3d_GL[] { new Polygon3d_GL(p1, p2, p3), new Polygon3d_GL(p1, p4, p3) };
-            var inds_m = new IndexedMesh(polygs);
-            var polyg_re = inds_m.get_polygs();
-
-            var mesh = Polygon3d_GL.toMesh(polygs);           
-            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, "re1");
-
-            mesh = Polygon3d_GL.toMesh(polyg_re);
-            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, "re2");
-        }
-        void test_cross_line_triang()
-        {
-            /* var p1 = new Point3d_GL(1, 1, 1);
-             var p2 = new Point3d_GL(2, 2, 2);
-             var p3 = new Point3d_GL(3, 3, 3);
-             var p4 = new Point3d_GL(4, 4, 4);*/
-
-            var p1 = new Point3d_GL(0, 0, 0);
-            var p2 = new Point3d_GL(10, 0, 0);
-            var p3 = new Point3d_GL(10, 10, 0);
-            var p4 = new Point3d_GL(0, 10, 0);
-            var polygs = new Polygon3d_GL[] { new Polygon3d_GL(p1, p2, p3), new Polygon3d_GL(p1, p4, p3) };
-            var inds_m = new IndexedMesh(polygs);
-            var line = new Line3d_GL(new Point3d_GL(4, -0.5, 0), new Point3d_GL(4, -0.5, 10));
-            var p_cross = Polygon3d_GL.cross_line_triang(polygs[0], line);
-            Console.WriteLine(p_cross+" "+p_cross.exist);
-        }
-        void add_points_cal()
-        {
-            var ps = new Point3d_GL[] { 
-                new Point3d_GL(-0.3801956,0.22838, 0.03581),
-                new Point3d_GL(-0.380255,  0.278841, 0.0354566),
-                new Point3d_GL(-0.4398407, 0.278541,0.0353042),
-
-            };
-            ps = Point3d_GL.mult(ps, 1000);
-           // GL1.addPointMesh(ps,Color3d_GL.red());
         }
 
         void loadStereo()
@@ -823,9 +579,9 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //
             if(scanner_config.syncr)
-                scanner = loadVideo_stereo(scan_path_1, scanner, config);
+                scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
             else
-                scanner = loadVideo_stereo_not_sync(scan_path_1, scanner, config);
+                scanner = VideoAnalyse.loadVideo_stereo_not_sync(scan_path_1, scanner, config,this);
 
             var load_3d = true;
             if(load_3d)
@@ -868,7 +624,7 @@ namespace opengl3
         void load_scan_sing(Scanner scanner,string scan_path, int strip = 1, double smooth = 0.8)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            scanner = loadVideo_sing_cam(scan_path_1, scanner,strip);
+            scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner,strip);
             var ps = scanner.getPointsLinesScene();
             var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
             var scan_stl = Polygon3d_GL.toMesh(mesh);
@@ -881,7 +637,7 @@ namespace opengl3
         {
 
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            scanner = loadVideo_sing_cam(scan_path_1, scanner, strip, true);
+            scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner, strip, true);
             scanner.linearAxis.save("linear.txt");
 
         }
@@ -937,7 +693,7 @@ namespace opengl3
 
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,10f);
 
-            loadVideo_stereo(scand_path, scanner, scanner_config);
+            VideoAnalyse.loadVideo_stereo(scand_path, scanner, scanner_config,this);
             var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
             var scan_stl = Polygon3d_GL.toMesh(mesh);
              GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
@@ -1470,6 +1226,218 @@ namespace opengl3
             //imBox_disparity.Image = features.drawDescriptorsMatch(ref mat1_or, ref mat2_or);
 
         }
+        private void but_cross_flat_Click(object sender, EventArgs e)
+        {
+
+            var v = debugBox.Text.Trim().Split(' ');
+            var f = new List<double>();
+            for (int i = 0; i < v.Length; i++)
+            {
+                f.Add(Convert.ToDouble(v[i]));
+            }
+
+
+            SurfaceReconstraction.cross_obj_flats(GL1.buffersGl.objs[scan_i].vertex_buffer_data, f[0], f[1], GL1, f[2]);
+
+        }
+
+
+
+        Mat toMat(Bitmap bitmap)
+        {
+            var data = new byte[bitmap.Height, bitmap.Width, 3];
+            for (int i = 0; i < bitmap.Width; i++)
+            {
+                for (int j = 0; j < bitmap.Height; j++)
+                {
+                    data[j, i, 0] = bitmap.GetPixel(i, j).B;
+                    data[j, i, 1] = bitmap.GetPixel(i, j).G;
+                    data[j, i, 2] = bitmap.GetPixel(i, j).B;
+                }
+            }
+            return new Image<Bgr, byte>(data).Mat;
+        }
+        private void glControl1_MouseMove(object sender, MouseEventArgs e)
+        {
+            GL1.glControl_MouseMove(sender, e);
+
+        }
+        private void glControl1_MouseDown(object sender, MouseEventArgs e)
+        {
+            GL1.glControl_MouseDown(sender, e);
+        }
+        void test4pointHomo()
+        {
+            int id_mon = 0;
+            var mat1 = GL1.matFromMonitor(id_mon);
+
+            var points2D = new System.Drawing.PointF[points3D.Length];
+            for (int i = 0; i < points3D.Length; i++)
+            {
+                var p = GL1.calcPixel(new Vertex4f(points3D[i].X, points3D[i].Y, points3D[i].Z, 1), id_mon);
+                points2D[i] = new System.Drawing.PointF(p.X, p.Y);
+            }
+            GL1.cameraCV.compPos(points3D, points2D);
+            var mxCam = matrixFromCam(GL1.cameraCV);
+            prin.t(mxCam);
+            prin.t("-------------------");
+            prin.t(GL1.Vs[id_mon]);
+            prin.t("-------------------");
+            imBox_mark2.Image = mat1;
+
+        }
+        CameraCV projMatr(CameraCV cameraCV, int id_mon)
+        {
+
+            var points2D = new System.Drawing.PointF[points3D.Length];
+            for (int i = 0; i < points3D.Length; i++)
+            {
+                var p = GL1.calcPixel(new Vertex4f(points3D[i].X, points3D[i].Y, points3D[i].Z, 1), id_mon);
+                points2D[i] = new System.Drawing.PointF(p.X, p.Y);
+            }
+            cameraCV.pos = cameraCV.compPos(points3D, points2D);
+            var mxCam = matrixFromCam(cameraCV);
+            var prjCam = cameraCV.cameramatrix * mxCam;
+            cameraCV.prjmatrix = prjCam;
+            return cameraCV;
+        }
+
+
+
+        void load_subpix()
+        {
+            var folders = Directory.GetDirectories("subpix");
+            var frms = new List<Frame[]>();
+            foreach (var s in folders)
+            {
+                var frm = FrameLoader.loadImages_chess(s);
+                frms.Add(frm);
+                //comboImages.Items.AddRange(frm);
+            }
+
+            var fr_ar = frms.ToArray();
+
+            for (int i = 0; i < fr_ar.Length; i++)
+            {
+                for (int j = 0; j < fr_ar[i].Length; j++)
+                {
+                    for (int k = 1; k < 13; k++)
+                    {
+                        var err = UtilOpenCV.calcSubpixelPrec(chess_size, GL1, markSize, 1, PatternType.Chess, fr_ar[i][j].im, fr_ar[i][j].name, k);
+                        if (err[0].X < 100000000000)
+                        {
+                            Console.WriteLine(err[0] + " " + err[1].X + " " + k);
+                        }
+                    }
+                    Console.WriteLine("__________________________");
+                }
+            }
+        }
+        async void calibr_make_photo()
+        {
+            var zoom = 0.1;
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+
+                    GL1.transRotZooms[1].zoom = zoom * i;
+                    await Task.Delay(100);
+                    UtilOpenCV.saveImage(imBox_mark1, "subpix\\calib_graph_" + i, GL1.transRotZooms[1].ToString() + j);
+                }
+
+            }
+        }
+        Matrix<double> matrixFromCam(CameraCV cam)
+        {
+            var rotateMatrix = new Matrix<double>(3, 3);
+            CvInvoke.Rodrigues(cam.cur_r, rotateMatrix);
+            var tvec = UtilMatr.toVertex3f(cam.cur_t);
+            var mx = UtilMatr.assemblMatrix(rotateMatrix, tvec);
+            var datam = new double[3, 4];
+            for (int i = 0; i < datam.GetLength(0); i++)
+            {
+                for (int j = 0; j < datam.GetLength(1); j++)
+                {
+                    datam[i, j] = mx[(uint)i, (uint)j];
+                }
+            }
+            // var invMx = mx.Inverse;
+            return new Matrix<double>(datam);
+        }
+        private void Form1_mousewheel(object sender, MouseEventArgs e)
+        {
+            GL1.Form1_mousewheel(sender, e);
+        }
+        #endregion
+
+        #region test
+        void test_smooth()
+        {
+            var p1 = new Point3d_GL(0, 0, 0);
+            var p2 = new Point3d_GL(10, 0, 0);
+            var p3 = new Point3d_GL(10, 10, 10);
+            var traj = new List<Point3d_GL>();
+            traj.Add(p1);
+            traj.Add(p2);
+            traj.Add(p3);
+            var div = PathPlanner.divide_traj(traj, 0.05);
+            var line_s1 = Point3d_GL.line_aver(div.ToArray(), 20);
+            var line_s2 = Point3d_GL.line_laplace(div.ToArray(), 200);
+            GL1.addLineMeshTraj(line_s1, Color3d_GL.red(), "aver");
+            GL1.addLineMeshTraj(line_s2, Color3d_GL.blue(), "lapl");
+
+        }
+
+        void test_remesh()
+        {
+            /* var p1 = new Point3d_GL(1, 1, 1);
+             var p2 = new Point3d_GL(2, 2, 2);
+             var p3 = new Point3d_GL(3, 3, 3);
+             var p4 = new Point3d_GL(4, 4, 4);*/
+
+            var p1 = new Point3d_GL(0, 0, 0);
+            var p2 = new Point3d_GL(10, 0, 0);
+            var p3 = new Point3d_GL(10, 10, 0);
+            var p4 = new Point3d_GL(0, 10, 0);
+            var polygs = new Polygon3d_GL[] { new Polygon3d_GL(p1, p2, p3), new Polygon3d_GL(p1, p4, p3) };
+            var inds_m = new IndexedMesh(polygs);
+            var polyg_re = inds_m.get_polygs();
+
+            var mesh = Polygon3d_GL.toMesh(polygs);
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, "re1");
+
+            mesh = Polygon3d_GL.toMesh(polyg_re);
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, "re2");
+        }
+        void test_cross_line_triang()
+        {
+            /* var p1 = new Point3d_GL(1, 1, 1);
+             var p2 = new Point3d_GL(2, 2, 2);
+             var p3 = new Point3d_GL(3, 3, 3);
+             var p4 = new Point3d_GL(4, 4, 4);*/
+
+            var p1 = new Point3d_GL(0, 0, 0);
+            var p2 = new Point3d_GL(10, 0, 0);
+            var p3 = new Point3d_GL(10, 10, 0);
+            var p4 = new Point3d_GL(0, 10, 0);
+            var polygs = new Polygon3d_GL[] { new Polygon3d_GL(p1, p2, p3), new Polygon3d_GL(p1, p4, p3) };
+            var inds_m = new IndexedMesh(polygs);
+            var line = new Line3d_GL(new Point3d_GL(4, -0.5, 0), new Point3d_GL(4, -0.5, 10));
+            var p_cross = Polygon3d_GL.cross_line_triang(polygs[0], line);
+            Console.WriteLine(p_cross + " " + p_cross.exist);
+        }
+        void add_points_cal()
+        {
+            var ps = new Point3d_GL[] {
+                new Point3d_GL(-0.3801956,0.22838, 0.03581),
+                new Point3d_GL(-0.380255,  0.278841, 0.0354566),
+                new Point3d_GL(-0.4398407, 0.278541,0.0353042),
+
+            };
+            ps = Point3d_GL.mult(ps, 1000);
+            // GL1.addPointMesh(ps,Color3d_GL.red());
+        }
 
         void test_traj_2d()
         {
@@ -1825,152 +1793,8 @@ namespace opengl3
             }
 
         }
-
-        private void but_cross_flat_Click(object sender, EventArgs e)
-        {
-
-            var v = debugBox.Text.Trim().Split(' ');
-            var f = new List<double>();
-            for(int i = 0; i < v.Length; i++)
-            {
-                f.Add(Convert.ToDouble(v[i]));
-            }
-
-            
-           SurfaceReconstraction.cross_obj_flats(GL1.buffersGl.objs[scan_i].vertex_buffer_data, f[0], f[1],GL1, f[2]);
-
-        }
-
-
-        
-        Mat toMat(Bitmap bitmap)
-        {
-            var data = new byte[bitmap.Height, bitmap.Width, 3];
-            for (int i = 0; i < bitmap.Width; i++)
-            {
-                for (int j = 0; j < bitmap.Height; j++)
-                {
-                    data[j, i, 0] = bitmap.GetPixel(i, j).B;
-                    data[j, i, 1] = bitmap.GetPixel(i, j).G;
-                    data[j, i, 2] = bitmap.GetPixel(i, j).B;
-                }
-            }
-            return new Image<Bgr, byte>(data).Mat;
-        }
-        private void glControl1_MouseMove(object sender, MouseEventArgs e)
-        {
-            GL1.glControl_MouseMove(sender, e);
-
-        }
-        private void glControl1_MouseDown(object sender, MouseEventArgs e)
-        {
-            GL1.glControl_MouseDown(sender, e);
-        }
-        void test4pointHomo()
-        {
-            int id_mon = 0;
-            var mat1 = GL1.matFromMonitor(id_mon);
-
-            var points2D = new System.Drawing.PointF[points3D.Length];
-            for (int i = 0; i < points3D.Length; i++)
-            {
-                var p = GL1.calcPixel(new Vertex4f(points3D[i].X, points3D[i].Y, points3D[i].Z, 1), id_mon);
-                points2D[i] = new System.Drawing.PointF(p.X, p.Y);
-            }
-            GL1.cameraCV.compPos(points3D, points2D);
-            var mxCam = matrixFromCam(GL1.cameraCV);
-            prin.t(mxCam);
-            prin.t("-------------------");
-            prin.t(GL1.Vs[id_mon]);
-            prin.t("-------------------");
-            imBox_mark2.Image = mat1;
-           
-        }
-        CameraCV projMatr(CameraCV cameraCV, int id_mon)
-        {
-
-            var points2D = new System.Drawing.PointF[points3D.Length];
-            for (int i = 0; i < points3D.Length; i++)
-            {
-                var p = GL1.calcPixel(new Vertex4f(points3D[i].X, points3D[i].Y, points3D[i].Z, 1), id_mon);
-                points2D[i] = new System.Drawing.PointF(p.X, p.Y);
-            }
-            cameraCV.pos = cameraCV.compPos(points3D, points2D);
-            var mxCam = matrixFromCam(cameraCV);
-            var prjCam = cameraCV.cameramatrix * mxCam;
-            cameraCV.prjmatrix = prjCam;
-            return cameraCV;
-        }
-        
-
-
-        void load_subpix()
-        {
-            var folders = Directory.GetDirectories("subpix");
-            var frms = new List<Frame[]>();
-            foreach (var s in folders)
-            {
-                var frm = FrameLoader.loadImages_chess(s);
-                frms.Add(frm);
-                //comboImages.Items.AddRange(frm);
-            }
-
-            var fr_ar = frms.ToArray();
-
-            for(int i=0; i<fr_ar.Length;i++)
-            {
-                for (int j = 0; j < fr_ar[i].Length; j++)
-                {
-                    for(int k = 1; k<13;k++)
-                    {
-                        var err = UtilOpenCV.calcSubpixelPrec(chess_size, GL1, markSize, 1, PatternType.Chess, fr_ar[i][j].im, fr_ar[i][j].name,k);
-                        if(err[0].X<100000000000)
-                        {
-                            Console.WriteLine(err[0] + " " + err[1].X + " " + k);
-                        }                       
-                    }
-                    Console.WriteLine("__________________________");
-                }
-            }
-        }
-        async void calibr_make_photo()
-        {
-            var zoom = 0.1;
-            for(int i=0; i<20; i++)
-            {
-                for(int j=0; j <5; j++)
-                {
-                    
-                    GL1.transRotZooms[1].zoom = zoom * i;
-                    await Task.Delay(100);
-                    UtilOpenCV.saveImage(imBox_mark1, "subpix\\calib_graph_" + i, GL1.transRotZooms[1].ToString() + j);
-                }
-                
-            }           
-        }
-        Matrix<double> matrixFromCam(CameraCV cam)
-        {
-            var rotateMatrix = new Matrix<double>(3, 3);
-            CvInvoke.Rodrigues(cam.cur_r, rotateMatrix);
-            var tvec = UtilMatr.toVertex3f(cam.cur_t);
-            var mx = UtilMatr.assemblMatrix(rotateMatrix, tvec);
-            var datam = new double[3, 4];
-            for(int i=0; i<datam.GetLength(0);i++)
-            {
-                for (int j = 0; j < datam.GetLength(1); j++)
-                {
-                    datam[i, j] = mx[(uint)i, (uint)j];
-                }
-            }
-            // var invMx = mx.Inverse;
-            return new Matrix<double>(datam);
-        }      
-        private void Form1_mousewheel(object sender, MouseEventArgs e)
-        {
-            GL1.Form1_mousewheel(sender, e);
-        }
-
         #endregion
+        
 
         #region buttons
         private void comboImages_SelectionChangeCommitted(object sender, EventArgs e)
@@ -3023,6 +2847,208 @@ namespace opengl3
             var frame = (Frame)comboImages.SelectedItem;
             imageBox_cameraDist.Image = UtilOpenCV.remapUnDistIm(frame.im, cameraMatrix, cameraDistortionCoeffs);
         }
+
+
+        private void tree_models_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            try
+            {
+                prop_grid_model.SelectedObject = GL1.buffersGl.objs[e.Node.Text];
+                prop_grid_model.Text = e.Node.Text;
+                if (ModifierKeys == Keys.Control)
+                {
+                    e.Node.BackColor = Color.Green;
+                    GL1.buffersGl.objs[e.Node.Text] = GL1.buffersGl.objs[e.Node.Text].setSelected(true);
+                }
+                else
+                {
+                    e.Node.BackColor = Color.White;
+                    GL1.buffersGl.objs[e.Node.Text] = GL1.buffersGl.objs[e.Node.Text].setSelected(false);
+                }
+
+            }
+            catch
+            {
+
+            }
+
+        }
+
+        private void tree_models_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right) clear_selected_nodes();
+        }
+        private void tree_models_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            //GL1.buffersGl.objs[e.Node.Text] = GL1.buffersGl.objs[e.Node.Text].setVisible(e.Node.Checked);
+        }
+        //-----------------------------------
+        string[] selected_nodes()
+        {
+            List<string> nodes = new List<string>();
+            for (int i = 0; i < tree_models.Nodes.Count; i++)
+            {
+                if (tree_models.Nodes[i].BackColor == Color.Green) nodes.Add(tree_models.Nodes[i].Text);
+            }
+            return nodes.ToArray();
+        }
+        string selected_object()
+        {
+            var selected_obj = selected_nodes();
+            if (selected_obj == null) return null;
+            if (selected_obj.Length < 1) return null;
+            //Console.WriteLine(selected_obj[0]);
+            return selected_obj[0];
+        }
+
+        void clear_selected_nodes()
+        {
+            try
+            {
+                for (int i = 0; i < tree_models.Nodes.Count; i++)
+                {
+                    tree_models.Nodes[i].BackColor = Color.White;
+                    GL1.buffersGl.objs[tree_models.Nodes[i].Text].setSelected(false);
+
+                }
+            }
+            catch
+            {
+
+            }
+
+        }
+        //-----------------------------------
+        private void but_home_las_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_home_laser();
+        }
+
+        private void but_div_disp_Click(object sender, EventArgs e)
+        {
+
+            laserLine?.set_div_disp(Convert.ToInt32(tb_div_disp.Text));
+        }
+
+        private void but_dir_disp_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_dir_disp(Convert.ToInt32(tb_dir_disp.Text));
+        }
+
+        private void but_extr_st_Click(object sender, EventArgs e)
+        {
+            double vel_noz = Convert.ToDouble(tb_print_vel.Text);
+            double d_noz = Convert.ToDouble(tb_print_nozzle_d.Text);
+            double d_syr = Convert.ToDouble(tb_print_syr_d.Text);
+            var div = LaserLine.vel_div(vel_noz, d_noz, d_syr);
+            laserLine?.set_dir_disp(-1);
+            laserLine?.set_div_disp(div);
+        }
+        //-----------------------------------
+        private void but_printer_traj_fab_Click(object sender, EventArgs e)
+        {
+            var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
+            var traj = PathPlanner.ps_to_matr(pattern);
+            var prog = PathPlanner.generate_printer_prog(traj, traj_config);
+            debugBox.Text = prog;
+            if (GL1.buffersGl.objs.Keys.Contains("prog")) GL1.buffersGl.removeObj("prog");
+            //GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
+            GL1.addTraj(pattern.ToArray(), "prog");
+            //GL1.addTrajPoint(pattern.ToArray(), "prog");
+        }
+
+        private void but_scan_virt_Click(object sender, EventArgs e)
+        {
+            var n = Convert.ToInt32(boxN.Text);
+            GL1.start_animation(100);
+            var folder_scan = box_scanFolder.Text;
+            UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, "1.png", folder_scan + "\\orig");
+            startWrite(1, n);
+            startWrite(2, n);
+        }
+
+        private void but_start_anim_Click(object sender, EventArgs e)
+        {
+            GL1.start_animation(100);
+        }
+
+        private void but_photo_gl_Click(object sender, EventArgs e)
+        {
+
+            UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, txBx_photoName.Text + "_" + photo_number.ToString() + ".png", box_photoFolder.Text);
+            photo_number++;
+        }
+
+        private void but_con_scan_Click(object sender, EventArgs e)
+        {
+            videoStart(2);
+            videoStart(1); Thread.Sleep(5000);
+            find_ports(); Thread.Sleep(100);
+            laserLine = new LaserLine(portArd); Thread.Sleep(1000);
+            laserLine?.setShvpVel(200); Thread.Sleep(100);
+            laserLine?.laserOn(); Thread.Sleep(100);
+            laserLine?.set_home_laser(); Thread.Sleep(1000);
+            laserLine?.setShvpPos(350); Thread.Sleep(100);
+
+        }
+
+        private void but_scan_pres_Click(object sender, EventArgs e)
+        {
+            var scan_path = textB_scan_path.Text;
+            var filepath = scan_path.Split('\\').Reverse().ToArray()[0];
+            var ve_paths1 = get_video_path(1, filepath);
+            string video_path1 = ve_paths1[0];
+
+            // string enc_path1 = ve_paths1[1];
+
+            var ve_paths2 = get_video_path(2, filepath);
+            string video_path2 = ve_paths2[0];
+            // string enc_path2 = ve_paths2[1];
+
+            string enc_path = ve_paths1[1];
+            var pairs = VideoAnalyse.frames_sync_from_file(enc_path, lab_scan_pres);
+        }
+       
+        private void but_set_z_pos_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_z_pos(Convert.ToInt32(textB_set_z_pos.Text));
+        }
+
+        private void but_z_home_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_home_z();
+        }
+
+        private void but_set_z_div_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_z_div(Convert.ToInt32(textB_set_z_div.Text));
+        }
+
+        private void prop_gr_scan_SelectedGridItemChanged(object sender, SelectedGridItemChangedEventArgs e)
+        {
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+        }
+
+        private void but_flange_calib_basis_Click(object sender, EventArgs e)
+        {
+            var stereo_cal_1 = textB_stereo_cal_path.Text.Split('\\').Reverse().ToArray()[0];
+            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
+            //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
+            var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
+
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var cam1 = CameraCV.load_camera(cam1_conf_path);
+            var cam2 = CameraCV.load_camera(cam2_conf_path);
+            var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
+            stereocam_scan = stereo;
+            //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
+            chess_size = new Size(6, 7);
+            var markSize = 10f;
+            stereocam_scan.calibrate_basis_rob(frms_stereo, PatternType.Mesh, chess_size, markSize);
+            comboImages.Items.AddRange(frms_stereo);
+        }
+
         #endregion
 
         #region cameraUtil
@@ -4104,278 +4130,9 @@ namespace opengl3
             startScanLaser(4);
         }
 
-        void show_frame(string filepath)
-        {
-            var capture1 = new VideoCapture(Directory.GetFiles("cam1\\" + filepath)[0]);
-            var capture2 = new VideoCapture(Directory.GetFiles("cam2\\" + filepath)[0]);
-            //capture1.SetCaptureProperty(CapProp.);
-        }
-        public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner, ScannerConfig config)
-        {
-
-            videoframe_count = 0;
-            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
-            var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
-            Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
-            Console.WriteLine(Directory.GetFiles("cam2\\" + filepath)[0]);
-
-            var ve_paths1 = get_video_path(1,filepath);
-            string video_path1 = ve_paths1[0];
-           // string enc_path1 = ve_paths1[1];
-
-            var ve_paths2 = get_video_path(2, filepath);
-            string video_path2 = ve_paths2[0];
-            // string enc_path2 = ve_paths2[1];
-
-            scanner.set_coord_sys(StereoCamera.mode.model);
-            var name_v1 = Path.GetFileNameWithoutExtension(video_path1);
-            var name_v2 = Path.GetFileNameWithoutExtension(video_path2);
-            if (name_v1.Length > 1 && name_v2.Length > 1)
-            {
-                scanner.set_rob_pos(name_v1);
-                scanner.set_coord_sys(StereoCamera.mode.world);
-            }
-                
-
-
-            var capture1 = new VideoCapture(video_path1);
-            var capture2 = new VideoCapture(video_path2);
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
-            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
-            var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
-            var frames_show = new List<Frame>();
-            fr_st_vid.stereo = true;
-            //comboImages.Items.Add(fr_st_vid);
-
-            
-            int buff_diff = config.buff_delt;
-            int buff_len = buff_diff+1;
-            var all_frames = Math.Min(all_frames1, all_frames2);
-            if (scanner != null)
-            {
-                var orig2_im = orig2.ToImage<Bgr, byte>();
-                CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
-                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
-                scanner.pointCloud.graphicGL = GL1;
-            }
-            var im1_buff = new Mat();
-            var im2_buff = new Mat();
-
-            var im1_buff_list = new List<Mat>();
-            var im2_buff_list = new List<Mat>();
-
-            //while (videoframe_count < 80)
-            while (videoframe_count < all_frames)
-            {
-                Mat im1 = new Mat();
-                Mat im2 = new Mat();
-                
-                while (!capture1.Read(im1)) { }
-                while (!capture2.Read(im2)) { }
-               // Console.WriteLine(videoframe_count+"____________________");
-                
-                if (scanner != null && im1!= null && im2!=null)
-                {
-                    var buffer_mat1 = im1.Clone();
-                    var buffer_mat2 = im2.Clone();
-                    if (videoframe_count % config.strip == 0 && videoframe_count> buff_len)
-                    {
-                        // im1 -= orig1;
-                        // im2 -= orig2;
-
-       
-                        /* CvInvoke.Imshow("im1_or", im1);
-                         CvInvoke.Imshow("buffer_mat1", im1_buff_list[1]);
-                         CvInvoke.Imshow("buffer_mat8", im1_buff_list[8]);
-                       */
-                        
-                        im1 -= im1_buff_list[buff_len - buff_diff];
-                        im2 -= im2_buff_list[buff_len - buff_diff];
-                       // CvInvoke.Imshow("im1_dif", im1);
-                       // CvInvoke.WaitKey();
-                        
-                        CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                        if (config.save_im)
-                        {
-                             var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
-                             frame_d.stereo = true;
-                             frames_show.Add(frame_d);
-                        }
-                            //scanner.addPointsStereoLas(new Mat[] { im1, im2 },false);
-                            /*var ps1 = Detection.detectLineDiff(im1, 7);
-                            var ps2 = Detection.detectLineDiff(im2, 7);
-
-                            imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
-                            imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
-                            //CvInvoke.Imshow("im2", im2);                       
-
-                            scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, config.distort);
-                    }
-                    
-                    im1_buff = buffer_mat1.Clone();
-                    im2_buff = buffer_mat2.Clone();
-
-                    im1_buff_list.Add(im1_buff);
-                    im2_buff_list.Add(im2_buff);
-                    if(im1_buff_list.Count>buff_len)
-                    {
-                        im1_buff_list.RemoveAt(0);
-                        im2_buff_list.RemoveAt(0);
-                    }
-                    
-
-
-
-                }                
-                videoframe_count++;
-                //Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
-            }
-            comboImages.Items.AddRange(frames_show.ToArray());
-            scanner.compPointsStereoLas_2d();
-            Console.WriteLine("Points computed.");
-            return scanner;
-        }
-
-
-        static List<Mat>  read_frame(VideoCapture capture, List<Mat> buff,int len)
-        {
-            Mat im = new Mat();
-            while (!capture.Read(im)){}
-            buff.Add(im);
-            if (buff.Count > len) buff.RemoveAt(0);
-            return buff;
-        }
-        public Scanner loadVideo_stereo(string filepath, Scanner scanner, ScannerConfig config)
-        {
-
-            videoframe_count = 0;
-            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
-            var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
-            Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
-            Console.WriteLine(Directory.GetFiles("cam2\\" + filepath)[0]);
-
-            var ve_paths1 = get_video_path(1, filepath);
-            string video_path1 = ve_paths1[0];
-            
-            // string enc_path1 = ve_paths1[1];
-
-            var ve_paths2 = get_video_path(2, filepath);
-            string video_path2 = ve_paths2[0];
-            // string enc_path2 = ve_paths2[1];
-
-            string enc_path = ve_paths1[1];
-            var pairs = frames_sync_from_file(enc_path,lab_scan_pres);
-            var cam_min = (int)pairs[0][0];
-            var cam_max = (int)pairs[0][1];
-            var frame_min = (int)pairs[0][2];
-            var frame_max = (int)pairs[0][3];
-
-            scanner.set_coord_sys(StereoCamera.mode.model);
-            var name_v1 = Path.GetFileNameWithoutExtension(video_path1);
-            var name_v2 = Path.GetFileNameWithoutExtension(video_path2);
-            if (name_v1.Length > 1 && name_v2.Length > 1)
-            {
-                scanner.set_rob_pos(name_v1);
-                scanner.set_coord_sys(StereoCamera.mode.world);
-            }
-
-            
-
-            var capture1 = new VideoCapture(video_path1);
-            var capture2 = new VideoCapture(video_path2);
-            var captures = new VideoCapture[] { capture1, capture2 };
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
-            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
-            Console.WriteLine(all_frames1 + " " + all_frames2);
-            var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
-            var frames_show = new List<Frame>();
-            fr_st_vid.stereo = true;
-            //comboImages.Items.Add(fr_st_vid);
-
-            int buff_diff = 5;
-            int buff_len = buff_diff + 1;
-            if(config.distort)
-            {
-                orig1 = scanner.stereoCamera.cameraCVs[0].undist(orig1);
-                orig2 = scanner.stereoCamera.cameraCVs[1].undist(orig2);
-            }
-            var all_frames = Math.Min(all_frames1, all_frames2);
-            if (scanner != null)
-            {
-                var orig2_im = orig2.ToImage<Bgr, byte>();
-                CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
-                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
-                scanner.pointCloud.graphicGL = GL1;
-            }
-            var im_min_buff_list = new List<Mat>();
-            var im_max_buff_list = new List<Mat>();
-            int f1 = 0;
-            int f2 = 0;
-            //f1 = 70;
-            //while (f1 < frame_min-1)
-            //int fr_c1 = 0;
-            //int fr_c1 = 0;
-            Console.WriteLine(cam_min + " " + cam_max);
-            while (f1 < frame_min - 1- config.las_offs)
-            //while (f1 < 200)
-            {
-                im_min_buff_list = read_frame(captures[cam_min-1], im_min_buff_list, buff_len); f1++;
-                var f2_ind = (int)pairs[f1][0];
-                var k = pairs[f1][1];
-                while(f2 < f2_ind)
-                //while (f2 != f2_ind)
-                {
-                    im_max_buff_list = read_frame(captures[cam_max - 1], im_max_buff_list, buff_len); f2++;
-                }
-                //Console.WriteLine(f1 + " " + f2);
-                if (scanner != null)
-                {
-                    if (f1% config.strip == 0 && f1 > buff_len)
-                    {
-                        var im_min = im_min_buff_list[buff_len - 1] - im_min_buff_list[buff_len - buff_diff];
-
-                        var im_max = im_max_buff_list[buff_len - 1] - im_max_buff_list[buff_len - buff_diff];
-                        var im_max_prev = im_max_buff_list[buff_len - 1 - 1] - im_max_buff_list[buff_len - buff_diff-1];
-                        
-                        if(cam_min == 2)
-                        {
-                            CvInvoke.Rotate(im_min, im_min, RotateFlags.Rotate180);
-                        }
-                        if (cam_max == 2)
-                        {
-                            CvInvoke.Rotate(im_max, im_max, RotateFlags.Rotate180);
-                            CvInvoke.Rotate(im_max_prev, im_max_prev, RotateFlags.Rotate180);
-                        }
-                        //Console.WriteLine(f1 + " " + f2);
-
-                        
-                        //CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
-                        
-                        
-                        //if(videoframe_count!= 100 && videoframe_count != 103 && videoframe_count != 104 && videoframe_count != 145 && videoframe_count != 146 && videoframe_count <149 && videoframe_count > 100)
-                        {
-                            if (config.save_im)
-                            {
-                                var frame_d = new Frame(im_min.Clone(), im_max.Clone(), videoframe_count.ToString(), FrameType.LasDif);
-                                frame_d.stereo = true;
-                                frames_show.Add(frame_d);
-                            }
-                            
-                            scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min, im_max, im_max_prev }, k, cam_min, cam_max,config);
-                        }
-                            
-                    }
-                }
-                videoframe_count++;
-                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
-            }
-            comboImages.Items.AddRange(frames_show.ToArray());
-            scanner.compPointsStereoLas_2d();
-            Console.WriteLine("Points computed.");
-            return scanner;
-        }
         string[] get_video_path(int ind,string filepath)//[ video, enc]
         {
+            Console.WriteLine("cam" + ind + "\\" + filepath);
             var files = Directory.GetFiles("cam"+ind+"\\" + filepath);
             string video_path = "";
             string enc_path = "";
@@ -4394,151 +4151,19 @@ namespace opengl3
             }
             return new string[] { video_path, enc_path };
         }
-        public Scanner loadVideo_sing_cam(string filepath, Scanner scanner = null, int strip = 1, bool calib = false)
+
+        public Label get_label_scan_res()
         {
-            videoframe_count = 0;
-            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
-            //var mat_or_tr = new Mat();
-            //CvInvoke.AdaptiveThreshold(orig1, mat_or_tr,  255, ThresholdType.);
-
-            //CvInvoke.Imshow("thr", mat_or_tr);
-
-            Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
-            var ve_paths = get_video_path(1, filepath);
-            string video_path = ve_paths[0];
-            string enc_path = ve_paths[1];
-
-            var capture1 = new VideoCapture(video_path);
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
-            var fr_st_vid = new Frame(orig1, "sd", FrameType.Test);
-            var frames_show = new List<Frame>();
-            var pos_inc_cal = new List<double>();
-            comboImages.Items.Add(fr_st_vid);
-            int buff_diff = 10;
-            int buff_len = buff_diff + 1;
-            var all_frames = all_frames1;
-            if (scanner != null)
-            {
-                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>() };
-                scanner.pointCloud.graphicGL = GL1;
-            }
-            var enc_file = "";
-            using (StreamReader sr = new StreamReader(enc_path))
-            {
-                enc_file = sr.ReadToEnd();
-            }
-            var inc_pos = scanner.enc_pos(enc_file, (int)all_frames);
-            var buffer_mat = new Mat();
-            var im_orig = orig1.ToImage<Bgr, byte>();
-
-            var im1_buff = new Mat();
-
-
-            var im1_buff_list = new List<Mat>();
-            foreach (var pos in inc_pos) Console.WriteLine(pos);
-
-            while (videoframe_count < all_frames * 0.5)
-            {
-                Mat im1 = new Mat();
-                while (!capture1.Read(im1)) { }
-                if (scanner != null)
-                {
-                    var buffer_mat1 = im1.Clone();
-                    //if (videoframe_count % strip == 0)
-                    if (videoframe_count % strip == 0 && videoframe_count > 3)
-                    {
-                        var im1_or = im1.Clone();
-                        im1 -= im1_buff_list[buff_len - buff_diff];
-
-                        if(videoframe_count>20)         
-                        {
-                            var im1_or_un = scanner.cameraCV.undist(im1_or);
-                            CvInvoke.Imshow("im1", im1_or_un);
-                            CvInvoke.Imshow("buffer_mat", scanner.cameraCV.undist(im1_buff_list[buff_len - buff_diff]));
-                            var im1_diff_un = scanner.cameraCV.undist(im1);
-                            CvInvoke.Imshow("im1 diff", im1_diff_un);
-
-                            var ps = Detection.detectLineDiff(im1_diff_un);
-                            UtilOpenCV.drawPointsF(im1_or_un, ps, 0, 255, 0, 2);
-                            CvInvoke.Imshow("im1-or_un", im1_or_un);
-                            CvInvoke.WaitKey();
-                        }
-                        var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
-                        frames_show.Add(frame_d);
-                        if (calib)
-                        {
-                            //var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
-                            // frames_show.Add(frame_d);
-                            pos_inc_cal.Add(inc_pos[videoframe_count]);
-
-                            scanner.addPointsSingLas_2d(im1, false, calib);
-                        }
-                        else scanner.addPointsLinLas_step(im1, im_orig, inc_pos[videoframe_count], PatternType.Mesh);
-
-                    }
-                    im1_buff = buffer_mat1.Clone();
-
-                    im1_buff_list.Add(im1_buff);
-                    if (im1_buff_list.Count > buff_len)
-                    {
-                        im1_buff_list.RemoveAt(0);
-                    }
-                }
-                videoframe_count++;
-                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
-            }
-            comboImages.Items.AddRange(frames_show.ToArray());
-
-
-            if (calib) scanner.calibrateLinearStep(Frame.getMats(frames_show.ToArray()), orig1, pos_inc_cal.ToArray(), PatternType.Mesh, GL1);
-
-            //var mats = Frame.getMats(frames_show.ToArray());
-            //var corn = Detection.detectLineDiff_corn_calibr(mats);
-
-            //UtilOpenCV.drawPointsF(orig1, corn, 255, 0, 0, 2, true);
-            //CvInvoke.Imshow("corn", orig1);
-            return scanner;
+            return lab_scan_pres;
         }
-
-
-        public void loadVideo_test_laser(string filepath)
+        public ComboBox get_combo_im()
         {
-
-            ImageViewer viewer = new ImageViewer(); //create an image viewer
-            viewer.SetBounds(0, 0, 1620, 1080);
-            VideoCapture capture = new VideoCapture(filepath); //create a camera captue
-            var mat_f = new Mat();
-            bool first = true;
-            Application.Idle += new EventHandler(delegate (object sender, EventArgs e)
-            {  //run this until application closed (close button click on image viewer)
-                var mat = capture.QueryFrame();
-                if (first) { mat_f = mat.Clone(); first = false; }
-
-                var pf = Detection.detectLineSensor(mat)[0];
-                var p = new System.Drawing.Point((int)pf.X, (int)pf.Y);
-                Console.WriteLine(pf.X);
-                CvInvoke.DrawMarker(mat, p, new MCvScalar(255, 0, 0), MarkerTypes.TiltedCross, 10);
-                viewer.Image = mat; //draw the image obtained from camera
-                
-            });
-            viewer.ShowDialog();
-
-
-            /*string video_path = filepath;
-            var capture1 = new VideoCapture(video_path);
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
-            Console.WriteLine(all_frames1);
-            while (capture1.IsOpened)
-            {
-                Mat im1 = new Mat();
-                var ok = capture1.Read(im1);
-                if(ok)  CvInvoke.Imshow("v1", im1);
-                
-               
-               // videoframe_count++;
-                //Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames1);
-            }*/
+            return comboImages;
         }
+        /*public Label get_label_scan_res()
+        {
+            return lab_scan_pres;
+        }*/
         #endregion
 
         #region graphic_util
@@ -5369,205 +4994,7 @@ namespace opengl3
 
         #endregion
 
-        private void tree_models_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            try
-            {
-                prop_grid_model.SelectedObject = GL1.buffersGl.objs[e.Node.Text];
-                prop_grid_model.Text = e.Node.Text;
-                if(ModifierKeys == Keys.Control)
-                {
-                    e.Node.BackColor = Color.Green;
-                    GL1.buffersGl.objs[e.Node.Text] = GL1.buffersGl.objs[e.Node.Text].setSelected(true);
-                }
-                else
-                {
-                    e.Node.BackColor = Color.White;
-                    GL1.buffersGl.objs[e.Node.Text] = GL1.buffersGl.objs[e.Node.Text].setSelected(false);
-                }
-                   
-            }
-            catch
-            {
-
-            }
-            
-        }
-
-        private void tree_models_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right) clear_selected_nodes();
-        }
-        private void tree_models_AfterCheck(object sender, TreeViewEventArgs e)
-        {
-            //GL1.buffersGl.objs[e.Node.Text] = GL1.buffersGl.objs[e.Node.Text].setVisible(e.Node.Checked);
-        }
-
-        string[] selected_nodes()
-        {
-            List<string> nodes = new List<string>();
-            for(int i=0; i<tree_models.Nodes.Count; i++)
-            {
-                if (tree_models.Nodes[i].BackColor == Color.Green) nodes.Add(tree_models.Nodes[i].Text);
-            }
-            return nodes.ToArray();
-        }
-        string selected_object()
-        {
-            var selected_obj = selected_nodes();
-            if (selected_obj == null) return null;
-            if (selected_obj.Length < 1) return null;
-            //Console.WriteLine(selected_obj[0]);
-            return selected_obj[0];
-        }
-
-        void clear_selected_nodes()
-        {
-            try
-            {
-                for (int i = 0; i < tree_models.Nodes.Count; i++)
-                {
-                    tree_models.Nodes[i].BackColor = Color.White;
-                    GL1.buffersGl.objs[tree_models.Nodes[i].Text].setSelected(false);
-
-                }
-            }
-            catch
-            {
-
-            }
-            
-        }
-
-        private void but_home_las_Click(object sender, EventArgs e)
-        {
-            laserLine?.set_home_laser();
-        }
-
-        private void but_div_disp_Click(object sender, EventArgs e)
-        {
-
-            laserLine?.set_div_disp(Convert.ToInt32(tb_div_disp.Text));
-        }
-
-        private void but_dir_disp_Click(object sender, EventArgs e)
-        {
-            laserLine?.set_dir_disp(Convert.ToInt32(tb_dir_disp.Text));
-        }
-
-        private void but_extr_st_Click(object sender, EventArgs e)
-        {
-            double vel_noz = Convert.ToDouble(tb_print_vel.Text);
-            double d_noz = Convert.ToDouble(tb_print_nozzle_d.Text);
-            double d_syr = Convert.ToDouble(tb_print_syr_d.Text);
-            var div = LaserLine.vel_div(vel_noz, d_noz, d_syr);
-            laserLine?.set_dir_disp(-1);
-            laserLine?.set_div_disp(div);
-        }
-
-        private void but_printer_traj_fab_Click(object sender, EventArgs e)
-        {
-            var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
-            var traj = PathPlanner.ps_to_matr(pattern);
-            var prog = PathPlanner.generate_printer_prog(traj, traj_config);
-            debugBox.Text = prog;
-            if (GL1.buffersGl.objs.Keys.Contains("prog")) GL1.buffersGl.removeObj("prog");
-            //GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
-            GL1.addTraj(pattern.ToArray(), "prog");
-            //GL1.addTrajPoint(pattern.ToArray(), "prog");
-        }
-
-        private void but_scan_virt_Click(object sender, EventArgs e)
-        {
-            var n = Convert.ToInt32(boxN.Text);
-            GL1.start_animation(100);
-            var folder_scan = box_scanFolder.Text;
-            UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, "1.png", folder_scan + "\\orig");
-            startWrite(1,n);
-            startWrite(2,n);
-        }
-
-        private void but_start_anim_Click(object sender, EventArgs e)
-        {
-            GL1.start_animation(100);
-        }
-
-        private void but_photo_gl_Click(object sender, EventArgs e)
-        {
-
-            UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, txBx_photoName.Text + "_" + photo_number.ToString() + ".png", box_photoFolder.Text);
-            photo_number++;
-        }
-
-        private void but_con_scan_Click(object sender, EventArgs e)
-        {
-            videoStart(2);
-            videoStart(1); Thread.Sleep(5000);
-            find_ports(); Thread.Sleep(100);
-            laserLine = new LaserLine(portArd); Thread.Sleep(1000);
-            laserLine?.setShvpVel(200); Thread.Sleep(100);
-            laserLine?.laserOn(); Thread.Sleep(100);
-            laserLine?.set_home_laser(); Thread.Sleep(1000);
-            laserLine?.setShvpPos(350); Thread.Sleep(100);
-
-        }
-
-        private void but_scan_pres_Click(object sender, EventArgs e)
-        {
-            var scan_path = textB_scan_path.Text;
-            var filepath = scan_path.Split('\\').Reverse().ToArray()[0];
-            var ve_paths1 = get_video_path(1, filepath);
-            string video_path1 = ve_paths1[0];
-
-            // string enc_path1 = ve_paths1[1];
-
-            var ve_paths2 = get_video_path(2, filepath);
-            string video_path2 = ve_paths2[0];
-            // string enc_path2 = ve_paths2[1];
-
-            string enc_path = ve_paths1[1];
-            var pairs = frames_sync_from_file(enc_path, lab_scan_pres);
-        }
-
-        private void but_set_z_pos_Click(object sender, EventArgs e)
-        {
-            laserLine?.set_z_pos(Convert.ToInt32(textB_set_z_pos.Text));
-        }
-
-        private void but_z_home_Click(object sender, EventArgs e)
-        {
-            laserLine?.set_home_z();
-        }
-
-        private void but_set_z_div_Click(object sender, EventArgs e)
-        {
-            laserLine?.set_z_div(Convert.ToInt32(textB_set_z_div.Text));
-        }
-
-        private void prop_gr_scan_SelectedGridItemChanged(object sender, SelectedGridItemChangedEventArgs e)
-        {
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
-        }
-
-        private void but_flange_calib_basis_Click(object sender, EventArgs e)
-        {
-            var stereo_cal_1 = textB_stereo_cal_path.Text.Split('\\').Reverse().ToArray()[0];
-            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
-            //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
-            var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
-
-            var cam1_conf_path = textB_cam1_conf.Text;
-            var cam2_conf_path = textB_cam2_conf.Text;
-            var cam1 = CameraCV.load_camera(cam1_conf_path);
-            var cam2 = CameraCV.load_camera(cam2_conf_path);
-            var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
-            stereocam_scan = stereo;
-            //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
-            chess_size = new Size(6, 7);
-            var markSize = 10f;
-            stereocam_scan.calibrate_basis_rob(frms_stereo, PatternType.Mesh, chess_size, markSize);
-            comboImages.Items.AddRange(frms_stereo);
-        }
+      
     }
 }
 

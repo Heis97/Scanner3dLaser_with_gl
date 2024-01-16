@@ -158,6 +158,7 @@
     <Compile Include="ScannerHandle\LinearAxis.cs" />
     <Compile Include="ScannerHandle\PointCloud.cs" />
     <Compile Include="ScannerHandle\Scanner.cs" />
+    <Compile Include="ScannerHandle\VideoAnalyse.cs" />
     <Compile Include="ScannerRobot\ContourAnalyse.cs" />
     <Compile Include="Extra\FindMark.cs" />
     <Compile Include="Frame\FrameLoader.cs" />

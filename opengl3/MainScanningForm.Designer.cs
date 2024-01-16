@@ -193,6 +193,7 @@ namespace opengl3
             this.imBox_disparity = new Emgu.CV.UI.ImageBox();
             this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.but_flange_calib_basis = new System.Windows.Forms.Button();
             this.prop_gr_scan = new System.Windows.Forms.PropertyGrid();
             this.lab_scan_pres = new System.Windows.Forms.Label();
             this.but_scan_pres = new System.Windows.Forms.Button();
@@ -369,7 +370,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_flange_calib_basis = new System.Windows.Forms.Button();
+            this.but_test_pres = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1037,6 +1038,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.but_test_pres);
             this.tabOpenGl.Controls.Add(this.win_tab_diff);
             this.tabOpenGl.Controls.Add(this.glControl1);
             this.tabOpenGl.Location = new System.Drawing.Point(4, 22);
@@ -2190,6 +2192,16 @@ namespace opengl3
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // but_flange_calib_basis
+            // 
+            this.but_flange_calib_basis.Location = new System.Drawing.Point(487, 663);
+            this.but_flange_calib_basis.Name = "but_flange_calib_basis";
+            this.but_flange_calib_basis.Size = new System.Drawing.Size(149, 35);
+            this.but_flange_calib_basis.TabIndex = 172;
+            this.but_flange_calib_basis.Text = "Калибровка относит фланца через базисы";
+            this.but_flange_calib_basis.UseVisualStyleBackColor = true;
+            this.but_flange_calib_basis.Click += new System.EventHandler(this.but_flange_calib_basis_Click);
             // 
             // prop_gr_scan
             // 
@@ -3983,19 +3995,19 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // but_flange_calib_basis
+            // but_test_pres
             // 
-            this.but_flange_calib_basis.Location = new System.Drawing.Point(487, 663);
-            this.but_flange_calib_basis.Name = "but_flange_calib_basis";
-            this.but_flange_calib_basis.Size = new System.Drawing.Size(149, 35);
-            this.but_flange_calib_basis.TabIndex = 172;
-            this.but_flange_calib_basis.Text = "Калибровка относит фланца через базисы";
-            this.but_flange_calib_basis.UseVisualStyleBackColor = true;
-            this.but_flange_calib_basis.Click += new System.EventHandler(this.but_flange_calib_basis_Click);
+            this.but_test_pres.Location = new System.Drawing.Point(1088, 114);
+            this.but_test_pres.Name = "but_test_pres";
+            this.but_test_pres.Size = new System.Drawing.Size(75, 23);
+            this.but_test_pres.TabIndex = 166;
+            this.but_test_pres.Text = "but_test_pres";
+            this.but_test_pres.UseVisualStyleBackColor = true;
+            this.but_test_pres.Click += new System.EventHandler(this.but_scan_pres_Click);
             // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1884, 938);
+            this.ClientSize = new System.Drawing.Size(1370, 749);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
@@ -4444,6 +4456,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_setShvpVel;
         private System.Windows.Forms.TextBox textBox_shvpVel;
         private System.Windows.Forms.Button but_flange_calib_basis;
+        private System.Windows.Forms.Button but_test_pres;
     }
 }
 
