@@ -139,7 +139,7 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-
+            
             //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");
 
             //CvInvoke.Imshow("im1", im_las);
@@ -571,7 +571,7 @@ namespace opengl3
 
             return scanner;
         }
-        void load_scan_v2(Scanner scanner,string scan_path, ScannerConfig config)
+        Scanner load_scan_v2(Scanner scanner,string scan_path, ScannerConfig config,bool load_3d = true)
         {
 
 
@@ -579,13 +579,14 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //
             if(scanner_config.syncr)
+                //scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this);
                 scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
             else
                 scanner = VideoAnalyse.loadVideo_stereo_not_sync(scan_path_1, scanner, config,this);
 
-            var load_3d = true;
             if(load_3d)
             {
+
                 var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), -1);
 
                 var scan_stl = Polygon3d_GL.toMesh(mesh);
@@ -596,9 +597,12 @@ namespace opengl3
                 smooth_mesh(scan_i, config.smooth);
                 // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
 
-            }
+                
 
+            }
             Console.WriteLine("Loading end.");
+            return scanner;
+            
         }
 
         void smooth_mesh(string mesh_id, double rad)
@@ -1161,7 +1165,9 @@ namespace opengl3
              var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
              GL1.addTraj(ps);
              GL1.addTraj(ps_circ);*/
-           // test_traj_2d();
+            // test_traj_2d();
+
+            test_merge_surf();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1372,6 +1378,30 @@ namespace opengl3
         #endregion
 
         #region test
+        void test_merge_surf()
+        {
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var stereo_cal_path = textB_stereo_cal_path.Text;
+            string bfs_path = "bfs_cal.txt";
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path);
+            this.scanner = scanner;
+
+            string[] scan_paths = new string[]
+            {
+                "scan_12_27_13_28_31",
+                "scan_12_27_13_29_43",
+                  /*"scan_12_27_13_31_3",
+                   "scan_12_27_13_32_13",
+                    "scan_12_27_13_33_20"*/
+            };
+            foreach (var scan_path in scan_paths)
+            {
+                scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
+                scanner = load_scan_v2(scanner, scan_path, scanner_config);
+
+            }               
+        }
         void test_smooth()
         {
             var p1 = new Point3d_GL(0, 0, 0);
@@ -2046,6 +2076,17 @@ namespace opengl3
                     tab.Controls[i].Font = new Font(tab.Controls[i].Font.Name, (float)(tab.Controls[i].Font.Size * k));
                 }
             }
+
+            for(int j = 0; j < win_tab_diff.Controls.Count; j++)
+            {
+                var tab = (TabPage)win_tab_diff.Controls[j];
+                for (int i = 0; i < tab.Controls.Count; i++)
+                {
+                    tab.Controls[i].Location = new Point((int)(tab.Controls[i].Location.X * k), (int)(tab.Controls[i].Location.Y * k));
+                    tab.Controls[i].Size = new Size((int)(tab.Controls[i].Size.Width * k), (int)(tab.Controls[i].Size.Height * k));
+                    tab.Controls[i].Font = new Font(tab.Controls[i].Font.Name, (float)(tab.Controls[i].Font.Size * k));
+                }
+            }
         }
 
         void chekLines()
@@ -2575,14 +2616,6 @@ namespace opengl3
 
             }
         }
-
-        private void glControl1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-       
-
         private void comboVideo_SelectedIndexChanged(object sender, EventArgs e)
         {
             var combo = (ComboBox)sender;
@@ -4689,6 +4722,8 @@ namespace opengl3
 
         }
 
+       
+
         private void but_scan_stereo_rob_Click(object sender, EventArgs e)
         {
             var scan_path = textB_scan_path.Text;
@@ -4809,6 +4844,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
+            resize();
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)

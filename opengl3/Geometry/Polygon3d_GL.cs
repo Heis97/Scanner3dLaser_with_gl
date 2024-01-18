@@ -724,6 +724,14 @@ namespace opengl3
             return null;
         }
 
+
+        static public Polygon3d_GL[] merge_surfs(Polygon3d_GL[][] surfs)
+        {
+
+
+            return null;
+        }
+
         public Polygon3d_GL Clone()
         {
             return new Polygon3d_GL(ps[0].Clone(), ps[1].Clone(), ps[2].Clone(), special_point_ind);

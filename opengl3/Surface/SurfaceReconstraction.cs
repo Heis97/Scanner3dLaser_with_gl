@@ -130,7 +130,7 @@ namespace opengl3
         }
 
 
-
+       
 
 
         static public Polygon3d_GL[] get_conts_from_defect(Polygon3d_GL[] pols)
