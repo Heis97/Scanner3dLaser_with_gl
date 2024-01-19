@@ -579,8 +579,8 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //
             if(scanner_config.syncr)
-                //scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this);
-                scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
+                scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this);
+                //scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
             else
                 scanner = VideoAnalyse.loadVideo_stereo_not_sync(scan_path_1, scanner, config,this);
 
@@ -1167,7 +1167,7 @@ namespace opengl3
              GL1.addTraj(ps_circ);*/
             // test_traj_2d();
 
-            test_merge_surf();
+            //test_merge_surf();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -4844,7 +4844,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-            resize();
+           // resize();
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)

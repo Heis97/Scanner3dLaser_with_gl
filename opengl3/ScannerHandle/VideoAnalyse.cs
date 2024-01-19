@@ -652,7 +652,7 @@ namespace opengl3
                 scanner.set_rob_pos(name_v1);
                 scanner.set_coord_sys(StereoCamera.mode.world);
             }
-            int ref_frame = 93;
+            int ref_frame = 100;
             orig1 = get_frame_video(video_path1, ref_frame);
             orig2 = get_frame_video(video_path2, ref_frame);
 
