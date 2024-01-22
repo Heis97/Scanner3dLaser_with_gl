@@ -579,8 +579,8 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //
             if(scanner_config.syncr)
-                scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this);
-                //scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
+                //scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this);
+                scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
             else
                 scanner = VideoAnalyse.loadVideo_stereo_not_sync(scan_path_1, scanner, config,this);
 
