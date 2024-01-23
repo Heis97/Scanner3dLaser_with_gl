@@ -769,5 +769,14 @@ namespace opengl3
             
             return dev;
         }
+
+        static string deviation_test_features(Mat mat)
+        {
+            var dev = "";
+            var gauss = new Mat();
+            CvInvoke.GaussianBlur(mat, gauss, new Size(7, 7), 3);
+
+            return dev;
+        }
     }
 }
