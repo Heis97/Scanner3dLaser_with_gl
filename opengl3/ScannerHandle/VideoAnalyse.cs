@@ -683,8 +683,10 @@ namespace opengl3
             var im1_buff_list = new List<Mat>();
             var im2_buff_list = new List<Mat>();
 
+            var features = new Features();
+
             //while (videoframe_count < 80)
-            while (videoframe_count < all_frames)
+            while (videoframe_count < all_frames - config.las_offs)
             {
                 
                 Mat im1 = new Mat();
@@ -700,13 +702,13 @@ namespace opengl3
                 }
                 if (scanner != null && im1 != null && im2 != null)
                 {
-                   // var buffer_mat1 = im1.Clone();
-                   // var buffer_mat2 = im2.Clone();
+                    var buffer_mat1 = im1.Clone();
+                    var buffer_mat2 = im2.Clone();
                     if (videoframe_count % config.strip == 0 && videoframe_count > buff_len)
                     {
 
-                        im1 -= orig1;
-                        im2 -= orig2;
+                        //im1 -= orig1;
+                        //im2 -= orig2;
                         Console.Write(videoframe_count + " ");
                         deviation_light(im1); 
                         deviation_light(im2);
@@ -717,11 +719,14 @@ namespace opengl3
                         {
                             var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                             frame_d.stereo = true;
+                            im2 = im1_buff_list[buff_len - buff_diff].Clone();
+                            frame_d.im_dif = features.drawDescriptorsMatch(ref im1, ref im2);
+                            
                             frames_show.Add(frame_d);
                         }
                     }
 
-                    /*im1_buff = buffer_mat1.Clone();
+                    im1_buff = buffer_mat1.Clone();
                     im2_buff = buffer_mat2.Clone();
 
                     im1_buff_list.Add(im1_buff);
@@ -730,7 +735,7 @@ namespace opengl3
                     {
                         im1_buff_list.RemoveAt(0);
                         im2_buff_list.RemoveAt(0);
-                    }*/
+                    }
                 }
                 videoframe_count++;
                 //Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);

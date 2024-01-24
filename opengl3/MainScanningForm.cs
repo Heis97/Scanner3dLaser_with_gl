@@ -139,7 +139,7 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-            
+
             //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");
 
             //CvInvoke.Imshow("im1", im_las);
@@ -171,6 +171,7 @@ namespace opengl3
 
             // frames_sync_from_file("enc_v1.txt");
             //analys_sph();
+           //
         }
 
         void python_c_sh()
@@ -579,8 +580,8 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //
             if(scanner_config.syncr)
-                //scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this);
-                scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
+                scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this);
+                //scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
             else
                 scanner = VideoAnalyse.loadVideo_stereo_not_sync(scan_path_1, scanner, config,this);
 
@@ -1889,7 +1890,7 @@ namespace opengl3
                     var ps1_dr = PointF.toSystemPoint_d(ps1_filtr);
                     var ps2_dr = PointF.toSystemPoint_d(ps2_filtr);
 
-
+                    if(fr.im_dif!=null) CvInvoke.Imshow("match", fr.im_dif);
                     //var fr_im_cl = fr.im.Clone();
                     //var fr_im_sec_cl = fr.im_sec.Clone();
                     if (ps1_dr == null || ps2_dr == null) { Console.WriteLine("NULL ps1 ps2"); return; }
