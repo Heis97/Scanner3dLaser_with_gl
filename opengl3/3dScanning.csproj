@@ -125,7 +125,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Camera\DMatch.cs" />
     <Compile Include="Camera\Features.cs" />
     <Compile Include="Camera\FindCircles.cs" />
     <Compile Include="Camera\StereoCamera.cs" />

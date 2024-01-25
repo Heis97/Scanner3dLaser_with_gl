@@ -129,8 +129,8 @@ namespace opengl3
             var points_im1 = Detection.detectLineDiff(mat[0], 7);
             var points_im2 = Detection.detectLineDiff(mat[1], 7);
 
-            var srx1 = Detection.detectLineSensor(mat[0], 7)[0];
-            var srx2 = Detection.detectLineSensor(mat[1], 7)[0];
+            //var srx1 = Detection.detectLineSensor(mat[0], 7)[0];
+            //var srx2 = Detection.detectLineSensor(mat[1], 7)[0];
             //Console.WriteLine(srx1.X + " " + srx2.X);
             if (points_im1 != null && points_im2 != null)
                 if(points_im1.Length == points_im2.Length)

@@ -572,7 +572,7 @@ namespace opengl3
 
             return scanner;
         }
-        Scanner load_scan_v2(Scanner scanner,string scan_path, ScannerConfig config,bool load_3d = true)
+        Scanner load_scan_v2(Scanner scanner,string scan_path, ScannerConfig config,bool load_3d = false)
         {
 
 
@@ -580,7 +580,8 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //
             if(scanner_config.syncr)
-                scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this);
+               // scanner = VideoAnalyse.video_delt_bf(scan_path_1, scanner, config, this);
+                scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this,33);
                 //scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
             else
                 scanner = VideoAnalyse.loadVideo_stereo_not_sync(scan_path_1, scanner, config,this);
@@ -1899,6 +1900,7 @@ namespace opengl3
                     //CvInvoke.Line(fr_im_sec_cl, ps2_dr[0], ps2_dr[ps2_dr.Length - 1], new MCvScalar(255, 0, 255),2);
                     //imBox_base_1.Image = UtilOpenCV.drawPoints(fr_im_cl, ps1_dr, 0, 255, 0, 2);
                     //imBox_base_2.Image = UtilOpenCV.drawPoints(fr_im_sec_cl, ps2_dr, 0, 255, 0, 2);
+                    VideoAnalyse.deviation_light_gauss(fr_im_cl);
 
                     imBox_base_1.Image = UtilOpenCV.drawLines(fr_im_cl, ps1_dr, 0, 255, 0, 2,0);
                     imBox_base_2.Image = UtilOpenCV.drawLines(fr_im_sec_cl, ps2_dr, 0, 255, 0, 2,0);
@@ -4845,7 +4847,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-           // resize();
+            resize();
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)

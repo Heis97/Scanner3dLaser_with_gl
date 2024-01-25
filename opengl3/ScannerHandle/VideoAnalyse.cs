@@ -628,7 +628,7 @@ namespace opengl3
             capture.Dispose();
             return mat;
         }
-        public static Scanner video_delt(string filepath, Scanner scanner, ScannerConfig config, MainScanningForm form)
+        public static Scanner video_delt(string filepath, Scanner scanner, ScannerConfig config, MainScanningForm form, int ref_fr = 0)
         {
             var videoframe_count = 0;
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
@@ -652,7 +652,7 @@ namespace opengl3
                 scanner.set_rob_pos(name_v1);
                 scanner.set_coord_sys(StereoCamera.mode.world);
             }
-            int ref_frame = 100;
+            int ref_frame = ref_fr;
             orig1 = get_frame_video(video_path1, ref_frame);
             orig2 = get_frame_video(video_path2, ref_frame);
 
@@ -707,20 +707,19 @@ namespace opengl3
                     if (videoframe_count % config.strip == 0 && videoframe_count > buff_len)
                     {
 
-                        //im1 -= orig1;
-                        //im2 -= orig2;
-                        Console.Write(videoframe_count + " ");
-                        deviation_light(im1); 
-                        deviation_light(im2);
-                        Console.WriteLine( " ");
+                        im1 = orig1 - im1;
+                        im2 = orig2 - im2;
+                        var dev1 = deviation_light_gauss(im1);
+                        var dev2 = deviation_light_gauss(im2);
+                        Console.WriteLine(videoframe_count + " "+dev1+" "+dev2);
 
                         CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
                         if (config.save_im)
                         {
                             var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
                             frame_d.stereo = true;
-                            im2 = im1_buff_list[buff_len - buff_diff].Clone();
-                            frame_d.im_dif = features.drawDescriptorsMatch(ref im1, ref im2);
+                           // im2 = im1_buff_list[buff_len - buff_diff].Clone();
+                            //frame_d.im_dif = features.drawDescriptorsMatch(ref im1, ref im2);
                             
                             frames_show.Add(frame_d);
                         }
@@ -745,41 +744,174 @@ namespace opengl3
             Console.WriteLine("Points computed.");
             return scanner;
         }
-
-        static string deviation_light(Mat mat)
+        public static Scanner video_delt_bf(string filepath, Scanner scanner, ScannerConfig config, MainScanningForm form)
         {
-            var dev = "";
+            var videoframe_count = 0;
+            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
+            var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
+            Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
+            Console.WriteLine(Directory.GetFiles("cam2\\" + filepath)[0]);
+
+            var ve_paths1 = get_video_path(1, filepath);
+            string video_path1 = ve_paths1[0];
+            // string enc_path1 = ve_paths1[1];
+
+            var ve_paths2 = get_video_path(2, filepath);
+            string video_path2 = ve_paths2[0];
+            // string enc_path2 = ve_paths2[1];
+
+            scanner.set_coord_sys(StereoCamera.mode.model);
+            var name_v1 = Path.GetFileNameWithoutExtension(video_path1);
+            var name_v2 = Path.GetFileNameWithoutExtension(video_path2);
+            if (name_v1.Length > 1 && name_v2.Length > 1)
+            {
+                scanner.set_rob_pos(name_v1);
+                scanner.set_coord_sys(StereoCamera.mode.world);
+            }
+            int ref_frame = 20;
+            orig1 = get_frame_video(video_path1, ref_frame);
+            orig2 = get_frame_video(video_path2, ref_frame);
+
+            var capture1 = new VideoCapture(video_path1);
+            var capture2 = new VideoCapture(video_path2);
+            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
+            var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
+            var frames_show = new List<Frame>();
+            fr_st_vid.stereo = true;
+            form.get_combo_im().Items.Add(fr_st_vid);
+
+            var all_frames = Math.Min(all_frames1, all_frames2);
+            if (scanner != null)
+            {
+                var orig2_im = orig2.ToImage<Bgr, byte>();
+                CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
+                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
+                scanner.pointCloud.graphicGL = form.GL1;
+            }
+
+            var ims1 = new List<Mat>();
+            var ims2 = new List<Mat>();
+            while (videoframe_count < all_frames - config.las_offs)
+            {
+
+                Mat im1 = new Mat();
+                Mat im2 = new Mat();
+
+                while (!capture1.Read(im1)) { }
+                while (!capture2.Read(im2)) { }
+                ims1.Add(im1);
+                ims2.Add(im2);
+                
+                videoframe_count++;
+                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+            }
+
+            var ims1_diff = diff_mats_bf(ims1.ToArray(), config.buff_delt);
+            var ims2_diff = diff_mats_bf(ims2.ToArray(), config.buff_delt);
+
+
+            var len = Math.Min(ims1_diff.Length, ims2_diff.Length);
+            for(int i=0; i<len; i++)
+            {
+                if (scanner != null && ims1_diff[i] != null && ims2_diff[i] != null)
+                {
+                    if (i % config.strip == 0 )
+                    {
+
+                        CvInvoke.Rotate(ims2_diff[i], ims2_diff[i], RotateFlags.Rotate180);
+                        if (config.save_im)
+                        {
+                            var frame_d = new Frame(ims1_diff[i], ims2_diff[i], i.ToString(), FrameType.LasDif);
+                            frame_d.stereo = true;
+                            frames_show.Add(frame_d);
+                        }
+                        scanner.addPointsStereoLas_2d(new Mat[] { ims1_diff[i], ims2_diff[i] }, config.distort);
+                    }
+                }
+
+            }
+
+            form.get_combo_im().Items.AddRange(frames_show.ToArray());
+            scanner.compPointsStereoLas_2d();
+            Console.WriteLine("Points computed.");
+            return scanner;
+        }
+
+        static Mat[] diff_mats_bf(Mat[] mats,int wind)
+        {
+            var mats_diff = new Mat[mats.Length];
+            for(int i=0; i<mats.Length;i++)
+            {
+                var err = double.MaxValue;
+                var j_min = 0;
+                for(int j=0; j<mats.Length;j++)
+                {
+                    if (Math.Abs(i - j) > wind)
+                    {
+                        var cur_err = deviation_light_gauss(mats[i] - mats[j]);
+                        if (cur_err < err)
+                        {
+                            err = cur_err;
+                            j_min = j;
+                        }
+                    }
+                    
+                }
+                mats_diff[i] = mats[i] - mats[j_min];
+                CvInvoke.PutText(mats_diff[i], 
+                    j_min.ToString(),
+                    new Point(100, 100),
+                    FontFace.HersheyScriptSimplex,
+                    4, new MCvScalar(255));
+                GC.Collect();
+                Console.WriteLine("comp_diff...      " + i + "/" + mats.Length);
+            }
+
+            return mats_diff;
+        }
+
+        static double deviation_light_old(Mat mat)
+        {
             var im = mat.ToImage<Bgr, byte>();
             //dev= im.GetAverage().Red;
             int pres = 3;
             var r = //im.GetAverage().Red + 
                 im.GetAverage().Green + im.GetAverage().Blue;
-            dev = Math.Round(im.GetAverage().Red, pres) + " " +
-                Math.Round(im.GetAverage().Green, pres) + " " + Math.Round(im.GetAverage().Blue, pres);
-            
-            /*int total = 0;
-             for(int x= 0; x<im.Width;x++)
-                for (int y = 0; y < im.Height; y++)
-                {
-                    if((im.Data[y,x,0]+ im.Data[y, x, 1]+ im.Data[y, x, 2])>15)
-                    {
-                        total++;
-                    }
-                }
-            Console.Write(total + " ");*/
-            dev = r.ToString();
-            Console.Write(dev + " ");
-            //CvInvoke.PutText(mat, dev, new Point(20, 100), FontFace.HersheyScriptSimplex, 2, new MCvScalar(0, 255, 0));
-
-            
-            return dev;
+            return r;
+        }
+        static double deviation_light(Mat mat)
+        {
+            var im = mat.ToImage<Gray, byte>();
+            var r = im.GetAverage();
+            return r.Intensity;
         }
 
-        static string deviation_test_features(Mat mat)
+
+        static public double deviation_light_gauss(Mat mat)//bin_v,
         {
-            var dev = "";
+
+            var dev = 0d;
             var gauss = new Mat();
-            CvInvoke.GaussianBlur(mat, gauss, new Size(7, 7), 3);
+            var im = mat.ToImage<Gray, byte>();
+            CvInvoke.GaussianBlur(im, gauss, new Size(13, 13), 7);
+            CvInvoke.GaussianBlur(gauss, gauss, new Size(13, 13), 7);
+            CvInvoke.Imshow("gauss", gauss);
+            CvInvoke.Threshold(gauss, gauss, 15, 255, ThresholdType.Binary);
+
+            Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
+            Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(1, 1));
+            Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Ellipse , new Size(5, 5), new Point(1, 1));
+
+            CvInvoke.MorphologyEx(gauss, gauss, MorphOp.Dilate, kernel5, new Point(-1, -1), 2, BorderType.Default, new MCvScalar());
+            var im_g = gauss.ToImage<Gray, byte>();
+            var k1 = im_g.CountNonzero()[0];
+            Console.WriteLine(k1);
+
+            im -= im_g;
+            dev = im.GetAverage().Intensity;
+            //CvInvoke.AdaptiveThreshold(gauss, gauss, 255, AdaptiveThresholdType.GaussianC, ThresholdType.Binary, 13, 20);
+            CvInvoke.Imshow("thresh", gauss);
 
             return dev;
         }
