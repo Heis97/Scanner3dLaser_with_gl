@@ -130,8 +130,14 @@ namespace opengl3
         }
 
 
-       
 
+
+        static public Point3d_GL[][] ps_fit_circ_XYZ_mnk(Point3d_GL[] ps)
+        {
+
+
+            return null;
+        }
 
         static public Polygon3d_GL[] get_conts_from_defect(Polygon3d_GL[] pols)
         {

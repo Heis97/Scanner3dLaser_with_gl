@@ -44,6 +44,26 @@ namespace opengl3
             set { distort = value; }
         }
 
+        public bool load_3d;
+        [Description("Загрузить 3д")]
+        [Category("Видео")]
+        [DisplayName("load_3d")]
+        public bool Load_3d
+        {
+            get { return load_3d; }
+            set { load_3d = value; }
+        }
+
+        public bool fast_load;
+        [Description("Быстрая загрузка")]
+        [Category("Видео")]
+        [DisplayName("fast_load")]
+        public bool Fast_load
+        {
+            get { return fast_load; }
+            set { fast_load = value; }
+        }
+
         public bool save_im;
         [Description("Сохранять изображения")]
         [Category("Видео")]

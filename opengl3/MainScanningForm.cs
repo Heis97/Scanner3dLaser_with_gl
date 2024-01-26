@@ -572,21 +572,27 @@ namespace opengl3
 
             return scanner;
         }
-        Scanner load_scan_v2(Scanner scanner,string scan_path, ScannerConfig config,bool load_3d = false)
+        Scanner load_scan_v2(Scanner scanner,string scan_path, ScannerConfig config)
         {
 
 
 
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //
-            if(scanner_config.syncr)
-               // scanner = VideoAnalyse.video_delt_bf(scan_path_1, scanner, config, this);
-                scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this,33);
-                //scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
+            if(config.fast_load)
+            {
+                if (scanner_config.syncr)
+                   scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
+                else
+                    scanner = VideoAnalyse.loadVideo_stereo_not_sync(scan_path_1, scanner, config, this);
+            }
             else
-                scanner = VideoAnalyse.loadVideo_stereo_not_sync(scan_path_1, scanner, config,this);
+            {
+                scanner = VideoAnalyse.video_delt_bf(scan_path_1, scanner, config, this);
+                //scanner = VideoAnalyse.video_delt(scan_path_1, scanner, config, this,33);
+            }
 
-            if(load_3d)
+            if (config.load_3d)
             {
 
                 var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), -1);
@@ -4847,7 +4853,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-            resize();
+            //resize();
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)

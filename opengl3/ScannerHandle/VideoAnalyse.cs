@@ -827,6 +827,7 @@ namespace opengl3
                             frames_show.Add(frame_d);
                         }
                         scanner.addPointsStereoLas_2d(new Mat[] { ims1_diff[i], ims2_diff[i] }, config.distort);
+                        GC.Collect();
                     }
                 }
 
@@ -859,11 +860,11 @@ namespace opengl3
                     
                 }
                 mats_diff[i] = mats[i] - mats[j_min];
-                CvInvoke.PutText(mats_diff[i], 
+                /*CvInvoke.PutText(mats_diff[i], 
                     j_min.ToString(),
                     new Point(100, 100),
                     FontFace.HersheyScriptSimplex,
-                    4, new MCvScalar(255));
+                    4, new MCvScalar(255));*/
                 GC.Collect();
                 Console.WriteLine("comp_diff...      " + i + "/" + mats.Length);
             }
@@ -888,7 +889,7 @@ namespace opengl3
         }
 
 
-        static public double deviation_light_gauss(Mat mat)//bin_v,
+        static public double deviation_light_gauss(Mat mat)//bin_ связь с config.thresh
         {
 
             var dev = 0d;
@@ -906,7 +907,7 @@ namespace opengl3
             CvInvoke.MorphologyEx(gauss, gauss, MorphOp.Dilate, kernel5, new Point(-1, -1), 2, BorderType.Default, new MCvScalar());
             var im_g = gauss.ToImage<Gray, byte>();
             var k1 = im_g.CountNonzero()[0];
-            Console.WriteLine(k1);
+            //Console.WriteLine(k1);
 
             im -= im_g;
             dev = im.GetAverage().Intensity;
