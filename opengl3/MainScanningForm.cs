@@ -171,7 +171,23 @@ namespace opengl3
 
             // frames_sync_from_file("enc_v1.txt");
             //analys_sph();
-           //
+            //
+            test_detect_spher();
+        }
+
+        void test_detect_spher()
+        {
+            var im_las = new Mat("s6.jpg");
+            CvInvoke.GaussianBlur(im_las, im_las, new Size(29, 29), -1);
+            CvInvoke.Resize(im_las, im_las, new Size(400, 400));
+            //CvInvoke.Threshold(im_las, im_las, 60, 255, ThresholdType.BinaryInv);
+            //CvInvoke.CvtColor(im_las,im_las,ColorConversion.Bgr2Gray);
+            //CvInvoke.AdaptiveThreshold(im_las, im_las, 255, AdaptiveThresholdType.GaussianC, ThresholdType.BinaryInv, 11, 1);
+            //im_las = FindCircles.sobel_mat(im_las);
+            //CvInvoke.Threshold(im_las, im_las, 50, 255, ThresholdType.Binary);
+            //CvInvoke.Imshow("im1", im_las);
+            imageBox1.Image = im_las.Clone();
+            
         }
 
         void python_c_sh()

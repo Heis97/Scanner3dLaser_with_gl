@@ -496,8 +496,9 @@ namespace opengl3
             float y_sr = (max_v[1] - min_v[1]) / 2 + min_v[1];
             float z_sr = (max_v[2] - min_v[2]) / 2 + min_v[2];
             _center = new Point3d_GL(x_sr, y_sr, z_sr);
+            
 
-            // prin.t(ret2);
+            //prin.t(ret2);
             return new object[] { ret1, ret2, polygs.ToArray() };
         }
 
