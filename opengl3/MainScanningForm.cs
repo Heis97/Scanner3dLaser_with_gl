@@ -172,7 +172,7 @@ namespace opengl3
             // frames_sync_from_file("enc_v1.txt");
             //analys_sph();
             //
-            test_detect_spher();
+            //test_detect_spher();
         }
 
         void test_detect_spher()
@@ -598,7 +598,7 @@ namespace opengl3
             if(config.fast_load)
             {
                 if (scanner_config.syncr)
-                   scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
+                    scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
                 else
                     scanner = VideoAnalyse.loadVideo_stereo_not_sync(scan_path_1, scanner, config, this);
             }
@@ -3089,7 +3089,10 @@ namespace opengl3
 
         private void but_flange_calib_basis_Click(object sender, EventArgs e)
         {
-            var stereo_cal_1 = textB_stereo_cal_path.Text.Split('\\').Reverse().ToArray()[0];
+            //var stereo_cal_1 = textB_scan_path.Text.Split('\\').Reverse().ToArray()[0];
+            var stereo_cal_1 = get_folder_name_cam(textB_scan_path.Text);
+            //Console.WriteLine(stereo_cal_1+" "+ stereo_cal_2);
+
             var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
             //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
             var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
@@ -3107,6 +3110,26 @@ namespace opengl3
             comboImages.Items.AddRange(frms_stereo);
         }
 
+        private string get_folder_name_cam(string path)
+        {
+            var paths = textB_scan_path.Text.Split('\\');
+            bool fl = false;
+            var ret = "";
+            for(int i = 0; i < paths.Length; i++)
+            {
+                
+                if(fl)
+                {
+                    ret += (paths[i] + @"\");
+                }
+
+                if (paths[i] == "cam1" || paths[i] == "cam2")
+                {
+                    fl = true;
+                }
+            }
+            return ret;
+        }
         #endregion
 
         #region cameraUtil
@@ -4943,7 +4966,6 @@ namespace opengl3
 
         private void but_save_stl_Click(object sender, EventArgs e)
         {
-
             var stl_name = save_file_name(Directory.GetCurrentDirectory(), tree_models.SelectedNode.Text, "stl");
             //var scan_stl = Polygon3d_GL.toMesh(mesh);
             if(stl_name == null) return;

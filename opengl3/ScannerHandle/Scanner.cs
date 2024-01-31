@@ -234,6 +234,8 @@ namespace opengl3
             stereoCamera.Bbf = new RobotFrame(pos).getMatrix();
             return this;
         }
+
+
         public void clearPoints()
         {
             pointCloud.clearPoints();

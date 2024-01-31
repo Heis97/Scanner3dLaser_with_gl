@@ -166,18 +166,27 @@ namespace opengl3
                         p_cam.Add(p2);
 
                         //Console.WriteLine(i + " " + r1[0, 3] + " " + r1[1, 3] + " " + r1[2, 3]+" ");// + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");
+                        //Console.WriteLine(i + " " + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " ");
                         //Console.WriteLine(R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");// + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
                         GC.Collect();
                     }
                     
                 }
-                var matr1 = UtilMatr.calcTransformMatr_cv(p_rob.ToArray(), p_cam.ToArray());
+                var matr1 = UtilMatr.calcTransformMatr_cv(p_cam.ToArray(), p_rob.ToArray());
+
+                Settings_loader.save_file("basis_matr_xyz.txt", new object[] { matr1 });
                 prin.t(matr1);
                 prin.t("____________");
 
                 for (int i = 1; i < p_cam.Count; i++)
                 {
-                    Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
+                    Console.WriteLine("dist: "+(p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
+
+                    Console.WriteLine("p_cam[i] * matr1: "+ matr1*p_cam[i]  +"\n"+ "p_rob[i]:          " + p_rob[i]);
+
+                    //Console.WriteLine("p_rob[i] * matr1: " + matr1 * p_rob[i]+ "\n" + "p_cam[i]:        " + p_cam[i]);
+                    prin.t("____________");
+
                 }
 
             }
