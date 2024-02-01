@@ -307,7 +307,7 @@ namespace opengl3
         static VectorOfVectorOfPoint sameContours(VectorOfVectorOfPoint contours)
         {
             var clasters = new List<VectorOfVectorOfPoint>();
-            var err = 0.045;
+            var err = 0.065;
             var err_area = 0.65;
            // Console.WriteLine("------------------------");
             for (int i=0; i< contours.Size;i++)

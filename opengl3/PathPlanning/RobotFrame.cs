@@ -114,7 +114,7 @@ namespace opengl3
 
                         //Console.WriteLine(cRx + " "+ sRx+" "+arccos(cRx));
                         var Rx = Math.Sign(sRx) * arccos(cRx);
-                        var Ry = Math.Asin(m[0, 2]);
+                        var Ry = Math.Asin(-m[0, 2]);
                         var Rz = Math.Sign(sRz) * arccos(cRz);
 
                         int d = (int)m[3, 3];
@@ -122,7 +122,7 @@ namespace opengl3
                         Y = y;
                         Z = z;
                         A = cut_off_2pi(Rz);
-                        B = -cut_off_2pi(Ry);
+                        B = cut_off_2pi(Ry);
                         C = cut_off_2pi(Rx);
                         D = d;
                     }
@@ -151,8 +151,8 @@ namespace opengl3
                         X = x;
                         Y = y;
                         Z = z;
-                        A = -cut_off_2pi(Rx);
-                        B = -cut_off_2pi(Ry);
+                        A = cut_off_2pi(Rx);//-
+                        B = cut_off_2pi(Ry);//
                         C = cut_off_2pi(Rz);
                         D = d;
                     }

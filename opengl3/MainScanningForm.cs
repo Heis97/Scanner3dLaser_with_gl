@@ -173,6 +173,17 @@ namespace opengl3
             //analys_sph();
             //
             //test_detect_spher();
+           // test_matr();
+        }
+
+        void test_matr()
+        {
+            var name = "-353.9612 164.1644 109.397 0.0939 0.0589 0.0098 ";
+            var rob_pos = new RobotFrame(name);
+            var r1 = rob_pos.getMatrix();
+            prin.t(r1);
+            var fr = new RobotFrame(r1, RobotFrame.RobotType.PULSE);
+            prin.t(fr.ToStr());
         }
 
         void test_detect_spher()
@@ -3106,7 +3117,9 @@ namespace opengl3
             //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
             chess_size = new Size(6, 7);
             var markSize = 10f;
-            stereocam_scan.calibrate_basis_rob(frms_stereo, PatternType.Mesh, chess_size, markSize);
+            //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
+
+            stereocam_scan.calibrate_basis_rob_abc_test(frms_stereo, PatternType.Mesh, chess_size, markSize);
             comboImages.Items.AddRange(frms_stereo);
         }
 
