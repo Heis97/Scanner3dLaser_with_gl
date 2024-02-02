@@ -217,7 +217,89 @@ namespace opengl3
             this.stereoCamera = stereoCamera;
 
         }
+        static Matrix<double> comp_matr_calib(double r, double alp, double bet)// apl = z^z , bet = x^x
+        {
+            var z = r * Math.Cos(alp);
+            var r_xy = r * Math.Sin(alp);
+            var y = r_xy * Math.Cos(bet);
+            var x = r_xy * Math.Sin(bet);
+            var vz = new Point3d_GL(-x, -y, -z).normalize();
+            var v_xy = new Point3d_GL(x, y, 0).normalize();
+            var vx = Point3d_GL.vec_perpend_xy(v_xy);
+            var vy = vz * vx;
+            if (vy.z > 0)
+            {
+                vx = -vx;
+                vy = vz * vx;
+            }
+            var matr = new Matrix<double>(new double[,] {
+                { vx.x ,vx.y ,vx.z , x },
+                { vy.x ,vy.y ,vy.z , y },
+                { vz.x ,vz.y ,vz.z , z },
+                { 0, 0, 0, 1},});
+            return matr;
+        }
+        static RobotFrame comp_rob_fr_calib(double r, double alp, double bet)// apl = z^z , bet = x^x
+        {
+            var matr = comp_matr_calib(r, alp, bet);
+            var fr = new RobotFrame(matr);
+            return fr;
+        }
+        public void calibrate_scanner(MainScanningForm form)
+        {
 
+            var r = 100;// соизмеримо с фокусом камеры
+            var alp_m = 0.4;
+            var bet_m = Math.PI / 2;
+            var angs = new double[,]
+            {
+                { 0 , 0 },
+                { alp_m , 0 },
+                { -alp_m , 0 },
+                { alp_m , bet_m },
+                { -alp_m , bet_m },
+            };
+
+            var ps_cam = new List<RobotFrame>();
+            for (int i = 0; i < angs.Length; i++)
+            {
+                ps_cam.Add(comp_rob_fr_calib(r, alp_m, bet_m));
+            }
+            var ps_cam_n = new List<RobotFrame>();
+            var ps_rob = new List<RobotFrame>();
+
+            for (int j = 0; j < ps_cam.Count; j++)
+            {
+                RobotFrame p_rob, p_cam_n;
+                (p_rob, p_cam_n) = go_to_pos_cam(ps_cam[j], form);
+                ps_rob.Add(p_rob);
+                ps_cam_n.Add(p_cam_n);
+                go_to_pos_rob(ps_rob[0], form);
+            }
+        }
+        public void go_to_pos_rob(RobotFrame frame_rob, MainScanningForm form)
+        {
+            form.send_rob_fr(frame_rob);
+        }
+        public (RobotFrame, RobotFrame) go_to_pos_cam(RobotFrame frame_cam, MainScanningForm form)// ret frame_rob, frame_cam end
+        {
+            // ...
+            //
+            var mat = form.get_im1();
+            var ret = stereoCamera.cameraCVs[0].compPos(mat, PatternType.Mesh, new System.Drawing.Size(6, 7), 10, true);
+            var ps = stereoCamera.cameraCVs[0].last_corners;
+            var p_c_patt = new PointF((ps[21].X + ps[20].X) / 2, (ps[21].Y + ps[20].Y) / 2);
+            var p_c = stereoCamera.cameraCVs[0].im_centr;
+
+
+
+
+            return (null, null);
+        }
+        public void gen_next_p()
+        {
+
+        }
 
         public void initStereo(Mat[] mats, PatternType patternType,System.Drawing.Size pattern_size,float marksize)
         {

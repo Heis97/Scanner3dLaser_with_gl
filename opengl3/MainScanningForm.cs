@@ -2564,7 +2564,31 @@ namespace opengl3
             }
 
         }
-        
+
+
+        public Mat get_im1()
+        {
+            return (Mat)imageBox1.Image;
+        }
+
+
+
+        public void send_rob_fr(RobotFrame frame_rob)
+        {
+            try_send_rob(debugBox.Text + "\n");
+            try_send_rob("s\n");
+        }
+        public RobotFrame get_rob_fr()
+        {
+            var posRob = positionFromRobot(con1);
+
+            var fr = new RobotFrame(posRob.x, posRob.y, posRob.z, posRob.a, posRob.b, posRob.c);
+            return fr;
+        }
+
+
+
+
 
         void makePhoto(float[] pos, int count, string[] folders, ImageBox[] imageBoxes, TCPclient con)
         {

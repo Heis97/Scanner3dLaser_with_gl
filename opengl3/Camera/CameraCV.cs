@@ -30,6 +30,8 @@ namespace opengl3
         public Matrix<double> distortmatrix;
         public Frame[] frames;
         public System.Drawing.PointF[][] corners;
+        public System.Drawing.PointF[] last_corners;
+        public PointF im_centr;
         public MCvPoint3D32f[][] objps;
         public Mat[] tvecs;
         public Mat[] rvecs;
@@ -288,7 +290,7 @@ namespace opengl3
             cameramatrix_opt = UtilMatr.toMatrix(matr);
             cameramatrix_opt_inv = invMatrix(cameramatrix_opt);
             //cameramatrix =
-
+            im_centr = new PointF((float)cameramatrix[0, 2], (float)cameramatrix[1, 2]);
             CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F, mapx, mapy);
 
             pos = new float[3] { 0, 0, 0 };
@@ -299,6 +301,7 @@ namespace opengl3
             distortmatrix = _distortmatrix;
             image_size = im_size;
             pattern_size = new Size(6, 7);
+            
             init_vars();
         }
         public CameraCV(Frame[] _frames, Size _size, float markSize, MCvPoint3D32f[][] obp_inp)
@@ -405,7 +408,7 @@ namespace opengl3
             setPos();
             return pos;
         }
-        public bool compPos(Mat _mat, PatternType patternType,Size pattern_size,float mark = -1)
+        public bool compPos(Mat _mat, PatternType patternType,Size pattern_size,float mark = -1,bool centr = false)
         {
             var mat = _mat.Clone();
             if (patternType == PatternType.Chess)
@@ -464,21 +467,34 @@ namespace opengl3
                 var x = markSize * (size_patt.Width - 1);
                 var y = markSize * (size_patt.Height - 1);
 
-               /* var points3d = new MCvPoint3D32f[]
+                /* var points3d = new MCvPoint3D32f[]
+                 {
+                     new MCvPoint3D32f(0,0,0),
+                     new MCvPoint3D32f(x,0,0),
+                     new MCvPoint3D32f(0,y,0),
+                     new MCvPoint3D32f(x,y,0)
+                 };*/
+                MCvPoint3D32f[] points3d = null;
+                if (centr)
                 {
-                    new MCvPoint3D32f(0,0,0),
-                    new MCvPoint3D32f(x,0,0),
-                    new MCvPoint3D32f(0,y,0),
-                    new MCvPoint3D32f(x,y,0)
-                };*/
-
-                var points3d = new MCvPoint3D32f[]
+                    points3d = new MCvPoint3D32f[]
+                    {
+                        new MCvPoint3D32f(x/2,y/2,0),
+                        new MCvPoint3D32f(-x/2,y/2,0),
+                        new MCvPoint3D32f(x/2,-y/2,0),
+                        new MCvPoint3D32f(-x/2,-y/2,0)
+                    };
+                }
+                else 
                 {
-                    new MCvPoint3D32f(x,y,0),
-                    new MCvPoint3D32f(0,y,0),
-                    new MCvPoint3D32f(x,0,0),
-                    new MCvPoint3D32f(0,0,0)
-                };
+                    points3d = new MCvPoint3D32f[]
+                    {
+                        new MCvPoint3D32f(x,y,0),
+                        new MCvPoint3D32f(0,y,0),
+                        new MCvPoint3D32f(x,0,0),
+                        new MCvPoint3D32f(0,0,0)
+                    };
+                }
 
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
@@ -491,6 +507,7 @@ namespace opengl3
                     return false;
                 }
                 var mat_p1 = UtilOpenCV.drawPointsF(_mat, cornF, 255, 0, 0);
+                last_corners = (System.Drawing.PointF[])cornF.Clone();
                 //CvInvoke.Imshow("pos", mat_p1);
                 //CvInvoke.WaitKey();
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);

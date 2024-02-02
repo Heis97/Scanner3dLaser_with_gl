@@ -17,6 +17,9 @@ namespace opengl3
         public CameraCV[] cameraCVs;
         public Matrix<double> R;//1 * R -> 2
         public Matrix<double> Bfs;//Flange->scaner
+
+        public Matrix<double> Bfs_r;//Flange->scaner
+
         public Matrix<double> Bbf;//Base->Flange
         public mode scan_coord_sys;
         public StereoCamera(CameraCV[] _cameraCVs,string bfs_file = null)
@@ -276,7 +279,7 @@ namespace opengl3
 
                 //Settings_loader.save_file("basis_matr_abc.txt", new object[] { matr1 });
                 var matr1 = (Matrix<double>)Settings_loader.load_data("basis_matr_abc.txt")[0];
-
+                Bfs_r = matr1;
                 prin.t(matr1);
                 prin.t("____________");
 
