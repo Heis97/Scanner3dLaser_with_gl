@@ -130,7 +130,22 @@ namespace opengl3
         }
 
 
+        #region fit_circle
 
+        static Point3d_GL generate_circle_by_vectors(double  t, Point3d_GL C, double r, Point3d_GL n, Point3d_GL u)
+        {
+            n = n.normalize();
+            u = u.normalize();
+            Point3d_GL p_c = u * r * Math.Cos(t) + (u * n) * r * Math.Cos(t) + C;
+            return p_c;
+        }
+        static Point3d_GL generate_circle_by_angles(double t, Point3d_GL C, double r, Point3d_GL n, Point3d_GL u)
+        {
+            n = n.normalize();
+            u = u.normalize();
+            Point3d_GL p_c = u * r * Math.Cos(t) + (u * n) * r * Math.Cos(t) + C;
+            return p_c;
+        }
 
         static public Point3d_GL[][] ps_fit_circ_XYZ_mnk(Point3d_GL[] ps)
         {
@@ -138,7 +153,7 @@ namespace opengl3
 
             return null;
         }
-
+        #endregion
         static public Polygon3d_GL[] get_conts_from_defect(Polygon3d_GL[] pols)
         {
             var pols_color = new Polygon3d_GL[pols.Length];
