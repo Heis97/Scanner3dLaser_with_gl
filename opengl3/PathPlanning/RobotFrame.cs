@@ -134,7 +134,7 @@ namespace opengl3
                         var z = m[2,3];
 
                         var sRy = m[0,2];
-                        var cRy = Math.Pow((1 - sRy*sRy),0.5);
+                        var cRy = Math.Pow((1 - sRy*sRy),0.5);//sign lost
 
                         var sRz = -m[0,1] / cRy;
                         var cRz = m[0,0] / cRy;
@@ -453,8 +453,8 @@ namespace opengl3
         static public Matrix<double> RotZmatr(double alpha)
         {
             var matrix = new Matrix<double>(new double[,] {
-                { cos(alpha), -sin(alpha), 0,0 },
-                { sin(alpha), cos(alpha), 0, 0 },
+                { cos(alpha), -sin(alpha), 0, 0 },
+                { sin(alpha),  cos(alpha), 0, 0 },
                 { 0, 0, 1, 0 },
                 { 0, 0, 0, 1 } });
             return matrix;
@@ -462,19 +462,19 @@ namespace opengl3
         static public Matrix<double> RotYmatr(double alpha)
         {
             var matrix = new Matrix<double>(new double[,] {
-                 { cos(alpha),0, sin(alpha), 0 },
-                { 0,1,0 , 0 },
-                {  -sin(alpha), 0, cos(alpha), 0 },
-                 { 0, 0, 0, 1 }});
+                { cos(alpha), 0, sin(alpha), 0 },
+                { 0, 1, 0, 0 },
+                {-sin(alpha), 0, cos(alpha), 0 },
+                { 0, 0, 0, 1 }});
             return matrix;
         }
         static public Matrix<double> RotXmatr(double alpha)
         {
             var matrix = new Matrix<double>(new double[,] {
-                { 1,0,0,0 },
+                { 1, 0, 0, 0 },
                 { 0, cos(alpha), -sin(alpha), 0 },
-                { 0, sin(alpha), cos(alpha), 0 },
-                 { 0, 0, 0, 1 } });
+                { 0, sin(alpha),  cos(alpha), 0 },
+                { 0, 0, 0, 1 } });
             return matrix;
         }
         static public Matrix<double> Translmatr(double x, double y, double z)
