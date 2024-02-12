@@ -3143,7 +3143,7 @@ namespace opengl3
             var markSize = 10f;
             //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
 
-            stereocam_scan.calibrate_basis_rob_abc_test(frms_stereo, PatternType.Mesh, chess_size, markSize);
+            stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
             comboImages.Items.AddRange(frms_stereo);
         }
 

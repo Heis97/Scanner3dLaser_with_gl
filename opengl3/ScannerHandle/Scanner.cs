@@ -290,7 +290,7 @@ namespace opengl3
             var ps = stereoCamera.cameraCVs[0].last_corners;
             var p_c_patt = new PointF((ps[21].X + ps[20].X) / 2, (ps[21].Y + ps[20].Y) / 2);
             var p_c = stereoCamera.cameraCVs[0].im_centr;
-            CvInvoke.CalibrateHandEye
+            //CvInvoke.CalibrateHandEye
             //get vec_xy
 
 
