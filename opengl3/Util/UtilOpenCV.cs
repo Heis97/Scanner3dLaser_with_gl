@@ -705,6 +705,7 @@ namespace opengl3
         {
             int ind = 0;
             var color = new MCvScalar(b, g, r);//bgr
+            //color = randomColor();
             if(points1 == null)
             {
                 return im;
@@ -714,7 +715,7 @@ namespace opengl3
                 for (int i = 1; i < points1.Length; i++)
                 {                  
                     CvInvoke.Circle(im, points1[i], size_c, color, 1);
-                    CvInvoke.Line(im, points1[i-1], points1[i], randomColor(), size);
+                    CvInvoke.Line(im, points1[i-1], points1[i], color, size);
                     ind++;
                 }
             }

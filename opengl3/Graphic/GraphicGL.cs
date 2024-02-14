@@ -419,8 +419,8 @@ namespace opengl3
             locationBox = contr.Location;
             Gl.Initialize();
             Gl.Enable(EnableCap.Multisample);
-            Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
-            //Gl.ClearColor(1f, 1f, 1f, 0.0f);
+            //Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
+            Gl.ClearColor(1f, 1f, 1f, 0.0f);
             Gl.PointSize(2f);
             
             var VertexSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Vert\VertexSh_Models.glsl" });

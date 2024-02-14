@@ -235,7 +235,22 @@ namespace opengl3
             }
             return ps_fil.ToArray();
         }
+        public static List<Point3d_GL> unifPoints2d(List<List<Point3d_GL>> ps)
+        {
+            var ps_fil = new List<Point3d_GL>();
+            for (int i = 0; i < ps.Count; i++)
+            {
+                if (ps[i] != null)
+                {
+                    for (int j = 0; j < ps[i].Count; j++)
+                    {
+                        ps_fil.Add(ps[i][j]);
+                    }
+                }
 
+            }
+            return ps_fil;
+        }
         public double magnitude()
         {
             return Math.Sqrt(x * x + y * y + z * z);

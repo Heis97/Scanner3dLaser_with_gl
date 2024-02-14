@@ -370,6 +370,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.but_save_im_base1 = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2420,6 +2421,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.but_save_im_base1);
             this.tabMain.Controls.Add(this.but_rob_ph);
             this.tabMain.Controls.Add(this.groupBox2);
             this.tabMain.Controls.Add(this.tabControl1);
@@ -3993,6 +3995,16 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
+            // but_save_im_base1
+            // 
+            this.but_save_im_base1.Location = new System.Drawing.Point(10, 898);
+            this.but_save_im_base1.Name = "but_save_im_base1";
+            this.but_save_im_base1.Size = new System.Drawing.Size(102, 55);
+            this.but_save_im_base1.TabIndex = 147;
+            this.but_save_im_base1.Text = "Сохранить изобр";
+            this.but_save_im_base1.UseVisualStyleBackColor = true;
+            this.but_save_im_base1.Click += new System.EventHandler(this.but_save_im_base1_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -4444,6 +4456,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_setShvpVel;
         private System.Windows.Forms.TextBox textBox_shvpVel;
         private System.Windows.Forms.Button but_flange_calib_basis;
+        private System.Windows.Forms.Button but_save_im_base1;
     }
 }
 

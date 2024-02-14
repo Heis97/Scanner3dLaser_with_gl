@@ -690,7 +690,7 @@ namespace PathPlanning
         {
             var layer_sq = gen_pattern_in_square_xy(settings, p_min, p_max);
             //Console.WriteLine("layer_sq z"+layer_sq[0].z + " " + layer_sq[1].z + " ");
-            //gl.addLineMeshTraj(layer_sq.ToArray(), Color3d_GL.aqua());
+            gl.addLineMeshTraj(layer_sq.to_ps().ToArray(), Color3d_GL.red());
 
             // var ps_div = divide_traj(layer_sq, trajParams.div_step);
             var ps_div = layer_sq.divide_traj(settings.min_dist).to_ps();
@@ -879,18 +879,20 @@ namespace PathPlanning
             var im_patt = new Image<Gray, Byte>(size_im);
             CvInvoke.FillPoly(im, cont_im, new MCvScalar(255));
             CvInvoke.FillPoly(im_patt, cont_im, new MCvScalar(127));
-            //CvInvoke.Imshow("cont", im);
+            //CvInvoke.Polylines()
+            //CvInvoke.Imshow("cont1", im);
             var patt_cut = new List<Point3d_GL>();
             for (int i = 0; i < pattern.Count; i++)
             {
                 var p = (pattern[i] - min_p + new Point3d_GL(1, 1, 1))*k;
                 var p_i = new Point((int)p.x, (int)p.y);
-                //CvInvoke.Circle(im_patt, p_i, 0, new MCvScalar(255));
+                CvInvoke.Circle(im_patt, p_i, 2, new MCvScalar(255),2);
                 if (p_i.X < 0 || p_i.Y < 0 || p_i.X >= size_im.Width || p_i.Y >= size_im.Height) continue;
                 if (im.Data[p_i.Y, p_i.X, 0] > 0) patt_cut.Add(pattern[i]);
+
             }
 
-            //CvInvoke.Imshow("cont", im_patt);
+            CvInvoke.Imshow("cont2", im_patt);
             return patt_cut;
         }
 
@@ -914,7 +916,8 @@ namespace PathPlanning
                 else settings.filling =0;
 
                 var layer = gen_pattern_in_square_xy(settings, new Point3d_GL(), dim_cur);
-                layer.add(new Point3d_GL(0,0,trajParams.dz * ((int)(i/2)+1))+ dim_const / 2);
+                //layer.add(new Point3d_GL(0,0,trajParams.dz * ((int)(i/2)+1))+ dim_const / 2);
+                layer.add(new Point3d_GL(0, 0, trajParams.dz * ((int)(i ) + 1)) + dim_const / 2);
                 traj_layers.Add(layer);
                 //Console.WriteLine(settings.filling);
                 //settings.angle += pi / 2;
@@ -928,16 +931,14 @@ namespace PathPlanning
         public static List<List<Point3d_GL>> gen_traj_2d(List<List<Point3d_GL>> contour, TrajParams trajParams, PatternSettings settings,GraphicGL gl = null)
         {
             var traj_layers = new List<LayerPath>();
-            var min_p = Point3d_GL.Min(contour) - new Point3d_GL(5 * trajParams.step, 5 * trajParams.step, 5 * trajParams.step);
-            var max_p = Point3d_GL.Max(contour) + new Point3d_GL(5 * trajParams.step, 5 * trajParams.step, 5 * trajParams.step);
+            var min_p = Point3d_GL.Min(contour) - new Point3d_GL(trajParams.step,trajParams.step, trajParams.step);
+            var max_p = Point3d_GL.Max(contour) + new Point3d_GL(trajParams.step,  trajParams.step, trajParams.step);
             for (int i = 0; i < contour.Count; i++)
             {
                 var layer = gen_pattern_in_contour_xy(settings, trajParams, contour[i].ToList(), min_p, max_p, gl);
-                layer.add(new Point3d_GL(0, 0, trajParams.dz * 0));
+                layer.add(new Point3d_GL(0, 0, trajParams.dz * i));
                 traj_layers.Add(layer);
                 settings.angle += settings.angle_layers;
-                
-
             }
            
             var traj = new TrajectoryPath { layers = traj_layers };

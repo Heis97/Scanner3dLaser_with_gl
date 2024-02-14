@@ -1933,10 +1933,11 @@ namespace opengl3
                     //CvInvoke.Line(fr_im_sec_cl, ps2_dr[0], ps2_dr[ps2_dr.Length - 1], new MCvScalar(255, 0, 255),2);
                     //imBox_base_1.Image = UtilOpenCV.drawPoints(fr_im_cl, ps1_dr, 0, 255, 0, 2);
                     //imBox_base_2.Image = UtilOpenCV.drawPoints(fr_im_sec_cl, ps2_dr, 0, 255, 0, 2);
-                    VideoAnalyse.deviation_light_gauss(fr_im_cl);
 
-                    imBox_base_1.Image = UtilOpenCV.drawLines(fr_im_cl, ps1_dr, 0, 255, 0, 2,0);
-                    imBox_base_2.Image = UtilOpenCV.drawLines(fr_im_sec_cl, ps2_dr, 0, 255, 0, 2,0);
+                    //VideoAnalyse.deviation_light_gauss(fr_im_cl);
+
+                    imBox_base_1.Image = UtilOpenCV.drawLines(fr_im_cl, ps1_dr, 0, 255, 0, 3,0);
+                    imBox_base_2.Image = UtilOpenCV.drawLines(fr_im_sec_cl, ps2_dr, 0, 255, 0, 3,0);
                 }
                     
 
@@ -3040,7 +3041,16 @@ namespace opengl3
         //-----------------------------------
         private void but_printer_traj_fab_Click(object sender, EventArgs e)
         {
-            var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
+            var contours = new List<List<Point3d_GL>>();
+            for(int i = 0; i < 4; i++)
+            {
+                var cont = SurfaceReconstraction.gen_random_cont_XY(10, 30, 0, new Point3d_GL(0,0,0.4*i)).ToList();
+                contours.Add(cont);
+            }
+            var patterns = PathPlanner.gen_traj_2d(contours, traj_config, patt_config, GL1);
+
+            var pattern = Point3d_GL.unifPoints2d(patterns);
+            //var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
             var traj = PathPlanner.ps_to_matr(pattern);
             var prog = PathPlanner.generate_printer_prog(traj, traj_config);
             debugBox.Text = prog;
@@ -5112,9 +5122,17 @@ namespace opengl3
 
 
 
+
         #endregion
 
-      
+        private void but_save_im_base1_Click(object sender, EventArgs e)
+        {
+            var im = (Mat)imBox_base_1.Image;
+            im.Save("im1.png");
+
+            im = (Mat)imageBox1.Image;
+            im.Save("im2.png");
+        }
     }
 }
 
