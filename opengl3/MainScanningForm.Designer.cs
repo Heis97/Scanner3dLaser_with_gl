@@ -89,134 +89,9 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
-            this.win_tab_diff = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.propGrid_pattern = new System.Windows.Forms.PropertyGrid();
-            this.propGrid_traj = new System.Windows.Forms.PropertyGrid();
-            this.but_printer_traj_fab = new System.Windows.Forms.Button();
-            this.but_rob_traj_pulse = new System.Windows.Forms.Button();
-            this.but_rob_traj_kuka = new System.Windows.Forms.Button();
-            this.but_gl_clear = new System.Windows.Forms.Button();
-            this.but_traj_clear = new System.Windows.Forms.Button();
-            this.debugBox = new System.Windows.Forms.RichTextBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.prop_grid_model = new System.Windows.Forms.PropertyGrid();
-            this.tree_models = new System.Windows.Forms.TreeView();
-            this.tp_smooth_scan = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.but_load_stl = new System.Windows.Forms.Button();
-            this.but_save_stl = new System.Windows.Forms.Button();
-            this.but_remesh_test = new System.Windows.Forms.Button();
-            this.but_del_obj3d = new System.Windows.Forms.Button();
-            this.but_modeV = new System.Windows.Forms.Button();
-            this.butSaveOpenGlIm = new System.Windows.Forms.Button();
-            this.but_ProjV = new System.Windows.Forms.Button();
-            this.but_plane_Oxy = new System.Windows.Forms.Button();
-            this.but_plane_Oyz = new System.Windows.Forms.Button();
-            this.butt_plane_Ozx = new System.Windows.Forms.Button();
-            this.lab_kor = new System.Windows.Forms.Label();
-            this.lab_curCor = new System.Windows.Forms.Label();
-            this.label33 = new System.Windows.Forms.Label();
-            this.but_im_to_3d_im1 = new System.Windows.Forms.Button();
-            this.lab_check = new System.Windows.Forms.Label();
-            this.textBox_monitor_id = new System.Windows.Forms.TextBox();
-            this.lab_TRZ = new System.Windows.Forms.Label();
-            this.but_point_type = new System.Windows.Forms.Button();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.but_start_anim = new System.Windows.Forms.Button();
-            this.but_send_traj = new System.Windows.Forms.Button();
-            this.but_rob_discon_sc = new System.Windows.Forms.Button();
-            this.but_rob_auto_sc = new System.Windows.Forms.Button();
-            this.but_rob_res_sc = new System.Windows.Forms.Button();
-            this.but_rob_clear_sc = new System.Windows.Forms.Button();
-            this.but_rob_send_sc = new System.Windows.Forms.Button();
-            this.but_rob_con_sc = new System.Windows.Forms.Button();
-            this.but_rob_manual_sc = new System.Windows.Forms.Button();
-            this.but_rob_start_sc = new System.Windows.Forms.Button();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.but_gl_cam_calib = new System.Windows.Forms.Button();
-            this.but_swapMonit = new System.Windows.Forms.Button();
-            this.but_imGen = new System.Windows.Forms.Button();
-            this.but_text_vis = new System.Windows.Forms.Button();
-            this.but_gl_light = new System.Windows.Forms.Button();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.label34 = new System.Windows.Forms.Label();
-            this.label35 = new System.Windows.Forms.Label();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
-            this.label36 = new System.Windows.Forms.Label();
-            this.trackBar3 = new System.Windows.Forms.TrackBar();
-            this.label37 = new System.Windows.Forms.Label();
-            this.trackBar4 = new System.Windows.Forms.TrackBar();
-            this.label38 = new System.Windows.Forms.Label();
-            this.trackBar5 = new System.Windows.Forms.TrackBar();
-            this.label39 = new System.Windows.Forms.Label();
-            this.trackBar6 = new System.Windows.Forms.TrackBar();
-            this.label40 = new System.Windows.Forms.Label();
-            this.trackBar7 = new System.Windows.Forms.TrackBar();
-            this.label41 = new System.Windows.Forms.Label();
-            this.trackBar8 = new System.Windows.Forms.TrackBar();
-            this.label42 = new System.Windows.Forms.Label();
-            this.trackBar9 = new System.Windows.Forms.TrackBar();
-            this.label43 = new System.Windows.Forms.Label();
-            this.trackBar10 = new System.Windows.Forms.TrackBar();
-            this.label44 = new System.Windows.Forms.Label();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.but_comp_basis = new System.Windows.Forms.Button();
-            this.but_set_model_matr = new System.Windows.Forms.Button();
-            this.but_dist_same_ps = new System.Windows.Forms.Button();
-            this.but_ps_cal_save = new System.Windows.Forms.Button();
-            this.but_stereo_3dp = new System.Windows.Forms.Button();
-            this.but_delete_area = new System.Windows.Forms.Button();
-            this.but_end_cont = new System.Windows.Forms.Button();
-            this.but_intersec_obj = new System.Windows.Forms.Button();
-            this.but_cross_flat = new System.Windows.Forms.Button();
-            this.but_keep_area = new System.Windows.Forms.Button();
-            this.but_reconstruc_area = new System.Windows.Forms.Button();
-            this.but_SubpixPrec = new System.Windows.Forms.Button();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.prop_gr_light = new System.Windows.Forms.PropertyGrid();
-            this.treeV_light = new System.Windows.Forms.TreeView();
-            this.trackOz = new System.Windows.Forms.TrackBar();
-            this.trackOy = new System.Windows.Forms.TrackBar();
-            this.trackX_light = new System.Windows.Forms.TrackBar();
-            this.trackOx = new System.Windows.Forms.TrackBar();
-            this.trackZ_light = new System.Windows.Forms.TrackBar();
-            this.trackY_light = new System.Windows.Forms.TrackBar();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
-            this.tabPage8 = new System.Windows.Forms.TabPage();
-            this.but_photo_gl = new System.Windows.Forms.Button();
-            this.imBox_mark1 = new Emgu.CV.UI.ImageBox();
-            this.imBox_mark2 = new Emgu.CV.UI.ImageBox();
-            this.but_scan_virt = new System.Windows.Forms.Button();
-            this.imBox_disparity = new Emgu.CV.UI.ImageBox();
-            this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
-            this.tabPage9 = new System.Windows.Forms.TabPage();
-            this.but_flange_calib_basis = new System.Windows.Forms.Button();
-            this.prop_gr_scan = new System.Windows.Forms.PropertyGrid();
-            this.lab_scan_pres = new System.Windows.Forms.Label();
-            this.but_scan_pres = new System.Windows.Forms.Button();
-            this.but_load_fr_cal = new System.Windows.Forms.Button();
-            this.but_scan_load_ex = new System.Windows.Forms.Button();
-            this.textB_cam1_conf = new System.Windows.Forms.TextBox();
-            this.textB_cam2_conf = new System.Windows.Forms.TextBox();
-            this.but_scan_stereo_rob = new System.Windows.Forms.Button();
-            this.but_load_conf_cam1 = new System.Windows.Forms.Button();
-            this.but_load_conf_cam2 = new System.Windows.Forms.Button();
-            this.but_load_sing_calib = new System.Windows.Forms.Button();
-            this.textB_stereo_cal_path = new System.Windows.Forms.TextBox();
-            this.but_scan_load_sing = new System.Windows.Forms.Button();
-            this.but_stereo_cal_path = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.textB_scan_path = new System.Windows.Forms.TextBox();
-            this.but_scan_path = new System.Windows.Forms.Button();
-            this.but_calibr_Bfs = new System.Windows.Forms.Button();
-            this.label13 = new System.Windows.Forms.Label();
             this.glControl1 = new OpenGL.GlControl();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.but_save_im_base1 = new System.Windows.Forms.Button();
             this.but_rob_ph = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.but_set_z_div = new System.Windows.Forms.Button();
@@ -370,7 +245,132 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_save_im_base1 = new System.Windows.Forms.Button();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.label13 = new System.Windows.Forms.Label();
+            this.but_calibr_Bfs = new System.Windows.Forms.Button();
+            this.but_scan_path = new System.Windows.Forms.Button();
+            this.textB_scan_path = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.but_stereo_cal_path = new System.Windows.Forms.Button();
+            this.but_scan_load_sing = new System.Windows.Forms.Button();
+            this.textB_stereo_cal_path = new System.Windows.Forms.TextBox();
+            this.but_load_sing_calib = new System.Windows.Forms.Button();
+            this.but_load_conf_cam2 = new System.Windows.Forms.Button();
+            this.but_load_conf_cam1 = new System.Windows.Forms.Button();
+            this.but_scan_stereo_rob = new System.Windows.Forms.Button();
+            this.textB_cam2_conf = new System.Windows.Forms.TextBox();
+            this.textB_cam1_conf = new System.Windows.Forms.TextBox();
+            this.but_scan_load_ex = new System.Windows.Forms.Button();
+            this.but_load_fr_cal = new System.Windows.Forms.Button();
+            this.but_scan_pres = new System.Windows.Forms.Button();
+            this.lab_scan_pres = new System.Windows.Forms.Label();
+            this.prop_gr_scan = new System.Windows.Forms.PropertyGrid();
+            this.but_flange_calib_basis = new System.Windows.Forms.Button();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
+            this.imBox_disparity = new Emgu.CV.UI.ImageBox();
+            this.but_scan_virt = new System.Windows.Forms.Button();
+            this.imBox_mark2 = new Emgu.CV.UI.ImageBox();
+            this.imBox_mark1 = new Emgu.CV.UI.ImageBox();
+            this.but_photo_gl = new System.Windows.Forms.Button();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.label27 = new System.Windows.Forms.Label();
+            this.trackY_light = new System.Windows.Forms.TrackBar();
+            this.trackZ_light = new System.Windows.Forms.TrackBar();
+            this.trackX_light = new System.Windows.Forms.TrackBar();
+            this.treeV_light = new System.Windows.Forms.TreeView();
+            this.prop_gr_light = new System.Windows.Forms.PropertyGrid();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.but_SubpixPrec = new System.Windows.Forms.Button();
+            this.but_reconstruc_area = new System.Windows.Forms.Button();
+            this.but_keep_area = new System.Windows.Forms.Button();
+            this.but_cross_flat = new System.Windows.Forms.Button();
+            this.but_intersec_obj = new System.Windows.Forms.Button();
+            this.but_end_cont = new System.Windows.Forms.Button();
+            this.but_delete_area = new System.Windows.Forms.Button();
+            this.but_stereo_3dp = new System.Windows.Forms.Button();
+            this.but_ps_cal_save = new System.Windows.Forms.Button();
+            this.but_dist_same_ps = new System.Windows.Forms.Button();
+            this.but_set_model_matr = new System.Windows.Forms.Button();
+            this.but_comp_basis = new System.Windows.Forms.Button();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.label44 = new System.Windows.Forms.Label();
+            this.trackBar10 = new System.Windows.Forms.TrackBar();
+            this.label43 = new System.Windows.Forms.Label();
+            this.trackBar9 = new System.Windows.Forms.TrackBar();
+            this.label42 = new System.Windows.Forms.Label();
+            this.trackBar8 = new System.Windows.Forms.TrackBar();
+            this.label41 = new System.Windows.Forms.Label();
+            this.trackBar7 = new System.Windows.Forms.TrackBar();
+            this.label40 = new System.Windows.Forms.Label();
+            this.trackBar6 = new System.Windows.Forms.TrackBar();
+            this.label39 = new System.Windows.Forms.Label();
+            this.trackBar5 = new System.Windows.Forms.TrackBar();
+            this.label38 = new System.Windows.Forms.Label();
+            this.trackBar4 = new System.Windows.Forms.TrackBar();
+            this.label37 = new System.Windows.Forms.Label();
+            this.trackBar3 = new System.Windows.Forms.TrackBar();
+            this.label36 = new System.Windows.Forms.Label();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.label35 = new System.Windows.Forms.Label();
+            this.label34 = new System.Windows.Forms.Label();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.but_gl_light = new System.Windows.Forms.Button();
+            this.but_text_vis = new System.Windows.Forms.Button();
+            this.but_imGen = new System.Windows.Forms.Button();
+            this.but_swapMonit = new System.Windows.Forms.Button();
+            this.but_gl_cam_calib = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.but_rob_start_sc = new System.Windows.Forms.Button();
+            this.but_rob_manual_sc = new System.Windows.Forms.Button();
+            this.but_rob_con_sc = new System.Windows.Forms.Button();
+            this.but_rob_send_sc = new System.Windows.Forms.Button();
+            this.but_rob_clear_sc = new System.Windows.Forms.Button();
+            this.but_rob_res_sc = new System.Windows.Forms.Button();
+            this.but_rob_auto_sc = new System.Windows.Forms.Button();
+            this.but_rob_discon_sc = new System.Windows.Forms.Button();
+            this.but_send_traj = new System.Windows.Forms.Button();
+            this.but_start_anim = new System.Windows.Forms.Button();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.but_point_type = new System.Windows.Forms.Button();
+            this.lab_TRZ = new System.Windows.Forms.Label();
+            this.textBox_monitor_id = new System.Windows.Forms.TextBox();
+            this.lab_check = new System.Windows.Forms.Label();
+            this.but_im_to_3d_im1 = new System.Windows.Forms.Button();
+            this.label33 = new System.Windows.Forms.Label();
+            this.lab_curCor = new System.Windows.Forms.Label();
+            this.lab_kor = new System.Windows.Forms.Label();
+            this.butt_plane_Ozx = new System.Windows.Forms.Button();
+            this.but_plane_Oyz = new System.Windows.Forms.Button();
+            this.but_plane_Oxy = new System.Windows.Forms.Button();
+            this.but_ProjV = new System.Windows.Forms.Button();
+            this.butSaveOpenGlIm = new System.Windows.Forms.Button();
+            this.but_modeV = new System.Windows.Forms.Button();
+            this.but_del_obj3d = new System.Windows.Forms.Button();
+            this.but_remesh_test = new System.Windows.Forms.Button();
+            this.but_save_stl = new System.Windows.Forms.Button();
+            this.but_load_stl = new System.Windows.Forms.Button();
+            this.label19 = new System.Windows.Forms.Label();
+            this.tp_smooth_scan = new System.Windows.Forms.TextBox();
+            this.tree_models = new System.Windows.Forms.TreeView();
+            this.prop_grid_model = new System.Windows.Forms.PropertyGrid();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.debugBox = new System.Windows.Forms.RichTextBox();
+            this.but_traj_clear = new System.Windows.Forms.Button();
+            this.but_gl_clear = new System.Windows.Forms.Button();
+            this.but_rob_traj_kuka = new System.Windows.Forms.Button();
+            this.but_rob_traj_pulse = new System.Windows.Forms.Button();
+            this.but_printer_traj_fab = new System.Windows.Forms.Button();
+            this.propGrid_traj = new System.Windows.Forms.PropertyGrid();
+            this.propGrid_pattern = new System.Windows.Forms.PropertyGrid();
+            this.win_tab_diff = new System.Windows.Forms.TabControl();
+            this.trackOz = new System.Windows.Forms.TrackBar();
+            this.trackOy = new System.Windows.Forms.TrackBar();
+            this.trackOx = new System.Windows.Forms.TrackBar();
+            this.label4 = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -398,36 +398,6 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.histogramBox1)).BeginInit();
             this.tabOpenGl.SuspendLayout();
-            this.win_tab_diff.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
-            this.tabPage5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar7)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar8)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar9)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar10)).BeginInit();
-            this.tabPage6.SuspendLayout();
-            this.tabPage7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackOz)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackOy)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackX_light)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackOx)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackZ_light)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackY_light)).BeginInit();
-            this.tabPage8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).BeginInit();
-            this.tabPage9.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -453,6 +423,36 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).BeginInit();
             this.windowsTabs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
+            this.tabPage9.SuspendLayout();
+            this.tabPage8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).BeginInit();
+            this.tabPage7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackY_light)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackZ_light)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackX_light)).BeginInit();
+            this.tabPage6.SuspendLayout();
+            this.tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar10)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar9)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar8)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar7)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            this.tabPage4.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.win_tab_diff.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackOz)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackOy)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackOx)).BeginInit();
             this.SuspendLayout();
             // 
             // comboImages
@@ -1048,1355 +1048,6 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
-            // win_tab_diff
-            // 
-            this.win_tab_diff.Controls.Add(this.tabPage1);
-            this.win_tab_diff.Controls.Add(this.tabPage2);
-            this.win_tab_diff.Controls.Add(this.tabPage3);
-            this.win_tab_diff.Controls.Add(this.tabPage4);
-            this.win_tab_diff.Controls.Add(this.tabPage5);
-            this.win_tab_diff.Controls.Add(this.tabPage6);
-            this.win_tab_diff.Controls.Add(this.tabPage7);
-            this.win_tab_diff.Controls.Add(this.tabPage8);
-            this.win_tab_diff.Controls.Add(this.tabPage9);
-            this.win_tab_diff.Location = new System.Drawing.Point(1213, 6);
-            this.win_tab_diff.Name = "win_tab_diff";
-            this.win_tab_diff.SelectedIndex = 0;
-            this.win_tab_diff.Size = new System.Drawing.Size(650, 925);
-            this.win_tab_diff.TabIndex = 165;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.propGrid_pattern);
-            this.tabPage1.Controls.Add(this.propGrid_traj);
-            this.tabPage1.Controls.Add(this.but_printer_traj_fab);
-            this.tabPage1.Controls.Add(this.but_rob_traj_pulse);
-            this.tabPage1.Controls.Add(this.but_rob_traj_kuka);
-            this.tabPage1.Controls.Add(this.but_gl_clear);
-            this.tabPage1.Controls.Add(this.but_traj_clear);
-            this.tabPage1.Controls.Add(this.debugBox);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(642, 899);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Траектория";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // propGrid_pattern
-            // 
-            this.propGrid_pattern.Location = new System.Drawing.Point(15, 6);
-            this.propGrid_pattern.Name = "propGrid_pattern";
-            this.propGrid_pattern.Size = new System.Drawing.Size(183, 343);
-            this.propGrid_pattern.TabIndex = 162;
-            // 
-            // propGrid_traj
-            // 
-            this.propGrid_traj.Location = new System.Drawing.Point(15, 355);
-            this.propGrid_traj.Name = "propGrid_traj";
-            this.propGrid_traj.Size = new System.Drawing.Size(183, 343);
-            this.propGrid_traj.TabIndex = 119;
-            // 
-            // but_printer_traj_fab
-            // 
-            this.but_printer_traj_fab.Location = new System.Drawing.Point(15, 794);
-            this.but_printer_traj_fab.Name = "but_printer_traj_fab";
-            this.but_printer_traj_fab.Size = new System.Drawing.Size(106, 34);
-            this.but_printer_traj_fab.TabIndex = 163;
-            this.but_printer_traj_fab.Text = "Заполнение Фабион";
-            this.but_printer_traj_fab.UseVisualStyleBackColor = true;
-            this.but_printer_traj_fab.Click += new System.EventHandler(this.but_printer_traj_fab_Click);
-            // 
-            // but_rob_traj_pulse
-            // 
-            this.but_rob_traj_pulse.Location = new System.Drawing.Point(15, 714);
-            this.but_rob_traj_pulse.Name = "but_rob_traj_pulse";
-            this.but_rob_traj_pulse.Size = new System.Drawing.Size(106, 34);
-            this.but_rob_traj_pulse.TabIndex = 147;
-            this.but_rob_traj_pulse.Text = "Траектория Pulse";
-            this.but_rob_traj_pulse.UseVisualStyleBackColor = true;
-            this.but_rob_traj_pulse.Click += new System.EventHandler(this.but_rob_traj_pulse_Click);
-            // 
-            // but_rob_traj_kuka
-            // 
-            this.but_rob_traj_kuka.Location = new System.Drawing.Point(15, 754);
-            this.but_rob_traj_kuka.Name = "but_rob_traj_kuka";
-            this.but_rob_traj_kuka.Size = new System.Drawing.Size(106, 34);
-            this.but_rob_traj_kuka.TabIndex = 146;
-            this.but_rob_traj_kuka.Text = "Траектория Kuka";
-            this.but_rob_traj_kuka.UseVisualStyleBackColor = true;
-            this.but_rob_traj_kuka.Click += new System.EventHandler(this.but_rob_traj_kuka_Click);
-            // 
-            // but_gl_clear
-            // 
-            this.but_gl_clear.Location = new System.Drawing.Point(25, 843);
-            this.but_gl_clear.Name = "but_gl_clear";
-            this.but_gl_clear.Size = new System.Drawing.Size(96, 23);
-            this.but_gl_clear.TabIndex = 118;
-            this.but_gl_clear.Text = "Очистить";
-            this.but_gl_clear.UseVisualStyleBackColor = true;
-            this.but_gl_clear.Click += new System.EventHandler(this.but_gl_clear_Click);
-            // 
-            // but_traj_clear
-            // 
-            this.but_traj_clear.Location = new System.Drawing.Point(25, 868);
-            this.but_traj_clear.Name = "but_traj_clear";
-            this.but_traj_clear.Size = new System.Drawing.Size(96, 19);
-            this.but_traj_clear.TabIndex = 128;
-            this.but_traj_clear.Text = "Очистить траек";
-            this.but_traj_clear.UseVisualStyleBackColor = true;
-            this.but_traj_clear.Click += new System.EventHandler(this.but_traj_clear_Click);
-            // 
-            // debugBox
-            // 
-            this.debugBox.Location = new System.Drawing.Point(204, 6);
-            this.debugBox.Name = "debugBox";
-            this.debugBox.Size = new System.Drawing.Size(435, 887);
-            this.debugBox.TabIndex = 62;
-            this.debugBox.Text = "";
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.prop_grid_model);
-            this.tabPage2.Controls.Add(this.tree_models);
-            this.tabPage2.Controls.Add(this.tp_smooth_scan);
-            this.tabPage2.Controls.Add(this.label19);
-            this.tabPage2.Controls.Add(this.but_load_stl);
-            this.tabPage2.Controls.Add(this.but_save_stl);
-            this.tabPage2.Controls.Add(this.but_remesh_test);
-            this.tabPage2.Controls.Add(this.but_del_obj3d);
-            this.tabPage2.Controls.Add(this.but_modeV);
-            this.tabPage2.Controls.Add(this.butSaveOpenGlIm);
-            this.tabPage2.Controls.Add(this.but_ProjV);
-            this.tabPage2.Controls.Add(this.but_plane_Oxy);
-            this.tabPage2.Controls.Add(this.but_plane_Oyz);
-            this.tabPage2.Controls.Add(this.butt_plane_Ozx);
-            this.tabPage2.Controls.Add(this.lab_kor);
-            this.tabPage2.Controls.Add(this.lab_curCor);
-            this.tabPage2.Controls.Add(this.label33);
-            this.tabPage2.Controls.Add(this.but_im_to_3d_im1);
-            this.tabPage2.Controls.Add(this.lab_check);
-            this.tabPage2.Controls.Add(this.textBox_monitor_id);
-            this.tabPage2.Controls.Add(this.lab_TRZ);
-            this.tabPage2.Controls.Add(this.but_point_type);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(642, 899);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Объекты сцены";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // prop_grid_model
-            // 
-            this.prop_grid_model.Location = new System.Drawing.Point(6, 6);
-            this.prop_grid_model.Name = "prop_grid_model";
-            this.prop_grid_model.Size = new System.Drawing.Size(183, 400);
-            this.prop_grid_model.TabIndex = 150;
-            // 
-            // tree_models
-            // 
-            this.tree_models.BackColor = System.Drawing.SystemColors.Window;
-            this.tree_models.Location = new System.Drawing.Point(198, 6);
-            this.tree_models.Name = "tree_models";
-            this.tree_models.Size = new System.Drawing.Size(174, 400);
-            this.tree_models.TabIndex = 149;
-            this.tree_models.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tree_models_AfterCheck);
-            this.tree_models.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tree_models_AfterSelect);
-            this.tree_models.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tree_models_MouseDown);
-            // 
-            // tp_smooth_scan
-            // 
-            this.tp_smooth_scan.Location = new System.Drawing.Point(451, 310);
-            this.tp_smooth_scan.Name = "tp_smooth_scan";
-            this.tp_smooth_scan.Size = new System.Drawing.Size(68, 20);
-            this.tp_smooth_scan.TabIndex = 127;
-            this.tp_smooth_scan.Text = "-1";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(382, 313);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(63, 13);
-            this.label19.TabIndex = 126;
-            this.label19.Text = "smooth, mm";
-            // 
-            // but_load_stl
-            // 
-            this.but_load_stl.Location = new System.Drawing.Point(6, 450);
-            this.but_load_stl.Name = "but_load_stl";
-            this.but_load_stl.Size = new System.Drawing.Size(132, 24);
-            this.but_load_stl.TabIndex = 131;
-            this.but_load_stl.Text = "Загрузить модель";
-            this.but_load_stl.UseVisualStyleBackColor = true;
-            this.but_load_stl.Click += new System.EventHandler(this.but_load_stl_Click);
-            // 
-            // but_save_stl
-            // 
-            this.but_save_stl.Location = new System.Drawing.Point(6, 420);
-            this.but_save_stl.Name = "but_save_stl";
-            this.but_save_stl.Size = new System.Drawing.Size(132, 24);
-            this.but_save_stl.TabIndex = 130;
-            this.but_save_stl.Text = "Сохранить модель";
-            this.but_save_stl.UseVisualStyleBackColor = true;
-            this.but_save_stl.Click += new System.EventHandler(this.but_save_stl_Click);
-            // 
-            // but_remesh_test
-            // 
-            this.but_remesh_test.Location = new System.Drawing.Point(379, 351);
-            this.but_remesh_test.Name = "but_remesh_test";
-            this.but_remesh_test.Size = new System.Drawing.Size(96, 34);
-            this.but_remesh_test.TabIndex = 152;
-            this.but_remesh_test.Text = "Сгладить";
-            this.but_remesh_test.UseVisualStyleBackColor = true;
-            this.but_remesh_test.Click += new System.EventHandler(this.but_remesh_test_Click);
-            // 
-            // but_del_obj3d
-            // 
-            this.but_del_obj3d.Location = new System.Drawing.Point(6, 488);
-            this.but_del_obj3d.Name = "but_del_obj3d";
-            this.but_del_obj3d.Size = new System.Drawing.Size(132, 24);
-            this.but_del_obj3d.TabIndex = 153;
-            this.but_del_obj3d.Text = "Удалить объект";
-            this.but_del_obj3d.UseVisualStyleBackColor = true;
-            this.but_del_obj3d.Click += new System.EventHandler(this.but_del_obj3d_Click);
-            // 
-            // but_modeV
-            // 
-            this.but_modeV.Location = new System.Drawing.Point(378, 34);
-            this.but_modeV.Name = "but_modeV";
-            this.but_modeV.Size = new System.Drawing.Size(96, 56);
-            this.but_modeV.TabIndex = 63;
-            this.but_modeV.Text = "Рисование(текущая: обозреватель)";
-            this.but_modeV.UseVisualStyleBackColor = true;
-            this.but_modeV.Click += new System.EventHandler(this.but_modeV_Click);
-            // 
-            // butSaveOpenGlIm
-            // 
-            this.butSaveOpenGlIm.Location = new System.Drawing.Point(6, 730);
-            this.butSaveOpenGlIm.Name = "butSaveOpenGlIm";
-            this.butSaveOpenGlIm.Size = new System.Drawing.Size(121, 42);
-            this.butSaveOpenGlIm.TabIndex = 20;
-            this.butSaveOpenGlIm.Text = "Сохранить изображение";
-            this.butSaveOpenGlIm.UseVisualStyleBackColor = true;
-            this.butSaveOpenGlIm.Click += new System.EventHandler(this.butFinPointFs_Click);
-            // 
-            // but_ProjV
-            // 
-            this.but_ProjV.Location = new System.Drawing.Point(378, 152);
-            this.but_ProjV.Name = "but_ProjV";
-            this.but_ProjV.Size = new System.Drawing.Size(96, 56);
-            this.but_ProjV.TabIndex = 58;
-            this.but_ProjV.Text = "Проецирование(текущая:ортоганальная)";
-            this.but_ProjV.UseVisualStyleBackColor = true;
-            this.but_ProjV.Click += new System.EventHandler(this.but_ProjV_Click);
-            // 
-            // but_plane_Oxy
-            // 
-            this.but_plane_Oxy.Location = new System.Drawing.Point(154, 536);
-            this.but_plane_Oxy.Name = "but_plane_Oxy";
-            this.but_plane_Oxy.Size = new System.Drawing.Size(54, 31);
-            this.but_plane_Oxy.TabIndex = 59;
-            this.but_plane_Oxy.Text = "Oxy";
-            this.but_plane_Oxy.UseVisualStyleBackColor = true;
-            this.but_plane_Oxy.Click += new System.EventHandler(this.but_plane_Oxy_Click);
-            // 
-            // but_plane_Oyz
-            // 
-            this.but_plane_Oyz.Location = new System.Drawing.Point(214, 536);
-            this.but_plane_Oyz.Name = "but_plane_Oyz";
-            this.but_plane_Oyz.Size = new System.Drawing.Size(54, 31);
-            this.but_plane_Oyz.TabIndex = 60;
-            this.but_plane_Oyz.Text = "Oyz";
-            this.but_plane_Oyz.UseVisualStyleBackColor = true;
-            this.but_plane_Oyz.Click += new System.EventHandler(this.but_plane_Oyz_Click);
-            // 
-            // butt_plane_Ozx
-            // 
-            this.butt_plane_Ozx.CausesValidation = false;
-            this.butt_plane_Ozx.Location = new System.Drawing.Point(271, 536);
-            this.butt_plane_Ozx.Name = "butt_plane_Ozx";
-            this.butt_plane_Ozx.Size = new System.Drawing.Size(54, 31);
-            this.butt_plane_Ozx.TabIndex = 61;
-            this.butt_plane_Ozx.Text = "Ozx";
-            this.butt_plane_Ozx.UseVisualStyleBackColor = true;
-            this.butt_plane_Ozx.Click += new System.EventHandler(this.butt_plane_Ozx_Click);
-            // 
-            // lab_kor
-            // 
-            this.lab_kor.AutoSize = true;
-            this.lab_kor.Location = new System.Drawing.Point(151, 444);
-            this.lab_kor.Name = "lab_kor";
-            this.lab_kor.Size = new System.Drawing.Size(22, 13);
-            this.lab_kor.TabIndex = 64;
-            this.lab_kor.Text = "cor";
-            // 
-            // lab_curCor
-            // 
-            this.lab_curCor.AutoSize = true;
-            this.lab_curCor.Location = new System.Drawing.Point(258, 444);
-            this.lab_curCor.Name = "lab_curCor";
-            this.lab_curCor.Size = new System.Drawing.Size(38, 13);
-            this.lab_curCor.TabIndex = 66;
-            this.lab_curCor.Text = "curCor";
-            // 
-            // label33
-            // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(147, 409);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(58, 13);
-            this.label33.TabIndex = 69;
-            this.label33.Text = "ID_monitor";
-            // 
-            // but_im_to_3d_im1
-            // 
-            this.but_im_to_3d_im1.Location = new System.Drawing.Point(379, 218);
-            this.but_im_to_3d_im1.Name = "but_im_to_3d_im1";
-            this.but_im_to_3d_im1.Size = new System.Drawing.Size(96, 49);
-            this.but_im_to_3d_im1.TabIndex = 121;
-            this.but_im_to_3d_im1.Text = "3д модель изобр im1";
-            this.but_im_to_3d_im1.UseVisualStyleBackColor = true;
-            this.but_im_to_3d_im1.Click += new System.EventHandler(this.but_im_to_3d_im1_Click);
-            // 
-            // lab_check
-            // 
-            this.lab_check.AutoSize = true;
-            this.lab_check.Location = new System.Drawing.Point(331, 409);
-            this.lab_check.Name = "lab_check";
-            this.lab_check.Size = new System.Drawing.Size(38, 13);
-            this.lab_check.TabIndex = 70;
-            this.lab_check.Text = "curCor";
-            // 
-            // textBox_monitor_id
-            // 
-            this.textBox_monitor_id.Location = new System.Drawing.Point(225, 406);
-            this.textBox_monitor_id.Name = "textBox_monitor_id";
-            this.textBox_monitor_id.Size = new System.Drawing.Size(100, 20);
-            this.textBox_monitor_id.TabIndex = 68;
-            this.textBox_monitor_id.Text = "0 1";
-            // 
-            // lab_TRZ
-            // 
-            this.lab_TRZ.AutoSize = true;
-            this.lab_TRZ.Location = new System.Drawing.Point(292, 484);
-            this.lab_TRZ.Name = "lab_TRZ";
-            this.lab_TRZ.Size = new System.Drawing.Size(22, 13);
-            this.lab_TRZ.TabIndex = 99;
-            this.lab_TRZ.Text = "cor";
-            // 
-            // but_point_type
-            // 
-            this.but_point_type.Location = new System.Drawing.Point(379, 96);
-            this.but_point_type.Name = "but_point_type";
-            this.but_point_type.Size = new System.Drawing.Size(96, 50);
-            this.but_point_type.TabIndex = 101;
-            this.but_point_type.Text = "Точки";
-            this.but_point_type.UseVisualStyleBackColor = true;
-            this.but_point_type.Click += new System.EventHandler(this.but_point_type_Click);
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.but_start_anim);
-            this.tabPage3.Controls.Add(this.but_send_traj);
-            this.tabPage3.Controls.Add(this.but_rob_discon_sc);
-            this.tabPage3.Controls.Add(this.but_rob_auto_sc);
-            this.tabPage3.Controls.Add(this.but_rob_res_sc);
-            this.tabPage3.Controls.Add(this.but_rob_clear_sc);
-            this.tabPage3.Controls.Add(this.but_rob_send_sc);
-            this.tabPage3.Controls.Add(this.but_rob_con_sc);
-            this.tabPage3.Controls.Add(this.but_rob_manual_sc);
-            this.tabPage3.Controls.Add(this.but_rob_start_sc);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(642, 899);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Управление роботом";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // but_start_anim
-            // 
-            this.but_start_anim.Location = new System.Drawing.Point(15, 219);
-            this.but_start_anim.Name = "but_start_anim";
-            this.but_start_anim.Size = new System.Drawing.Size(106, 30);
-            this.but_start_anim.TabIndex = 146;
-            this.but_start_anim.Text = "Старт анимации";
-            this.but_start_anim.UseVisualStyleBackColor = true;
-            this.but_start_anim.Click += new System.EventHandler(this.but_start_anim_Click);
-            // 
-            // but_send_traj
-            // 
-            this.but_send_traj.Location = new System.Drawing.Point(15, 437);
-            this.but_send_traj.Name = "but_send_traj";
-            this.but_send_traj.Size = new System.Drawing.Size(96, 34);
-            this.but_send_traj.TabIndex = 104;
-            this.but_send_traj.Text = "Отправить траекторию";
-            this.but_send_traj.UseVisualStyleBackColor = true;
-            this.but_send_traj.Click += new System.EventHandler(this.but_send_traj_Click);
-            // 
-            // but_rob_discon_sc
-            // 
-            this.but_rob_discon_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_discon_sc.Location = new System.Drawing.Point(15, 57);
-            this.but_rob_discon_sc.Name = "but_rob_discon_sc";
-            this.but_rob_discon_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_discon_sc.TabIndex = 138;
-            this.but_rob_discon_sc.Text = "Disconnect robot";
-            this.but_rob_discon_sc.UseVisualStyleBackColor = true;
-            this.but_rob_discon_sc.Click += new System.EventHandler(this.but_rob_discon_sc_Click);
-            // 
-            // but_rob_auto_sc
-            // 
-            this.but_rob_auto_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_auto_sc.Location = new System.Drawing.Point(127, 13);
-            this.but_rob_auto_sc.Name = "but_rob_auto_sc";
-            this.but_rob_auto_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_auto_sc.TabIndex = 142;
-            this.but_rob_auto_sc.Text = "Auto";
-            this.but_rob_auto_sc.UseVisualStyleBackColor = true;
-            this.but_rob_auto_sc.Click += new System.EventHandler(this.but_rob_auto_sc_Click);
-            // 
-            // but_rob_res_sc
-            // 
-            this.but_rob_res_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_res_sc.Location = new System.Drawing.Point(15, 145);
-            this.but_rob_res_sc.Name = "but_rob_res_sc";
-            this.but_rob_res_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_res_sc.TabIndex = 140;
-            this.but_rob_res_sc.Text = "Reseive robot";
-            this.but_rob_res_sc.UseVisualStyleBackColor = true;
-            this.but_rob_res_sc.Click += new System.EventHandler(this.but_rob_res_sc_Click);
-            // 
-            // but_rob_clear_sc
-            // 
-            this.but_rob_clear_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_clear_sc.Location = new System.Drawing.Point(127, 101);
-            this.but_rob_clear_sc.Name = "but_rob_clear_sc";
-            this.but_rob_clear_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_clear_sc.TabIndex = 144;
-            this.but_rob_clear_sc.Text = "Clear buf";
-            this.but_rob_clear_sc.UseVisualStyleBackColor = true;
-            this.but_rob_clear_sc.Click += new System.EventHandler(this.but_rob_clear_sc_Click);
-            // 
-            // but_rob_send_sc
-            // 
-            this.but_rob_send_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_send_sc.Location = new System.Drawing.Point(15, 101);
-            this.but_rob_send_sc.Name = "but_rob_send_sc";
-            this.but_rob_send_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_send_sc.TabIndex = 139;
-            this.but_rob_send_sc.Text = "Send robot";
-            this.but_rob_send_sc.UseVisualStyleBackColor = true;
-            this.but_rob_send_sc.Click += new System.EventHandler(this.but_rob_send_sc_Click);
-            // 
-            // but_rob_con_sc
-            // 
-            this.but_rob_con_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_con_sc.Location = new System.Drawing.Point(15, 13);
-            this.but_rob_con_sc.Name = "but_rob_con_sc";
-            this.but_rob_con_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_con_sc.TabIndex = 137;
-            this.but_rob_con_sc.Text = "Connect robot";
-            this.but_rob_con_sc.UseVisualStyleBackColor = true;
-            this.but_rob_con_sc.Click += new System.EventHandler(this.but_rob_con_sc_Click);
-            // 
-            // but_rob_manual_sc
-            // 
-            this.but_rob_manual_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_manual_sc.Location = new System.Drawing.Point(127, 57);
-            this.but_rob_manual_sc.Name = "but_rob_manual_sc";
-            this.but_rob_manual_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_manual_sc.TabIndex = 143;
-            this.but_rob_manual_sc.Text = "Manual";
-            this.but_rob_manual_sc.UseVisualStyleBackColor = true;
-            this.but_rob_manual_sc.Click += new System.EventHandler(this.but_rob_manual_sc_Click);
-            // 
-            // but_rob_start_sc
-            // 
-            this.but_rob_start_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_rob_start_sc.Location = new System.Drawing.Point(127, 145);
-            this.but_rob_start_sc.Name = "but_rob_start_sc";
-            this.but_rob_start_sc.Size = new System.Drawing.Size(106, 33);
-            this.but_rob_start_sc.TabIndex = 145;
-            this.but_rob_start_sc.Text = "Start";
-            this.but_rob_start_sc.UseVisualStyleBackColor = true;
-            this.but_rob_start_sc.Click += new System.EventHandler(this.but_rob_start_sc_Click);
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.but_gl_cam_calib);
-            this.tabPage4.Controls.Add(this.but_swapMonit);
-            this.tabPage4.Controls.Add(this.but_imGen);
-            this.tabPage4.Controls.Add(this.but_text_vis);
-            this.tabPage4.Controls.Add(this.but_gl_light);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(642, 899);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "old";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // but_gl_cam_calib
-            // 
-            this.but_gl_cam_calib.Location = new System.Drawing.Point(25, 275);
-            this.but_gl_cam_calib.Name = "but_gl_cam_calib";
-            this.but_gl_cam_calib.Size = new System.Drawing.Size(96, 56);
-            this.but_gl_cam_calib.TabIndex = 98;
-            this.but_gl_cam_calib.Text = "Калибровка камеры";
-            this.but_gl_cam_calib.UseVisualStyleBackColor = true;
-            this.but_gl_cam_calib.Click += new System.EventHandler(this.but_gl_cam_calib_Click);
-            // 
-            // but_swapMonit
-            // 
-            this.but_swapMonit.Location = new System.Drawing.Point(25, 60);
-            this.but_swapMonit.Name = "but_swapMonit";
-            this.but_swapMonit.Size = new System.Drawing.Size(96, 56);
-            this.but_swapMonit.TabIndex = 67;
-            this.but_swapMonit.Text = "Поменять местами";
-            this.but_swapMonit.UseVisualStyleBackColor = true;
-            this.but_swapMonit.Click += new System.EventHandler(this.but_swapMonit_Click);
-            // 
-            // but_imGen
-            // 
-            this.but_imGen.Location = new System.Drawing.Point(25, 142);
-            this.but_imGen.Name = "but_imGen";
-            this.but_imGen.Size = new System.Drawing.Size(96, 56);
-            this.but_imGen.TabIndex = 72;
-            this.but_imGen.Text = "Начать генерацию";
-            this.but_imGen.UseVisualStyleBackColor = true;
-            this.but_imGen.Click += new System.EventHandler(this.but_imGen_Click);
-            // 
-            // but_text_vis
-            // 
-            this.but_text_vis.Location = new System.Drawing.Point(40, 352);
-            this.but_text_vis.Name = "but_text_vis";
-            this.but_text_vis.Size = new System.Drawing.Size(96, 50);
-            this.but_text_vis.TabIndex = 100;
-            this.but_text_vis.Text = "Отобразить текстуру";
-            this.but_text_vis.UseVisualStyleBackColor = true;
-            this.but_text_vis.Click += new System.EventHandler(this.but_text_vis_Click);
-            // 
-            // but_gl_light
-            // 
-            this.but_gl_light.Location = new System.Drawing.Point(25, 220);
-            this.but_gl_light.Name = "but_gl_light";
-            this.but_gl_light.Size = new System.Drawing.Size(96, 49);
-            this.but_gl_light.TabIndex = 125;
-            this.but_gl_light.Text = "Отобразить освещение";
-            this.but_gl_light.UseVisualStyleBackColor = true;
-            this.but_gl_light.Click += new System.EventHandler(this.but_gl_light_Click);
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Controls.Add(this.trackBar1);
-            this.tabPage5.Controls.Add(this.label34);
-            this.tabPage5.Controls.Add(this.label35);
-            this.tabPage5.Controls.Add(this.trackBar2);
-            this.tabPage5.Controls.Add(this.label36);
-            this.tabPage5.Controls.Add(this.trackBar3);
-            this.tabPage5.Controls.Add(this.label37);
-            this.tabPage5.Controls.Add(this.trackBar4);
-            this.tabPage5.Controls.Add(this.label38);
-            this.tabPage5.Controls.Add(this.trackBar5);
-            this.tabPage5.Controls.Add(this.label39);
-            this.tabPage5.Controls.Add(this.trackBar6);
-            this.tabPage5.Controls.Add(this.label40);
-            this.tabPage5.Controls.Add(this.trackBar7);
-            this.tabPage5.Controls.Add(this.label41);
-            this.tabPage5.Controls.Add(this.trackBar8);
-            this.tabPage5.Controls.Add(this.label42);
-            this.tabPage5.Controls.Add(this.trackBar9);
-            this.tabPage5.Controls.Add(this.label43);
-            this.tabPage5.Controls.Add(this.trackBar10);
-            this.tabPage5.Controls.Add(this.label44);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(642, 899);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "sgbm";
-            this.tabPage5.UseVisualStyleBackColor = true;
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.AccessibleName = "1";
-            this.trackBar1.Location = new System.Drawing.Point(101, 59);
-            this.trackBar1.Maximum = 20;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(188, 45);
-            this.trackBar1.TabIndex = 74;
-            this.trackBar1.Value = 1;
-            this.trackBar1.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
-            // 
-            // label34
-            // 
-            this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(130, 13);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(96, 13);
-            this.label34.TabIndex = 75;
-            this.label34.Text = "Настройки SGBM";
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(51, 118);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(48, 13);
-            this.label35.TabIndex = 77;
-            this.label35.Text = "manDisp";
-            // 
-            // trackBar2
-            // 
-            this.trackBar2.AccessibleName = "2";
-            this.trackBar2.Location = new System.Drawing.Point(101, 110);
-            this.trackBar2.Maximum = 20;
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(188, 45);
-            this.trackBar2.TabIndex = 78;
-            this.trackBar2.Value = 2;
-            this.trackBar2.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(42, 180);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(53, 13);
-            this.label36.TabIndex = 79;
-            this.label36.Text = "blockSize";
-            // 
-            // trackBar3
-            // 
-            this.trackBar3.AccessibleName = "3";
-            this.trackBar3.Location = new System.Drawing.Point(101, 161);
-            this.trackBar3.Maximum = 20;
-            this.trackBar3.Name = "trackBar3";
-            this.trackBar3.Size = new System.Drawing.Size(188, 45);
-            this.trackBar3.TabIndex = 80;
-            this.trackBar3.Value = 10;
-            this.trackBar3.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(69, 225);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(19, 13);
-            this.label37.TabIndex = 81;
-            this.label37.Text = "p1";
-            // 
-            // trackBar4
-            // 
-            this.trackBar4.AccessibleName = "4";
-            this.trackBar4.Location = new System.Drawing.Point(101, 212);
-            this.trackBar4.Maximum = 60;
-            this.trackBar4.Name = "trackBar4";
-            this.trackBar4.Size = new System.Drawing.Size(188, 45);
-            this.trackBar4.TabIndex = 82;
-            this.trackBar4.Value = 10;
-            this.trackBar4.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(69, 279);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(19, 13);
-            this.label38.TabIndex = 83;
-            this.label38.Text = "p2";
-            // 
-            // trackBar5
-            // 
-            this.trackBar5.AccessibleName = "5";
-            this.trackBar5.Location = new System.Drawing.Point(101, 263);
-            this.trackBar5.Maximum = 60;
-            this.trackBar5.Name = "trackBar5";
-            this.trackBar5.Size = new System.Drawing.Size(188, 45);
-            this.trackBar5.TabIndex = 84;
-            this.trackBar5.Value = 10;
-            this.trackBar5.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(26, 334);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(73, 13);
-            this.label39.TabIndex = 85;
-            this.label39.Text = "Disp12maxdiff";
-            // 
-            // trackBar6
-            // 
-            this.trackBar6.AccessibleName = "6";
-            this.trackBar6.Location = new System.Drawing.Point(101, 314);
-            this.trackBar6.Maximum = 20;
-            this.trackBar6.Name = "trackBar6";
-            this.trackBar6.Size = new System.Drawing.Size(188, 45);
-            this.trackBar6.TabIndex = 86;
-            this.trackBar6.Value = 10;
-            this.trackBar6.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
-            // 
-            // label40
-            // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(58, 384);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(41, 13);
-            this.label40.TabIndex = 87;
-            this.label40.Text = "prefilter";
-            // 
-            // trackBar7
-            // 
-            this.trackBar7.AccessibleName = "7";
-            this.trackBar7.Location = new System.Drawing.Point(101, 365);
-            this.trackBar7.Maximum = 20;
-            this.trackBar7.Name = "trackBar7";
-            this.trackBar7.Size = new System.Drawing.Size(188, 45);
-            this.trackBar7.TabIndex = 88;
-            this.trackBar7.Value = 10;
-            this.trackBar7.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(51, 443);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(37, 13);
-            this.label41.TabIndex = 89;
-            this.label41.Text = "unuqe";
-            // 
-            // trackBar8
-            // 
-            this.trackBar8.AccessibleName = "8";
-            this.trackBar8.Location = new System.Drawing.Point(101, 416);
-            this.trackBar8.Maximum = 20;
-            this.trackBar8.Name = "trackBar8";
-            this.trackBar8.Size = new System.Drawing.Size(188, 45);
-            this.trackBar8.TabIndex = 90;
-            this.trackBar8.Value = 10;
-            this.trackBar8.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(39, 482);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(56, 13);
-            this.label42.TabIndex = 91;
-            this.label42.Text = "specleWS";
-            // 
-            // trackBar9
-            // 
-            this.trackBar9.AccessibleName = "9";
-            this.trackBar9.Location = new System.Drawing.Point(101, 468);
-            this.trackBar9.Maximum = 20;
-            this.trackBar9.Name = "trackBar9";
-            this.trackBar9.Size = new System.Drawing.Size(188, 45);
-            this.trackBar9.TabIndex = 92;
-            this.trackBar9.Value = 10;
-            this.trackBar9.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(222, 572);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(70, 13);
-            this.label43.TabIndex = 93;
-            this.label43.Text = "specleRange";
-            // 
-            // trackBar10
-            // 
-            this.trackBar10.AccessibleName = "10";
-            this.trackBar10.Location = new System.Drawing.Point(101, 519);
-            this.trackBar10.Maximum = 20;
-            this.trackBar10.Name = "trackBar10";
-            this.trackBar10.Size = new System.Drawing.Size(188, 45);
-            this.trackBar10.TabIndex = 94;
-            this.trackBar10.Value = 10;
-            this.trackBar10.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(51, 67);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(44, 13);
-            this.label44.TabIndex = 95;
-            this.label44.Text = "minDisp";
-            // 
-            // tabPage6
-            // 
-            this.tabPage6.Controls.Add(this.but_comp_basis);
-            this.tabPage6.Controls.Add(this.but_set_model_matr);
-            this.tabPage6.Controls.Add(this.but_dist_same_ps);
-            this.tabPage6.Controls.Add(this.but_ps_cal_save);
-            this.tabPage6.Controls.Add(this.but_stereo_3dp);
-            this.tabPage6.Controls.Add(this.but_delete_area);
-            this.tabPage6.Controls.Add(this.but_end_cont);
-            this.tabPage6.Controls.Add(this.but_intersec_obj);
-            this.tabPage6.Controls.Add(this.but_cross_flat);
-            this.tabPage6.Controls.Add(this.but_keep_area);
-            this.tabPage6.Controls.Add(this.but_reconstruc_area);
-            this.tabPage6.Controls.Add(this.but_SubpixPrec);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(642, 899);
-            this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "Тест";
-            this.tabPage6.UseVisualStyleBackColor = true;
-            // 
-            // but_comp_basis
-            // 
-            this.but_comp_basis.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_comp_basis.Location = new System.Drawing.Point(107, 71);
-            this.but_comp_basis.Name = "but_comp_basis";
-            this.but_comp_basis.Size = new System.Drawing.Size(136, 48);
-            this.but_comp_basis.TabIndex = 159;
-            this.but_comp_basis.Text = "Посчитать матрицу";
-            this.but_comp_basis.UseVisualStyleBackColor = true;
-            this.but_comp_basis.Click += new System.EventHandler(this.but_comp_basis_Click);
-            // 
-            // but_set_model_matr
-            // 
-            this.but_set_model_matr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_set_model_matr.Location = new System.Drawing.Point(107, 20);
-            this.but_set_model_matr.Name = "but_set_model_matr";
-            this.but_set_model_matr.Size = new System.Drawing.Size(136, 48);
-            this.but_set_model_matr.TabIndex = 157;
-            this.but_set_model_matr.Text = "Установить матрицу";
-            this.but_set_model_matr.UseVisualStyleBackColor = true;
-            this.but_set_model_matr.Click += new System.EventHandler(this.but_set_model_matr_Click);
-            // 
-            // but_dist_same_ps
-            // 
-            this.but_dist_same_ps.Location = new System.Drawing.Point(27, 178);
-            this.but_dist_same_ps.Name = "but_dist_same_ps";
-            this.but_dist_same_ps.Size = new System.Drawing.Size(99, 42);
-            this.but_dist_same_ps.TabIndex = 161;
-            this.but_dist_same_ps.Text = "Расстояние между точками";
-            this.but_dist_same_ps.UseVisualStyleBackColor = true;
-            this.but_dist_same_ps.Click += new System.EventHandler(this.but_dist_same_ps_Click);
-            // 
-            // but_ps_cal_save
-            // 
-            this.but_ps_cal_save.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_ps_cal_save.Location = new System.Drawing.Point(107, 125);
-            this.but_ps_cal_save.Name = "but_ps_cal_save";
-            this.but_ps_cal_save.Size = new System.Drawing.Size(136, 48);
-            this.but_ps_cal_save.TabIndex = 158;
-            this.but_ps_cal_save.Text = "Проецировать точки";
-            this.but_ps_cal_save.UseVisualStyleBackColor = true;
-            this.but_ps_cal_save.Click += new System.EventHandler(this.but_ps_cal_save_Click);
-            // 
-            // but_stereo_3dp
-            // 
-            this.but_stereo_3dp.Location = new System.Drawing.Point(132, 178);
-            this.but_stereo_3dp.Name = "but_stereo_3dp";
-            this.but_stereo_3dp.Size = new System.Drawing.Size(111, 42);
-            this.but_stereo_3dp.TabIndex = 160;
-            this.but_stereo_3dp.Text = "Посчитать 3д точки";
-            this.but_stereo_3dp.UseVisualStyleBackColor = true;
-            this.but_stereo_3dp.Click += new System.EventHandler(this.but_stereo_3dp_Click);
-            // 
-            // but_delete_area
-            // 
-            this.but_delete_area.Location = new System.Drawing.Point(13, 307);
-            this.but_delete_area.Name = "but_delete_area";
-            this.but_delete_area.Size = new System.Drawing.Size(96, 34);
-            this.but_delete_area.TabIndex = 134;
-            this.but_delete_area.Text = "Удалить область";
-            this.but_delete_area.UseVisualStyleBackColor = true;
-            this.but_delete_area.Click += new System.EventHandler(this.but_delete_area_Click);
-            // 
-            // but_end_cont
-            // 
-            this.but_end_cont.Location = new System.Drawing.Point(13, 234);
-            this.but_end_cont.Name = "but_end_cont";
-            this.but_end_cont.Size = new System.Drawing.Size(96, 34);
-            this.but_end_cont.TabIndex = 103;
-            this.but_end_cont.Text = "Сохранить контур";
-            this.but_end_cont.UseVisualStyleBackColor = true;
-            this.but_end_cont.Click += new System.EventHandler(this.but_end_cont_Click);
-            // 
-            // but_intersec_obj
-            // 
-            this.but_intersec_obj.Location = new System.Drawing.Point(132, 415);
-            this.but_intersec_obj.Name = "but_intersec_obj";
-            this.but_intersec_obj.Size = new System.Drawing.Size(96, 34);
-            this.but_intersec_obj.TabIndex = 151;
-            this.but_intersec_obj.Text = "Линия пересеч. объектов";
-            this.but_intersec_obj.UseVisualStyleBackColor = true;
-            this.but_intersec_obj.Click += new System.EventHandler(this.but_intersec_obj_Click);
-            // 
-            // but_cross_flat
-            // 
-            this.but_cross_flat.Location = new System.Drawing.Point(13, 357);
-            this.but_cross_flat.Name = "but_cross_flat";
-            this.but_cross_flat.Size = new System.Drawing.Size(75, 23);
-            this.but_cross_flat.TabIndex = 129;
-            this.but_cross_flat.Text = "Пересеч";
-            this.but_cross_flat.UseVisualStyleBackColor = true;
-            this.but_cross_flat.Click += new System.EventHandler(this.but_cross_flat_Click);
-            // 
-            // but_keep_area
-            // 
-            this.but_keep_area.Location = new System.Drawing.Point(13, 270);
-            this.but_keep_area.Name = "but_keep_area";
-            this.but_keep_area.Size = new System.Drawing.Size(96, 34);
-            this.but_keep_area.TabIndex = 135;
-            this.but_keep_area.Text = "Оставить область";
-            this.but_keep_area.UseVisualStyleBackColor = true;
-            this.but_keep_area.Click += new System.EventHandler(this.but_keep_area_Click);
-            // 
-            // but_reconstruc_area
-            // 
-            this.but_reconstruc_area.Location = new System.Drawing.Point(30, 415);
-            this.but_reconstruc_area.Name = "but_reconstruc_area";
-            this.but_reconstruc_area.Size = new System.Drawing.Size(96, 34);
-            this.but_reconstruc_area.TabIndex = 136;
-            this.but_reconstruc_area.Text = "Восстановить область";
-            this.but_reconstruc_area.UseVisualStyleBackColor = true;
-            this.but_reconstruc_area.Click += new System.EventHandler(this.but_reconstruc_area_Click);
-            // 
-            // but_SubpixPrec
-            // 
-            this.but_SubpixPrec.Location = new System.Drawing.Point(186, 548);
-            this.but_SubpixPrec.Name = "but_SubpixPrec";
-            this.but_SubpixPrec.Size = new System.Drawing.Size(75, 23);
-            this.but_SubpixPrec.TabIndex = 96;
-            this.but_SubpixPrec.Text = "SubpixelPrec";
-            this.but_SubpixPrec.UseVisualStyleBackColor = true;
-            this.but_SubpixPrec.Click += new System.EventHandler(this.but_SubpixPrec_Click);
-            // 
-            // tabPage7
-            // 
-            this.tabPage7.Controls.Add(this.prop_gr_light);
-            this.tabPage7.Controls.Add(this.treeV_light);
-            this.tabPage7.Controls.Add(this.trackOz);
-            this.tabPage7.Controls.Add(this.trackOy);
-            this.tabPage7.Controls.Add(this.trackX_light);
-            this.tabPage7.Controls.Add(this.trackOx);
-            this.tabPage7.Controls.Add(this.trackZ_light);
-            this.tabPage7.Controls.Add(this.trackY_light);
-            this.tabPage7.Controls.Add(this.label4);
-            this.tabPage7.Controls.Add(this.label27);
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(642, 899);
-            this.tabPage7.TabIndex = 6;
-            this.tabPage7.Text = "Освещение";
-            this.tabPage7.UseVisualStyleBackColor = true;
-            // 
-            // prop_gr_light
-            // 
-            this.prop_gr_light.Location = new System.Drawing.Point(6, 6);
-            this.prop_gr_light.Name = "prop_gr_light";
-            this.prop_gr_light.Size = new System.Drawing.Size(411, 400);
-            this.prop_gr_light.TabIndex = 152;
-            // 
-            // treeV_light
-            // 
-            this.treeV_light.BackColor = System.Drawing.SystemColors.Window;
-            this.treeV_light.Location = new System.Drawing.Point(423, 0);
-            this.treeV_light.Name = "treeV_light";
-            this.treeV_light.Size = new System.Drawing.Size(174, 400);
-            this.treeV_light.TabIndex = 151;
-            // 
-            // trackOz
-            // 
-            this.trackOz.Location = new System.Drawing.Point(6, 485);
-            this.trackOz.Maximum = 300;
-            this.trackOz.Minimum = -300;
-            this.trackOz.Name = "trackOz";
-            this.trackOz.Size = new System.Drawing.Size(252, 45);
-            this.trackOz.TabIndex = 55;
-            this.trackOz.Value = 12;
-            this.trackOz.Scroll += new System.EventHandler(this.trackOz_Scroll);
-            // 
-            // trackOy
-            // 
-            this.trackOy.Location = new System.Drawing.Point(6, 536);
-            this.trackOy.Maximum = 300;
-            this.trackOy.Minimum = -300;
-            this.trackOy.Name = "trackOy";
-            this.trackOy.Size = new System.Drawing.Size(252, 45);
-            this.trackOy.TabIndex = 54;
-            this.trackOy.Value = 12;
-            this.trackOy.Scroll += new System.EventHandler(this.trackOy_Scroll);
-            // 
-            // trackX_light
-            // 
-            this.trackX_light.Location = new System.Drawing.Point(6, 622);
-            this.trackX_light.Maximum = 100;
-            this.trackX_light.Minimum = -100;
-            this.trackX_light.Name = "trackX_light";
-            this.trackX_light.Size = new System.Drawing.Size(252, 45);
-            this.trackX_light.TabIndex = 49;
-            this.trackX_light.Value = 60;
-            this.trackX_light.Scroll += new System.EventHandler(this.trackX_light_Scroll);
-            // 
-            // trackOx
-            // 
-            this.trackOx.Location = new System.Drawing.Point(6, 434);
-            this.trackOx.Maximum = 300;
-            this.trackOx.Minimum = -300;
-            this.trackOx.Name = "trackOx";
-            this.trackOx.Size = new System.Drawing.Size(252, 45);
-            this.trackOx.TabIndex = 53;
-            this.trackOx.Value = 12;
-            this.trackOx.Scroll += new System.EventHandler(this.trackOx_Scroll);
-            // 
-            // trackZ_light
-            // 
-            this.trackZ_light.Location = new System.Drawing.Point(6, 724);
-            this.trackZ_light.Maximum = 100;
-            this.trackZ_light.Minimum = -100;
-            this.trackZ_light.Name = "trackZ_light";
-            this.trackZ_light.Size = new System.Drawing.Size(252, 45);
-            this.trackZ_light.TabIndex = 51;
-            this.trackZ_light.Value = 12;
-            this.trackZ_light.Scroll += new System.EventHandler(this.trackZ_light_Scroll);
-            // 
-            // trackY_light
-            // 
-            this.trackY_light.Location = new System.Drawing.Point(6, 673);
-            this.trackY_light.Maximum = 100;
-            this.trackY_light.Minimum = -100;
-            this.trackY_light.Name = "trackY_light";
-            this.trackY_light.Size = new System.Drawing.Size(252, 45);
-            this.trackY_light.TabIndex = 50;
-            this.trackY_light.Scroll += new System.EventHandler(this.trackY_light_Scroll);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(84, 418);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(111, 13);
-            this.label4.TabIndex = 56;
-            this.label4.Text = "Ориентация камеры";
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(67, 595);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(152, 13);
-            this.label27.TabIndex = 57;
-            this.label27.Text = "Положение источника света";
-            // 
-            // tabPage8
-            // 
-            this.tabPage8.Controls.Add(this.but_photo_gl);
-            this.tabPage8.Controls.Add(this.imBox_mark1);
-            this.tabPage8.Controls.Add(this.imBox_mark2);
-            this.tabPage8.Controls.Add(this.but_scan_virt);
-            this.tabPage8.Controls.Add(this.imBox_disparity);
-            this.tabPage8.Controls.Add(this.imBox_3dDebug);
-            this.tabPage8.Location = new System.Drawing.Point(4, 22);
-            this.tabPage8.Name = "tabPage8";
-            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(642, 899);
-            this.tabPage8.TabIndex = 7;
-            this.tabPage8.Text = "mat_gl";
-            this.tabPage8.UseVisualStyleBackColor = true;
-            // 
-            // but_photo_gl
-            // 
-            this.but_photo_gl.Location = new System.Drawing.Point(108, 818);
-            this.but_photo_gl.Name = "but_photo_gl";
-            this.but_photo_gl.Size = new System.Drawing.Size(96, 34);
-            this.but_photo_gl.TabIndex = 165;
-            this.but_photo_gl.Text = "Фото GL";
-            this.but_photo_gl.UseVisualStyleBackColor = true;
-            this.but_photo_gl.Click += new System.EventHandler(this.but_photo_gl_Click);
-            // 
-            // imBox_mark1
-            // 
-            this.imBox_mark1.Location = new System.Drawing.Point(6, 6);
-            this.imBox_mark1.Name = "imBox_mark1";
-            this.imBox_mark1.Size = new System.Drawing.Size(778, 400);
-            this.imBox_mark1.TabIndex = 2;
-            this.imBox_mark1.TabStop = false;
-            // 
-            // imBox_mark2
-            // 
-            this.imBox_mark2.Location = new System.Drawing.Point(6, 412);
-            this.imBox_mark2.Name = "imBox_mark2";
-            this.imBox_mark2.Size = new System.Drawing.Size(738, 400);
-            this.imBox_mark2.TabIndex = 71;
-            this.imBox_mark2.TabStop = false;
-            // 
-            // but_scan_virt
-            // 
-            this.but_scan_virt.Location = new System.Drawing.Point(6, 818);
-            this.but_scan_virt.Name = "but_scan_virt";
-            this.but_scan_virt.Size = new System.Drawing.Size(96, 34);
-            this.but_scan_virt.TabIndex = 164;
-            this.but_scan_virt.Text = "Сканирование GL";
-            this.but_scan_virt.UseVisualStyleBackColor = true;
-            this.but_scan_virt.Click += new System.EventHandler(this.but_scan_virt_Click);
-            // 
-            // imBox_disparity
-            // 
-            this.imBox_disparity.Location = new System.Drawing.Point(6, 412);
-            this.imBox_disparity.Name = "imBox_disparity";
-            this.imBox_disparity.Size = new System.Drawing.Size(400, 400);
-            this.imBox_disparity.TabIndex = 73;
-            this.imBox_disparity.TabStop = false;
-            // 
-            // imBox_3dDebug
-            // 
-            this.imBox_3dDebug.Location = new System.Drawing.Point(412, 412);
-            this.imBox_3dDebug.Name = "imBox_3dDebug";
-            this.imBox_3dDebug.Size = new System.Drawing.Size(400, 400);
-            this.imBox_3dDebug.TabIndex = 97;
-            this.imBox_3dDebug.TabStop = false;
-            // 
-            // tabPage9
-            // 
-            this.tabPage9.Controls.Add(this.but_flange_calib_basis);
-            this.tabPage9.Controls.Add(this.prop_gr_scan);
-            this.tabPage9.Controls.Add(this.lab_scan_pres);
-            this.tabPage9.Controls.Add(this.but_scan_pres);
-            this.tabPage9.Controls.Add(this.but_load_fr_cal);
-            this.tabPage9.Controls.Add(this.but_scan_load_ex);
-            this.tabPage9.Controls.Add(this.textB_cam1_conf);
-            this.tabPage9.Controls.Add(this.textB_cam2_conf);
-            this.tabPage9.Controls.Add(this.but_scan_stereo_rob);
-            this.tabPage9.Controls.Add(this.but_load_conf_cam1);
-            this.tabPage9.Controls.Add(this.but_load_conf_cam2);
-            this.tabPage9.Controls.Add(this.but_load_sing_calib);
-            this.tabPage9.Controls.Add(this.textB_stereo_cal_path);
-            this.tabPage9.Controls.Add(this.but_scan_load_sing);
-            this.tabPage9.Controls.Add(this.but_stereo_cal_path);
-            this.tabPage9.Controls.Add(this.label3);
-            this.tabPage9.Controls.Add(this.label11);
-            this.tabPage9.Controls.Add(this.label12);
-            this.tabPage9.Controls.Add(this.textB_scan_path);
-            this.tabPage9.Controls.Add(this.but_scan_path);
-            this.tabPage9.Controls.Add(this.but_calibr_Bfs);
-            this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
-            this.tabPage9.Name = "tabPage9";
-            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(642, 899);
-            this.tabPage9.TabIndex = 8;
-            this.tabPage9.Text = "Загрузка скана";
-            this.tabPage9.UseVisualStyleBackColor = true;
-            // 
-            // but_flange_calib_basis
-            // 
-            this.but_flange_calib_basis.Location = new System.Drawing.Point(487, 663);
-            this.but_flange_calib_basis.Name = "but_flange_calib_basis";
-            this.but_flange_calib_basis.Size = new System.Drawing.Size(149, 35);
-            this.but_flange_calib_basis.TabIndex = 172;
-            this.but_flange_calib_basis.Text = "Калибровка относит фланца через базисы";
-            this.but_flange_calib_basis.UseVisualStyleBackColor = true;
-            this.but_flange_calib_basis.Click += new System.EventHandler(this.but_flange_calib_basis_Click);
-            // 
-            // prop_gr_scan
-            // 
-            this.prop_gr_scan.Location = new System.Drawing.Point(14, 109);
-            this.prop_gr_scan.Name = "prop_gr_scan";
-            this.prop_gr_scan.Size = new System.Drawing.Size(403, 580);
-            this.prop_gr_scan.TabIndex = 171;
-            this.prop_gr_scan.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.prop_gr_scan_SelectedGridItemChanged);
-            // 
-            // lab_scan_pres
-            // 
-            this.lab_scan_pres.AutoSize = true;
-            this.lab_scan_pres.Location = new System.Drawing.Point(443, 171);
-            this.lab_scan_pres.Name = "lab_scan_pres";
-            this.lab_scan_pres.Size = new System.Drawing.Size(54, 13);
-            this.lab_scan_pres.TabIndex = 158;
-            this.lab_scan_pres.Text = "Точность";
-            // 
-            // but_scan_pres
-            // 
-            this.but_scan_pres.Location = new System.Drawing.Point(540, 109);
-            this.but_scan_pres.Name = "but_scan_pres";
-            this.but_scan_pres.Size = new System.Drawing.Size(96, 37);
-            this.but_scan_pres.TabIndex = 157;
-            this.but_scan_pres.Text = "Проверка точности скана";
-            this.but_scan_pres.UseVisualStyleBackColor = true;
-            this.but_scan_pres.Click += new System.EventHandler(this.but_scan_pres_Click);
-            // 
-            // but_load_fr_cal
-            // 
-            this.but_load_fr_cal.Location = new System.Drawing.Point(487, 704);
-            this.but_load_fr_cal.Name = "but_load_fr_cal";
-            this.but_load_fr_cal.Size = new System.Drawing.Size(149, 34);
-            this.but_load_fr_cal.TabIndex = 124;
-            this.but_load_fr_cal.Text = "Загрузить калиборовку";
-            this.but_load_fr_cal.UseVisualStyleBackColor = true;
-            this.but_load_fr_cal.Click += new System.EventHandler(this.but_load_fr_cal_Click);
-            // 
-            // but_scan_load_ex
-            // 
-            this.but_scan_load_ex.Location = new System.Drawing.Point(25, 758);
-            this.but_scan_load_ex.Name = "but_scan_load_ex";
-            this.but_scan_load_ex.Size = new System.Drawing.Size(111, 42);
-            this.but_scan_load_ex.TabIndex = 105;
-            this.but_scan_load_ex.Text = "Загрузить скан стерео";
-            this.but_scan_load_ex.UseVisualStyleBackColor = true;
-            this.but_scan_load_ex.Click += new System.EventHandler(this.but_scan_load_ex_Click);
-            // 
-            // textB_cam1_conf
-            // 
-            this.textB_cam1_conf.Location = new System.Drawing.Point(127, 31);
-            this.textB_cam1_conf.Name = "textB_cam1_conf";
-            this.textB_cam1_conf.Size = new System.Drawing.Size(509, 20);
-            this.textB_cam1_conf.TabIndex = 106;
-            this.textB_cam1_conf.Text = "\"\"";
-            // 
-            // textB_cam2_conf
-            // 
-            this.textB_cam2_conf.Location = new System.Drawing.Point(127, 57);
-            this.textB_cam2_conf.Name = "textB_cam2_conf";
-            this.textB_cam2_conf.Size = new System.Drawing.Size(509, 20);
-            this.textB_cam2_conf.TabIndex = 107;
-            this.textB_cam2_conf.Text = "\"\"";
-            // 
-            // but_scan_stereo_rob
-            // 
-            this.but_scan_stereo_rob.Location = new System.Drawing.Point(423, 109);
-            this.but_scan_stereo_rob.Name = "but_scan_stereo_rob";
-            this.but_scan_stereo_rob.Size = new System.Drawing.Size(111, 37);
-            this.but_scan_stereo_rob.TabIndex = 148;
-            this.but_scan_stereo_rob.Text = "Загрузить скан стерео робот";
-            this.but_scan_stereo_rob.UseVisualStyleBackColor = true;
-            this.but_scan_stereo_rob.Click += new System.EventHandler(this.but_scan_stereo_rob_Click);
-            // 
-            // but_load_conf_cam1
-            // 
-            this.but_load_conf_cam1.Location = new System.Drawing.Point(58, 31);
-            this.but_load_conf_cam1.Name = "but_load_conf_cam1";
-            this.but_load_conf_cam1.Size = new System.Drawing.Size(72, 20);
-            this.but_load_conf_cam1.TabIndex = 108;
-            this.but_load_conf_cam1.Text = "Выбрать";
-            this.but_load_conf_cam1.UseVisualStyleBackColor = true;
-            this.but_load_conf_cam1.Click += new System.EventHandler(this.but_load_conf_cam1_Click);
-            // 
-            // but_load_conf_cam2
-            // 
-            this.but_load_conf_cam2.Location = new System.Drawing.Point(58, 57);
-            this.but_load_conf_cam2.Name = "but_load_conf_cam2";
-            this.but_load_conf_cam2.Size = new System.Drawing.Size(72, 20);
-            this.but_load_conf_cam2.TabIndex = 109;
-            this.but_load_conf_cam2.Text = "Выбрать";
-            this.but_load_conf_cam2.UseVisualStyleBackColor = true;
-            this.but_load_conf_cam2.Click += new System.EventHandler(this.but_load_conf_cam2_Click);
-            // 
-            // but_load_sing_calib
-            // 
-            this.but_load_sing_calib.Location = new System.Drawing.Point(259, 758);
-            this.but_load_sing_calib.Name = "but_load_sing_calib";
-            this.but_load_sing_calib.Size = new System.Drawing.Size(111, 42);
-            this.but_load_sing_calib.TabIndex = 133;
-            this.but_load_sing_calib.Text = "Загрузить калиб одиноч";
-            this.but_load_sing_calib.UseVisualStyleBackColor = true;
-            this.but_load_sing_calib.Click += new System.EventHandler(this.but_load_sing_calib_Click);
-            // 
-            // textB_stereo_cal_path
-            // 
-            this.textB_stereo_cal_path.Location = new System.Drawing.Point(127, 5);
-            this.textB_stereo_cal_path.Name = "textB_stereo_cal_path";
-            this.textB_stereo_cal_path.Size = new System.Drawing.Size(509, 20);
-            this.textB_stereo_cal_path.TabIndex = 110;
-            this.textB_stereo_cal_path.Text = "\"\"";
-            // 
-            // but_scan_load_sing
-            // 
-            this.but_scan_load_sing.Location = new System.Drawing.Point(142, 758);
-            this.but_scan_load_sing.Name = "but_scan_load_sing";
-            this.but_scan_load_sing.Size = new System.Drawing.Size(111, 42);
-            this.but_scan_load_sing.TabIndex = 132;
-            this.but_scan_load_sing.Text = "Загрузить скан одиноч";
-            this.but_scan_load_sing.UseVisualStyleBackColor = true;
-            this.but_scan_load_sing.Click += new System.EventHandler(this.but_scan_load_sing_Click);
-            // 
-            // but_stereo_cal_path
-            // 
-            this.but_stereo_cal_path.Location = new System.Drawing.Point(58, 5);
-            this.but_stereo_cal_path.Name = "but_stereo_cal_path";
-            this.but_stereo_cal_path.Size = new System.Drawing.Size(72, 20);
-            this.but_stereo_cal_path.TabIndex = 111;
-            this.but_stereo_cal_path.Text = "Выбрать";
-            this.but_stereo_cal_path.UseVisualStyleBackColor = true;
-            this.but_stereo_cal_path.Click += new System.EventHandler(this.but_stereo_cal_path_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 9);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 13);
-            this.label3.TabIndex = 112;
-            this.label3.Text = "stereo_cal";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(11, 35);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(60, 13);
-            this.label11.TabIndex = 113;
-            this.label11.Text = "cam1_conf";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(11, 60);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(60, 13);
-            this.label12.TabIndex = 114;
-            this.label12.Text = "cam2_conf";
-            // 
-            // textB_scan_path
-            // 
-            this.textB_scan_path.Location = new System.Drawing.Point(127, 83);
-            this.textB_scan_path.Name = "textB_scan_path";
-            this.textB_scan_path.Size = new System.Drawing.Size(509, 20);
-            this.textB_scan_path.TabIndex = 115;
-            this.textB_scan_path.Text = "\"\"";
-            // 
-            // but_scan_path
-            // 
-            this.but_scan_path.Location = new System.Drawing.Point(58, 83);
-            this.but_scan_path.Name = "but_scan_path";
-            this.but_scan_path.Size = new System.Drawing.Size(72, 20);
-            this.but_scan_path.TabIndex = 116;
-            this.but_scan_path.Text = "Выбрать";
-            this.but_scan_path.UseVisualStyleBackColor = true;
-            this.but_scan_path.Click += new System.EventHandler(this.but_scan_path_Click);
-            // 
-            // but_calibr_Bfs
-            // 
-            this.but_calibr_Bfs.Location = new System.Drawing.Point(540, 744);
-            this.but_calibr_Bfs.Name = "but_calibr_Bfs";
-            this.but_calibr_Bfs.Size = new System.Drawing.Size(96, 34);
-            this.but_calibr_Bfs.TabIndex = 120;
-            this.but_calibr_Bfs.Text = "Калибровка относит фланца";
-            this.but_calibr_Bfs.UseVisualStyleBackColor = true;
-            this.but_calibr_Bfs.Click += new System.EventHandler(this.but_calibr_Bfs_Click);
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(22, 86);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(30, 13);
-            this.label13.TabIndex = 117;
-            this.label13.Text = "scan";
-            // 
             // glControl1
             // 
             this.glControl1.AccessibleName = "1";
@@ -2481,6 +1132,16 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // but_save_im_base1
+            // 
+            this.but_save_im_base1.Location = new System.Drawing.Point(10, 898);
+            this.but_save_im_base1.Name = "but_save_im_base1";
+            this.but_save_im_base1.Size = new System.Drawing.Size(102, 55);
+            this.but_save_im_base1.TabIndex = 147;
+            this.but_save_im_base1.Text = "Сохранить изобр";
+            this.but_save_im_base1.UseVisualStyleBackColor = true;
+            this.but_save_im_base1.Click += new System.EventHandler(this.but_save_im_base1_Click);
             // 
             // but_rob_ph
             // 
@@ -3995,15 +2656,1355 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // but_save_im_base1
+            // tabPage9
             // 
-            this.but_save_im_base1.Location = new System.Drawing.Point(10, 898);
-            this.but_save_im_base1.Name = "but_save_im_base1";
-            this.but_save_im_base1.Size = new System.Drawing.Size(102, 55);
-            this.but_save_im_base1.TabIndex = 147;
-            this.but_save_im_base1.Text = "Сохранить изобр";
-            this.but_save_im_base1.UseVisualStyleBackColor = true;
-            this.but_save_im_base1.Click += new System.EventHandler(this.but_save_im_base1_Click);
+            this.tabPage9.Controls.Add(this.but_flange_calib_basis);
+            this.tabPage9.Controls.Add(this.prop_gr_scan);
+            this.tabPage9.Controls.Add(this.lab_scan_pres);
+            this.tabPage9.Controls.Add(this.but_scan_pres);
+            this.tabPage9.Controls.Add(this.but_load_fr_cal);
+            this.tabPage9.Controls.Add(this.but_scan_load_ex);
+            this.tabPage9.Controls.Add(this.textB_cam1_conf);
+            this.tabPage9.Controls.Add(this.textB_cam2_conf);
+            this.tabPage9.Controls.Add(this.textB_stereo_cal_path);
+            this.tabPage9.Controls.Add(this.textB_scan_path);
+            this.tabPage9.Controls.Add(this.but_scan_stereo_rob);
+            this.tabPage9.Controls.Add(this.but_load_conf_cam1);
+            this.tabPage9.Controls.Add(this.but_load_conf_cam2);
+            this.tabPage9.Controls.Add(this.but_load_sing_calib);
+            this.tabPage9.Controls.Add(this.but_scan_load_sing);
+            this.tabPage9.Controls.Add(this.but_stereo_cal_path);
+            this.tabPage9.Controls.Add(this.label3);
+            this.tabPage9.Controls.Add(this.label11);
+            this.tabPage9.Controls.Add(this.label12);
+            this.tabPage9.Controls.Add(this.but_scan_path);
+            this.tabPage9.Controls.Add(this.but_calibr_Bfs);
+            this.tabPage9.Controls.Add(this.label13);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage9.Size = new System.Drawing.Size(642, 899);
+            this.tabPage9.TabIndex = 8;
+            this.tabPage9.Text = "Загрузка скана";
+            this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(22, 86);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(30, 13);
+            this.label13.TabIndex = 117;
+            this.label13.Text = "scan";
+            // 
+            // but_calibr_Bfs
+            // 
+            this.but_calibr_Bfs.Location = new System.Drawing.Point(540, 744);
+            this.but_calibr_Bfs.Name = "but_calibr_Bfs";
+            this.but_calibr_Bfs.Size = new System.Drawing.Size(96, 34);
+            this.but_calibr_Bfs.TabIndex = 120;
+            this.but_calibr_Bfs.Text = "Калибровка относит фланца";
+            this.but_calibr_Bfs.UseVisualStyleBackColor = true;
+            this.but_calibr_Bfs.Click += new System.EventHandler(this.but_calibr_Bfs_Click);
+            // 
+            // but_scan_path
+            // 
+            this.but_scan_path.Location = new System.Drawing.Point(58, 83);
+            this.but_scan_path.Name = "but_scan_path";
+            this.but_scan_path.Size = new System.Drawing.Size(72, 20);
+            this.but_scan_path.TabIndex = 116;
+            this.but_scan_path.Text = "Выбрать";
+            this.but_scan_path.UseVisualStyleBackColor = true;
+            this.but_scan_path.Click += new System.EventHandler(this.but_scan_path_Click);
+            // 
+            // textB_scan_path
+            // 
+            this.textB_scan_path.Location = new System.Drawing.Point(127, 83);
+            this.textB_scan_path.Name = "textB_scan_path";
+            this.textB_scan_path.Size = new System.Drawing.Size(509, 20);
+            this.textB_scan_path.TabIndex = 115;
+            this.textB_scan_path.Text = "\"\"";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(11, 60);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(60, 13);
+            this.label12.TabIndex = 114;
+            this.label12.Text = "cam2_conf";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(11, 35);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(60, 13);
+            this.label11.TabIndex = 113;
+            this.label11.Text = "cam1_conf";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(11, 9);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(56, 13);
+            this.label3.TabIndex = 112;
+            this.label3.Text = "stereo_cal";
+            // 
+            // but_stereo_cal_path
+            // 
+            this.but_stereo_cal_path.Location = new System.Drawing.Point(58, 5);
+            this.but_stereo_cal_path.Name = "but_stereo_cal_path";
+            this.but_stereo_cal_path.Size = new System.Drawing.Size(72, 20);
+            this.but_stereo_cal_path.TabIndex = 111;
+            this.but_stereo_cal_path.Text = "Выбрать";
+            this.but_stereo_cal_path.UseVisualStyleBackColor = true;
+            this.but_stereo_cal_path.Click += new System.EventHandler(this.but_stereo_cal_path_Click);
+            // 
+            // but_scan_load_sing
+            // 
+            this.but_scan_load_sing.Location = new System.Drawing.Point(142, 758);
+            this.but_scan_load_sing.Name = "but_scan_load_sing";
+            this.but_scan_load_sing.Size = new System.Drawing.Size(111, 42);
+            this.but_scan_load_sing.TabIndex = 132;
+            this.but_scan_load_sing.Text = "Загрузить скан одиноч";
+            this.but_scan_load_sing.UseVisualStyleBackColor = true;
+            this.but_scan_load_sing.Click += new System.EventHandler(this.but_scan_load_sing_Click);
+            // 
+            // textB_stereo_cal_path
+            // 
+            this.textB_stereo_cal_path.Location = new System.Drawing.Point(127, 5);
+            this.textB_stereo_cal_path.Name = "textB_stereo_cal_path";
+            this.textB_stereo_cal_path.Size = new System.Drawing.Size(509, 20);
+            this.textB_stereo_cal_path.TabIndex = 110;
+            this.textB_stereo_cal_path.Text = "\"\"";
+            // 
+            // but_load_sing_calib
+            // 
+            this.but_load_sing_calib.Location = new System.Drawing.Point(259, 758);
+            this.but_load_sing_calib.Name = "but_load_sing_calib";
+            this.but_load_sing_calib.Size = new System.Drawing.Size(111, 42);
+            this.but_load_sing_calib.TabIndex = 133;
+            this.but_load_sing_calib.Text = "Загрузить калиб одиноч";
+            this.but_load_sing_calib.UseVisualStyleBackColor = true;
+            this.but_load_sing_calib.Click += new System.EventHandler(this.but_load_sing_calib_Click);
+            // 
+            // but_load_conf_cam2
+            // 
+            this.but_load_conf_cam2.Location = new System.Drawing.Point(58, 57);
+            this.but_load_conf_cam2.Name = "but_load_conf_cam2";
+            this.but_load_conf_cam2.Size = new System.Drawing.Size(72, 20);
+            this.but_load_conf_cam2.TabIndex = 109;
+            this.but_load_conf_cam2.Text = "Выбрать";
+            this.but_load_conf_cam2.UseVisualStyleBackColor = true;
+            this.but_load_conf_cam2.Click += new System.EventHandler(this.but_load_conf_cam2_Click);
+            // 
+            // but_load_conf_cam1
+            // 
+            this.but_load_conf_cam1.Location = new System.Drawing.Point(58, 31);
+            this.but_load_conf_cam1.Name = "but_load_conf_cam1";
+            this.but_load_conf_cam1.Size = new System.Drawing.Size(72, 20);
+            this.but_load_conf_cam1.TabIndex = 108;
+            this.but_load_conf_cam1.Text = "Выбрать";
+            this.but_load_conf_cam1.UseVisualStyleBackColor = true;
+            this.but_load_conf_cam1.Click += new System.EventHandler(this.but_load_conf_cam1_Click);
+            // 
+            // but_scan_stereo_rob
+            // 
+            this.but_scan_stereo_rob.Location = new System.Drawing.Point(423, 109);
+            this.but_scan_stereo_rob.Name = "but_scan_stereo_rob";
+            this.but_scan_stereo_rob.Size = new System.Drawing.Size(111, 37);
+            this.but_scan_stereo_rob.TabIndex = 148;
+            this.but_scan_stereo_rob.Text = "Загрузить скан стерео робот";
+            this.but_scan_stereo_rob.UseVisualStyleBackColor = true;
+            this.but_scan_stereo_rob.Click += new System.EventHandler(this.but_scan_stereo_rob_Click);
+            // 
+            // textB_cam2_conf
+            // 
+            this.textB_cam2_conf.Location = new System.Drawing.Point(127, 57);
+            this.textB_cam2_conf.Name = "textB_cam2_conf";
+            this.textB_cam2_conf.Size = new System.Drawing.Size(509, 20);
+            this.textB_cam2_conf.TabIndex = 107;
+            this.textB_cam2_conf.Text = "\"\"";
+            // 
+            // textB_cam1_conf
+            // 
+            this.textB_cam1_conf.Location = new System.Drawing.Point(127, 31);
+            this.textB_cam1_conf.Name = "textB_cam1_conf";
+            this.textB_cam1_conf.Size = new System.Drawing.Size(509, 20);
+            this.textB_cam1_conf.TabIndex = 106;
+            this.textB_cam1_conf.Text = "\"\"";
+            // 
+            // but_scan_load_ex
+            // 
+            this.but_scan_load_ex.Location = new System.Drawing.Point(25, 758);
+            this.but_scan_load_ex.Name = "but_scan_load_ex";
+            this.but_scan_load_ex.Size = new System.Drawing.Size(111, 42);
+            this.but_scan_load_ex.TabIndex = 105;
+            this.but_scan_load_ex.Text = "Загрузить скан стерео";
+            this.but_scan_load_ex.UseVisualStyleBackColor = true;
+            this.but_scan_load_ex.Click += new System.EventHandler(this.but_scan_load_ex_Click);
+            // 
+            // but_load_fr_cal
+            // 
+            this.but_load_fr_cal.Location = new System.Drawing.Point(487, 704);
+            this.but_load_fr_cal.Name = "but_load_fr_cal";
+            this.but_load_fr_cal.Size = new System.Drawing.Size(149, 34);
+            this.but_load_fr_cal.TabIndex = 124;
+            this.but_load_fr_cal.Text = "Загрузить калиборовку";
+            this.but_load_fr_cal.UseVisualStyleBackColor = true;
+            this.but_load_fr_cal.Click += new System.EventHandler(this.but_load_fr_cal_Click);
+            // 
+            // but_scan_pres
+            // 
+            this.but_scan_pres.Location = new System.Drawing.Point(540, 109);
+            this.but_scan_pres.Name = "but_scan_pres";
+            this.but_scan_pres.Size = new System.Drawing.Size(96, 37);
+            this.but_scan_pres.TabIndex = 157;
+            this.but_scan_pres.Text = "Проверка точности скана";
+            this.but_scan_pres.UseVisualStyleBackColor = true;
+            this.but_scan_pres.Click += new System.EventHandler(this.but_scan_pres_Click);
+            // 
+            // lab_scan_pres
+            // 
+            this.lab_scan_pres.AutoSize = true;
+            this.lab_scan_pres.Location = new System.Drawing.Point(443, 171);
+            this.lab_scan_pres.Name = "lab_scan_pres";
+            this.lab_scan_pres.Size = new System.Drawing.Size(54, 13);
+            this.lab_scan_pres.TabIndex = 158;
+            this.lab_scan_pres.Text = "Точность";
+            // 
+            // prop_gr_scan
+            // 
+            this.prop_gr_scan.Location = new System.Drawing.Point(14, 109);
+            this.prop_gr_scan.Name = "prop_gr_scan";
+            this.prop_gr_scan.Size = new System.Drawing.Size(403, 580);
+            this.prop_gr_scan.TabIndex = 171;
+            this.prop_gr_scan.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.prop_gr_scan_PropertyValueChanged);
+            this.prop_gr_scan.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler(this.prop_gr_scan_SelectedGridItemChanged);
+            // 
+            // but_flange_calib_basis
+            // 
+            this.but_flange_calib_basis.Location = new System.Drawing.Point(487, 663);
+            this.but_flange_calib_basis.Name = "but_flange_calib_basis";
+            this.but_flange_calib_basis.Size = new System.Drawing.Size(149, 35);
+            this.but_flange_calib_basis.TabIndex = 172;
+            this.but_flange_calib_basis.Text = "Калибровка относит фланца через базисы";
+            this.but_flange_calib_basis.UseVisualStyleBackColor = true;
+            this.but_flange_calib_basis.Click += new System.EventHandler(this.but_flange_calib_basis_Click);
+            // 
+            // tabPage8
+            // 
+            this.tabPage8.Controls.Add(this.trackOz);
+            this.tabPage8.Controls.Add(this.trackOy);
+            this.tabPage8.Controls.Add(this.trackOx);
+            this.tabPage8.Controls.Add(this.label4);
+            this.tabPage8.Controls.Add(this.but_photo_gl);
+            this.tabPage8.Controls.Add(this.imBox_mark1);
+            this.tabPage8.Controls.Add(this.imBox_mark2);
+            this.tabPage8.Controls.Add(this.but_scan_virt);
+            this.tabPage8.Controls.Add(this.imBox_disparity);
+            this.tabPage8.Controls.Add(this.imBox_3dDebug);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(642, 965);
+            this.tabPage8.TabIndex = 7;
+            this.tabPage8.Text = "mat_gl";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // imBox_3dDebug
+            // 
+            this.imBox_3dDebug.Location = new System.Drawing.Point(412, 412);
+            this.imBox_3dDebug.Name = "imBox_3dDebug";
+            this.imBox_3dDebug.Size = new System.Drawing.Size(400, 400);
+            this.imBox_3dDebug.TabIndex = 97;
+            this.imBox_3dDebug.TabStop = false;
+            // 
+            // imBox_disparity
+            // 
+            this.imBox_disparity.Location = new System.Drawing.Point(6, 412);
+            this.imBox_disparity.Name = "imBox_disparity";
+            this.imBox_disparity.Size = new System.Drawing.Size(400, 400);
+            this.imBox_disparity.TabIndex = 73;
+            this.imBox_disparity.TabStop = false;
+            // 
+            // but_scan_virt
+            // 
+            this.but_scan_virt.Location = new System.Drawing.Point(6, 818);
+            this.but_scan_virt.Name = "but_scan_virt";
+            this.but_scan_virt.Size = new System.Drawing.Size(96, 34);
+            this.but_scan_virt.TabIndex = 164;
+            this.but_scan_virt.Text = "Сканирование GL";
+            this.but_scan_virt.UseVisualStyleBackColor = true;
+            this.but_scan_virt.Click += new System.EventHandler(this.but_scan_virt_Click);
+            // 
+            // imBox_mark2
+            // 
+            this.imBox_mark2.Location = new System.Drawing.Point(6, 412);
+            this.imBox_mark2.Name = "imBox_mark2";
+            this.imBox_mark2.Size = new System.Drawing.Size(738, 400);
+            this.imBox_mark2.TabIndex = 71;
+            this.imBox_mark2.TabStop = false;
+            // 
+            // imBox_mark1
+            // 
+            this.imBox_mark1.Location = new System.Drawing.Point(6, 6);
+            this.imBox_mark1.Name = "imBox_mark1";
+            this.imBox_mark1.Size = new System.Drawing.Size(778, 400);
+            this.imBox_mark1.TabIndex = 2;
+            this.imBox_mark1.TabStop = false;
+            // 
+            // but_photo_gl
+            // 
+            this.but_photo_gl.Location = new System.Drawing.Point(108, 818);
+            this.but_photo_gl.Name = "but_photo_gl";
+            this.but_photo_gl.Size = new System.Drawing.Size(96, 34);
+            this.but_photo_gl.TabIndex = 165;
+            this.but_photo_gl.Text = "Фото GL";
+            this.but_photo_gl.UseVisualStyleBackColor = true;
+            this.but_photo_gl.Click += new System.EventHandler(this.but_photo_gl_Click);
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.prop_gr_light);
+            this.tabPage7.Controls.Add(this.treeV_light);
+            this.tabPage7.Controls.Add(this.trackX_light);
+            this.tabPage7.Controls.Add(this.trackZ_light);
+            this.tabPage7.Controls.Add(this.trackY_light);
+            this.tabPage7.Controls.Add(this.label27);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(642, 899);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "Освещение";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(67, 595);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(152, 13);
+            this.label27.TabIndex = 57;
+            this.label27.Text = "Положение источника света";
+            // 
+            // trackY_light
+            // 
+            this.trackY_light.Location = new System.Drawing.Point(6, 673);
+            this.trackY_light.Maximum = 100;
+            this.trackY_light.Minimum = -100;
+            this.trackY_light.Name = "trackY_light";
+            this.trackY_light.Size = new System.Drawing.Size(252, 45);
+            this.trackY_light.TabIndex = 50;
+            this.trackY_light.Scroll += new System.EventHandler(this.trackY_light_Scroll);
+            // 
+            // trackZ_light
+            // 
+            this.trackZ_light.Location = new System.Drawing.Point(6, 724);
+            this.trackZ_light.Maximum = 100;
+            this.trackZ_light.Minimum = -100;
+            this.trackZ_light.Name = "trackZ_light";
+            this.trackZ_light.Size = new System.Drawing.Size(252, 45);
+            this.trackZ_light.TabIndex = 51;
+            this.trackZ_light.Value = 12;
+            this.trackZ_light.Scroll += new System.EventHandler(this.trackZ_light_Scroll);
+            // 
+            // trackX_light
+            // 
+            this.trackX_light.Location = new System.Drawing.Point(6, 622);
+            this.trackX_light.Maximum = 100;
+            this.trackX_light.Minimum = -100;
+            this.trackX_light.Name = "trackX_light";
+            this.trackX_light.Size = new System.Drawing.Size(252, 45);
+            this.trackX_light.TabIndex = 49;
+            this.trackX_light.Value = 60;
+            this.trackX_light.Scroll += new System.EventHandler(this.trackX_light_Scroll);
+            // 
+            // treeV_light
+            // 
+            this.treeV_light.BackColor = System.Drawing.SystemColors.Window;
+            this.treeV_light.Location = new System.Drawing.Point(423, 0);
+            this.treeV_light.Name = "treeV_light";
+            this.treeV_light.Size = new System.Drawing.Size(174, 400);
+            this.treeV_light.TabIndex = 151;
+            // 
+            // prop_gr_light
+            // 
+            this.prop_gr_light.Location = new System.Drawing.Point(6, 6);
+            this.prop_gr_light.Name = "prop_gr_light";
+            this.prop_gr_light.Size = new System.Drawing.Size(411, 400);
+            this.prop_gr_light.TabIndex = 152;
+            // 
+            // tabPage6
+            // 
+            this.tabPage6.Controls.Add(this.but_comp_basis);
+            this.tabPage6.Controls.Add(this.but_set_model_matr);
+            this.tabPage6.Controls.Add(this.but_dist_same_ps);
+            this.tabPage6.Controls.Add(this.but_ps_cal_save);
+            this.tabPage6.Controls.Add(this.but_stereo_3dp);
+            this.tabPage6.Controls.Add(this.but_delete_area);
+            this.tabPage6.Controls.Add(this.but_end_cont);
+            this.tabPage6.Controls.Add(this.but_intersec_obj);
+            this.tabPage6.Controls.Add(this.but_cross_flat);
+            this.tabPage6.Controls.Add(this.but_keep_area);
+            this.tabPage6.Controls.Add(this.but_reconstruc_area);
+            this.tabPage6.Controls.Add(this.but_SubpixPrec);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage6.Size = new System.Drawing.Size(642, 899);
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "Тест";
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // but_SubpixPrec
+            // 
+            this.but_SubpixPrec.Location = new System.Drawing.Point(186, 548);
+            this.but_SubpixPrec.Name = "but_SubpixPrec";
+            this.but_SubpixPrec.Size = new System.Drawing.Size(75, 23);
+            this.but_SubpixPrec.TabIndex = 96;
+            this.but_SubpixPrec.Text = "SubpixelPrec";
+            this.but_SubpixPrec.UseVisualStyleBackColor = true;
+            this.but_SubpixPrec.Click += new System.EventHandler(this.but_SubpixPrec_Click);
+            // 
+            // but_reconstruc_area
+            // 
+            this.but_reconstruc_area.Location = new System.Drawing.Point(30, 415);
+            this.but_reconstruc_area.Name = "but_reconstruc_area";
+            this.but_reconstruc_area.Size = new System.Drawing.Size(96, 34);
+            this.but_reconstruc_area.TabIndex = 136;
+            this.but_reconstruc_area.Text = "Восстановить область";
+            this.but_reconstruc_area.UseVisualStyleBackColor = true;
+            this.but_reconstruc_area.Click += new System.EventHandler(this.but_reconstruc_area_Click);
+            // 
+            // but_keep_area
+            // 
+            this.but_keep_area.Location = new System.Drawing.Point(13, 270);
+            this.but_keep_area.Name = "but_keep_area";
+            this.but_keep_area.Size = new System.Drawing.Size(96, 34);
+            this.but_keep_area.TabIndex = 135;
+            this.but_keep_area.Text = "Оставить область";
+            this.but_keep_area.UseVisualStyleBackColor = true;
+            this.but_keep_area.Click += new System.EventHandler(this.but_keep_area_Click);
+            // 
+            // but_cross_flat
+            // 
+            this.but_cross_flat.Location = new System.Drawing.Point(13, 357);
+            this.but_cross_flat.Name = "but_cross_flat";
+            this.but_cross_flat.Size = new System.Drawing.Size(75, 23);
+            this.but_cross_flat.TabIndex = 129;
+            this.but_cross_flat.Text = "Пересеч";
+            this.but_cross_flat.UseVisualStyleBackColor = true;
+            this.but_cross_flat.Click += new System.EventHandler(this.but_cross_flat_Click);
+            // 
+            // but_intersec_obj
+            // 
+            this.but_intersec_obj.Location = new System.Drawing.Point(132, 415);
+            this.but_intersec_obj.Name = "but_intersec_obj";
+            this.but_intersec_obj.Size = new System.Drawing.Size(96, 34);
+            this.but_intersec_obj.TabIndex = 151;
+            this.but_intersec_obj.Text = "Линия пересеч. объектов";
+            this.but_intersec_obj.UseVisualStyleBackColor = true;
+            this.but_intersec_obj.Click += new System.EventHandler(this.but_intersec_obj_Click);
+            // 
+            // but_end_cont
+            // 
+            this.but_end_cont.Location = new System.Drawing.Point(13, 234);
+            this.but_end_cont.Name = "but_end_cont";
+            this.but_end_cont.Size = new System.Drawing.Size(96, 34);
+            this.but_end_cont.TabIndex = 103;
+            this.but_end_cont.Text = "Сохранить контур";
+            this.but_end_cont.UseVisualStyleBackColor = true;
+            this.but_end_cont.Click += new System.EventHandler(this.but_end_cont_Click);
+            // 
+            // but_delete_area
+            // 
+            this.but_delete_area.Location = new System.Drawing.Point(13, 307);
+            this.but_delete_area.Name = "but_delete_area";
+            this.but_delete_area.Size = new System.Drawing.Size(96, 34);
+            this.but_delete_area.TabIndex = 134;
+            this.but_delete_area.Text = "Удалить область";
+            this.but_delete_area.UseVisualStyleBackColor = true;
+            this.but_delete_area.Click += new System.EventHandler(this.but_delete_area_Click);
+            // 
+            // but_stereo_3dp
+            // 
+            this.but_stereo_3dp.Location = new System.Drawing.Point(132, 178);
+            this.but_stereo_3dp.Name = "but_stereo_3dp";
+            this.but_stereo_3dp.Size = new System.Drawing.Size(111, 42);
+            this.but_stereo_3dp.TabIndex = 160;
+            this.but_stereo_3dp.Text = "Посчитать 3д точки";
+            this.but_stereo_3dp.UseVisualStyleBackColor = true;
+            this.but_stereo_3dp.Click += new System.EventHandler(this.but_stereo_3dp_Click);
+            // 
+            // but_ps_cal_save
+            // 
+            this.but_ps_cal_save.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_ps_cal_save.Location = new System.Drawing.Point(107, 125);
+            this.but_ps_cal_save.Name = "but_ps_cal_save";
+            this.but_ps_cal_save.Size = new System.Drawing.Size(136, 48);
+            this.but_ps_cal_save.TabIndex = 158;
+            this.but_ps_cal_save.Text = "Проецировать точки";
+            this.but_ps_cal_save.UseVisualStyleBackColor = true;
+            this.but_ps_cal_save.Click += new System.EventHandler(this.but_ps_cal_save_Click);
+            // 
+            // but_dist_same_ps
+            // 
+            this.but_dist_same_ps.Location = new System.Drawing.Point(27, 178);
+            this.but_dist_same_ps.Name = "but_dist_same_ps";
+            this.but_dist_same_ps.Size = new System.Drawing.Size(99, 42);
+            this.but_dist_same_ps.TabIndex = 161;
+            this.but_dist_same_ps.Text = "Расстояние между точками";
+            this.but_dist_same_ps.UseVisualStyleBackColor = true;
+            this.but_dist_same_ps.Click += new System.EventHandler(this.but_dist_same_ps_Click);
+            // 
+            // but_set_model_matr
+            // 
+            this.but_set_model_matr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_set_model_matr.Location = new System.Drawing.Point(107, 20);
+            this.but_set_model_matr.Name = "but_set_model_matr";
+            this.but_set_model_matr.Size = new System.Drawing.Size(136, 48);
+            this.but_set_model_matr.TabIndex = 157;
+            this.but_set_model_matr.Text = "Установить матрицу";
+            this.but_set_model_matr.UseVisualStyleBackColor = true;
+            this.but_set_model_matr.Click += new System.EventHandler(this.but_set_model_matr_Click);
+            // 
+            // but_comp_basis
+            // 
+            this.but_comp_basis.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_comp_basis.Location = new System.Drawing.Point(107, 71);
+            this.but_comp_basis.Name = "but_comp_basis";
+            this.but_comp_basis.Size = new System.Drawing.Size(136, 48);
+            this.but_comp_basis.TabIndex = 159;
+            this.but_comp_basis.Text = "Посчитать матрицу";
+            this.but_comp_basis.UseVisualStyleBackColor = true;
+            this.but_comp_basis.Click += new System.EventHandler(this.but_comp_basis_Click);
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.trackBar1);
+            this.tabPage5.Controls.Add(this.label34);
+            this.tabPage5.Controls.Add(this.label35);
+            this.tabPage5.Controls.Add(this.trackBar2);
+            this.tabPage5.Controls.Add(this.label36);
+            this.tabPage5.Controls.Add(this.trackBar3);
+            this.tabPage5.Controls.Add(this.label37);
+            this.tabPage5.Controls.Add(this.trackBar4);
+            this.tabPage5.Controls.Add(this.label38);
+            this.tabPage5.Controls.Add(this.trackBar5);
+            this.tabPage5.Controls.Add(this.label39);
+            this.tabPage5.Controls.Add(this.trackBar6);
+            this.tabPage5.Controls.Add(this.label40);
+            this.tabPage5.Controls.Add(this.trackBar7);
+            this.tabPage5.Controls.Add(this.label41);
+            this.tabPage5.Controls.Add(this.trackBar8);
+            this.tabPage5.Controls.Add(this.label42);
+            this.tabPage5.Controls.Add(this.trackBar9);
+            this.tabPage5.Controls.Add(this.label43);
+            this.tabPage5.Controls.Add(this.trackBar10);
+            this.tabPage5.Controls.Add(this.label44);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(642, 899);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "sgbm";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(51, 67);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(44, 13);
+            this.label44.TabIndex = 95;
+            this.label44.Text = "minDisp";
+            // 
+            // trackBar10
+            // 
+            this.trackBar10.AccessibleName = "10";
+            this.trackBar10.Location = new System.Drawing.Point(101, 519);
+            this.trackBar10.Maximum = 20;
+            this.trackBar10.Name = "trackBar10";
+            this.trackBar10.Size = new System.Drawing.Size(188, 45);
+            this.trackBar10.TabIndex = 94;
+            this.trackBar10.Value = 10;
+            this.trackBar10.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(222, 572);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(70, 13);
+            this.label43.TabIndex = 93;
+            this.label43.Text = "specleRange";
+            // 
+            // trackBar9
+            // 
+            this.trackBar9.AccessibleName = "9";
+            this.trackBar9.Location = new System.Drawing.Point(101, 468);
+            this.trackBar9.Maximum = 20;
+            this.trackBar9.Name = "trackBar9";
+            this.trackBar9.Size = new System.Drawing.Size(188, 45);
+            this.trackBar9.TabIndex = 92;
+            this.trackBar9.Value = 10;
+            this.trackBar9.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(39, 482);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(56, 13);
+            this.label42.TabIndex = 91;
+            this.label42.Text = "specleWS";
+            // 
+            // trackBar8
+            // 
+            this.trackBar8.AccessibleName = "8";
+            this.trackBar8.Location = new System.Drawing.Point(101, 416);
+            this.trackBar8.Maximum = 20;
+            this.trackBar8.Name = "trackBar8";
+            this.trackBar8.Size = new System.Drawing.Size(188, 45);
+            this.trackBar8.TabIndex = 90;
+            this.trackBar8.Value = 10;
+            this.trackBar8.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(51, 443);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(37, 13);
+            this.label41.TabIndex = 89;
+            this.label41.Text = "unuqe";
+            // 
+            // trackBar7
+            // 
+            this.trackBar7.AccessibleName = "7";
+            this.trackBar7.Location = new System.Drawing.Point(101, 365);
+            this.trackBar7.Maximum = 20;
+            this.trackBar7.Name = "trackBar7";
+            this.trackBar7.Size = new System.Drawing.Size(188, 45);
+            this.trackBar7.TabIndex = 88;
+            this.trackBar7.Value = 10;
+            this.trackBar7.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(58, 384);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(41, 13);
+            this.label40.TabIndex = 87;
+            this.label40.Text = "prefilter";
+            // 
+            // trackBar6
+            // 
+            this.trackBar6.AccessibleName = "6";
+            this.trackBar6.Location = new System.Drawing.Point(101, 314);
+            this.trackBar6.Maximum = 20;
+            this.trackBar6.Name = "trackBar6";
+            this.trackBar6.Size = new System.Drawing.Size(188, 45);
+            this.trackBar6.TabIndex = 86;
+            this.trackBar6.Value = 10;
+            this.trackBar6.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(26, 334);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(73, 13);
+            this.label39.TabIndex = 85;
+            this.label39.Text = "Disp12maxdiff";
+            // 
+            // trackBar5
+            // 
+            this.trackBar5.AccessibleName = "5";
+            this.trackBar5.Location = new System.Drawing.Point(101, 263);
+            this.trackBar5.Maximum = 60;
+            this.trackBar5.Name = "trackBar5";
+            this.trackBar5.Size = new System.Drawing.Size(188, 45);
+            this.trackBar5.TabIndex = 84;
+            this.trackBar5.Value = 10;
+            this.trackBar5.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(69, 279);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(19, 13);
+            this.label38.TabIndex = 83;
+            this.label38.Text = "p2";
+            // 
+            // trackBar4
+            // 
+            this.trackBar4.AccessibleName = "4";
+            this.trackBar4.Location = new System.Drawing.Point(101, 212);
+            this.trackBar4.Maximum = 60;
+            this.trackBar4.Name = "trackBar4";
+            this.trackBar4.Size = new System.Drawing.Size(188, 45);
+            this.trackBar4.TabIndex = 82;
+            this.trackBar4.Value = 10;
+            this.trackBar4.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(69, 225);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(19, 13);
+            this.label37.TabIndex = 81;
+            this.label37.Text = "p1";
+            // 
+            // trackBar3
+            // 
+            this.trackBar3.AccessibleName = "3";
+            this.trackBar3.Location = new System.Drawing.Point(101, 161);
+            this.trackBar3.Maximum = 20;
+            this.trackBar3.Name = "trackBar3";
+            this.trackBar3.Size = new System.Drawing.Size(188, 45);
+            this.trackBar3.TabIndex = 80;
+            this.trackBar3.Value = 10;
+            this.trackBar3.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(42, 180);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(53, 13);
+            this.label36.TabIndex = 79;
+            this.label36.Text = "blockSize";
+            // 
+            // trackBar2
+            // 
+            this.trackBar2.AccessibleName = "2";
+            this.trackBar2.Location = new System.Drawing.Point(101, 110);
+            this.trackBar2.Maximum = 20;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Size = new System.Drawing.Size(188, 45);
+            this.trackBar2.TabIndex = 78;
+            this.trackBar2.Value = 2;
+            this.trackBar2.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(51, 118);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(48, 13);
+            this.label35.TabIndex = 77;
+            this.label35.Text = "manDisp";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(130, 13);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(96, 13);
+            this.label34.TabIndex = 75;
+            this.label34.Text = "Настройки SGBM";
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.AccessibleName = "1";
+            this.trackBar1.Location = new System.Drawing.Point(101, 59);
+            this.trackBar1.Maximum = 20;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(188, 45);
+            this.trackBar1.TabIndex = 74;
+            this.trackBar1.Value = 1;
+            this.trackBar1.Scroll += new System.EventHandler(this.trB_SGBM_Scroll);
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.but_gl_cam_calib);
+            this.tabPage4.Controls.Add(this.but_swapMonit);
+            this.tabPage4.Controls.Add(this.but_imGen);
+            this.tabPage4.Controls.Add(this.but_text_vis);
+            this.tabPage4.Controls.Add(this.but_gl_light);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(642, 899);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "old";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // but_gl_light
+            // 
+            this.but_gl_light.Location = new System.Drawing.Point(25, 220);
+            this.but_gl_light.Name = "but_gl_light";
+            this.but_gl_light.Size = new System.Drawing.Size(96, 49);
+            this.but_gl_light.TabIndex = 125;
+            this.but_gl_light.Text = "Отобразить освещение";
+            this.but_gl_light.UseVisualStyleBackColor = true;
+            this.but_gl_light.Click += new System.EventHandler(this.but_gl_light_Click);
+            // 
+            // but_text_vis
+            // 
+            this.but_text_vis.Location = new System.Drawing.Point(40, 352);
+            this.but_text_vis.Name = "but_text_vis";
+            this.but_text_vis.Size = new System.Drawing.Size(96, 50);
+            this.but_text_vis.TabIndex = 100;
+            this.but_text_vis.Text = "Отобразить текстуру";
+            this.but_text_vis.UseVisualStyleBackColor = true;
+            this.but_text_vis.Click += new System.EventHandler(this.but_text_vis_Click);
+            // 
+            // but_imGen
+            // 
+            this.but_imGen.Location = new System.Drawing.Point(25, 142);
+            this.but_imGen.Name = "but_imGen";
+            this.but_imGen.Size = new System.Drawing.Size(96, 56);
+            this.but_imGen.TabIndex = 72;
+            this.but_imGen.Text = "Начать генерацию";
+            this.but_imGen.UseVisualStyleBackColor = true;
+            this.but_imGen.Click += new System.EventHandler(this.but_imGen_Click);
+            // 
+            // but_swapMonit
+            // 
+            this.but_swapMonit.Location = new System.Drawing.Point(25, 60);
+            this.but_swapMonit.Name = "but_swapMonit";
+            this.but_swapMonit.Size = new System.Drawing.Size(96, 56);
+            this.but_swapMonit.TabIndex = 67;
+            this.but_swapMonit.Text = "Поменять местами";
+            this.but_swapMonit.UseVisualStyleBackColor = true;
+            this.but_swapMonit.Click += new System.EventHandler(this.but_swapMonit_Click);
+            // 
+            // but_gl_cam_calib
+            // 
+            this.but_gl_cam_calib.Location = new System.Drawing.Point(25, 275);
+            this.but_gl_cam_calib.Name = "but_gl_cam_calib";
+            this.but_gl_cam_calib.Size = new System.Drawing.Size(96, 56);
+            this.but_gl_cam_calib.TabIndex = 98;
+            this.but_gl_cam_calib.Text = "Калибровка камеры";
+            this.but_gl_cam_calib.UseVisualStyleBackColor = true;
+            this.but_gl_cam_calib.Click += new System.EventHandler(this.but_gl_cam_calib_Click);
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.but_start_anim);
+            this.tabPage3.Controls.Add(this.but_send_traj);
+            this.tabPage3.Controls.Add(this.but_rob_discon_sc);
+            this.tabPage3.Controls.Add(this.but_rob_auto_sc);
+            this.tabPage3.Controls.Add(this.but_rob_res_sc);
+            this.tabPage3.Controls.Add(this.but_rob_clear_sc);
+            this.tabPage3.Controls.Add(this.but_rob_send_sc);
+            this.tabPage3.Controls.Add(this.but_rob_con_sc);
+            this.tabPage3.Controls.Add(this.but_rob_manual_sc);
+            this.tabPage3.Controls.Add(this.but_rob_start_sc);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(642, 899);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Управление роботом";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // but_rob_start_sc
+            // 
+            this.but_rob_start_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_start_sc.Location = new System.Drawing.Point(127, 145);
+            this.but_rob_start_sc.Name = "but_rob_start_sc";
+            this.but_rob_start_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_start_sc.TabIndex = 145;
+            this.but_rob_start_sc.Text = "Start";
+            this.but_rob_start_sc.UseVisualStyleBackColor = true;
+            this.but_rob_start_sc.Click += new System.EventHandler(this.but_rob_start_sc_Click);
+            // 
+            // but_rob_manual_sc
+            // 
+            this.but_rob_manual_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_manual_sc.Location = new System.Drawing.Point(127, 57);
+            this.but_rob_manual_sc.Name = "but_rob_manual_sc";
+            this.but_rob_manual_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_manual_sc.TabIndex = 143;
+            this.but_rob_manual_sc.Text = "Manual";
+            this.but_rob_manual_sc.UseVisualStyleBackColor = true;
+            this.but_rob_manual_sc.Click += new System.EventHandler(this.but_rob_manual_sc_Click);
+            // 
+            // but_rob_con_sc
+            // 
+            this.but_rob_con_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_con_sc.Location = new System.Drawing.Point(15, 13);
+            this.but_rob_con_sc.Name = "but_rob_con_sc";
+            this.but_rob_con_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_con_sc.TabIndex = 137;
+            this.but_rob_con_sc.Text = "Connect robot";
+            this.but_rob_con_sc.UseVisualStyleBackColor = true;
+            this.but_rob_con_sc.Click += new System.EventHandler(this.but_rob_con_sc_Click);
+            // 
+            // but_rob_send_sc
+            // 
+            this.but_rob_send_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_send_sc.Location = new System.Drawing.Point(15, 101);
+            this.but_rob_send_sc.Name = "but_rob_send_sc";
+            this.but_rob_send_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_send_sc.TabIndex = 139;
+            this.but_rob_send_sc.Text = "Send robot";
+            this.but_rob_send_sc.UseVisualStyleBackColor = true;
+            this.but_rob_send_sc.Click += new System.EventHandler(this.but_rob_send_sc_Click);
+            // 
+            // but_rob_clear_sc
+            // 
+            this.but_rob_clear_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_clear_sc.Location = new System.Drawing.Point(127, 101);
+            this.but_rob_clear_sc.Name = "but_rob_clear_sc";
+            this.but_rob_clear_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_clear_sc.TabIndex = 144;
+            this.but_rob_clear_sc.Text = "Clear buf";
+            this.but_rob_clear_sc.UseVisualStyleBackColor = true;
+            this.but_rob_clear_sc.Click += new System.EventHandler(this.but_rob_clear_sc_Click);
+            // 
+            // but_rob_res_sc
+            // 
+            this.but_rob_res_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_res_sc.Location = new System.Drawing.Point(15, 145);
+            this.but_rob_res_sc.Name = "but_rob_res_sc";
+            this.but_rob_res_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_res_sc.TabIndex = 140;
+            this.but_rob_res_sc.Text = "Reseive robot";
+            this.but_rob_res_sc.UseVisualStyleBackColor = true;
+            this.but_rob_res_sc.Click += new System.EventHandler(this.but_rob_res_sc_Click);
+            // 
+            // but_rob_auto_sc
+            // 
+            this.but_rob_auto_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_auto_sc.Location = new System.Drawing.Point(127, 13);
+            this.but_rob_auto_sc.Name = "but_rob_auto_sc";
+            this.but_rob_auto_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_auto_sc.TabIndex = 142;
+            this.but_rob_auto_sc.Text = "Auto";
+            this.but_rob_auto_sc.UseVisualStyleBackColor = true;
+            this.but_rob_auto_sc.Click += new System.EventHandler(this.but_rob_auto_sc_Click);
+            // 
+            // but_rob_discon_sc
+            // 
+            this.but_rob_discon_sc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_rob_discon_sc.Location = new System.Drawing.Point(15, 57);
+            this.but_rob_discon_sc.Name = "but_rob_discon_sc";
+            this.but_rob_discon_sc.Size = new System.Drawing.Size(106, 33);
+            this.but_rob_discon_sc.TabIndex = 138;
+            this.but_rob_discon_sc.Text = "Disconnect robot";
+            this.but_rob_discon_sc.UseVisualStyleBackColor = true;
+            this.but_rob_discon_sc.Click += new System.EventHandler(this.but_rob_discon_sc_Click);
+            // 
+            // but_send_traj
+            // 
+            this.but_send_traj.Location = new System.Drawing.Point(15, 437);
+            this.but_send_traj.Name = "but_send_traj";
+            this.but_send_traj.Size = new System.Drawing.Size(96, 34);
+            this.but_send_traj.TabIndex = 104;
+            this.but_send_traj.Text = "Отправить траекторию";
+            this.but_send_traj.UseVisualStyleBackColor = true;
+            this.but_send_traj.Click += new System.EventHandler(this.but_send_traj_Click);
+            // 
+            // but_start_anim
+            // 
+            this.but_start_anim.Location = new System.Drawing.Point(15, 219);
+            this.but_start_anim.Name = "but_start_anim";
+            this.but_start_anim.Size = new System.Drawing.Size(106, 30);
+            this.but_start_anim.TabIndex = 146;
+            this.but_start_anim.Text = "Старт анимации";
+            this.but_start_anim.UseVisualStyleBackColor = true;
+            this.but_start_anim.Click += new System.EventHandler(this.but_start_anim_Click);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.prop_grid_model);
+            this.tabPage2.Controls.Add(this.tree_models);
+            this.tabPage2.Controls.Add(this.tp_smooth_scan);
+            this.tabPage2.Controls.Add(this.textBox_monitor_id);
+            this.tabPage2.Controls.Add(this.label19);
+            this.tabPage2.Controls.Add(this.but_load_stl);
+            this.tabPage2.Controls.Add(this.but_save_stl);
+            this.tabPage2.Controls.Add(this.but_remesh_test);
+            this.tabPage2.Controls.Add(this.but_del_obj3d);
+            this.tabPage2.Controls.Add(this.but_modeV);
+            this.tabPage2.Controls.Add(this.butSaveOpenGlIm);
+            this.tabPage2.Controls.Add(this.but_ProjV);
+            this.tabPage2.Controls.Add(this.but_plane_Oxy);
+            this.tabPage2.Controls.Add(this.but_plane_Oyz);
+            this.tabPage2.Controls.Add(this.butt_plane_Ozx);
+            this.tabPage2.Controls.Add(this.lab_kor);
+            this.tabPage2.Controls.Add(this.lab_curCor);
+            this.tabPage2.Controls.Add(this.label33);
+            this.tabPage2.Controls.Add(this.but_im_to_3d_im1);
+            this.tabPage2.Controls.Add(this.lab_check);
+            this.tabPage2.Controls.Add(this.lab_TRZ);
+            this.tabPage2.Controls.Add(this.but_point_type);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(642, 899);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Объекты сцены";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // but_point_type
+            // 
+            this.but_point_type.Location = new System.Drawing.Point(379, 96);
+            this.but_point_type.Name = "but_point_type";
+            this.but_point_type.Size = new System.Drawing.Size(96, 50);
+            this.but_point_type.TabIndex = 101;
+            this.but_point_type.Text = "Точки";
+            this.but_point_type.UseVisualStyleBackColor = true;
+            this.but_point_type.Click += new System.EventHandler(this.but_point_type_Click);
+            // 
+            // lab_TRZ
+            // 
+            this.lab_TRZ.AutoSize = true;
+            this.lab_TRZ.Location = new System.Drawing.Point(292, 484);
+            this.lab_TRZ.Name = "lab_TRZ";
+            this.lab_TRZ.Size = new System.Drawing.Size(22, 13);
+            this.lab_TRZ.TabIndex = 99;
+            this.lab_TRZ.Text = "cor";
+            // 
+            // textBox_monitor_id
+            // 
+            this.textBox_monitor_id.Location = new System.Drawing.Point(225, 406);
+            this.textBox_monitor_id.Name = "textBox_monitor_id";
+            this.textBox_monitor_id.Size = new System.Drawing.Size(100, 20);
+            this.textBox_monitor_id.TabIndex = 68;
+            this.textBox_monitor_id.Text = "0 1";
+            // 
+            // lab_check
+            // 
+            this.lab_check.AutoSize = true;
+            this.lab_check.Location = new System.Drawing.Point(331, 409);
+            this.lab_check.Name = "lab_check";
+            this.lab_check.Size = new System.Drawing.Size(38, 13);
+            this.lab_check.TabIndex = 70;
+            this.lab_check.Text = "curCor";
+            // 
+            // but_im_to_3d_im1
+            // 
+            this.but_im_to_3d_im1.Location = new System.Drawing.Point(379, 218);
+            this.but_im_to_3d_im1.Name = "but_im_to_3d_im1";
+            this.but_im_to_3d_im1.Size = new System.Drawing.Size(96, 49);
+            this.but_im_to_3d_im1.TabIndex = 121;
+            this.but_im_to_3d_im1.Text = "3д модель изобр im1";
+            this.but_im_to_3d_im1.UseVisualStyleBackColor = true;
+            this.but_im_to_3d_im1.Click += new System.EventHandler(this.but_im_to_3d_im1_Click);
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(147, 409);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(58, 13);
+            this.label33.TabIndex = 69;
+            this.label33.Text = "ID_monitor";
+            // 
+            // lab_curCor
+            // 
+            this.lab_curCor.AutoSize = true;
+            this.lab_curCor.Location = new System.Drawing.Point(258, 444);
+            this.lab_curCor.Name = "lab_curCor";
+            this.lab_curCor.Size = new System.Drawing.Size(38, 13);
+            this.lab_curCor.TabIndex = 66;
+            this.lab_curCor.Text = "curCor";
+            // 
+            // lab_kor
+            // 
+            this.lab_kor.AutoSize = true;
+            this.lab_kor.Location = new System.Drawing.Point(151, 444);
+            this.lab_kor.Name = "lab_kor";
+            this.lab_kor.Size = new System.Drawing.Size(22, 13);
+            this.lab_kor.TabIndex = 64;
+            this.lab_kor.Text = "cor";
+            // 
+            // butt_plane_Ozx
+            // 
+            this.butt_plane_Ozx.CausesValidation = false;
+            this.butt_plane_Ozx.Location = new System.Drawing.Point(271, 536);
+            this.butt_plane_Ozx.Name = "butt_plane_Ozx";
+            this.butt_plane_Ozx.Size = new System.Drawing.Size(54, 31);
+            this.butt_plane_Ozx.TabIndex = 61;
+            this.butt_plane_Ozx.Text = "Ozx";
+            this.butt_plane_Ozx.UseVisualStyleBackColor = true;
+            this.butt_plane_Ozx.Click += new System.EventHandler(this.butt_plane_Ozx_Click);
+            // 
+            // but_plane_Oyz
+            // 
+            this.but_plane_Oyz.Location = new System.Drawing.Point(214, 536);
+            this.but_plane_Oyz.Name = "but_plane_Oyz";
+            this.but_plane_Oyz.Size = new System.Drawing.Size(54, 31);
+            this.but_plane_Oyz.TabIndex = 60;
+            this.but_plane_Oyz.Text = "Oyz";
+            this.but_plane_Oyz.UseVisualStyleBackColor = true;
+            this.but_plane_Oyz.Click += new System.EventHandler(this.but_plane_Oyz_Click);
+            // 
+            // but_plane_Oxy
+            // 
+            this.but_plane_Oxy.Location = new System.Drawing.Point(154, 536);
+            this.but_plane_Oxy.Name = "but_plane_Oxy";
+            this.but_plane_Oxy.Size = new System.Drawing.Size(54, 31);
+            this.but_plane_Oxy.TabIndex = 59;
+            this.but_plane_Oxy.Text = "Oxy";
+            this.but_plane_Oxy.UseVisualStyleBackColor = true;
+            this.but_plane_Oxy.Click += new System.EventHandler(this.but_plane_Oxy_Click);
+            // 
+            // but_ProjV
+            // 
+            this.but_ProjV.Location = new System.Drawing.Point(378, 152);
+            this.but_ProjV.Name = "but_ProjV";
+            this.but_ProjV.Size = new System.Drawing.Size(96, 56);
+            this.but_ProjV.TabIndex = 58;
+            this.but_ProjV.Text = "Проецирование(текущая:ортоганальная)";
+            this.but_ProjV.UseVisualStyleBackColor = true;
+            this.but_ProjV.Click += new System.EventHandler(this.but_ProjV_Click);
+            // 
+            // butSaveOpenGlIm
+            // 
+            this.butSaveOpenGlIm.Location = new System.Drawing.Point(6, 730);
+            this.butSaveOpenGlIm.Name = "butSaveOpenGlIm";
+            this.butSaveOpenGlIm.Size = new System.Drawing.Size(121, 42);
+            this.butSaveOpenGlIm.TabIndex = 20;
+            this.butSaveOpenGlIm.Text = "Сохранить изображение";
+            this.butSaveOpenGlIm.UseVisualStyleBackColor = true;
+            this.butSaveOpenGlIm.Click += new System.EventHandler(this.butFinPointFs_Click);
+            // 
+            // but_modeV
+            // 
+            this.but_modeV.Location = new System.Drawing.Point(378, 34);
+            this.but_modeV.Name = "but_modeV";
+            this.but_modeV.Size = new System.Drawing.Size(96, 56);
+            this.but_modeV.TabIndex = 63;
+            this.but_modeV.Text = "Рисование(текущая: обозреватель)";
+            this.but_modeV.UseVisualStyleBackColor = true;
+            this.but_modeV.Click += new System.EventHandler(this.but_modeV_Click);
+            // 
+            // but_del_obj3d
+            // 
+            this.but_del_obj3d.Location = new System.Drawing.Point(6, 488);
+            this.but_del_obj3d.Name = "but_del_obj3d";
+            this.but_del_obj3d.Size = new System.Drawing.Size(132, 24);
+            this.but_del_obj3d.TabIndex = 153;
+            this.but_del_obj3d.Text = "Удалить объект";
+            this.but_del_obj3d.UseVisualStyleBackColor = true;
+            this.but_del_obj3d.Click += new System.EventHandler(this.but_del_obj3d_Click);
+            // 
+            // but_remesh_test
+            // 
+            this.but_remesh_test.Location = new System.Drawing.Point(379, 351);
+            this.but_remesh_test.Name = "but_remesh_test";
+            this.but_remesh_test.Size = new System.Drawing.Size(96, 34);
+            this.but_remesh_test.TabIndex = 152;
+            this.but_remesh_test.Text = "Сгладить";
+            this.but_remesh_test.UseVisualStyleBackColor = true;
+            this.but_remesh_test.Click += new System.EventHandler(this.but_remesh_test_Click);
+            // 
+            // but_save_stl
+            // 
+            this.but_save_stl.Location = new System.Drawing.Point(6, 420);
+            this.but_save_stl.Name = "but_save_stl";
+            this.but_save_stl.Size = new System.Drawing.Size(132, 24);
+            this.but_save_stl.TabIndex = 130;
+            this.but_save_stl.Text = "Сохранить модель";
+            this.but_save_stl.UseVisualStyleBackColor = true;
+            this.but_save_stl.Click += new System.EventHandler(this.but_save_stl_Click);
+            // 
+            // but_load_stl
+            // 
+            this.but_load_stl.Location = new System.Drawing.Point(6, 450);
+            this.but_load_stl.Name = "but_load_stl";
+            this.but_load_stl.Size = new System.Drawing.Size(132, 24);
+            this.but_load_stl.TabIndex = 131;
+            this.but_load_stl.Text = "Загрузить модель";
+            this.but_load_stl.UseVisualStyleBackColor = true;
+            this.but_load_stl.Click += new System.EventHandler(this.but_load_stl_Click);
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(382, 313);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(63, 13);
+            this.label19.TabIndex = 126;
+            this.label19.Text = "smooth, mm";
+            // 
+            // tp_smooth_scan
+            // 
+            this.tp_smooth_scan.Location = new System.Drawing.Point(451, 310);
+            this.tp_smooth_scan.Name = "tp_smooth_scan";
+            this.tp_smooth_scan.Size = new System.Drawing.Size(68, 20);
+            this.tp_smooth_scan.TabIndex = 127;
+            this.tp_smooth_scan.Text = "-1";
+            // 
+            // tree_models
+            // 
+            this.tree_models.BackColor = System.Drawing.SystemColors.Window;
+            this.tree_models.Location = new System.Drawing.Point(198, 6);
+            this.tree_models.Name = "tree_models";
+            this.tree_models.Size = new System.Drawing.Size(174, 400);
+            this.tree_models.TabIndex = 149;
+            this.tree_models.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tree_models_AfterCheck);
+            this.tree_models.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tree_models_AfterSelect);
+            this.tree_models.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tree_models_MouseDown);
+            // 
+            // prop_grid_model
+            // 
+            this.prop_grid_model.Location = new System.Drawing.Point(6, 6);
+            this.prop_grid_model.Name = "prop_grid_model";
+            this.prop_grid_model.Size = new System.Drawing.Size(183, 400);
+            this.prop_grid_model.TabIndex = 150;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.propGrid_pattern);
+            this.tabPage1.Controls.Add(this.propGrid_traj);
+            this.tabPage1.Controls.Add(this.but_printer_traj_fab);
+            this.tabPage1.Controls.Add(this.but_rob_traj_pulse);
+            this.tabPage1.Controls.Add(this.but_rob_traj_kuka);
+            this.tabPage1.Controls.Add(this.but_gl_clear);
+            this.tabPage1.Controls.Add(this.but_traj_clear);
+            this.tabPage1.Controls.Add(this.debugBox);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(642, 899);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Траектория";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // debugBox
+            // 
+            this.debugBox.Location = new System.Drawing.Point(204, 6);
+            this.debugBox.Name = "debugBox";
+            this.debugBox.Size = new System.Drawing.Size(435, 887);
+            this.debugBox.TabIndex = 62;
+            this.debugBox.Text = "";
+            // 
+            // but_traj_clear
+            // 
+            this.but_traj_clear.Location = new System.Drawing.Point(25, 868);
+            this.but_traj_clear.Name = "but_traj_clear";
+            this.but_traj_clear.Size = new System.Drawing.Size(96, 19);
+            this.but_traj_clear.TabIndex = 128;
+            this.but_traj_clear.Text = "Очистить траек";
+            this.but_traj_clear.UseVisualStyleBackColor = true;
+            this.but_traj_clear.Click += new System.EventHandler(this.but_traj_clear_Click);
+            // 
+            // but_gl_clear
+            // 
+            this.but_gl_clear.Location = new System.Drawing.Point(25, 843);
+            this.but_gl_clear.Name = "but_gl_clear";
+            this.but_gl_clear.Size = new System.Drawing.Size(96, 23);
+            this.but_gl_clear.TabIndex = 118;
+            this.but_gl_clear.Text = "Очистить";
+            this.but_gl_clear.UseVisualStyleBackColor = true;
+            this.but_gl_clear.Click += new System.EventHandler(this.but_gl_clear_Click);
+            // 
+            // but_rob_traj_kuka
+            // 
+            this.but_rob_traj_kuka.Location = new System.Drawing.Point(15, 754);
+            this.but_rob_traj_kuka.Name = "but_rob_traj_kuka";
+            this.but_rob_traj_kuka.Size = new System.Drawing.Size(106, 34);
+            this.but_rob_traj_kuka.TabIndex = 146;
+            this.but_rob_traj_kuka.Text = "Траектория Kuka";
+            this.but_rob_traj_kuka.UseVisualStyleBackColor = true;
+            this.but_rob_traj_kuka.Click += new System.EventHandler(this.but_rob_traj_kuka_Click);
+            // 
+            // but_rob_traj_pulse
+            // 
+            this.but_rob_traj_pulse.Location = new System.Drawing.Point(15, 714);
+            this.but_rob_traj_pulse.Name = "but_rob_traj_pulse";
+            this.but_rob_traj_pulse.Size = new System.Drawing.Size(106, 34);
+            this.but_rob_traj_pulse.TabIndex = 147;
+            this.but_rob_traj_pulse.Text = "Траектория Pulse";
+            this.but_rob_traj_pulse.UseVisualStyleBackColor = true;
+            this.but_rob_traj_pulse.Click += new System.EventHandler(this.but_rob_traj_pulse_Click);
+            // 
+            // but_printer_traj_fab
+            // 
+            this.but_printer_traj_fab.Location = new System.Drawing.Point(15, 794);
+            this.but_printer_traj_fab.Name = "but_printer_traj_fab";
+            this.but_printer_traj_fab.Size = new System.Drawing.Size(106, 34);
+            this.but_printer_traj_fab.TabIndex = 163;
+            this.but_printer_traj_fab.Text = "Заполнение Фабион";
+            this.but_printer_traj_fab.UseVisualStyleBackColor = true;
+            this.but_printer_traj_fab.Click += new System.EventHandler(this.but_printer_traj_fab_Click);
+            // 
+            // propGrid_traj
+            // 
+            this.propGrid_traj.Location = new System.Drawing.Point(15, 355);
+            this.propGrid_traj.Name = "propGrid_traj";
+            this.propGrid_traj.Size = new System.Drawing.Size(183, 343);
+            this.propGrid_traj.TabIndex = 119;
+            // 
+            // propGrid_pattern
+            // 
+            this.propGrid_pattern.Location = new System.Drawing.Point(15, 6);
+            this.propGrid_pattern.Name = "propGrid_pattern";
+            this.propGrid_pattern.Size = new System.Drawing.Size(183, 343);
+            this.propGrid_pattern.TabIndex = 162;
+            // 
+            // win_tab_diff
+            // 
+            this.win_tab_diff.Controls.Add(this.tabPage1);
+            this.win_tab_diff.Controls.Add(this.tabPage2);
+            this.win_tab_diff.Controls.Add(this.tabPage3);
+            this.win_tab_diff.Controls.Add(this.tabPage4);
+            this.win_tab_diff.Controls.Add(this.tabPage5);
+            this.win_tab_diff.Controls.Add(this.tabPage6);
+            this.win_tab_diff.Controls.Add(this.tabPage7);
+            this.win_tab_diff.Controls.Add(this.tabPage8);
+            this.win_tab_diff.Controls.Add(this.tabPage9);
+            this.win_tab_diff.Location = new System.Drawing.Point(1213, 6);
+            this.win_tab_diff.Name = "win_tab_diff";
+            this.win_tab_diff.SelectedIndex = 0;
+            this.win_tab_diff.Size = new System.Drawing.Size(650, 991);
+            this.win_tab_diff.TabIndex = 165;
+            // 
+            // trackOz
+            // 
+            this.trackOz.Location = new System.Drawing.Point(326, 861);
+            this.trackOz.Maximum = 300;
+            this.trackOz.Minimum = -300;
+            this.trackOz.Name = "trackOz";
+            this.trackOz.Size = new System.Drawing.Size(252, 45);
+            this.trackOz.TabIndex = 168;
+            this.trackOz.Value = 12;
+            this.trackOz.Scroll += new System.EventHandler(this.trackOy_Scroll);
+            // 
+            // trackOy
+            // 
+            this.trackOy.Location = new System.Drawing.Point(326, 912);
+            this.trackOy.Maximum = 300;
+            this.trackOy.Minimum = -300;
+            this.trackOy.Name = "trackOy";
+            this.trackOy.Size = new System.Drawing.Size(252, 45);
+            this.trackOy.TabIndex = 167;
+            this.trackOy.Value = 12;
+            this.trackOy.Scroll += new System.EventHandler(this.trackOz_Scroll);
+            // 
+            // trackOx
+            // 
+            this.trackOx.Location = new System.Drawing.Point(326, 810);
+            this.trackOx.Maximum = 300;
+            this.trackOx.Minimum = -300;
+            this.trackOx.Name = "trackOx";
+            this.trackOx.Size = new System.Drawing.Size(252, 45);
+            this.trackOx.TabIndex = 166;
+            this.trackOx.Value = 12;
+            this.trackOx.Scroll += new System.EventHandler(this.trackOx_Scroll);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(171, 871);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(111, 13);
+            this.label4.TabIndex = 169;
+            this.label4.Text = "Ориентация камеры";
             // 
             // MainScanningForm
             // 
@@ -4045,40 +4046,6 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.histogramBox1)).EndInit();
             this.tabOpenGl.ResumeLayout(false);
-            this.win_tab_diff.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage5.ResumeLayout(false);
-            this.tabPage5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar7)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar8)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar9)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar10)).EndInit();
-            this.tabPage6.ResumeLayout(false);
-            this.tabPage7.ResumeLayout(false);
-            this.tabPage7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackOz)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackOy)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackX_light)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackOx)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackZ_light)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackY_light)).EndInit();
-            this.tabPage8.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).EndInit();
-            this.tabPage9.ResumeLayout(false);
-            this.tabPage9.PerformLayout();
             this.tabMain.ResumeLayout(false);
             this.tabMain.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -4111,6 +4078,41 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).EndInit();
             this.windowsTabs.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
+            this.tabPage9.ResumeLayout(false);
+            this.tabPage9.PerformLayout();
+            this.tabPage8.ResumeLayout(false);
+            this.tabPage8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1)).EndInit();
+            this.tabPage7.ResumeLayout(false);
+            this.tabPage7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackY_light)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackZ_light)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackX_light)).EndInit();
+            this.tabPage6.ResumeLayout(false);
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar10)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar9)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar8)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar7)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
+            this.win_tab_diff.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.trackOz)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackOy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackOx)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -4176,57 +4178,7 @@ namespace opengl3
         private System.Windows.Forms.PictureBox pictureBox1;
         private Emgu.CV.UI.HistogramBox histogramBox1;
         private System.Windows.Forms.TabPage tabOpenGl;
-        private System.Windows.Forms.Label lab_TRZ;
-        private System.Windows.Forms.RichTextBox debugBox;
-        private System.Windows.Forms.TextBox textBox_monitor_id;
         private OpenGL.GlControl glControl1;
-        private System.Windows.Forms.Button but_gl_cam_calib;
-        private Emgu.CV.UI.ImageBox imBox_3dDebug;
-        private System.Windows.Forms.Button but_SubpixPrec;
-        private System.Windows.Forms.Label label44;
-        private System.Windows.Forms.TrackBar trackBar10;
-        private System.Windows.Forms.Label label43;
-        private System.Windows.Forms.TrackBar trackBar9;
-        private System.Windows.Forms.Label label42;
-        private System.Windows.Forms.TrackBar trackBar8;
-        private System.Windows.Forms.Label label41;
-        private System.Windows.Forms.TrackBar trackBar7;
-        private System.Windows.Forms.Label label40;
-        private System.Windows.Forms.TrackBar trackBar6;
-        private System.Windows.Forms.Label label39;
-        private System.Windows.Forms.TrackBar trackBar5;
-        private System.Windows.Forms.Label label38;
-        private System.Windows.Forms.TrackBar trackBar4;
-        private System.Windows.Forms.Label label37;
-        private System.Windows.Forms.TrackBar trackBar3;
-        private System.Windows.Forms.Label label36;
-        private System.Windows.Forms.TrackBar trackBar2;
-        private System.Windows.Forms.Label label35;
-        private System.Windows.Forms.Label label34;
-        private System.Windows.Forms.TrackBar trackBar1;
-        private Emgu.CV.UI.ImageBox imBox_disparity;
-        private System.Windows.Forms.Button but_imGen;
-        private Emgu.CV.UI.ImageBox imBox_mark2;
-        private Emgu.CV.UI.ImageBox imBox_mark1;
-        private System.Windows.Forms.Label lab_check;
-        private System.Windows.Forms.Label label33;
-        private System.Windows.Forms.Button but_swapMonit;
-        private System.Windows.Forms.Label lab_curCor;
-        private System.Windows.Forms.Label lab_kor;
-        private System.Windows.Forms.Button but_modeV;
-        private System.Windows.Forms.Button butt_plane_Ozx;
-        private System.Windows.Forms.Button but_plane_Oyz;
-        private System.Windows.Forms.Button but_plane_Oxy;
-        private System.Windows.Forms.Button but_ProjV;
-        private System.Windows.Forms.Label label27;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TrackBar trackOz;
-        private System.Windows.Forms.Button butSaveOpenGlIm;
-        private System.Windows.Forms.TrackBar trackY_light;
-        private System.Windows.Forms.TrackBar trackZ_light;
-        private System.Windows.Forms.TrackBar trackOx;
-        private System.Windows.Forms.TrackBar trackX_light;
-        private System.Windows.Forms.TrackBar trackOy;
         private System.Windows.Forms.TabPage tabMain;
         private System.Windows.Forms.Label label55;
         private System.Windows.Forms.TextBox txBx_photoName;
@@ -4308,25 +4260,6 @@ namespace opengl3
         private System.Windows.Forms.Button but_scan_marl;
         private System.Windows.Forms.Button but_scan_stereolas;
         private System.Windows.Forms.Button but_load_scan;
-        private System.Windows.Forms.Button but_text_vis;
-        private System.Windows.Forms.Button but_point_type;
-        private System.Windows.Forms.Button but_end_cont;
-        private System.Windows.Forms.Button but_send_traj;
-        private System.Windows.Forms.Button but_scan_load_ex;
-        private System.Windows.Forms.Button but_load_conf_cam2;
-        private System.Windows.Forms.Button but_load_conf_cam1;
-        private System.Windows.Forms.TextBox textB_cam2_conf;
-        private System.Windows.Forms.TextBox textB_cam1_conf;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Button but_scan_path;
-        private System.Windows.Forms.TextBox textB_scan_path;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button but_stereo_cal_path;
-        private System.Windows.Forms.TextBox textB_stereo_cal_path;
-        private System.Windows.Forms.Button but_gl_clear;
-        private System.Windows.Forms.PropertyGrid propGrid_traj;
         private System.Windows.Forms.Label label_timer;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button but_laser_dest;
@@ -4335,49 +4268,18 @@ namespace opengl3
         private System.Windows.Forms.TextBox textBox_set_kpp;
         private System.Windows.Forms.Button butset_kvp;
         private System.Windows.Forms.TextBox textBox_set_kvp;
-        private System.Windows.Forms.Button but_calibr_Bfs;
-        private System.Windows.Forms.Button but_im_to_3d_im1;
-        private System.Windows.Forms.Button but_load_fr_cal;
-        private System.Windows.Forms.Button but_gl_light;
-        private System.Windows.Forms.TextBox tp_smooth_scan;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Button but_traj_clear;
-        private System.Windows.Forms.Button but_cross_flat;
         private System.Windows.Forms.Button but_las_enc;
         private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Button but_save_stl;
-        private System.Windows.Forms.Button but_load_stl;
-        private System.Windows.Forms.Button but_scan_load_sing;
-        private System.Windows.Forms.Button but_load_sing_calib;
         private System.Windows.Forms.Button but_scan_sing_las;
         private System.Windows.Forms.TextBox tB_fps_scan;
         private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Button but_keep_area;
-        private System.Windows.Forms.Button but_delete_area;
-        private System.Windows.Forms.Button but_reconstruc_area;
-        private System.Windows.Forms.Button but_rob_res_sc;
-        private System.Windows.Forms.Button but_rob_con_sc;
-        private System.Windows.Forms.Button but_rob_discon_sc;
-        private System.Windows.Forms.Button but_rob_send_sc;
-        private System.Windows.Forms.Button but_rob_clear_sc;
-        private System.Windows.Forms.Button but_rob_manual_sc;
-        private System.Windows.Forms.Button but_rob_auto_sc;
-        private System.Windows.Forms.Button but_rob_start_sc;
-        private System.Windows.Forms.Button but_rob_traj_kuka;
-        private System.Windows.Forms.Button but_rob_traj_pulse;
         private System.Windows.Forms.Button but_resize;
-        private System.Windows.Forms.Button but_scan_stereo_rob;
-        private System.Windows.Forms.TreeView tree_models;
-        private System.Windows.Forms.PropertyGrid prop_grid_model;
-        private System.Windows.Forms.Button but_intersec_obj;
-        private System.Windows.Forms.Button but_remesh_test;
         private System.Windows.Forms.Label lab_fps_cam1;
         private System.Windows.Forms.Button but_dir_disp;
         private System.Windows.Forms.TextBox tb_dir_disp;
         private System.Windows.Forms.Button but_home_las;
         private System.Windows.Forms.Button but_div_disp;
         private System.Windows.Forms.TextBox tb_div_disp;
-        private System.Windows.Forms.Button but_del_obj3d;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.TextBox tb_print_vel;
@@ -4385,29 +4287,7 @@ namespace opengl3
         private System.Windows.Forms.Label label57;
         private System.Windows.Forms.TextBox tb_print_syr_d;
         private System.Windows.Forms.Button but_extr_st;
-        private System.Windows.Forms.Button but_set_model_matr;
-        private System.Windows.Forms.Button but_ps_cal_save;
-        private System.Windows.Forms.Button but_comp_basis;
-        private System.Windows.Forms.Button but_stereo_3dp;
-        private System.Windows.Forms.Button but_dist_same_ps;
-        private System.Windows.Forms.PropertyGrid propGrid_pattern;
-        private System.Windows.Forms.Button but_printer_traj_fab;
-        private System.Windows.Forms.Button but_scan_virt;
-        private System.Windows.Forms.TabControl win_tab_diff;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.TabPage tabPage6;
-        private System.Windows.Forms.TabPage tabPage7;
-        private System.Windows.Forms.PropertyGrid prop_gr_light;
-        private System.Windows.Forms.TreeView treeV_light;
-        private System.Windows.Forms.Button but_start_anim;
         private System.Windows.Forms.Timer timer2;
-        private System.Windows.Forms.TabPage tabPage8;
-        private System.Windows.Forms.TabPage tabPage9;
-        private System.Windows.Forms.Button but_photo_gl;
         private System.Windows.Forms.Button but_con_scan;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage10;
@@ -4443,8 +4323,6 @@ namespace opengl3
         private System.Windows.Forms.Button but_photo;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TabPage tabPage13;
-        private System.Windows.Forms.Button but_scan_pres;
-        private System.Windows.Forms.Label lab_scan_pres;
         private System.Windows.Forms.Button but_set_z_pos;
         private System.Windows.Forms.TextBox textB_set_z_pos;
         private System.Windows.Forms.Label label58;
@@ -4452,11 +4330,135 @@ namespace opengl3
         private System.Windows.Forms.Button but_set_z_div;
         private System.Windows.Forms.TextBox textB_set_z_div;
         private System.Windows.Forms.Button but_rob_ph;
-        private System.Windows.Forms.PropertyGrid prop_gr_scan;
         private System.Windows.Forms.Button but_setShvpVel;
         private System.Windows.Forms.TextBox textBox_shvpVel;
-        private System.Windows.Forms.Button but_flange_calib_basis;
         private System.Windows.Forms.Button but_save_im_base1;
+        private System.Windows.Forms.TabControl win_tab_diff;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.PropertyGrid propGrid_pattern;
+        private System.Windows.Forms.PropertyGrid propGrid_traj;
+        private System.Windows.Forms.Button but_printer_traj_fab;
+        private System.Windows.Forms.Button but_rob_traj_pulse;
+        private System.Windows.Forms.Button but_rob_traj_kuka;
+        private System.Windows.Forms.Button but_gl_clear;
+        private System.Windows.Forms.Button but_traj_clear;
+        private System.Windows.Forms.RichTextBox debugBox;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.PropertyGrid prop_grid_model;
+        private System.Windows.Forms.TreeView tree_models;
+        private System.Windows.Forms.TextBox tp_smooth_scan;
+        private System.Windows.Forms.TextBox textBox_monitor_id;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Button but_load_stl;
+        private System.Windows.Forms.Button but_save_stl;
+        private System.Windows.Forms.Button but_remesh_test;
+        private System.Windows.Forms.Button but_del_obj3d;
+        private System.Windows.Forms.Button but_modeV;
+        private System.Windows.Forms.Button butSaveOpenGlIm;
+        private System.Windows.Forms.Button but_ProjV;
+        private System.Windows.Forms.Button but_plane_Oxy;
+        private System.Windows.Forms.Button but_plane_Oyz;
+        private System.Windows.Forms.Button butt_plane_Ozx;
+        private System.Windows.Forms.Label lab_kor;
+        private System.Windows.Forms.Label lab_curCor;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Button but_im_to_3d_im1;
+        private System.Windows.Forms.Label lab_check;
+        private System.Windows.Forms.Label lab_TRZ;
+        private System.Windows.Forms.Button but_point_type;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Button but_start_anim;
+        private System.Windows.Forms.Button but_send_traj;
+        private System.Windows.Forms.Button but_rob_discon_sc;
+        private System.Windows.Forms.Button but_rob_auto_sc;
+        private System.Windows.Forms.Button but_rob_res_sc;
+        private System.Windows.Forms.Button but_rob_clear_sc;
+        private System.Windows.Forms.Button but_rob_send_sc;
+        private System.Windows.Forms.Button but_rob_con_sc;
+        private System.Windows.Forms.Button but_rob_manual_sc;
+        private System.Windows.Forms.Button but_rob_start_sc;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Button but_gl_cam_calib;
+        private System.Windows.Forms.Button but_swapMonit;
+        private System.Windows.Forms.Button but_imGen;
+        private System.Windows.Forms.Button but_text_vis;
+        private System.Windows.Forms.Button but_gl_light;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.TrackBar trackBar2;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.TrackBar trackBar3;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.TrackBar trackBar4;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.TrackBar trackBar5;
+        private System.Windows.Forms.Label label39;
+        private System.Windows.Forms.TrackBar trackBar6;
+        private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.TrackBar trackBar7;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.TrackBar trackBar8;
+        private System.Windows.Forms.Label label42;
+        private System.Windows.Forms.TrackBar trackBar9;
+        private System.Windows.Forms.Label label43;
+        private System.Windows.Forms.TrackBar trackBar10;
+        private System.Windows.Forms.Label label44;
+        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.Button but_comp_basis;
+        private System.Windows.Forms.Button but_set_model_matr;
+        private System.Windows.Forms.Button but_dist_same_ps;
+        private System.Windows.Forms.Button but_ps_cal_save;
+        private System.Windows.Forms.Button but_stereo_3dp;
+        private System.Windows.Forms.Button but_delete_area;
+        private System.Windows.Forms.Button but_end_cont;
+        private System.Windows.Forms.Button but_intersec_obj;
+        private System.Windows.Forms.Button but_cross_flat;
+        private System.Windows.Forms.Button but_keep_area;
+        private System.Windows.Forms.Button but_reconstruc_area;
+        private System.Windows.Forms.Button but_SubpixPrec;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.PropertyGrid prop_gr_light;
+        private System.Windows.Forms.TreeView treeV_light;
+        private System.Windows.Forms.TrackBar trackX_light;
+        private System.Windows.Forms.TrackBar trackZ_light;
+        private System.Windows.Forms.TrackBar trackY_light;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.TrackBar trackOz;
+        private System.Windows.Forms.TrackBar trackOy;
+        private System.Windows.Forms.TrackBar trackOx;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button but_photo_gl;
+        private Emgu.CV.UI.ImageBox imBox_mark1;
+        private Emgu.CV.UI.ImageBox imBox_mark2;
+        private System.Windows.Forms.Button but_scan_virt;
+        private Emgu.CV.UI.ImageBox imBox_disparity;
+        private Emgu.CV.UI.ImageBox imBox_3dDebug;
+        private System.Windows.Forms.TabPage tabPage9;
+        private System.Windows.Forms.Button but_flange_calib_basis;
+        private System.Windows.Forms.PropertyGrid prop_gr_scan;
+        private System.Windows.Forms.Label lab_scan_pres;
+        private System.Windows.Forms.Button but_scan_pres;
+        private System.Windows.Forms.Button but_load_fr_cal;
+        private System.Windows.Forms.Button but_scan_load_ex;
+        private System.Windows.Forms.TextBox textB_cam1_conf;
+        private System.Windows.Forms.TextBox textB_cam2_conf;
+        private System.Windows.Forms.TextBox textB_stereo_cal_path;
+        private System.Windows.Forms.TextBox textB_scan_path;
+        private System.Windows.Forms.Button but_scan_stereo_rob;
+        private System.Windows.Forms.Button but_load_conf_cam1;
+        private System.Windows.Forms.Button but_load_conf_cam2;
+        private System.Windows.Forms.Button but_load_sing_calib;
+        private System.Windows.Forms.Button but_scan_load_sing;
+        private System.Windows.Forms.Button but_stereo_cal_path;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button but_scan_path;
+        private System.Windows.Forms.Button but_calibr_Bfs;
+        private System.Windows.Forms.Label label13;
     }
 }
 

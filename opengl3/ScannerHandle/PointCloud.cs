@@ -119,15 +119,15 @@ namespace opengl3
             return true;
         }
 
-        public bool addPoints2dStereoLas(Mat[] mat, StereoCamera stereocamera, bool undist)
+        public bool addPoints2dStereoLas(Mat[] mat, StereoCamera stereocamera, ScannerConfig config)
         {
-            if (undist)
+            if (config.distort)
             {
                 mat[0] = stereocamera.cameraCVs[0].undist(mat[0]);
                 mat[1] = stereocamera.cameraCVs[1].undist(mat[1]);
             }
-            var points_im1 = Detection.detectLineDiff(mat[0], 7);
-            var points_im2 = Detection.detectLineDiff(mat[1], 7);
+            var points_im1 = Detection.detectLineDiff(mat[0], config);
+            var points_im2 = Detection.detectLineDiff(mat[1], config);
 
             //var srx1 = Detection.detectLineSensor(mat[0], 7)[0];
             //var srx2 = Detection.detectLineSensor(mat[1], 7)[0];

@@ -330,13 +330,22 @@ namespace opengl3
             anim_is_go = true;
             cur_time_an = 0;
             end_time_an = end;
+            lightSources[0].direction_z = 0.7f;
         }
 
         void comp_cur_animation()
         {
+            var df = 0.03f;
             if(anim_is_go)
             {
-                lightSources[0].direction_z = -0.5f+ (float)cur_time_an/end_time_an;
+                /*if(lightSources[0].direction_z >=1)
+                {
+                    lightSources[0].direction_z = 0.99999f;
+                }
+                var fi = Math.Acos(lightSources[0].direction_z);
+                fi -= df;
+                lightSources[0].direction_z = Math.Cos(fi);*/
+                lightSources[0].direction_z += df;
 
 
 
@@ -419,7 +428,7 @@ namespace opengl3
             locationBox = contr.Location;
             Gl.Initialize();
             Gl.Enable(EnableCap.Multisample);
-            //Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
+            Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
             Gl.ClearColor(1f, 1f, 1f, 0.0f);
             Gl.PointSize(2f);
             
@@ -475,11 +484,11 @@ namespace opengl3
             // addLight();
 
             //scan_light
-            /*lightSources.Add(new LightSourceGL
+            lightSources.Add(new LightSourceGL
             {
                 position_z = 100,
                 direction_x = 1,
-                direction_z = 0f,
+                direction_z = 0.7f,
                 color_r = 0.3f,
                 color_g = 0.20f,
                 color_b = 0.25f,
@@ -500,7 +509,7 @@ namespace opengl3
                 cut_off = 0.9999f,
                 type_light = LightSourceGL.type.Point
 
-            });*/
+            });
 /*
             lightSources.Add(new LightSourceGL
             {
@@ -516,8 +525,8 @@ namespace opengl3
                 type_light = LightSourceGL.type.Point
 
             }) ;*/
-
-            lightSources.Add(new LightSourceGL
+//def light
+           /* lightSources.Add(new LightSourceGL
             {
                 position_x = -370,
                 position_y = 230,
@@ -566,7 +575,7 @@ namespace opengl3
                 cut_off = 0.9999f,
                 type_light = LightSourceGL.type.Point
 
-            });
+            });*/
             /* lightSources.Add(new LightSourceGL
              {
                  position_z = 10,

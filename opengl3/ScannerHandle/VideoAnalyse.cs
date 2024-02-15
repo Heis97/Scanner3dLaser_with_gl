@@ -115,7 +115,7 @@ namespace opengl3
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                         //CvInvoke.Imshow("im2", im2);                       
 
-                        scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, config.distort);
+                        scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, config);
                     }
 
                     im1_buff = buffer_mat1.Clone();
@@ -266,9 +266,9 @@ namespace opengl3
                                 frame_d.stereo = true;
                                 frames_show.Add(frame_d);
 
-                                frame_d = new Frame(im_min2.Clone(), im_max2.Clone(), videoframe_count.ToString(), FrameType.LasDif);
+                                /*frame_d = new Frame(im_min2.Clone(), im_max2.Clone(), videoframe_count.ToString(), FrameType.LasDif);
                                 frame_d.stereo = true;
-                                frames_show.Add(frame_d);
+                                frames_show.Add(frame_d);*/
                             }
 
                             scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min, im_max, im_max_prev }, k, cam_min, cam_max, config);
@@ -840,7 +840,7 @@ namespace opengl3
                             frame_d.stereo = true;
                             frames_show.Add(frame_d);
                         }
-                        scanner.addPointsStereoLas_2d(new Mat[] { ims1_diff[i], ims2_diff[i] }, config.distort);
+                        scanner.addPointsStereoLas_2d(new Mat[] { ims1_diff[i], ims2_diff[i] }, config);
                         GC.Collect();
                     }
                 }

@@ -17,6 +17,7 @@ using System.Threading;
 using System.IO.Ports;
 using PathPlanning;
 using Newtonsoft.Json;
+using Emgu.CV.Util;
 
 namespace opengl3
 {
@@ -140,6 +141,12 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
+            /*comp_pores("rats\\2_1.png");
+
+            comp_pores("rats\\2_2.png");
+            comp_pores("rats\\2_3.png");
+            comp_pores("rats\\3_1.png");*/
+
             //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");
 
             //CvInvoke.Imshow("im1", im_las);
@@ -173,7 +180,51 @@ namespace opengl3
             //analys_sph();
             //
             //test_detect_spher();
-           // test_matr();
+            // test_matr();
+
+        }
+        void comp_pores(string path)
+        {
+            var im1 = new Mat(path);
+            CvInvoke.CvtColor(im1, im1, ColorConversion.Bgr2Gray);
+            //get_x_line_gray(im1, im1.Height / 2);
+            //Console.WriteLine("________________");
+            CvInvoke.GaussianBlur(im1, im1, new Size(11, 11), 6);
+            //get_x_line_gray(im1, im1.Height / 2);
+            //CvInvoke.Threshold(im1, im1, 150, 255,ThresholdType.BinaryInv);
+            var mat2 = new Mat();
+            CvInvoke.AdaptiveThreshold(im1, mat2, 255, AdaptiveThresholdType.GaussianC, ThresholdType.Binary, 9, 1);
+
+            Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(1, 1));
+
+            Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
+            Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
+            Mat kernel2 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(2, 2), new Point(1, 1));
+            Mat ellips7 = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(7, 7), new Point(1, 1));
+            CvInvoke.MorphologyEx(mat2, mat2,MorphOp.Dilate, kernel2, new Point(-1, -1), 2, BorderType.Default, new MCvScalar());
+
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            Mat hier = new Mat();
+            CvInvoke.FindContours(mat2, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                var area = CvInvoke.ContourArea(contours[i]);
+                if ( area > 5)
+                {
+                    Console.WriteLine(area);
+                }
+            }
+            Console.WriteLine("____________");
+            CvInvoke.Imshow(path, mat2);
+        }
+        void get_x_line_gray(Mat mat,int y)
+        {
+            var im = mat.ToImage<Gray, byte>();
+            for(int x =0; x<im.Width;x++)
+            {
+                Console.WriteLine(x + " " + im.Data[y, x,0]);
+            }
         }
 
         void test_matr()
@@ -191,6 +242,7 @@ namespace opengl3
             var im_las = new Mat("s6.jpg");
             CvInvoke.GaussianBlur(im_las, im_las, new Size(29, 29), -1);
             CvInvoke.Resize(im_las, im_las, new Size(400, 400));
+
             //CvInvoke.Threshold(im_las, im_las, 60, 255, ThresholdType.BinaryInv);
             //CvInvoke.CvtColor(im_las,im_las,ColorConversion.Bgr2Gray);
             //CvInvoke.AdaptiveThreshold(im_las, im_las, 255, AdaptiveThresholdType.GaussianC, ThresholdType.BinaryInv, 11, 1);
@@ -595,7 +647,7 @@ namespace opengl3
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,marksize);
 
-            //comboImages.Items.AddRange(frms_stereo);
+            comboImages.Items.AddRange(frms_stereo);
 
             return scanner;
         }
@@ -1126,9 +1178,9 @@ namespace opengl3
             var h = send.Height;
             //GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             //generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
-            //GL1.addFlat3d_XY_zero_s(-0.1, Color3d_GL.white());
+            //GL1.addFlat3d_XY_zero_s(0, Color3d_GL.white());
             //GL1.SortObj();
-            int monitor_num = 1;
+            int monitor_num = 2;
             if(monitor_num==4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -1186,9 +1238,9 @@ namespace opengl3
 
             //GL1.addFlat3d_XY_zero_s(0);
             //GL1.addFlat3d_XZ_zero_s(50);
-            /*var scan_stla = new Model3d("def2.stl", false);
-            scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
-            GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def2");*/
+            var scan_stla = new Model3d("models\\def_sq2.STL", false);
+            scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 0);
+            GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def_sq");
             //test_arc();
             //test_traj_def();
             //test_reconstr();
@@ -3062,8 +3114,15 @@ namespace opengl3
 
         private void but_scan_virt_Click(object sender, EventArgs e)
         {
+            scan_fold_name = box_scanFolder.Text;
+            box_scanFolder.Text += "_virt_" + DateTime.Now.Month.ToString() + "_"
+            + DateTime.Now.Day.ToString() + "_" +
+            DateTime.Now.Hour.ToString() + "_"
+            + DateTime.Now.Minute.ToString() + "_"
+            + DateTime.Now.Second.ToString();
+
             var n = Convert.ToInt32(boxN.Text);
-            GL1.start_animation(100);
+            GL1.start_animation(120);
             var folder_scan = box_scanFolder.Text;
             UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, "1.png", folder_scan + "\\orig");
             startWrite(1, n);
@@ -3131,7 +3190,10 @@ namespace opengl3
         {
             formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
         }
-
+        private void prop_gr_scan_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+        }
         private void but_flange_calib_basis_Click(object sender, EventArgs e)
         {
             //var stereo_cal_1 = textB_scan_path.Text.Split('\\').Reverse().ToArray()[0];
@@ -5133,6 +5195,8 @@ namespace opengl3
             im = (Mat)imageBox1.Image;
             im.Save("im2.png");
         }
+
+        
     }
 }
 

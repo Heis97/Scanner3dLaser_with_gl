@@ -351,9 +351,9 @@ namespace opengl3
         {
             pointCloud.addPointsStereoLas(mats, stereoCamera, undist);
         }
-        public void addPointsStereoLas_2d(Mat[] mats, bool undist = true)
+        public void addPointsStereoLas_2d(Mat[] mats, ScannerConfig config)
         {
-            pointCloud.addPoints2dStereoLas(mats, stereoCamera, undist);
+            pointCloud.addPoints2dStereoLas(mats, stereoCamera, config);
         }
 
         public void addPointsStereoLas_2d_sync(Mat[] mats, double k, int cam_min, int cam_max, ScannerConfig config)
