@@ -616,9 +616,9 @@ namespace opengl3
         {
             markSize = 10f;//6.2273f
             chess_size = new Size(6, 7);//new Size(10, 11);
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\virt_cam_cal_250823_3", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam2\virt_cal_15-2_1", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("virt_cam_conf_cal_250823_3.txt");            
+            cam1.save_camera("virt_cam_conf_virt_cal_15-2_1.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_130523_2", FrameType.Pattern, PatternType.Mesh);
@@ -679,8 +679,15 @@ namespace opengl3
                 var scan_stl = Polygon3d_GL.toMesh(mesh);
                 //mesh = GL1.addNormals(mesh, 1);
                 this.scanner = scanner;
-
-                if (scan_stl != null) scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
+                var m_sw_xy = new Matrix<double>(new double[,]
+            {
+                { 0,1,0,0},
+                { 1,0,0,0},
+                { 0,0,1,0},
+                { 0,0,0,1},
+            });
+                var m_t = mult_matr(scan_stl[0], m_sw_xy);
+                if (scan_stl != null) scan_i = GL1.add_buff_gl(m_t, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
                 smooth_mesh(scan_i, config.smooth);
                 // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
 
@@ -691,7 +698,19 @@ namespace opengl3
             return scanner;
             
         }
-
+        float[] mult_matr(float[] mesh, Matrix<double> m)
+        {
+            float[] mesh_t = new float[mesh.Length];
+            for(int i=2; i<mesh.Length;i+=3)
+            {
+                var p = new Point3d_GL((float)mesh[i-2], (float)mesh[i-1], (float)mesh[i]);
+                var p_t = p*m;
+                mesh_t[i -2] = (float)p_t.x;
+                mesh_t[i-1] = (float)p_t.y;
+                mesh_t[i] = (float)p_t.z;
+            }
+            return mesh_t;
+        }
         void smooth_mesh(string mesh_id, double rad)
         {
             
@@ -1176,9 +1195,9 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            //GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-            //generateImage3D_BOARD(chess_size.Width, chess_size.Height, markSize, PatternType.Mesh);
-            //GL1.addFlat3d_XY_zero_s(0, Color3d_GL.white());
+            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            generateImage3D_BOARD(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            GL1.addFlat3d_XY_zero_s(-0.1f, Color3d_GL.white());
             //GL1.SortObj();
             int monitor_num = 2;
             if(monitor_num==4)
@@ -1192,6 +1211,8 @@ namespace opengl3
             {
                 GL1.addMonitor(new Rectangle(0 , 0, w , h / 2), 0);
                 GL1.addMonitor(new Rectangle(0 , h / 2, w , h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
+                GL1.transRotZooms[0].viewType_ = viewType.Perspective;
+                GL1.transRotZooms[1].viewType_ = viewType.Perspective;
             }
             else
             {
@@ -1240,6 +1261,7 @@ namespace opengl3
             //GL1.addFlat3d_XZ_zero_s(50);
             var scan_stla = new Model3d("models\\def_sq2.STL", false);
             scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 0);
+            
             GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def_sq");
             //test_arc();
             //test_traj_def();
@@ -2154,15 +2176,25 @@ namespace opengl3
             var ky = target_size.Height / (double)cur_size.Height;
 
             var k = Math.Min(kx, ky);
+            
 
             for (int j = 0; j < windowsTabs.Controls.Count; j++)
             {
                 var tab = (TabPage)windowsTabs.Controls[j];
                 for (int i = 0; i < tab.Controls.Count; i++)
                 {
-                    tab.Controls[i].Location = new Point((int)(tab.Controls[i].Location.X * k), (int)(tab.Controls[i].Location.Y * k));
-                    tab.Controls[i].Size = new Size((int)(tab.Controls[i].Size.Width * k), (int)(tab.Controls[i].Size.Height * k));
-                    tab.Controls[i].Font = new Font(tab.Controls[i].Font.Name, (float)(tab.Controls[i].Font.Size * k));
+                    if  (tab.Controls[i] is GlControl)
+                    {
+                        Console.WriteLine("graph");
+                    }
+
+                    else
+                    {
+                        tab.Controls[i].Location = new Point((int)(tab.Controls[i].Location.X * k), (int)(tab.Controls[i].Location.Y * k));
+                        tab.Controls[i].Size = new Size((int)(tab.Controls[i].Size.Width * k), (int)(tab.Controls[i].Size.Height * k));
+                        tab.Controls[i].Font = new Font(tab.Controls[i].Font.Name, (float)(tab.Controls[i].Font.Size * k));
+                    }
+                    
                 }
             }
 
@@ -2863,13 +2895,13 @@ namespace opengl3
         private void trackOz_Scroll(object sender, EventArgs e)
         {
             var track = (TrackBar)sender;
-            GL1.orientYscroll(track.Value);
+            GL1.orientZscroll(track.Value);
         }
 
         private void trackOy_Scroll(object sender, EventArgs e)
         {
             var track = (TrackBar)sender;
-            GL1.orientZscroll(track.Value);
+            GL1.orientYscroll(track.Value);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -3115,14 +3147,22 @@ namespace opengl3
         private void but_scan_virt_Click(object sender, EventArgs e)
         {
             scan_fold_name = box_scanFolder.Text;
-            box_scanFolder.Text += "_virt_" + DateTime.Now.Month.ToString() + "_"
+            box_scanFolder.Text = "scan_virt_" + DateTime.Now.Month.ToString() + "_"
             + DateTime.Now.Day.ToString() + "_" +
             DateTime.Now.Hour.ToString() + "_"
             + DateTime.Now.Minute.ToString() + "_"
             + DateTime.Now.Second.ToString();
-
+            var coords = GL1.transRotZooms[0].off_x + " "
+                + (-GL1.transRotZooms[0].off_y) + " "
+                + GL1.transRotZooms[0].zoom * GL1.transRotZooms[0].off_z + " " +
+                GL1.transRotZooms[0].xRot + " " +
+                  GL1.transRotZooms[0].yRot + " " +
+                  GL1.transRotZooms[0].zRot + " ";
+            var pos = new RobotFrame(coords);
+            video_scan_name = pos.ToStr(" ",true);
+            boxN.Text = "80";
             var n = Convert.ToInt32(boxN.Text);
-            GL1.start_animation(120);
+            GL1.start_animation(n);
             var folder_scan = box_scanFolder.Text;
             UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, "1.png", folder_scan + "\\orig");
             startWrite(1, n);
@@ -5001,7 +5041,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-            //resize();
+            resize();
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)

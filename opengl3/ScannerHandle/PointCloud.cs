@@ -211,6 +211,7 @@ namespace opengl3
                stereocamera.cameraCVs[1].scan_points.ToArray(),
                stereocamera, graphicGL, color_im);
             Console.WriteLine("gpu computed.");
+            if (points_cam == null) return;
             for (int i= 0; i < points_cam.Length; i++)
             {
                 points3d_cur = points_cam[i];
@@ -391,6 +392,7 @@ namespace opengl3
             
 
             var m1 = stereocamera.cameraCVs[0].matrixCS;
+
             if(stereocamera.scan_coord_sys == StereoCamera.mode.camera)
             {
                 m1 = UtilMatr.eye_matr(4);
@@ -400,6 +402,13 @@ namespace opengl3
                 
                 if (stereocamera.Bbf!= null && stereocamera.Bfs!= null)
                     m1 = stereocamera.Bbf * stereocamera.Bfs;//or inverse                
+            }
+
+            if (stereocamera.scan_coord_sys == StereoCamera.mode.world_virt)
+            {
+
+                if (stereocamera.Bbf != null)
+                    m1 = stereocamera.Bbf;//or inverse                
             }
             var m2 = m1 * stereocamera.R;
             var ps1 = comp_points_for_gpu_2d(points3d_1, m1);

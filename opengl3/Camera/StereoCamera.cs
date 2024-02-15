@@ -13,7 +13,7 @@ namespace opengl3
     public class StereoCamera
     {
         //base = world, flange, scanner = cam1, model = local cord
-        public enum mode {model,world,camera };
+        public enum mode {model,world,camera,world_virt };
         public CameraCV[] cameraCVs;
         public Matrix<double> R;//1 * R -> 2
         public Matrix<double> Bfs;//Flange->scaner
@@ -68,11 +68,11 @@ namespace opengl3
 
                     // Console.WriteLine(R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + R[0, 0] + " " + R[0, 1] + " " + R[0, 2]);
 
-                    /*inv_cs1 = new Matrix<double>(4, 4);
+                    inv_cs1 = new Matrix<double>(4, 4);
                     CvInvoke.Invert(cameraCVs[1].matrixSC, inv_cs1, DecompMethod.LU);
                     R = cameraCVs[0].matrixSC* inv_cs1  ;
                     prin.t("stereo calib R_sc:");
-                    prin.t(R);*/
+                    prin.t(R);
                 }
             }
         }

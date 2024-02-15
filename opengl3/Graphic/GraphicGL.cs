@@ -228,6 +228,8 @@ namespace opengl3
         public List<LightSourceGL> lightSources = new List<LightSourceGL>();
         public LightSourceGL[] lightSources_arr;
         public LightSourcesGL lightSources_obj = new LightSourcesGL();
+
+        float laser_st = 0.9f;
         #endregion
 
         #region main
@@ -330,12 +332,12 @@ namespace opengl3
             anim_is_go = true;
             cur_time_an = 0;
             end_time_an = end;
-            lightSources[0].direction_z = 0.7f;
+            lightSources[0].direction_z = laser_st;
         }
 
         void comp_cur_animation()
         {
-            var df = 0.03f;
+            var df = 0.02f;
             if(anim_is_go)
             {
                 /*if(lightSources[0].direction_z >=1)
@@ -345,7 +347,7 @@ namespace opengl3
                 var fi = Math.Acos(lightSources[0].direction_z);
                 fi -= df;
                 lightSources[0].direction_z = Math.Cos(fi);*/
-                lightSources[0].direction_z += df;
+                lightSources[0].direction_z -= df;
 
 
 
@@ -488,7 +490,7 @@ namespace opengl3
             {
                 position_z = 100,
                 direction_x = 1,
-                direction_z = 0.7f,
+                direction_z = laser_st,
                 color_r = 0.3f,
                 color_g = 0.20f,
                 color_b = 0.25f,
@@ -723,6 +725,10 @@ namespace opengl3
         public Point3d_GL[][] cross_flat_gpu_all(Point3d_GL[][] ps1, Point3d_GL[][] ps2)
         {
             if(ps1 == null || ps2 == null)
+            {
+                return null;
+            }
+            if (ps1.Length==0 || ps2.Length==0)
             {
                 return null;
             }

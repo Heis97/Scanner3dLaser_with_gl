@@ -38,8 +38,10 @@ namespace opengl3
             var name_v2 = Path.GetFileNameWithoutExtension(video_path2);
             if (name_v1.Length > 1 && name_v2.Length > 1)
             {
-                scanner.set_rob_pos(name_v1);
-                scanner.set_coord_sys(StereoCamera.mode.world);
+                //scanner.set_rob_pos(name_v1);
+                //scanner.set_coord_sys(StereoCamera.mode.world);
+
+                //scanner.set_coord_sys(StereoCamera.mode.world_virt);
             }
 
 
@@ -134,7 +136,7 @@ namespace opengl3
 
                 }
                 videoframe_count++;
-                //Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
             form.get_combo_im().Items.AddRange(frames_show.ToArray());
             scanner.compPointsStereoLas_2d();

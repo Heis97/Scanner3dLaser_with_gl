@@ -46,18 +46,26 @@ namespace opengl3
             frame = new PositionRob(new Point3d_GL(x, y, z), new Point3d_GL(a, b, c));
             this.robotType = robotType;
         }
-
+        public double str_to_double(string s)
+        {
+            var s1 = s;
+            if(!s1.Contains("."))
+            {
+                s1 += ".0";
+            }
+            return Convert.ToDouble(s1);
+        }
         public RobotFrame(string coords, RobotType robotType = RobotType.PULSE)
         {
             var coords_s = coords.Split(' ');
             if (coords_s.Length < 6)
                 return;
-            X = Convert.ToDouble(coords_s[0]);
-            Y = Convert.ToDouble(coords_s[1]);
-            Z = Convert.ToDouble(coords_s[2]);
-            A = Convert.ToDouble(coords_s[3]);
-            B = Convert.ToDouble(coords_s[4]);
-            C = Convert.ToDouble(coords_s[5]);
+            X = str_to_double(coords_s[0]);
+            Y = str_to_double(coords_s[1]);
+            Z = str_to_double(coords_s[2]);
+            A = str_to_double(coords_s[3]);
+            B = str_to_double(coords_s[4]);
+            C = str_to_double(coords_s[5]);
             V = 0;
             D = 0;
             this.robotType = robotType;
