@@ -136,14 +136,14 @@ namespace opengl3
         {
             n = n.normalize();
             u = u.normalize();
-            Point3d_GL p_c = u * r * Math.Cos(t) + (u * n) * r * Math.Cos(t) + C;
+            Point3d_GL p_c = u * r * Math.Cos(t) + (u | n) * r * Math.Cos(t) + C;
             return p_c;
         }
         static Point3d_GL generate_circle_by_angles(double t, Point3d_GL C, double r, Point3d_GL n, Point3d_GL u)
         {
             n = n.normalize();
             u = u.normalize();
-            Point3d_GL p_c = u * r * Math.Cos(t) + (u * n) * r * Math.Cos(t) + C;
+            Point3d_GL p_c = u * r * Math.Cos(t) + (u | n) * r * Math.Cos(t) + C;
             return p_c;
         }
 
@@ -634,7 +634,7 @@ namespace opengl3
 
             return ps.ToArray();
         }
-        static public Polygon3d_GL[] expand_surf(Polygon3d_GL[] surf)
+        static public Polygon3d_GL[] expand_surf(Polygon3d_GL[] surf)//lol
         {
 
             return null;

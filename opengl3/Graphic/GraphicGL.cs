@@ -431,7 +431,7 @@ namespace opengl3
             Gl.Initialize();
             Gl.Enable(EnableCap.Multisample);
             Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
-            Gl.ClearColor(1f, 1f, 1f, 0.0f);
+            //Gl.ClearColor(1f, 1f, 1f, 0.0f);
             Gl.PointSize(2f);
             
             var VertexSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Vert\VertexSh_Models.glsl" });
@@ -2012,7 +2012,7 @@ namespace opengl3
             }
 
         }
-        public float[] translateMesh(float[] _mesh, float x=0, float y=0, float z=0)
+        static public float[] translateMesh(float[] _mesh, float x=0, float y=0, float z=0)
         {
             var mesh = new float[_mesh.Length];
             for (int i = 0; i < mesh.Length; i += 3)
@@ -2022,6 +2022,27 @@ namespace opengl3
                 mesh[i + 2] = _mesh[i + 2] + z;
             }
             return mesh;
+        }
+
+        static public float[] rotateMesh(float[] _mesh, float rx = 0, float ry = 0, float rz = 0)
+        {
+            var m_rot = RobotFrame.ABCmatr(0, 0, 0, rx, ry, rz, RobotFrame.RobotType.PULSE);
+            var mesh = mesh_mult_matr(_mesh, m_rot);
+            return mesh;
+        }
+
+        static public float[] mesh_mult_matr(float[] mesh, Matrix<double> m)
+        {
+            float[] mesh_t = new float[mesh.Length];
+            for (int i = 2; i < mesh.Length; i += 3)
+            {
+                var p = new Point3d_GL((float)mesh[i - 2], (float)mesh[i - 1], (float)mesh[i]);
+                var p_t = m * p;
+                mesh_t[i - 2] = (float)p_t.x;
+                mesh_t[i - 1] = (float)p_t.y;
+                mesh_t[i] = (float)p_t.z;
+            }
+            return mesh_t;
         }
         public float[] scaleMesh(float[] _mesh, float k, float kx = 1.0f, float ky = 1.0f, float kz = 1.0f)
         {
@@ -2227,7 +2248,7 @@ namespace opengl3
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
-            if (color == null) color = new Color3d_GL();
+            if (color == null) color = new Color3d_GL(0.1);
             for (int i = 0; i < color_buffer_data.Length; i += 3)
             {
                 color_buffer_data[i] = color.r;
@@ -2322,7 +2343,7 @@ namespace opengl3
                 
                 
             }
-            if (color == null) color = new Color3d_GL();
+            if (color == null) color = new Color3d_GL(0.1);
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
             for (int i = 0; i < color_buffer_data.Length; i += 3)
             {

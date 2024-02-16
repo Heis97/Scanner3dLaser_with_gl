@@ -148,6 +148,7 @@
     <Compile Include="Geometry\Line3d_GL.cs" />
     <Compile Include="Graphic\LightSourceGL.cs" />
     <Compile Include="PathPlanning\PathPlanner.cs" />
+    <Compile Include="PathPlanning\PathModeling.cs" />
     <Compile Include="PathPlanning\RobotFrame.cs" />
     <Compile Include="PathPlanning\RozumPoint.cs" />
     <Compile Include="PathPlanning\TrajParams.cs" />

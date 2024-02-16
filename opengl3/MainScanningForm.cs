@@ -679,15 +679,7 @@ namespace opengl3
                 var scan_stl = Polygon3d_GL.toMesh(mesh);
                 //mesh = GL1.addNormals(mesh, 1);
                 this.scanner = scanner;
-                var m_sw_xy = new Matrix<double>(new double[,]
-            {
-                { 0,1,0,0},
-                { 1,0,0,0},
-                { 0,0,1,0},
-                { 0,0,0,1},
-            });
-                var m_t = mult_matr(scan_stl[0], m_sw_xy);
-                if (scan_stl != null) scan_i = GL1.add_buff_gl(m_t, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
+                if (scan_stl != null) scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
                 smooth_mesh(scan_i, config.smooth);
                 // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
 
@@ -698,19 +690,7 @@ namespace opengl3
             return scanner;
             
         }
-        float[] mult_matr(float[] mesh, Matrix<double> m)
-        {
-            float[] mesh_t = new float[mesh.Length];
-            for(int i=2; i<mesh.Length;i+=3)
-            {
-                var p = new Point3d_GL((float)mesh[i-2], (float)mesh[i-1], (float)mesh[i]);
-                var p_t = p*m;
-                mesh_t[i -2] = (float)p_t.x;
-                mesh_t[i-1] = (float)p_t.y;
-                mesh_t[i] = (float)p_t.z;
-            }
-            return mesh_t;
-        }
+        
         void smooth_mesh(string mesh_id, double rad)
         {
             
@@ -1196,8 +1176,8 @@ namespace opengl3
             var w = send.Width;
             var h = send.Height;
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-            generateImage3D_BOARD(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-            GL1.addFlat3d_XY_zero_s(-0.1f, Color3d_GL.white());
+           // generateImage3D_BOARD(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            //GL1.addFlat3d_XY_zero_s(-0.1f, Color3d_GL.white());
             //GL1.SortObj();
             int monitor_num = 2;
             if(monitor_num==4)
@@ -1259,10 +1239,13 @@ namespace opengl3
 
             //GL1.addFlat3d_XY_zero_s(0);
             //GL1.addFlat3d_XZ_zero_s(50);
-            var scan_stla = new Model3d("models\\def_sq2.STL", false);
-            scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 0);
+            var scan_stla = new Model3d("models\\curv_sq_1.STL", false);
             
-            GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def_sq");
+
+            scan_stla.mesh = GraphicGL.rotateMesh(scan_stla.mesh, PI/2, 0, 0);
+
+            scan_stla.mesh = GraphicGL.translateMesh(scan_stla.mesh, 0, 0, 0);
+            //GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def_sq");
             //test_arc();
             //test_traj_def();
             //test_reconstr();
@@ -1736,7 +1719,7 @@ namespace opengl3
                     var meshs = Polygon3d_GL.toMesh(layers[i]);
 
                     var mesh_sm_tr = meshs[0];
-                    if (i==0) mesh_sm_tr = GL1.translateMesh(mesh_sm_tr, 0, 0, -0.5f);
+                    if (i==0) mesh_sm_tr = GraphicGL.translateMesh(mesh_sm_tr, 0, 0, -0.5f);
                     surfs.Add(Polygon3d_GL.polygs_from_mesh(mesh_sm_tr));
                     //var rec = GL1.add_buff_gl(mesh_sm_tr, meshs[1], meshs[2], PrimitiveType.Triangles, "_cut_" + i);
                     //cuts.Add(rec);
@@ -3126,17 +3109,33 @@ namespace opengl3
         private void but_printer_traj_fab_Click(object sender, EventArgs e)
         {
             var contours = new List<List<Point3d_GL>>();
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < traj_config.layers; i++)
             {
                 var cont = SurfaceReconstraction.gen_random_cont_XY(10, 30, 0, new Point3d_GL(0,0,0.4*i)).ToList();
                 contours.Add(cont);
             }
-            var patterns = PathPlanner.gen_traj_2d(contours, traj_config, patt_config, GL1);
+            var traj_path = PathPlanner.gen_traj_2d(contours, traj_config, patt_config, GL1);
+            traj_path.translate(new Point3d_GL(traj_config.Off_x, traj_config.Off_y, traj_config.Off_z));
+            var patterns = traj_path.to_ps_by_layers();
 
             var pattern = Point3d_GL.unifPoints2d(patterns);
             //var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
             var traj = PathPlanner.ps_to_matr(pattern);
             var prog = PathPlanner.generate_printer_prog(traj, traj_config);
+            var x = 40;
+            var y = 40;
+            var p1 = new Point3d_GL(x, y, 0);
+            var p2 = new Point3d_GL(x, -y, 0);
+            var p3 = new Point3d_GL(-x, y, 0);
+            var p4 = new Point3d_GL(-x, -y, 0);
+            var surf = new Polygon3d_GL[]
+            {
+                new Polygon3d_GL(p4,p3,p1),
+                new Polygon3d_GL(p4,p1,p2)
+            };
+            var pols = PathModeling.modeling_print_path(surf, traj_path, traj_config);
+
+            GL1.addMesh(Polygon3d_GL.toMesh(pols)[0], PrimitiveType.Triangles,Color3d_GL.white(),"model_traj");
             debugBox.Text = prog;
             if (GL1.buffersGl.objs.Keys.Contains("prog")) GL1.buffersGl.removeObj("prog");
             //GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
@@ -4552,7 +4551,7 @@ namespace opengl3
              var surfs = new List<Polygon3d_GL[]>();
              for (int i = 0; i < 3; i++)
              {
-                 var mesh_sm_tr = GL1.translateMesh(mesh_sm, 0, 0, -1f + (i * -1f));
+                 var mesh_sm_tr = GraphicGL.translateMesh(mesh_sm, 0, 0, -1f + (i * -1f));
                  surfs.Add(Polygon3d_GL.polygs_from_mesh(mesh_sm_tr));
                  //var rec = GL1.add_buff_gl(mesh_sm_tr, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_cut_"+i);
                  //cuts.Add(rec);
@@ -4678,7 +4677,7 @@ namespace opengl3
             var surfs = new List<Polygon3d_GL[]>();
             for (int i = 0; i < 3; i++)
             {
-                var mesh_sm_tr = GL1.translateMesh(mesh_sm, 0, 0, -1 + (i * -1f));
+                var mesh_sm_tr = GraphicGL.translateMesh(mesh_sm, 0, 0, -1 + (i * -1f));
                 surfs.Add(Polygon3d_GL.polygs_from_mesh(mesh_sm_tr));
                 //var rec = GL1.add_buff_gl(mesh_sm_tr, scan_stl[1], scan_stl[2], PrimitiveType.Triangles, selected_obj + "_cut_"+i);
                 //cuts.Add(rec);
@@ -5041,7 +5040,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-            resize();
+            //resize();
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)

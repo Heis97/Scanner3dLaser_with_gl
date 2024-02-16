@@ -146,6 +146,7 @@ namespace opengl3
             var ps2d = new System.Drawing.PointF[4];
             var w = patt_size.Width;
             var h = patt_size.Height;
+            Console.WriteLine("take ob: "+w + " "+h);
             var inds_1 = new int[4] {
                 0             ,          w - 1,
                 w * (h - 1)   ,        w * h - 1 };

@@ -235,6 +235,17 @@ namespace opengl3
             }
             return ps_fil.ToArray();
         }
+
+        public static Point3d_GL[][] to_arr(List<List<Point3d_GL>> ps)
+        {
+            var ps_arr = new List<Point3d_GL[]>();
+            for (int i = 0; i < ps.Count; i++)
+            {
+                ps_arr.Add(ps[i].ToArray());
+            }
+            return ps_arr.ToArray();
+        }
+
         public static List<Point3d_GL> unifPoints2d(List<List<Point3d_GL>> ps)
         {
             var ps_fil = new List<Point3d_GL>();
@@ -386,12 +397,9 @@ namespace opengl3
             return new Point3d_GL(p.x / k, p.y / k, p.z / k, p.color);
         }
 
-        public static Point3d_GL operator *(Point3d_GL p1, Point3d_GL p2)
+        public static double operator *(Point3d_GL p1, Point3d_GL p2)
         {
-            return new Point3d_GL(p1.y * p2.z - p1.z * p2.y,
-               p1.z * p2.x - p1.x * p2.z,
-                p1.x * p2.y - p1.y * p2.z, 
-                p1.color);
+            return p1.x * p2.x + p1.y * p2.y + p1.z * p2.z;
         }
         public static Point3d_GL operator *(Point3d_GL p, Flat3d_GL f)
         {
@@ -431,6 +439,7 @@ namespace opengl3
             }
             var pm = new Point3d_GL(matrixC, p.color);
             pm.exist = p.exist;
+            pm.color = p.color;
             return pm;
         }
         static double[,] Matrix4x4ToDouble(Matrix4x4f matrixA)
@@ -480,7 +489,7 @@ namespace opengl3
             var matrix = Matrix4x4ToDouble(matrixA);
             return matrix * p;
         }
-        public static Point3d_GL operator *(Point3d_GL p, Matrix<double> m)
+        public static Point3d_GL operator *(Point3d_GL p, Matrix<double> m)//хрень
         {
             return matrix_to_p(p.p_to_matrix() * m);
         }
@@ -518,7 +527,7 @@ namespace opengl3
         }
         public static double operator ^(Point3d_GL p1, Point3d_GL p2)
         {
-            return (p1.x * p2.x + p1.y * p2.y + p1.z * p2.z) / (p1.magnitude() * p2.magnitude());
+            return (p1*p2) / (p1.magnitude() * p2.magnitude());
         }//scalar mult
         static double arccos(double cos)
         {
@@ -1111,7 +1120,11 @@ namespace opengl3
         }
 
         
-
+        public Point3d_GL set_color_this(Color3d_GL _color)
+        {
+            color = _color;
+            return this;
+        }
 
 
     }

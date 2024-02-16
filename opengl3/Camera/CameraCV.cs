@@ -464,8 +464,8 @@ namespace opengl3
                     markSize = mark;
                 }
 
-                var x = markSize * (size_patt.Width - 1);
-                var y = markSize * (size_patt.Height - 1);
+                var x = markSize * (size_patt.Height - 1);
+                var y = markSize * (size_patt.Width - 1);
 
                 /* var points3d = new MCvPoint3D32f[]
                  {
@@ -487,12 +487,18 @@ namespace opengl3
                 }
                 else 
                 {
-                    points3d = new MCvPoint3D32f[]
+                    /*points3d = new MCvPoint3D32f[]
                     {
                         new MCvPoint3D32f(x,y,0),
                         new MCvPoint3D32f(0,y,0),
                         new MCvPoint3D32f(x,0,0),
                         new MCvPoint3D32f(0,0,0)
+                    };*/
+
+                    points3d = new MCvPoint3D32f[]
+                    {
+                        new MCvPoint3D32f(0,y,0), new MCvPoint3D32f(0,0,0),
+                        new MCvPoint3D32f(x,y,0), new MCvPoint3D32f(x,0,0)
                     };
                 }
 
@@ -511,7 +517,11 @@ namespace opengl3
                 //CvInvoke.Imshow("pos", mat_p1);
                 //CvInvoke.WaitKey();
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
+                prin.t("points2d");
+                prin.t(points2d);
 
+                prin.t("points3d");
+                prin.t(points3d);
                 compPos(points3d, points2d);
                /* UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 2);
                 CvInvoke.Imshow("pos", matDraw);

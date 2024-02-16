@@ -38,10 +38,8 @@ namespace opengl3
             var name_v2 = Path.GetFileNameWithoutExtension(video_path2);
             if (name_v1.Length > 1 && name_v2.Length > 1)
             {
-                //scanner.set_rob_pos(name_v1);
-                //scanner.set_coord_sys(StereoCamera.mode.world);
-
-                //scanner.set_coord_sys(StereoCamera.mode.world_virt);
+                scanner.set_rob_pos(name_v1);
+                scanner.set_coord_sys(StereoCamera.mode.world);
             }
 
 

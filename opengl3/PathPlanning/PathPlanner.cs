@@ -188,6 +188,16 @@ namespace PathPlanning
             ps =((Point3d_GL[]) traj_div.ToArray().Clone()).ToList();
             return this;
         }
+        
+        public LinePath translate(Point3d_GL p)
+        {
+            for(int i = 0; i < this.ps.Count;i++)
+            {
+                ps[i] += p;
+            }
+            return this;
+        }
+
     }
     public class LayerPath
     {
@@ -230,6 +240,13 @@ namespace PathPlanning
             foreach(LinePath l in lines)
                 l.add(p);
         }
+
+        public LayerPath translate(Point3d_GL p)
+        {
+            foreach (LinePath l in lines)
+                l.translate(p);
+            return this;
+        }
         public void rotate(double angle)
         {
             foreach (LinePath l in lines)
@@ -241,6 +258,14 @@ namespace PathPlanning
             var ps = new List<Point3d_GL>();
             foreach (var line in lines)
                 ps.AddRange(line.ps);
+            return ps;
+        }
+
+        public List<List<Point3d_GL>> to_ps_by_lines()
+        {
+            var ps = new List<List<Point3d_GL>>();
+            foreach (var line in lines)
+                ps.Add(line.ps);
             return ps;
         }
         public LayerPath Clone()
@@ -305,6 +330,13 @@ namespace PathPlanning
                 layers_cl.Add(layer.Clone());
             return new TrajectoryPath() { layers = layers_cl };
         }
+        public TrajectoryPath translate(Point3d_GL p)
+        {
+            foreach (LayerPath l in layers)
+                l.translate(p);
+            return this;
+        }
+
     }
     public class PathPlanner
     {
@@ -690,7 +722,7 @@ namespace PathPlanning
         {
             var layer_sq = gen_pattern_in_square_xy(settings, p_min, p_max);
             //Console.WriteLine("layer_sq z"+layer_sq[0].z + " " + layer_sq[1].z + " ");
-            gl.addLineMeshTraj(layer_sq.to_ps().ToArray(), Color3d_GL.red());
+            //gl.addLineMeshTraj(layer_sq.to_ps().ToArray(), Color3d_GL.red());
 
             // var ps_div = divide_traj(layer_sq, trajParams.div_step);
             var ps_div = layer_sq.divide_traj(settings.min_dist).to_ps();
@@ -892,7 +924,7 @@ namespace PathPlanning
 
             }
 
-            CvInvoke.Imshow("cont2", im_patt);
+            //CvInvoke.Imshow("cont2", im_patt);
             return patt_cut;
         }
 
@@ -928,7 +960,7 @@ namespace PathPlanning
             return traj_ps;
         }
 
-        public static List<List<Point3d_GL>> gen_traj_2d(List<List<Point3d_GL>> contour, TrajParams trajParams, PatternSettings settings,GraphicGL gl = null)
+        public static TrajectoryPath gen_traj_2d(List<List<Point3d_GL>> contour, TrajParams trajParams, PatternSettings settings,GraphicGL gl = null)
         {
             var traj_layers = new List<LayerPath>();
             var min_p = Point3d_GL.Min(contour) - new Point3d_GL(trajParams.step,trajParams.step, trajParams.step);
@@ -945,8 +977,8 @@ namespace PathPlanning
             Console.WriteLine("Layers__________");
             traj = Trajectory.OptimizeTranzitions2LayerPath(traj);
             Console.WriteLine("Layers----------");
-            var traj_ps = traj.to_ps_by_layers();
-            return traj_ps;
+            //var traj_ps = traj.to_ps_by_layers();
+            return traj;
         }
         static List<Point3d_GL> GeneratePositionTrajectory(List<Point3d_GL> contour, double step)
         {
@@ -1266,7 +1298,7 @@ namespace PathPlanning
         {
             trajParams.comp_z();
             var traj_2d = new List<List<Point3d_GL>>();
-            if (patternSettings != null) traj_2d = gen_traj_2d(contour, trajParams, patternSettings,gl);
+            if (patternSettings != null) traj_2d = gen_traj_2d(contour, trajParams, patternSettings,gl).to_ps_by_layers();
             else traj_2d = generate_2d_traj(contour, trajParams);
 
             //gl.addLineMeshTraj(traj_2d[0].ToArray(), Color3d_GL.blue());

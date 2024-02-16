@@ -226,11 +226,11 @@ namespace opengl3
             var vz = new Point3d_GL(-x, -y, -z).normalize();
             var v_xy = new Point3d_GL(x, y, 0).normalize();
             var vx = Point3d_GL.vec_perpend_xy(v_xy);
-            var vy = vz * vx;
+            var vy = vz | vx;
             if (vy.z > 0)
             {
                 vx = -vx;
-                vy = vz * vx;
+                vy = vz | vx;
             }
             var matr = new Matrix<double>(new double[,] {
                 { vx.x ,vx.y ,vx.z , x },
