@@ -677,6 +677,15 @@ namespace opengl3
             var p_proj = surface[polyg_ind].project_point_xy(p);
             return p_proj;
         }
+
+        public (Point3d_GL, Point3d_GL) proj_point_xy_ex(Point3d_GL p, Polygon3d_GL[] surface)//p,n
+        {
+            var polyg_inds = get_polyg_ind_prec_xy(p, surface);
+            if (polyg_inds == null) return (Point3d_GL.notExistP(), Point3d_GL.notExistP());
+            var polyg_ind = fing_high_polyg(polyg_inds, p, surface);
+            var p_proj = surface[polyg_ind].project_point_xy(p);
+            return (p_proj, surface[polyg_ind].flat3D.n.toPoint()) ;
+        }
         public static int fing_high_polyg(int[] inds, Point3d_GL p, Polygon3d_GL[] surface)
         {
             if (inds == null) return 0;

@@ -19,6 +19,10 @@ namespace PathPlanning
 {
     public class LinePath
     {
+        public enum LineType { Main, Other }
+
+        public LineType type = LineType.Main;
+
         public List<Point3d_GL> ps;
         public void add(Point3d_GL p)  { ps = Point3d_GL.add_arr(ps, p); }
         public void rotate(double angle)  {  ps = Point3d_GL.rotate_points(ps, angle);  }
@@ -243,7 +247,7 @@ namespace PathPlanning
 
         public LayerPath translate(Point3d_GL p)
         {
-            foreach (LinePath l in lines)
+            foreach (var l in lines)
                 l.translate(p);
             return this;
         }
@@ -268,6 +272,15 @@ namespace PathPlanning
                 ps.Add(line.ps);
             return ps;
         }
+        public List<List<Point3d_GL>> to_ps_by_lines_main_only()
+        {
+            var ps = new List<List<Point3d_GL>>();
+            foreach (var line in lines)
+            {
+                if(line.type == LinePath.LineType.Main) { ps.Add(line.ps); }
+            }    
+            return ps;
+        }
         public LayerPath Clone()
         {
             var layers_cl = new List<LinePath>();
@@ -281,6 +294,23 @@ namespace PathPlanning
             foreach (var line in lines)
                 layers_cl.Add(line.divide_traj(div));
             return new LayerPath() { lines = layers_cl };
+        }
+
+        public LayerPath fill_gaps(double div)
+        {
+            var lines_old = ((LinePath[])lines.ToArray().Clone()).ToList();
+            lines = new List<LinePath>();
+            lines.Add(lines_old[0].Clone());
+            for (int i=1; i < lines_old.Count; i++)
+            {
+                var fill = new Point3d_GL[] { lines_old[i - 1].get_last(), lines_old[i].get_first() };
+                var ps =  PathPlanner.divide_traj(fill.ToList(), div,true);
+                var gap = new LinePath() { ps = ps };
+                gap.type = LinePath.LineType.Other;
+                lines.Add(gap);
+                lines.Add(lines_old[i].Clone());
+            }
+            return this;
         }
 
     }
@@ -332,8 +362,34 @@ namespace PathPlanning
         }
         public TrajectoryPath translate(Point3d_GL p)
         {
-            foreach (LayerPath l in layers)
+            foreach (var l in layers)
                 l.translate(p);
+            return this;
+        }
+        public TrajectoryPath fill_gaps(double div)
+        {
+            foreach (var l in layers)
+                l.fill_gaps(div);
+            return this;
+        }
+
+        public TrajectoryPath gauss(int w)
+        {
+            var ps = to_ps(); //Console.WriteLine("ps.Count: "+ps.Count);
+            var ps_gauss = Point3d_GL.line_aver(ps.ToArray(), w);
+            int c = 0;
+            for (int i = 0; i < layers.Count; i++)
+            {
+                for (int j = 0; j <layers[i].lines.Count; j++)
+                {
+                    for (int k = 0; k < layers[i].lines[j].ps.Count; k++)
+                    {
+
+                        layers[i].lines[j].ps[k] = ps_gauss[c]; c++;
+                    }
+                }
+            }
+            //Console.WriteLine("ps.Count: " + to_ps().Count);
             return this;
         }
 
@@ -496,7 +552,7 @@ namespace PathPlanning
             }
             return traj_m;
         }
-        static List<Point3d_GL> join_traj(List<List<Point3d_GL>> traj)
+        static public  List<Point3d_GL> join_traj(List<List<Point3d_GL>> traj)
         {
             var traj_j = new List<Point3d_GL>();
             for(int i=0; i<traj.Count;i++)
@@ -968,7 +1024,7 @@ namespace PathPlanning
             for (int i = 0; i < contour.Count; i++)
             {
                 var layer = gen_pattern_in_contour_xy(settings, trajParams, contour[i].ToList(), min_p, max_p, gl);
-                layer.add(new Point3d_GL(0, 0, trajParams.dz * i));
+                layer.add(new Point3d_GL(0, 0, trajParams.dz * (1+i)));
                 traj_layers.Add(layer);
                 settings.angle += settings.angle_layers;
             }
@@ -1127,7 +1183,7 @@ namespace PathPlanning
             }
             return traj_fil;
         }
-        public static List<Point3d_GL> divide_traj(List<Point3d_GL> layer,double div_step)
+        public static List<Point3d_GL> divide_traj(List<Point3d_GL> layer,double div_step, bool with_end = false)
         {
             var traj_div = new List<Point3d_GL>();
             for(int i=0; i<layer.Count-1;i++)
@@ -1146,7 +1202,12 @@ namespace PathPlanning
                             layer[i].z + (div_step * j * (layer[i + 1].z - layer[i].z)) / dist
                             ));
                     }
+                    if (with_end)
+                    {
+                        traj_div.Add(layer[i + 1]);
+                    }
                 }
+                
             }
             return traj_div;
         }

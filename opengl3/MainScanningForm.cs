@@ -1239,13 +1239,12 @@ namespace opengl3
 
             //GL1.addFlat3d_XY_zero_s(0);
             //GL1.addFlat3d_XZ_zero_s(50);
-            var scan_stla = new Model3d("models\\curv_sq_1.STL", false);
-            
 
+            /*var scan_stla = new Model3d("models\\curv_sq_1.STL", false);
             scan_stla.mesh = GraphicGL.rotateMesh(scan_stla.mesh, PI/2, 0, 0);
-
             scan_stla.mesh = GraphicGL.translateMesh(scan_stla.mesh, 0, 0, 0);
-            //GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def_sq");
+            GL1.add_buff_gl(scan_stla.mesh, scan_stla.color, scan_stla.normale, PrimitiveType.Triangles, "def_sq");*/
+
             //test_arc();
             //test_traj_def();
             //test_reconstr();
@@ -3133,13 +3132,13 @@ namespace opengl3
                 new Polygon3d_GL(p4,p3,p1),
                 new Polygon3d_GL(p4,p1,p2)
             };
-            var pols = PathModeling.modeling_print_path(surf, traj_path, traj_config);
+            var pols = PathModeling.modeling_print_path_3d(surf, traj_path, traj_config,GL1);
 
             GL1.addMesh(Polygon3d_GL.toMesh(pols)[0], PrimitiveType.Triangles,Color3d_GL.white(),"model_traj");
             debugBox.Text = prog;
             if (GL1.buffersGl.objs.Keys.Contains("prog")) GL1.buffersGl.removeObj("prog");
             //GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
-            GL1.addTraj(pattern.ToArray(), "prog");
+            //GL1.addTraj(pattern.ToArray(), "prog");
             //GL1.addTrajPoint(pattern.ToArray(), "prog");
         }
 

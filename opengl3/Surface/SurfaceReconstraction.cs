@@ -634,8 +634,27 @@ namespace opengl3
 
             return ps.ToArray();
         }
-        static public Polygon3d_GL[] expand_surf(Polygon3d_GL[] surf)//lol
+        static public Polygon3d_GL[] expand_surf(Polygon3d_GL[] surf,double f)
         {
+            var mesh = new IndexedMesh(surf);
+            var board = mesh.points_on_board();
+            if(board == null) return null;
+            if( board.Length == 0 ) return null;
+            var cont = board[0];
+            var exp_cont = expand_cont(cont,f);
+            var pols_ex =  Polygon3d_GL.triangulate_two_same_conts(cont,exp_cont);
+            var surf_exp = new List<Polygon3d_GL>();
+            surf_exp.AddRange(surf);
+            surf_exp.AddRange(pols_ex);
+            return surf_exp.ToArray();
+        }
+
+        static public Point3d_GL[] expand_cont(Point3d_GL[] cont, double f)
+        {
+            if (cont == null) return null;
+            if (cont.Length == 0) return null;
+            var cont_exp = new List<Point3d_GL>();
+
 
             return null;
         }

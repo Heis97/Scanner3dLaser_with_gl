@@ -19,13 +19,29 @@ namespace PathPlanning
 {
     static class PathModeling
     {
-        static public Polygon3d_GL[] modeling_print_path(Polygon3d_GL[] surf, TrajectoryPath path, TrajParams trajParams)
+        static public Polygon3d_GL[] modeling_print_path(Polygon3d_GL[] surf, TrajectoryPath path, TrajParams trajParams,GraphicGL graphicGL = null)
         {
-            Console.WriteLine("comp_whv_________________");
+             path = path.fill_gaps(trajParams.div_step);
+            path = path.gauss(4);
             var path_c = comp_whv(path,trajParams);
-            Console.WriteLine("modeling_gravity_________________");
-            var path_g = modeling_gravity(path_c,surf);
+            var path_g = modeling_gravity(path_c,surf, graphicGL);
             var model = path_to_model(path_g.to_ps());
+           
+            return model;
+        }
+
+        static public Polygon3d_GL[] modeling_print_path_3d(Polygon3d_GL[] surf, TrajectoryPath path, TrajParams trajParams, GraphicGL graphicGL = null)
+        {
+            path = path.fill_gaps(trajParams.div_step);
+            path = path.gauss(2);
+            var path_c = comp_whv(path, trajParams);
+            TrajectoryPath path_g;
+            List<List<Point3d_GL>> ns;
+            (path_g,ns) = modeling_gravity_3d(path_c, surf, graphicGL);
+
+            var model = path_to_model_3d(path_g.to_ps(),ns);
+
+
             return model;
         }
         static public TrajectoryPath comp_whv(TrajectoryPath path,TrajParams trajParams)
@@ -41,7 +57,7 @@ namespace PathPlanning
                         var color = comp_whv_from_rect(w, h);
                         path.layers[i].lines[j].ps[k] =  path.layers[i].lines[j].ps[k].set_color_this(color);
 
-                        Console.WriteLine(path.layers[i].lines[j].ps[k].color.ToString());
+                        //Console.WriteLine(path.layers[i].lines[j].ps[k].color.ToString());
                     }
                 }
             }
@@ -55,30 +71,52 @@ namespace PathPlanning
             if (h < 0.00001) h = 0.00001;
             var w_sh = (w - (Math.PI * h) / 4);
             w = w_sh + h;
+            v = (w - h + Math.PI * h / 4) * h;
             return new Color3d_GL(w, h, v);
         }
-        static Color3d_GL comp_whv_from_norm(double v, double h, double h_new)
+        static Color3d_GL comp_whv_from_norm(double v, double h_new)
         {
 
             if (h_new < 0.00001) h_new = 0.00001;
-            var w_sh = (v - (Math.PI * h_new*h_new) / 4)/h;
-            var w = w_sh + h_new;
+            var w = v/h_new + h_new - Math.PI*h_new / 4;
+            v = (w - h_new + Math.PI * h_new / 4) * h_new;
             return new Color3d_GL(w, h_new, v);
         }
-        static public TrajectoryPath modeling_gravity(TrajectoryPath path, Polygon3d_GL[] surf)
+        static public TrajectoryPath modeling_gravity(TrajectoryPath path, Polygon3d_GL[] surf, GraphicGL graphicGL = null)
         {
             var path_g = new List<LayerPath>();
             var layers = path.layers;
             var surf_o = surf;
             for(int i = 0; i < layers.Count; i++)
             {
-                if(i!=0) surf_o = surf_from_layer(layers[i]);
-                var path_o = modeling_gravity_one(layers[i], surf_o);
+                if(i!=0) surf_o = surf_from_layer(layers[i-1]);
+               // graphicGL?.addMesh(Polygon3d_GL.toMesh(surf_o)[0], OpenGL.PrimitiveType.Triangles);
+                var path_o = modeling_gravity_one(layers[i], surf_o, graphicGL);
                 path_g.Add(path_o);
+
             }
             return new TrajectoryPath { layers = path_g };
         }
-        static public LayerPath modeling_gravity_one(LayerPath layer, Polygon3d_GL[] surf)
+
+        static public (TrajectoryPath, List<List<Point3d_GL>>)  modeling_gravity_3d(TrajectoryPath path, Polygon3d_GL[] surf, GraphicGL graphicGL = null)
+        {
+            var nss = new List<List<Point3d_GL>>();
+            var path_g = new List<LayerPath>();
+            var layers = path.layers;
+            var surf_o = surf;
+            for (int i = 0; i < layers.Count; i++)
+            {
+                if (i != 0) surf_o = surf_from_layer(layers[i - 1]);
+                 graphicGL?.addMesh(Polygon3d_GL.toMesh(surf_o)[0], OpenGL.PrimitiveType.Triangles);
+                List<Point3d_GL> ns;
+                LayerPath path_o;
+                (path_o,ns) = modeling_gravity_one_3d(layers[i], surf_o, graphicGL);
+                path_g.Add(path_o);
+                nss.Add(ns);
+            }
+            return (new TrajectoryPath { layers = path_g }, nss);
+        }
+        static public LayerPath modeling_gravity_one(LayerPath layer, Polygon3d_GL[] surf, GraphicGL graphicGL = null)
         {
             var map_xy = new RasterMap(surf,1);
             for (int i=0; i< layer.lines.Count;i++)
@@ -91,7 +129,7 @@ namespace PathPlanning
                     {
                         layer.lines[i].ps[j] = comp_whv_2p(p, p_proj);
 
-                        Console.WriteLine(layer.lines[i].ps[j].color.ToString());
+                       // Console.WriteLine(layer.lines[i].ps[j].color.ToString());
                     }
                     else
                     {
@@ -101,6 +139,30 @@ namespace PathPlanning
             }
             return layer;
         }
+
+        static public (LayerPath,List<Point3d_GL>) modeling_gravity_one_3d(LayerPath layer, Polygon3d_GL[] surf, GraphicGL graphicGL = null)
+        {
+            var ns = new List<Point3d_GL>();
+            var map_xy = new RasterMap(surf, 1);
+            for (int i = 0; i < layer.lines.Count; i++)
+            {
+                for (int j = 0; j < layer.lines[i].ps.Count; j++)
+                {
+                    var p = layer.lines[i].ps[j];
+                    Point3d_GL p_proj, n;
+                    (p_proj,n) = map_xy.proj_point_xy_ex(p, surf);
+                    ns.Add(n);
+                    if (p_proj.exist)
+                    {
+                        layer.lines[i].ps[j] = comp_whv_2p(p, p_proj);
+                    }
+                    else{}
+                }
+            }
+            return (layer,ns);
+        }
+
+
         static Point3d_GL comp_whv_2p(Point3d_GL p, Point3d_GL p_proj)
         {
             var h = p.z - p_proj.z;
@@ -116,7 +178,7 @@ namespace PathPlanning
             }
             p.z = p_proj.z + h;
             
-            p.color = comp_whv_from_norm(p.color.b, p.color.g, h);
+            p.color = comp_whv_from_norm(p.color.b, h);
             return p;
         }
         static double comp_h_max(Color3d_GL whv)
@@ -128,7 +190,7 @@ namespace PathPlanning
         }
         static public Polygon3d_GL[] surf_from_layer(LayerPath layer)
         {
-            var ps = Point3d_GL.to_arr( layer.to_ps_by_lines());
+            var ps = Point3d_GL.to_arr( layer.to_ps_by_lines_main_only());
             var pols = Polygon3d_GL.triangulate_lines_xy(ps);
             return pols;
         }
@@ -136,6 +198,16 @@ namespace PathPlanning
         static public Polygon3d_GL[] path_to_model(List<Point3d_GL> path)
         {
             var matrs = comp_matr_from_path(path);
+            var sections = gen_sections(path, matrs);
+            var model = triangulate_sections(sections);
+            return model;
+        }
+
+        static public Polygon3d_GL[] path_to_model_3d(List<Point3d_GL>  path,List<List<Point3d_GL>> ns)
+        {
+            var path_n = PathPlanner.join_traj(ns);
+            Console.WriteLine("Count: "+path_n.Count + " " + path.Count);
+            var matrs = comp_matr_from_path_3d(path, path_n);
             var sections = gen_sections(path, matrs);
             var model = triangulate_sections(sections);
             return model;
@@ -153,18 +225,48 @@ namespace PathPlanning
                 var vec_z = new Point3d_GL(0, 0, 1);
                 var vec_y = (vec_z | vec_x).normalize();
 
+
                 var m = new Matrix<double>(new double[,]
                 {
-                { vec_x.x,vec_x.y,vec_x.z,path[i].x},
-                 { vec_y.x,vec_y.y,vec_y.z,path[i].y},
-                  { vec_z.x,vec_z.y,vec_z.z,path[i].z},
-                   { 0,0,0,1}
+                  { vec_x.x,vec_y.x,vec_x.x,path[i].x},
+                  { vec_x.y,vec_y.y,vec_z.y,path[i].y},
+                  { vec_x.z,vec_y.z,vec_z.z,path[i].z},
+                  { 0,0,0,1}
                 });
+
+                
+                ms.Add(m);
+            }
+            return ms;
+        }
+        static public List<Matrix<double>> comp_matr_from_path_3d(List<Point3d_GL> path, List<Point3d_GL> ns)
+        {
+            var ms = new List<Matrix<double>>();
+            for (int i = 0; i < path.Count; i++)
+            {
+                var i_prev = i - 1; if (i_prev < 0) i_prev = 0;
+                var i_next = i + 1; if (i_next > path.Count - 1) i_next = path.Count - 1;
+
+                var vec_x = path[i_next] - path[i_prev];
+                vec_x.normalize();
+                var vec_z = ns[i];
+                var vec_y = (vec_z | vec_x).normalize();
+
+
+                var m = new Matrix<double>(new double[,]
+                {
+                  { vec_x.x,vec_y.x,vec_x.x,path[i].x},
+                  { vec_x.y,vec_y.y,vec_z.y,path[i].y},
+                  { vec_x.z,vec_y.z,vec_z.z,path[i].z},
+                  { 0,0,0,1}
+                });
+
 
                 ms.Add(m);
             }
             return ms;
         }
+
         static public List<List<Point3d_GL>> gen_sections(List<Point3d_GL> path, List<Matrix<double>> matrs)
         {
             var sects = new List<List<Point3d_GL>>();

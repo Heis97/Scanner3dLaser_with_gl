@@ -43,6 +43,11 @@ namespace opengl3
             y = p.Y;
             z = _z;
         }
+
+        public Point3d_GL toPoint()
+        {
+            return new Point3d_GL(x, y, z);
+        }
         public Vector3d_GL normalize()
         {
             var n = Math.Sqrt(x * x + y * y + z * z);
