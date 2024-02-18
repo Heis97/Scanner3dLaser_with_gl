@@ -634,14 +634,17 @@ namespace opengl3
 
             return ps.ToArray();
         }
-        static public Polygon3d_GL[] expand_surf(Polygon3d_GL[] surf,double f)
+        static public Polygon3d_GL[] expand_surf_convex(Polygon3d_GL[] surf, double f, GraphicGL graphic = null)
         {
             var mesh = new IndexedMesh(surf);
             var board = mesh.points_on_board();
             if(board == null) return null;
             if( board.Length == 0 ) return null;
+
             var cont = board[0];
-            var exp_cont = expand_cont(cont,f);
+            //graphic?.addLineMeshTraj(cont, Color3d_GL.yellow(), "cont");
+            var exp_cont = expand_cont_convex(cont,f);
+            //graphic?.addLineMeshTraj(exp_cont, Color3d_GL.red(), "exp_cont");
             var pols_ex =  Polygon3d_GL.triangulate_two_same_conts(cont,exp_cont);
             var surf_exp = new List<Polygon3d_GL>();
             surf_exp.AddRange(surf);
@@ -649,15 +652,148 @@ namespace opengl3
             return surf_exp.ToArray();
         }
 
-        static public Point3d_GL[] expand_cont(Point3d_GL[] cont, double f)
+        static public Point3d_GL[] expand_cont_old(Point3d_GL[] cont, double f)
         {
             if (cont == null) return null;
             if (cont.Length == 0) return null;
             var cont_exp = new List<Point3d_GL>();
+            var bisecs = new List<Point3d_GL>();
+            
+            for (int i=0; i < cont.Length; i++)
+            {
+                var i_prev = i - 1; if (i_prev < 0) i_prev = cont.Length - 1;
+                var i_next = i + 1; if (i_next > cont.Length - 1) i_next = 0;
 
+                var v1 = cont[i] - cont[i_prev];
+                var v2 = cont[i_next] - cont[i];
 
-            return null;
+                Point3d_GL bisec = new Point3d_GL(1, 0, 0);
+                if (i == 0) { bisec = v2; }
+                else { bisec = gen_bisectr_norm_one_side(v1, v2, bisecs[bisecs.Count-1]); }
+                bisecs.Add(bisec);
+            }
+            //recalc for first
+            var v1_0 = cont[0] - cont[cont.Length-1];
+            var v2_0 = cont[1] - cont[0];
+            bisecs[0] = gen_bisectr_norm_one_side(v1_0, v2_0, bisecs[bisecs.Count - 1]);
+
+            bisecs = Point3d_GL.mult(bisecs.ToArray(), f).ToList();
+
+            var cont1 = Point3d_GL.add_same_arr(cont, bisecs.ToArray());
+            var cont2 = Point3d_GL.add_same_arr(cont, Point3d_GL.mult( bisecs.ToArray(),-1));
+
+            var dist1 = Point3d_GL.dist_betw_ps(cont1).Sum();
+            var dist2 = Point3d_GL.dist_betw_ps(cont2).Sum();
+            if (dist1 > dist2) return cont1;
+            return cont2;
         }
+
+        static public Point3d_GL[] expand_cont_3d_a(Point3d_GL[] cont, double f)
+        {
+            if (cont == null) return null;
+            if (cont.Length == 0) return null;
+            var cont_exp = new List<Point3d_GL>();
+            var bisecs = new Point3d_GL[cont.Length];
+            bisecs[bisecs.Length - 1] = Point3d_GL.notExistP();
+
+            for (int i = 0; i < cont.Length; i++)
+            {
+                var i_prev = i - 1; if (i_prev < 0) i_prev = cont.Length - 1;
+                var i_next = i + 1; if (i_next > cont.Length - 1) i_next = 0;
+
+                var v1 = cont[i] - cont[i_prev];
+                var v2 = cont[i_next] - cont[i];
+
+                if (!bisecs[bisecs.Length - 1].exist) { bisecs[i_prev] = v2; }
+                bisecs[i] =  gen_bisectr_norm_one_side(v1, v2, bisecs[i_prev]); 
+                
+            }
+
+            for (int i = 0; i < cont.Length; i++)
+            {
+                var i_prev = i - 1; if (i_prev < 0) i_prev = cont.Length - 1;
+                var i_next = i + 1; if (i_next > cont.Length - 1) i_next = 0;
+
+                var v1 = cont[i] - cont[i_prev];
+                var v2 = cont[i_next] - cont[i];
+
+                if (!bisecs[bisecs.Length - 1].exist) { bisecs[i_prev] = v2; }
+                bisecs[i] = gen_bisectr_norm_one_side(v1, v2, bisecs[i_prev]);
+
+            }
+
+            bisecs = Point3d_GL.mult(bisecs, f);
+
+            var cont1 = Point3d_GL.add_same_arr(cont, bisecs.ToArray());
+            var cont2 = Point3d_GL.add_same_arr(cont, Point3d_GL.mult(bisecs.ToArray(), -1));
+
+            var dist1 = Point3d_GL.dist_betw_ps(cont1).Sum();
+            var dist2 = Point3d_GL.dist_betw_ps(cont2).Sum();
+            if (dist1 > dist2) return cont1;
+            return cont2;
+        }
+
+        static public Point3d_GL[] expand_cont_convex(Point3d_GL[] cont, double f)
+        {
+            if (cont == null) return null;
+            if (cont.Length == 0) return null;
+            var cont_exp_c = new List<Point3d_GL>();
+            var p_c = Point3d_GL.aver(cont);
+            var cont_allign = Point3d_GL.add_arr(cont, -p_c);
+            for(int i = 0; i < cont_allign.Length; i++)
+            {
+                var p_ex = cont_allign[i].Clone().normalize()*f+cont_allign[i];
+                cont_exp_c.Add(p_ex);
+            }
+            var cont_exp = Point3d_GL.add_arr(cont_exp_c, p_c);
+            return cont_exp.ToArray();
+        }
+
+        static Point3d_GL gen_bisectr_norm_one_side(Point3d_GL v1, Point3d_GL v2, Point3d_GL last_bisec)
+        {
+            var v1_sh = v1.normalize();
+            var v2_sh = -v2.normalize();
+            var v3 = (v1_sh + v2_sh) / 2;//bisec 
+            var vz = (last_bisec | v1_sh).normalize();
+            var vx = (v1_sh | vz).normalize();
+
+            if (v3.magnitude() < 0.001) { v3 = vx; }//check parall
+            else { v3 = v3.normalize(); }
+            var fi = Point3d_GL.ang( v3 , vx);
+            if(fi>Math.PI/2)
+            {
+                v3 = -v3;
+            }
+            return v3;
+        }
+
+        static public Point3d_GL[] vec_to_xy_plane(Point3d_GL[] p123)
+        {
+            if (p123 == null) return null;
+            if (p123.Length != 3) return null;
+            var v1 = (p123[1] - p123[0]).normalize();
+            var v2 = (p123[2] - p123[1]).normalize();
+            var vx = v1;
+            var vz = (v1 | v2).normalize();
+            if (vz.z < 0) vz = -vz;
+            var vy = (vz | vx).normalize();
+
+            var m = new Matrix<double>(new double[,]
+                {
+                  { vx.x,vy.x,vz.x,p123[0].x},
+                  { vx.y,vy.y,vz.y,p123[0].y},
+                  { vx.z,vy.z,vz.z,p123[0].z},
+                  { 0,0,0,1}
+                });
+
+            CvInvoke.Invert(m, m, Emgu.CV.CvEnum.DecompMethod.LU);
+            var p123_xy = Point3d_GL.multMatr(p123, m);
+
+            return p123_xy;
+        }
+       
+
+
 
         //-------------------------------------------------------------------------
         static public Point3d_GL[,] gen_grid_ps_xy(Point3d_GL min, Point3d_GL max, double dist)

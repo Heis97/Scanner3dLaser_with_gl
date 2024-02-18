@@ -40,8 +40,11 @@ namespace opengl3
 
         public void removeObj(string name)
         {
-            if(objs.ContainsKey(name))
+            if(objs.ContainsKey(name) )
+            {
                 objs.Remove(name);
+            }    
+               
         }
 
         public void setObj(string name, openGlobj openGlobj)

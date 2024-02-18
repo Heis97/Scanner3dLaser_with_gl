@@ -34,11 +34,14 @@ namespace PathPlanning
         {
             path = path.fill_gaps(trajParams.div_step);
             path = path.gauss(2);
+            graphicGL.remove_buff_gl_id("prog");
+            graphicGL.addLineMeshTraj(path.to_ps().ToArray(), Color3d_GL.red(), "prog");
             var path_c = comp_whv(path, trajParams);
             TrajectoryPath path_g;
             List<List<Point3d_GL>> ns;
             (path_g,ns) = modeling_gravity_3d(path_c, surf, graphicGL);
-
+            graphicGL.remove_buff_gl_id("prog_grav");
+            graphicGL.addLineMeshTraj(path_g.to_ps().ToArray(), Color3d_GL.purple(), "prog_grav");
             var model = path_to_model_3d(path_g.to_ps(),ns);
 
 
@@ -107,7 +110,8 @@ namespace PathPlanning
             for (int i = 0; i < layers.Count; i++)
             {
                 if (i != 0) surf_o = surf_from_layer(layers[i - 1]);
-                 graphicGL?.addMesh(Polygon3d_GL.toMesh(surf_o)[0], OpenGL.PrimitiveType.Triangles);
+                surf_o = SurfaceReconstraction.expand_surf_convex(surf_o, 20);
+                //graphicGL?.addMesh(Polygon3d_GL.toMesh(surf_o)[0], OpenGL.PrimitiveType.Triangles);
                 List<Point3d_GL> ns;
                 LayerPath path_o;
                 (path_o,ns) = modeling_gravity_one_3d(layers[i], surf_o, graphicGL);
@@ -151,6 +155,7 @@ namespace PathPlanning
                     var p = layer.lines[i].ps[j];
                     Point3d_GL p_proj, n;
                     (p_proj,n) = map_xy.proj_point_xy_ex(p, surf);
+                    if (n.z < 0) n = -n;
                     ns.Add(n);
                     if (p_proj.exist)
                     {
@@ -163,10 +168,11 @@ namespace PathPlanning
         }
 
 
-        static Point3d_GL comp_whv_2p(Point3d_GL p, Point3d_GL p_proj)
+        static Point3d_GL comp_whv_2p(Point3d_GL p, Point3d_GL p_proj)//!!!!MOST IMPORTANT GRAVITY
         {
             var h = p.z - p_proj.z;
             var h_max = comp_h_max(p.color);
+           // h_max = 
             var h_min = 0.2*(double)p.color.g;
             if(h>h_max)
             {
@@ -185,8 +191,10 @@ namespace PathPlanning
         {
             var v = whv.b;
             var k_mech = 0.95;
+
+            return whv.g;
            // Console.WriteLine()
-            return 2 * Math.Sqrt((k_mech * v) / Math.PI);
+            //return 2 * Math.Sqrt((k_mech * v) / Math.PI);
         }
         static public Polygon3d_GL[] surf_from_layer(LayerPath layer)
         {
@@ -206,7 +214,7 @@ namespace PathPlanning
         static public Polygon3d_GL[] path_to_model_3d(List<Point3d_GL>  path,List<List<Point3d_GL>> ns)
         {
             var path_n = PathPlanner.join_traj(ns);
-            Console.WriteLine("Count: "+path_n.Count + " " + path.Count);
+            //Console.WriteLine("Count: "+path_n.Count + " " + path.Count);
             var matrs = comp_matr_from_path_3d(path, path_n);
             var sections = gen_sections(path, matrs);
             var model = triangulate_sections(sections);
@@ -255,7 +263,7 @@ namespace PathPlanning
 
                 var m = new Matrix<double>(new double[,]
                 {
-                  { vec_x.x,vec_y.x,vec_x.x,path[i].x},
+                  { vec_x.x,vec_y.x,vec_z.x,path[i].x},
                   { vec_x.y,vec_y.y,vec_z.y,path[i].y},
                   { vec_x.z,vec_y.z,vec_z.z,path[i].z},
                   { 0,0,0,1}
@@ -308,8 +316,9 @@ namespace PathPlanning
                 if (sections[i] == null || sections[i - 1] == null) continue;
                 if (sections[i].Count!= sections[i - 1].Count) continue;
 
-
-                for (var j = 0; j < sections[i].Count; j++)
+                var sect =  Polygon3d_GL.triangulate_two_same_conts(sections[i - 1].ToArray(), sections[i].ToArray());
+                pols.AddRange(sect);
+                /*for (var j = 0; j < sections[i].Count; j++)
                 {
                     var j_prev = j - 1;
                     if (j_prev < 0) j_prev = sections[i].Count - 1;
@@ -317,7 +326,7 @@ namespace PathPlanning
                     var pol2 = new Polygon3d_GL(sections[i][j], sections[i-1][j_prev], sections[i - 1][j]);
                     pols.Add(pol1);
                     pols.Add(pol2);
-                }
+                }*/
             }
             return pols.ToArray();
         }

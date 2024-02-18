@@ -182,6 +182,9 @@ namespace opengl3
             //test_detect_spher();
             // test_matr();
 
+            
+
+
         }
         void comp_pores(string path)
         {
@@ -1176,8 +1179,8 @@ namespace opengl3
             var w = send.Width;
             var h = send.Height;
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-           // generateImage3D_BOARD(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-            //GL1.addFlat3d_XY_zero_s(-0.1f, Color3d_GL.white());
+            generateImage3D_BOARD(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            GL1.addFlat3d_XY_zero_s(-0.1f, Color3d_GL.white());
             //GL1.SortObj();
             int monitor_num = 2;
             if(monitor_num==4)
@@ -1257,7 +1260,7 @@ namespace opengl3
              GL1.addTraj(ps);
              GL1.addTraj(ps_circ);*/
             // test_traj_2d();
-
+            //test_expand();
             //test_merge_surf();
         }
 
@@ -1469,6 +1472,29 @@ namespace opengl3
         #endregion
 
         #region test
+
+        void test_expand()
+        {
+           /* var ps = new Point3d_GL[]
+            {
+                new Point3d_GL(3,3,3),
+                new Point3d_GL(5,5,2),
+                new Point3d_GL(9,3,1),
+            };*/
+           /* var ps = SurfaceReconstraction.gen_random_cont_XY(10, 20, 0, new Point3d_GL());
+
+            var ps_xy = SurfaceReconstraction.expand_cont(ps, 1);
+            GL1.addLineMeshTraj(ps, Color3d_GL.purple(), "def");
+            GL1.addLineMeshTraj(ps_xy, Color3d_GL.blue(), "def_xy");*/
+
+            var scan_stla = new Model3d("models\\flat2.stl", false);
+
+            var surf = scan_stla.pols;
+            var surf_exp = SurfaceReconstraction.expand_surf_convex(surf, 0.1,GL1);
+
+            GL1.addMesh(Polygon3d_GL.toMesh(surf)[0], PrimitiveType.Triangles, Color3d_GL.red(),"surf");
+            GL1.addMesh(Polygon3d_GL.toMesh(surf_exp)[0], PrimitiveType.Triangles,Color3d_GL.aqua(), "surf_exp");
+        }
         void test_merge_surf()
         {
             var cam1_conf_path = textB_cam1_conf.Text;
@@ -2653,7 +2679,46 @@ namespace opengl3
             return fr;
         }
 
+        private void but_save_im_base1_Click(object sender, EventArgs e)
+        {
+            var im = (Mat)imBox_base_1.Image;
+            im.Save("im1.png");
 
+            im = (Mat)imageBox1.Image;
+            im.Save("im2.png");
+        }
+
+        private void but_hydro_model_grav_Click(object sender, EventArgs e)
+        {
+            var contours = new List<List<Point3d_GL>>();
+            for (int i = 0; i < traj_config.layers; i++)
+            {
+                var cont = SurfaceReconstraction.gen_random_cont_XY(10, 30, 0, new Point3d_GL(0, 0, 0.4 * i)).ToList();
+                contours.Add(cont);
+            }
+            var traj_path = PathPlanner.gen_traj_2d(contours, traj_config, patt_config, GL1);
+            traj_path.translate(new Point3d_GL(traj_config.Off_x, traj_config.Off_y, traj_config.Off_z));
+            var patterns = traj_path.to_ps_by_layers();
+
+            var pattern = Point3d_GL.unifPoints2d(patterns);
+            //var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
+            var traj = PathPlanner.ps_to_matr(pattern);
+            var prog = PathPlanner.generate_printer_prog(traj, traj_config);
+
+
+            var selected_obj = selected_object(); if (selected_obj == null) return;
+            var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+
+            var hydro = PathModeling.modeling_print_path_3d(surf, traj_path, traj_config, GL1);
+            GL1.remove_buff_gl_id("model_traj");
+            GL1.addMesh(Polygon3d_GL.toMesh(hydro)[0], PrimitiveType.Triangles, Color3d_GL.white(), "model_traj");
+            GL1.addMesh(Polygon3d_GL.toMesh(surf)[0], PrimitiveType.Triangles, Color3d_GL.white(), "surf");
+
+            //if (GL1.buffersGl.objs.Keys.Contains("prog")) GL1.buffersGl.removeObj("prog");
+            //GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
+            //GL1.addTraj(pattern.ToArray(), "prog");
+            //GL1.addTrajPoint(pattern.ToArray(), "prog");
+        }
 
 
 
@@ -3121,25 +3186,7 @@ namespace opengl3
             //var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
             var traj = PathPlanner.ps_to_matr(pattern);
             var prog = PathPlanner.generate_printer_prog(traj, traj_config);
-            var x = 40;
-            var y = 40;
-            var p1 = new Point3d_GL(x, y, 0);
-            var p2 = new Point3d_GL(x, -y, 0);
-            var p3 = new Point3d_GL(-x, y, 0);
-            var p4 = new Point3d_GL(-x, -y, 0);
-            var surf = new Polygon3d_GL[]
-            {
-                new Polygon3d_GL(p4,p3,p1),
-                new Polygon3d_GL(p4,p1,p2)
-            };
-            var pols = PathModeling.modeling_print_path_3d(surf, traj_path, traj_config,GL1);
-
-            GL1.addMesh(Polygon3d_GL.toMesh(pols)[0], PrimitiveType.Triangles,Color3d_GL.white(),"model_traj");
             debugBox.Text = prog;
-            if (GL1.buffersGl.objs.Keys.Contains("prog")) GL1.buffersGl.removeObj("prog");
-            //GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
-            //GL1.addTraj(pattern.ToArray(), "prog");
-            //GL1.addTrajPoint(pattern.ToArray(), "prog");
         }
 
         private void but_scan_virt_Click(object sender, EventArgs e)
@@ -5224,15 +5271,6 @@ namespace opengl3
 
 
         #endregion
-
-        private void but_save_im_base1_Click(object sender, EventArgs e)
-        {
-            var im = (Mat)imBox_base_1.Image;
-            im.Save("im1.png");
-
-            im = (Mat)imageBox1.Image;
-            im.Save("im2.png");
-        }
 
         
     }

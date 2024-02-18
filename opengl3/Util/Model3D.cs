@@ -151,7 +151,7 @@ namespace opengl3
             }
             else if (format == "stl")
             {
-                var arrays = parsingStl_GL4(path, out center1);
+                var arrays = parsingStl_GL4(path, out center1,_scale);
                 mesh = (float[])arrays[0];
 
                     
@@ -348,7 +348,7 @@ namespace opengl3
         }
 
 
-        private static object[] parsingStl_GL4_binary(string fileName, out Point3d_GL _center)
+        private static object[] parsingStl_GL4_binary(string fileName, out Point3d_GL _center, float scale = 1)
         {
             int i2 = 0;
             int i3 = 0;
@@ -388,10 +388,10 @@ namespace opengl3
                             float y = BitConverter.ToSingle(block, i * 12 + 4);
                             float z = BitConverter.ToSingle(block, i * 12 + 8);
 
-                            ret1[i2] = x; i2++;
-                            ret1[i2] = y; i2++;
-                            ret1[i2] = z; i2++;
-                            ps.Add(new Point3d_GL(x, y, z));
+                            ret1[i2] = scale * x; i2++;
+                            ret1[i2] = scale * y; i2++;
+                            ret1[i2] = scale * z; i2++;
+                            ps.Add(new Point3d_GL(scale * x, scale * y, scale * z));
                             min_v = minCompar(new float[] { ret1[i2 - 3], ret1[i2 - 2], ret1[i2 - 1] }, min_v);
                             max_v = maxCompar(new float[] { ret1[i2 - 3], ret1[i2 - 2], ret1[i2 - 1] }, max_v);
 
@@ -419,7 +419,7 @@ namespace opengl3
         }
 
 
-        static public object[] parsingStl_GL4_ascii(string path, out Point3d_GL _center)
+        static public object[] parsingStl_GL4_ascii(string path, out Point3d_GL _center, float scale = 1)
         {
             float[] min_v = new float[] { float.MaxValue, float.MaxValue, float.MaxValue };
             float[] max_v = new float[] { float.MinValue, float.MinValue, float.MinValue };
@@ -465,9 +465,9 @@ namespace opengl3
                         var y = (float)parseE(vert[2]);
                         var z = (float)parseE(vert[3]);
 
-                        ret1[i2] = x; i2++;
-                        ret1[i2] = y; i2++;
-                        ret1[i2] = z; i2++;
+                        ret1[i2] = scale * x; i2++;
+                        ret1[i2] = scale * y; i2++;
+                        ret1[i2] = scale * z; i2++;
 
                         ps.Add(new Point3d_GL(x, y, z));
 
@@ -502,7 +502,7 @@ namespace opengl3
             return new object[] { ret1, ret2, polygs.ToArray() };
         }
 
-        static public object[] parsingStl_GL4(string path, out Point3d_GL _center)
+        static public object[] parsingStl_GL4(string path, out Point3d_GL _center, float scale = 1)
         {
             string file1;
 
@@ -510,8 +510,8 @@ namespace opengl3
             {
                 file1 = sr.ReadToEnd();
             }
-            if (file1.Contains("solid")) return parsingStl_GL4_ascii(path, out _center);
-            else return parsingStl_GL4_binary(path, out _center);            
+            if (file1.Contains("solid")) return parsingStl_GL4_ascii(path, out _center, scale);
+            else return parsingStl_GL4_binary(path, out _center, scale);            
         }
 
 

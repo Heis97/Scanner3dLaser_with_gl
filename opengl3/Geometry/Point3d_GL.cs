@@ -904,6 +904,18 @@ namespace opengl3
             }
             return ret;
         }
+
+        public static Point3d_GL[] add_same_arr(Point3d_GL[] ps1, Point3d_GL[] ps2)
+        {
+            if(ps1== null || ps2 == null) return null;
+            if (ps1.Length != ps2.Length) return null;
+            var ret = new Point3d_GL[ps1.Length];
+            for (int i = 0; i < ps1.Length; i++)
+            {
+                ret[i] = ps1[i] + ps2[i];
+            }
+            return ret;
+        }
         public static List<Point3d_GL> add_arr(List<Point3d_GL> ps, Point3d_GL p)
         {
             var ret = new Point3d_GL[ps.Count];
