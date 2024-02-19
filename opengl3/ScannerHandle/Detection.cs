@@ -470,6 +470,8 @@ namespace opengl3
                 var a = koef[2];
                 var b = koef[1];
                 var j_max_2 = (-b / (2 * a));
+
+                
                 //var j_max_2 = j_max;
                 if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
                 {
@@ -620,6 +622,7 @@ namespace opengl3
                 for (int k1 = 0; k1 < ps_imp.Length; k1++)
                 {
                     vals_regr.Add(new double[] { ps_imp[k1].X, ps_imp[k1].Y });
+                   // Console.WriteLine(k1 + " " + ps_imp[k1].X + " " + ps_imp[k1].Y);
 
                 }
 
@@ -631,6 +634,26 @@ namespace opengl3
                 var a = koef[2];
                 var b = koef[1];
                 var j_max_2 = (-b / (2 * a));
+
+                var vals_regr_re = new List<double[]>();
+                
+                    
+
+                if (i == data.GetLength(1) / 2)
+                {
+                    for (int k2 = 0; k2 < vals_regr.Count; k2++)
+                    {
+                        vals_regr_re.Add(new double[] { vals_regr[k2][0], Regression.calcPolynSolv(koef, vals_regr[k2][0]) });
+                        Console.WriteLine(k2 + " " + vals_regr[k2][0] + " " + Regression.calcPolynSolv(koef, vals_regr[k2][0]));
+                    }
+
+                    for (int k2 = 0; k2 < vals_regr.Count; k2++)
+                    {
+                        Console.WriteLine(k2 + " " + vals_regr_re[k2][1] + " " + vals_regr[k2][1]);
+                    }
+                }
+
+
                 //var j_max_2 = j_max;
                 if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
                 {

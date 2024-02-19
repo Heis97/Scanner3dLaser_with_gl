@@ -141,12 +141,12 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
-            /*comp_pores("rats\\2_1.png");
+            //comp_pores("rats\\2_1.png");
 
-            comp_pores("rats\\2_2.png");
+            //comp_pores("rats\\2_2.png");
             comp_pores("rats\\2_3.png");
-            comp_pores("rats\\3_1.png");*/
-
+            //comp_pores("rats\\3_1.png");
+            //comp_pores("model_mesh\\1.jpg");
             //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");
 
             //CvInvoke.Imshow("im1", im_las);
@@ -182,13 +182,14 @@ namespace opengl3
             //test_detect_spher();
             // test_matr();
 
-            
+
 
 
         }
         void comp_pores(string path)
         {
             var im1 = new Mat(path);
+            var im1_c = im1.Clone();
             CvInvoke.CvtColor(im1, im1, ColorConversion.Bgr2Gray);
             //get_x_line_gray(im1, im1.Height / 2);
             //Console.WriteLine("________________");
@@ -210,16 +211,21 @@ namespace opengl3
             Mat hier = new Mat();
             CvInvoke.FindContours(mat2, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
 
+            contours = FindCircles.size_filter(contours, 50,300);
+
+            CvInvoke.DrawContours(im1_c, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
+
             for (int i = 0; i < contours.Size; i++)
             {
                 var area = CvInvoke.ContourArea(contours[i]);
-                if ( area > 5)
+                if ( area > 50)
                 {
                     Console.WriteLine(area);
                 }
             }
             Console.WriteLine("____________");
             CvInvoke.Imshow(path, mat2);
+            CvInvoke.Imshow(path, im1_c);
         }
         void get_x_line_gray(Mat mat,int y)
         {
@@ -2691,9 +2697,10 @@ namespace opengl3
         private void but_hydro_model_grav_Click(object sender, EventArgs e)
         {
             var contours = new List<List<Point3d_GL>>();
+            var r = patt_config.dim_x;
             for (int i = 0; i < traj_config.layers; i++)
             {
-                var cont = SurfaceReconstraction.gen_random_cont_XY(10, 30, 0, new Point3d_GL(0, 0, 0.4 * i)).ToList();
+                var cont = SurfaceReconstraction.gen_random_cont_XY(r, 30, 0, new Point3d_GL(1.5*r, 1.5 * r, 0.4 * i)).ToList();
                 contours.Add(cont);
             }
             var traj_path = PathPlanner.gen_traj_2d(contours, traj_config, patt_config, GL1);
@@ -2706,11 +2713,16 @@ namespace opengl3
             var prog = PathPlanner.generate_printer_prog(traj, traj_config);
 
 
-            var selected_obj = selected_object(); if (selected_obj == null) return;
-            var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
 
+            //var selected_obj = selected_object(); if (selected_obj == null) return;
+            // var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+            GL1.remove_buff_gl_id("flat_xy_h");
+            GL1.addFlat3d_XY_zero(0,null,"flat_xy_h");
+            var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs["flat_xy_h"].vertex_buffer_data);
             var hydro = PathModeling.modeling_print_path_3d(surf, traj_path, traj_config, GL1);
             GL1.remove_buff_gl_id("model_traj");
+
+            GL1.remove_buff_gl_id("surf");
             GL1.addMesh(Polygon3d_GL.toMesh(hydro)[0], PrimitiveType.Triangles, Color3d_GL.white(), "model_traj");
             GL1.addMesh(Polygon3d_GL.toMesh(surf)[0], PrimitiveType.Triangles, Color3d_GL.white(), "surf");
 
@@ -3205,7 +3217,7 @@ namespace opengl3
                   GL1.transRotZooms[0].zRot + " ";
             var pos = new RobotFrame(coords);
             video_scan_name = pos.ToStr(" ",true);
-            boxN.Text = "80";
+            boxN.Text = "120";
             var n = Convert.ToInt32(boxN.Text);
             GL1.start_animation(n);
             var folder_scan = box_scanFolder.Text;

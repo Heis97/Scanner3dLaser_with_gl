@@ -770,7 +770,7 @@ namespace PathPlanning
             layer.add(-p_cent);
             layer.rotate(settings.angle);
 
-            //layer.add(p_cent);
+            layer.add(p_cent);
             return layer;
         }
 
@@ -972,7 +972,7 @@ namespace PathPlanning
             var patt_cut = new List<Point3d_GL>();
             for (int i = 0; i < pattern.Count; i++)
             {
-                var p = (pattern[i] - min_p + new Point3d_GL(1, 1, 1))*k;
+                var p = (pattern[i] - min_p + new Point3d_GL(1, 1, 1)) * k;
                 var p_i = new Point((int)p.x, (int)p.y);
                 CvInvoke.Circle(im_patt, p_i, 2, new MCvScalar(255),2);
                 if (p_i.X < 0 || p_i.Y < 0 || p_i.X >= size_im.Width || p_i.Y >= size_im.Height) continue;
@@ -981,6 +981,7 @@ namespace PathPlanning
             }
 
             //CvInvoke.Imshow("cont2", im_patt);
+            //CvInvoke.WaitKey();
             return patt_cut;
         }
 
@@ -1021,6 +1022,7 @@ namespace PathPlanning
             var traj_layers = new List<LayerPath>();
             var min_p = Point3d_GL.Min(contour) - new Point3d_GL(trajParams.step,trajParams.step, trajParams.step);
             var max_p = Point3d_GL.Max(contour) + new Point3d_GL(trajParams.step,  trajParams.step, trajParams.step);
+
             for (int i = 0; i < contour.Count; i++)
             {
                 var layer = gen_pattern_in_contour_xy(settings, trajParams, contour[i].ToList(), min_p, max_p, gl);

@@ -516,9 +516,10 @@ namespace opengl3
             return polygons3d;
         }
 
-        public static Point3d_GL[] computePointsCam(PointF[] points_im, CameraCV cameraCV, Image<Bgr, byte> image = null)
+        public static Point3d_GL[] computePointsCam(PointF[] points_im, CameraCV cameraCV, Image<Bgr, byte> image_in = null)
         {
             var points3d = new Point3d_GL[points_im.Length];
+            Image<Bgr, byte> image = cameraCV.undist(image_in.Mat).ToImage<Bgr, byte>();
             for (int i = 0; i < points3d.Length; i++)
             {
                 points3d[i] = cameraCV.point3DfromCam(points_im[i]);

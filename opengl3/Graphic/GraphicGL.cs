@@ -337,7 +337,7 @@ namespace opengl3
 
         void comp_cur_animation()
         {
-            var df = 0.02f;
+            var df = 0.01f;
             if(anim_is_go)
             {
                 /*if(lightSources[0].direction_z >=1)

@@ -223,12 +223,12 @@ namespace opengl3
             }
             return filtr_conts;
         }
-        static VectorOfVectorOfPoint size_filter(VectorOfVectorOfPoint contours,double min_size)
+        static public  VectorOfVectorOfPoint size_filter(VectorOfVectorOfPoint contours,double min_size = double.MinValue, double max_size = double.MaxValue)
         {
             var filtr_conts = new VectorOfVectorOfPoint();
             for (int i = 0; i < contours.Size; i++)
             {
-                if (CvInvoke.ContourArea(contours[i])> min_size)
+                if (CvInvoke.ContourArea(contours[i])> min_size && CvInvoke.ContourArea(contours[i]) < max_size)
                 {
                     filtr_conts.Push(contours[i]);
                 }

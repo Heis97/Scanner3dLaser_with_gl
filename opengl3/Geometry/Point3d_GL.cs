@@ -856,7 +856,7 @@ namespace opengl3
         }
         public static Point3d_GL Min(Point3d_GL[][] ps)
         {
-            var ps_max = new Point3d_GL(double.MinValue, double.MinValue, double.MinValue);
+            var ps_max = new Point3d_GL(double.MaxValue, double.MaxValue, double.MaxValue);
             for (int i = 0; i < ps.Length; i++)
             {
                 ps_max = Min(ps_max, Min(ps[i]));
