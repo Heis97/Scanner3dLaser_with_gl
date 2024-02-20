@@ -145,6 +145,8 @@ namespace opengl3
 
             //comp_pores("rats\\2_2.png");
             comp_pores("rats\\2_3.png");
+
+
             //comp_pores("rats\\3_1.png");
             //comp_pores("model_mesh\\1.jpg");
             //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");

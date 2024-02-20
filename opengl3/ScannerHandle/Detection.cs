@@ -553,6 +553,8 @@ namespace opengl3
 
             var ps_list = new List<PointF>();
             var ps = ps_list.ToArray();
+            var mat_c = mat.Clone();
+            var data_rgb = (byte[,,])mat_c.GetData();
             CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
             //var mats = mat.Split();
             //mat = mats[0];
@@ -566,7 +568,7 @@ namespace opengl3
 
 
 
-
+                
 
             for (int i = (int)(config.board * data.GetLength(1)); i < data.GetLength(1) - (int)(config.board * data.GetLength(1)); i++)
             //for (int i = start; i < stop; i+=di)
@@ -644,12 +646,12 @@ namespace opengl3
                     for (int k2 = 0; k2 < vals_regr.Count; k2++)
                     {
                         vals_regr_re.Add(new double[] { vals_regr[k2][0], Regression.calcPolynSolv(koef, vals_regr[k2][0]) });
-                        Console.WriteLine(k2 + " " + vals_regr[k2][0] + " " + Regression.calcPolynSolv(koef, vals_regr[k2][0]));
+                        //Console.WriteLine(k2 + " " + vals_regr[k2][0] + " " + Regression.calcPolynSolv(koef, vals_regr[k2][0]));
                     }
 
                     for (int k2 = 0; k2 < vals_regr.Count; k2++)
                     {
-                        Console.WriteLine(k2 + " " + vals_regr_re[k2][1] + " " + vals_regr[k2][1]);
+                        Console.WriteLine(k2 + " " + vals_regr_re[k2][1] + " " + vals_regr[k2][1]+data_rgb[i, vals_regr_re[k2,0,]]);
                     }
                 }
 
