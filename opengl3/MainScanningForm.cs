@@ -147,8 +147,8 @@ namespace opengl3
             //comp_pores("rats\\3_1.png");
             //comp_pores("model_mesh\\1.jpg");
 
-            var mat_l = new Mat("arm1.png");
-            Detection.detectLineDiff(mat_l, scanner_config);
+            var mat_l = new Mat("pict\\arm_clear.jpg");
+            Detection.detectLineDiff_debug(mat_l, scanner_config);
 
             //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");
             //CvInvoke.Imshow("im1", im_las);
@@ -1187,7 +1187,7 @@ namespace opengl3
             var h = send.Height;
             GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
             generateImage3D_BOARD(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-            GL1.addFlat3d_XY_zero_s(-0.1f, new Color3d_GL(180,110,140,1,255)*1.4);
+            GL1.addFlat3d_XY_zero_s(-0.1f, new Color3d_GL(135,117,103,1,255)*1.4);
             //GL1.SortObj();
             int monitor_num = 2;
             if(monitor_num==4)
@@ -5106,7 +5106,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-            resize();
+            //resize();
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)
@@ -5296,7 +5296,7 @@ namespace opengl3
         private void but_gl_detect_line_Click(object sender, EventArgs e)
         {
             Console.WriteLine("detect:");
-             Detection.detectLineDiff( (Mat)imBox_mark1.Image , scanner_config);
+             Detection.detectLineDiff_debug( (Mat)imBox_mark1.Image , scanner_config);
         }
     }
 }

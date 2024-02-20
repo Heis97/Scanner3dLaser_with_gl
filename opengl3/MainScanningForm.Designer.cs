@@ -183,6 +183,7 @@ namespace opengl3
             this.trackY_light = new System.Windows.Forms.TrackBar();
             this.label27 = new System.Windows.Forms.Label();
             this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.but_gl_detect_line = new System.Windows.Forms.Button();
             this.trackOz = new System.Windows.Forms.TrackBar();
             this.trackOy = new System.Windows.Forms.TrackBar();
             this.trackOx = new System.Windows.Forms.TrackBar();
@@ -372,7 +373,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_gl_detect_line = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2079,6 +2079,16 @@ namespace opengl3
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "mat_gl";
             this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // but_gl_detect_line
+            // 
+            this.but_gl_detect_line.Location = new System.Drawing.Point(18, 421);
+            this.but_gl_detect_line.Name = "but_gl_detect_line";
+            this.but_gl_detect_line.Size = new System.Drawing.Size(75, 37);
+            this.but_gl_detect_line.TabIndex = 170;
+            this.but_gl_detect_line.Text = "расп лазлин";
+            this.but_gl_detect_line.UseVisualStyleBackColor = true;
+            this.but_gl_detect_line.Click += new System.EventHandler(this.but_gl_detect_line_Click);
             // 
             // trackOz
             // 
@@ -4020,19 +4030,9 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // but_gl_detect_line
-            // 
-            this.but_gl_detect_line.Location = new System.Drawing.Point(18, 421);
-            this.but_gl_detect_line.Name = "but_gl_detect_line";
-            this.but_gl_detect_line.Size = new System.Drawing.Size(75, 37);
-            this.but_gl_detect_line.TabIndex = 170;
-            this.but_gl_detect_line.Text = "расп лазлин";
-            this.but_gl_detect_line.UseVisualStyleBackColor = true;
-            this.but_gl_detect_line.Click += new System.EventHandler(this.but_gl_detect_line_Click);
-            // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1370, 749);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);

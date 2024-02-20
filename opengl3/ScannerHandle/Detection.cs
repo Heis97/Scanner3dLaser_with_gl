@@ -779,11 +779,11 @@ namespace opengl3
                 var wind_full = config.wind_regr;
                 var wind_half = config.wind_regr/2;
 
-                var start_i = 0; var stop_i = wind_full * 2 + 1;
+                var start_i = j_max - wind_full; var stop_i = j_max + wind_full * 2 + 1;
 
-                if (j_max - wind_half < 0) start_i = 0;
+                if (j_max - wind_full < 0) start_i = 0;
                 if (start_i+stop_i > data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
-
+               // Console.WriteLine(start_i + " " + stop_i + " " + (stop_i - start_i) + " ");
                 var ps_imp = ps_list_j.GetRange(start_i, stop_i - start_i).ToArray();
                 var vals_regr = new List<double[]>();
                 for (int k1 = 0; k1 < ps_imp.Length; k1++)
@@ -795,12 +795,13 @@ namespace opengl3
 
                 //for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
                 // vals_regr.Add(new double[] { data[k1, i],k1 });
+                wind_half = 2;
+                start_i = j_max - wind_half; stop_i = j_max+wind_half;
 
-                start_i = 0; stop_i = wind_full*2+1;
-
-                if (j_max - wind_half < 0) start_i =0;
+                if (j_max - wind_full < 0) start_i =0;
                 if (start_i + stop_i > data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
 
+                ps_imp = ps_list_j.GetRange(start_i, stop_i - start_i).ToArray();
                 var for_regr = new List<double[]>();
                 for (int k1 = 0; k1 < ps_imp.Length; k1++)
                 {
@@ -830,8 +831,8 @@ namespace opengl3
                         var x_c = i;
                         var y_c = (int)vals_regr_re[k2][0];
                         Console.WriteLine(k2
-                           // + " " + vals_regr_re[k2][1]
-                           // + " " + vals_regr[k2][1]
+                            + " " + vals_regr_re[k2][1]
+                            + " " + vals_regr[k2][1]
                             + " " + data_rgb[y_c, x_c, 0]
                             + " " + data_rgb[y_c, x_c, 1]
                             + " " + data_rgb[y_c, x_c, 2]);
