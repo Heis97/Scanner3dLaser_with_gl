@@ -91,7 +91,7 @@ namespace opengl3
 
         public TransRotZoom(Rectangle _rect, int _id)
         {
-            zoom = 200;
+            zoom = 30;
             xRot = 0;
             yRot = 0;
             zRot = 0;

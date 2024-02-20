@@ -376,9 +376,15 @@ namespace opengl3
         public static Mat GLnoise(Mat mat, int val = 0, int range = 30, int kernel_size = 7)
         {            
             CvInvoke.GaussianBlur(mat, mat, new Size(kernel_size, kernel_size), 0);
-            //CvInvoke.Randn(mat, new MCvScalar(val), new MCvScalar(range));
-            mat = noise(mat, val, range);
-            var mat1 = new Mat();
+            var noise = mat.Clone();
+            CvInvoke.Randn(noise, new MCvScalar(val,val,val), new MCvScalar(range,range,range));
+
+           // mat = noise(mat, val, range);
+
+            mat += noise;
+            //var mat1 = new Mat();
+
+
             //CvInvoke.Flip(mat, mat1, FlipType.Vertical);
             return mat;
         }

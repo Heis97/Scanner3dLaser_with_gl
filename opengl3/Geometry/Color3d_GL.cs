@@ -13,20 +13,27 @@ namespace opengl3
         public float b { get; set; }
         public float a { get; set; }
 
-        public Color3d_GL(float r = 0.1f, float g = 0.1f, float b = 0.1f, float a = 1f)
+        public Color3d_GL(float r = 0.1f, float g = 0.1f, float b = 0.1f, float a = 1f, float max = 1)
         {
-            this.r = r;
-            this.g = g;
-            this.b = b;
+            this.r = r/max;
+            this.g = g / max;
+            this.b = b / max;
             this.a = a;
+
         }
 
-        public Color3d_GL(double r = 0.1f, double g = 0.1f, double b = 0.1f, double a = 1f)
+        public Color3d_GL(double r = 0.1f, double g = 0.1f, double b = 0.1f, double a = 1f,double max = 1)
         {
-            this.r =(float) r;
-            this.g = (float)g;
-            this.b = (float)b;
+            this.r =(float) (r / max);
+            this.g = (float)(g / max);
+            this.b = (float)(b / max);
             this.a = (float)a;
+
+        }
+
+        public static Color3d_GL operator*(Color3d_GL color,double k)
+        {
+            return new Color3d_GL(color.r * k, color.g * k, color.b * k, color.a);
         }
         public static Color3d_GL black() { return new Color3d_GL(0, 0, 0); }
         public static Color3d_GL red() { return new Color3d_GL(1, 0, 0); }

@@ -91,6 +91,7 @@ namespace opengl3
             this.tabOpenGl = new System.Windows.Forms.TabPage();
             this.win_tab_diff = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.but_hydro_model_grav = new System.Windows.Forms.Button();
             this.propGrid_pattern = new System.Windows.Forms.PropertyGrid();
             this.propGrid_traj = new System.Windows.Forms.PropertyGrid();
             this.but_printer_traj_fab = new System.Windows.Forms.Button();
@@ -371,7 +372,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_hydro_model_grav = new System.Windows.Forms.Button();
+            this.but_gl_detect_line = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1084,6 +1085,16 @@ namespace opengl3
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Траектория";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // but_hydro_model_grav
+            // 
+            this.but_hydro_model_grav.Location = new System.Drawing.Point(127, 714);
+            this.but_hydro_model_grav.Name = "but_hydro_model_grav";
+            this.but_hydro_model_grav.Size = new System.Drawing.Size(75, 34);
+            this.but_hydro_model_grav.TabIndex = 164;
+            this.but_hydro_model_grav.Text = "Моделир гидрогель";
+            this.but_hydro_model_grav.UseVisualStyleBackColor = true;
+            this.but_hydro_model_grav.Click += new System.EventHandler(this.but_hydro_model_grav_Click);
             // 
             // propGrid_pattern
             // 
@@ -2050,6 +2061,7 @@ namespace opengl3
             // 
             // tabPage8
             // 
+            this.tabPage8.Controls.Add(this.but_gl_detect_line);
             this.tabPage8.Controls.Add(this.trackOz);
             this.tabPage8.Controls.Add(this.trackOy);
             this.tabPage8.Controls.Add(this.trackOx);
@@ -4008,19 +4020,19 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // but_hydro_model_grav
+            // but_gl_detect_line
             // 
-            this.but_hydro_model_grav.Location = new System.Drawing.Point(127, 714);
-            this.but_hydro_model_grav.Name = "but_hydro_model_grav";
-            this.but_hydro_model_grav.Size = new System.Drawing.Size(75, 34);
-            this.but_hydro_model_grav.TabIndex = 164;
-            this.but_hydro_model_grav.Text = "Моделир гидрогель";
-            this.but_hydro_model_grav.UseVisualStyleBackColor = true;
-            this.but_hydro_model_grav.Click += new System.EventHandler(this.but_hydro_model_grav_Click);
+            this.but_gl_detect_line.Location = new System.Drawing.Point(18, 421);
+            this.but_gl_detect_line.Name = "but_gl_detect_line";
+            this.but_gl_detect_line.Size = new System.Drawing.Size(75, 37);
+            this.but_gl_detect_line.TabIndex = 170;
+            this.but_gl_detect_line.Text = "расп лазлин";
+            this.but_gl_detect_line.UseVisualStyleBackColor = true;
+            this.but_gl_detect_line.Click += new System.EventHandler(this.but_gl_detect_line_Click);
             // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.ClientSize = new System.Drawing.Size(1370, 749);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
@@ -4472,6 +4484,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_calibr_Bfs;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Button but_hydro_model_grav;
+        private System.Windows.Forms.Button but_gl_detect_line;
     }
 }
 

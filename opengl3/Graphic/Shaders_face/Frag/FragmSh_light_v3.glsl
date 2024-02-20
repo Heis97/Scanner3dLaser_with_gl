@@ -82,22 +82,23 @@ vec3 comp_color_disk_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_c,
 	vec3 R = reflect(-l, n);
 	float cosAlpha = clamp(dot(E, R), 0, 1);
 
+
 	float cos_ang = cut_off ;
-
-
 	vec3 ld = normalize(LightDirection_c);
 	float cosGamma = clamp(dot(l, ld), 0, 1);
-
-
 	
 	if(cosGamma<cos_ang)
-	{
-		
+	{	
 		//MaterialDiffuseColor = vec3(0);
-		
 	}
-	LightColor *= 1 -  pow(1-cosGamma,2)*1e9;
-	LightColor = clamp(LightColor, 0, 1);
+
+	//LightColor *= 1 -  pow(1-cosGamma,2)*1e9;
+	float gamma = acos(cosGamma);
+	float k  = (1.2 * (1 - gamma * 240));
+
+	k = clamp(k, 0, 1);
+
+	LightColor *= k;
 	//if(LightColor
 	//imageStore(debugdata, ivec2(0,0), vec4(LightVec_c,111));
 	//imageStore(debugdata, ivec2(1,0), vec4(LightVec_c,222));

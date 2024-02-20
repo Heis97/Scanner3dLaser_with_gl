@@ -229,7 +229,7 @@ namespace opengl3
         public LightSourceGL[] lightSources_arr;
         public LightSourcesGL lightSources_obj = new LightSourcesGL();
 
-        float laser_st = 0.9f;
+        float laser_st = 0.1f;
         #endregion
 
         #region main

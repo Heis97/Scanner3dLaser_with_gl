@@ -529,8 +529,169 @@ namespace opengl3
            // CvInvoke.Imshow("ds_rot", UtilOpenCV.drawPointsF(_mat, ps, 0, 255, 0));
             return ps; 
         }
-
         public static PointF[] detectLineDiff(Mat _mat,
+            ScannerConfig config)
+        {
+
+            if (_mat.GetData() == null) return null;
+            var mat = _mat.Clone();
+            //var mat = _mat;
+            if (config.rotate)
+            {
+                if (config.reverse)
+                {
+                    CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90Clockwise);
+                }
+                else
+                {
+                    CvInvoke.Rotate(_mat, mat, RotateFlags.Rotate90CounterClockwise);
+                }
+            }
+
+
+
+            var ps_list = new List<PointF>();
+            var ps = ps_list.ToArray();
+            CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
+            //var mats = mat.Split();
+            //mat = mats[0];
+            CvInvoke.GaussianBlur(mat, mat, new Size(config.gauss_kern, config.gauss_kern), -1);
+            //CvInvoke.Imshow("detect_dif",mat);
+            //CvInvoke.WaitKey();
+            var data = (byte[,])mat.GetData();
+            var ps_arr_j = new PointF[data.GetLength(0)];
+            for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();
+            int add_count = 0;
+
+
+
+
+
+            for (int i = (int)(config.board * data.GetLength(1)); i < data.GetLength(1) - (int)(config.board * data.GetLength(1)); i++)
+            //for (int i = start; i < stop; i+=di)
+            {
+                bool p_add = false;
+                var br_max = int.MinValue;
+                int j_max = 0;
+
+                bool reverse_direct = false;
+
+                if (reverse_direct)
+                {
+                    for (int j = data.GetLength(0) - 1; j >= 0; j--)
+                    {
+                        int br_cur = (int)data[j, i];
+                        //for(int i_w =0; i_w<wind-1; i_w++)
+                        //br_cur += (int)data[j + i_w, i ];
+
+                        if (br_cur > br_max)
+                        {
+                            br_max = br_cur;
+                            j_max = j;
+                        }
+                        ps_arr_j[j] = new PointF(j, br_cur);
+                    }
+
+                }
+                else
+                {
+                    for (int j = 0; j < data.GetLength(0); j++)
+                    {
+                        int br_cur = (int)data[j, i];
+                        // for(int i_w =0; i_w<wind-1; i_w++)
+                        //br_cur += (int)data[j + i_w, i ];
+
+                        if (br_cur > br_max)
+                        {
+                            br_max = br_cur;
+                            j_max = j;
+                        }
+                        ps_arr_j[j] = new PointF(j, br_cur);
+                    }
+                }
+
+
+                var ps_list_j = ps_arr_j.ToList();
+                var start_i = 0; var stop_i = config.wind_regr * 2 + 1;
+                if (j_max - config.wind_regr < 0) start_i = 0;
+                if (start_i + stop_i > data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
+
+                var ps_imp = ps_list_j.GetRange(start_i, stop_i - start_i).ToArray();
+                var vals_regr = new List<double[]>();
+                for (int k1 = 0; k1 < ps_imp.Length; k1++)
+                {
+                    vals_regr.Add(new double[] { ps_imp[k1].X, ps_imp[k1].Y });
+                    // Console.WriteLine(k1 + " " + ps_imp[k1].X + " " + ps_imp[k1].Y);
+
+                }
+
+                //for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
+                // vals_regr.Add(new double[] { data[k1, i],k1 });
+
+                var threshold = config.threshold;
+                var koef = Regression.regression(vals_regr.ToArray(), 2);
+                var a = koef[2];
+                var b = koef[1];
+                var j_max_2 = (-b / (2 * a));
+
+                //var j_max_2 = j_max;
+                if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
+                {
+                    if (data[(int)j_max_2, i] > threshold)
+                    {
+                        ps_list.Add(new PointF(i, j_max_2));
+                        p_add = true;
+                        add_count++;
+                    }
+                }
+
+                if (!p_add)
+                {
+
+                    ps_list.Add(PointF.notExistP());
+                }
+
+
+
+            }
+            if (add_count < 5) return null;
+            ps = ps_list.ToArray();
+            //ps = PointF.filter_exist(ps);
+            if (!config.orig)
+            {
+                ps = medianFilter_real(ps, 20);
+                //ps = connectPoints(ps);
+            }
+
+            for (int i = 0; i < ps.Length; i++)
+            {
+                //if(!ps[i].exist)
+                //Console.WriteLine(i);
+            }
+
+            GC.Collect();
+            // CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255));
+            //  CvInvoke.WaitKey();
+            if (config.rotate)
+            {
+                if (config.reverse)
+                {
+                    ps = rotatePointsCounterClockwise(ps, _mat.Size);
+                }
+                else
+                {
+                    ps = rotatePointsClockwise(ps, _mat.Size);
+                }
+            }
+            else
+            {
+                //ps = (PointF[])ps.Reverse();
+            }
+
+            // CvInvoke.Imshow("ds_rot", UtilOpenCV.drawPointsF(_mat, ps, 0, 255, 0));
+            return ps;
+        }
+        public static PointF[] detectLineDiff_debug(Mat _mat,
             ScannerConfig config)
         {
             
@@ -615,11 +776,15 @@ namespace opengl3
 
 
                 var ps_list_j = ps_arr_j.ToList();
+                var wind_full = config.wind_regr;
+                var wind_half = config.wind_regr/2;
 
-                if (j_max < config.wind_regr) j_max = config.wind_regr;
-                if (j_max > data.GetLength(0) - config.wind_regr - 1) j_max = data.GetLength(0) - config.wind_regr - 1;
+                var start_i = 0; var stop_i = wind_full * 2 + 1;
 
-                var ps_imp = ps_list_j.GetRange(j_max - config.wind_regr, 2 * config.wind_regr + 1).ToArray();
+                if (j_max - wind_half < 0) start_i = 0;
+                if (start_i+stop_i > data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
+
+                var ps_imp = ps_list_j.GetRange(start_i, stop_i - start_i).ToArray();
                 var vals_regr = new List<double[]>();
                 for (int k1 = 0; k1 < ps_imp.Length; k1++)
                 {
@@ -631,8 +796,19 @@ namespace opengl3
                 //for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
                 // vals_regr.Add(new double[] { data[k1, i],k1 });
 
+                start_i = 0; stop_i = wind_full*2+1;
+
+                if (j_max - wind_half < 0) start_i =0;
+                if (start_i + stop_i > data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
+
+                var for_regr = new List<double[]>();
+                for (int k1 = 0; k1 < ps_imp.Length; k1++)
+                {
+                    for_regr.Add(new double[] { ps_imp[k1].X, ps_imp[k1].Y });
+                    // Console.WriteLine(k1 + " " + ps_imp[k1].X + " " + ps_imp[k1].Y);
+                }
                 var threshold = config.threshold;
-                var koef = Regression.regression(vals_regr.ToArray(), 2);
+                var koef = Regression.regression(for_regr.ToArray(), 2);
                 var a = koef[2];
                 var b = koef[1];
                 var j_max_2 = (-b / (2 * a));
@@ -651,7 +827,14 @@ namespace opengl3
 
                     for (int k2 = 0; k2 < vals_regr.Count; k2++)
                     {
-                        Console.WriteLine(k2 + " " + vals_regr_re[k2][1] + " " + vals_regr[k2][1]+data_rgb[i, vals_regr_re[k2,0,]]);
+                        var x_c = i;
+                        var y_c = (int)vals_regr_re[k2][0];
+                        Console.WriteLine(k2
+                           // + " " + vals_regr_re[k2][1]
+                           // + " " + vals_regr[k2][1]
+                            + " " + data_rgb[y_c, x_c, 0]
+                            + " " + data_rgb[y_c, x_c, 1]
+                            + " " + data_rgb[y_c, x_c, 2]);
                     }
                 }
 
