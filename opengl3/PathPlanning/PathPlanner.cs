@@ -192,7 +192,22 @@ namespace PathPlanning
             ps =((Point3d_GL[]) traj_div.ToArray().Clone()).ToList();
             return this;
         }
-        
+
+        public LinePath filter_traj(double min_dist)
+        {
+            var traj_filt = new List<Point3d_GL>();
+            if (ps.Count < 1) return this;
+            traj_filt.Add(ps[0].Clone());
+            if (ps.Count < 2) return this;
+            for (int i = 1; i < ps.Count - 1; i++)
+            {
+                if((ps[i]-traj_filt[traj_filt.Count-1]).magnitude() > min_dist)
+                    traj_filt.Add(ps[i]);
+            }
+            ps = ((Point3d_GL[])traj_filt.ToArray().Clone()).ToList();
+            return this;
+        }
+
         public LinePath translate(Point3d_GL p)
         {
             for(int i = 0; i < this.ps.Count;i++)
@@ -293,6 +308,14 @@ namespace PathPlanning
             var layers_cl = new List<LinePath>();
             foreach (var line in lines)
                 layers_cl.Add(line.divide_traj(div));
+            return new LayerPath() { lines = layers_cl };
+        }
+
+        public LayerPath filter_traj(double div)
+        {
+            var layers_cl = new List<LinePath>();
+            foreach (var line in lines)
+                layers_cl.Add(line.filter_traj(div));
             return new LayerPath() { lines = layers_cl };
         }
 
@@ -793,7 +816,8 @@ namespace PathPlanning
         public static LayerPath parse_layerpath_from_ps(List<Point3d_GL> ps, double div, double step, GraphicGL gl = null)
         {
             var lines = parse_linepath_from_ps(ps, div,step,gl);
-
+            if(lines == null) return null;
+            if (lines.Length == 0) return null;
             var areas = layerpaths_from_linepaths(lines, step);
             /*foreach (var ls in areas)
             {
@@ -845,6 +869,8 @@ namespace PathPlanning
         {
 
             var dirty_ls = parse_linepath_from_ps_dirty(ps, div,gl);
+            if(dirty_ls == null) return null;
+            if (dirty_ls.Length == 0) return null;
             dirty_ls = filter_linepath_dist(dirty_ls,step);
             
             var ls = linepath_from_dirty_linepath(dirty_ls, div);
@@ -869,6 +895,8 @@ namespace PathPlanning
         {
             //var ps_ord = Point3d_GL.order_points_by_dist(ps.ToArray(),div*1.3).ToList();
             //var ps_ord = Point3d_GL.order_points(ps.ToArray()).ToList();
+            if(ps==null) return null;
+            if(ps.Count==0) return null;
             var ps_ord = ps;
             //gl.addLineMeshTraj(ps.ToArray(), Color3d_GL.yellow(), "lines");
             //gl.addLineMeshTraj(ps_ord.ToArray(), Color3d_GL.aqua(), "lines2");
@@ -1026,11 +1054,14 @@ namespace PathPlanning
             for (int i = 0; i < contour.Count; i++)
             {
                 var layer = gen_pattern_in_contour_xy(settings, trajParams, contour[i].ToList(), min_p, max_p, gl);
-                layer.add(new Point3d_GL(0, 0, trajParams.dz * (1+i)));
-                traj_layers.Add(layer);
-                settings.angle += settings.angle_layers;
+                if (layer != null)
+                { 
+                    layer.add(new Point3d_GL(0, 0, trajParams.dz * (1 + i)));
+                    traj_layers.Add(layer);
+                    settings.angle += settings.angle_layers;
+                }
             }
-           
+            if (traj_layers.Count == 0) return null;
             var traj = new TrajectoryPath { layers = traj_layers };
             Console.WriteLine("Layers__________");
             traj = Trajectory.OptimizeTranzitions2LayerPath(traj);
@@ -1296,7 +1327,7 @@ namespace PathPlanning
                     }));
                     continue;
                 }
-                var polyg_ind =RasterMap.fing_high_polyg(polyg_inds, layer[i], surface);
+                var polyg_ind =RasterMap.find_high_polyg(polyg_inds, layer[i], surface);
                 var proj_matr = proj_point(surface[polyg_ind], layer[i], vec_x_dir);
                 if(proj_matr!=null)
                     layer_3d.Add(proj_matr);          
@@ -1305,7 +1336,46 @@ namespace PathPlanning
             return layer_3d;
         }
 
-        
+        public static (List<Matrix<double>>, LayerPath) project_layer_xy(Polygon3d_GL[] surface, LayerPath layer, RasterMap map_xy, Vector3d_GL vec_x_dir)
+        {
+            var layer_3d = new List<Matrix<double>>();
+            var lines_proj = new List<LinePath>();
+            for(var j = 0; j < layer.lines.Count; j++)
+            {
+                var line = layer.lines[j];
+                var line_proj = new List<Point3d_GL>();
+                for (int i = 0; i < line.ps.Count; i++)
+                {
+                    var polyg_inds = map_xy.get_polyg_ind_prec_xy(line.ps[i], surface);
+                    if (polyg_inds == null)
+                    {
+                        layer_3d.Add(new Matrix<double>(new double[,]
+                        {
+                        { 1, 0 , 0, line.ps[i].x },
+                        { 0, 1 , 0, line.ps[i].y },
+                        { 0, 0 , 1, line.ps[i].z },
+                        { 0, 0 , 0,  1}
+                        }));
+                        continue;
+                    }
+                    var polyg_ind = RasterMap.find_high_polyg(polyg_inds, line.ps[i], surface);
+                    var proj_matr = proj_point(surface[polyg_ind], line.ps[i], vec_x_dir);
+                    if (proj_matr != null)
+                    {
+                        layer_3d.Add(proj_matr);
+                        line.ps[i] = line.ps[i].setx(proj_matr[0, 3]);
+                        line.ps[i] = line.ps[i].sety(proj_matr[1, 3]);
+                        line.ps[i] = line.ps[i].setz(proj_matr[2, 3]);
+                        line_proj.Add(line.ps[i].Clone());
+                    }
+                        
+                }
+                lines_proj.Add(new LinePath() { ps = line_proj });
+            }
+            
+            if (layer_3d.Count == 0) return (null,null);
+            return (layer_3d,new LayerPath() { lines = lines_proj});
+        }
 
         static List<List<Matrix<double>>> add_transit(List<List<Matrix<double>>> traj, double trans_h)
         {
@@ -1388,30 +1458,41 @@ namespace PathPlanning
         public static TrajectoryPath generate_3d_traj_diff_surf_test(List<Polygon3d_GL[]> surface, List<List<Point3d_GL>> contour, TrajParams trajParams, PatternSettings patternSettings = null, GraphicGL gl = null)
         {
             trajParams.comp_z();
-            var traj_2d = new List<List<Point3d_GL>>();
-            if (patternSettings != null) traj_2d = gen_traj_2d(contour, trajParams, patternSettings, gl).to_ps_by_layers();
-            else traj_2d = generate_2d_traj(contour, trajParams);
+            
+            var traj_2d = gen_traj_2d(contour, trajParams, patternSettings, gl);
 
+            if(traj_2d == null) return null;
             //gl.addLineMeshTraj(traj_2d[0].ToArray(), Color3d_GL.blue());
 
             var traj_3d = new List<List<Matrix<double>>>();
+            var traj_2d_rob = new List<LayerPath>();
             double resolut = -1;
 
             var ang_x = trajParams.ang_x;
             var vec_x = new Vector3d_GL(Math.Cos(ang_x), Math.Sin(ang_x), 0);
-            for (int i = 0; i < traj_2d.Count; i++)
+            for (int i = 0; i < traj_2d.layers.Count; i++)
             {
                 var map_xy = new RasterMap(surface[i], resolut, RasterMap.type_map.XY);
-                var traj_df = filter_traj(divide_traj(traj_2d[i], trajParams.div_step), trajParams.div_step / 2);
+                var traj_df = traj_2d.layers[i].filter_traj( trajParams.div_step / 2);
                 //if (imb != null) imb.Image = UtilOpenCV.draw_map_xy(map_xy, surface[i], traj_df.ToArray());
-                var proj_layer = project_layer(surface[i], traj_df, map_xy, vec_x);
+                LayerPath proj_layer_xy;
+                List<Matrix<double>> proj_layer;
+                (proj_layer,proj_layer_xy) = project_layer_xy(surface[i], traj_df, map_xy, vec_x);
                 //gl.addLineMeshTraj(matr_to_traj(proj_layer).ToArray(), Color3d_GL.purple());
                 if (proj_layer == null) continue;
                 traj_3d.Add(proj_layer);
+                traj_2d_rob.Add(proj_layer_xy);
             }
 
-            traj_3d = add_transit(traj_3d, trajParams.h_transf);
-            return new TrajectoryPath();
+            /*traj_3d = add_transit(traj_3d, trajParams.h_transf);
+            var layers = new List<LayerPath>();
+            for (int i=0; i < traj_3d.Count; i++)
+            {
+                var lay_ps = matr_to_traj(traj_3d[i]);
+                var layer = parse_layerpath_from_ps(lay_ps, trajParams.div_step, patternSettings.step);
+                if(layer!= null) layers.Add(layer);
+            }*/
+            return new TrajectoryPath() { layers = traj_2d_rob };
         }
         public static List<Point3d_GL> project_contour_on_surface(Polygon3d_GL[] surface, List<Point3d_GL> contour)
         {

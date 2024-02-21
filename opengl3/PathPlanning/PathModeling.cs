@@ -185,6 +185,7 @@ namespace PathPlanning
             p.z = p_proj.z + h;
             
             p.color = comp_whv_from_norm(p.color.b, h);
+            Console.WriteLine(p.color);
             return p;
         }
         static double comp_h_max(Color3d_GL whv)
@@ -192,9 +193,9 @@ namespace PathPlanning
             var v = whv.b;
             var k_mech = 0.95;
 
-            return whv.g;
-           // Console.WriteLine()
-            //return 2 * Math.Sqrt((k_mech * v) / Math.PI);
+            //return whv.g;
+            //Console.WriteLine(whv);
+            return 2 * Math.Sqrt((k_mech * v) / Math.PI);
         }
         static public Polygon3d_GL[] surf_from_layer(LayerPath layer)
         {
@@ -290,7 +291,7 @@ namespace PathPlanning
         }
         static public List<Point3d_GL> gen_section(double w, double h)
         {
-            var pres = 5;
+            var pres = 7;
 
             var sect = new List<Point3d_GL>();
             var sect_mirr = new List<Point3d_GL>();

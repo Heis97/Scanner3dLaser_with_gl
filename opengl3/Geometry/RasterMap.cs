@@ -90,8 +90,8 @@ namespace opengl3
                 p_len = (p_max - p_min) / resolution;
             }
 
-            var x_len = (int)(p_len.x);
-            var y_len = (int)(p_len.y);
+            var x_len = (int)(p_len.x)+1;
+            var y_len = (int)(p_len.y)+1;
             var map_xy = new int[x_len, y_len][];
 
             int triangle_overlay = 0;
@@ -673,7 +673,7 @@ namespace opengl3
         {
             var polyg_inds = get_polyg_ind_prec_xy(p, surface);
             if (polyg_inds == null) return Point3d_GL.notExistP();
-            var polyg_ind = fing_high_polyg(polyg_inds, p, surface);
+            var polyg_ind = find_high_polyg(polyg_inds, p, surface);
             var p_proj = surface[polyg_ind].project_point_xy(p);
             return p_proj;
         }
@@ -682,11 +682,11 @@ namespace opengl3
         {
             var polyg_inds = get_polyg_ind_prec_xy(p, surface);
             if (polyg_inds == null) return (Point3d_GL.notExistP(), Point3d_GL.notExistP());
-            var polyg_ind = fing_high_polyg(polyg_inds, p, surface);
+            var polyg_ind = find_high_polyg(polyg_inds, p, surface);
             var p_proj = surface[polyg_ind].project_point_xy(p);
             return (p_proj, surface[polyg_ind].flat3D.n.toPoint()) ;
         }
-        public static int fing_high_polyg(int[] inds, Point3d_GL p, Polygon3d_GL[] surface)
+        public static int find_high_polyg(int[] inds, Point3d_GL p, Polygon3d_GL[] surface)
         {
             if (inds == null) return 0;
             int num = 0;

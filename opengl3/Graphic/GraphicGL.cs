@@ -1867,9 +1867,8 @@ namespace opengl3
             addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
 
         }
-        public void addFlat3d_XY_zero(double z = 0,Color3d_GL color = null, string name = "new Flat XY")
+        public void addFlat3d_XY_zero(double z = 0,Color3d_GL color = null, string name = "new Flat XY",double d = 50)
         {
-            var d = 50;
             Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, z), new Point3d_GL(10, 10, z), new Point3d_GL(0, 10, z));
             var p0 = (new Line3d_GL(new Vector3d_GL(-d, -d, 10), new Point3d_GL(-d,  -d, 0))).calcCrossFlat(flat3D_GL);
             var p1 = (new Line3d_GL(new Vector3d_GL(d, -d, 10), new Point3d_GL(d,  -d, 0))).calcCrossFlat(flat3D_GL);

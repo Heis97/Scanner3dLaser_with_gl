@@ -2709,8 +2709,21 @@ namespace opengl3
             var contours = new List<List<Point3d_GL>>();
             var surfaces = new List<Polygon3d_GL[]>();
             var r = patt_config.r;
-            var selected_obj = selected_object(); if (selected_obj == null) return;
-            var surf_scan = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+
+            GL1.remove_buff_gl_id("scan_virt_flat.stl");
+            var model = new Model3d("scan_virt_flat.stl");
+            GL1.addMesh(model.mesh, PrimitiveType.Triangles, null, "scan_virt_flat.stl");
+            var surf_scan = model.pols;
+
+            GL1.remove_buff_gl_id("flat_xy_h");
+            GL1.addFlat3d_XY_zero(0, null, "flat_xy_h", 60);
+            var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs["flat_xy_h"].vertex_buffer_data);
+
+            //GL1.addFlat3d_XY_zero(0, null, "flat_scan",60);
+            //var surf_scan = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs["flat_scan"].vertex_buffer_data);
+            
+            //var selected_obj = selected_object(); if (selected_obj == null) return;
+            //var surf_scan = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
 
             for (int i = 0; i < traj_config.layers; i++)
             {
@@ -2725,20 +2738,20 @@ namespace opengl3
 
 
             var traj_path = PathPlanner.generate_3d_traj_diff_surf_test(surfaces, contours,traj_config, patt_config, GL1);
+
+            if (traj_path == null) return;
             traj_path.translate(new Point3d_GL(traj_config.Off_x, traj_config.Off_y, traj_config.Off_z));
-            var patterns = traj_path.to_ps_by_layers();
+           /* var patterns = traj_path.to_ps_by_layers();
 
             var pattern = Point3d_GL.unifPoints2d(patterns);
             //var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
             var traj = PathPlanner.ps_to_matr(pattern);
-            var prog = PathPlanner.generate_printer_prog(traj, traj_config);
+            var prog = PathPlanner.generate_printer_prog(traj, traj_config);*/
 
 
 
            
-            GL1.remove_buff_gl_id("flat_xy_h");
-            GL1.addFlat3d_XY_zero(0,null,"flat_xy_h");
-            var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs["flat_xy_h"].vertex_buffer_data);
+           
             var hydro = PathModeling.modeling_print_path_3d(surf, traj_path, traj_config, GL1);
             GL1.remove_buff_gl_id("model_traj");
 
