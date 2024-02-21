@@ -147,8 +147,8 @@ namespace opengl3
             //comp_pores("rats\\3_1.png");
             //comp_pores("model_mesh\\1.jpg");
 
-            var mat_l = new Mat("pict\\arm_clear.jpg");
-            Detection.detectLineDiff_debug(mat_l, scanner_config);
+            //var mat_l = new Mat("pict\\arm_clear.jpg");
+           // Detection.detectLineDiff_debug(mat_l, scanner_config);
 
             //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");
             //CvInvoke.Imshow("im1", im_las);
@@ -628,12 +628,14 @@ namespace opengl3
             chess_size = new Size(6, 7);//new Size(10, 11);
             var frms_1 = FrameLoader.loadImages_diff(@"cam2\virt_cal_15-2_1", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("virt_cam_conf_virt_cal_15-2_1.txt");            
+            cam1.save_camera("virt_cam_conf_virt_cal_2102_err.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
-           /* var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_130523_2", FrameType.Pattern, PatternType.Mesh);
+           /* markSize = 6.2273f;//6.2273f
+            chess_size = new Size(10, 11);//new Size(10, 11);
+            var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
             var cam2 = new CameraCV(frms_2, chess_size, markSize, null);
-            cam2.save_camera("cam2_conf_130523_2.txt");
+            cam2.save_camera("cam2_conf_190623_test.txt");
             comboImages.Items.AddRange(frms_2);*/
         }
         Scanner loadScanner_v2(string  conf1, string conf2, string stereo_cal, string bfs_file = null)
@@ -1185,11 +1187,11 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-            generateImage3D_BOARD(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-            GL1.addFlat3d_XY_zero_s(-0.1f, new Color3d_GL(135,117,103,1,255)*1.4);
+           // GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            //generateImage3D_BOARD(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
             //GL1.SortObj();
-            int monitor_num = 2;
+            int monitor_num = 1;
             if(monitor_num==4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -1656,7 +1658,7 @@ namespace opengl3
             conts.Add(ps_cont.ToList());
             surfs.Add(scan_stl.pols);
 
-            var pols2 = Polygon3d_GL.plus(scan_stl.pols, new Point3d_GL(0, 0, 1));
+            var pols2 = Polygon3d_GL.add_arr(scan_stl.pols, new Point3d_GL(0, 0, 1));
             
             
             conts.Add(ps_cont.ToList());
@@ -2705,13 +2707,24 @@ namespace opengl3
         private void but_hydro_model_grav_Click(object sender, EventArgs e)
         {
             var contours = new List<List<Point3d_GL>>();
-            var r = patt_config.dim_x;
+            var surfaces = new List<Polygon3d_GL[]>();
+            var r = patt_config.r;
+            var selected_obj = selected_object(); if (selected_obj == null) return;
+            var surf_scan = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+
             for (int i = 0; i < traj_config.layers; i++)
             {
-                var cont = SurfaceReconstraction.gen_random_cont_XY(r, 30, 0, new Point3d_GL(1.5*r, 1.5 * r, 0.4 * i)).ToList();
+                var cont = SurfaceReconstraction.gen_random_cont_XY(r, 30, 0, new Point3d_GL(patt_config.dim_x, patt_config.dim_y, 0)).ToList();
                 contours.Add(cont);
+                var surf_scan_cur = Polygon3d_GL.add_arr(surf_scan, new Point3d_GL(0, 0, traj_config.dz * i));
+                surfaces.Add(surf_scan_cur);
             }
-            var traj_path = PathPlanner.gen_traj_2d(contours, traj_config, patt_config, GL1);
+            ///var traj_path = PathPlanner.gen_traj_2d(contours, traj_config, patt_config, GL1);
+           
+
+
+
+            var traj_path = PathPlanner.generate_3d_traj_diff_surf_test(surfaces, contours,traj_config, patt_config, GL1);
             traj_path.translate(new Point3d_GL(traj_config.Off_x, traj_config.Off_y, traj_config.Off_z));
             var patterns = traj_path.to_ps_by_layers();
 
@@ -2722,8 +2735,7 @@ namespace opengl3
 
 
 
-            //var selected_obj = selected_object(); if (selected_obj == null) return;
-            // var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+           
             GL1.remove_buff_gl_id("flat_xy_h");
             GL1.addFlat3d_XY_zero(0,null,"flat_xy_h");
             var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs["flat_xy_h"].vertex_buffer_data);
@@ -3225,6 +3237,7 @@ namespace opengl3
                   GL1.transRotZooms[0].zRot + " ";
             var pos = new RobotFrame(coords);
             video_scan_name = pos.ToStr(" ",true);
+            video_scan_name = "1";
             boxN.Text = "120";
             var n = Convert.ToInt32(boxN.Text);
             GL1.start_animation(n);
@@ -5190,6 +5203,9 @@ namespace opengl3
             var stl_name = get_file_name(Directory.GetCurrentDirectory(), "stl");
             
             var scan_stl = new Model3d(stl_name, false);
+
+
+
             scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles,Path.GetFileNameWithoutExtension(stl_name));
         }
 

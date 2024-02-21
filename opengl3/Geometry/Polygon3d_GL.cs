@@ -739,17 +739,7 @@ namespace opengl3
 
 
         //public
-
-        public static Polygon3d_GL[] minus(Polygon3d_GL[] pol, Point3d_GL p)
-        {
-            var pols = new List<Polygon3d_GL>();
-            for(int i = 0; i < pol.Length; i++)
-            {
-                pols.Add(pol[i]-p);
-            }
-            return pol;
-        }
-        public static Polygon3d_GL[] plus(Polygon3d_GL[] pol, Point3d_GL p)
+        public static Polygon3d_GL[] add_arr(Polygon3d_GL[] pol, Point3d_GL p)
         {
             var pols = new List<Polygon3d_GL>();
             for (int i = 0; i < pol.Length; i++)

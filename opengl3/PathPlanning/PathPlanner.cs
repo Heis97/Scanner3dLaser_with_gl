@@ -1385,7 +1385,34 @@ namespace PathPlanning
             traj_3d = add_transit(traj_3d, trajParams.h_transf);
             return traj_3d;
         }
+        public static TrajectoryPath generate_3d_traj_diff_surf_test(List<Polygon3d_GL[]> surface, List<List<Point3d_GL>> contour, TrajParams trajParams, PatternSettings patternSettings = null, GraphicGL gl = null)
+        {
+            trajParams.comp_z();
+            var traj_2d = new List<List<Point3d_GL>>();
+            if (patternSettings != null) traj_2d = gen_traj_2d(contour, trajParams, patternSettings, gl).to_ps_by_layers();
+            else traj_2d = generate_2d_traj(contour, trajParams);
 
+            //gl.addLineMeshTraj(traj_2d[0].ToArray(), Color3d_GL.blue());
+
+            var traj_3d = new List<List<Matrix<double>>>();
+            double resolut = -1;
+
+            var ang_x = trajParams.ang_x;
+            var vec_x = new Vector3d_GL(Math.Cos(ang_x), Math.Sin(ang_x), 0);
+            for (int i = 0; i < traj_2d.Count; i++)
+            {
+                var map_xy = new RasterMap(surface[i], resolut, RasterMap.type_map.XY);
+                var traj_df = filter_traj(divide_traj(traj_2d[i], trajParams.div_step), trajParams.div_step / 2);
+                //if (imb != null) imb.Image = UtilOpenCV.draw_map_xy(map_xy, surface[i], traj_df.ToArray());
+                var proj_layer = project_layer(surface[i], traj_df, map_xy, vec_x);
+                //gl.addLineMeshTraj(matr_to_traj(proj_layer).ToArray(), Color3d_GL.purple());
+                if (proj_layer == null) continue;
+                traj_3d.Add(proj_layer);
+            }
+
+            traj_3d = add_transit(traj_3d, trajParams.h_transf);
+            return new TrajectoryPath();
+        }
         public static List<Point3d_GL> project_contour_on_surface(Polygon3d_GL[] surface, List<Point3d_GL> contour)
         {
             var cont_proj = new List<Point3d_GL>();

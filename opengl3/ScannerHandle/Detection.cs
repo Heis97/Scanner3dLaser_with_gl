@@ -612,9 +612,9 @@ namespace opengl3
 
 
                 var ps_list_j = ps_arr_j.ToList();
-                var start_i = 0; var stop_i = config.wind_regr * 2 + 1;
-                if (j_max - config.wind_regr < 0) start_i = 0;
-                if (start_i + stop_i > data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
+                var start_i = j_max - config.wind_regr; var stop_i = j_max + config.wind_regr + 1;
+                if (start_i < 0) start_i = 0;
+                if (stop_i > data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
 
                 var ps_imp = ps_list_j.GetRange(start_i, stop_i - start_i).ToArray();
                 var vals_regr = new List<double[]>();
@@ -776,13 +776,12 @@ namespace opengl3
 
 
                 var ps_list_j = ps_arr_j.ToList();
-                var wind_full = config.wind_regr;
-                var wind_half = config.wind_regr/2;
+                var wind_full = 40;
 
-                var start_i = j_max - wind_full; var stop_i = j_max + wind_full * 2 + 1;
+                var start_i = j_max - wind_full; var stop_i = j_max + wind_full+1;
 
-                if (j_max - wind_full < 0) start_i = 0;
-                if (start_i+stop_i > data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
+                if (start_i < 0) start_i = 0;
+                if (stop_i> data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
                // Console.WriteLine(start_i + " " + stop_i + " " + (stop_i - start_i) + " ");
                 var ps_imp = ps_list_j.GetRange(start_i, stop_i - start_i).ToArray();
                 var vals_regr = new List<double[]>();
@@ -795,11 +794,11 @@ namespace opengl3
 
                 //for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
                 // vals_regr.Add(new double[] { data[k1, i],k1 });
-                wind_half = 2;
-                start_i = j_max - wind_half; stop_i = j_max+wind_half;
+                var wind_half = config.wind_regr;
+                start_i = j_max - wind_half; stop_i = j_max+wind_half+1;
 
-                if (j_max - wind_full < 0) start_i =0;
-                if (start_i + stop_i > data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
+                if (start_i < 0) start_i =0;
+                if (stop_i > data.GetLength(0) - 1) stop_i = data.GetLength(0) - 1;
 
                 ps_imp = ps_list_j.GetRange(start_i, stop_i - start_i).ToArray();
                 var for_regr = new List<double[]>();
@@ -830,13 +829,15 @@ namespace opengl3
                     {
                         var x_c = i;
                         var y_c = (int)vals_regr_re[k2][0];
-                        Console.WriteLine(k2
+                        Console.WriteLine(vals_regr[k2][0]
                             + " " + vals_regr_re[k2][1]
                             + " " + vals_regr[k2][1]
                             + " " + data_rgb[y_c, x_c, 0]
                             + " " + data_rgb[y_c, x_c, 1]
                             + " " + data_rgb[y_c, x_c, 2]);
                     }
+
+                    Console.WriteLine("j_max_2: "+j_max_2);
                 }
 
 
