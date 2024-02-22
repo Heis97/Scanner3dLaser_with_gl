@@ -16,25 +16,26 @@ namespace opengl3
         public double dim;
         public Point3d_GL centr;
 
-        public Polygon3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3, int _special_point_ind = 0)
+        public Polygon3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3, int _special_point_ind = 0,bool nz_positive = false)
         {
             special_point_ind = _special_point_ind;
             ps = new Point3d_GL[] { P1, P2, P3 };
             v1 = new Vector3d_GL(P1, P2).normalize();
             v2 = new Vector3d_GL(P1, P3).normalize();
             v3 = v1 | v2;//vector multiply
+            v3.normalize();
             centr = (P1 + P2 + P3) / 3;
-            /*if(v3.z<0)
+            if(nz_positive && v3.z<0)
             {
                 v1 = -v1;
                 v2 = -v2;
                 v3 = -v3;
                 
-            }*/
+            }
 
             dim = Math.Max(Math.Max((P3 - P1).magnitude(), (P2 - P1).magnitude()), (P3 - P2).magnitude());
             //Console.WriteLine(v3);
-            v3.normalize();
+            
             flat3D = new Flat3d_GL(v3.x, v3.y, v3.z, -v3 * P1);
 
         }
@@ -732,11 +733,20 @@ namespace opengl3
             return null;
         }
 
-        public Polygon3d_GL Clone()
+        public Polygon3d_GL Clone( bool nz_positive = false)
         {
-            return new Polygon3d_GL(ps[0].Clone(), ps[1].Clone(), ps[2].Clone(), special_point_ind);
+            return new Polygon3d_GL(ps[0].Clone(), ps[1].Clone(), ps[2].Clone(), special_point_ind,nz_positive);
         }
 
+        static public Polygon3d_GL[] Clone_surf(Polygon3d_GL[] surf, bool nz_positive = false)
+        {
+            var surf_clone = new Polygon3d_GL[surf.Length];
+            for(int i=0; i<surf.Length;i++)
+            {
+                surf_clone[i] = surf[i].Clone(nz_positive);
+            }
+            return surf_clone;
+        }
 
         //public
         public static Polygon3d_GL[] add_arr(Polygon3d_GL[] pol, Point3d_GL p)

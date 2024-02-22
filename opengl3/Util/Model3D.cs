@@ -128,7 +128,7 @@ namespace opengl3
 
         public Polygon3d_GL[] pols;
 
-        public Model3d(string _path, bool centering = true, float _scale = 1)
+        public Model3d(string _path, bool centering = false, float _scale = 1)
         {
             path = _path;
             var name_list = path.Split('.');

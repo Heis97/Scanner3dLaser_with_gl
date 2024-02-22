@@ -1187,9 +1187,9 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-           // GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
-            //generateImage3D_BOARD(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-            GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
+            GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(0, 10, 0), new Point3d_GL(0, 0, 10));
+            //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+           // GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
             //GL1.SortObj();
             int monitor_num = 1;
             if(monitor_num==4)
@@ -1271,6 +1271,7 @@ namespace opengl3
             // test_traj_2d();
             //test_expand();
             //test_merge_surf();
+            //test_comp_color();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1488,7 +1489,16 @@ namespace opengl3
         #endregion
 
         #region test
+        void test_comp_color()
+        {
+            var name = "scan_virt_flat.stl";
+            GL1.remove_buff_gl_id(name);
+            var model = new Model3d(name);
+            var color = GraphicGL.comp_grad_color_dz(model.mesh);
+            GL1.add_buff_gl(model.mesh,color,model.normale, PrimitiveType.Triangles, name);
+            GL1.buffersGl.objs[name].setlight_vis(0, false);
 
+        }
         void test_expand()
         {
            /* var ps = new Point3d_GL[]
@@ -2704,36 +2714,51 @@ namespace opengl3
             im.Save("im2.png");
         }
 
-        private void but_hydro_model_grav_Click(object sender, EventArgs e)
+        private void but_hydro_model_grav_Click(object sender, EventArgs e)//modelir_hydro!!!!!
         {
             var contours = new List<List<Point3d_GL>>();
             var surfaces = new List<Polygon3d_GL[]>();
             var r = patt_config.r;
 
-            GL1.remove_buff_gl_id("scan_virt_flat.stl");
-            var model = new Model3d("scan_virt_flat.stl");
-            GL1.addMesh(model.mesh, PrimitiveType.Triangles, null, "scan_virt_flat.stl");
-            var surf_scan = model.pols;
+            var name_scan = "flat_dirt2.stl";
+            Polygon3d_GL[] surf_scan;
+            bool load_scan = true;
+           // bool selected_scan
+            if(load_scan)
+            {
+                GL1.remove_buff_gl_id(name_scan);
+                var model = new Model3d(name_scan);
+                name_scan = GL1.addMesh(model.mesh, PrimitiveType.Triangles, null, name_scan);
+                surf_scan = model.pols;
 
-            GL1.remove_buff_gl_id("flat_xy_h");
-            GL1.addFlat3d_XY_zero(0, null, "flat_xy_h", 60);
-            var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs["flat_xy_h"].vertex_buffer_data);
 
-            //GL1.addFlat3d_XY_zero(0, null, "flat_scan",60);
-            //var surf_scan = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs["flat_scan"].vertex_buffer_data);
-            
-            //var selected_obj = selected_object(); if (selected_obj == null) return;
-            //var surf_scan = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+                //var selected_obj = selected_object(); if (selected_obj == null) return;
+                // surf_scan = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+            }
+            else
+            {
+                name_scan = GL1.addFlat3d_XY_zero(0, null, "name_scan", 60);
+                surf_scan = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[name_scan].vertex_buffer_data);
+                GL1.remove_buff_gl_id(name_scan);
+            }
+
+            var flat_xy = "flat_xy_h";
+            GL1.remove_buff_gl_id(flat_xy);
+            flat_xy = GL1.addFlat3d_XY_zero(0, null, flat_xy, 60);
+            var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[flat_xy].vertex_buffer_data);
+            GL1.remove_buff_gl_id(flat_xy);
+
+            var flat_proj = surf;
 
             for (int i = 0; i < traj_config.layers; i++)
             {
                 var cont = SurfaceReconstraction.gen_random_cont_XY(r, 30, 0, new Point3d_GL(patt_config.dim_x, patt_config.dim_y, 0)).ToList();
                 contours.Add(cont);
-                var surf_scan_cur = Polygon3d_GL.add_arr(surf_scan, new Point3d_GL(0, 0, traj_config.dz * i));
+                var surf_scan_cur = Polygon3d_GL.add_arr(flat_proj, new Point3d_GL(0, 0, traj_config.dz * i));
                 surfaces.Add(surf_scan_cur);
             }
             ///var traj_path = PathPlanner.gen_traj_2d(contours, traj_config, patt_config, GL1);
-           
+            
 
 
 
@@ -2741,31 +2766,18 @@ namespace opengl3
 
             if (traj_path == null) return;
             traj_path.translate(new Point3d_GL(traj_config.Off_x, traj_config.Off_y, traj_config.Off_z));
-           /* var patterns = traj_path.to_ps_by_layers();
 
-            var pattern = Point3d_GL.unifPoints2d(patterns);
-            //var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
-            var traj = PathPlanner.ps_to_matr(pattern);
-            var prog = PathPlanner.generate_printer_prog(traj, traj_config);*/
+            var hydro = PathModeling.modeling_print_path_3d(surf_scan, traj_path, traj_config, GL1);
 
-
-
-           
-           
-            var hydro = PathModeling.modeling_print_path_3d(surf, traj_path, traj_config, GL1);
             GL1.remove_buff_gl_id("model_traj");
-
-            GL1.remove_buff_gl_id("surf");
             GL1.addMesh(Polygon3d_GL.toMesh(hydro)[0], PrimitiveType.Triangles, Color3d_GL.white(), "model_traj");
-            GL1.addMesh(Polygon3d_GL.toMesh(surf)[0], PrimitiveType.Triangles, Color3d_GL.white(), "surf");
 
-            //if (GL1.buffersGl.objs.Keys.Contains("prog")) GL1.buffersGl.removeObj("prog");
-            //GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "prog");
-            //GL1.addTraj(pattern.ToArray(), "prog");
-            //GL1.addTrajPoint(pattern.ToArray(), "prog");
+            //GL1.remove_buff_gl_id("surf");
+            // GL1.addMesh(Polygon3d_GL.toMesh(surf)[0], PrimitiveType.Triangles, Color3d_GL.white(), "surf");
+
         }
 
-
+        
 
         void makePhoto(float[] pos, int count, string[] folders, ImageBox[] imageBoxes, TCPclient con)
         {
@@ -3893,19 +3905,18 @@ namespace opengl3
             }
 
         }
-
-        void generateImage3D_BOARD(int n, int k, float sidef,PatternType patternType = PatternType.Chess)
+        void generateImage3D_BOARD_solid(int n, int k, float sidef, PatternType patternType = PatternType.Chess)
         {
             float side = sidef * 2;
             if (patternType == PatternType.Chess)
             {
-                n++;k++;
+                n++; k++;
             }
 
             float w = sidef * (float)n;
             float h = sidef * (float)k;
             float offx = -sidef;
-            float offy =  -sidef;
+            float offy = -sidef;
             float z = 0f;
             float[] pattern_mesh = {
                             0.0f,0.0f,0.0f, // triangle 1 : begin
@@ -3915,7 +3926,7 @@ namespace opengl3
                            sidef,0.0f,0.0f,
                             0.0f, 0.0f,0.0f};
 
-            if(patternType == PatternType.Mesh)
+            if (patternType == PatternType.Mesh)
             {
                 pattern_mesh = circle_mesh(sidef / 4, 50);
                 side = sidef;
@@ -3923,13 +3934,16 @@ namespace opengl3
                 h += side;
             }
 
+            var mesh = new List<float>();
+
             if (patternType == PatternType.Chess)
             {
                 for (float x = 0; x < w; x += side)
                 {
                     for (float y = 0; y < h; y += side)
                     {
-                        GL1.addGLMesh(pattern_mesh, PrimitiveType.Triangles, x + offx, y + offy, z);
+                        var patt_cur = GraphicGL.translateMesh(pattern_mesh, x + offx, y + offy, z);
+                        mesh.AddRange(patt_cur);
                     }
                 }
             }
@@ -3938,14 +3952,14 @@ namespace opengl3
             {
                 for (float y = sidef; y < h; y += side)
                 {
-                    GL1.addGLMesh(pattern_mesh, PrimitiveType.Triangles, x + offx, y + offy, z);
+                    var patt_cur = GraphicGL.translateMesh(pattern_mesh, x + offx, y + offy, z);
+                    mesh.AddRange(patt_cur);
                 }
             }
-            
-            
+            GL1.addGLMesh(mesh.ToArray(), PrimitiveType.Triangles,0,0,0,1,null,"calibrate_board");
+
 
         }
-
         float[] circle_mesh(float rad,int count)
         {
             var mesh = new List<float>();
@@ -5132,7 +5146,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-            //resize();
+            resize();
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)

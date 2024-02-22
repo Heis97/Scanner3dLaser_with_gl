@@ -34,14 +34,14 @@ namespace PathPlanning
         {
             path = path.fill_gaps(trajParams.div_step);
             path = path.gauss(2);
-            //graphicGL.remove_buff_gl_id("prog");
-            //graphicGL.addLineMeshTraj(path.to_ps().ToArray(), Color3d_GL.red(), "prog");
+            graphicGL.remove_buff_gl_id("prog");
+            graphicGL.addLineMeshTraj(path.to_ps().ToArray(), Color3d_GL.red(), "prog");
             var path_c = comp_whv(path, trajParams);
             TrajectoryPath path_g;
             List<List<Point3d_GL>> ns;
             (path_g,ns) = modeling_gravity_3d(path_c, surf, graphicGL);
-            //graphicGL.remove_buff_gl_id("prog_grav");
-            //graphicGL.addLineMeshTraj(path_g.to_ps().ToArray(), Color3d_GL.purple(), "prog_grav");
+            graphicGL.remove_buff_gl_id("prog_grav");
+            graphicGL.addLineMeshTraj(path_g.to_ps().ToArray(), Color3d_GL.purple(), "prog_grav");
             var model = path_to_model_3d(path_g.to_ps(),ns);
 
 
@@ -110,8 +110,16 @@ namespace PathPlanning
             for (int i = 0; i < layers.Count; i++)
             {
                 if (i != 0) surf_o = surf_from_layer(layers[i - 1]);
-                surf_o = SurfaceReconstraction.expand_surf_convex(surf_o, 20);
-                //graphicGL?.addMesh(Polygon3d_GL.toMesh(surf_o)[0], OpenGL.PrimitiveType.Triangles);
+                surf_o = SurfaceReconstraction.expand_surf_convex(surf_o, 5);
+                /*surf_o = Polygon3d_GL.Clone_surf(surf_o,true);
+                if(i!=0)
+                {
+                    var obj = graphicGL?.addMesh(Polygon3d_GL.toMesh(surf_o)[0], OpenGL.PrimitiveType.Triangles, Color3d_GL.green(), "layer");
+                    graphicGL?.buffersGl.objs[obj].setlight_vis(0,false);
+                    graphicGL?.buffersGl.objs[obj].setTransf(0, new trsc(0, 0, 0.1, 0, 0, 0, 1));
+                    graphicGL?.buffersGl.objs[obj].setTrasp(0.3f);
+                }*/
+               
                 List<Point3d_GL> ns;
                 LayerPath path_o;
                 (path_o,ns) = modeling_gravity_one_3d(layers[i], surf_o, graphicGL);
@@ -185,7 +193,7 @@ namespace PathPlanning
             p.z = p_proj.z + h;
             
             p.color = comp_whv_from_norm(p.color.b, h);
-            Console.WriteLine(p.color);
+           // Console.WriteLine(p.color);
             return p;
         }
         static double comp_h_max(Color3d_GL whv)

@@ -644,6 +644,8 @@ namespace opengl3
             var cont = board[0];
             //graphic?.addLineMeshTraj(cont, Color3d_GL.yellow(), "cont");
             var exp_cont = expand_cont_convex(cont,f);
+            var dz = f;
+           // exp_cont = Point3d_GL.add_arr(exp_cont, new Point3d_GL(0, 0, -dz));
             //graphic?.addLineMeshTraj(exp_cont, Color3d_GL.red(), "exp_cont");
             var pols_ex =  Polygon3d_GL.triangulate_two_same_conts(cont,exp_cont);
             var surf_exp = new List<Polygon3d_GL>();

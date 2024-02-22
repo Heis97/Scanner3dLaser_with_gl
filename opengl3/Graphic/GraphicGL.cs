@@ -1782,13 +1782,13 @@ namespace opengl3
             return addMeshColor(mesh.ToArray(), color.ToArray(), PrimitiveType.Lines,name);
         }
 
-        public void addFrame_Cam(Camera cam, int frame_len = 15)
+        public string addFrame_Cam(Camera cam, int frame_len = 15)
         {
 
-            addFrame(cam.pos, cam.pos + cam.oX * frame_len, cam.pos + cam.oY * frame_len, cam.pos + cam.oZ * frame_len * 1.3);
+           return addFrame(cam.pos, cam.pos + cam.oX * frame_len, cam.pos + cam.oY * frame_len, cam.pos + cam.oZ * frame_len * 1.3);
         }
 
-        public void addFlat3d_XZ(Flat3d_GL flat3D_GL, Matrix<double> matrix=null, Color3d_GL color = null, string name = "new Flat XZ")
+        public string addFlat3d_XZ(Flat3d_GL flat3D_GL, Matrix<double> matrix=null, Color3d_GL color = null, string name = "new Flat XZ")
         {
             var p0 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(-50, 0, -1000))).calcCrossFlat(flat3D_GL);
             var p1 = (new Line3d_GL(new Vector3d_GL(0, 10, 0), new Point3d_GL(50, 0, -1000))).calcCrossFlat(flat3D_GL);
@@ -1811,11 +1811,11 @@ namespace opengl3
 
 
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
+           return addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
 
         }
 
-        public void addFlat3d_YZ(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Color3d_GL color = null, string name = "new Flat YZ")
+        public string addFlat3d_YZ(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Color3d_GL color = null, string name = "new Flat YZ")
         {
             var p0 = (new Line3d_GL(new Vector3d_GL(10, 0, 0), new Point3d_GL(0, -50,  -1000))).calcCrossFlat(flat3D_GL);
             var p1 = (new Line3d_GL(new Vector3d_GL(10, 0, 0), new Point3d_GL(0, 50, -1000))).calcCrossFlat(flat3D_GL);
@@ -1838,10 +1838,10 @@ namespace opengl3
 
 
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
+           return addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
 
         }
-        public void addFlat3d_XY(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Color3d_GL color = null, string name = "new Flat XY")
+        public string addFlat3d_XY(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Color3d_GL color = null, string name = "new Flat XY")
         {
             var p0 = (new Line3d_GL(new Vector3d_GL( 0, 0,10), new Point3d_GL( -50, -1000,0))).calcCrossFlat(flat3D_GL);
             var p1 = (new Line3d_GL(new Vector3d_GL( 0, 0, 10), new Point3d_GL( 50, -1000,0))).calcCrossFlat(flat3D_GL);
@@ -1864,10 +1864,10 @@ namespace opengl3
 
 
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
+            return addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
 
         }
-        public void addFlat3d_XY_zero(double z = 0,Color3d_GL color = null, string name = "new Flat XY",double d = 50)
+        public string addFlat3d_XY_zero(double z = 0,Color3d_GL color = null, string name = "new Flat XY",double d = 50)
         {
             Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, 0, z), new Point3d_GL(10, 10, z), new Point3d_GL(0, 10, z));
             var p0 = (new Line3d_GL(new Vector3d_GL(-d, -d, 10), new Point3d_GL(-d,  -d, 0))).calcCrossFlat(flat3D_GL);
@@ -1881,10 +1881,10 @@ namespace opengl3
                 p1,p3,p2,
                 p2,p0,p1
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
+            return addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
 
         }
-        public void addFlat3d_XY_zero_s(double z = 0, Color3d_GL color = null, string name = "new Flat XY")
+        public string addFlat3d_XY_zero_s(double z = 0, Color3d_GL color = null, string name = "new Flat XY")
         {
             var d = 1000;
             var p0 = new Point3d_GL(-d, -d, z);
@@ -1898,10 +1898,10 @@ namespace opengl3
                 p1,p3,p2,
                 p2,p0,p1
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
+            return addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
 
         }
-        public void addFlat3d_XZ_zero(double y = 0,Color3d_GL color = null,string name = "new Flat XZ")
+        public string addFlat3d_XZ_zero(double y = 0,Color3d_GL color = null,string name = "new Flat XZ")
         {
             var d = 50;
             Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, y, 0), new Point3d_GL(10, y, 10), new Point3d_GL(0, y, 10));
@@ -1916,11 +1916,11 @@ namespace opengl3
                 p1,p3,p2,
                 p2,p0,p1
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
+            return addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles,color,name);
 
         }
 
-        public void addFlat3d_XZ_zero_s(double y = 0, Color3d_GL color = null, string name = "new Flat XZ")
+        public string addFlat3d_XZ_zero_s(double y = 0, Color3d_GL color = null, string name = "new Flat XZ")
         {
             var d = 50;
             var p0 = new Point3d_GL(-d, y, -d);
@@ -1934,19 +1934,19 @@ namespace opengl3
                 p1,p3,p2,
                 p2,p0,p1
             };
-            addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
+           return addMesh(Point3d_GL.toMesh(ps), PrimitiveType.Triangles, color, name);
 
         }
-        public void addFrame_Cam(CameraCV cam, int frame_len = 15)
+        public string addFrame_Cam(CameraCV cam, int frame_len = 15)
         {
             var posit = cam.matrixCS * new Point3d_GL(0, 0, 0);
             var ox = cam.matrixCS * new Point3d_GL( frame_len, 0, 0);
             var oy = cam.matrixCS * new Point3d_GL( 0, frame_len, 0);
             var oz = cam.matrixCS * new Point3d_GL( 0, 0, frame_len);
-            addFrame(posit, ox, oy, oz);
+            return addFrame(posit, ox, oy, oz);
         }
 
-        public void addFrame(Matrix<double> m, int frame_len = 15)
+        public string addFrame(Matrix<double> m, int frame_len = 15)
         {
             var posit = m * new Point3d_GL(0, 0, 0);
             /*var ox = matrix * new Point3d_GL(frame_len, 0, 0);
@@ -1959,7 +1959,41 @@ namespace opengl3
             ox += posit;
             oy += posit;
             oz += posit;
-            addFrame(posit, ox, oy, oz);
+            return addFrame(posit, ox, oy, oz);
+        }
+
+        static public float[] comp_grad_color_dz(float[] mesh)
+        {
+            var mesh_color = new float[mesh.Length];
+            var ps = Point3d_GL.fromMesh(mesh);
+            var max = Point3d_GL.Max(ps).z;
+            var min = Point3d_GL.Min(ps).z;
+            Console.WriteLine("maxmin: " + max + " " + min);
+            var max_abs = Math.Max(Math.Abs(min), Math.Abs(max));
+
+            for (int i = 0; i < mesh.Length; i+=3)
+            {
+                var v = mesh[i + 2];
+                var c = comp_color_from_val(v, (float)max_abs);
+                //c = Color3d_GL.red();
+                mesh_color[i] = c.r;
+                mesh_color[i+1] = c.g;
+                mesh_color[i+2] = c.b;
+                //Console.WriteLine(c);
+            }
+            return mesh_color;
+        }
+
+        static Color3d_GL comp_color_from_val(float v,float max_v)
+        {
+            var r = Color3d_GL.red();
+            var b = Color3d_GL.blue();
+            var k = Math.Abs(v / max_v);
+            Color3d_GL color;
+            if (v > 0) color = b * k;
+            else color = r * k;
+            //
+            return color;
         }
 
         public Polygon3d_GL[] addNormals(Polygon3d_GL[] pols,double len)

@@ -22,6 +22,7 @@ namespace opengl3
             string name_obj =gen_name(name);
             opgl_obj = opgl_obj.setName(name_obj);
             objs.Add(opgl_obj.name, opgl_obj);
+            sort_by_transp();
             return name_obj;
         }
 
@@ -62,6 +63,13 @@ namespace opengl3
         public void clearObj()
         {
             objs = new Dictionary<string, openGlobj>();
+        }
+
+
+        public void sort_by_transp()
+        {
+            var obj_sort = objs.OrderByDescending(pair => pair.Value.transparency).ToDictionary(pair => pair.Key, pair => pair.Value);
+            objs = obj_sort;
         }
 
         #region setters
@@ -114,6 +122,7 @@ namespace opengl3
         public void setTranspobj(string name, float transp)
         {
             objs[name] = objs[name].setTrasp(transp);
+            sort_by_transp();
         }
         public void setVisibleobj(string name, bool visible)
         {
