@@ -2095,6 +2095,67 @@ namespace opengl3
             }
             return new Matrix<float>(data).Mat;
         }
+
+        static public Mat Mcvscalar_to_mat(MCvScalar[] ps)
+        {
+            var data = new double[ps.Length, 3];
+            // var ps = new System.Drawing.PointF[data.GetLength(0)];
+            for (int i = 0; i < data.GetLength(0); i++)
+            {
+                data[i, 0] = ps[i].V0;
+                data[i, 1] = ps[i].V1;
+                data[i, 2] = ps[i].V2;
+            }
+            return new Matrix<double>(data).Mat;
+        }
+        static public Mat data1ch_to_mat(double[] data)//ps.len x 1
+        {
+            return new Matrix<double>(data).Mat;
+        }
+        static MCvScalar mean_std_dev(MCvScalar[] ps_pix)
+        {
+            var ps = UtilOpenCV.Mcvscalar_to_mat(ps_pix);
+
+            MCvScalar mean = new MCvScalar(0, 0, 0);
+            MCvScalar std_dev = new MCvScalar(0, 0, 0);
+            CvInvoke.MeanStdDev(ps, ref mean, ref std_dev);
+            return new MCvScalar(mean.V0, std_dev.V0);
+        }
+        static MCvScalar mean_std_dev(double[] ps_pix)
+        {
+            var ps = data1ch_to_mat(ps_pix);
+
+            MCvScalar mean = new MCvScalar(0);
+            MCvScalar std_dev = new MCvScalar(0);
+            CvInvoke.MeanStdDev(ps, ref mean, ref std_dev);
+            return new MCvScalar(mean.V0, std_dev.V0);
+        }
+        public static (MCvScalar, MCvScalar) std_dev_3ch(double[,] ps_pix)
+        {
+            var data_r = ps_pix.GetColumn(0);
+            var data_g = ps_pix.GetColumn(1);
+            var data_b = ps_pix.GetColumn(2);
+            var md_r = mean_std_dev(data_r);
+            var md_g = mean_std_dev(data_g);
+            var md_b = mean_std_dev(data_b);
+
+            MCvScalar mean = new MCvScalar(md_r.V0, md_g.V0, md_b.V0);
+            MCvScalar std_dev = new MCvScalar(md_r.V1, md_g.V1, md_b.V1);
+            return (mean, std_dev);
+        }
+        static public Mat p3d_to_mat(Point3d_GL[] ps)
+        {
+            var data = new double[ps.Length, 3];
+            // var ps = new System.Drawing.PointF[data.GetLength(0)];
+            for (int i = 0; i < data.GetLength(0); i++)
+            {
+                data[i, 0] = ps[i].x;
+                data[i, 1] = ps[i].y;
+                data[i, 2] = ps[i].z;
+            }
+            return new Matrix<double>(data).Mat;
+        }
+
         public static System.Drawing.PointF[][] dividePointF(System.Drawing.PointF[] ps, int len0)
         {
             prin.t(ps.Length);

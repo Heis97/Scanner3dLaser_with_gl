@@ -148,7 +148,7 @@ namespace opengl3
             //comp_pores("model_mesh\\1.jpg");
 
             //var mat_l = new Mat("pict\\arm_clear.jpg");
-           // Detection.detectLineDiff_debug(mat_l, scanner_config);
+            // Detection.detectLineDiff_debug(mat_l, scanner_config);
 
             //var im_las = new Image<Bgr, byte>("test_las_scan_table_model6.png");
             //CvInvoke.Imshow("im1", im_las);
@@ -184,7 +184,7 @@ namespace opengl3
             // test_matr();
 
 
-
+            VideoAnalyse.noise_analyse("noise.avi");
 
         }
         void comp_pores(string path)
@@ -5146,7 +5146,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-            resize();
+            //resize();
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)

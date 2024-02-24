@@ -436,6 +436,110 @@ namespace opengl3
             return buff;
         }
 
+
+        static Mat[] load_video(string path)
+        {
+
+            var capture = new VideoCapture(path);
+            var all_frames = capture.GetCaptureProperty(CapProp.FrameCount);
+            var frames = new List<Mat>();
+            var videoframe_count = 0;
+
+            //CvInvoke.mea
+            while (videoframe_count < all_frames)
+            {
+                Mat im = new Mat();
+                while (!capture.Read(im)) { }
+                frames.Add(im);
+                videoframe_count++;
+            }
+            Console.WriteLine(path + " loaded.");
+            return frames.ToArray();
+        }
+
+        public static void noise_analyse(string path)
+        {
+            var mats = load_video(path);
+            var datas = new List<byte[,,]>();
+            for(int i=0; i < mats.Length; i++)
+            {
+                var data = (byte[,,])mats[i].GetData();
+                datas.Add(data);
+            }
+          /*  var data_an_r = new List<double>();
+            var data_an_g = new List<double>();
+            var data_an_b = new List<double>();
+
+            var data_an = new List<MCvScalar>();
+
+            
+            for (int i = 0; i < datas.Count;i++)
+            {
+                data_an_r.Add(datas[i][0, 0, 0]);
+                data_an_g.Add(datas[i][0, 0, 1]);
+                data_an_b.Add(datas[i][0, 0, 2]);
+
+                Console.WriteLine(datas[i][0, 0, 0] + " " + datas[i][0, 0, 1] + " " + datas[i][0, 0, 2] + " ");
+                data_an.Add(new MCvScalar(datas[i][0, 0, 0],datas[i][0, 0, 1],datas[i][0, 0, 2]));
+            }
+
+            var ps = UtilOpenCV.Mcvscalar_to_mat(data_an.ToArray());
+            MCvScalar mean = new MCvScalar(0, 0, 0);
+            MCvScalar std_dev = new MCvScalar(0, 0, 0);
+            CvInvoke.MeanStdDev(ps,ref mean, ref std_dev);
+            Console.WriteLine(mean.V0 + " " + std_dev.V0);
+            Console.WriteLine(mean.V1 + " " + std_dev.V1);
+            Console.WriteLine(mean.V2 + " " + std_dev.V2);*/
+
+
+            var w = datas[0].GetLength(0);
+            var h = datas[0].GetLength(1);
+            var im = new Image<Bgr, byte>(w, h);
+            var x_sh = 0;
+            var data_pix = new double[datas.Count, 3];
+            int dxy = 2;
+            for (int x = 0; x < w; x+= dxy)
+            {
+               
+                var y_sh = 0;
+                for (int y = 0; y < h; y+= dxy)
+                {
+                    
+                    
+
+                    for (int i = 0; i < datas.Count; i++)
+                    {
+                        data_pix[i, 0] = datas[i][x, y, 0];
+                        data_pix[i, 1] = datas[i][x, y, 1];
+                        data_pix[i, 2] = datas[i][x, y, 2];
+                        //Console.WriteLine(data_pix_r[i].V0);
+                    }
+                    
+                    MCvScalar mean = new MCvScalar();
+                    MCvScalar std_dev = new MCvScalar();
+                    (mean, std_dev) = UtilOpenCV.std_dev_3ch(data_pix);
+
+                    im.Data[y_sh, x_sh, 0] = (byte)std_dev.V0;
+                    im.Data[y_sh, x_sh, 1] = (byte)std_dev.V1;
+                    im.Data[y_sh, x_sh, 2] = (byte)std_dev.V2;
+
+                    //Console.WriteLine(std_dev.V0 + " " + std_dev.V1 + " " + std_dev.V2);
+                    y_sh++;
+                }
+                GC.Collect();
+                Console.WriteLine(x + "/" + w);
+                x_sh++;
+            }
+              im = im * 30;
+              var mat_rgb = im.Mat.Split();
+              CvInvoke.Imshow("b", mat_rgb[0]);
+              CvInvoke.Imshow("g", mat_rgb[1]);
+              CvInvoke.Imshow("r", mat_rgb[2]);
+            
+        }
+        
+
+
         static string[] get_video_path(int ind, string filepath)//[ video, enc]
         {
             var files = Directory.GetFiles("cam" + ind + "\\" + filepath);
