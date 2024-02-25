@@ -309,11 +309,9 @@ namespace opengl3
             }
             return mass_2;
         }
-        static VectorOfVectorOfPoint sameContours(VectorOfVectorOfPoint contours)
+        public static VectorOfVectorOfPoint sameContours(VectorOfVectorOfPoint contours,double err_form= 0.095, double err_area= 0.85)
         {
             var clasters = new List<VectorOfVectorOfPoint>();
-            var err = 0.095;//0.065
-            var err_area = 0.85;//0.65
                                 // Console.WriteLine("------------------------");
             for (int i=0; i< contours.Size;i++)
             {
@@ -332,7 +330,7 @@ namespace opengl3
                         var area_clast = areaAver(clasters[j]);
 
                         //Console.WriteLine(" i: " + i + " j: " + j + " area_clast: " + area_clast + " perim_clast: " + perim_clast + " area_cur: " + area_cur + " perim_cur: " + perim_cur);
-                        if (Math.Abs(sumHuMom(contours[i]) - HuMomAver(clasters[j])) < HuMomAver(clasters[j])*err &&
+                        if (Math.Abs(sumHuMom(contours[i]) - HuMomAver(clasters[j])) < HuMomAver(clasters[j])* err_form &&
                             Math.Abs(area_cur - area_clast) < area_clast * err_area)
                         {
                             clasters[j].Push(contours[i]);
@@ -442,7 +440,7 @@ namespace opengl3
             var p = new System.Drawing.PointF((float)cX, (float)cY);
             return p;
         }
-        static System.Drawing.PointF[] findCentres(VectorOfVectorOfPoint contours)
+        public static System.Drawing.PointF[] findCentres(VectorOfVectorOfPoint contours)
         {
             if (contours == null)
             {

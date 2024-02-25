@@ -304,10 +304,11 @@ namespace opengl3
             fr.dateTime = File.GetCreationTime(filepath1);
             return fr;
         }
-        static string[] sortByDate(string[] files)
+        public static string[] sortByDate(string[] files)
         {
+            
             var sortFiles = from f in files
-                            orderby File.GetCreationTime(f)
+                            orderby File.GetLastWriteTime(f)
                             select f;
             return sortFiles.ToArray();
         }

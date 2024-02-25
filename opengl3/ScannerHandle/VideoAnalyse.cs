@@ -233,15 +233,15 @@ namespace opengl3
                         var im_max = im_max_buff_list[buff_len - 1] - im_max_buff_list[buff_len - buff_diff];
                         var im_max_prev = im_max_buff_list[buff_len - 1 - 1] - im_max_buff_list[buff_len - buff_diff - 1];
 
-                        //var im_min2 = im_min_buff_list[buff_len - 1];
+                        var im_min2 = im_min_buff_list[buff_len - 1];
 
-                        //ar im_max2 = im_max_buff_list[buff_len - 1];
+                        var im_max2 = im_max_buff_list[buff_len - 1];
 
                         if (cam_min == 2)
                         {
                             CvInvoke.Rotate(im_min, im_min, RotateFlags.Rotate180);
 
-                            //CvInvoke.Rotate(im_min, im_min, RotateFlags.Rotate180);
+                            CvInvoke.Rotate(im_min, im_min, RotateFlags.Rotate180);
 
                         }
                         if (cam_max == 2)
@@ -249,8 +249,8 @@ namespace opengl3
                             CvInvoke.Rotate(im_max, im_max, RotateFlags.Rotate180);
                             CvInvoke.Rotate(im_max_prev, im_max_prev, RotateFlags.Rotate180);
 
-                            //CvInvoke.Rotate(im_min2, im_min2, RotateFlags.Rotate180);
-                            //CvInvoke.Rotate(im_max2, im_max2, RotateFlags.Rotate180);
+                            CvInvoke.Rotate(im_min2, im_min2, RotateFlags.Rotate180);
+                            CvInvoke.Rotate(im_max2, im_max2, RotateFlags.Rotate180);
                         }
                         //Console.WriteLine(f1 + " " + f2);
 
@@ -266,9 +266,9 @@ namespace opengl3
                                 frame_d.stereo = true;
                                 frames_show.Add(frame_d);
 
-                                /*frame_d = new Frame(im_min2.Clone(), im_max2.Clone(), videoframe_count.ToString(), FrameType.LasDif);
+                                frame_d = new Frame(im_min2.Clone(), im_max2.Clone(), videoframe_count.ToString(), FrameType.LasDif);
                                 frame_d.stereo = true;
-                                frames_show.Add(frame_d);*/
+                                frames_show.Add(frame_d);
                             }
 
                             scanner.addPointsStereoLas_2d_sync(new Mat[] { im_min, im_max, im_max_prev }, k, cam_min, cam_max, config);

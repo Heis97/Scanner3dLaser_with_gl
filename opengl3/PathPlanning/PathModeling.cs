@@ -34,14 +34,14 @@ namespace PathPlanning
         {
             path = path.fill_gaps(trajParams.div_step);
             path = path.gauss(2);
-            graphicGL.remove_buff_gl_id("prog");
-            graphicGL.addLineMeshTraj(path.to_ps().ToArray(), Color3d_GL.red(), "prog");
+           // graphicGL.remove_buff_gl_id("prog");
+            //graphicGL.addLineMeshTraj(path.to_ps().ToArray(), Color3d_GL.red(), "prog");
             var path_c = comp_whv(path, trajParams);
             TrajectoryPath path_g;
             List<List<Point3d_GL>> ns;
             (path_g,ns) = modeling_gravity_3d(path_c, surf, graphicGL);
-            graphicGL.remove_buff_gl_id("prog_grav");
-            graphicGL.addLineMeshTraj(path_g.to_ps().ToArray(), Color3d_GL.purple(), "prog_grav");
+           // graphicGL.remove_buff_gl_id("prog_grav");
+           // graphicGL.addLineMeshTraj(path_g.to_ps().ToArray(), Color3d_GL.purple(), "prog_grav");
             var model = path_to_model_3d(path_g.to_ps(),ns);
 
 

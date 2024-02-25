@@ -87,11 +87,11 @@ namespace opengl3
             }
             Console.WriteLine(" ");
         }
-        public static void t(double[] matr)
+        public static void t(double[] matr,string del = " ")
         {
             for (int i = 0; i < matr.Length; i++)
             {
-                Console.Write(matr[i] + " ");
+                Console.Write(matr[i] + del);
             }
             Console.WriteLine(" ");
         }

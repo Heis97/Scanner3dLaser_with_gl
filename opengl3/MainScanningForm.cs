@@ -24,7 +24,8 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
-        
+        int ks_i = 0;
+        int ws_i = 0;
         bool scan_dist = false;
         bool scan_sync = false;
         int port_tcp = 30005;
@@ -182,10 +183,14 @@ namespace opengl3
             //
             //test_detect_spher();
             // test_matr();
+            //comp_pores_ext("test_pores.png");
+            // comp_pores_ext("test_pores_2.png");
 
-
-            VideoAnalyse.noise_analyse("noise.avi");
-
+            //comp_pores_ext_folder("hydro_mod");
+            //VideoAnalyse.noise_analyse("noise.avi");
+            //roi_for_ims("delt_ims");
+           // var im1 = new Mat("roi\\im2_149.png");
+           // get_x_line_gray(im1, im1.Height / 2);
         }
         void comp_pores(string path)
         {
@@ -228,12 +233,120 @@ namespace opengl3
             CvInvoke.Imshow(path, mat2);
             CvInvoke.Imshow(path, im1_c);
         }
+        void roi_for_ims(string path)
+        {
+            var files = Directory.GetFiles(path);
+            var roi = new Rectangle(222,362, 912, 149);
+            for(int i = 0; i < files.Length; i++)
+            {
+                var mat = new Mat(files[i]);
+                var name = Path.GetFileNameWithoutExtension(files[i]);
+                var mat_roi = new Mat(mat, roi);
+                Directory.CreateDirectory("roi");
+                mat_roi.Save("roi\\" + name + ".png");
+            }
+        }
+        void comp_pores_ext_folder(string path)
+        {
+            var ks = new double[] { 0.25, 0.5, 0.75 };
+            var ws = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0, 1.2 };
+
+            var files = FrameLoader.sortByDate( Directory.GetFiles(path));
+
+            var kws_pores = new double[ks.Length, ws.Length];
+
+            var kws_dev = new double[ks.Length, ws.Length];
+
+            for (int i=0; i<files.Length;i++)
+            {
+               // Console.WriteLine( File.GetLastWriteTime(files[i]));
+                var p =  comp_pores_ext(files[i]);
+                kws_pores[ks_i, ws_i] = p.x;
+                kws_dev[ks_i, ws_i] = p.y;
+                Console.WriteLine(files[i] + " " + p);
+                ws_i++;
+                if (ws_i >= ws.Length)
+                {
+                    ks_i++;
+                    ws_i = 0;
+                }
+                if (ks_i >= ks.Length)
+                {
+                    ks_i = 0;
+                }
+            }
+
+
+            for(int w_i = 0; w_i<ws.Length;w_i++)
+            {
+                Console.WriteLine(kws_pores[0, w_i] + " " + kws_pores[1, w_i] + " " + kws_pores[2, w_i]);
+            }
+            Console.WriteLine("____");
+            for (int w_i = 0; w_i < ws.Length; w_i++)
+            {
+                Console.WriteLine(kws_dev[0, w_i] + " " + kws_dev[1, w_i] + " " + kws_dev[2, w_i]);
+            }
+
+
+        }
+        Point3d_GL comp_pores_ext(string path)
+        {
+            var im1 = new Mat(path);
+            var size = new Size(400, 600);
+            im1 = new Mat(im1, new Rectangle(360, 270,size.Width,size.Height ));
+            var im1_c = im1.Clone();
+            CvInvoke.CvtColor(im1, im1, ColorConversion.Bgr2Gray);
+            var mat2 = new Mat();       
+            CvInvoke.Threshold(im1, mat2, 50, 255, ThresholdType.BinaryInv);
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            Mat hier = new Mat();
+            CvInvoke.FindContours(mat2, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
+            var conts = FindCircles.sameContours(contours,0.9,9);
+            CvInvoke.DrawContours(im1_c, conts, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
+            //CvInvoke.Imshow(path, im1_c);
+           //CvInvoke.WaitKey();
+            //CvInvoke.Imshow(path, im1_c);
+            return  analyse_contours(conts,size);
+        }
+
+        Point3d_GL analyse_contours(VectorOfVectorOfPoint conts,Size size)
+        {
+            var ps = Point3d_GL.toPoints( FindCircles.findCentres(conts));
+            var ps_or = Point3d_GL.order_points(ps);
+            var ps_dist = Point3d_GL.dist_betw_ps(ps_or);
+            //prin.t(ps_dist,"\n");
+
+            var m_s_dist = UtilOpenCV.mean_std_dev(ps_dist);
+            var mean_dist = m_s_dist.V0;
+            var dev_dist = m_s_dist.V1;
+            var w_i = (size.Width / mean_dist);
+            var h_i = (size.Height / mean_dist);
+            var len_ps_all = w_i*h_i;
+            var pores = ps.Length / (double)len_ps_all;
+
+            var areas = new double[ps.Length];
+            for (int i = 0; i < conts.Size; i++)
+            {
+                var area = CvInvoke.ContourArea(conts[i]);
+                areas[i] = area;
+            }
+            var m_s_area = UtilOpenCV.mean_std_dev(areas);
+            var mean_area = m_s_area.V0;
+            var dev_area = m_s_area.V1;
+            if (pores > 1) pores = 1;
+            return new Point3d_GL(pores, dev_area / mean_area);
+        }
+
+        
+
         void get_x_line_gray(Mat mat,int y)
         {
             var im = mat.ToImage<Gray, byte>();
-            for(int x =0; x<im.Width;x++)
+            var im2 = im.Clone();
+            CvInvoke.GaussianBlur(im,im2, new Size(scanner_config.gauss_kern, scanner_config.gauss_kern), -1);
+            for (int x =0; x<im.Width;x++)
             {
-                Console.WriteLine(x + " " + im.Data[y, x,0]);
+                Console.WriteLine(x + " " + im.Data[y, x,0]+" "+ im2.Data[y, x, 0]);
             }
         }
 
@@ -1272,6 +1385,7 @@ namespace opengl3
             //test_expand();
             //test_merge_surf();
             //test_comp_color();
+            
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -2716,24 +2830,64 @@ namespace opengl3
 
         private void but_hydro_model_grav_Click(object sender, EventArgs e)//modelir_hydro!!!!!
         {
+
+            comp_hydro_screen();
+        }
+
+        void comp_hydro_screen()
+        {
+            var ks = new double[] { 0.25, 0.5, 0.75 };
+            var ws = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0, 1.2 };
+
+            var dz = ks[ks_i] * ws[ws_i];
+            var step = ws[ws_i] * 2.5;
+
+            patt_config.step = step;
+            traj_config.Line_width = ws[ws_i];
+            traj_config.dz = dz;
+
+
+            propGrid_pattern.SelectedObject = patt_config;
+            propGrid_traj.SelectedObject = traj_config;
+
+            propGrid_pattern.Update();
+            propGrid_traj.Update();
+            comp_hydro();
+            Console.WriteLine(ks[ks_i] + " " + ws[ws_i]);
+            ws_i++;
+            if(ws_i>=ws.Length)
+            {
+                ks_i++;
+                ws_i = 0;
+            }
+            if (ks_i >=ks.Length)
+            {
+                ks_i = 0;
+            }
+
+
+          
+        }
+        void comp_hydro()
+        {
             var contours = new List<List<Point3d_GL>>();
             var surfaces = new List<Polygon3d_GL[]>();
             var r = patt_config.r;
 
-            var name_scan = "flat_dirt2.stl";
+            var name_scan = "scan_virt_flat.stl";
             Polygon3d_GL[] surf_scan;
             bool load_scan = true;
-           // bool selected_scan
-            if(load_scan)
+            // bool selected_scan
+            if (load_scan)
             {
                 GL1.remove_buff_gl_id(name_scan);
                 var model = new Model3d(name_scan);
-                name_scan = GL1.addMesh(model.mesh, PrimitiveType.Triangles, null, name_scan);
+                //name_scan = GL1.addMesh(model.mesh, PrimitiveType.Triangles, null, name_scan);
                 surf_scan = model.pols;
 
 
                 //var selected_obj = selected_object(); if (selected_obj == null) return;
-                // surf_scan = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
+                //surf_scan = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
             }
             else
             {
@@ -2744,11 +2898,11 @@ namespace opengl3
 
             var flat_xy = "flat_xy_h";
             GL1.remove_buff_gl_id(flat_xy);
-            flat_xy = GL1.addFlat3d_XY_zero(0, null, flat_xy, 60);
+            flat_xy = GL1.addFlat3d_XY_zero(0, Color3d_GL.black(), flat_xy, 60);
             var surf = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[flat_xy].vertex_buffer_data);
-            GL1.remove_buff_gl_id(flat_xy);
+            //GL1.remove_buff_gl_id(flat_xy);
 
-            var flat_proj = surf;
+            var flat_proj = surf_scan;
 
             for (int i = 0; i < traj_config.layers; i++)
             {
@@ -2758,26 +2912,24 @@ namespace opengl3
                 surfaces.Add(surf_scan_cur);
             }
             ///var traj_path = PathPlanner.gen_traj_2d(contours, traj_config, patt_config, GL1);
-            
 
 
 
-            var traj_path = PathPlanner.generate_3d_traj_diff_surf_test(surfaces, contours,traj_config, patt_config, GL1);
+
+            var traj_path = PathPlanner.generate_3d_traj_diff_surf_test(surfaces, contours, traj_config, patt_config, GL1);
 
             if (traj_path == null) return;
             traj_path.translate(new Point3d_GL(traj_config.Off_x, traj_config.Off_y, traj_config.Off_z));
 
-            var hydro = PathModeling.modeling_print_path_3d(surf_scan, traj_path, traj_config, GL1);
+            var hydro = PathModeling.modeling_print_path_3d(surf, traj_path, traj_config, GL1);
 
             GL1.remove_buff_gl_id("model_traj");
             GL1.addMesh(Polygon3d_GL.toMesh(hydro)[0], PrimitiveType.Triangles, Color3d_GL.white(), "model_traj");
 
-            //GL1.remove_buff_gl_id("surf");
-            // GL1.addMesh(Polygon3d_GL.toMesh(surf)[0], PrimitiveType.Triangles, Color3d_GL.white(), "surf");
-
+            GL1.remove_buff_gl_id("surf");
+             GL1.addMesh(Polygon3d_GL.toMesh(surf)[0], PrimitiveType.Triangles, Color3d_GL.white(), "surf");
         }
 
-        
 
         void makePhoto(float[] pos, int count, string[] folders, ImageBox[] imageBoxes, TCPclient con)
         {

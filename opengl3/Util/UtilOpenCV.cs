@@ -2121,7 +2121,7 @@ namespace opengl3
             CvInvoke.MeanStdDev(ps, ref mean, ref std_dev);
             return new MCvScalar(mean.V0, std_dev.V0);
         }
-        static MCvScalar mean_std_dev(double[] ps_pix)
+        public static MCvScalar mean_std_dev(double[] ps_pix)
         {
             var ps = data1ch_to_mat(ps_pix);
 
