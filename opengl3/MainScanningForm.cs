@@ -157,7 +157,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-            //load_camers_v2();
+            load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -737,11 +737,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 10f;//6.2273f
+            markSize = 9.6f;//6.2273f//10f
             chess_size = new Size(6, 7);//new Size(10, 11);
-            var frms_1 = FrameLoader.loadImages_diff(@"cam2\virt_cal_15-2_1", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cal_sq_cam_2602", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("virt_cam_conf_virt_cal_2102_err.txt");            
+            cam1.save_camera("sq_cam_2602_1.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* markSize = 6.2273f;//6.2273f

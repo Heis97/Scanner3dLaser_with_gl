@@ -2451,7 +2451,6 @@ namespace opengl3
             this.tabMain.Controls.Add(this.groupBox2);
             this.tabMain.Controls.Add(this.tabControl1);
             this.tabMain.Controls.Add(this.lab_fps_cam1);
-            this.tabMain.Controls.Add(this.label_timer);
             this.tabMain.Controls.Add(this.but_load_scan);
             this.tabMain.Controls.Add(this.groupBox1);
             this.tabMain.Controls.Add(this.nameC2);
@@ -2459,6 +2458,7 @@ namespace opengl3
             this.tabMain.Controls.Add(this.nameA2);
             this.tabMain.Controls.Add(this.nameX);
             this.tabMain.Controls.Add(this.nameY);
+            this.tabMain.Controls.Add(this.label_timer);
             this.tabMain.Controls.Add(this.nameC_in);
             this.tabMain.Controls.Add(this.nameZ);
             this.tabMain.Controls.Add(this.nameB_in);
@@ -3419,12 +3419,11 @@ namespace opengl3
             // 
             this.label_timer.AutoSize = true;
             this.label_timer.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
-            this.label_timer.Location = new System.Drawing.Point(3, 584);
+            this.label_timer.Location = new System.Drawing.Point(244, 483);
             this.label_timer.Name = "label_timer";
             this.label_timer.Size = new System.Drawing.Size(118, 37);
             this.label_timer.TabIndex = 131;
             this.label_timer.Text = "label19";
-            this.label_timer.Visible = false;
             // 
             // but_load_scan
             // 
