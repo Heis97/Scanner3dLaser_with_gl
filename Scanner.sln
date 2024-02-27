@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3dScanning", "opengl3\3dScanning.csproj", "{04AC0D58-47DA-4FF4-895A-166375C6BA66}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "InstallerGUI", "InstallerGUI\InstallerGUI.vdproj", "{74EB06E4-A814-4088-9E53-2F6085B761FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,12 @@ Global
 		{04AC0D58-47DA-4FF4-895A-166375C6BA66}.Release|x64.Build.0 = Release|x64
 		{04AC0D58-47DA-4FF4-895A-166375C6BA66}.Release|x86.ActiveCfg = Release|Any CPU
 		{04AC0D58-47DA-4FF4-895A-166375C6BA66}.Release|x86.Build.0 = Release|Any CPU
+		{74EB06E4-A814-4088-9E53-2F6085B761FD}.Debug|Any CPU.ActiveCfg = Debug
+		{74EB06E4-A814-4088-9E53-2F6085B761FD}.Debug|x64.ActiveCfg = Debug
+		{74EB06E4-A814-4088-9E53-2F6085B761FD}.Debug|x86.ActiveCfg = Debug
+		{74EB06E4-A814-4088-9E53-2F6085B761FD}.Release|Any CPU.ActiveCfg = Release
+		{74EB06E4-A814-4088-9E53-2F6085B761FD}.Release|x64.ActiveCfg = Release
+		{74EB06E4-A814-4088-9E53-2F6085B761FD}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

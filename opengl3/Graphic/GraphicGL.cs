@@ -2406,10 +2406,19 @@ namespace opengl3
    
         string[] assembCode(string[] paths)
         {
-            var text = "";
-            foreach (var path in paths)
-                text += File.ReadAllText(path);
-            return new string[] { text };
+            try
+            {
+                var text = "";
+                foreach (var path in paths)
+                    text += File.ReadAllText(path);
+                return new string[] { text };
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+            
         }
         void debugShaderComp(uint ShaderName)
         {

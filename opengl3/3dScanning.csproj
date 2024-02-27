@@ -222,48 +222,48 @@
     <None Include="Connection\DevicesArduino\arduino-timer-api-master\LICENSE" />
     <None Include="Connection\DevicesArduino\arduino-timer-api-master\README.md" />
     <None Include="Connection\DevicesArduino\LaserScanner070422_nano\LaserScanner070422_nano.ino" />
-    <None Include="Graphic\Shaders\Comp\CompSh_cross_mesh.glsl">
+    <Content Include="Graphic\Shaders\Comp\CompSh_cross_mesh.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders\Comp\CompSh_cross_stereo_f.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\CompSh_cross_stereo_f.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders\Comp\CompSh_intersec_two_mesh.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\CompSh_intersec_two_mesh.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders\Comp\slice_test.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\slice_test.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders\Comp\slice_shader_one_0704.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\slice_shader_one_0704.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders\Comp\slice_shader_one.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\slice_shader_one.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="Graphic\Shaders\Geom\slice_shader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Graphic\Shaders\Geom\slice_shader_one.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Graphic\Shaders\Comp\face_geom_leg.glsl">
+    <Content Include="Graphic\Shaders\Comp\face_geom_leg.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders\Comp\CompSh.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\CompSh.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders\Comp\CompSh_cross_stereo_all_f.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\CompSh_cross_stereo_all_f.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders\Comp\CompSh_cross_stereo_all.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\CompSh_cross_stereo_all.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders\Comp\CompSh_cross_stereo.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\CompSh_cross_stereo.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders\Comp\CompSh_Test1.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\CompSh_Test1.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="Graphic\Shaders_face\Comp\CompSh.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -273,48 +273,48 @@
     <None Include="Graphic\Shaders_face\Comp\CompSh_Test1.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Graphic\Shaders_face\Frag\FragmSh_light_v3.glsl">
+    <Content Include="Graphic\Shaders_face\Frag\FragmSh_light_v3.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Frag\FragmSh_light_v2.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Frag\FragmSh_light_v2.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Frag\FragmSh.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Frag\FragmSh.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Frag\FragmSh_Simple.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Frag\FragmSh_Simple.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Frag\TestSh.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Frag\TestSh.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Geom\GeomSh_Lines.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Geom\GeomSh_Lines.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Geom\GeomSh_Points.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Geom\GeomSh_Points.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Geom\GeomSh_Triangles_v3.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Geom\GeomSh_Triangles_v3.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Geom\GeomSh_Triangles_v2.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Geom\GeomSh_Triangles_v2.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Vert\TestSh.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Vert\TestSh.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Vert\VertexSh.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Vert\VertexSh.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Vert\VertexSh_Models.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Vert\VertexSh_Models.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Vert\VertexSh_ModelsOne.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Vert\VertexSh_ModelsOne.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Graphic\Shaders_face\Vert\VertexSh_Static.glsl">
+    </Content>
+    <Content Include="Graphic\Shaders_face\Vert\VertexSh_Static.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="Properties\DataSources\GraphicGL.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
