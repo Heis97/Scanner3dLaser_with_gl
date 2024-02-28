@@ -41,6 +41,7 @@ namespace opengl3
         List<Matrix<double>> rob_traj = null;
         Point3d_GL[] cont_traj = null;
         ImageBox[] imb_base = null;
+        ImageBox[] imb_main = null;
         FrameType imProcType = FrameType.Test;
         LaserLine laserLine;
         DeviceMarlin linearPlatf;
@@ -62,9 +63,9 @@ namespace opengl3
         // private Size cameraSize = new Size(1280, 960);
         private Size cameraSize = new Size(1184, 656);
         // private Size cameraSize = new Size(1184, 656);
-         //private Size cameraSize = new Size(1024, 576);
+        //private Size cameraSize = new Size(1024, 576);
         //private Size cameraSize = new Size(1920, 1080);
-         //private Size cameraSize = new Size(640, 480);
+        //private Size cameraSize = new Size(640, 480);
         public GraphicGL GL1 = new GraphicGL();
         private VideoCapture myCapture1 = null;
         VideoWriter writer = null;
@@ -80,6 +81,8 @@ namespace opengl3
         private float[] normal_buffer_data = { 0.0f };
         private float[] color_buffer_data = { 0.0f };
         volatile List<IntPtr> camera_ind = new List<IntPtr>();
+        volatile IntPtr[] camera_ind_ptr = new IntPtr[]{ (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0 };
+        volatile int[] imb_ind_cam = new int[] { 0,0,0,0,0,0,0 };
         volatile List<long> camera_frame_time = new List<long>();
         List<float[]> im = new List<float[]>();
         public List<Mat> Ims;
@@ -89,7 +92,7 @@ namespace opengl3
         private List<Frame> frames;
 
         int res_min = 256 * 1;
-        volatile Mat[] mat_global = new Mat[3];
+        volatile Mat[] mat_global = new Mat[6];
         Mat matr = new Mat();
         int flag1 = 1;
         int flag2 = 1;
@@ -102,7 +105,7 @@ namespace opengl3
 
         volatile int[] videoframe_counts = new int[5] { -1, -1,-1,-1,-1 };
 
-        volatile int[] videoframe_counts_stop = new int[5] { 0, 0,0,0,0};
+        volatile int[] videoframe_counts_stop = new int[5] { int.MaxValue , int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue };
 
         double minArea = 1;
         double maxArea = 10;
@@ -141,7 +144,6 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-
             //comp_pores("rats\\2_1.png");
             //comp_pores("rats\\2_2.png");
             //comp_pores("rats\\2_3.png");
@@ -189,8 +191,8 @@ namespace opengl3
             //comp_pores_ext_folder("hydro_mod");
             //VideoAnalyse.noise_analyse("noise.avi");
             //roi_for_ims("delt_ims");
-           // var im1 = new Mat("roi\\im2_149.png");
-           // get_x_line_gray(im1, im1.Height / 2);
+            // var im1 = new Mat("roi\\im2_149.png");
+            // get_x_line_gray(im1, im1.Height / 2);
         }
         void comp_pores(string path)
         {
@@ -396,10 +398,11 @@ namespace opengl3
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "Ничего" });
 
             cameraDistortionCoeffs_dist[0, 0] = -0.3;
+            for(int i=0; i<mat_global.Length;i++)
+            {
+                mat_global[i] = new Mat();
+            }
 
-            mat_global[0] = new Mat();
-            mat_global[1] = new Mat();
-            mat_global[2] = new Mat();
 
             if (comboImages.Items.Count > 0)
             {
@@ -417,6 +420,7 @@ namespace opengl3
             patt = UtilOpenCV.generateImage_chessboard(10, 11, 200);
             #endregion
             imb_base = new ImageBox[] { imBox_base_1, imBox_base_2 };
+            imb_main = new ImageBox[] { imageBox1, imageBox2 };
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
             red_c = 252;
@@ -3543,52 +3547,7 @@ namespace opengl3
         }
 
    
-        void drawCameras(VideoCapture cap)
-        {
-            if (camera_ind != null)
-            {
-
-                if ((camera_ind.Count > 0) && (cap.Ptr == camera_ind[0]))
-                {
-                    /*var mat = new Mat();
-                    cap.Retrieve(mat);
-                    imProcess(mat, 1);*/
-                    
-                    cap.Retrieve(mat_global[0]);
-                    
-                   // CvInvoke.Imshow("im1", mat_global[0]);
-                    camera_frame_time.Add(DateTime.Now.Ticks / 10000);
-                    int fps_c = 100;
-                    if(camera_frame_time.Count> fps_c)
-                    {
-                        camera_frame_time.RemoveAt(0);
-                    }
-                    if(camera_frame_time.Count== fps_c)
-                    {
-                        var dt = (int)(camera_frame_time[camera_frame_time.Count - 1] - camera_frame_time[0]);
-                        fps1=Math.Round((double)fps_c*1000 / dt,1);
-                    }
-                    
-                    imageBox1.Image = mat_global[0];  
-                    
-                    imProcess(mat_global[0],1);
-                   
-
-                }
-                else if ((camera_ind.Count > 1) && (cap.Ptr == camera_ind[1]))
-                {
-                    /*var mat = new Mat();
-                    cap.Retrieve(mat);
-                    imProcess(mat, 2);*/
-                    cap.Retrieve(mat_global[1]);                                      
-                    imageBox2.Image = mat_global[1];
-
-                    imProcess(mat_global[1],2);
-                    
-                    //imBox_base.Image = stereoProc(mat_global[0], mat_global[1]);
-                }
-            }
-        }
+        
          
         void imProcess(Mat mat,int ind)
         {
@@ -3781,8 +3740,197 @@ namespace opengl3
             capture.ImageGrabbed += capturingVideo;
             capture.Start();
         }
+        void drawCameras(VideoCapture cap)
+        {
+            if (camera_ind != null)
+            {
+
+                if ((camera_ind.Count > 0) && (cap.Ptr == camera_ind[0]))
+                {
+                    /*var mat = new Mat();
+                    cap.Retrieve(mat);
+                    imProcess(mat, 1);*/
+
+                    cap.Retrieve(mat_global[0]);
+
+                    // CvInvoke.Imshow("im1", mat_global[0]);
+                    camera_frame_time.Add(DateTime.Now.Ticks / 10000);
+                    int fps_c = 100;
+                    if (camera_frame_time.Count > fps_c)
+                    {
+                        camera_frame_time.RemoveAt(0);
+                    }
+                    if (camera_frame_time.Count == fps_c)
+                    {
+                        var dt = (int)(camera_frame_time[camera_frame_time.Count - 1] - camera_frame_time[0]);
+                        fps1 = Math.Round((double)fps_c * 1000 / dt, 1);
+                    }
+
+                    imageBox1.Image = mat_global[0];
+
+                    imProcess(mat_global[0], 1);
 
 
+                }
+                else if ((camera_ind.Count > 1) && (cap.Ptr == camera_ind[1]))
+                {
+                    /*var mat = new Mat();
+                    cap.Retrieve(mat);
+                    imProcess(mat, 2);*/
+                    cap.Retrieve(mat_global[1]);
+                    imageBox2.Image = mat_global[1];
+
+                    imProcess(mat_global[1], 2);
+
+                    //imBox_base.Image = stereoProc(mat_global[0], mat_global[1]);
+                }
+            }
+        }
+
+        //--------------------------------------------------------
+        private void videoStart_sam(int number)
+        {
+            var capture = new VideoCapture(number);
+
+            //capture.SetCaptureProperty(CapProp.
+            capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
+
+            // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
+            //capture.SetCaptureProperty(CapProp.Exposure, -4);
+            //capture.SetCaptureProperty(CapProp.Fps, 60);
+            Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight) + " " + capture.GetCaptureProperty(CapProp.Fps));
+
+            //capture.SetCaptureProperty(CapProp.Contrast, 30);
+            camera_ind[number] = capture.Ptr;
+            capture.ImageGrabbed += capturingVideo;
+            capture.Start();
+        }
+        void drawCameras_sam(VideoCapture cap)
+        {
+
+            var ind_cam = camera_ind.IndexOf(cap.Ptr);
+            cap.Retrieve(mat_global[ind_cam]);
+            
+
+            for (int i=0; i < imb_main.Length; i++)
+            {
+                if(ind_cam == imb_ind_cam[i])
+                {
+                    imb_main[i].Image = mat_global[ind_cam];
+                    imProcess(mat_global[ind_cam], i);
+                }
+            }
+        }
+
+        void comp_fps()
+        {
+            camera_frame_time.Add(DateTime.Now.Ticks / 10000);
+            int fps_c = 100;
+            if (camera_frame_time.Count > fps_c)
+            {
+                camera_frame_time.RemoveAt(0);
+            }
+            if (camera_frame_time.Count == fps_c)
+            {
+                var dt = (int)(camera_frame_time[camera_frame_time.Count - 1] - camera_frame_time[0]);
+                fps1 = Math.Round((double)fps_c * 1000 / dt, 1);
+            }
+        }
+        void imProcess_sam(Mat mat, int ind)
+        {
+
+            switch (imProcType)
+            {
+
+                case FrameType.Test:
+                    //laserLine?.offLaserSensor();
+                    //imb_base[ind-1].Image = mat;
+                    break;
+                case FrameType.MarkBoard:
+                    imb_base[ind - 1].Image = UtilOpenCV.drawChessboard(mat, chess_size, false, false, CalibCbType.FastCheck);
+                    break;
+                case FrameType.Undist:
+                    imb_base[ind - 1].Image = stereocam.remapCam(mat, ind);
+                    break;
+
+                case FrameType.LasLin://laser sensor
+                    try
+                    {
+                        var ps = Detection.detectLineSensor(mat);
+                        Console.Write(ps[0].X + " ");
+                        laserLine?.setLaserCur((int)(10 * ps[0].X));
+                        // Console.WriteLine((int)(10 * ps[0].X));
+                        CvInvoke.Line(mat, new Point(350, 0), new Point(350, mat.Width - 1), new MCvScalar(0, 255, 0));
+                        imb_base[ind - 1].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
+                        //Console.Write(laserLine?.reseav());
+
+                        //imb_base[ind - 1].Image = Detection.detectLineSensor(mat);
+                    }
+                    catch
+                    {
+
+                    }
+                    //imb_base[ind - 1].Image = Detection.detectLineSensor(mat);
+                    break;
+                case FrameType.Pattern:
+                    System.Drawing.PointF[] points = null;
+                    imb_base[ind - 1].Image = FindCircles.findCircles(mat, ref points, chess_size);
+                    break;
+                default:
+                    break;
+            }
+            if (videoframe_counts[ind - 1] == 0)
+            {
+                //initWrite(ind,cameraSize.Width,cameraSize.Height);
+                video_mats[ind - 1] = new List<Mat>();
+                videoframe_counts[ind - 1]++;
+            }
+
+            if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
+            {
+                // sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                //if (sb_enc == null) Console.WriteLine("NULL!");
+                sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append("\n");
+                //video_writer[ind - 1]?.Write(mat);
+                video_mats[ind - 1].Add(mat.Clone());
+                //var p = Detection.detectLineSensor(mat)[0];
+                //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
+                //sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append("\n");
+
+                videoframe_counts[ind - 1]++;
+            }
+            else
+            {
+                if (video_mats[ind - 1] != null) save_video(ind, cameraSize.Width, cameraSize.Height);
+                if (sb_enc != null)
+                {
+                    laserLine?.laserOff();
+
+                    string path = "cam1" + "\\" + box_scanFolder.Text + "\\enc.txt";
+                    box_scanFolder.BeginInvoke((MethodInvoker)(() => box_scanFolder.Text = scan_fold_name));
+                    textB_scan_path.BeginInvoke((MethodInvoker)(() => textB_scan_path.Text = scan_fold_path));
+                    using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
+                    {
+                        if (sb_enc != null)
+                        {
+                            sw.Write(sb_enc.ToString());
+                            sb_enc = null;
+                        }
+
+                    }
+
+                }
+
+
+                // video_writer[ind - 1]?.Dispose();
+            }
+
+        }
         #endregion
 
         #region Mesh
