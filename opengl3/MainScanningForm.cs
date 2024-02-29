@@ -82,7 +82,7 @@ namespace opengl3
         private float[] color_buffer_data = { 0.0f };
         volatile List<IntPtr> camera_ind = new List<IntPtr>();
         volatile IntPtr[] camera_ind_ptr = new IntPtr[]{ (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0 };
-        volatile int[] imb_ind_cam = new int[] { 0,0,0,0,0,0,0 };
+        volatile int[] imb_ind_cam = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
         volatile List<long> camera_frame_time = new List<long>();
         List<float[]> im = new List<float[]>();
         public List<Mat> Ims;
@@ -144,6 +144,7 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
+
             //comp_pores("rats\\2_1.png");
             //comp_pores("rats\\2_2.png");
             //comp_pores("rats\\2_3.png");
@@ -424,6 +425,8 @@ namespace opengl3
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
             red_c = 252;
+
+            
             //var model_mesh = STLmodel.parsingStl_GL4(@"curve_test_asc.STL");
             //GL1.addMesh(model_mesh, PrimitiveType.Triangles);
 
@@ -955,6 +958,7 @@ namespace opengl3
             catch
             {
             }
+
         }
 
         private void scan_resLaser(object obj)
@@ -1008,7 +1012,25 @@ namespace opengl3
                 sb_enc = new StringBuilder();
 
             }
+            if (typescan == 8)
+            {
+                var t_video = (double)counts / fps;
+                var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
+                laserLine?.laserOn();
+                Thread.Sleep(100);
+                laserLine?.setShvpVel(2000);
+                Thread.Sleep(200);
 
+                laserLine?.setShvpPos((int)p1_cur_scan.x);
+                Thread.Sleep(2000);
+                startWrite_sam(0, counts);
+                startWrite_sam(1, counts);
+                Console.WriteLine(v_laser + " v_las");
+                laserLine?.setShvpVel(v_laser);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                sb_enc = new StringBuilder();
+
+            }
             if (typescan == 4)
             {
                 
@@ -1264,6 +1286,44 @@ namespace opengl3
             return but1;
         }
 
+        Button addButton(Control control, string name, string ass_name , Size offset)
+        {
+            var but1 = new Button();
+            but1.Location = new Point(control.Location.X + offset.Width, control.Location.Y + offset.Height);
+            but1.Size = new Size(30, 30);
+            but1.AccessibleName = ass_name;
+            but1.Text = name;
+            return but1;
+        }
+
+        void addButsForControl(Control control, int count)
+        {
+            for(int i=0; i<count;i++)
+            {
+                var but = addButton(control, i.ToString(), control.AccessibleName, new Size(33 * i, 1));
+                but.Click += start_video_but;
+                //but.
+                tabMain.Controls.Add(but);
+            }
+        }
+
+        void start_video_but(object sender, EventArgs e)
+        {
+            var but = (Button)sender;
+            Console.WriteLine(but.Text + " " + but.AccessibleName);
+            var ind_cam = Convert.ToInt32(but.Text);
+            var ind_box = Convert.ToInt32(but.AccessibleName);
+            if(ind_cam<camera_ind_ptr.Length)
+            {
+                if (camera_ind_ptr[ind_cam] == (IntPtr)0)
+                {
+                    videoStart_sam(ind_cam);                   
+                }
+                imb_ind_cam[ind_box] = ind_cam;
+            }
+           
+
+        }
         void addButForMonitor(GraphicGL graphicGL, Size sizeControl, Point locatControl)
         {
             int ind = 0;
@@ -3545,10 +3605,13 @@ namespace opengl3
         {
             drawCameras((VideoCapture)sender);
         }
+        void capturingVideo_sam(object sender, EventArgs e)
+        {
+            drawCameras_sam((VideoCapture)sender);
+        }
 
-   
-        
-         
+
+
         void imProcess(Mat mat,int ind)
         {
 
@@ -3699,12 +3762,38 @@ namespace opengl3
             video_writer[ind - 1].Dispose();
 
         }
+
+        void save_video_sam(int ind, int w, int h)
+        {
+            int fcc = VideoWriter.Fourcc('h', '2', '6', '4'); //'M', 'J', 'P', 'G';'m', 'p', '4', 'v';'M', 'P', '4', 'V';'H', '2', '6', '4'
+
+            int fps = 30;
+            Directory.CreateDirectory("cam" + ind.ToString() + "\\" + box_scanFolder.Text);
+            string name = "cam" + ind.ToString() + "\\" + box_scanFolder.Text + "\\" + video_scan_name + ".mp4";
+            Console.WriteLine("wr" + " " + w + " " + h);
+            video_writer[ind ] = new VideoWriter(name, -1, fps, new Size(w, h), true);
+            var reswr = video_writer[ind ].Set(VideoWriter.WriterProperty.Quality, 100);
+            Console.WriteLine(reswr);
+            for (int i = 0; i < video_mats[ind].Count; i++)
+            {
+                video_writer[ind].Write(video_mats[ind][i]);
+                //var p = Detection.detectLineSensor(video_mats[ind - 1][i])[0];
+                //Console.WriteLine(ind + " "  + p);
+            }
+            video_mats[ind ] = null;
+            video_writer[ind ].Dispose();
+
+        }
         void startWrite(int ind,int count)
         {
             videoframe_counts_stop[ind - 1] = count;
             videoframe_counts[ind - 1] = 0;
         }
-
+        void startWrite_sam(int ind, int count)
+        {
+            videoframe_counts_stop[ind] = count;
+            videoframe_counts[ind] = 0;
+        }
         Mat stereoProc(Mat mat1, Mat mat2)
         {
 
@@ -3801,25 +3890,27 @@ namespace opengl3
             Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight) + " " + capture.GetCaptureProperty(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
-            camera_ind[number] = capture.Ptr;
-            capture.ImageGrabbed += capturingVideo;
+            camera_ind_ptr[number] = capture.Ptr;
+            capture.ImageGrabbed += capturingVideo_sam;
             capture.Start();
         }
         void drawCameras_sam(VideoCapture cap)
         {
 
-            var ind_cam = camera_ind.IndexOf(cap.Ptr);
-            cap.Retrieve(mat_global[ind_cam]);
-            
-
-            for (int i=0; i < imb_main.Length; i++)
+            var ind_cam = camera_ind_ptr.IndexOf(cap.Ptr);
+            if(ind_cam<10 && ind_cam>=0)
             {
-                if(ind_cam == imb_ind_cam[i])
+                cap.Retrieve(mat_global[ind_cam]);
+                for (int i = 0; i < imb_main.Length; i++)
                 {
-                    imb_main[i].Image = mat_global[ind_cam];
-                    imProcess(mat_global[ind_cam], i);
+                    if (ind_cam == imb_ind_cam[i])
+                    {
+                        imb_main[i].Image = mat_global[ind_cam];
+                        imProcess_sam(mat_global[ind_cam], i);
+                    }
                 }
             }
+            
         }
 
         void comp_fps()
@@ -3847,10 +3938,10 @@ namespace opengl3
                     //imb_base[ind-1].Image = mat;
                     break;
                 case FrameType.MarkBoard:
-                    imb_base[ind - 1].Image = UtilOpenCV.drawChessboard(mat, chess_size, false, false, CalibCbType.FastCheck);
+                    imb_base[ind].Image = UtilOpenCV.drawChessboard(mat, chess_size, false, false, CalibCbType.FastCheck);
                     break;
                 case FrameType.Undist:
-                    imb_base[ind - 1].Image = stereocam.remapCam(mat, ind);
+                    imb_base[ind].Image = stereocam.remapCam(mat, ind);
                     break;
 
                 case FrameType.LasLin://laser sensor
@@ -3861,7 +3952,7 @@ namespace opengl3
                         laserLine?.setLaserCur((int)(10 * ps[0].X));
                         // Console.WriteLine((int)(10 * ps[0].X));
                         CvInvoke.Line(mat, new Point(350, 0), new Point(350, mat.Width - 1), new MCvScalar(0, 255, 0));
-                        imb_base[ind - 1].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
+                        imb_base[ind].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
                         //Console.Write(laserLine?.reseav());
 
                         //imb_base[ind - 1].Image = Detection.detectLineSensor(mat);
@@ -3874,19 +3965,19 @@ namespace opengl3
                     break;
                 case FrameType.Pattern:
                     System.Drawing.PointF[] points = null;
-                    imb_base[ind - 1].Image = FindCircles.findCircles(mat, ref points, chess_size);
+                    imb_base[ind].Image = FindCircles.findCircles(mat, ref points, chess_size);
                     break;
                 default:
                     break;
             }
-            if (videoframe_counts[ind - 1] == 0)
+            if (videoframe_counts[ind] == 0)
             {
                 //initWrite(ind,cameraSize.Width,cameraSize.Height);
-                video_mats[ind - 1] = new List<Mat>();
-                videoframe_counts[ind - 1]++;
+                video_mats[ind] = new List<Mat>();
+                videoframe_counts[ind]++;
             }
 
-            if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
+            if (videoframe_counts[ind] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
             {
                 // sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 //if (sb_enc == null) Console.WriteLine("NULL!");
@@ -3894,7 +3985,7 @@ namespace opengl3
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("\n");
                 //video_writer[ind - 1]?.Write(mat);
-                video_mats[ind - 1].Add(mat.Clone());
+                video_mats[ind].Add(mat.Clone());
                 //var p = Detection.detectLineSensor(mat)[0];
                 //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
                 //sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
@@ -3902,11 +3993,11 @@ namespace opengl3
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 sb_enc?.Append("\n");
 
-                videoframe_counts[ind - 1]++;
+                videoframe_counts[ind]++;
             }
             else
             {
-                if (video_mats[ind - 1] != null) save_video(ind, cameraSize.Width, cameraSize.Height);
+                if (video_mats[ind] != null) save_video_sam(ind, cameraSize.Width, cameraSize.Height);
                 if (sb_enc != null)
                 {
                     laserLine?.laserOff();
@@ -5447,6 +5538,16 @@ namespace opengl3
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
             //resize();
+            for (int i = 0; i < imb_main.Length; i++)
+            {
+                imb_main[i].AccessibleName = i.ToString();
+                addButsForControl((Control)imb_main[i], 4);
+            }
+
+            for (int i = 0; i < imb_main.Length; i++)
+            {
+                imb_main[i].SendToBack();
+            }
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)

@@ -306,7 +306,6 @@ namespace opengl3
             this.but_laser_dest = new System.Windows.Forms.Button();
             this.textBox_laser_dest = new System.Windows.Forms.TextBox();
             this.lab_fps_cam1 = new System.Windows.Forms.Label();
-            this.label_timer = new System.Windows.Forms.Label();
             this.but_load_scan = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.but_setShvpVel = new System.Windows.Forms.Button();
@@ -329,6 +328,7 @@ namespace opengl3
             this.nameA2 = new System.Windows.Forms.TextBox();
             this.nameX = new System.Windows.Forms.TextBox();
             this.nameY = new System.Windows.Forms.TextBox();
+            this.label_timer = new System.Windows.Forms.Label();
             this.nameC_in = new System.Windows.Forms.TextBox();
             this.nameZ = new System.Windows.Forms.TextBox();
             this.nameB_in = new System.Windows.Forms.TextBox();
@@ -349,7 +349,6 @@ namespace opengl3
             this.but_robMod = new System.Windows.Forms.Button();
             this.label24 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
-            this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.butStop = new System.Windows.Forms.Button();
             this.label26 = new System.Windows.Forms.Label();
             this.butStart = new System.Windows.Forms.Button();
@@ -368,6 +367,7 @@ namespace opengl3
             this.comboVideo = new System.Windows.Forms.ComboBox();
             this.comboNumber = new System.Windows.Forms.ComboBox();
             this.imBox_base = new Emgu.CV.UI.ImageBox();
+            this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.but_resize = new System.Windows.Forms.Button();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -450,9 +450,9 @@ namespace opengl3
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.windowsTabs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -2479,7 +2479,6 @@ namespace opengl3
             this.tabMain.Controls.Add(this.but_robMod);
             this.tabMain.Controls.Add(this.label24);
             this.tabMain.Controls.Add(this.label25);
-            this.tabMain.Controls.Add(this.imageBox1);
             this.tabMain.Controls.Add(this.butStop);
             this.tabMain.Controls.Add(this.label26);
             this.tabMain.Controls.Add(this.butStart);
@@ -2498,6 +2497,7 @@ namespace opengl3
             this.tabMain.Controls.Add(this.comboVideo);
             this.tabMain.Controls.Add(this.comboNumber);
             this.tabMain.Controls.Add(this.imBox_base);
+            this.tabMain.Controls.Add(this.imageBox1);
             this.tabMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabMain.Location = new System.Drawing.Point(4, 22);
             this.tabMain.Name = "tabMain";
@@ -3410,20 +3410,10 @@ namespace opengl3
             // 
             // lab_fps_cam1
             // 
-            this.lab_fps_cam1.Location = new System.Drawing.Point(6, 9);
+            this.lab_fps_cam1.Location = new System.Drawing.Point(543, 3);
             this.lab_fps_cam1.Name = "lab_fps_cam1";
             this.lab_fps_cam1.Size = new System.Drawing.Size(100, 23);
             this.lab_fps_cam1.TabIndex = 0;
-            // 
-            // label_timer
-            // 
-            this.label_timer.AutoSize = true;
-            this.label_timer.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
-            this.label_timer.Location = new System.Drawing.Point(244, 483);
-            this.label_timer.Name = "label_timer";
-            this.label_timer.Size = new System.Drawing.Size(118, 37);
-            this.label_timer.TabIndex = 131;
-            this.label_timer.Text = "label19";
             // 
             // but_load_scan
             // 
@@ -3643,6 +3633,16 @@ namespace opengl3
             this.nameY.TabIndex = 12;
             this.nameY.Text = "100";
             // 
+            // label_timer
+            // 
+            this.label_timer.AutoSize = true;
+            this.label_timer.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
+            this.label_timer.Location = new System.Drawing.Point(244, 483);
+            this.label_timer.Name = "label_timer";
+            this.label_timer.Size = new System.Drawing.Size(118, 37);
+            this.label_timer.TabIndex = 131;
+            this.label_timer.Text = "label19";
+            // 
             // nameC_in
             // 
             this.nameC_in.Location = new System.Drawing.Point(1004, 493);
@@ -3813,14 +3813,6 @@ namespace opengl3
             this.label25.Size = new System.Drawing.Size(20, 20);
             this.label25.TabIndex = 90;
             this.label25.Text = "B";
-            // 
-            // imageBox1
-            // 
-            this.imageBox1.Location = new System.Drawing.Point(3, 3);
-            this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(640, 480);
-            this.imageBox1.TabIndex = 2;
-            this.imageBox1.TabStop = false;
             // 
             // butStop
             // 
@@ -3995,6 +3987,14 @@ namespace opengl3
             this.imBox_base.TabIndex = 94;
             this.imBox_base.TabStop = false;
             // 
+            // imageBox1
+            // 
+            this.imageBox1.Location = new System.Drawing.Point(3, 3);
+            this.imageBox1.Name = "imageBox1";
+            this.imageBox1.Size = new System.Drawing.Size(640, 480);
+            this.imageBox1.TabIndex = 2;
+            this.imageBox1.TabStop = false;
+            // 
             // but_resize
             // 
             this.but_resize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -4031,12 +4031,12 @@ namespace opengl3
             // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.ClientSize = new System.Drawing.Size(1370, 749);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
             this.Name = "MainScanningForm";
-            this.Text = "Form1";
+            this.Text = "In situ bioprinter";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.MainScanningForm_Load);
@@ -4131,9 +4131,9 @@ namespace opengl3
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             this.windowsTabs.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.ResumeLayout(false);
