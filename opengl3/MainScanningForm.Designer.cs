@@ -373,6 +373,8 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.but_start_scan_sam = new System.Windows.Forms.Button();
+            this.but_con_scan_sam = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2944,6 +2946,8 @@ namespace opengl3
             // 
             // tabPage11
             // 
+            this.tabPage11.Controls.Add(this.but_con_scan_sam);
+            this.tabPage11.Controls.Add(this.but_start_scan_sam);
             this.tabPage11.Controls.Add(this.but_scan_start_laser);
             this.tabPage11.Controls.Add(this.but_con_scan);
             this.tabPage11.Controls.Add(this.tB_fps_scan);
@@ -4029,9 +4033,32 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
+            // but_start_scan_sam
+            // 
+            this.but_start_scan_sam.AccessibleName = "1";
+            this.but_start_scan_sam.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_start_scan_sam.Location = new System.Drawing.Point(359, 277);
+            this.but_start_scan_sam.Name = "but_start_scan_sam";
+            this.but_start_scan_sam.Size = new System.Drawing.Size(148, 33);
+            this.but_start_scan_sam.TabIndex = 139;
+            this.but_start_scan_sam.Text = "Scan StereoLaser";
+            this.but_start_scan_sam.UseVisualStyleBackColor = true;
+            this.but_start_scan_sam.Click += new System.EventHandler(this.but_start_scan_sam_Click);
+            // 
+            // but_con_scan_sam
+            // 
+            this.but_con_scan_sam.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_scan_sam.Location = new System.Drawing.Point(359, 316);
+            this.but_con_scan_sam.Name = "but_con_scan_sam";
+            this.but_con_scan_sam.Size = new System.Drawing.Size(106, 57);
+            this.but_con_scan_sam.TabIndex = 140;
+            this.but_con_scan_sam.Text = "Connect scanner";
+            this.but_con_scan_sam.UseVisualStyleBackColor = true;
+            this.but_con_scan_sam.Click += new System.EventHandler(this.but_con_scan_sam_Click);
+            // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1370, 749);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
@@ -4484,6 +4511,8 @@ namespace opengl3
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Button but_hydro_model_grav;
         private System.Windows.Forms.Button but_gl_detect_line;
+        private System.Windows.Forms.Button but_con_scan_sam;
+        private System.Windows.Forms.Button but_start_scan_sam;
     }
 }
 

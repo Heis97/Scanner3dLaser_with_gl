@@ -3768,8 +3768,9 @@ namespace opengl3
             int fcc = VideoWriter.Fourcc('h', '2', '6', '4'); //'M', 'J', 'P', 'G';'m', 'p', '4', 'v';'M', 'P', '4', 'V';'H', '2', '6', '4'
 
             int fps = 30;
-            Directory.CreateDirectory("cam" + ind.ToString() + "\\" + box_scanFolder.Text);
-            string name = "cam" + ind.ToString() + "\\" + box_scanFolder.Text + "\\" + video_scan_name + ".mp4";
+            var dir = "cam" + ind.ToString() + "\\" + box_scanFolder.Text;
+            Directory.CreateDirectory(dir);
+            string name = dir + "\\" + video_scan_name + ".mp4";
             Console.WriteLine("wr" + " " + w + " " + h);
             video_writer[ind ] = new VideoWriter(name, -1, fps, new Size(w, h), true);
             var reswr = video_writer[ind ].Set(VideoWriter.WriterProperty.Quality, 100);
@@ -5741,6 +5742,32 @@ namespace opengl3
         {
             Console.WriteLine("detect:");
              Detection.detectLineDiff_debug( (Mat)imBox_mark1.Image , scanner_config);
+        }
+
+        private void but_start_scan_sam_Click(object sender, EventArgs e)
+        {
+            var pos_rob = positionFromRobot(con1);
+            if (pos_rob != null)
+            {
+                video_scan_name = pos_rob.ToString();
+            }
+            else
+            {
+                video_scan_name = "1";
+            }
+            startScanLaser(8);
+        }
+
+        private void but_con_scan_sam_Click(object sender, EventArgs e)
+        {
+            videoStart(0);
+            videoStart(1); Thread.Sleep(5000);
+            find_ports(); Thread.Sleep(100);
+            laserLine = new LaserLine(portArd); Thread.Sleep(1000);
+            laserLine?.setShvpVel(200); Thread.Sleep(100);
+            laserLine?.laserOn(); Thread.Sleep(100);
+            laserLine?.set_home_laser(); Thread.Sleep(1000);
+            laserLine?.setShvpPos(350); Thread.Sleep(100);
         }
     }
 }
