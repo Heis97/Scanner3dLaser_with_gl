@@ -3510,7 +3510,6 @@ namespace opengl3
             laserLine?.laserOn(); Thread.Sleep(100);
             laserLine?.set_home_laser(); Thread.Sleep(1000);
             laserLine?.setShvpPos(350); Thread.Sleep(100);
-
         }
 
         private void but_scan_pres_Click(object sender, EventArgs e)
@@ -3574,7 +3573,8 @@ namespace opengl3
             var markSize = 10f;
             //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
 
-            stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
+            //stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
+            stereocam_scan.calibrate_stereo_rob_handeye(frms_stereo, PatternType.Mesh, chess_size, markSize);
             comboImages.Items.AddRange(frms_stereo);
         }
 

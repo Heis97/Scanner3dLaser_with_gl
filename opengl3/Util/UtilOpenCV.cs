@@ -33,6 +33,25 @@ namespace opengl3
     }
     static public class UtilOpenCV
     {
+
+        public static (VectorOfMat, VectorOfMat) to_vec_mat(Matrix<double>[] matrixs)
+        {
+            var ms_r = new List<Mat>();
+            var ms_t = new List<Mat>();
+            for(int i=0; i<matrixs.Length;i++)
+            {
+                ms_r.Add(matrixs[i].GetRows(0, 3,1).Transpose().GetRows(0, 3, 1).Transpose().Mat);
+                ms_t.Add(matrixs[i].GetCol(3).GetRows(0, 3, 1).Transpose().Mat);
+
+                /*prin.t(matrixs[i]);
+                prin.t(ms_r[i]);
+                prin.t(ms_t[i]);*/
+            }
+
+            return (new VectorOfMat(ms_r.ToArray()), new VectorOfMat(ms_t.ToArray()));
+        }
+
+
         public static Mat draw_map_xy(RasterMap map, Polygon3d_GL[] surface,Point3d_GL[] traj)
         {
             var res = map.res;

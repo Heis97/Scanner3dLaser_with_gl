@@ -144,6 +144,62 @@ namespace opengl3
 
             }
         }
+        public void calibrate_stereo_rob_handeye(Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize)
+        {
+
+            if (cameraCVs.Length == 2)
+            {
+                var p_rob = new List<Point3d_GL>();
+                var p_cam = new List<Point3d_GL>();
+
+                var ms_rob = new List<Matrix<double>>();
+                var ms_cam = new List<Matrix<double>>();
+                Console.WriteLine("calibrate_stereo_rob");
+
+                for (int i = 0; i < frames.Length; i++)
+                {
+                    var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, pattern_size, markSize);
+                    var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, pattern_size, markSize);
+                    if (pos1 && pos2)
+                    {
+                        var inv_cs1 = new Matrix<double>(4, 4);
+                        CvInvoke.Invert(cameraCVs[0].matrixCS, inv_cs1, DecompMethod.LU);
+
+                        R = inv_cs1 * cameraCVs[1].matrixCS;
+                        var c1 = cameraCVs[0].matrixCS;
+                        var rob_pos = new RobotFrame(frames[i].name);
+                        var r1 = rob_pos.getMatrix();
+                        ms_rob.Add(r1);
+                        ms_cam.Add(c1);
+                        var p1 = new Point3d_GL(r1[0, 3], r1[1, 3], r1[2, 3]);
+                        var p2 = new Point3d_GL(c1[0, 3], c1[1, 3], c1[2, 3]);
+                        p_rob.Add(p1);
+                        p_cam.Add(p2);
+
+                        //Console.WriteLine(i + " " + r1[0, 3] + " " + r1[1, 3] + " " + r1[2, 3]+" ");// + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");
+                        //Console.WriteLine(R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");// + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
+                        GC.Collect();
+                    }
+
+                    //Console.WriteLine(comp_pos);
+                }
+                VectorOfMat mr_r, mr_t, mc_r, mc_t;
+                (mr_r, mr_t) = UtilOpenCV.to_vec_mat(ms_rob.ToArray());
+                (mc_r, mc_t) = UtilOpenCV.to_vec_mat(ms_cam.ToArray());
+                Mat mr = new Mat();
+                Mat mt = new Mat();
+                CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt,HandEyeCalibrationMethod.Park);
+                prin.t("result:");
+                prin.t(mr);
+                prin.t(mt);
+                for (int i = 1; i < p_cam.Count; i++)
+                {
+                    Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
+                }
+
+            }
+        }
+
 
 
         public void calibrate_basis_rob_xyz(Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize)
