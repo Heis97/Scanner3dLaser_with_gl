@@ -41,7 +41,7 @@ namespace opengl3
             for(int i=0; i<matrixs.Length;i++)
             {
                 ms_r.Add(matrixs[i].GetRows(0, 3,1).Transpose().GetRows(0, 3, 1).Transpose().Mat);
-                ms_t.Add(matrixs[i].GetCol(3).GetRows(0, 3, 1).Transpose().Mat);
+                ms_t.Add(matrixs[i].GetCol(3).GetRows(0, 3, 1).Mat);
 
                 /*prin.t(matrixs[i]);
                 prin.t(ms_r[i]);
