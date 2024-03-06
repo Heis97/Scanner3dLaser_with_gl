@@ -262,6 +262,8 @@ namespace opengl3
             this.label54 = new System.Windows.Forms.Label();
             this.trackBar20 = new System.Windows.Forms.TrackBar();
             this.tabPage11 = new System.Windows.Forms.TabPage();
+            this.but_con_scan_sam = new System.Windows.Forms.Button();
+            this.but_start_scan_sam = new System.Windows.Forms.Button();
             this.but_scan_start_laser = new System.Windows.Forms.Button();
             this.but_con_scan = new System.Windows.Forms.Button();
             this.tB_fps_scan = new System.Windows.Forms.TextBox();
@@ -373,8 +375,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_start_scan_sam = new System.Windows.Forms.Button();
-            this.but_con_scan_sam = new System.Windows.Forms.Button();
+            this.tabP_in_situ_gui = new System.Windows.Forms.TabPage();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2977,6 +2978,29 @@ namespace opengl3
             this.tabPage11.Text = "3Д сканер";
             this.tabPage11.UseVisualStyleBackColor = true;
             // 
+            // but_con_scan_sam
+            // 
+            this.but_con_scan_sam.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_scan_sam.Location = new System.Drawing.Point(359, 316);
+            this.but_con_scan_sam.Name = "but_con_scan_sam";
+            this.but_con_scan_sam.Size = new System.Drawing.Size(106, 57);
+            this.but_con_scan_sam.TabIndex = 140;
+            this.but_con_scan_sam.Text = "Connect scanner";
+            this.but_con_scan_sam.UseVisualStyleBackColor = true;
+            this.but_con_scan_sam.Click += new System.EventHandler(this.but_con_scan_sam_Click);
+            // 
+            // but_start_scan_sam
+            // 
+            this.but_start_scan_sam.AccessibleName = "1";
+            this.but_start_scan_sam.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_start_scan_sam.Location = new System.Drawing.Point(359, 277);
+            this.but_start_scan_sam.Name = "but_start_scan_sam";
+            this.but_start_scan_sam.Size = new System.Drawing.Size(148, 33);
+            this.but_start_scan_sam.TabIndex = 139;
+            this.but_start_scan_sam.Text = "Scan StereoLaser";
+            this.but_start_scan_sam.UseVisualStyleBackColor = true;
+            this.but_start_scan_sam.Click += new System.EventHandler(this.but_start_scan_sam_Click);
+            // 
             // but_scan_start_laser
             // 
             this.but_scan_start_laser.AccessibleName = "1";
@@ -4017,6 +4041,7 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabDebug);
             this.windowsTabs.Controls.Add(this.tabDistort);
             this.windowsTabs.Controls.Add(this.tabCalibMonit);
+            this.windowsTabs.Controls.Add(this.tabP_in_situ_gui);
             this.windowsTabs.Location = new System.Drawing.Point(12, 0);
             this.windowsTabs.Name = "windowsTabs";
             this.windowsTabs.SelectedIndex = 0;
@@ -4033,28 +4058,15 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // but_start_scan_sam
+            // tabP_in_situ_gui
             // 
-            this.but_start_scan_sam.AccessibleName = "1";
-            this.but_start_scan_sam.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_start_scan_sam.Location = new System.Drawing.Point(359, 277);
-            this.but_start_scan_sam.Name = "but_start_scan_sam";
-            this.but_start_scan_sam.Size = new System.Drawing.Size(148, 33);
-            this.but_start_scan_sam.TabIndex = 139;
-            this.but_start_scan_sam.Text = "Scan StereoLaser";
-            this.but_start_scan_sam.UseVisualStyleBackColor = true;
-            this.but_start_scan_sam.Click += new System.EventHandler(this.but_start_scan_sam_Click);
-            // 
-            // but_con_scan_sam
-            // 
-            this.but_con_scan_sam.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_con_scan_sam.Location = new System.Drawing.Point(359, 316);
-            this.but_con_scan_sam.Name = "but_con_scan_sam";
-            this.but_con_scan_sam.Size = new System.Drawing.Size(106, 57);
-            this.but_con_scan_sam.TabIndex = 140;
-            this.but_con_scan_sam.Text = "Connect scanner";
-            this.but_con_scan_sam.UseVisualStyleBackColor = true;
-            this.but_con_scan_sam.Click += new System.EventHandler(this.but_con_scan_sam_Click);
+            this.tabP_in_situ_gui.Location = new System.Drawing.Point(4, 22);
+            this.tabP_in_situ_gui.Name = "tabP_in_situ_gui";
+            this.tabP_in_situ_gui.Padding = new System.Windows.Forms.Padding(3);
+            this.tabP_in_situ_gui.Size = new System.Drawing.Size(1861, 1003);
+            this.tabP_in_situ_gui.TabIndex = 6;
+            this.tabP_in_situ_gui.Text = "in situ gui";
+            this.tabP_in_situ_gui.UseVisualStyleBackColor = true;
             // 
             // MainScanningForm
             // 
@@ -4513,6 +4525,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_gl_detect_line;
         private System.Windows.Forms.Button but_con_scan_sam;
         private System.Windows.Forms.Button but_start_scan_sam;
+        private System.Windows.Forms.TabPage tabP_in_situ_gui;
     }
 }
 
