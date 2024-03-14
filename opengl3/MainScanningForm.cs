@@ -194,6 +194,59 @@ namespace opengl3
             //roi_for_ims("delt_ims");
             // var im1 = new Mat("roi\\im2_149.png");
             // get_x_line_gray(im1, im1.Height / 2);
+
+            test_handeye();
+        }
+
+        void test_handeye()
+        {
+            var ms_rob = new List<Matrix<double>>();
+            var ms_cam = new List<Matrix<double>>();
+
+            var bm = new RobotFrame(20, 0, 0, 0, 0, -3);
+            //var bm = new RobotFrame(20, 0, 0, 0, 0, -3);
+
+            var fs = new RobotFrame(0, 10, 50, 0, 0, 0);
+
+            var rpos_2 = new List<RobotFrame>();
+
+
+            var rpos = new RobotFrame[]
+            {
+                new RobotFrame(0,0,200,0,0,0),
+                new RobotFrame(0,0,200,1,0,0),
+                new RobotFrame(0,0,200,0,1,0),
+                new RobotFrame(0,0,200,0,0,1),
+                new RobotFrame(10,0,200,2,0,1),
+                new RobotFrame(0,10,200,0,2,1),
+                new RobotFrame(0,0,210,0,0,2),
+            };
+
+            for(int i=0; i<rpos.Length;i++)
+            {
+                var rpos_inv = rpos[i].Clone();
+                var bm_inv = bm.Clone();
+                var fs_inv = fs.Clone();
+
+                ms_rob.Add(rpos_inv.getMatrix());                
+                ms_cam.Add(fs_inv.getMatrix()* rpos_inv.getMatrix()* bm.getMatrix());
+
+                var cam2 =  bm_inv.getMatrix() * rpos[i].getMatrix() * fs.getMatrix();
+                prin.t(ms_rob[i]);
+                prin.t(ms_cam[i]);
+                prin.t(cam2);
+                prin.t("_________");
+            }
+
+
+            VectorOfMat mr_r, mr_t, mc_r, mc_t;
+            (mr_r, mr_t) = UtilOpenCV.to_vec_mat(ms_rob.ToArray());
+            (mc_r, mc_t) = UtilOpenCV.to_vec_mat(ms_cam.ToArray());
+            Mat mr = new Mat();
+            Mat mt = new Mat();
+            CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt, HandEyeCalibrationMethod.Tsai);
+            prin.t(mr);
+            prin.t(mt);
         }
         void comp_pores(string path)
         {
@@ -3557,11 +3610,11 @@ namespace opengl3
             //var stereo_cal_1 = textB_scan_path.Text.Split('\\').Reverse().ToArray()[0];
             var stereo_cal_1 = get_folder_name_cam(textB_scan_path.Text);
             //Console.WriteLine(stereo_cal_1+" "+ stereo_cal_2);
-
+            
             var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
             //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
             var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
-
+            
             var cam1_conf_path = textB_cam1_conf.Text;
             var cam2_conf_path = textB_cam2_conf.Text;
             var cam1 = CameraCV.load_camera(cam1_conf_path);
