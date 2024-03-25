@@ -5591,7 +5591,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-            resize();
+            //resize();
             for (int i = 0; i < imb_main.Length; i++)
             {
                 imb_main[i].AccessibleName = i.ToString();
