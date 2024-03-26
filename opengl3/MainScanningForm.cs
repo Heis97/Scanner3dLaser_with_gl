@@ -203,10 +203,13 @@ namespace opengl3
             var ms_rob = new List<Matrix<double>>();
             var ms_cam = new List<Matrix<double>>();
 
-            var bm = new RobotFrame(20, 0, 0, 0, 0, -3);
+            var ms_gb = new List<Matrix<double>>();
+            var ms_tc = new List<Matrix<double>>();
+
+            var bt = new RobotFrame(20, 0, 0, 0, 0, -3);
             //var bm = new RobotFrame(20, 0, 0, 0, 0, -3);
 
-            var fs = new RobotFrame(0, 10, 50, 0, 0, 0);
+            var gc = new RobotFrame(0, 10, 50, 0, 0, 0);
 
             var rpos_2 = new List<RobotFrame>();
 
@@ -224,17 +227,38 @@ namespace opengl3
 
             for(int i=0; i<rpos.Length;i++)
             {
-                var rpos_inv = rpos[i].Clone();
-                var bm_inv = bm.Clone();
-                var fs_inv = fs.Clone();
+                var rpos_i = rpos[i].Clone();
+                var bg_inv = rpos_i.getMatrix();
+                var bt_inv = bt.Clone().getMatrix();
+                var gc_inv = gc.Clone().getMatrix();
+                var bg = bg_inv.Clone();
 
-                ms_rob.Add(rpos_inv.getMatrix());                
-                ms_cam.Add(fs_inv.getMatrix()* rpos_inv.getMatrix()* bm.getMatrix());
+                CvInvoke.Invert(bt_inv, bt_inv, DecompMethod.LU);
+                CvInvoke.Invert(bg_inv, bg_inv, DecompMethod.LU);
+                CvInvoke.Invert(gc_inv, gc_inv, DecompMethod.LU);
+                CvInvoke.Invert(bg, bg, DecompMethod.LU);
 
-                var cam2 =  bm_inv.getMatrix() * rpos[i].getMatrix() * fs.getMatrix();
+                ms_rob.Add(bg);    
+                
+                ms_cam.Add(bt.getMatrix() * bg_inv* gc_inv);
+
+               /* prin.t("bt_inv");
+                prin.t(bt_inv);
+                prin.t("_________________");
+
+                prin.t("bg_inv");
+                prin.t(bg_inv);
+                prin.t("_________________");
+
+                prin.t("gc_inv");
+                prin.t(gc_inv);
+                prin.t("_________________");*/
+                // var cam2 =  bt_inv.getMatrix() * rpos[i].getMatrix() * gc.getMatrix();
                 prin.t(ms_rob[i]);
                 prin.t(ms_cam[i]);
-                prin.t(cam2);
+
+
+                //prin.t(cam2);
                 prin.t("_________");
             }
 
@@ -245,6 +269,7 @@ namespace opengl3
             Mat mr = new Mat();
             Mat mt = new Mat();
             CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt, HandEyeCalibrationMethod.Tsai);
+            prin.t("res:s");
             prin.t(mr);
             prin.t(mt);
         }
