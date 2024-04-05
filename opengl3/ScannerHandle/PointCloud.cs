@@ -410,6 +410,7 @@ namespace opengl3
                 if (stereocamera.Bbf != null)
                     m1 = stereocamera.Bbf;//or inverse                
             }
+            Console.WriteLine(stereocamera.scan_coord_sys);
             var m2 = m1 * stereocamera.R;
             var ps1 = comp_points_for_gpu_2d(points3d_1, m1);
             var ps2 = comp_points_for_gpu_2d(points3d_2, m2);

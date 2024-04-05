@@ -195,7 +195,7 @@ namespace opengl3
             // var im1 = new Mat("roi\\im2_149.png");
             // get_x_line_gray(im1, im1.Height / 2);
 
-            test_handeye();
+            //test_handeye();
         }
 
         void test_handeye()
