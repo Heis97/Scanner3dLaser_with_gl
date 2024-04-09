@@ -487,19 +487,19 @@ namespace opengl3
                 }
                 else 
                 {
-                    points3d = new MCvPoint3D32f[]
+                    /*points3d = new MCvPoint3D32f[]
                     {
                         new MCvPoint3D32f(x,y,0),
                         new MCvPoint3D32f(0,y,0),
                         new MCvPoint3D32f(x,0,0),
                         new MCvPoint3D32f(0,0,0)
-                    };
+                    };*/
 
-                   /* points3d = new MCvPoint3D32f[]
+                    points3d = new MCvPoint3D32f[]
                     {
                         new MCvPoint3D32f(0,y,0), new MCvPoint3D32f(0,0,0),
                         new MCvPoint3D32f(x,y,0), new MCvPoint3D32f(x,0,0)
-                    };*/
+                    };
                 }
 
                 var len = size_patt.Width * size_patt.Height;
