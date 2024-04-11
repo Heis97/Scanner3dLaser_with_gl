@@ -3846,7 +3846,7 @@ namespace opengl3
             int fcc = VideoWriter.Fourcc('h', '2', '6', '4'); //'M', 'J', 'P', 'G';'m', 'p', '4', 'v';'M', 'P', '4', 'V';'H', '2', '6', '4'
 
             int fps = 30;
-            var dir = "cam" + ind.ToString() + "\\" + box_scanFolder.Text;
+            var dir = "cam" + (ind+1).ToString() + "\\" + box_scanFolder.Text;
             Directory.CreateDirectory(dir);
             string name = dir + "\\" + video_scan_name + ".mp4";
             Console.WriteLine("wr" + " " + w + " " + h);
@@ -4056,20 +4056,20 @@ namespace opengl3
                 videoframe_counts[ind]++;
             }
 
-            if (videoframe_counts[ind] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
+            if (videoframe_counts[ind] > 0 && videoframe_counts[ind ] < videoframe_counts_stop[ind])
             {
                 // sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 //if (sb_enc == null) Console.WriteLine("NULL!");
-                sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
-                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
+                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind] + " " + ind + " ");
                 sb_enc?.Append("\n");
                 //video_writer[ind - 1]?.Write(mat);
-                video_mats[ind].Add(mat.Clone());
+                video_mats[ind]?.Add(mat.Clone());
                 //var p = Detection.detectLineSensor(mat)[0];
                 //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
                 //sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind - 1] + " " + ind + " ");
-                sb_enc?.Append("0" + " " + videoframe_counts[ind - 1] + " " + ind + " ");
-                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
+                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind ] + " " + ind + " ");
                 sb_enc?.Append("\n");
 
                 videoframe_counts[ind]++;
