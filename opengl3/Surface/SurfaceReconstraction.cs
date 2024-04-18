@@ -14,6 +14,7 @@ namespace opengl3
     public enum Ax { X,Y,Z};
     static class SurfaceReconstraction
     {
+
         static public Point3d_GL[] gen_random_cont_XY(double d, int n, double err,Point3d_GL p_cent)
         {
             var ps = new Point3d_GL[n];
