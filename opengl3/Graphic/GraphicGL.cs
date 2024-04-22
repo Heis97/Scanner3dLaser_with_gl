@@ -2270,13 +2270,13 @@ namespace opengl3
                 mesh.Add((float)points[i].y);
                 mesh.Add((float)points[i].z);
 
-                var color_cur = Color3d_GL.yellow();
+                var color_cur = Color3d_GL.blue();
                 if (points[i].color != null) color_cur = points[i].color;
                 color.Add(color_cur.r);
                 color.Add(color_cur.g);
                 color.Add(color_cur.b);
 
-                 color_cur = Color3d_GL.yellow();
+                 color_cur = Color3d_GL.blue();
                 if (points[i-1].color != null) color_cur = points[i-1].color;
                 color.Add(color_cur.r);
                 color.Add(color_cur.g);

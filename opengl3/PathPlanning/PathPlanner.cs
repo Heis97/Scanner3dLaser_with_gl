@@ -1410,7 +1410,9 @@ namespace PathPlanning
 
             foreach(var v in traj_2d)
             {
-                gl?.addTrajPoint(v.ToArray());
+                // gl?.addTrajPoint(v.ToArray());
+                var ps_p = Point3d_GL.add_arr(v.ToArray(), new Point3d_GL(0, 0, 45));
+                gl?.addLineMeshTraj(ps_p, Color3d_GL.purple(), "lin_traj");
             }
             var traj_3d = new List<List<Matrix<double>>>();
             double resolut = 0.2;

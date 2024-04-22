@@ -372,10 +372,12 @@ namespace opengl3
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.but_resize = new System.Windows.Forms.Button();
             this.windowsTabs = new System.Windows.Forms.TabControl();
+            this.tabP_in_situ_gui = new System.Windows.Forms.TabPage();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.tabP_in_situ_gui = new System.Windows.Forms.TabPage();
+            this.but_unwrap = new System.Windows.Forms.Button();
+            this.but_wrap = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1173,6 +1175,8 @@ namespace opengl3
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.but_wrap);
+            this.tabPage2.Controls.Add(this.but_unwrap);
             this.tabPage2.Controls.Add(this.prop_grid_model);
             this.tabPage2.Controls.Add(this.tree_models);
             this.tabPage2.Controls.Add(this.tp_smooth_scan);
@@ -4048,6 +4052,16 @@ namespace opengl3
             this.windowsTabs.Size = new System.Drawing.Size(1869, 1029);
             this.windowsTabs.TabIndex = 92;
             // 
+            // tabP_in_situ_gui
+            // 
+            this.tabP_in_situ_gui.Location = new System.Drawing.Point(4, 22);
+            this.tabP_in_situ_gui.Name = "tabP_in_situ_gui";
+            this.tabP_in_situ_gui.Padding = new System.Windows.Forms.Padding(3);
+            this.tabP_in_situ_gui.Size = new System.Drawing.Size(1861, 1003);
+            this.tabP_in_situ_gui.TabIndex = 6;
+            this.tabP_in_situ_gui.Text = "in situ gui";
+            this.tabP_in_situ_gui.UseVisualStyleBackColor = true;
+            // 
             // timer1
             // 
             this.timer1.Enabled = true;
@@ -4058,15 +4072,25 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // tabP_in_situ_gui
+            // but_unwrap
             // 
-            this.tabP_in_situ_gui.Location = new System.Drawing.Point(4, 22);
-            this.tabP_in_situ_gui.Name = "tabP_in_situ_gui";
-            this.tabP_in_situ_gui.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_in_situ_gui.Size = new System.Drawing.Size(1861, 1003);
-            this.tabP_in_situ_gui.TabIndex = 6;
-            this.tabP_in_situ_gui.Text = "in situ gui";
-            this.tabP_in_situ_gui.UseVisualStyleBackColor = true;
+            this.but_unwrap.Location = new System.Drawing.Point(379, 391);
+            this.but_unwrap.Name = "but_unwrap";
+            this.but_unwrap.Size = new System.Drawing.Size(97, 31);
+            this.but_unwrap.TabIndex = 154;
+            this.but_unwrap.Text = "Развернуть";
+            this.but_unwrap.UseVisualStyleBackColor = true;
+            this.but_unwrap.Click += new System.EventHandler(this.but_unwrap_Click);
+            // 
+            // but_wrap
+            // 
+            this.but_wrap.Location = new System.Drawing.Point(379, 428);
+            this.but_wrap.Name = "but_wrap";
+            this.but_wrap.Size = new System.Drawing.Size(95, 29);
+            this.but_wrap.TabIndex = 155;
+            this.but_wrap.Text = "Свернуть";
+            this.but_wrap.UseVisualStyleBackColor = true;
+            this.but_wrap.Click += new System.EventHandler(this.but_wrap_Click);
             // 
             // MainScanningForm
             // 
@@ -4526,6 +4550,8 @@ namespace opengl3
         private System.Windows.Forms.Button but_con_scan_sam;
         private System.Windows.Forms.Button but_start_scan_sam;
         private System.Windows.Forms.TabPage tabP_in_situ_gui;
+        private System.Windows.Forms.Button but_wrap;
+        private System.Windows.Forms.Button but_unwrap;
     }
 }
 

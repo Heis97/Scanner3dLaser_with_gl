@@ -911,6 +911,87 @@ namespace opengl3
             GL1.remove_buff_gl_id(mesh_id);
             GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, mesh_id);
         }
+
+        void unwrap_mesh(string mesh_id)
+        {
+            var radius = 20;
+            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[mesh_id].vertex_buffer_data, GL1.buffersGl.objs[mesh_id].color_buffer_data);
+            var mesh_ind = new IndexedMesh(polygs);
+            var ps = mesh_ind.ps_uniq;
+
+            
+            for(int i=0; i < ps.Length;i++)
+            {
+                ps[i] = unwrap_p(ps[i].Clone(),radius);
+            }
+            mesh_ind.ps_uniq = ps;
+            var mesh = Polygon3d_GL.toMesh(mesh_ind.get_polygs());
+            GL1.remove_buff_gl_id(mesh_id);
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, mesh_id);
+        }
+
+        void wrap_mesh(string mesh_id)
+        {
+            var radius = 20;
+            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[mesh_id].vertex_buffer_data, GL1.buffersGl.objs[mesh_id].color_buffer_data);
+            var mesh_ind = new IndexedMesh(polygs);
+            var ps = mesh_ind.ps_uniq;
+
+
+            ps = wrap_ps(ps, radius);
+            mesh_ind.ps_uniq = ps;
+            var mesh = Polygon3d_GL.toMesh(mesh_ind.get_polygs());
+            GL1.remove_buff_gl_id(mesh_id);
+            GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Triangles, mesh_id);
+
+            var ps_traj = Point3d_GL.fromMesh(GL1.buffersGl.objs[traj_i].vertex_buffer_data);
+            ps_traj = wrap_ps(ps_traj, radius);
+            GL1.remove_buff_gl_id(traj_i);
+            traj_i = GL1.addLineMeshTraj(ps_traj, new Color3d_GL(0.9f), "gen_traj");
+
+        }
+
+        static Point3d_GL unwrap_p(Point3d_GL p, double r_c)
+        {
+            var x = p.x;
+            var z = p.z;
+            var r = Math.Sqrt(x * x + z * z);
+            var thetta = Math.Sign(x)* Math.Acos(z / r);
+            var p_c = p.Clone();
+            p_c.z = r;
+            p_c.x = thetta * r_c;
+            return p_c;
+        
+        }
+
+
+        static Point3d_GL wrap_p(Point3d_GL p, double r_c)
+        {
+            var thetta_ = p.x;
+            var r = p.z;
+            var p_c = p.Clone();
+            var thetta = thetta_ / r_c;
+            var x = r * Math.Sin(thetta);
+            var z = r * Math.Cos(thetta);
+            p_c.x = x;
+            p_c.z = z;
+
+            return p_c;
+
+        }
+
+        static Point3d_GL[] wrap_ps(Point3d_GL[] ps, double r_c)
+        {
+
+            for(int i = 0; i < ps.Length; i++)
+            {
+                ps[i] = wrap_p(ps[i].Clone(), r_c);
+            }
+
+            return ps;
+
+        }
+
         //----------------------------------------------------------------------------------------------------------
         Scanner loadScanner_sing(string conf1, string laser_line = null)
         {
@@ -1503,7 +1584,7 @@ namespace opengl3
             //test_patt();
             //test_cut();
             //test_traj_3d_pores();
-            test_find_cont_1();
+            //test_find_cont_1();
             //GL1.addFlat3d_XY_zero_s(0);
             //GL1.addFlat3d_XZ_zero_s(50);
 
@@ -5308,6 +5389,18 @@ namespace opengl3
             smooth_mesh(selected_obj, Convert.ToDouble(tp_smooth_scan.Text));
 
         }
+
+        private void but_unwrap_Click(object sender, EventArgs e)
+        {
+            var selected_obj = selected_object(); if (selected_obj == null) return;
+            unwrap_mesh(selected_obj);
+        }
+
+        private void but_wrap_Click(object sender, EventArgs e)
+        {
+            var selected_obj = selected_object(); if (selected_obj == null) return;
+            wrap_mesh(selected_obj);
+        }
         private void but_intersec_obj_Click(object sender, EventArgs e)
         {
             var selected_obj = selected_nodes();
@@ -5877,6 +5970,8 @@ namespace opengl3
             laserLine?.set_home_laser(); Thread.Sleep(1000);
             laserLine?.setShvpPos(350); Thread.Sleep(100);
         }
+
+        
     }
 }
 
