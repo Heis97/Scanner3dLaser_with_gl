@@ -1503,7 +1503,7 @@ namespace opengl3
             //test_patt();
             //test_cut();
             //test_traj_3d_pores();
-
+            test_find_cont_1();
             //GL1.addFlat3d_XY_zero_s(0);
             //GL1.addFlat3d_XZ_zero_s(50);
 
@@ -1527,7 +1527,7 @@ namespace opengl3
             //test_expand();
             //test_merge_surf();
             //test_comp_color();
-            
+
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1991,14 +1991,39 @@ namespace opengl3
         void test_find_cont_1()
         {
             Console.WriteLine("load models");
-            var scan_stl_orig = new Model3d("models\\defects\\ring3.stl", false);
+            var scan_stl_orig = new Model3d(@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d models\arm_defect_noise3_sm.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
             GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
             var mesh = new IndexedMesh(scan_stl_orig.pols);
-            var board = mesh.points_on_board();
-            foreach (var cont in board)
+            var board = mesh.triangs_on_board();
+           /* foreach (var cont in board)
             {
                 var color = Color3d_GL.random();
                 GL1.addLineMeshTraj(cont,color);
+            }*/
+            comp_angs_board(board[0]);
+        }
+
+        void comp_angs_board(Point3d_GL[] ps)
+        {
+            var angs = new Point3d_GL[ps.Length - 1];
+            for(int i=1; i < ps.Length;i++)
+            {
+               angs[i-1]= new Point3d_GL( Point3d_GL.ang(ps[i - 1], ps[i]));
+
+            }
+            for (int i = 0; i < angs.Length; i++)
+            {
+                //Console.WriteLine(i+" "+angs[i].x);
+
+            }
+            var smooth_ang = Point3d_GL.gaussFilter_X(angs, 25);
+            Console.WriteLine("________________________________");
+            Console.WriteLine("________________________________");
+            Console.WriteLine("________________________________");
+            for (int i = 0; i < smooth_ang.Length; i++)
+            {
+                Console.WriteLine(i + " " + smooth_ang[i].x + " " + angs[i].x);
+
             }
         }
         void test_surf_rec_2()
@@ -5711,10 +5736,15 @@ namespace opengl3
             
             var scan_stl = new Model3d(stl_name, false);
 
+            //var imesh = new IndexedMesh(scan_stl.pols);
 
+            //imesh.ps_uniq = GraphicGL.add_random_to_ps(imesh.ps_uniq);
+
+            //scan_stl.mesh = Polygon3d_GL.toMesh(imesh.get_polygs())[0];
 
             scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles,Path.GetFileNameWithoutExtension(stl_name));
         }
+
 
         private void but_del_obj3d_Click(object sender, EventArgs e)
         {

@@ -11,7 +11,7 @@ using Emgu.CV;
 using Emgu.CV.UI;
 using Emgu.CV.Structure;
 using Emgu.Util;
-
+using Accord.Statistics.Distributions.Univariate;
 
 namespace opengl3
 {   
@@ -1624,6 +1624,26 @@ namespace opengl3
         #endregion
 
         #region mesh
+
+        static public float[] add_random_to_mesh(float[] mesh)//not work
+        {
+            for(int i = 0; i < mesh.Length;i++)
+            {
+                mesh[i] += (float)NormalDistribution.Random(0.02, 0.02);
+            }
+            return mesh;
+        }
+
+        static public Point3d_GL[] add_random_to_ps(Point3d_GL[] ps)//not work
+        {
+            var std = 0.02;
+            var dev = 0.02;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ps[i] += new Point3d_GL(NormalDistribution.Random(std, dev), NormalDistribution.Random(std, dev), NormalDistribution.Random(std, dev));
+            }
+            return ps;
+        }
         void addLight()
         {
             addPointMesh(new Point3d_GL[] { new Point3d_GL() }, Color3d_GL.red(), "light source");
