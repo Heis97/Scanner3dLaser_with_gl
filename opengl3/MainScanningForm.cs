@@ -5961,7 +5961,7 @@ namespace opengl3
 
         private void but_con_scan_sam_Click(object sender, EventArgs e)
         {
-            videoStart(0);
+            videoStart(2);
             videoStart(1); Thread.Sleep(5000);
             find_ports(); Thread.Sleep(100);
             laserLine = new LaserLine(portArd); Thread.Sleep(1000);
