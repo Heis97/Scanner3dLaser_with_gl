@@ -1415,7 +1415,7 @@ namespace PathPlanning
                 gl?.addLineMeshTraj(ps_p, Color3d_GL.purple(), "lin_traj");
             }
             var traj_3d = new List<List<Matrix<double>>>();
-            double resolut = 0.2;
+            double resolut = -1;
             var map_xy = new RasterMap(surface, resolut,RasterMap.type_map.XY);
             var ang_x = trajParams.ang_x;
             var vec_x = new Vector3d_GL(Math.Cos(ang_x), Math.Sin(ang_x), 0);
