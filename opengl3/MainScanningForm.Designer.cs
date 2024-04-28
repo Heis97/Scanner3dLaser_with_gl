@@ -101,6 +101,8 @@ namespace opengl3
             this.but_traj_clear = new System.Windows.Forms.Button();
             this.debugBox = new System.Windows.Forms.RichTextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.but_wrap = new System.Windows.Forms.Button();
+            this.but_unwrap = new System.Windows.Forms.Button();
             this.prop_grid_model = new System.Windows.Forms.PropertyGrid();
             this.tree_models = new System.Windows.Forms.TreeView();
             this.tp_smooth_scan = new System.Windows.Forms.TextBox();
@@ -376,8 +378,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_unwrap = new System.Windows.Forms.Button();
-            this.but_wrap = new System.Windows.Forms.Button();
+            this.but_allign_cyl = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1175,6 +1176,7 @@ namespace opengl3
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.but_allign_cyl);
             this.tabPage2.Controls.Add(this.but_wrap);
             this.tabPage2.Controls.Add(this.but_unwrap);
             this.tabPage2.Controls.Add(this.prop_grid_model);
@@ -1206,6 +1208,26 @@ namespace opengl3
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Объекты сцены";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // but_wrap
+            // 
+            this.but_wrap.Location = new System.Drawing.Point(379, 428);
+            this.but_wrap.Name = "but_wrap";
+            this.but_wrap.Size = new System.Drawing.Size(95, 29);
+            this.but_wrap.TabIndex = 155;
+            this.but_wrap.Text = "Свернуть";
+            this.but_wrap.UseVisualStyleBackColor = true;
+            this.but_wrap.Click += new System.EventHandler(this.but_wrap_Click);
+            // 
+            // but_unwrap
+            // 
+            this.but_unwrap.Location = new System.Drawing.Point(379, 391);
+            this.but_unwrap.Name = "but_unwrap";
+            this.but_unwrap.Size = new System.Drawing.Size(97, 31);
+            this.but_unwrap.TabIndex = 154;
+            this.but_unwrap.Text = "Развернуть";
+            this.but_unwrap.UseVisualStyleBackColor = true;
+            this.but_unwrap.Click += new System.EventHandler(this.but_unwrap_Click);
             // 
             // prop_grid_model
             // 
@@ -4072,25 +4094,15 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // but_unwrap
+            // but_allign_cyl
             // 
-            this.but_unwrap.Location = new System.Drawing.Point(379, 391);
-            this.but_unwrap.Name = "but_unwrap";
-            this.but_unwrap.Size = new System.Drawing.Size(97, 31);
-            this.but_unwrap.TabIndex = 154;
-            this.but_unwrap.Text = "Развернуть";
-            this.but_unwrap.UseVisualStyleBackColor = true;
-            this.but_unwrap.Click += new System.EventHandler(this.but_unwrap_Click);
-            // 
-            // but_wrap
-            // 
-            this.but_wrap.Location = new System.Drawing.Point(379, 428);
-            this.but_wrap.Name = "but_wrap";
-            this.but_wrap.Size = new System.Drawing.Size(95, 29);
-            this.but_wrap.TabIndex = 155;
-            this.but_wrap.Text = "Свернуть";
-            this.but_wrap.UseVisualStyleBackColor = true;
-            this.but_wrap.Click += new System.EventHandler(this.but_wrap_Click);
+            this.but_allign_cyl.Location = new System.Drawing.Point(501, 351);
+            this.but_allign_cyl.Name = "but_allign_cyl";
+            this.but_allign_cyl.Size = new System.Drawing.Size(96, 34);
+            this.but_allign_cyl.TabIndex = 156;
+            this.but_allign_cyl.Text = "Выровнять цилиндр";
+            this.but_allign_cyl.UseVisualStyleBackColor = true;
+            this.but_allign_cyl.Click += new System.EventHandler(this.but_allign_cyl_Click);
             // 
             // MainScanningForm
             // 
@@ -4552,6 +4564,7 @@ namespace opengl3
         private System.Windows.Forms.TabPage tabP_in_situ_gui;
         private System.Windows.Forms.Button but_wrap;
         private System.Windows.Forms.Button but_unwrap;
+        private System.Windows.Forms.Button but_allign_cyl;
     }
 }
 

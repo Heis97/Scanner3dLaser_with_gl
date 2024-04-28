@@ -1089,19 +1089,45 @@ namespace opengl3
         {
             var ps1L = ps1.ToList();
             var ps1ret = (Point3d_GL[])ps1.Clone();
-            for (int i = wind; i < ps1.Length - wind; i++)
+            for (int i = 0; i < ps1.Length; i++)
             {
                 if (i > 0)
                 {
-
+                    var beg = i-wind; if(beg<0) beg = 0;
+                    var end = i + wind; if (end >= ps1.Length) end = ps1.Length-1;
+                    var range = end - beg;
                     Point3d_GL sum = new Point3d_GL();
-                    Array.ForEach(ps1L.GetRange(i - wind, 2 * wind).ToArray(), p => sum += p);
+                    Array.ForEach(ps1L.GetRange(beg, range).ToArray(), p => sum += p);
                     var aver = sum.x / (2 * wind);
                     ps1ret[i].x = aver;
                 }
             }
             return ps1ret;
         }
+        public static Point3d_GL[] gaussFilter_X_closed(Point3d_GL[] ps1, int wind = 3)
+        {
+            var ps1L = ps1.ToList();
+            var ps1ret = (Point3d_GL[])ps1.Clone();
+            ps1L.AddRange(ps1);
+            ps1L.AddRange(ps1);
+            int j = 0;
+            for (int i = ps1.Length; i < 2*ps1.Length; i++)
+            {
+                if (i > 0)
+                {
+                    var beg = i - wind; 
+                    var end = i + wind; 
+                    var range = end - beg;
+                    Point3d_GL sum = new Point3d_GL();
+                    Array.ForEach(ps1L.GetRange(beg, range).ToArray(), p => sum += p);
+                    var aver = sum.x / (2 * wind);
+                    ps1ret[j].x = aver;
+                    j++;
+                }
+            }
+            return ps1ret;
+        }
+
         public static Point3d_GL[] sortByX(Point3d_GL[] ps)
         {
             var ps_sort = from p in ps

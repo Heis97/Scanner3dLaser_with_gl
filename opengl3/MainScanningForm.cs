@@ -1602,13 +1602,16 @@ namespace opengl3
             //GL1.addFlat3d_XY_zero_s(0);
             //var ps = SurfaceReconstraction.gen_random_cont_XY(20, 40, 2,new Point3d_GL(20,10));
 
-             /*var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
-             GL1.addTraj(ps);
-             GL1.addTraj(ps_circ);*/
+            /*var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
+            GL1.addTraj(ps);
+            GL1.addTraj(ps_circ);*/
             // test_traj_2d();
             //test_expand();
             //test_merge_surf();
             //test_comp_color();
+
+            var scan_stl_orig = new Model3d(@"C:\Users\Dell\source\repos\kuka\opengl3_01.10\opengl3\bin\x64\Debug\models\defects\human arm_cut.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
 
         }
 
@@ -2076,7 +2079,7 @@ namespace opengl3
             var scan_stl_orig = new Model3d(@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d models\arm_defect_noise3_sm.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
             GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
             var mesh = new IndexedMesh(scan_stl_orig.pols);
-            var board = mesh.triangs_on_board();
+            var board = mesh.normals_on_board();
            /* foreach (var cont in board)
             {
                 var color = Color3d_GL.random();
@@ -2085,7 +2088,7 @@ namespace opengl3
             comp_angs_board(board[0]);
         }
 
-        void comp_angs_board(Point3d_GL[] ps)
+        static Point3d_GL[] comp_angs_board(Point3d_GL[] ps)
         {
             var angs = new Point3d_GL[ps.Length - 1];
             for(int i=1; i < ps.Length;i++)
@@ -2107,6 +2110,32 @@ namespace opengl3
                 Console.WriteLine(i + " " + smooth_ang[i].x + " " + angs[i].x);
 
             }
+            return smooth_ang;
+        }
+
+        static Point3d_GL[] comp_angs_board_inds(Polygon3d_GL[] pols,int[] inds)
+        {
+            var angs = new Point3d_GL[inds.Length - 1];
+            for (int i = 1; i < inds.Length; i++)
+            {
+                angs[i - 1] = new Point3d_GL(Point3d_GL.ang(pols[inds[i - 1]].flat3D.n.toPoint(), pols[inds[i]].flat3D.n.toPoint()));
+
+            }
+            for (int i = 0; i < angs.Length; i++)
+            {
+                //Console.WriteLine(i+" "+angs[i].x);
+
+            }
+            var smooth_ang = Point3d_GL.gaussFilter_X_closed(angs, 35);
+            Console.WriteLine("________________________________");
+            Console.WriteLine("________________________________");
+            Console.WriteLine("________________________________");
+            for (int i = 0; i < smooth_ang.Length; i++)
+            {
+                Console.WriteLine(i + " " + smooth_ang[i].x + " " + angs[i].x);
+
+            }
+            return smooth_ang;
         }
         void test_surf_rec_2()
         {
@@ -5394,13 +5423,170 @@ namespace opengl3
         private void but_unwrap_Click(object sender, EventArgs e)
         {
             var selected_obj = selected_object(); if (selected_obj == null) return;
+
+            //mesh_ in  ax y
             unwrap_mesh(selected_obj);
+        }
+
+        static Point3d_GL[] approxim_cylindr(Polygon3d_GL[] pols)
+        {
+
+
+
+            return null;
+        }
+        static int[] comp_zeros(Point3d_GL[] ns)
+        {
+            var zeros = new List<int>();
+            for(int i=1; i < ns.Length-1;i++)
+            {
+                if(ns[i].x> ns[i+1].x && ns[i].x > ns[i -1].x)
+                {
+                    zeros.Add(i);
+                }
+            }
+            return zeros.ToArray();
+        }
+        static void cylindr_find_vc(Polygon3d_GL[] pols,GraphicGL graphic)
+        {
+            var mesh = new IndexedMesh(pols);
+            var ps = mesh.ps_uniq;
+            var board = mesh.triangs_on_board()[0];//only first
+
+            var ns = comp_angs_board_inds(pols,board);
+
+
+
+            //var zeros = comp_zeros(ns);
+
+            var zeros = new int[] { 92, 169 };
+            if (zeros.Length != 2)
+            {
+                return;
+            }
+            var vc = pols[board[zeros[0]]].centr - pols[board[zeros[1]]].centr;
+            var ps_vc = new Point3d_GL[] { pols[board[zeros[0]]].centr, pols[board[zeros[1]]].centr };
+
+            
+            var z0 = new Point3d_GL(0, 0, 1);
+            var y = (vc).normalize();
+            var x = y | z0;
+            var z = x | y;
+
+            var ms = Point3d_GL.aver(ps);
+
+           /*var m = new Matrix<double>(new double[,]
+            {
+                { x.x,x.y,x.z,ms.x},
+                 { y.x,y.y,y.z,ms.y},
+                  {z.x,z.y,z.z,ms.z},
+                   { 0,0,0,1}
+            });*/
+
+            var m = new Matrix<double>(new double[,]
+            {
+                { x.x,y.x,z.x,ms.x},
+                 { x.y,y.y,z.y,ms.y},
+                  {x.z,y.z,z.z,ms.z},
+                   { 0,0,0,1}
+            });
+
+            var m_inv = m.Clone();
+            CvInvoke.Invert(m, m_inv, DecompMethod.LU);
+
+
+            var ps_y_ax = Point3d_GL.multMatr(ps, m_inv);
+
+            //graphic.addPointMesh(ps_y_ax, Color3d_GL.green());
+             var flat_xz = get_flat_xz(0, 100);
+
+           
+
+            mesh.ps_uniq = ps_y_ax;
+            pols = mesh.get_polygs();
+            var pols_xz = pols_on_xz(pols);
+            var ps_c = Polygon3d_GL.get_centres(pols_xz);
+
+            //graphic.addMesh(Polygon3d_GL.toMesh(flat_xz)[0], PrimitiveType.Triangles);
+            graphic.addMesh(Polygon3d_GL.toMesh(pols_xz)[0], PrimitiveType.Triangles);
+
+            graphic.addPointMesh(ps_c, Color3d_GL.green());
+
+              var circ = SurfaceReconstraction.ps_fit_circ_XZ_mnk(ps_c);
+              var p_c = new Point3d_GL(circ.x, 0, circ.y);
+              ps_y_ax = Point3d_GL.add_arr(ps_y_ax, -p_c);
+
+            var ps_circ = new Point3d_GL[ps.Length];
+
+            var ps_circ_2 = new Point3d_GL[ps.Length];
+            var alph = Math.PI;
+            var d_alph = 2 * Math.PI / ps_circ.Length;
+            var rc = circ.z;
+            for (int i = 0; i < ps_circ.Length; i++)
+            {
+                var xc = circ.x + rc * Math.Sin(alph);
+                var yc = circ.y + rc * Math.Cos(alph);
+                ps_circ[i] = new Point3d_GL(xc, 0,yc);
+
+                ps_circ_2[i] = new Point3d_GL(rc * Math.Sin(alph), 0, rc * Math.Cos(alph));
+                alph += d_alph;
+            }
+            graphic.addPointMesh(ps_circ, Color3d_GL.purple());
+            graphic.addPointMesh(ps_circ_2, Color3d_GL.aqua());
+            mesh.ps_uniq = ps_y_ax;
+            var pols_xz2 = mesh.get_polygs();
+            graphic.addMesh(Polygon3d_GL.toMesh(pols_xz2)[0], PrimitiveType.Triangles);
+            Console.WriteLine("circ_r:" + circ.z);
+
+        }
+
+        static Polygon3d_GL[] pols_on_xz(Polygon3d_GL[] pols)
+        {
+            var pols_xz = new List<Polygon3d_GL>();
+            for(int i=0; i<pols.Length;i++)
+            {
+                var s1 = Math.Sign(pols[i].ps[0].y);
+                var s2 = Math.Sign(pols[i].ps[1].y);
+                var s3 = Math.Sign(pols[i].ps[2].y);
+                var s = s1 * s2 * s3;
+                if(s<0 &&(s1>0 || s2>0|| s3>0))
+                {
+                    pols_xz.Add(pols[i]);
+                }
+            }
+            return pols_xz.ToArray();
+        }
+
+
+        static  Polygon3d_GL[] get_flat_xz(double y, double d)
+        {
+            Flat3d_GL flat3D_GL = new Flat3d_GL(new Point3d_GL(10, y, 0), new Point3d_GL(10, y, 10), new Point3d_GL(0, y, 10));
+            var p0 = (new Line3d_GL(new Vector3d_GL(-d, 10, -d), new Point3d_GL(-d, 0, -d))).calcCrossFlat(flat3D_GL);
+            var p1 = (new Line3d_GL(new Vector3d_GL(d, 10, -d), new Point3d_GL(d, 0, -d))).calcCrossFlat(flat3D_GL);
+
+            var p2 = (new Line3d_GL(new Vector3d_GL(-d, 10, d), new Point3d_GL(-d, 0, d))).calcCrossFlat(flat3D_GL);
+            var p3 = (new Line3d_GL(new Vector3d_GL(d, 10, d), new Point3d_GL(d, 0, d))).calcCrossFlat(flat3D_GL);
+
+            var pols = new Polygon3d_GL[]
+            {
+                new Polygon3d_GL( p1,p3,p2),
+                new Polygon3d_GL( p2,p0,p1)
+            };
+            return pols;
         }
 
         private void but_wrap_Click(object sender, EventArgs e)
         {
             var selected_obj = selected_object(); if (selected_obj == null) return;
             wrap_mesh(selected_obj);
+        }
+
+        private void but_allign_cyl_Click(object sender, EventArgs e)
+        {
+            var selected_obj = selected_object(); if (selected_obj == null) return;
+            var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data, GL1.buffersGl.objs[selected_obj].color_buffer_data);
+            cylindr_find_vc(polygs, GL1);
+
         }
         private void but_intersec_obj_Click(object sender, EventArgs e)
         {

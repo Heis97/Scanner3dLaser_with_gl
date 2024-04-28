@@ -69,7 +69,7 @@ namespace opengl3
             return ps_circ;
         }
 
-        static public Point3d_GL[] ps_fit_circ_XY_mnk(Point3d_GL[] ps)
+        static public Point3d_GL ps_fit_circ_XY_mnk(Point3d_GL[] ps)
         {
             
             var sx = 0d;
@@ -127,7 +127,67 @@ namespace opengl3
                 ps_circ[i] = new Point3d_GL(x, y);
                 alph += d_alph;
             }
-            return ps_circ;
+            return circ;
+        }
+        static public Point3d_GL ps_fit_circ_XZ_mnk(Point3d_GL[] ps)
+        {
+
+            var sx = 0d;
+            var sx2 = 0d;
+            var sx3 = 0d;
+            var sy = 0d;
+            var sy2 = 0d;
+            var sy3 = 0d;
+            var sxy = 0d;
+            var sx2y = 0d;
+            var sxy2 = 0d;
+
+            var n = ps.Length;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                sx += ps[i].x;
+                sx2 += ps[i].x * ps[i].x;
+                sx3 += ps[i].x * ps[i].x * ps[i].x;
+
+                sy += ps[i].z;
+                sy2 += ps[i].z * ps[i].z;
+                sy3 += ps[i].z * ps[i].z * ps[i].z;
+
+                sxy += ps[i].x * ps[i].z;
+                sx2y += ps[i].x * ps[i].x * ps[i].z;
+                sxy2 += ps[i].x * ps[i].z * ps[i].z;
+            }
+            var n1 = 1d / n;
+
+            var n11 = 2 * (sx2 - n1 * sx * sx);
+            var n12 = 2 * (sxy - n1 * sx * sy);
+            var w1 = sx3 + sxy2 - n1 * sx2 * sx - n1 * sy2 * sx;
+
+            var n21 = 2 * (sxy - n1 * sx * sy);
+            var n22 = 2 * (sy2 - n1 * sy * sy);
+            var w2 = sx2y + sy3 - n1 * sx2 * sy - n1 * sy2 * sy;
+
+            var det_N = n11 * n22 - n12 * n21;
+            var x0 = (w1 * n22 - w2 * n12) / det_N;
+            var y0 = (w2 * n11 - w1 * n21) / det_N;
+
+            var r2 = x0 * x0 + y0 * y0 + n1 * (sx2 + sy2 - 2 * (x0 * sx + y0 * sy));
+
+            //var circ = fit_circle_xy(ps);
+            //Console.WriteLine(circ);
+            var circ = new Point3d_GL(x0, y0, Math.Sqrt(r2));
+            var r_app = circ.z;
+            var ps_circ = new Point3d_GL[ps.Length];
+            var alph = Math.PI;
+            var d_alph = 2 * Math.PI / ps_circ.Length;
+            for (int i = 0; i < ps_circ.Length; i++)
+            {
+                var x = circ.x + r_app * Math.Sin(alph);
+                var y = circ.y + r_app * Math.Cos(alph);
+                ps_circ[i] = new Point3d_GL(x, y);
+                alph += d_alph;
+            }
+            return circ;
         }
 
 

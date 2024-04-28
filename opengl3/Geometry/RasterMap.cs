@@ -543,7 +543,7 @@ namespace opengl3
         {
             var obj1 = Polygon3d_GL.polygs_from_mesh(mesh1);
             var obj2 = Polygon3d_GL.polygs_from_mesh(mesh2);
-            var intersec = matches_two_surf(obj1, obj2);
+            var intersec = matches_two_surf(obj1, obj2,100);//-1
             var ps = calc_intersec(obj1, obj2, intersec);
             var ps_or = Point3d_GL.order_points(ps);
             //ps_or = PathPlanner.filter_traj(ps_or.ToList(), 4.6).ToArray();

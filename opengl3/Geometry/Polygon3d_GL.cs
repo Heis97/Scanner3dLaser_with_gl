@@ -720,6 +720,16 @@ namespace opengl3
             }
             return ps.ToArray();
         }
+
+        public static Point3d_GL[] get_centres(Polygon3d_GL[] pn)
+        {
+            var ps = new List<Point3d_GL>();
+            for (int i = 0; i < pn.Length; i++)
+            {
+                ps.Add(pn[i].centr);
+            }
+            return ps.ToArray();
+        }
         public static Polygon3d_GL[] from_points(Point3d_GL[] ps1)
         {
             return null;
@@ -957,7 +967,17 @@ namespace opengl3
 
             return pss.ToArray();
         }
-        public Point3d_GL[][] triangs_on_board()
+        public int[][] triangs_on_board()//normals
+        {
+            pols_inds = get_poligs_inds();
+            ps_on_triang = get_points_triang_inds();
+            check_arr = check_board_all_poligs();
+            var board_conts = get_triangs_on_board();
+
+            return board_conts.ToArray();
+        }
+
+        public Point3d_GL[][] normals_on_board()//normals
         {
             pols_inds = get_poligs_inds();
             ps_on_triang = get_points_triang_inds();

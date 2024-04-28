@@ -16,14 +16,14 @@ namespace opengl3
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            try
+            //try
             {
                 Application.Run(new MainScanningForm());
             }
-            catch (Exception ex)
+            /*catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
+            }*/
             
         }
     }
