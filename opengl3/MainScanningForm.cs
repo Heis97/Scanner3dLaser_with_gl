@@ -5799,7 +5799,7 @@ namespace opengl3
 
         }
 
-       
+        
 
         private void but_scan_stereo_rob_Click(object sender, EventArgs e)
         {
