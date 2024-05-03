@@ -49,7 +49,11 @@ namespace opengl3
         public double str_to_double(string s)
         {
             var s1 = s;
-            if(!s1.Contains("."))
+            if (s1.Contains(","))
+            {
+                s1.Replace(',', '.');
+            }
+            if (!s1.Contains("."))
             {
                 s1 += ".0";
             }
@@ -57,18 +61,45 @@ namespace opengl3
         }
         public RobotFrame(string coords, RobotType robotType = RobotType.PULSE)
         {
-            var coords_s = coords.Split(' ');
+            var coords_s = coords.Trim().Split(' ');
             if (coords_s.Length < 6)
                 return;
-            X = str_to_double(coords_s[0]);
-            Y = str_to_double(coords_s[1]);
-            Z = str_to_double(coords_s[2]);
-            A = str_to_double(coords_s[3]);
-            B = str_to_double(coords_s[4]);
-            C = str_to_double(coords_s[5]);
+            if(coords_s[0][0]=='G')
+            {
+                X = str_to_double(coords_s[1].Substring(1));
+                Y = str_to_double(coords_s[2].Substring(1));
+                Z = str_to_double(coords_s[3].Substring(1));
+                A = str_to_double(coords_s[4].Substring(1));
+                B = str_to_double(coords_s[5].Substring(1));
+                C = str_to_double(coords_s[6].Substring(1));
+            }
+            else
+            {
+                X = str_to_double(coords_s[0]);
+                Y = str_to_double(coords_s[1]);
+                Z = str_to_double(coords_s[2]);
+                A = str_to_double(coords_s[3]);
+                B = str_to_double(coords_s[4]);
+                C = str_to_double(coords_s[5]);
+            }
+            
             V = 0;
             D = 0;
             this.robotType = robotType;
+        }
+
+        public static RobotFrame[] parse_g_code(string g_code, RobotType robotType = RobotType.PULSE)
+        {
+            var lines = g_code.Split('\n');
+            var frames = new List<RobotFrame>();
+            for(int i=0; i < lines.Length; i++)
+            {
+                if(lines[i].Length>12)
+                {
+                    frames.Add(new RobotFrame(lines[i],robotType));
+                }
+            }
+            return frames.ToArray();
         }
         public Point3d_GL get_pos() { return new Point3d_GL(X, Y, Z); }
         public Point3d_GL get_rot() { return new Point3d_GL(A, B, C); }

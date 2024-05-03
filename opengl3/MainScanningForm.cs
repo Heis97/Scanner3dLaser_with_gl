@@ -956,7 +956,10 @@ namespace opengl3
             var mesh_ind = new IndexedMesh(polygs);
             var ps = mesh_ind.ps_uniq;
 
-
+            for (int i = 0; i < rob_traj.Count; i++)
+            {
+                GL1.addFrame(rob_traj[i], 2, "sda");
+            }
             ps = wrap_ps(ps, radius);
             Console.WriteLine("off_cyl: "+off_cyl);  
             mesh_ind.ps_uniq = Point3d_GL.add_arr(mesh_ind.ps_uniq, off_cyl);
@@ -967,7 +970,10 @@ namespace opengl3
 
 
             rob_traj = wrap_ms(rob_traj.ToArray(), radius).ToList();
-
+            for (int i = 0; i < rob_traj.Count; i++)
+            {
+                GL1.addFrame(rob_traj[i], 2, "sda");
+            }
             for (int i = 0; i < rob_traj.Count; i++)
             {
                 //rob_traj[i]
@@ -1034,7 +1040,7 @@ namespace opengl3
             var z = r * Math.Cos(thetta);
             var y = m[1, 3];
             var m_ry = RobotFrame.RotYmatr(thetta);
-            m_c = m * m_ry;
+            m_c = m_ry*m;
             m_c[0, 3] = x;
             m_c[1, 3] = y;
             m_c[2, 3] = z;
@@ -1682,6 +1688,8 @@ namespace opengl3
 
             var scan_stl_orig = new Model3d("models\\human arm5.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
             GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
+
+            test_abc_matr();
            /* var m = new Matrix<double>(4,4);
             m[0, 3] = 10;
             for (int i = 0; i < 4; i++) m[i, i] = 1;
@@ -1914,6 +1922,31 @@ namespace opengl3
         #endregion
 
         #region test
+
+        void test_abc_matr()
+        {
+
+            var g_code = File.ReadAllText("test_traj.txt");
+            var frames = RobotFrame.parse_g_code(g_code);
+
+            var matrs = new List<Matrix<double>>();
+            for(int i=0; i < frames.Length;i++)
+            {
+                matrs.Add(frames[i].getMatrix());
+               // GL1.addFrame(matrs[i],3,"sf");
+            }
+            for (int i = 0; i < frames.Length; i++)
+            {
+                frames[i] = new RobotFrame(matrs[i], RobotFrame.RobotType.PULSE);
+                Console.WriteLine(frames[i]);
+            }
+
+            for (int i = 0; i < frames.Length; i++)
+            {
+                matrs[i] = frames[i].getMatrix();
+                 GL1.addFrame(matrs[i],3,"sf");
+            }
+        }
         void test_comp_color()
         {
             var name = "scan_virt_flat.stl";
