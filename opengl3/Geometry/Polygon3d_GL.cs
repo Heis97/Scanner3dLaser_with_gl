@@ -967,7 +967,7 @@ namespace opengl3
 
             return pss.ToArray();
         }
-        public int[][] triangs_on_board()//normals
+        public int[][] triangs_on_board()
         {
             pols_inds = get_poligs_inds();
             ps_on_triang = get_points_triang_inds();

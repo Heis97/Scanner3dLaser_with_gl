@@ -1260,35 +1260,42 @@ namespace PathPlanning
         }
 
 
-        static Matrix<double> proj_point(Polygon3d_GL polyg, Point3d_GL point,Vector3d_GL vec_x_dir)//only xy scans
+        static Matrix<double> proj_point(Polygon3d_GL polyg, Point3d_GL point, Vector3d_GL vec_x_dir)//only xy scans
         {
 
-             /*var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
-             //Console.WriteLine(vec_y);
-             var vec_x = (vec_y | polyg.flat3D.n).normalize();
-             //Console.WriteLine(vec_x);
-             var vec_z = polyg.flat3D.n;
-             //Console.WriteLine(vec_z);
-             //Console.WriteLine("_________________");
-             */
+            /*var vec_y = (polyg.flat3D.n | vec_x_dir).normalize();
+            //Console.WriteLine(vec_y);
+            var vec_x = (vec_y | polyg.flat3D.n).normalize();
+            //Console.WriteLine(vec_x);
+            var vec_z = polyg.flat3D.n;
+            //Console.WriteLine(vec_z);
+            //Console.WriteLine("_________________");
+            */
             var n = polyg.flat3D.n;
             if (n.z < 0) n *= -1;
-            var vec_x = comp_vecx(vec_x_dir,n);
-            var vec_z = comp_vecz(vec_x,n);
+            var vec_x = comp_vecx(vec_x_dir, n);
+            var vec_z = comp_vecz(vec_x, n);
             var vec_y = (vec_z | vec_x).normalize();
 
             var p_proj = polyg.project_point_xy(point);
-            
+
             //var p_proj = polyg.ps[0];
-            return new Matrix<double>(new double[,]
+            /*return new Matrix<double>(new double[,]
             {
                 { vec_x.x,vec_x.y,vec_x.z,p_proj.x},
                  { vec_y.x,vec_y.y,vec_y.z,p_proj.y},
                   { vec_z.x,vec_z.y,vec_z.z,p_proj.z+point.z},
                    { 0,0,0,1}
+            });*/
+
+            return new Matrix<double>(new double[,]
+            {
+                { vec_x.x,vec_y.x,vec_z.x,p_proj.x},
+                 { vec_x.y,vec_y.y,vec_z.y,p_proj.y},
+                  { vec_x.z,vec_y.z,vec_z.z,p_proj.z+point.z},
+                   { 0,0,0,1}
             });
         }
-
         public static Matrix<double> proj_point_test(Polygon3d_GL polyg, Vector3d_GL vec_x_dir)
         {
 
@@ -1424,8 +1431,8 @@ namespace PathPlanning
                 var traj_df = filter_traj(divide_traj(traj_2d[i], trajParams.div_step), trajParams.div_step / 2);
                 traj_3d.Add(project_layer(surface, traj_df, map_xy, vec_x));
             }
-            traj_3d = add_transit(traj_3d, trajParams.h_transf);
-            traj_3d = add_transit_out(traj_3d, trajParams.h_transf_out);
+            //traj_3d = add_transit(traj_3d, trajParams.h_transf);
+           // traj_3d = add_transit_out(traj_3d, trajParams.h_transf_out);
             return traj_3d;
         }
 

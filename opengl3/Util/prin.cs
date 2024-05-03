@@ -108,6 +108,15 @@ namespace opengl3
             }
             Console.WriteLine(" ");
         }
+        public static void t(int[] arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+            {
+                Console.Write(arr[i] + " ");
+
+            }
+            Console.WriteLine(" ");
+        }
         public static void t(Frame frame, int cols = 3)
         {
             var name = frame.name;

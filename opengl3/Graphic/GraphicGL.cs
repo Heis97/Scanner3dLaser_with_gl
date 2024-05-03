@@ -1801,7 +1801,38 @@ namespace opengl3
 
             return addMeshColor(mesh.ToArray(), color.ToArray(), PrimitiveType.Lines,name);
         }
+        public string addFrame(Matrix<double> matrix,double d= 10, string name = "new Frame")//not right
+        {
+            //addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 1.0f, 0);
+            //addLineMesh(new Point3d_GL[] { pos, x }, 1.0f, 0, 0);
+            
+            var mesh = new List<float>();
+            var color = new List<float>();
+            var points = new Point3d_GL[] { new Point3d_GL(d), new Point3d_GL(0,d), new Point3d_GL(0,0,d), new Point3d_GL(0, 0, 0) };
+            var colors = new Color3d_GL[] { Color3d_GL.red(), Color3d_GL.green(), Color3d_GL.blue() };
+            points = Point3d_GL.multMatr_p_m( matrix,points);
+            for (int i = 0; i < 3; i++)
+            {
+                mesh.Add((float)points[3].x);
+                mesh.Add((float)points[3].y);
+                mesh.Add((float)points[3].z);
 
+                color.Add(colors[i].r);
+                color.Add(colors[i].g);
+                color.Add(colors[i].b);
+
+                mesh.Add((float)points[i].x);
+                mesh.Add((float)points[i].y);
+                mesh.Add((float)points[i].z);
+
+                color.Add(colors[i].r);
+                color.Add(colors[i].g);
+                color.Add(colors[i].b);
+
+            }
+
+            return addMeshColor(mesh.ToArray(), color.ToArray(), PrimitiveType.Lines, name);
+        }
         public string addFrame_Cam(Camera cam, int frame_len = 15)
         {
 
@@ -1966,7 +1997,7 @@ namespace opengl3
             return addFrame(posit, ox, oy, oz);
         }
 
-        public string addFrame(Matrix<double> m, int frame_len = 15)
+        public string addFrame(Matrix<double> m, double frame_len = 3)
         {
             var posit = m * new Point3d_GL(0, 0, 0);
             /*var ox = matrix * new Point3d_GL(frame_len, 0, 0);

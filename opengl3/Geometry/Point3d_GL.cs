@@ -362,7 +362,15 @@ namespace opengl3
             }
             return ps_ret;
         }
-
+        public static Point3d_GL[] multMatr_p_m(Matrix<double> matrix,Point3d_GL[] ps)
+        {
+            var ps_ret = new Point3d_GL[ps.Length];
+            for (int i = 0; i < ps_ret.Length; i++)
+            {
+                ps_ret[i] = ps[i] * matrix;
+            }
+            return ps_ret;
+        }
         public static Point3d_GL[] mult(Point3d_GL[] ps, double k)
         {
             var ps_ret = new Point3d_GL[ps.Length];
@@ -489,19 +497,36 @@ namespace opengl3
             var matrix = Matrix4x4ToDouble(matrixA);
             return matrix * p;
         }
-        public static Point3d_GL operator *(Point3d_GL p, Matrix<double> m)//хрень
+
+        public static Point3d_GL operator *(Point3d_GL p,Matrix<double> m)
+        {
+            var pm = p.p_to_matrix();
+            var m_res =m *pm ;
+            var p_n = matrix_to_p(m_res);
+           /* prin.t("pm");
+            prin.t(pm);
+            prin.t("m");
+            prin.t(m);
+            prin.t("m_res");
+            prin.t(m_res);
+            prin.t("p_n");
+            prin.t(p_n.ToString());*/
+            return p_n;
+        }
+       /*public static Point3d_GL operator *(Point3d_GL p, Matrix<double> m)//хрень
         {
             return matrix_to_p(p.p_to_matrix() * m);
-        }
+        }*/
         public Matrix<double> p_to_matrix()
         {
-            return new Matrix<double>(new double[,]
+            var m = new Matrix<double>(new double[,]
             {
                 { 1,0,0,x},
                 { 0,1,0,y},
                 { 0,0,1,z},
                 { 0,0,0,1}
             });
+            return m;
         }
         public static Point3d_GL matrix_to_p(Matrix<double> m)
         {
@@ -1127,7 +1152,29 @@ namespace opengl3
             }
             return ps1ret;
         }
-
+        public static Point3d_GL[] gaussFilter_closed(Point3d_GL[] ps1, int wind = 3)
+        {
+            var ps1L = ps1.ToList();
+            var ps1ret = (Point3d_GL[])ps1.Clone();
+            ps1L.AddRange(ps1);
+            ps1L.AddRange(ps1);
+            int j = 0;
+            for (int i = ps1.Length; i < 2 * ps1.Length; i++)
+            {
+                if (i > 0)
+                {
+                    var beg = i - wind;
+                    var end = i + wind;
+                    var range = end - beg;
+                    Point3d_GL sum = new Point3d_GL();
+                    Array.ForEach(ps1L.GetRange(beg, range).ToArray(), p => sum += p);
+                    var aver = sum / (2 * wind);
+                    ps1ret[j] = aver;
+                    j++;
+                }
+            }
+            return ps1ret;
+        }
         public static Point3d_GL[] sortByX(Point3d_GL[] ps)
         {
             var ps_sort = from p in ps
