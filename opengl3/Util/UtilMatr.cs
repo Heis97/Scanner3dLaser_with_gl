@@ -118,6 +118,40 @@ namespace opengl3
             return new Vertex3f((float)v[0, 0], (float)v[1, 0], (float)v[2, 0]);
         }
 
+        public static Matrix<double> to_matrix(Matrix4x4f m)
+        {
+            var matr = new Matrix<double>(4, 4);
+            for (uint i = 0; i < 4; i++)
+            {
+                for (uint j = 0; j < 4; j++)
+                {
+                    matr[(int)i, (int)j] = m[j, i];
+                }
+            }
+            return matr;
+        }
+        public static Matrix4x4f to_matrix(Matrix<double> m)
+        {
+            var matr = new Matrix4x4f(new float[16]);
+            
+            for (uint i = 0; i < 4; i++)
+            {
+                for (uint j = 0; j < 4; j++)
+                {
+                    matr[i, j] = (float) m[(int)j, (int)i];
+                }
+            }
+            return matr;
+        }
+
+        public static Matrix4x4f matrix(Point3d_GL transl, Point3d_GL rotate)
+        {
+
+            return Matrix4x4f.Translated((float)transl.x, (float)transl.y, (float)transl.z) *
+                Matrix4x4f.RotatedX((float)rotate.x) *
+                Matrix4x4f.RotatedY((float)rotate.y) *
+                Matrix4x4f.RotatedZ((float)rotate.z);
+        }
         static public Matrix<double> toMatrix(Mat mat)
         {
             var arr = mat.GetData();

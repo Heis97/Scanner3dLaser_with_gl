@@ -51,6 +51,7 @@ namespace opengl3
                 Matrix4x4f.Scaled(scale, scale, scale);
         }
 
+
         public static Matrix4x4f toGLmatrix(Matrix<double> matrixCV)
         {
             var matrixCV_T = matrixCV.Transpose();

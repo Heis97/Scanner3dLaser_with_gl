@@ -1686,10 +1686,11 @@ namespace opengl3
             //test_merge_surf();
             //test_comp_color();
 
-            var scan_stl_orig = new Model3d("models\\human arm5.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
-            GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
+            //var scan_stl_orig = new Model3d("models\\human arm5.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            //GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
 
-            test_abc_matr();
+            //test_abc_matr();
+            test_3d_models();
            /* var m = new Matrix<double>(4,4);
             m[0, 3] = 10;
             for (int i = 0; i < 4; i++) m[i, i] = 1;
@@ -1922,7 +1923,64 @@ namespace opengl3
         #endregion
 
         #region test
+        void test_3d_models()
+        {
+            for(int i=0;i<=7;i++)
+            {
+                //if(i<4)
+                {
+                    var scan_stl_orig = new Model3d("models\\lowres\\" + i + ".stl", false, 1000);
+                    GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "ax_" + i);
+                }             
+                
+            }
 
+            var L1 = 231.1;
+            var L2 = 450;
+            var L3 = 370;
+            var L4 = 135.1;
+            var L5 = 182.5;
+            var L6 = 132.5;
+            var ms = new Matrix4x4f[8];
+            //var qs = new Matrix4x4f[8];
+            var qms = new Matrix4x4f[8];
+            ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90,0));
+            GL1.buffersGl.setMatrobj("ax_0", 0, ms[0]);
+            ms[1] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
+            GL1.buffersGl.setMatrobj("ax_1", 0, ms[1]); 
+            ms[2] = UtilMatr.matrix(new Point3d_GL(0,-L1), new Point3d_GL(0, 180, 0)) ;
+            GL1.buffersGl.setMatrobj("ax_2", 0, ms[2]);
+            ms[3] =  UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0,90))* UtilMatr.matrix(new Point3d_GL(0, -L1 - L2), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
+            GL1.buffersGl.setMatrobj("ax_3", 0, ms[3]);
+            ms[4] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2-L3), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
+            GL1.buffersGl.setMatrobj("ax_4", 0, ms[4]);
+            ms[5] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL( 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            GL1.buffersGl.setMatrobj("ax_5", 0, ms[5]);
+            ms[6] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 180, 180)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3-L5, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            GL1.buffersGl.setMatrobj("ax_6", 0, ms[6]);
+            ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3-L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            GL1.buffersGl.setMatrobj("ax_7", 0, ms[7]);
+
+
+            var q = new double[6];
+            for(int i=0; i <=7;i++)
+            {
+                var mq = Matrix4x4f.Identity;
+                if(i>=2)
+                {
+                    var j = i - 1;
+                    var fr = RobotFrame.comp_forv_kinem(q, j);
+                    prin.t(j.ToString() + "q; ax_"+i.ToString());
+                    
+                    mq = UtilMatr.matrix(fr.position, fr.rotation.toRad());
+                    prin.t(mq);
+                    prin.t("___________");
+                }               
+                qms[i] = ms[i] * mq;
+                GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
+            }
+
+        }
         void test_abc_matr()
         {
 

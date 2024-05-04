@@ -36,7 +36,13 @@ namespace opengl3
             exist = true;
             color = _color;
         }
-
+        public Point3d_GL toRad()
+        {
+            x = x * 180 / Math.PI;
+            y = y * 180 / Math.PI;
+            z = z * 180 / Math.PI;
+            return this;
+        }
         public Point3d_GL(Point p, double _z)
         {
             x = p.X;

@@ -16,7 +16,7 @@ vec2 vertexTexture;
 
 void main() 
 {
-	vs_out.vertexPosition_world =  (_ModelMatrix*vec4(_vertexPosition_model,1)).xyz;
+	vs_out.vertexPosition_world =  (_ModelMatrix * vec4(_vertexPosition_model,1)).xyz;
 	vs_out.vertexNormal_world = (_ModelMatrix * vec4(_vertexNormal_model,0)).xyz;//
 	vs_out.vertexColor = _vertexColor;
 	vs_out.vertexTexture = _vertexTexture;

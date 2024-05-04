@@ -18,6 +18,8 @@ namespace opengl3
             this.position = pos;
             this.rotation = rot;
         }
+
+
     }
 
     public class RobotFrame
@@ -616,16 +618,16 @@ namespace opengl3
             }
             return q_r;
         }
-        static public PositionRob comp_forv_kinem(double[] q,bool rad = true, RobotType robotType = RobotType.PULSE)
+        static public PositionRob comp_forv_kinem(double[] q,int count, bool rad = true, RobotType robotType = RobotType.PULSE)
         {
             if(robotType==RobotType.PULSE)
             {
-                var L1 = 0.2311;
-                var L2 = 0.45;
-                var L3 = 0.37;
-                var L4 = 0.1351;
-                var L5 = 0.1825;
-                var L6 = 0.1325;
+                var L1 = 231.1;
+                var L2 = 450;
+                var L3 = 370;
+                var L4 = 135.1;
+                var L5 = 182.5;
+                var L6 = 132.5;
 
                 if(!rad)
                     q = to_rad(q);
@@ -638,8 +640,13 @@ namespace opengl3
                     new double[]{ q[4], -Math.PI / 2, 0, L5},
                     new double[]{ q[5],  0, 0, L6}
                 };
-
-                var fr = new RobotFrame(calc_pos(dh_params), robotType);
+                //var dh_params_c = new double[6][];
+                var dh_params_c = new List<double[]>();
+                for (int i=0; i < count;i++)
+                {
+                    dh_params_c.Add( dh_params[i]);
+                }
+                var fr = new RobotFrame(calc_pos(dh_params_c.ToArray()), robotType);
                 var pos = fr.frame;
                 return pos;
             }

@@ -643,7 +643,8 @@ namespace opengl3
             Gl.UseProgram(ids.programID);
             if (openGlobj.count == 1)
             {
-                var ModelMatr = openGlobj.trsc[0].getModelMatrix();
+               // var ModelMatr = openGlobj.trsc[0].getModelMatrix();
+                var ModelMatr = openGlobj.trsc[0].matr;
                 //Console.WriteLine(openGlobj.name+" "+ ModelMatr);
                 Gl.UniformMatrix4f(ids.LocationM, 1, false, ModelMatr);
             }
