@@ -689,14 +689,16 @@ namespace opengl3
         }
         static public double[] comp_inv_kinem_priv(PositionRob pos, int[] turn)
         {
+
+
             var pm = getMatrixPos(pos);
             var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
-            var L1 = 0.2311;
-            var L2 = 0.45;
-            var L3 = 0.37;
-            var L4 = 0.1351;
-            var L5 = 0.1825;
-            var L6 = 0.1325;
+            var L1 = 231.1;
+            var L2 = 450;
+            var L3 = 370;
+            var L4 = 135.1;
+            var L5 = 182.5;
+            var L6 = 132.5;
 
             var dz = eye_matr(4);
             dz[2, 3] = -L6;
@@ -780,13 +782,15 @@ namespace opengl3
             q6 += Math.PI;
 
             var q = new double[]{q1, q2, q3, q4, q5, q6};
+            //Console.WriteLine("q");
             for (int i=0 ;i<q.Length;i++){
                 var qi = q[i];
                 if (qi > Math.PI) qi -= 2 * Math.PI;
                 if (qi < -Math.PI) qi += 2 * Math.PI;
                 q[i] = qi;
+                //Console.WriteLine(q[i]);
             }
-
+            
             return q;
         }
 

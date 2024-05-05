@@ -24,6 +24,9 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        Matrix4x4f[] ms = new Matrix4x4f[8];
+        //var qs = new Matrix4x4f[8];
+        Matrix4x4f[] qms = new Matrix4x4f[8];
 
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4,4);
@@ -1690,22 +1693,44 @@ namespace opengl3
             //GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
 
             //test_abc_matr();
-            test_3d_models();
-           /* var m = new Matrix<double>(4,4);
-            m[0, 3] = 10;
-            for (int i = 0; i < 4; i++) m[i, i] = 1;
+            // test_3d_models();
+            /* var m = new Matrix<double>(4,4);
+             m[0, 3] = 10;
+             for (int i = 0; i < 4; i++) m[i, i] = 1;
 
-            var my = RobotFrame.RotYmatr(PI / 4);
-            my[0, 3] = 15;
+             var my = RobotFrame.RotYmatr(PI / 4);
+             my[0, 3] = 15;
 
-            var ps = new Point3d_GL[] { new Point3d_GL(0, 0), new Point3d_GL(10, 0), new Point3d_GL(10, 10), new Point3d_GL(0, 10) };
-            GL1.addPointMesh(ps, Color3d_GL.blue(), "1_");
-            //ps = Point3d_GL.add_arr(ps, new Point3d_GL(10));
-            var ps_my = Point3d_GL.multMatr_p_m(my,ps);
-            GL1.addPointMesh(ps_my, Color3d_GL.red(), "2_");*/
+             var ps = new Point3d_GL[] { new Point3d_GL(0, 0), new Point3d_GL(10, 0), new Point3d_GL(10, 10), new Point3d_GL(0, 10) };
+             GL1.addPointMesh(ps, Color3d_GL.blue(), "1_");
+             //ps = Point3d_GL.add_arr(ps, new Point3d_GL(10));
+             var ps_my = Point3d_GL.multMatr_p_m(my,ps);
+             GL1.addPointMesh(ps_my, Color3d_GL.red(), "2_");*/
             //GL1.addFrame(m, 15, "m");
 
             //GL1.addFrame(m*my, 15, "my");
+
+            load_3d_model_robot();
+            set_conf_robot(new double[6] { 0,0,0,0,0,0});
+            var fr_test = new RobotFrame(-600, 0, 0, 0, 0, 0);
+            var tool = new RobotFrame(-170.93+5, 68.74 +6.52 + 6.52, 48.09  - 3.35, 1.5511, 1.194616, 0.0);
+            var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052);
+
+            var tool_inv = tool.getMatrix().Clone();
+
+            CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
+            prin.t("tool_inv_1");
+            prin.t(tool_inv);
+
+            set_pos_robot(new RobotFrame( fr_test.getMatrix().Clone() * tool_inv));
+
+            //set_pos_robot(fr_test.Clone(), tool.Clone());
+
+
+
+            GL1.addFrame(fr_test.getMatrix() * tool_inv, 50, "asd");
+            GL1.addFrame(fr_test.getMatrix(), 50, "asd");
+            //test_gen_traj();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1923,6 +1948,143 @@ namespace opengl3
         #endregion
 
         #region test
+
+        void load_3d_model_robot()
+        {
+            for (int i = 0; i <= 7; i++)
+            {
+                //if(i<4)
+                {
+                    var scan_stl_orig = new Model3d("models\\lowres\\" + i + ".stl", false, 1000);
+                    GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "ax_" + i);
+                }
+
+            }
+            var scan_stl = new Model3d("models\\lowres\\t2.stl", false, 1);
+            GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles, "t2");
+            var L1 = 231.1;
+            var L2 = 450;
+            var L3 = 370;
+            var L4 = 135.1;
+            var L5 = 182.5;
+            var L6 = 132.5;
+            
+            ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
+         
+            ms[1] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
+           
+            ms[2] = UtilMatr.matrix(new Point3d_GL(0, -L1), new Point3d_GL(0, 180, 0));
+            
+            ms[3] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
+           
+            ms[4] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
+            
+            ms[5] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+           
+            ms[6] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 180, 180)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            
+            ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+
+            GL1.buffersGl.setMatrobj("ax_0", 0, ms[0]);
+            GL1.buffersGl.setMatrobj("ax_1", 0, ms[1]);
+            GL1.buffersGl.setMatrobj("ax_2", 0, ms[2]);
+            GL1.buffersGl.setMatrobj("ax_3", 0, ms[3]);
+            GL1.buffersGl.setMatrobj("ax_4", 0, ms[4]);
+            GL1.buffersGl.setMatrobj("ax_5", 0, ms[5]);
+            GL1.buffersGl.setMatrobj("ax_6", 0, ms[6]);
+              GL1.buffersGl.setMatrobj("ax_7", 0, ms[7]);
+             GL1.buffersGl.setMatrobj("t2", 0, ms[7]);
+
+
+        }
+
+        void set_conf_robot(double[] q)
+        {
+            //var q = new double[6];
+            for (int i = 0; i <= 7; i++)
+            {
+                var mq = Matrix4x4f.Identity;
+                if (i >= 2)
+                {
+                    var j = i - 1;
+                    var fr = RobotFrame.comp_forv_kinem(q, j);
+                    //prin.t(j.ToString() + "q; ax_"+i.ToString());
+
+                    mq = UtilMatr.matrix(fr.position, fr.rotation.toDegree());
+                    //prin.t(mq);
+                    //prin.t("___________");
+                }
+                qms[i] = mq * ms[i];
+                GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
+            }
+            GL1.buffersGl.setMatrobj("t2", 0, qms[7]);
+        }
+        static Matrix<double> eye_matr(int n)
+        {
+            var m = new Matrix<double>(n, n);
+            for(int i=0; i<n;i++)
+            {
+                m[i, i] = 1;
+            }
+            return m;
+        }
+        void set_pos_robot(RobotFrame rf, RobotFrame tool = null, RobotFrame model = null)
+        {
+            var mr = rf.getMatrix();
+            var mt = eye_matr(4);
+            var mm = eye_matr(4);
+            if (tool != null) mt = tool.getMatrix().Clone();
+            if (model != null) mm = model.getMatrix();
+            // Console.WriteLine(rf.ToStr());
+            var tool_inv = mt.Clone();
+            var model_inv = mm.Clone();
+
+            CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
+            CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
+            prin.t(" model_inv");
+            prin.t(model_inv);
+            prin.t("mr");
+            prin.t(mr);
+            prin.t("tool_inv");
+            prin.t(tool_inv);
+            var mf = model_inv * mr * tool_inv;
+
+            prin.t("mf");
+            prin.t(mf);
+
+
+            var solv = RobotFrame.comp_inv_kinem_priv(new RobotFrame(mf).frame, new int[] { 1, 1, 1 });
+            set_conf_robot(solv);
+        }
+        void test_gen_traj()
+        {
+            var g_code = File.ReadAllText("test_traj.txt");
+            var frames = RobotFrame.parse_g_code(g_code);
+            var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
+            var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052).getMatrix();
+            var matrs = new List<Matrix<double>>();
+            var frs = new List<RobotFrame>();
+            var tool_inv = tool.Clone();
+            var model_inv = model.Clone();
+            CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
+            CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
+            for (int i = 0; i < frames.Length; i++)
+            {
+                // var mf =  tool_inv * frames[i].getMatrix() *  model_inv;
+                var mf = model_inv * frames[i].getMatrix() * tool_inv;
+                GL1.addFrame(model_inv * frames[i].getMatrix(), 3, "asd");
+                matrs.Add(mf);
+                var fr = new RobotFrame(mf);
+               frs.Add(fr);
+                // GL1.addFrame(matrs[i],3,"sf");
+            }
+
+            set_pos_robot(frs[10]);
+
+
+
+        }
+
         void test_3d_models()
         {
             for(int i=0;i<=7;i++)
@@ -1970,13 +2132,13 @@ namespace opengl3
                 {
                     var j = i - 1;
                     var fr = RobotFrame.comp_forv_kinem(q, j);
-                    prin.t(j.ToString() + "q; ax_"+i.ToString());
+                    //prin.t(j.ToString() + "q; ax_"+i.ToString());
                     
-                    mq = UtilMatr.matrix(fr.position, fr.rotation.toRad());
-                    prin.t(mq);
-                    prin.t("___________");
+                    mq = UtilMatr.matrix(fr.position, fr.rotation.toDegree());
+                    //prin.t(mq);
+                    //prin.t("___________");
                 }               
-                qms[i] = ms[i] * mq;
+                qms[i] = mq* ms[i];
                 GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
             }
 
@@ -5623,9 +5785,15 @@ namespace opengl3
             }
             return zeros.ToArray();
         }
-        void cylindr_find_vc(Polygon3d_GL[] pols,GraphicGL graphic)
+        /// <summary>
+        /// 
+        /// 
+        /// </summary>
+        /// <param name="pols"> массив треугольников, описывающих цилиндр</param>
+        /// <param name="graphic">объект для отрисовки </param>
+        void cylindr_find_vc(Polygon3d_GL[] pols,GraphicGL graphic)//выравнивание цилиндра
         {
-            var mesh = new IndexedMesh(pols);
+            var mesh = new IndexedMesh(pols);//
             var ps = mesh.ps_uniq;
             var board = mesh.triangs_on_board()[0];//only first
 

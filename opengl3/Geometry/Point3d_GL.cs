@@ -36,7 +36,7 @@ namespace opengl3
             exist = true;
             color = _color;
         }
-        public Point3d_GL toRad()
+        public Point3d_GL toDegree()
         {
             x = x * 180 / Math.PI;
             y = y * 180 / Math.PI;
