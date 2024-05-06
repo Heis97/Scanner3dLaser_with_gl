@@ -143,7 +143,22 @@ namespace opengl3
             }
             return matr;
         }
+        public static Matrix<double> to_inv_rot_matrix(Matrix<double> m)
+        {
+            var matr = new Matrix<double>(4, 4);
+            var x = m[0, 3];
+            var y = m[1, 3];
+            var z = m[2, 3];
+            matr = m.Transpose();
+            matr[0, 3] = x;
+            matr[1, 3] = y;
+            matr[2, 3] = z;
 
+            matr[3, 0] = 0;
+            matr[3, 1] = 0;
+            matr[3, 2] = 0;
+            return matr;
+        }
         public static Matrix4x4f matrix(Point3d_GL transl, Point3d_GL rotate)
         {
 

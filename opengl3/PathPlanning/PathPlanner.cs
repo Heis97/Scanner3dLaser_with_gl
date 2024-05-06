@@ -1629,6 +1629,9 @@ namespace PathPlanning
         {
             return Math.Round(val,4);
         }
+
+        
+
     }
     public static class Trajectory
     {

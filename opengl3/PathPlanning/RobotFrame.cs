@@ -355,7 +355,15 @@ namespace opengl3
         {
             return Math.Round(val, 4);
         }
-
+        public  static List<Point3d_GL> to_points(List<RobotFrame> frs)
+        {
+            var ps = new List<Point3d_GL>();
+            for (int i = 0; i < frs.Count; i++)
+            {
+                ps.Add(frs[i].get_pos());
+            }
+            return ps;
+        }
         public RobotFrame Clone()
         {
             return new RobotFrame(X, Y, Z, A, B, C, V, D,F,robotType);

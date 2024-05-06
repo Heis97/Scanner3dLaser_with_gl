@@ -28,6 +28,7 @@ namespace opengl3
         //var qs = new Matrix4x4f[8];
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
+        List<RobotFrame> frames_rob_end = new List<RobotFrame>();
 
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4,4);
@@ -1690,8 +1691,8 @@ namespace opengl3
             //test_merge_surf();
             //test_comp_color();
 
-            var scan_stl_orig = new Model3d("models\\human arm5.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
-            GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
+            // var scan_stl_orig = new Model3d("models\\human arm5.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            // GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
 
             //test_abc_matr();
             // test_3d_models();
@@ -1711,8 +1712,15 @@ namespace opengl3
 
             //GL1.addFrame(m*my, 15, "my");
 
-           
-           //test_gen_traj();
+
+            //test_gen_traj();
+            var color_skin = new Color3d_GL(213 / 255f, 172 / 255f, 129 / 255f);
+            var scan_stl_orig = new Model3d("models\\human arm7.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            GL1.add_buff_gl(scan_stl_orig.mesh, color_skin, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
+            var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
+
+            load_3d_model_robot();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1956,17 +1964,21 @@ namespace opengl3
         }
         void load_3d_model_robot()
         {
+
+            var color_arm = Color3d_GL.black();
+            var color_end = Color3d_GL.white();
+            var color_skin = new Color3d_GL(213, 172, 129);
             for (int i = 0; i <= 7; i++)
             {
                 //if(i<4)
                 {
                     var scan_stl_orig = new Model3d("models\\lowres\\" + i + ".stl", false, 1000);
-                    GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "ax_" + i);
+                    GL1.add_buff_gl(scan_stl_orig.mesh, color_arm, scan_stl_orig.normale, PrimitiveType.Triangles, "ax_" + i);
                 }
 
             }
             var scan_stl = new Model3d("models\\lowres\\t2.stl", false, 1);
-            GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles, "t2");
+            GL1.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "t2");
             var L1 = 231.1;
             var L2 = 450;
             var L3 = 370;
@@ -2056,19 +2068,14 @@ namespace opengl3
 
             //prin.t("mf");
            // prin.t(mf);
-
+          
 
             var solv = RobotFrame.comp_inv_kinem_priv(new RobotFrame(mf).frame, new int[] { 1, 1, 1 });
             set_conf_robot(solv);
         }
         void test_gen_traj()
         {
-            var scan_stl_orig = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
-            GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
-            var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
-            GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
-
-            load_3d_model_robot();
+           
             var g_code = File.ReadAllText("test_traj.txt");
             var frames = RobotFrame.parse_g_code(g_code);
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
@@ -2085,11 +2092,16 @@ namespace opengl3
             for (int i = 0; i < frames.Length; i++)
             {
                 // var mf =  tool_inv * frames[i].getMatrix() *  model_inv;
+
+                var mf_e = model_inv * frames[i].getMatrix();
+
                 var mf = model_inv * frames[i].getMatrix() * tool_inv;
                 //GL1.addFrame(model_inv * frames[i].getMatrix(), 10, "asd");
                 matrs.Add(mf);
                 var fr = new RobotFrame(mf);
                 frames_rob.Add(fr);
+
+                frames_rob_end.Add(new RobotFrame(mf_e));
                 // GL1.addFrame(matrs[i],3,"sf");
             }
 
@@ -2102,6 +2114,17 @@ namespace opengl3
         {
             if(i< frames_rob.Count)
                 set_pos_robot(frames_rob[i]);
+
+            var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
+            var tool_inv = tool.Clone();
+            CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
+            var fr_e =tool* frames_rob[i].getMatrix() ;
+            var ps = RobotFrame.to_points(frames_rob_end.GetRange(0, i));
+            GL1.remove_buff_gl_id("gen_traj");
+            traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
+
+            if(i%10==0)
+                GL1.addFrame(UtilMatr.to_inv_rot_matrix( frames_rob_end[i].getMatrix()), 10, "sdf");
         }
 
         void test_3d_models()

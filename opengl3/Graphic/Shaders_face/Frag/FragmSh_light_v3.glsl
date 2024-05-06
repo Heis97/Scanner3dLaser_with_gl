@@ -190,7 +190,13 @@ void main() {
 		/*color.xyz = comp_color_point_light(LightPosition_world, fs_in.Position_world,
 		fs_in.Normal_camera, fs_in.LightDirection_camera, fs_in.EyeDirection_camera,
 		MaterialAmbientColor, MaterialDiffuseColor,MaterialSpecularColor);*/
-		vec3 MaterialSpecularColor = vec3(0.0000001);
+
+
+		//============================================
+		//MaterialDiffuseColor = fs_in.Color;
+		//MaterialSpecularColor = 0.2 * MaterialDiffuseColor;
+		//============================================
+		vec3 MaterialSpecularColor = vec3(0.3);
 		for(int i=0; i< light_count; i++)
 		{
 			color.xyz += comp_light(LightSource[i],

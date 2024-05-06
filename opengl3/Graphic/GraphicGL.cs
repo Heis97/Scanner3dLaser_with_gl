@@ -491,7 +491,7 @@ namespace opengl3
             // addLight();
 
             //scan_light
-            lightSources.Add(new LightSourceGL
+           /* lightSources.Add(new LightSourceGL
             {
                 position_z = 100,
                 direction_x = 1,
@@ -504,7 +504,7 @@ namespace opengl3
                 type_light = LightSourceGL.type.Disc
             
             });
-
+           */
             lightSources.Add(new LightSourceGL
             {
                 position_z = 1000,
@@ -517,8 +517,8 @@ namespace opengl3
                 type_light = LightSourceGL.type.Point
 
             });
-/*
-            lightSources.Add(new LightSourceGL
+
+         /*   lightSources.Add(new LightSourceGL
             {
                  position_z = 50,
                 position_x = -250,
@@ -1728,7 +1728,7 @@ namespace opengl3
 
             if (Convert.ToDouble( trz.view_3d) < 0)
             {
-                transRotZooms[i].view_3d = add_buff_gl(toFloat(verts), null, null, PrimitiveType.Lines, i.ToString());
+                transRotZooms[i].view_3d = add_buff_gl(toFloat(verts), toFloat(verts), toFloat(verts), PrimitiveType.Lines, i.ToString());
             }
             else
             {
@@ -1761,6 +1761,27 @@ namespace opengl3
                 fl[3 * i + 2] = points[i].z;
             }
             return fl;
+        }
+        public string add_buff_gl(float[] data_v, Color3d_GL color, float[] data_n, PrimitiveType tp, string name = "new obj")
+        {
+            if (data_v == null)
+            {
+                Console.WriteLine("date_v == NULL");
+                return null;
+            }
+            var data_c = new float[data_v.Length];
+            if(color!=null)
+            {
+                for (int i = 0; i < data_c.Length; i += 3)
+                {
+                    data_c[i] = color.r;
+                    data_c[i + 1] = color.g ;
+                    data_c[i + 2] = color.b;
+                }
+            }
+          
+
+            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n, null, tp, name), name);
         }
 
         public string add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp,string name = "new obj")
