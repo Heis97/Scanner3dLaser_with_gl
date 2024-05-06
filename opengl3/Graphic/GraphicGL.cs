@@ -228,6 +228,7 @@ namespace opengl3
         public List<LightSourceGL> lightSources = new List<LightSourceGL>();
         public LightSourceGL[] lightSources_arr;
         public LightSourcesGL lightSources_obj = new LightSourcesGL();
+        public MainScanningForm form;
 
         float laser_st = 0.7f;
         #endregion
@@ -327,12 +328,17 @@ namespace opengl3
             //Console.WriteLine(toStringBuf(debug_data.getData(), 100, 4, "debug_D"));
         }
 
-        public void start_animation(int end = 0)
+        public void start_animation(int end = 0, object form1 = null)
         {
             anim_is_go = true;
             cur_time_an = 0;
             end_time_an = end;
-            lightSources[0].direction_z = laser_st;
+            if(form1 != null)
+            {
+                form = (MainScanningForm)form1;
+
+            }
+            //lightSources[0].direction_z = laser_st;
         }
 
         void comp_cur_animation()
@@ -347,10 +353,9 @@ namespace opengl3
                 var fi = Math.Acos(lightSources[0].direction_z);
                 fi -= df;
                 lightSources[0].direction_z = Math.Cos(fi);*/
-                lightSources[0].direction_z -= df;
 
-
-
+                //lightSources[0].direction_z -= df;
+                form?.set_pos_traj_robot(cur_time_an);
                 cur_time_an++;
                 if (cur_time_an > end_time_an) anim_is_go = false;
             }

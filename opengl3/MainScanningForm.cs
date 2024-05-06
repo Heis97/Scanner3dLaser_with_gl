@@ -27,6 +27,7 @@ namespace opengl3
         Matrix4x4f[] ms = new Matrix4x4f[8];
         //var qs = new Matrix4x4f[8];
         Matrix4x4f[] qms = new Matrix4x4f[8];
+        List<RobotFrame> frames_rob = new List<RobotFrame>();
 
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4,4);
@@ -1689,8 +1690,8 @@ namespace opengl3
             //test_merge_surf();
             //test_comp_color();
 
-            var scan_stl_orig = new Model3d("models\\human arm5.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
-           GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
+            //var scan_stl_orig = new Model3d("models\\human arm5.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+         //  GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
 
             //test_abc_matr();
             // test_3d_models();
@@ -2032,7 +2033,7 @@ namespace opengl3
             }
             return m;
         }
-        void set_pos_robot(RobotFrame rf, RobotFrame tool = null, RobotFrame model = null)
+        public void set_pos_robot(RobotFrame rf, RobotFrame tool = null, RobotFrame model = null)
         {
             var mr = rf.getMatrix();
             var mt = eye_matr(4);
@@ -2062,17 +2063,25 @@ namespace opengl3
         }
         void test_gen_traj()
         {
+            var scan_stl_orig = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
+            var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
+
             load_3d_model_robot();
             var g_code = File.ReadAllText("test_traj.txt");
             var frames = RobotFrame.parse_g_code(g_code);
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
             var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052).getMatrix();
             var matrs = new List<Matrix<double>>();
-            var frs = new List<RobotFrame>();
+            frames_rob = new List<RobotFrame>();
             var tool_inv = tool.Clone();
             var model_inv = model.Clone();
             CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
             CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
+            GL1.buffersGl.setMatrobj("scan", 0, UtilMatr.to_matrix(model_inv));
+            GL1.buffersGl.setMatrobj("table", 0, UtilMatr.to_matrix(model_inv));
+
             for (int i = 0; i < frames.Length; i++)
             {
                 // var mf =  tool_inv * frames[i].getMatrix() *  model_inv;
@@ -2080,14 +2089,19 @@ namespace opengl3
                 GL1.addFrame(model_inv * frames[i].getMatrix(), 10, "asd");
                 matrs.Add(mf);
                 var fr = new RobotFrame(mf);
-               frs.Add(fr);
+                frames_rob.Add(fr);
                 // GL1.addFrame(matrs[i],3,"sf");
             }
 
-            set_pos_robot(frs[10]);
+            set_pos_robot(frames_rob[10]);
 
 
 
+        }
+        public void set_pos_traj_robot(int i)
+        {
+            if(i< frames_rob.Count)
+                set_pos_robot(frames_rob[i]);
         }
 
         void test_3d_models()
@@ -4052,7 +4066,8 @@ namespace opengl3
 
         private void but_start_anim_Click(object sender, EventArgs e)
         {
-            GL1.start_animation(100);
+            test_gen_traj();
+            GL1.start_animation(frames_rob.Count, this);
         }
 
         private void but_photo_gl_Click(object sender, EventArgs e)
