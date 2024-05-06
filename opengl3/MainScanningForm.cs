@@ -1690,8 +1690,8 @@ namespace opengl3
             //test_merge_surf();
             //test_comp_color();
 
-            //var scan_stl_orig = new Model3d("models\\human arm5.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
-         //  GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
+            var scan_stl_orig = new Model3d("models\\human arm5.stl", false);//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
 
             //test_abc_matr();
             // test_3d_models();
@@ -2086,7 +2086,7 @@ namespace opengl3
             {
                 // var mf =  tool_inv * frames[i].getMatrix() *  model_inv;
                 var mf = model_inv * frames[i].getMatrix() * tool_inv;
-                GL1.addFrame(model_inv * frames[i].getMatrix(), 10, "asd");
+                //GL1.addFrame(model_inv * frames[i].getMatrix(), 10, "asd");
                 matrs.Add(mf);
                 var fr = new RobotFrame(mf);
                 frames_rob.Add(fr);
