@@ -1715,12 +1715,14 @@ namespace opengl3
 
             //test_gen_traj();
             var color_skin = new Color3d_GL(213 / 255f, 172 / 255f, 129 / 255f);
-            var scan_stl_orig = new Model3d("models\\human arm7.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            var scan_stl_orig = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
             GL1.add_buff_gl(scan_stl_orig.mesh, color_skin, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
             var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
             GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
+            //var g_code = File.ReadAllText("test_traj.txt");
+            //var frames = RobotFrame.parse_g_code(g_code);
 
-            load_3d_model_robot();
+            //load_3d_model_robot();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -2512,9 +2514,7 @@ namespace opengl3
 
             }
             var smooth_ang = Point3d_GL.gaussFilter_X_closed(angs, 35);
-            Console.WriteLine("________________________________");
-            Console.WriteLine("________________________________");
-            Console.WriteLine("________________________________");
+
             for (int i = 0; i < smooth_ang.Length; i++)
             {
                 Console.WriteLine(i + " " + smooth_ang[i].x + " " + angs[i].x);
@@ -5842,12 +5842,7 @@ namespace opengl3
 
             var ns = comp_angs_board_inds(pols,board);
 
-
-
             var zeros = comp_zeros(ns);
-            prin.t("zeros:");
-            prin.t(zeros);
-            //var zeros = new int[] { 92, 169 };
             if (zeros.Length != 2)
             {
                 return;
@@ -5877,26 +5872,15 @@ namespace opengl3
             CvInvoke.Invert(m, m_inv, DecompMethod.LU);
 
             m_cyl = m_inv.Clone();
-            prin.t(m);
-            prin.t("m_inv:");
-            prin.t(m_inv);
-
             var ps_y_ax = Point3d_GL.multMatr_p_m(m, ps);
 
             var ps_vc_y_ax = Point3d_GL.multMatr_p_m(m, ps_vc);
             graphic.addLineMesh(ps_vc_y_ax, Color3d_GL.aqua());
-            //graphic.addPointMesh(ps_y_ax, Color3d_GL.green());
-            //var flat_xz = get_flat_xz(0, 100);
-
-
 
             mesh.ps_uniq = ps_y_ax;
             pols = mesh.get_polygs();
             var pols_xz = pols_on_xz(pols);
             var ps_c = Polygon3d_GL.get_centres(pols_xz);
-
-            //graphic.addMesh(Polygon3d_GL.toMesh(flat_xz)[0], PrimitiveType.Triangles);
-            //graphic.addMesh(Polygon3d_GL.toMesh(pols_xz)[0], PrimitiveType.Triangles);
 
             graphic.addPointMesh(ps_c, Color3d_GL.green());
 
@@ -5904,8 +5888,6 @@ namespace opengl3
               var p_c = new Point3d_GL(circ.x, 0, circ.y);
               ps_y_ax = Point3d_GL.add_arr(ps_y_ax, -p_c);
 
-            //m_cyl[0, 3] -= circ.x;
-            //m_cyl[2, 3] -= circ.y;
             off_cyl = new Point3d_GL(circ.x, 0, circ.y);
             Console.WriteLine("off_cyl1: " + off_cyl);
             var ps_circ = new Point3d_GL[ps.Length];
@@ -5924,8 +5906,6 @@ namespace opengl3
                 ps_circ_2[i] = new Point3d_GL(rc * Math.Sin(alph), 0, rc * Math.Cos(alph));
                 alph += d_alph;
             }
-            //graphic.addPointMesh(ps_circ, Color3d_GL.purple());
-            //graphic.addPointMesh(ps_circ_2, Color3d_GL.aqua());
             mesh.ps_uniq = ps_y_ax;
             var pols_xz2 = mesh.get_polygs();
             graphic.addMesh(Polygon3d_GL.toMesh(pols_xz2)[0], PrimitiveType.Triangles,null,"align");
