@@ -1518,7 +1518,7 @@ namespace PathPlanning
             return matr_to_ps(proj_c);
         }
 
-        public static string generate_robot_traj(List<Matrix<double>> traj, RobotFrame.RobotType type_robot,TrajParams trajParams = null)
+        public static string generate_robot_traj(List<Matrix<double>> traj, RobotFrame.RobotType type_robot,TrajParams trajParams = null,GraphicGL graphic = null)
         {
             var traj_rob = new List<RobotFrame>();
             var r_syr = 18.5/2;
@@ -1536,6 +1536,10 @@ namespace PathPlanning
             }
             traj_rob = RobotFrame.smooth_angle(traj_rob, trajParams.w_smooth_ang);
             traj_rob = RobotFrame.decrease_angle(traj_rob, trajParams.k_decr_ang);
+            for (int i = 0; i < traj_rob.Count; i++)
+            {
+                graphic?.addFrame(traj_rob[i].getMatrix(), 5, "sda");
+            }
 
             return RobotFrame.generate_string(traj_rob.ToArray());
         }
