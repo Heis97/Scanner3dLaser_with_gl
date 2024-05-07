@@ -113,15 +113,18 @@ namespace opengl3
         }
         public void setMatrobj(string name, int i, Matrix4x4f matr)
         {
-            objs[name] = objs[name].setMatr(i, matr);
+            if (objs.ContainsKey(name))
+                objs[name] = objs[name].setMatr(i, matr);
         }
         public void addMatrobj(string name, int i, Matrix4x4f matr)
         {
-            objs[name] = objs[name].addMatr(i, matr);
+            if (objs.ContainsKey(name))
+                objs[name] = objs[name].addMatr(i, matr);
         }
         public void setTranspobj(string name, float transp)
         {
-            objs[name] = objs[name].setTrasp(transp);
+            if (objs.ContainsKey(name))
+                objs[name] = objs[name].setTrasp(transp);
             sort_by_transp();
         }
         public void setVisibleobj(string name, bool visible)

@@ -1714,15 +1714,28 @@ namespace opengl3
 
 
             //test_gen_traj();
-            var color_skin = new Color3d_GL(213 / 255f, 172 / 255f, 129 / 255f);
+            /*var color_skin = new Color3d_GL(213 / 255f, 172 / 255f, 129 / 255f);
             var scan_stl_orig = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
             GL1.add_buff_gl(scan_stl_orig.mesh, color_skin, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
             var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
-            GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
+            GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");*/
             //var g_code = File.ReadAllText("test_traj.txt");
             //var frames = RobotFrame.parse_g_code(g_code);
-
+            
             //load_3d_model_robot();
+            var ps = new Point3d_GL[]
+            {
+                new Point3d_GL(-583.4106, 68.5254, -25.249),
+                new Point3d_GL( -497.7654, 21.0938, -27.4487),
+                new Point3d_GL( -494.8929, 114.3297, 25.6902),
+            };
+            GL1.addPointMesh(ps, Color3d_GL.red());
+            var model = new RobotFrame(-583.4106, 68.5254, -25.249, 0.5114, -0.2437, -0.4482).getMatrix();
+            //var model_inv = UtilMatr.to_inv_rot_matrix(model);
+           // CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
+
+            GL1.addFrame(model, 200, "mod");
+
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -2116,17 +2129,17 @@ namespace opengl3
         {
             if(i< frames_rob.Count)
                 set_pos_robot(frames_rob[i]);
-
+            if (i % 3 == 0)
+                GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
             var tool_inv = tool.Clone();
             CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
-            var fr_e =tool* frames_rob[i].getMatrix() ;
+            var fr_e = frames_rob[i].getMatrix()*tool ;
             var ps = RobotFrame.to_points(frames_rob_end.GetRange(0, i));
             GL1.remove_buff_gl_id("gen_traj");
             traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
 
-            if(i%10==0)
-                GL1.addFrame(UtilMatr.to_inv_rot_matrix( frames_rob_end[i].getMatrix()), 10, "sdf");
+           
         }
 
         void test_3d_models()

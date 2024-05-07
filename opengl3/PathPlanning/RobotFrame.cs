@@ -133,7 +133,7 @@ namespace opengl3
 
             return ABCmatr(pos.position.x, pos.position.y, pos.position.z, pos.rotation.x, pos.rotation.y, pos.rotation.z, robotType);
         }
-        public RobotFrame(Matrix<double> m, RobotType type = RobotType.KUKA)
+        public RobotFrame(Matrix<double> m, RobotType type = RobotType.PULSE)
         {
             robotType = type;
             switch (type)

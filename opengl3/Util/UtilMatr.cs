@@ -1,4 +1,5 @@
 ﻿using Emgu.CV;
+using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using OpenGL;
@@ -157,6 +158,21 @@ namespace opengl3
             matr[3, 0] = 0;
             matr[3, 1] = 0;
             matr[3, 2] = 0;
+            return matr;
+        }
+
+        public static Matrix<double> to_inv_trns_matrix(Matrix<double> m)
+        {
+            var matr = m.Clone();
+            var matr_inv = m.Clone();
+            CvInvoke.Invert(matr_inv, matr_inv, DecompMethod.LU);
+            var x = matr_inv[0, 3];
+            var y = matr_inv[1, 3];
+            var z = matr_inv[2, 3];
+            matr[0, 3] = x;
+            matr[1, 3] = y;
+            matr[2, 3] = z;
+
             return matr;
         }
         public static Matrix4x4f matrix(Point3d_GL transl, Point3d_GL rotate)
