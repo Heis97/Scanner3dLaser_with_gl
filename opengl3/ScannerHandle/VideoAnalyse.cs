@@ -351,7 +351,7 @@ namespace opengl3
                             var ps = Detection.detectLineDiff(im1_diff_un);
                             UtilOpenCV.drawPointsF(im1_or_un, ps, 0, 255, 0, 2);
                             CvInvoke.Imshow("im1-or_un", im1_or_un);
-                            CvInvoke.WaitKey();
+                           // CvInvoke.WaitKey();
                         }
                         var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                         frames_show.Add(frame_d);
@@ -360,7 +360,7 @@ namespace opengl3
                             //var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                             // frames_show.Add(frame_d);
                             pos_inc_cal.Add(inc_pos[videoframe_count]);
-
+                            Console.WriteLine(inc_pos[videoframe_count]);
                             scanner.addPointsSingLas_2d(im1, false, calib);
                         }
                         else scanner.addPointsLinLas_step(im1, im_orig, inc_pos[videoframe_count], PatternType.Mesh);

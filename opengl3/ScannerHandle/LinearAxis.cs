@@ -68,12 +68,12 @@ namespace opengl3
         public bool calibrateLas_step(Mat[] mats, Mat orig, double[] positions, CameraCV cameraCV, PatternType patternType, GraphicGL graphicGL=null)
         {
             var inds_part = Detection.max_claster_im(cameraCV.scan_points.ToArray(), 4);
-/*
+
             CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4]]);
             CvInvoke.Imshow("im2", mats[inds_part[inds_part.Length* 2/ 4]]);
             CvInvoke.Imshow("im3", mats[inds_part[inds_part.Length*3 / 4]]);
 
-            CvInvoke.WaitKey();*/
+            CvInvoke.WaitKey();
 
             var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
             positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
@@ -84,10 +84,10 @@ namespace opengl3
             var corners = corner_step(orig);
 
             var orig_c = orig.Clone();
-           /* orig_c = cameraCV.undist(orig_c);
+            orig_c = cameraCV.undist(orig_c);
             UtilOpenCV.drawPointsF(orig_c, corners,255,0,0,2,true);
             CvInvoke.Imshow("corn", orig_c);
-            CvInvoke.WaitKey();*/
+            CvInvoke.WaitKey();
             cameraCV.compPos(new MCvPoint3D32f[] {
                 new MCvPoint3D32f(0,0,0),
             new MCvPoint3D32f(0,y_dim,0),
@@ -118,12 +118,12 @@ namespace opengl3
         System.Drawing.PointF[] corner_step(Mat orig)
         {
             var orig1= orig.Clone();
-            orig1 = FindCircles.sobel_mat(orig1);
+           // orig1 = FindCircles.sobel_mat(orig1);
 
             CvInvoke.CvtColor(orig1, orig1, ColorConversion.Rgb2Gray);
             CvInvoke.MedianBlur(orig1, orig1, 5);
-            CvInvoke.Threshold(orig1, orig1, 40, 255, ThresholdType.Binary);
-            //CvInvoke.Imshow("corn1s", orig1);
+            CvInvoke.Threshold(orig1, orig1, 160, 255, ThresholdType.Binary);
+            CvInvoke.Imshow("corn1s", orig1);
             var cont = FindCircles.find_max_contour(orig1);
             var c_f = PointF.from_contour(cont);
             var corn = FindCircles.findGab(PointF.toSystemPoint(c_f));

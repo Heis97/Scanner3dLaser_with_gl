@@ -471,7 +471,7 @@ namespace opengl3
                 if (line.Length>1)
                 {
                     var vals = line.Split(' ');
-                    if(vals.Length==2)
+                    //if(vals.Length==2)
                     {
                         var ind = try_int32(vals[1]);
                         var var = try_int32(vals[0]);

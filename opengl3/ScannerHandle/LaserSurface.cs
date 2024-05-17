@@ -198,10 +198,10 @@ namespace opengl3
             var ps = takePointsForFlat(ps_m_2, false, div);
 
             var orig_c = mat.Clone();
-          /* UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
+           UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
             UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
             CvInvoke.Imshow("corn", orig_c);
-            CvInvoke.WaitKey();*/
+            CvInvoke.WaitKey();
 
             var lines = PointCloud.computeTracesCam(ps, cameraCV);
             var ps3d = new List<Point3d_GL>();
