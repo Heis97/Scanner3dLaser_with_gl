@@ -88,14 +88,15 @@ namespace opengl3
 
             var ps = points3dInCam_step(mat, cameraCV, patternType,5, graphicGL);
 
-           // graphicGL?.addMesh(Point3d_GL.toMesh(ps.ToArray()),OpenGL.PrimitiveType.Points, 0.9f);
+            graphicGL?.addMesh(Point3d_GL.toMesh(ps.ToArray()),OpenGL.PrimitiveType.Points, Color3d_GL.red());
 
             flat3D = computeSurface(ps.ToArray());
 
 
             //var flat3D_in_scene = computeSurface(ps_in_scene.ToArray());
 
-            //graphicGL?.addFlat3d_XZ(flat3D);
+            //var flat = graphicGL?.addFlat3d_XZ(flat3D);
+            //graphicGL?.buffersGl.setTranspobj(flat, 0.5f);
 
 
             // Console.WriteLine(flat3D/flat3D.A);
@@ -181,7 +182,7 @@ namespace opengl3
         {
 
             
-            var points =order_y(Detection.detectLineDiff(mat, 5,0,false,true,true));
+            var points = order_y(Detection.detectLineDiff(mat, 5,0,false,true,true));
             var ps_m = order_y(Detection.x_max_claster(points,3));
            // CvInvoke.Imshow("orig", UtilOpenCV.drawPointsF(mat, ps_m, 255, 0, 0));
            // CvInvoke.WaitKey();
@@ -192,13 +193,13 @@ namespace opengl3
             var ps_m_2 = points.ToList().GetRange(start, len).ToArray();
             var mat_p = UtilOpenCV.drawPointsF(mat, points, 255, 0, 0);
             
-           // CvInvoke.Imshow("asf", mat_p);
-            // CvInvoke.WaitKey();
+            //CvInvoke.Imshow("asf", mat_p);
+            //CvInvoke.WaitKey();
 
             var ps = takePointsForFlat(ps_m_2, false, div);
 
             var orig_c = mat.Clone();
-           UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
+            UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
             UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
             CvInvoke.Imshow("corn", orig_c);
             CvInvoke.WaitKey();
@@ -209,17 +210,21 @@ namespace opengl3
 
             double z = 0;
             ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[0], lines[4] }, zeroFlatInCam(cameraCV.matrixSC, z)));
-           // graphicGL?.addFlat3d_XY(zeroFlatInCam(cameraCV.matrixSC, z));
-          //  Console.WriteLine("cameraCV.matrixSC");
-           // prin.t(cameraCV.matrixSC);
-
+            var flat1 = graphicGL?.addFlat3d_XY(zeroFlatInCam(cameraCV.matrixSC, z));
+            graphicGL?.buffersGl.setTranspobj(flat1, 0.5f);
+            //Console.WriteLine("cameraCV.matrixSC");
+            // prin.t(cameraCV.matrixSC);
+            graphicGL?.addFrame(cameraCV.matrixSC, 30,"cs");
             z = -10;
             ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[1], lines[3] }, zeroFlatInCam(cameraCV.matrixSC, z)));
-          //  graphicGL?.addFlat3d_XY(zeroFlatInCam(cameraCV.matrixSC, z));
+            var flat2 = graphicGL?.addFlat3d_XY(zeroFlatInCam(cameraCV.matrixSC, z));
+            graphicGL?.buffersGl.setTranspobj(flat2, 0.5f);
+
             z = -20;
             ps3d.AddRange(PointCloud.intersectWithFlat(new Line3d_GL[] { lines[2] }, zeroFlatInCam(cameraCV.matrixSC, z)));
 
-           // graphicGL?.addFlat3d_XY(zeroFlatInCam(cameraCV.matrixSC, z),null,0.1f,0.3f);
+            var flat3 = graphicGL?.addFlat3d_XY(zeroFlatInCam(cameraCV.matrixSC, z),null);
+            graphicGL?.buffersGl.setTranspobj(flat3, 0.5f);
 
             return ps3d.ToArray();
         }

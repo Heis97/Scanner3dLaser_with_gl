@@ -327,7 +327,7 @@ namespace opengl3
             var im1_buff_list = new List<Mat>();
             foreach (var pos in inc_pos) Console.WriteLine(pos);
 
-            while (videoframe_count < all_frames * 0.5)
+            while (videoframe_count < all_frames)
             {
                 Mat im1 = new Mat();
                 while (!capture1.Read(im1)) { }
@@ -335,12 +335,12 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
-                    if (videoframe_count % strip == 0 && videoframe_count > 3)
+                    if (videoframe_count % strip == 0 && videoframe_count > 37 && videoframe_count <173)
                     {
                         var im1_or = im1.Clone();
                         im1 -= im1_buff_list[buff_len - buff_diff];
 
-                        if (videoframe_count > 20)
+                        //if (videoframe_count > 20)
                         {
                             var im1_or_un = scanner.cameraCV.undist(im1_or);
                             CvInvoke.Imshow("im1", im1_or_un);
@@ -351,7 +351,7 @@ namespace opengl3
                             var ps = Detection.detectLineDiff(im1_diff_un);
                             UtilOpenCV.drawPointsF(im1_or_un, ps, 0, 255, 0, 2);
                             CvInvoke.Imshow("im1-or_un", im1_or_un);
-                           // CvInvoke.WaitKey();
+                            //CvInvoke.WaitKey();
                         }
                         var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                         frames_show.Add(frame_d);

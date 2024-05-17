@@ -78,8 +78,8 @@ namespace opengl3
             var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
             positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
 
-            var x_dim = 50;
-            var y_dim = 70;
+            var x_dim = 70;
+            var y_dim = 50;
 
             var corners = corner_step(orig);
 

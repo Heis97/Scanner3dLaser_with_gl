@@ -1086,9 +1086,10 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner,strip);
             var ps = scanner.getPointsLinesScene();
+            foreach(var line in ps) GL1.addLineMeshTraj(line);  
             var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"scan_sing");
+           // scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"scan_sing");
             
 
         }
@@ -1723,7 +1724,7 @@ namespace opengl3
             //var frames = RobotFrame.parse_g_code(g_code);
             
             //load_3d_model_robot();
-            var ps = new Point3d_GL[]
+           /* var ps = new Point3d_GL[]
             {
                 new Point3d_GL(-583.4106, 68.5254, -25.249),
                 new Point3d_GL( -497.7654, 21.0938, -27.4487),
@@ -1731,10 +1732,10 @@ namespace opengl3
             };
             GL1.addPointMesh(ps, Color3d_GL.red());
             var model = new RobotFrame(-583.4106, 68.5254, -25.249, 0.5114, -0.2437, -0.4482).getMatrix();
-            //var model_inv = UtilMatr.to_inv_rot_matrix(model);
-           // CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
+            var model_inv = UtilMatr.to_inv_rot_matrix(model);
+            CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
 
-            GL1.addFrame(model, 200, "mod");
+            GL1.addFrame(model, 200, "mod");*/
 
         }
 
