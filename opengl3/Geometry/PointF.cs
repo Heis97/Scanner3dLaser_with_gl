@@ -97,7 +97,10 @@ namespace opengl3
             return ps_ex.ToArray();
         }
 
- 
+        public System.Drawing.Point toPoint()
+        {
+            return new System.Drawing.Point((int)X, (int)Y);
+        }
         public static Point[] toPoint(System.Drawing.PointF[] ps)
         {
             if (ps == null)

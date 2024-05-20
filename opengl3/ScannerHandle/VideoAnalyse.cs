@@ -361,7 +361,7 @@ namespace opengl3
                         }*/
                         var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                         frames_show.Add(frame_d);
-                        //Console.WriteLine(videoframe_count.ToString() + " " + inc_pos[videoframe_count].ToString());
+                        Console.Write(videoframe_count.ToString() + " " + inc_pos[videoframe_count].ToString());
                         if (calib)
                         {
                             //var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
@@ -731,12 +731,13 @@ namespace opengl3
                             }
                         }
                         //Console.Write(vals[i] + ";");
-                        /*Console.Write(enc_pos[ind, 3] );
-                         if (enc_pos[ind, 5] == 1) Console.Write(enc_pos[ind, 4] + ";" + ";");
+                        if (enc_pos[ind, 0] == 0) Console.WriteLine(enc_pos[ind, 3]+" ");
+                        if (enc_pos[ind, 0] != 0) Console.Write(enc_pos[ind, 3]+" ");
+                        if (enc_pos[ind, 5] == 1) Console.Write(enc_pos[ind, 4] + ";" + ";");
                          if (enc_pos[ind, 5] == 2) Console.Write(";" + enc_pos[ind, 4] + ";");
 
 
-                         Console.WriteLine(' ');*/
+                        // Console.WriteLine();
                     }
                 }
                 ind++;

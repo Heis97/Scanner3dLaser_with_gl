@@ -80,8 +80,14 @@ namespace opengl3
         {
             mat = cameraCV.undist(mat);     
             var points_im = Detection.detectLineDiff(mat, 5, 0.05f, false, true);
+            Console.WriteLine(" "+ Detection.p_in_ps_by_y(points_im, 330).X);
+           
+           /* CvInvoke.DrawMarker(mat, Detection.p_in_ps_by_y(points_im,330).toPoint(), new MCvScalar(255, 0, 0), Emgu.CV.CvEnum.MarkerTypes.Cross, 10, 2);
+            CvInvoke.Line(mat, new Point(0,330), new Point(mat.Width,330), new MCvScalar(0, 0, 255), 2);
+            CvInvoke.Imshow("ps", mat);
+            CvInvoke.WaitKey();*/
             //var points_im = Detection.detectLineDiff(mat);
-            if(points_im == null) return false;
+            if (points_im == null) return false;
             //Console.WriteLine(points_im.Length);
             var orig_c = mat.Clone();
             /*UtilOpenCV.drawPoints(orig_c, points_im, 0, 255, 0,2);

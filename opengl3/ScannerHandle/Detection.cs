@@ -367,7 +367,7 @@ namespace opengl3
         }
 
         public static PointF[] detectLineDiff(Mat _mat,
-            int wind = 7, float board = 0f,
+            int wind = 3, float board = 0f,
             bool reverse = false, bool rotate = true,
             bool orig = false)
             {
@@ -472,7 +472,7 @@ namespace opengl3
                 var j_max_2 = (-b / (2 * a));
 
                 
-                j_max_2 = j_max;
+                //j_max_2 = j_max;
                 if (j_max_2 > 0 && j_max_2 < data.GetLength(0))
                 {
                     if (data[(int)j_max_2, i] > threshold)
@@ -1111,7 +1111,14 @@ namespace opengl3
             }
             return ps;
         }
-
+        static public PointF p_in_ps_by_y(PointF[] inp,int y)
+        {
+            for(int i = 0; i < inp.Length;i++)
+            {
+                if((int)inp[i].Y == y)return inp[i];
+            }
+            return new PointF(0,0);
+        }
         static public PointF[] claster_Points(PointF[] inp,int clast,bool max = true)
         {
             var ps = (from p in inp
