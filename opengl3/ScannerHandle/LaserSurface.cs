@@ -158,13 +158,18 @@ namespace opengl3
             return ps3d.ToArray();          
         }
 
-        static PointF[] order_y(PointF[] ps)
+        public static PointF[] order_y(PointF[] ps)
         {
             return (from p in ps
                     orderby p.Y
                     select p).ToArray();
         }
-
+        public static PointF[] order_x(PointF[] ps)
+        {
+            return (from p in ps
+                    orderby p.X
+                    select p).ToArray();
+        }
         static int ind_y(PointF[] ps,float y)
         {
             var i_y = 0;
@@ -181,11 +186,11 @@ namespace opengl3
         static Point3d_GL[] points3dInCam_step(Mat mat, CameraCV cameraCV, PatternType patternType, int div = -1, GraphicGL graphicGL = null)
         {
 
-            
+            mat = cameraCV.undist(mat);
             var points = order_y(Detection.detectLineDiff(mat, 5,0,false,true,true));
-            var ps_m = order_y(Detection.x_max_claster(points,3));
-           // CvInvoke.Imshow("orig", UtilOpenCV.drawPointsF(mat, ps_m, 255, 0, 0));
-           // CvInvoke.WaitKey();
+            var ps_m = order_y(Detection.x_min_claster(points,3));
+            CvInvoke.Imshow("orig_las_step", UtilOpenCV.drawPointsF(mat, ps_m, 255, 0, 0));
+            CvInvoke.WaitKey();
 
             var p_mm = new PointF(ps_m[0].Y, ps_m[ps_m.Length-1].Y);
             var start = ind_y(points, p_mm.X);

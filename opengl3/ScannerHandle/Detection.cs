@@ -465,7 +465,7 @@ namespace opengl3
                 //for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
                    // vals_regr.Add(new double[] { data[k1, i],k1 });
                 
-                var threshold = 5;
+                var threshold = 15;
                 var koef = Regression.regression(vals_regr.ToArray(), 2);
                 var a = koef[2];
                 var b = koef[1];
@@ -495,9 +495,10 @@ namespace opengl3
             if (add_count < 5) return null;
             ps = ps_list.ToArray();
             //ps = PointF.filter_exist(ps);
+            ps = filtr_y0_Points(ps);
             if(!orig)
             {                
-                ps = medianFilter_real(ps, 20);
+                //ps = medianFilter_real(ps, 20);
                 //ps = connectPoints(ps);
             }
             
@@ -508,7 +509,7 @@ namespace opengl3
             }
 
             GC.Collect();
-            CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255,2));
+            //CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255,2));
           //  CvInvoke.WaitKey();
             if (rotate)
             {
@@ -1111,7 +1112,7 @@ namespace opengl3
             return ps;
         }
 
-        static public PointF[] claster_Points(PointF[] inp,int clast)
+        static public PointF[] claster_Points(PointF[] inp,int clast,bool max = true)
         {
             var ps = (from p in inp
                       orderby p.X
@@ -1175,8 +1176,8 @@ namespace opengl3
             var clasters_x_max = (from c in clasters_a
                                   orderby averageXps(c.ToArray()) descending
                                   select c).ToArray();
-
-            return clasters_x_max[0];
+            if (max) return clasters_x_max[0];
+            else return clasters_x_max[clasters_x_max.Length-1];
         }
         static public PointF[] same_y_Points(PointF[] orig, PointF[] ps2)
         {
@@ -1204,6 +1205,13 @@ namespace opengl3
             if (ps == null) return null;
             var paral = parall_Points(filtr_y0_Points(ps));
             var ps_max = claster_Points(paral, clast_count);
+            return same_y_Points(ps, ps_max);
+        }
+        static public PointF[] x_min_claster(PointF[] ps, int clast_count)
+        {
+            if (ps == null) return null;
+            var paral = parall_Points(filtr_y0_Points(ps));
+            var ps_max = claster_Points(paral, clast_count,false);
             return same_y_Points(ps, ps_max);
         }
 

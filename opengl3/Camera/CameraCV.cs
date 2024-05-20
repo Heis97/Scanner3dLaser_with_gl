@@ -258,7 +258,7 @@ namespace opengl3
 
             return matrs;
         }
-        static Matrix<double> affinematr(double alpha = 0, double k = 0, double offx = 0, double offy = 0)
+        public static Matrix<double> affinematr(double alpha = 0, double k = 0, double offx = 0, double offy = 0)
         {
 
             return new Matrix<double>(new double[2, 3] {
@@ -290,8 +290,8 @@ namespace opengl3
             cameramatrix_opt = UtilMatr.toMatrix(matr);
             cameramatrix_opt_inv = invMatrix(cameramatrix_opt);
             //cameramatrix =
-            im_centr = new PointF((float)cameramatrix[0, 2], (float)cameramatrix[1, 2]);
-            CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F, mapx, mapy);
+            im_centr = new PointF((float)cameramatrix_opt[0, 2], (float)cameramatrix_opt[1, 2]);
+            CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F, mapx, mapy);//_opt
 
             pos = new float[3] { 0, 0, 0 };
         }
@@ -381,7 +381,7 @@ namespace opengl3
            // prin.t(points3D);
            // prin.t(points2D);
            //var distort = new Matrix<double>(new double[,] { { 0, 0, 0, 0, 0 } });
-            CvInvoke.SolvePnP(points3D, points2D, cameramatrix, distortmatrix, cur_r, cur_t);
+            CvInvoke.SolvePnP(points3D, points2D, cameramatrix, distortmatrix, cur_r, cur_t);//_opt
 
             var matrs = assemblMatrix(cur_r, cur_t);
             matrixCS = matrs[0];
@@ -539,7 +539,7 @@ namespace opengl3
             var p =  (cameramatrix_opt_inv * new Point3d_GL(_p.X, _p.Y, 1));
             return p;
         }
-        public PointF point2DfromCam(Point3d_GL _p)
+        public PointF point2DfromCam(Point3d_GL _p)//_opt
         {
             var p = (cameramatrix * _p);
             return new PointF(p.x,p.y);

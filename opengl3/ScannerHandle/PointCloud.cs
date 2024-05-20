@@ -78,15 +78,17 @@ namespace opengl3
         }
         public bool addPointsLinLas_step(Mat mat, Image<Bgr,byte> orig, double LinPos, CameraCV cameraCV, LinearAxis linearAxis, PatternType patternType)
         {
+            mat = cameraCV.undist(mat);     
             var points_im = Detection.detectLineDiff(mat, 5, 0.05f, false, true);
             //var points_im = Detection.detectLineDiff(mat);
             if(points_im == null) return false;
-            Console.WriteLine(points_im.Length);
-          /*var orig = mat.Clone();
-            UtilOpenCV.drawPoints(orig, points_im, 0, 255, 0);
-            CvInvoke.Imshow("ps", orig);
-            CvInvoke.WaitKey();*/
-            
+            //Console.WriteLine(points_im.Length);
+            var orig_c = mat.Clone();
+            /*UtilOpenCV.drawPoints(orig_c, points_im, 0, 255, 0,2);
+            CvInvoke.Imshow("ps", orig_c);
+            CvInvoke.WaitKey();
+            prin.t(points_im);
+            prin.t("____________________");*/
             var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
             points_cam = color_points3d(points_im, points_cam, orig);
             //graphicGL.addFlat3d_YZ(linearAxis.getLaserSurf(LinPos),null,0.1f,0.1f,0.4f);

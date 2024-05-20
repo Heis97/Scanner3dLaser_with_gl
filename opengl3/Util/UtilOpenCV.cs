@@ -240,6 +240,8 @@ namespace opengl3
         public static System.Drawing.PointF[] transfAffine(System.Drawing.PointF[] pointFs, Matrix<double> matrix)
         {
             var affineMatr_3d = matrix.ConcateVertical(new Matrix<double>(new double[1, 3] { { 0, 0, 1 } }));
+           // prin.t("affineMatr_3d");
+           //prin.t(affineMatr_3d);
             var p_aff = CvInvoke.PerspectiveTransform(pointFs, affineMatr_3d);
             return p_aff;
         }

@@ -65,28 +65,224 @@ namespace opengl3
             return false;
         }
 
+        static int right_white_pixel(Mat mat)
+        {
+            var im = mat.ToImage<Gray, byte>();
+            int min_x = mat.Width;
+            for(int j = 0; j < im.Height; j++)
+            {
+                for (int i = 0; i < im.Width; i++)
+                {
+                    if( im.Data[j,i,0] > 127)
+                    {
+                        if(i<min_x)
+                        {
+                            min_x = i;
+                        }
+                       
+                    }
+                }
+            }
+            return min_x;
+        }
+
+        static System.Drawing.Point[] find_gab_pix(Mat mat)
+        {
+            var im = mat.ToImage<Gray, byte>();
+
+            var ps = new System.Drawing.Point[]
+               {
+                    new System.Drawing.Point(0,0),
+                    new System.Drawing.Point(0,0),
+                    new System.Drawing.Point(0,0),
+                    new System.Drawing.Point(0,0),
+               };
+
+            int min_x = mat.Width;
+            int max_x = 0;
+
+            int min_y = mat.Height;
+            int max_y = 0;
+            for (int j = 0; j < im.Height; j++)
+            {
+                for (int i = 0; i < im.Width; i++)
+                {
+                    if (im.Data[j, i, 0] > 50)
+                    {
+                        if (i < min_x)
+                        {
+                            min_x = i;
+                            ps[0] = new System.Drawing.Point(i, j);
+                        }
+                       
+
+                        if (j < min_y)
+                        {
+                            min_y = j;
+                            ps[1] = new System.Drawing.Point(i, j);
+                        }
+
+                        if (i > max_x)
+                        {
+                            max_x = i;
+                            ps[2] = new System.Drawing.Point(i, j);
+                        }
+                        if (j > max_y)
+                        {
+                            max_y = j;
+                            ps[3] = new System.Drawing.Point(i, j);
+                        }
+                    }
+                }
+            }
+
+           
+            return ps;
+        }
+        public Mat get_corners_calibrate_model(Mat[] mats)
+        {
+            Mat up_surf = null;
+            var i_max = 0;
+            var i_min = mats.Length-1;
+            var delts = new float[mats.Length];
+            var delts_b = new bool[mats.Length];
+            double dest_max = 0;
+            for (int i = 0; i< mats.Length;i++)
+            {         
+                var ps = Detection.detectLineDiff(mats[i]);
+                var ps_par = Detection.parall_Points(Detection.filtr_y0_Points(ps));
+                var ps_o = LaserSurface.order_x(ps_par);
+                var del = ps_o[0].X - ps_o[ps_par.Length-1].X;
+                delts[i] = Math.Abs(del);
+                if(delts[i]>dest_max)
+                {
+                    dest_max = delts[i];
+                }
+                Console.WriteLine(i + " " + delts[i]);
+                
+            }
+            for (int i = 0; i < delts.Length; i++)
+            {
+                if (delts[i] > dest_max*0.7)
+                {
+                    delts_b[i] = true;
+                }
+            }
+            for (int i = 1; i < delts_b.Length; i++)
+            {
+                if(delts_b[i-1] == false && delts_b[i] == true) i_min = i;
+                if (delts_b[i - 1] == true && delts_b[i] == false) i_max = i;
+            }
+            Console.WriteLine(i_min + " " + i_max);
+            for (int i = 0;  i < mats.Length; i++)
+            {
+                if ((i < i_min + 4 && i > i_min - 1) || ((i < i_max + 1 && i > i_max - 3)))
+                {
+
+
+                    //Console.WriteLine(i);
+                    if (Math.Abs(delts[i]) > 55)
+                    {
+                        var bin = new Mat();
+                        var r = mats[i].Split()[2];
+                        CvInvoke.GaussianBlur(r, r, new System.Drawing.Size(7, 7), -1);
+                        CvInvoke.Threshold(r, bin, 50, 255, ThresholdType.Binary);
+                        var x_min = right_white_pixel(bin);
+                        var ps_rec = new System.Drawing.Point[]
+                        {
+                        new System.Drawing.Point(x_min+12, 0),
+                        new System.Drawing.Point(x_min+12, bin.Height-1),
+                         new System.Drawing.Point(bin.Width-1, bin.Height-1),
+                        new System.Drawing.Point(bin.Width-1, 0),
+                        };
+                        CvInvoke.FillPoly(bin, new VectorOfPoint(ps_rec), new MCvScalar(0));
+
+                      
+                       //  CvInvoke.Imshow("bin", bin);
+                      //  CvInvoke.WaitKey();
+                        if (up_surf == null)
+                        {
+                            up_surf = bin.Clone();
+                        }
+                        else
+                        {
+                            up_surf += bin;
+                        }
+
+                    }
+                }
+            }
+           // CvInvoke.Imshow("bin2", up_surf);
+            //CvInvoke.WaitKey();
+            return up_surf.ToImage<Bgr,byte>().Mat;
+        }
+        static public Mat bin_to_green(Mat bin)
+        {
+            var im = bin.ToImage<Bgr, byte>();
+            for (int j = 0; j < im.Height; j++)
+            {
+                for (int i = 0; i < im.Width; i++)
+                {
+                    im.Data[j, i, 0] = 0;
+                    im.Data[j, i, 2] = 0;
+                }
+            }
+            return im.Mat;
+        }
+
+
         public bool calibrateLas_step(Mat[] mats, Mat orig, double[] positions, CameraCV cameraCV, PatternType patternType, GraphicGL graphicGL=null)
         {
             var inds_part = Detection.max_claster_im(cameraCV.scan_points.ToArray(), 4);
 
-            CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4]]);
-            CvInvoke.Imshow("im2", mats[inds_part[inds_part.Length* 2/ 4]]);
-            CvInvoke.Imshow("im3", mats[inds_part[inds_part.Length*3 / 4]]);
+            // CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4]]);
+            // CvInvoke.Imshow("im2", mats[inds_part[inds_part.Length* 2/ 4]]);
+            // CvInvoke.Imshow("im3", mats[inds_part[inds_part.Length*3 / 4]]);
 
-            CvInvoke.WaitKey();
+            //CvInvoke.WaitKey();
 
+           var up_surf = bin_to_green( get_corners_calibrate_model(mats));
+
+            //CvInvoke.Imshow(" up_surf", up_surf);
+            //CvInvoke.WaitKey();
+            var aff_matr = CameraCV.affinematr(Math.PI / 4,1,300);
+
+            var aff_matr_inv = aff_matr.Clone();
+            var up_s_r = new Mat();
+            CvInvoke.WarpAffine(up_surf, up_s_r, aff_matr,new System.Drawing.Size(1100,1200));
+            
+
+            var ps_g = PointF.toSystemPoint(PointF.toPointF(find_gab_pix(up_s_r)));
+
+            //CvInvoke.Imshow(" up_surf", UtilOpenCV.drawPointsF(up_s_r.Clone(), ps_g, 255, 255, 0, 3));
+            //CvInvoke.WaitKey();
+
+            var aff_matr_3d = aff_matr.ConcateVertical(new Matrix<double>(new double[1, 3] { { 0, 0, 1 } }));
+           
+            var aff_matr_inv_3d = aff_matr_inv.ConcateVertical(new Matrix<double>(new double[1, 3] { { 0, 0, 1 } }));
+            CvInvoke.Invert(aff_matr_3d, aff_matr_inv_3d, DecompMethod.LU);
+            aff_matr_inv = aff_matr_inv_3d.GetRows(0, 2, 1);
+
+            ps_g = UtilOpenCV.transfAffine(ps_g, aff_matr_inv);
+            CvInvoke.WarpAffine(up_s_r, up_s_r, aff_matr_inv, new System.Drawing.Size(2000, 2000));
+            //up_s_r = UtilOpenCV.drawPointsF(up_s_r, ps_g, 255, 255, 0, 3);
+             //orig = UtilOpenCV.drawPointsF(orig, ps_g, 255, 0, 0,3);
+            //CvInvoke.Imshow(" up_s_r", up_s_r);
+           // CvInvoke.Imshow(" orig_ps", orig );
+            //CvInvoke.WaitKey();
             var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
             positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
 
             var x_dim = 70;
             var y_dim = 50;
 
-            var corners = corner_step(orig);
+           // var corners = corner_step(orig);
+            var corners = ps_g;
 
             var orig_c = orig.Clone();
-            orig_c = cameraCV.undist(orig_c);
+            //orig_c = cameraCV.undist(orig_c);
             UtilOpenCV.drawPointsF(orig_c, corners,255,0,0,2,true);
-            CvInvoke.Imshow("corn", orig_c);
+            CvInvoke.Imshow("orig_corn", orig_c);
             CvInvoke.WaitKey();
             cameraCV.compPos(new MCvPoint3D32f[] {
                 new MCvPoint3D32f(0,0,0),
@@ -118,11 +314,11 @@ namespace opengl3
         System.Drawing.PointF[] corner_step(Mat orig)
         {
             var orig1= orig.Clone();
-           // orig1 = FindCircles.sobel_mat(orig1);
+            orig1 = FindCircles.sobel_mat(orig1);
 
             CvInvoke.CvtColor(orig1, orig1, ColorConversion.Rgb2Gray);
             CvInvoke.MedianBlur(orig1, orig1, 5);
-            CvInvoke.Threshold(orig1, orig1, 160, 255, ThresholdType.Binary);
+          //  CvInvoke.Threshold(orig1, orig1, 30, 255, ThresholdType.Binary);
             CvInvoke.Imshow("corn1s", orig1);
             var cont = FindCircles.find_max_contour(orig1);
             var c_f = PointF.from_contour(cont);

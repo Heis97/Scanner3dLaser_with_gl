@@ -62,7 +62,7 @@ namespace opengl3
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
         float markSize = 10f;
-        Size chess_size = new Size(6, 7);
+        Size chess_size = new Size(10, 11);
         Size chess_size_real = new Size(6, 7);
         StereoCameraCV stereocam = null;
         StereoCamera stereocam_scan = null;
@@ -831,11 +831,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 9.6f;//6.2273f//10f
-            chess_size = new Size(6, 7);//new Size(10, 11);
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cal_sq_cam_2602", FrameType.Pattern, PatternType.Mesh);
+            markSize = 6.2273f;//6.2273f//10f//9.6f
+            chess_size = new Size(10, 11);//new Size(10, 11);//new Size(6, 7)
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1cal_1011_1705_1", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("sq_cam_2602_1.txt");            
+            cam1.save_camera("cam1cal_1011_1705_2.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* markSize = 6.2273f;//6.2273f
@@ -1086,10 +1086,10 @@ namespace opengl3
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner,strip);
             var ps = scanner.getPointsLinesScene();
-            foreach(var line in ps) GL1.addLineMeshTraj(line);  
+           // foreach(var line in ps) GL1.addLineMeshTraj(line);  
             var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-           // scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"scan_sing");
+            scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"scan_sing");
             
 
         }
@@ -4502,8 +4502,12 @@ namespace opengl3
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
-            Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight) + " " + capture.GetCaptureProperty(CapProp.Fps));
 
+
+            
+            cameraSize.Width =(int) capture.GetCaptureProperty(CapProp.FrameWidth);
+            cameraSize.Height = (int)capture.GetCaptureProperty(CapProp.FrameHeight);
+            Console.WriteLine(cameraSize.Width.ToString() + " " + cameraSize.Height.ToString() + " " + capture.GetCaptureProperty(CapProp.Fps));
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
             camera_ind_ptr[number] = capture.Ptr;
             capture.ImageGrabbed += capturingVideo_sam;

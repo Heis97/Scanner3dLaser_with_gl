@@ -300,6 +300,7 @@ namespace opengl3
 
             var capture1 = new VideoCapture(video_path);
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
+           // orig1 = scanner.cameraCV.undist(orig1);
             var fr_st_vid = new Frame(orig1, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
             var pos_inc_cal = new List<double>();
@@ -318,16 +319,21 @@ namespace opengl3
                 enc_file = sr.ReadToEnd();
             }
             var inc_pos = scanner.enc_pos(enc_file, (int)all_frames);
+
+            analys_sync(enc_path);
             var buffer_mat = new Mat();
             var im_orig = orig1.ToImage<Bgr, byte>();
-
+            
             var im1_buff = new Mat();
 
 
             var im1_buff_list = new List<Mat>();
-            foreach (var pos in inc_pos) Console.WriteLine(pos);
-
-            while (videoframe_count < all_frames)
+            for(int i=0; i< inc_pos.Length; i++)
+            {
+                Console.WriteLine(i+" "+inc_pos[i]);
+            }
+            //Console.WriteLine("start video_________");
+            while (videoframe_count < all_frames/2+1)
             {
                 Mat im1 = new Mat();
                 while (!capture1.Read(im1)) { }
@@ -335,12 +341,12 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
-                    if (videoframe_count % strip == 0 && videoframe_count > 37 && videoframe_count <173)
+                    if (videoframe_count % strip == 0 && videoframe_count> buff_len)//&& videoframe_count > 37 && videoframe_count <173)
                     {
-                        var im1_or = im1.Clone();
+                        //var im1_or = im1.Clone();
                         im1 -= im1_buff_list[buff_len - buff_diff];
-
-                        //if (videoframe_count > 20)
+                       // im1 = scanner.cameraCV.undist(im1);
+                        /*//if (videoframe_count > 20)
                         {
                             var im1_or_un = scanner.cameraCV.undist(im1_or);
                             CvInvoke.Imshow("im1", im1_or_un);
@@ -352,15 +358,16 @@ namespace opengl3
                             UtilOpenCV.drawPointsF(im1_or_un, ps, 0, 255, 0, 2);
                             CvInvoke.Imshow("im1-or_un", im1_or_un);
                             //CvInvoke.WaitKey();
-                        }
+                        }*/
                         var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                         frames_show.Add(frame_d);
+                        //Console.WriteLine(videoframe_count.ToString() + " " + inc_pos[videoframe_count].ToString());
                         if (calib)
                         {
                             //var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                             // frames_show.Add(frame_d);
                             pos_inc_cal.Add(inc_pos[videoframe_count]);
-                            Console.WriteLine(inc_pos[videoframe_count]);
+                            
                             scanner.addPointsSingLas_2d(im1, false, calib);
                         }
                         else scanner.addPointsLinLas_step(im1, im_orig, inc_pos[videoframe_count], PatternType.Mesh);
@@ -375,10 +382,10 @@ namespace opengl3
                     }
                 }
                 videoframe_count++;
-                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+               // Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
             //comboImages.Items.AddRange(frames_show.ToArray());
-
+            Console.WriteLine("stop video_________");
 
             if (calib) scanner.calibrateLinearStep(Frame.getMats(frames_show.ToArray()), orig1, pos_inc_cal.ToArray(), PatternType.Mesh, form.GL1);
 
@@ -723,7 +730,8 @@ namespace opengl3
 
                             }
                         }
-                        /*Console.Write(enc_pos[ind, 3] + ";");
+                        //Console.Write(vals[i] + ";");
+                        /*Console.Write(enc_pos[ind, 3] );
                          if (enc_pos[ind, 5] == 1) Console.Write(enc_pos[ind, 4] + ";" + ";");
                          if (enc_pos[ind, 5] == 2) Console.Write(";" + enc_pos[ind, 4] + ";");
 
