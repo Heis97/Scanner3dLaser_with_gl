@@ -14,6 +14,71 @@ namespace opengl3
 {
     static public class Analyse
     {
+
+        public static double[] norm_align_data(double[] data)
+        {
+            var f = data.First();
+            var l = data.Last();
+            var data_c =(double[]) data.Clone();
+            var df = (l - f) / f;
+            for(int i=0; i<data.Length;i++)
+            {
+                var a = data[i]/f - df*((double)i/data.Length);
+
+                data_c[i] = a;
+            }
+            return data_c;
+        }
+
+        public static double[][] norm_align_data(double[][] data)
+        {
+
+            var data_split = new double[data[0].Length][];
+            for(int k=0;k< data_split.Length;k++)
+            {
+                data_split[k] = new double[data.Length];
+                for (int i = 0; i < data_split[k].Length; i++)
+                {
+                    data_split[k][i] = data[i][k];
+                }
+                data_split[k] = norm_align_data(data_split[k]);
+            }
+            for (int i = 0; i < data_split[0].Length; i++)
+            {
+                for  (int k = 0; k < data_split.Length; k++)
+                {
+                    Console.Write(data_split[k][i]+" ");
+                }
+                Console.WriteLine();
+            }
+
+
+            return data_split;
+        }
+        static public double[][] parse_data_txt(string file)
+        {
+            var data = new List<double[]>();
+            var lines = File.ReadAllText(file).Split('\n');
+            foreach(var line in lines)
+            {
+
+                var s = line.Trim().Replace("  "," ").Replace("  ", " ").Split(' ');
+                var data_s = new double[s.Length];
+                for(int i=0; i<s.Length;i++)
+                {
+                    data_s[i] = Convert.ToDouble(s[i]);
+                }
+                data.Add(data_s);
+            }
+
+            return data.ToArray();
+        }
+
+       /* static public double[,] remap_data(double[][]  data)
+        {
+            var data_r = new double[data.l]
+        }*/
+
         static void analys_sph()
         {
 

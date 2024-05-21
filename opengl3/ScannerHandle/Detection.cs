@@ -1111,13 +1111,13 @@ namespace opengl3
             }
             return ps;
         }
-        static public PointF p_in_ps_by_y(PointF[] inp,int y)
+        static public int p_in_ps_by_y(PointF[] inp,int y)
         {
             for(int i = 0; i < inp.Length;i++)
             {
-                if((int)inp[i].Y == y)return inp[i];
+                if((int)inp[i].Y == y)return i;
             }
-            return new PointF(0,0);
+            return 0;
         }
         static public PointF[] claster_Points(PointF[] inp,int clast,bool max = true)
         {

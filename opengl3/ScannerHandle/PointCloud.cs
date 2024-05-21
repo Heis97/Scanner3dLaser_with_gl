@@ -80,8 +80,8 @@ namespace opengl3
         {
             mat = cameraCV.undist(mat);     
             var points_im = Detection.detectLineDiff(mat, 5, 0.05f, false, true);
-            Console.WriteLine(" "+ Detection.p_in_ps_by_y(points_im, 330).X);
-           
+            var p_i = Detection.p_in_ps_by_y(points_im, 330);
+            Console.Write(" "+ points_im[p_i].X);
            /* CvInvoke.DrawMarker(mat, Detection.p_in_ps_by_y(points_im,330).toPoint(), new MCvScalar(255, 0, 0), Emgu.CV.CvEnum.MarkerTypes.Cross, 10, 2);
             CvInvoke.Line(mat, new Point(0,330), new Point(mat.Width,330), new MCvScalar(0, 0, 255), 2);
             CvInvoke.Imshow("ps", mat);
@@ -97,6 +97,8 @@ namespace opengl3
             prin.t("____________________");*/
             var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
             points_cam = color_points3d(points_im, points_cam, orig);
+
+            Console.WriteLine(" " + points_cam[p_i].z);
             //graphicGL.addFlat3d_YZ(linearAxis.getLaserSurf(LinPos),null,0.1f,0.1f,0.4f);
             points3d_cur = points_cam;
             //points3d_cur = camToScene(points_cam, cameraCV.matrixCS);

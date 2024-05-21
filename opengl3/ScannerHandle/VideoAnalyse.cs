@@ -320,7 +320,8 @@ namespace opengl3
             }
             var inc_pos = scanner.enc_pos(enc_file, (int)all_frames);
 
-            analys_sync(enc_path);
+            var enc_pos_time = analys_sync(enc_path);
+
             var buffer_mat = new Mat();
             var im_orig = orig1.ToImage<Bgr, byte>();
             
@@ -330,7 +331,7 @@ namespace opengl3
             var im1_buff_list = new List<Mat>();
             for(int i=0; i< inc_pos.Length; i++)
             {
-                Console.WriteLine(i+" "+inc_pos[i]);
+               // Console.WriteLine(i+" "+inc_pos[i]);
             }
             //Console.WriteLine("start video_________");
             while (videoframe_count < all_frames/2+1)
@@ -361,7 +362,10 @@ namespace opengl3
                         }*/
                         var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                         frames_show.Add(frame_d);
-                        Console.Write(videoframe_count.ToString() + " " + inc_pos[videoframe_count].ToString());
+                        Console.Write(videoframe_count.ToString() + " " +
+                            inc_pos[videoframe_count].ToString() + " " +
+                            enc_pos_time[(videoframe_count - 1) * 2, 3] + " ");
+                           // enc_pos_time[(videoframe_count-1)*2, 0]);
                         if (calib)
                         {
                             //var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
@@ -745,6 +749,28 @@ namespace opengl3
             return enc_pos;
         }
 
+        static double[] recomp_pos_sing(double[,] data)
+        {
+            var len = data.GetLength(1)/2;
+            int f_ind = 5;
+            int l_ind = len;
+            double pos_f = data[f_ind, 0];
+            double pos_l = data[l_ind, 0];
+
+            double time_f = data[f_ind, 0];
+            double time_l = data[l_ind, 0];
+
+
+
+            for (int i=5;i<len;i+=2)
+            {
+                var time = data[i, 3];
+                var pos = data[i, 0];
+                var pos_re = time - time_f;
+
+            }
+            return null;
+        }
 
         static Mat get_frame_video(string video_path, int frame)
         {
