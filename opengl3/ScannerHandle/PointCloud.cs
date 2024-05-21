@@ -95,10 +95,25 @@ namespace opengl3
             CvInvoke.WaitKey();
             prin.t(points_im);
             prin.t("____________________");*/
-            var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
+            var z = -20;
+           // prin.t("prin.t(cameraCV.matrixSC);");
+            //prin.t(cameraCV.matrixSC);
+            var flat = LaserSurface.zeroFlatInCam(cameraCV.matrixSC, z);
+            //var points_cam = fromLines(points_im, cameraCV, linearAxis.getLaserSurf(LinPos));
+            //graphicGL?.addFlat3d_XY(flat);
+
+           
+            var points_cam = fromLines(points_im, cameraCV, flat);
+            //graphicGL?.addPointMesh(points_cam, Color3d_GL.green());
             points_cam = color_points3d(points_im, points_cam, orig);
 
-            Console.WriteLine(" " + points_cam[p_i].z);
+            var las_fl = -flat_las_from_ps(points_cam[p_i], linearAxis);
+
+            //graphicGL?.addFlat3d_YZ(las_fl);
+
+
+            Console.WriteLine(" " + points_cam[p_i].z+" "+ pos_from_las_flat(las_fl, linearAxis));
+
             //graphicGL.addFlat3d_YZ(linearAxis.getLaserSurf(LinPos),null,0.1f,0.1f,0.4f);
             points3d_cur = points_cam;
             //points3d_cur = camToScene(points_cam, cameraCV.matrixCS);
@@ -108,6 +123,21 @@ namespace opengl3
             points3d_lines.Add(points3d_cur);
             points3d = ps_list.ToArray();
             return true;
+        }
+        double pos_from_las_flat(Flat3d_GL f, LinearAxis linearAxis)
+        {
+            var pos = (f.D - linearAxis.start_LasFlat.D) / linearAxis.oneLasFlat.D + linearAxis.start_pos;
+            return pos;
+        }
+        Flat3d_GL flat_las_from_ps(Point3d_GL p, LinearAxis linearAxis)
+        {
+            var f_f = linearAxis.getLaserSurf(750);
+            var f_e = linearAxis.getLaserSurf(1050);
+            var f_0 = LaserSurface.zeroFlatInCam(null, 0);
+            var f_100 = LaserSurface.zeroFlatInCam(null, 100);
+            var p1 = Flat3d_GL.cross(f_f, f_e,f_0);
+            var p2 = Flat3d_GL.cross(f_f, f_e, f_100);
+            return new Flat3d_GL(p1, p2, p);
         }
         public bool addPointsStereoLas(Mat[] mat, StereoCamera stereocamera, bool undist)
         {

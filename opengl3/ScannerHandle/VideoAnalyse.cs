@@ -284,7 +284,7 @@ namespace opengl3
             Console.WriteLine("Points computed.");
             return scanner;
         }
-        static public Scanner loadVideo_sing_cam(string filepath,MainScanningForm form, Scanner scanner = null, int strip = 1, bool calib = false)
+        static public Scanner loadVideo_sing_cam(string filepath, MainScanningForm form, Scanner scanner = null, int strip = 1, bool calib = false)
         {
             var videoframe_count = 0;
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
@@ -300,27 +300,47 @@ namespace opengl3
 
             var capture1 = new VideoCapture(video_path);
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
-           // orig1 = scanner.cameraCV.undist(orig1);
+            // orig1 = scanner.cameraCV.undist(orig1);
             var fr_st_vid = new Frame(orig1, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
             var pos_inc_cal = new List<double>();
             //comboImages.Items.Add(fr_st_vid);
-            int buff_diff = 10;
+            int buff_diff = 4;
             int buff_len = buff_diff + 1;
             var all_frames = all_frames1;
             if (scanner != null)
             {
                 scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>() };
                 scanner.pointCloud.graphicGL = form.GL1;
-            }
-            var enc_file = "";
+                scanner.cameraCV.matrixSC = new Matrix<double>(
+                    /*new double[,]
+                    {
+                        { 0.9986744136, 0.0156131588, 0.0490473742, 25.2702716137 },
+{ 0.013848945, -0.9992520102, 0.0361057723, 22.5256433504 },
+{ 0.0495744124 ,- 0.0353786566 ,- 0.9981436411 ,125.1960146638},
+            { 0 ,0, 0, 1} });
+            }*/
+
+            new double[,]
+                    {
+                        {0.9984988882, 0.0187528173, 0.0514616562, 24.9030440612 },
+{ 0.0167773194 ,- 0.9991156302, 0.0385548832, 22.0981226538},
+{ 0.0521391577, - 0.0376336194, - 0.997930468, 123.1442586159},
+            { 0 ,0, 0, 1} });
+        }
+
+
+                var enc_file = "";
             using (StreamReader sr = new StreamReader(enc_path))
             {
                 enc_file = sr.ReadToEnd();
             }
-            var inc_pos = scanner.enc_pos(enc_file, (int)all_frames);
-
+            //var inc_pos = enc_pos(enc_file, (int)all_frames);
             var enc_pos_time = analys_sync(enc_path);
+           // enc_pos_time = recomp_pos_sing(enc_pos_time);
+            var inc_pos = enc_pos(enc_pos_time);
+
+            
 
             var buffer_mat = new Mat();
             var im_orig = orig1.ToImage<Bgr, byte>();
@@ -334,7 +354,7 @@ namespace opengl3
                // Console.WriteLine(i+" "+inc_pos[i]);
             }
             //Console.WriteLine("start video_________");
-            while (videoframe_count < all_frames/2+1)
+            while (videoframe_count < all_frames / 2 + 1)//  "/2+1"
             {
                 Mat im1 = new Mat();
                 while (!capture1.Read(im1)) { }
@@ -342,7 +362,7 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
-                    if (videoframe_count % strip == 0 && videoframe_count> buff_len)//&& videoframe_count > 37 && videoframe_count <173)
+                    if (videoframe_count % strip == 0 && videoframe_count> buff_len && videoframe_count > 18 && videoframe_count <83)
                     {
                         //var im1_or = im1.Clone();
                         im1 -= im1_buff_list[buff_len - buff_diff];
@@ -548,7 +568,59 @@ namespace opengl3
               CvInvoke.Imshow("r", mat_rgb[2]);
             
         }
-        
+
+        static public double[] enc_pos(string enc, int size)
+        {
+            var enc_pos = new double[size + 10];
+            enc = enc.Replace("\r", "");
+            var lines = enc.Split('\n');
+            foreach (var line in lines)
+            {
+                if (line.Length > 1)
+                {
+                    var vals = line.Split(' ');
+                    //if(vals.Length==2)
+                    {
+                        var ind = try_int32(vals[1]);
+                        var var = try_int32(vals[0]);
+                        if (ind > 0 && var > 0)
+                        {
+                            enc_pos[ind] = var;
+                        }
+                    }
+
+                }
+            }
+            return enc_pos;
+        }
+
+        static public double[] enc_pos(double[,] enc)
+        {
+            var enc_pos = new double[enc.GetLength(0)];
+            for (int i = 0; i < enc.GetLength(0); i += 2)
+            {
+                var ind = (int)enc[i, 1];
+                var var = enc[i, 0];
+                if (ind > 0 && var > 0)
+                {
+                    enc_pos[ind] = var;
+                }
+            }
+            return enc_pos;
+        }
+
+        static int try_int32(string val)
+        {
+            try
+            {
+                return Convert.ToInt32(val);
+            }
+            catch (FormatException e)
+            {
+                return -1;
+            }
+
+        }
 
 
         static string[] get_video_path(int ind, string filepath)//[ video, enc]
@@ -572,13 +644,13 @@ namespace opengl3
             return new string[] { video_path, enc_path };
         }
 
-        static int[] frames_max(int[,] data)
+        static int[] frames_max(double[,] data)
         {
             int analyse_len = 40;
             var end_data = new List<int[]>();
             for (int i = data.GetLength(0) - analyse_len; i < data.GetLength(0) - 1; i++)
             {
-                end_data.Add(new int[] { data[i, 1], data[i, 2] });
+                end_data.Add(new int[] {(int) data[i, 1],(int) data[i, 2] });
             }
             var ed_s = (from d in end_data
                         orderby d[0] descending
@@ -608,9 +680,9 @@ namespace opengl3
             var data_s = new int[3, fr_max + 1][];
             for (int i = 0; i < data.GetLength(0); i++)
             {
-                var fr_n = data[i, 1];
-                var cam_n = data[i, 2];
-                var time = data[i, 3];
+                var fr_n =(int) data[i, 1];
+                var cam_n = (int)data[i, 2];
+                var time = (int)data[i, 3];
                 if (data_s[cam_n, fr_n] == null)
                 {
                     data_s[cam_n, fr_n] = new int[0];
@@ -687,7 +759,7 @@ namespace opengl3
             pairs[0] = new double[] { cam_min, cam_max, frame_min, frame_max };
             return pairs;
         }
-        static int[,] analys_sync(string enc_path)
+        static double[,] analys_sync(string enc_path)
         {
             string enc;
             using (StreamReader sr = new StreamReader(enc_path))
@@ -697,7 +769,7 @@ namespace opengl3
 
             enc = enc.Replace("\r", "");
             var lines = enc.Split('\n');
-            var enc_pos = new int[lines.Length, 8];
+            var enc_pos = new double[lines.Length, 8];
             int ind = 0;
             int st_time = 0;
             foreach (var line in lines)
@@ -728,7 +800,7 @@ namespace opengl3
                                 enc_pos[ind, i] -= st_time;
                                 if (ind == 0)
                                 {
-                                    st_time = enc_pos[ind, i];
+                                    st_time =(int) enc_pos[ind, i];
                                     enc_pos[ind, i] = 0;
                                 }
 
@@ -749,27 +821,28 @@ namespace opengl3
             return enc_pos;
         }
 
-        static double[] recomp_pos_sing(double[,] data)
+        static double[,] recomp_pos_sing(double[,] data)
         {
-            var len = data.GetLength(1)/2;
-            int f_ind = 5;
+            var len = data.GetLength(0)/2;
+            if (len % 2 != 0) len -= 1;
+            int f_ind = 6;
             int l_ind = len;
             double pos_f = data[f_ind, 0];
             double pos_l = data[l_ind, 0];
 
-            double time_f = data[f_ind, 0];
-            double time_l = data[l_ind, 0];
+            double time_f = data[f_ind, 3];
+            double time_l = data[l_ind, 3];
+            var data_c = (double[,])data.Clone();
 
 
-
-            for (int i=5;i<len;i+=2)
+            for (int i=f_ind;i<len;i+=2)
             {
-                var time = data[i, 3];
+                var time = data[i+1, 3];
                 var pos = data[i, 0];
-                var pos_re = time - time_f;
-
+                var pos_re = ((time - time_f)/(time_l-time_f) )*(pos_l-pos_f)+pos_f;
+                data_c[i, 0] = pos_re;
             }
-            return null;
+            return data_c;
         }
 
         static Mat get_frame_video(string video_path, int frame)

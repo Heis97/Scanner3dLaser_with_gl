@@ -23,11 +23,26 @@ namespace opengl3
             var df = (l - f) / f;
             for(int i=0; i<data.Length;i++)
             {
-                var a = data[i]/f - df*((double)i/data.Length);
-
+                //var a = data[i]/f - df*((double)i/data.Length);
+                var a =( data[i] - f) / (l-f) - (double)i/data.Length;
                 data_c[i] = a;
             }
             return data_c;
+        }
+
+        public static void norm_align_2_data(double[] data1, double[] data2)
+        {
+            var f = data1.First();
+            var l = data1.Last();
+            var data_c = (double[])data1.Clone();
+            var df = (l - f) / f;
+            for (int i = 0; i < data1.Length; i++)
+            {
+                //var a = data[i]/f - df*((double)i/data.Length);
+                var a1 = (data1[i] - f) / (l - f) - (double)i / data1.Length;
+                var a2 = (data2[i] - f) / (l - f) - (double)i / data1.Length;
+                Console.WriteLine(a1 + " " + a2);
+            }
         }
 
         public static double[][] norm_align_data(double[][] data)
@@ -41,16 +56,23 @@ namespace opengl3
                 {
                     data_split[k][i] = data[i][k];
                 }
-                data_split[k] = norm_align_data(data_split[k]);
+                
             }
-            for (int i = 0; i < data_split[0].Length; i++)
+            norm_align_2_data(data_split[1], data_split[5]);
+
+            for(int i = 0; i < data_split.Length;i++)
+            {
+                data_split[i] = norm_align_data(data_split[i]);
+            }
+
+            /*for (int i = 0; i < data_split[0].Length; i++)
             {
                 for  (int k = 0; k < data_split.Length; k++)
                 {
                     Console.Write(data_split[k][i]+" ");
                 }
                 Console.WriteLine();
-            }
+            }*/
 
 
             return data_split;

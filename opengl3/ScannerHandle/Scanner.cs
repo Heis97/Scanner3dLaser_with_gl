@@ -461,44 +461,7 @@ namespace opengl3
         }
 
 
-        public double[] enc_pos(string enc,int size)
-        {
-            var enc_pos = new double[size+10];
-            enc = enc.Replace("\r", "");
-            var lines = enc.Split('\n');
-            foreach(var line in lines)
-            {
-                if (line.Length>1)
-                {
-                    var vals = line.Split(' ');
-                    //if(vals.Length==2)
-                    {
-                        var ind = try_int32(vals[1]);
-                        var var = try_int32(vals[0]);
-                        if(ind>0 && var>0)
-                        {
-                            enc_pos[ind] = var;
-                        }
-                    }
-                    
-                }
-            }
-            return enc_pos;
-        }
-
-        static int try_int32(string val)
-        {
-            try
-            {
-                return Convert.ToInt32(val);
-            }
-            catch(FormatException e)
-            {
-                return -1;
-            }
-            
-        }
-   
+        
        
         
     

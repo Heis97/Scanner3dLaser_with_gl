@@ -204,10 +204,10 @@ namespace opengl3
             var ps = takePointsForFlat(ps_m_2, false, div);
 
             var orig_c = mat.Clone();
-            UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
+            /*UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
             UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
             CvInvoke.Imshow("corn", orig_c);
-            CvInvoke.WaitKey();
+            CvInvoke.WaitKey();*/
 
             var lines = PointCloud.computeTracesCam(ps, cameraCV);
             var ps3d = new List<Point3d_GL>();
@@ -272,13 +272,18 @@ namespace opengl3
 
         public static Flat3d_GL zeroFlatInCam(Matrix<double> matrix,double z = 0)
         {
-            if(matrix ==null)
+            var p1 = new Point3d_GL(100, 0, z);
+            var p2 = new Point3d_GL(0, 0, z);
+            var p3 = new Point3d_GL(0, 100, z);
+            if (matrix ==null)
             {
-                Console.WriteLine("matrxZeroFlat   NULL");
+                //Console.WriteLine("matrxZeroFlat   NULL");
+                
+                return new Flat3d_GL(p1, p2, p3);
             }
-            var p1 = matrix * new Point3d_GL(100, 0, z);
-            var p2 = matrix * new Point3d_GL(0, 0, z);
-            var p3 = matrix * new Point3d_GL(0, 100, z);
+            p1 = matrix * new Point3d_GL(100, 0, z);
+            p2 = matrix * new Point3d_GL(0, 0, z);
+            p3 = matrix * new Point3d_GL(0, 100, z);
             return new Flat3d_GL(p1, p2, p3);
         }
     }

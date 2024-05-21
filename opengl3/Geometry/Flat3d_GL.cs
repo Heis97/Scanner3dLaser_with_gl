@@ -140,7 +140,10 @@ namespace opengl3
             return new Flat3d_GL(f1.A - f2.A, f1.B - f2.B, f1.C - f2.C, f1.D - f2.D);
         }
 
-
+        public static Flat3d_GL operator -(Flat3d_GL f1)
+        {
+            return new Flat3d_GL(-f1.A ,- f1.B, -f1.C , -f1.D );
+        }
         public override string ToString()
         {
             return Math.Round(A,4) + " " + Math.Round(B, 4) + " " + Math.Round(C, 4) + " " + Math.Round(D, 4);

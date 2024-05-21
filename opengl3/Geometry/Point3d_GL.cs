@@ -617,7 +617,7 @@ namespace opengl3
             if (ps == null) return null;
             if (ps.Length == 0) return null;
             var inds_rem = remote_element(ps);
-
+            if (inds_rem[2] == 0) return ps;
 
             var ps_or = new List<Point3d_GL>();
             ps_or.Add(ps[inds_rem[0]]);
