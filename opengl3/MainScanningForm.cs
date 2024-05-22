@@ -207,8 +207,8 @@ namespace opengl3
             //test_handeye();
 
            
-            var data = Analyse.parse_data_txt("data_sing.txt");
-            Analyse.norm_align_data(data);
+            //var data = Analyse.parse_data_txt("data_sing.txt");
+            //Analyse.norm_align_data(data);
         }
 
         void test_handeye()
