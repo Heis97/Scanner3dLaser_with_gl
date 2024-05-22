@@ -1728,7 +1728,7 @@ namespace opengl3
             //var frames = RobotFrame.parse_g_code(g_code);
             
             //load_3d_model_robot();
-           /* var ps = new Point3d_GL[]
+            var ps = new Point3d_GL[]
             {
                 new Point3d_GL(-583.4106, 68.5254, -25.249),
                 new Point3d_GL( -497.7654, 21.0938, -27.4487),
@@ -1736,10 +1736,10 @@ namespace opengl3
             };
             GL1.addPointMesh(ps, Color3d_GL.red());
             var model = new RobotFrame(-583.4106, 68.5254, -25.249, 0.5114, -0.2437, -0.4482).getMatrix();
-            var model_inv = UtilMatr.to_inv_rot_matrix(model);
-            CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
+            //var model_inv = UtilMatr.to_inv_rot_matrix(model);
+            //CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
 
-            GL1.addFrame(model, 200, "mod");*/
+            GL1.addFrame(model, 200, "mod");
 
         }
 
