@@ -335,10 +335,10 @@ namespace opengl3
             {
                 enc_file = sr.ReadToEnd();
             }
-            //var inc_pos = enc_pos(enc_file, (int)all_frames);
+            var inc_pos = enc_pos(enc_file, (int)all_frames);
             var enc_pos_time = analys_sync(enc_path);
            // enc_pos_time = recomp_pos_sing(enc_pos_time);
-            var inc_pos = enc_pos(enc_pos_time);
+           // var inc_pos = enc_pos(enc_pos_time);
 
             
 
@@ -362,7 +362,7 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
-                    if (videoframe_count % strip == 0 && videoframe_count> buff_len)// && videoframe_count > 18 && videoframe_count <83)
+                    if (videoframe_count % strip == 0 && videoframe_count> buff_len && videoframe_count > 18)// && videoframe_count <83)
                     {
                         //var im1_or = im1.Clone();
                         im1 -= im1_buff_list[buff_len - buff_diff];
@@ -581,7 +581,7 @@ namespace opengl3
                     var vals = line.Split(' ');
                     //if(vals.Length==2)
                     {
-                        var ind = try_int32(vals[1]);
+                        var ind = try_int32(vals[2]);
                         var var = try_int32(vals[0]);
                         if (ind > 0 && var > 0)
                         {

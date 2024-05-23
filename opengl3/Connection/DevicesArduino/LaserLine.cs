@@ -127,11 +127,44 @@ namespace opengl3
             
             return 0;
         }
+
+        public string get_las_pos_res_time()
+        {
+
+            var res = reseav().Split('\n');
+
+            for (int k = res.Length - 1; k >= 0; k--)
+            {
+                Console.WriteLine("k"+k+":"+res[k]);
+                for (int i = 0; i < res[k].Length; i++)
+                {
+                    if (res[k].Contains("lp"))
+                    {
+
+                        var res_sp = res[k].Split(' ');
+                        if(res_sp.Length>2)
+                        {
+                            return res_sp[1] + " " + res_sp[2];
+                        }
+                        
+                    }
+                }
+            }
+
+            return "0 0";
+        }
         public int get_las_pos()
         {
             get_las_pos_send();
             //Thread.Sleep(1);
             return get_las_pos_res();
+        }
+
+        public string get_las_pos_time()
+        {
+            get_las_pos_send();
+           // Thread.Sleep(10);
+            return get_las_pos_res_time();
         }
         static int comp_vel_div(double vel)
         {

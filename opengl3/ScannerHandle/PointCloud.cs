@@ -78,12 +78,14 @@ namespace opengl3
         }
         public bool addPointsLinLas_step(Mat mat, Image<Bgr,byte> orig, double LinPos, CameraCV cameraCV, LinearAxis linearAxis, PatternType patternType)
         {
-            mat = cameraCV.undist(mat);     
+            mat = cameraCV.undist(mat);
+           // CvInvoke.Imshow("ps", mat);
+           // CvInvoke.WaitKey();
             var points_im = Detection.detectLineDiff(mat, 5, 0.05f, false, true);
-            var y_im = 300;
+            var y_im = 305;
             var p_i = Detection.p_in_ps_by_y(points_im, y_im);
-            /*Console.Write(" "+ points_im[p_i].X);
-           CvInvoke.DrawMarker(mat, points_im[ Detection.p_in_ps_by_y(points_im, y_im)].toPoint(), new MCvScalar(255, 0, 0), Emgu.CV.CvEnum.MarkerTypes.Cross, 10, 2);
+            Console.Write(" "+ points_im[p_i].X);
+          /* CvInvoke.DrawMarker(mat, points_im[ Detection.p_in_ps_by_y(points_im, y_im)].toPoint(), new MCvScalar(255, 0, 0), Emgu.CV.CvEnum.MarkerTypes.Cross, 10, 2);
             CvInvoke.Line(mat, new Point(0, y_im), new Point(mat.Width, y_im), new MCvScalar(0, 0, 255), 2);
             CvInvoke.Imshow("ps", mat);
             CvInvoke.WaitKey();*/

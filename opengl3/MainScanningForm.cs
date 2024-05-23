@@ -1306,7 +1306,9 @@ namespace opengl3
 
                 startWrite_sam(0, counts);
                 sb_enc = new StringBuilder();
+                Thread.Sleep(200);
                 laserLine?.setShvpVel(v_laser);
+                Thread.Sleep(200);
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
 
             }
@@ -4633,7 +4635,7 @@ namespace opengl3
 
             if (videoframe_counts[ind] > 0 && videoframe_counts[ind ] < videoframe_counts_stop[ind])
             {
-                 sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind] + " " + ind + " ");
+                 sb_enc?.Append(laserLine?.get_las_pos_time() + " " + videoframe_counts[ind] + " " + ind + " ");
                 //if (sb_enc == null) Console.WriteLine("NULL!");
                // sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind] + " " + ind + " ");
@@ -4642,7 +4644,7 @@ namespace opengl3
                 video_mats[ind]?.Add(mat.Clone());
                 //var p = Detection.detectLineSensor(mat)[0];
                 //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
-                sb_enc?.Append(laserLine?.get_las_pos() + " " + videoframe_counts[ind] + " " + ind + " ");
+                sb_enc?.Append(laserLine?.get_las_pos_time() + " " + videoframe_counts[ind] + " " + ind + " ");
                 //sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind ] + " " + ind + " ");
                 sb_enc?.Append("\n");
@@ -5415,7 +5417,7 @@ namespace opengl3
         }
         private void but_las_enc_Click(object sender, EventArgs e)
         {
-            textBox_shvpPos.Text = laserLine?.get_las_pos().ToString();
+            textBox_shvpPos.Text = laserLine?.get_las_pos_time().ToString();
         }
         private void comboBox_portsArd_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -103,6 +103,7 @@ namespace opengl3
                 res += serialPort.ReadLine();
             }*/
             //return res;
+            
             return serialPort.ReadExisting();
             
         }
