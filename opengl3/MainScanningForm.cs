@@ -206,9 +206,29 @@ namespace opengl3
 
             //test_handeye();
 
-           
+
             //var data = Analyse.parse_data_txt("data_sing.txt");
             //Analyse.norm_align_data(data);
+
+            var frs = new RobotFrame[]
+          {
+                new RobotFrame(-549.6832, 231.2491, 164.4913, -1.5754, -0.6576, 1.5666),
+                new RobotFrame( -345.6098, 217.2007, 163.8482, -1.5752, -0.6579, 1.567),
+                new RobotFrame(  -346.2069, 348.3778, 174.2129, -1.5754, -0.6574, 1.5664),
+          };
+
+            var model = new RobotFrame(-549.6832, 231.2491, 164.4913, 0.0789, -0.0023, -0.0688).getMatrix();
+            //var model_inv = UtilMatr.to_inv_rot_matrix(model);
+            CvInvoke.Invert(model, model, DecompMethod.LU);
+            var m1 = new RobotFrame(model * frs[0].getMatrix());
+            var m2 = new RobotFrame(model * frs[1].getMatrix());
+            var m3 = new RobotFrame(model * frs[2].getMatrix());
+            Console.WriteLine("ps");
+            Console.WriteLine(m1.ToStr());
+            Console.WriteLine(m2.ToStr());
+            Console.WriteLine(m3.ToStr());
+
+            
         }
 
         void test_handeye()
@@ -1726,7 +1746,7 @@ namespace opengl3
             GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");*/
             //var g_code = File.ReadAllText("test_traj.txt");
             //var frames = RobotFrame.parse_g_code(g_code);
-            
+
             //load_3d_model_robot();
             /*var ps = new Point3d_GL[]
             {
@@ -1737,18 +1757,20 @@ namespace opengl3
             GL1.addPointMesh(ps, Color3d_GL.red());
             var model = new RobotFrame(-583.4106, 68.5254, -25.249, 0.5114, -0.2437, -0.4482).getMatrix();*/
 
-            var ps = new Point3d_GL[]
-            {
-                new Point3d_GL(-549.6832, 231.2491, 164.4913),
-                new Point3d_GL( -345.6098, 217.2007, 163.8482),
-                new Point3d_GL( -346.2069, 348.3778, 164.2129+10),
-            };
+            /* var ps = new Point3d_GL[]
+             {
+                 new Point3d_GL(-549.6832, 231.2491, 164.4913),
+                 new Point3d_GL( -345.6098, 217.2007, 163.8482),
+                 new Point3d_GL( -346.2069, 348.3778, 164.2129+10),
+             };
+             GL1.addPointMesh(ps, Color3d_GL.red());
+             var model = new RobotFrame(-549.6832, 231.2491, 164.4913, 0.0789, -0.0023, -0.0688).getMatrix();
             GL1.addPointMesh(ps, Color3d_GL.red());
-            var model = new RobotFrame(-549.6832, 231.2491, 164.4913, 0.0789, -0.0023, -0.0688).getMatrix();
-            //var model_inv = UtilMatr.to_inv_rot_matrix(model);
-            //CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
+              GL1.addFrame(model, 200, "mod");*/
 
-            GL1.addFrame(model, 200, "mod");
+          
+
+          
 
         }
 
