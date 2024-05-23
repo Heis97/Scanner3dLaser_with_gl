@@ -354,7 +354,7 @@ namespace opengl3
                // Console.WriteLine(i+" "+inc_pos[i]);
             }
             //Console.WriteLine("start video_________");
-            while (videoframe_count < all_frames / 2 + 1)//  "/2+1"
+            while (videoframe_count < all_frames-buff_len)//  "/2+1"
             {
                 Mat im1 = new Mat();
                 while (!capture1.Read(im1)) { }
@@ -362,7 +362,7 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
-                    if (videoframe_count % strip == 0 && videoframe_count> buff_len && videoframe_count > 18 && videoframe_count <83)
+                    if (videoframe_count % strip == 0 && videoframe_count> buff_len)// && videoframe_count > 18 && videoframe_count <83)
                     {
                         //var im1_or = im1.Clone();
                         im1 -= im1_buff_list[buff_len - buff_diff];
@@ -597,11 +597,11 @@ namespace opengl3
         static public double[] enc_pos(double[,] enc)
         {
             var enc_pos = new double[enc.GetLength(0)];
-            for (int i = 0; i < enc.GetLength(0); i += 2)
+            for (int i = 1; i < enc.GetLength(0); i += 2)
             {
                 var ind = (int)enc[i, 1];
                 var var = enc[i, 0];
-                if (ind > 0 && var > 0)
+                if (ind > 0)
                 {
                     enc_pos[ind] = var;
                 }

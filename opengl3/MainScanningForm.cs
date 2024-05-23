@@ -837,9 +837,9 @@ namespace opengl3
         {
             markSize = 6.2273f;//6.2273f//10f//9.6f
             chess_size = new Size(10, 11);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1cal_1011_1705_1", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_sing_home_2205_1", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("cam1cal_1011_1705_2.txt");            
+            cam1.save_camera("cam_sing_home_2205_1.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* markSize = 6.2273f;//6.2273f

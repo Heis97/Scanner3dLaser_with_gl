@@ -152,6 +152,8 @@ namespace opengl3
                 var ps = Detection.detectLineDiff(mats[i]);
                 var ps_par = Detection.parall_Points(Detection.filtr_y0_Points(ps));
                 var ps_o = LaserSurface.order_x(ps_par);
+                if (ps_o == null) continue;
+                if (ps_o.Length<3) continue;
                 var del = ps_o[0].X - ps_o[ps_par.Length-1].X;
                 delts[i] = Math.Abs(del);
                 if(delts[i]>dest_max)
@@ -188,21 +190,23 @@ namespace opengl3
                     {
                         var bin = new Mat();
                         var r = mats[i].Split()[2];
+                        CvInvoke.Rotate(r, r, RotateFlags.Rotate180);
                         CvInvoke.GaussianBlur(r, r, new System.Drawing.Size(7, 7), -1);
                         CvInvoke.Threshold(r, bin, 40, 255, ThresholdType.Binary);
                         var x_min = right_white_pixel(bin);
+                        var dx = 25;
                         var ps_rec = new System.Drawing.Point[]
                         {
-                        new System.Drawing.Point(x_min+12, 0),
-                        new System.Drawing.Point(x_min+12, bin.Height-1),
+                        new System.Drawing.Point(x_min+dx, 0),
+                        new System.Drawing.Point(x_min+dx, bin.Height-1),
                          new System.Drawing.Point(bin.Width-1, bin.Height-1),
                         new System.Drawing.Point(bin.Width-1, 0),
                         };
                         CvInvoke.FillPoly(bin, new VectorOfPoint(ps_rec), new MCvScalar(0));
 
-                      
-                         CvInvoke.Imshow("bin", bin);
-                        CvInvoke.WaitKey();
+                        CvInvoke.Rotate(bin, bin, RotateFlags.Rotate180);
+                        CvInvoke.Imshow("bin", bin);
+                        //CvInvoke.WaitKey();
                         if (up_surf == null)
                         {
                             up_surf = bin.Clone();
@@ -258,7 +262,7 @@ namespace opengl3
             var ps_g = PointF.toSystemPoint(PointF.toPointF(find_gab_pix(up_s_r)));
 
             CvInvoke.Imshow(" up_surf", UtilOpenCV.drawPointsF(up_s_r.Clone(), ps_g, 255, 255, 0, 3));
-            CvInvoke.WaitKey();
+            //CvInvoke.WaitKey();
 
             var aff_matr_3d = aff_matr.ConcateVertical(new Matrix<double>(new double[1, 3] { { 0, 0, 1 } }));
            
@@ -280,14 +284,14 @@ namespace opengl3
             var y_dim = 50;
 
             // var corners = corner_step(orig);
-            ps_g = new System.Drawing.PointF[]
+           /* ps_g = new System.Drawing.PointF[]
              {
                 new System.Drawing.PointF(376,542),
                 new System.Drawing.PointF(384,144),
                 new System.Drawing.PointF(919,160),
                 new System.Drawing.PointF(917,547)
 
-             };
+             };*/
             var corners = ps_g;
 
             
@@ -449,7 +453,7 @@ namespace opengl3
            /* int start_ind = (int)(LasFlats.Count / 2) + 1;
             int end_ind = (int)(LasFlats.Count / 2) - 1;*/
 
-            int start_ind = LasFlats.Count  - 1;
+             int start_ind = LasFlats.Count  - 1;
             int end_ind = 0;
 
             oneLasFlat = (LasFlats[end_ind] - LasFlats[start_ind]) / (PositionsAxis[end_ind] - PositionsAxis[start_ind]);

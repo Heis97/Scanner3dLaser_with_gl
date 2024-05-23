@@ -1088,6 +1088,7 @@ namespace opengl3
             /* var ps = (from p in inp
                             orderby p.Y
                             select p).ToArray();*/
+            if (inp == null) return null; 
             var ps = (PointF[])inp.Clone();
 
             var dx = ps[0].X - ps[ps.Length - 1].X;
@@ -1113,6 +1114,7 @@ namespace opengl3
         }
         static public int p_in_ps_by_y(PointF[] inp,int y)
         {
+            if (inp == null) return 0;
             for(int i = 0; i < inp.Length;i++)
             {
                 if((int)inp[i].Y == y)return i;
