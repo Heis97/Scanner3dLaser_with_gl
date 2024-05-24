@@ -23,7 +23,7 @@ namespace opengl3
         public Flat3d_GL stop_LasFlat = new Flat3d_GL(1, 0, 0, 0);
         public double start_pos = 0, betw_pos = 0, stop_pos = 0;
 
-        double[] akoef, bkoef, ckoef, dkoef;
+        public Flat3d_GL akoef, bkoef, ckoef, dkoef;
 
         bool calibrated = false;
         public GraphicGL GraphicGL;
@@ -58,6 +58,18 @@ namespace opengl3
             betw_pos = pos2;
             stop_pos = pos3;
             comp_flat_koef();
+            calibrated = true;
+        }
+
+        public LinearAxis(Flat3d_GL f1, Flat3d_GL f2, Flat3d_GL f3, Flat3d_GL f4)
+        {
+            MatrixesCamera = new List<Matrix<double>>();
+            PositionsAxis = new List<double>();
+            LasFlats = new List<Flat3d_GL>();
+            akoef = f1;
+            bkoef = f2;
+            ckoef = f3;
+            dkoef = f4;
             calibrated = true;
         }
 
@@ -296,9 +308,20 @@ namespace opengl3
             //CvInvoke.Imshow(" up_s_r", up_s_r);
            // CvInvoke.Imshow(" orig_ps", orig );
             //CvInvoke.WaitKey();
-            var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
-            positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
+           // var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
+            //positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
 
+            var mats_calib = new Mat[] { mats[inds_part[inds_part.Length / 4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3 * inds_part.Length / 4]] };
+           // positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
+            var mats_calib_l = new List<Mat>();
+            var positions_l = new List<double>();
+            for(int i= inds_part.Length/6; i<5* inds_part.Length/6;i++ )
+            {
+                mats_calib_l.Add(mats[inds_part[i]]);
+                positions_l.Add(positions[inds_part[i]]);
+            }
+            mats_calib = mats_calib_l.ToArray();
+            positions = positions_l.ToArray();
             var x_dim = 70;
             var y_dim = 50;
 
@@ -335,6 +358,7 @@ namespace opengl3
             {
                 var las = new LaserSurface(mats_calib[i], cameraCV, patternType,graphicGL);                
                 PositionsAxis.Add(positions[i]);
+                Console.WriteLine(positions[i]+" "+las.flat3D);
                 //graphicGL.addFlat3d_YZ(las.flat3D,null,0.3f);
                 LasFlats.Add(las.flat3D);
             }
@@ -493,12 +517,45 @@ namespace opengl3
                 cval[i] = new double[] { poses[i], flats[i].C };
                 dval[i] = new double[] { poses[i], flats[i].D };
             }
-            akoef = Regression.regression(aval, grad);
-            bkoef = Regression.regression(bval, grad);
-            ckoef = Regression.regression(cval, grad);
-            dkoef = Regression.regression(dval, grad);
+            akoef =new Flat3d_GL( Regression.regression(aval, grad));
+            bkoef = new Flat3d_GL(Regression.regression(bval, grad));
+            ckoef = new Flat3d_GL(Regression.regression(cval, grad));
+            dkoef = new Flat3d_GL(Regression.regression(dval, grad));
+            calibrated = true;
+            var fl1 = getLaserSurf(poses[0]);
 
-            //var test_d = Regression.calcPolynSolv(dkoef, poses[0]);
+            var fl2 = getLaserSurf(poses[1]);
+            var fl3 = getLaserSurf(poses[2]);
+        }
+
+        void comp_flat_koef_full(Flat3d_GL[] flats, double[] poses)
+        {
+
+            /* int start_ind = (int)(LasFlats.Count / 2) + 1;
+                        int end_ind = (int)(LasFlats.Count / 2) - 1;*/
+            int grad = 2;
+            var aval = new double[flats.Length][];
+            var bval = new double[flats.Length][];
+            var cval = new double[flats.Length][];
+            var dval = new double[flats.Length][];
+            for (int i = 0; i < flats.Length; i++)
+            {
+                aval[i] = new double[] { poses[i], flats[i].A };
+                bval[i] = new double[] { poses[i], flats[i].B };
+                cval[i] = new double[] { poses[i], flats[i].C };
+                dval[i] = new double[] { poses[i], flats[i].D };
+            }
+            akoef = new Flat3d_GL(Regression.regression(aval, grad));
+            bkoef = new Flat3d_GL(Regression.regression(bval, grad));
+            ckoef = new Flat3d_GL(Regression.regression(cval, grad));
+            dkoef = new Flat3d_GL(Regression.regression(dval, grad));
+
+            
+            calibrated = true;
+            var fl1 = getLaserSurf(poses[0]);
+
+            var fl2 = getLaserSurf(poses[1]);
+            var fl3 = getLaserSurf(poses[2]);
         }
 
         void compOneFlat()
@@ -546,10 +603,10 @@ namespace opengl3
         {
             if (calibrated)
             {
-                var a = Regression.calcPolynSolv(akoef, PositionLinear);
-                var b = Regression.calcPolynSolv(bkoef, PositionLinear);
-                var c = Regression.calcPolynSolv(ckoef, PositionLinear);
-                var d = Regression.calcPolynSolv(dkoef, PositionLinear);
+                var a = Regression.calcPolynSolv(akoef.ToDouble(), PositionLinear);
+                var b = Regression.calcPolynSolv(bkoef.ToDouble(), PositionLinear);
+                var c = Regression.calcPolynSolv(ckoef.ToDouble(), PositionLinear);
+                var d = Regression.calcPolynSolv(dkoef.ToDouble(), PositionLinear);
            
                 return new Flat3d_GL(a,b,c,d);
             }
@@ -564,8 +621,7 @@ namespace opengl3
             var  stP= (double)settings[2];
             return new LinearAxis(oneF, stF, stP);
         }
-
-        static public LinearAxis load(string path)
+        static public LinearAxis load_old2(string path)
         {
             var settings = Settings_loader.load_data(path);
 
@@ -575,13 +631,26 @@ namespace opengl3
             var pos1 = (double)settings[3];
             var pos2 = (double)settings[4];
             var pos3 = (double)settings[5];
-            return new LinearAxis(f1, f2, f3,pos1,pos2,pos3);
+            return new LinearAxis(f1, f2, f3, pos1, pos2, pos3);
         }
-        public void save(string path)
+        static public LinearAxis load(string path)
+        {
+            var settings = Settings_loader.load_data(path);
+
+            var f1 = (Flat3d_GL)settings[0];
+            var f2 = (Flat3d_GL)settings[1];
+            var f3 = (Flat3d_GL)settings[2];
+            var f4 = (Flat3d_GL)settings[3];
+            return new LinearAxis(f1, f2, f3,f4);
+        }
+        public void save_old_2(string path)
         {
             Settings_loader.save_file(path, new object[] { start_LasFlat, betw_LasFlat, stop_LasFlat , start_pos, betw_pos, stop_pos });
         }
-
+        public void save(string path)
+        {
+            Settings_loader.save_file(path, new object[] { akoef, bkoef, ckoef, dkoef });
+        }
 
     }
 }

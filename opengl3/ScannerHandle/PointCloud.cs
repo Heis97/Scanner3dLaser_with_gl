@@ -134,8 +134,8 @@ namespace opengl3
         }
         Flat3d_GL flat_las_from_ps(Point3d_GL p, LinearAxis linearAxis)
         {
-            var f_f = linearAxis.getLaserSurf(750);
-            var f_e = linearAxis.getLaserSurf(1050);
+            var f_f = linearAxis.getLaserSurf(linearAxis.start_pos);
+            var f_e = linearAxis.getLaserSurf(linearAxis.stop_pos);
             var f_0 = LaserSurface.zeroFlatInCam(null, 0);
             var f_100 = LaserSurface.zeroFlatInCam(null, 100);
             var p1 = Flat3d_GL.cross(f_f, f_e,f_0);

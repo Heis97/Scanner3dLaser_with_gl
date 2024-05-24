@@ -23,6 +23,15 @@ namespace opengl3
             n = new Vector3d_GL(A, B, C);
             exist = true;
         }
+        public Flat3d_GL(double[] vals)
+        {
+            A = vals[0];
+            B = vals[1];
+            C = vals[2];
+            D = 0;
+            n = new Vector3d_GL(A, B, C);
+            exist = true;
+        }
         public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3, Point3d_GL P4)
         {
             var x1 = P1.x;
@@ -146,8 +155,13 @@ namespace opengl3
         }
         public override string ToString()
         {
-            return Math.Round(A,4) + " " + Math.Round(B, 4) + " " + Math.Round(C, 4) + " " + Math.Round(D, 4);
+            int pres = 6;
+            return Math.Round(A,pres) + " " + Math.Round(B, pres) + " " + Math.Round(C, pres) + " " + Math.Round(D, pres);
         }
+        public double[] ToDouble()
+        {
 
+            return new double[] { A, B, C };
+        }
     }
 }
