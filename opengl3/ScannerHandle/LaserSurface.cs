@@ -189,7 +189,7 @@ namespace opengl3
 
             mat = cameraCV.undist(mat);
             var points = order_y(Detection.detectLineDiff(mat, 5,0,false,true,true));
-            var ps_m = order_y(Detection.x_max_claster(points,3));//x_min
+            var ps_m = order_y(Detection.x_min_claster(points,3));//x_min
            // CvInvoke.Imshow("orig_las_step", UtilOpenCV.drawPointsF(mat, ps_m, 255, 0, 0));
             //CvInvoke.WaitKey();
 
@@ -207,8 +207,8 @@ namespace opengl3
             var orig_c = mat.Clone();
             UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
             UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
-           // CvInvoke.Imshow("corn", orig_c);
-           // CvInvoke.WaitKey();
+            CvInvoke.Imshow("corn", orig_c);
+            CvInvoke.WaitKey();
 
             var lines = PointCloud.computeTracesCam(ps, cameraCV);
             var ps3d = new List<Point3d_GL>();

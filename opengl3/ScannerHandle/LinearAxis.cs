@@ -192,10 +192,10 @@ namespace opengl3
                     dest_max = delts[i];
                 }
                 Console.WriteLine(i + " " + delts[i]);
-                /*Mat test_1 = mats[i].Clone();
+                Mat test_1 = mats[i].Clone();
                 test_1 = UtilOpenCV.drawPointsF(test_1, ps_o, 0, 255, 0);
-                CvInvoke.Imshow("test", test_1);
-                CvInvoke.WaitKey();*/
+               // CvInvoke.Imshow("test"+i, test_1);
+                //CvInvoke.WaitKey();
             }
             for (int i = 0; i < delts.Length; i++)
             {
@@ -221,23 +221,27 @@ namespace opengl3
                     {
                         var bin = new Mat();
                         var r = mats[i].Split()[2];
-                        CvInvoke.Rotate(r, r, RotateFlags.Rotate180);
+                        // CvInvoke.Rotate(r, r, RotateFlags.Rotate180);
+                       
+                      //  CvInvoke.WaitKey();
                         CvInvoke.GaussianBlur(r, r, new System.Drawing.Size(7, 7), -1);
-                        CvInvoke.Threshold(r, bin, 40, 255, ThresholdType.Binary);
+                       // CvInvoke.Imshow("bin", r);
+                        CvInvoke.Threshold(r, bin, 30, 255, ThresholdType.Binary);
                         var x_min = right_white_pixel(bin);
                         var dx = 25;
                         var ps_rec = new System.Drawing.Point[]
                         {
-                        new System.Drawing.Point(x_min+dx, 0),
-                        new System.Drawing.Point(x_min+dx, bin.Height-1),
-                         new System.Drawing.Point(bin.Width-1, bin.Height-1),
-                        new System.Drawing.Point(bin.Width-1, 0),
+                            new System.Drawing.Point(x_min+dx, 0),
+                            new System.Drawing.Point(x_min+dx, bin.Height-1),
+                             new System.Drawing.Point(bin.Width-1, bin.Height-1),
+                            new System.Drawing.Point(bin.Width-1, 0),
                         };
+                       
                         CvInvoke.FillPoly(bin, new VectorOfPoint(ps_rec), new MCvScalar(0));
 
-                        CvInvoke.Rotate(bin, bin, RotateFlags.Rotate180);
-                        CvInvoke.Imshow("bin", bin);
-                        //CvInvoke.WaitKey();
+                        //CvInvoke.Rotate(bin, bin, RotateFlags.Rotate180);
+                        //CvInvoke.Imshow("bin", bin);
+                       // CvInvoke.WaitKey();
                         if (up_surf == null)
                         {
                             up_surf = bin.Clone();
@@ -271,6 +275,9 @@ namespace opengl3
 
         public bool calibrateLas_step(Mat[] mats, Mat orig, double[] positions, CameraCV cameraCV, PatternType patternType, GraphicGL graphicGL=null)
         {
+
+            var sob = FindCircles.sobel_mat(orig);
+            CvInvoke.Imshow("sobel", sob);
             var inds_part = Detection.max_claster_im(cameraCV.scan_points.ToArray(), 4);
 
             // CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4]]);
@@ -293,7 +300,7 @@ namespace opengl3
             var ps_g = PointF.toSystemPoint(PointF.toPointF(find_gab_pix(up_s_r)));
 
             CvInvoke.Imshow(" up_surf", UtilOpenCV.drawPointsF(up_s_r.Clone(), ps_g, 255, 255, 0, 3));
-            //CvInvoke.WaitKey();
+           // CvInvoke.WaitKey();
 
             var aff_matr_3d = aff_matr.ConcateVertical(new Matrix<double>(new double[1, 3] { { 0, 0, 1 } }));
            
@@ -303,11 +310,11 @@ namespace opengl3
 
             ps_g = UtilOpenCV.transfAffine(ps_g, aff_matr_inv);
             CvInvoke.WarpAffine(up_s_r, up_s_r, aff_matr_inv, new System.Drawing.Size(2000, 2000));
-            //up_s_r = UtilOpenCV.drawPointsF(up_s_r, ps_g, 255, 255, 0, 3);
-             //orig = UtilOpenCV.drawPointsF(orig, ps_g, 255, 0, 0,3);
-            //CvInvoke.Imshow(" up_s_r", up_s_r);
-           // CvInvoke.Imshow(" orig_ps", orig );
-            //CvInvoke.WaitKey();
+            up_s_r = UtilOpenCV.drawPointsF(up_s_r, ps_g, 255, 255, 0, 3);
+             orig = UtilOpenCV.drawPointsF(orig, ps_g, 255, 0, 0,3);
+            CvInvoke.Imshow(" up_s_r", up_s_r);
+           CvInvoke.Imshow(" orig_ps", orig );
+           // CvInvoke.WaitKey();
            // var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
             //positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
 
@@ -318,6 +325,8 @@ namespace opengl3
             for(int i= inds_part.Length/6; i<5* inds_part.Length/6;i++ )
             {
                 mats_calib_l.Add(mats[inds_part[i]]);
+              // CvInvoke.Imshow(" mats[inds_part[i]]", mats[inds_part[i]]);
+               // CvInvoke.WaitKey();
                 positions_l.Add(positions[inds_part[i]]);
             }
             mats_calib = mats_calib_l.ToArray();
@@ -369,7 +378,7 @@ namespace opengl3
             start_pos = PositionsAxis[0];
             betw_pos = PositionsAxis[1];
             stop_pos = PositionsAxis[2];
-            comp_flat_koef();
+            comp_flat_koef_full(LasFlats.ToArray(), PositionsAxis.ToArray());
 
 
             calibrated = true;

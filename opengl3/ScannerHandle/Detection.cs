@@ -395,7 +395,7 @@ namespace opengl3
             //mat = mats[0];
             CvInvoke.GaussianBlur(mat, mat, new Size(17, 17), -1);
             //CvInvoke.Imshow("detect_dif",mat);
-            //CvInvoke.WaitKey();
+           // CvInvoke.WaitKey();
             var data = (byte[,])mat.GetData();
             var ps_arr_j = new PointF[data.GetLength(0)];
             for (int i = 0; i < ps_arr_j.Length; i++) ps_arr_j[i] = PointF.notExistP();

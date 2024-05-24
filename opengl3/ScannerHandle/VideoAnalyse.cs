@@ -312,30 +312,30 @@ namespace opengl3
             {
                 scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>() };
                 scanner.pointCloud.graphicGL = form.GL1;
-                scanner.cameraCV.matrixSC = new Matrix<double>(
-                    /*new double[,]
-                    {
-                        { 0.9986744136, 0.0156131588, 0.0490473742, 25.2702716137 },
+                // scanner.cameraCV.matrixSC = new Matrix<double>(
+                /*new double[,]
+                {
+                    { 0.9986744136, 0.0156131588, 0.0490473742, 25.2702716137 },
 { 0.013848945, -0.9992520102, 0.0361057723, 22.5256433504 },
 { 0.0495744124 ,- 0.0353786566 ,- 0.9981436411 ,125.1960146638},
-            { 0 ,0, 0, 1} });
-            }*/
-
-          /*  new double[,]
-                    {
-                        {0.9984988882, 0.0187528173, 0.0514616562, 24.9030440612 },
-{ 0.0167773194 ,- 0.9991156302, 0.0385548832, 22.0981226538},
-{ 0.0521391577, - 0.0376336194, - 0.997930468, 123.1442586159},
-            { 0 ,0, 0, 1} });
+        { 0 ,0, 0, 1} });
         }*/
-            new double[,]
-                    {
-                        {0.969975639, -0.003123777 ,-0.2431820343, 45.7608462581  },
-{ -0.0081239926, -0.9997756496, -0.0195614726, 26.8603275217},
-{ -0.2430663706, 0.0209497609, -0.9697834021, 175.5494983004},
-            { 0 ,0, 0, 1} });
-        }
 
+                /*  new double[,]
+                          {
+                              {0.9984988882, 0.0187528173, 0.0514616562, 24.9030440612 },
+      { 0.0167773194 ,- 0.9991156302, 0.0385548832, 22.0981226538},
+      { 0.0521391577, - 0.0376336194, - 0.997930468, 123.1442586159},
+                  { 0 ,0, 0, 1} });
+              }*/
+                /*  new double[,]
+                          {
+                              {0.969975639, -0.003123777 ,-0.2431820343, 45.7608462581  },
+      { -0.0081239926, -0.9997756496, -0.0195614726, 26.8603275217},
+      { -0.2430663706, 0.0209497609, -0.9697834021, 175.5494983004},
+                  { 0 ,0, 0, 1} });
+              }*/
+            }
         var enc_file = "";
             using (StreamReader sr = new StreamReader(enc_path))
             {
@@ -360,7 +360,7 @@ namespace opengl3
                // Console.WriteLine(i+" "+inc_pos[i]);
             }
             //Console.WriteLine("start video_________");
-            while (videoframe_count < all_frames-buff_len)//  "/2+1"
+            while (videoframe_count < all_frames - buff_len)//  "/2+1"   //-buff_len
             {
                 Mat im1 = new Mat();
                 while (!capture1.Read(im1)) { }
@@ -368,7 +368,7 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
-                    if (videoframe_count % strip == 0 && videoframe_count> buff_len && videoframe_count > 18)// && videoframe_count <83)
+                    if (videoframe_count % strip == 0 && videoframe_count> buff_len)// && videoframe_count > 18)// && videoframe_count <83)
                     {
                         //var im1_or = im1.Clone();
                         im1 -= im1_buff_list[buff_len - buff_diff];
