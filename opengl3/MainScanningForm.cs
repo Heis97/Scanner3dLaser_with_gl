@@ -210,7 +210,7 @@ namespace opengl3
             //var data = Analyse.parse_data_txt("data_sing.txt");
             //Analyse.norm_align_data(data);
 
-            var frs = new RobotFrame[]
+           /* var frs = new RobotFrame[]
           {
                 new RobotFrame(-549.6832, 231.2491, 164.4913, -1.5754, -0.6576, 1.5666),
                 new RobotFrame( -345.6098, 217.2007, 163.8482, -1.5752, -0.6579, 1.567),
@@ -226,8 +226,8 @@ namespace opengl3
             Console.WriteLine("ps");
             Console.WriteLine(m1.ToStr());
             Console.WriteLine(m2.ToStr());
-            Console.WriteLine(m3.ToStr());
-
+            Console.WriteLine(m3.ToStr());*/
+           
             
         }
 

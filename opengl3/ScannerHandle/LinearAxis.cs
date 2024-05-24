@@ -19,7 +19,11 @@ namespace opengl3
         Matrix<double> oneMatrix = new Matrix<double>(4, 4);
         public Flat3d_GL oneLasFlat = new Flat3d_GL(1,0,0,0);
         public Flat3d_GL start_LasFlat = new Flat3d_GL(1, 0, 0, 0);
-        public double start_pos = 0;
+        public Flat3d_GL betw_LasFlat = new Flat3d_GL(1, 0, 0, 0);
+        public Flat3d_GL stop_LasFlat = new Flat3d_GL(1, 0, 0, 0);
+        public double start_pos = 0, betw_pos = 0, stop_pos = 0;
+
+        double[] akoef, bkoef, ckoef, dkoef;
 
         bool calibrated = false;
         public GraphicGL GraphicGL;
@@ -42,6 +46,21 @@ namespace opengl3
             start_pos = stP;
             calibrated = true;
         }
+        public LinearAxis(Flat3d_GL f1, Flat3d_GL f2, Flat3d_GL f3, double pos1, double pos2, double pos3)
+        {
+            MatrixesCamera = new List<Matrix<double>>();
+            PositionsAxis = new List<double>();
+            LasFlats = new List<Flat3d_GL>();
+            start_LasFlat = f1;
+            betw_LasFlat = f2;
+            stop_LasFlat = f3;
+            start_pos = pos1;
+            betw_pos = pos2;
+            stop_pos = pos3;
+            comp_flat_koef();
+            calibrated = true;
+        }
+
         public bool calibrate(Mat[] mats, double[] positions, CameraCV cameraCV,PatternType patternType, GraphicGL graphicGL)
         {
             if(addPositions(mats, positions, cameraCV, patternType))
@@ -319,7 +338,14 @@ namespace opengl3
                 //graphicGL.addFlat3d_YZ(las.flat3D,null,0.3f);
                 LasFlats.Add(las.flat3D);
             }
-            compOneFlat();
+
+            start_LasFlat = LasFlats[0];
+            betw_LasFlat = LasFlats[1];
+            stop_LasFlat = LasFlats[2];
+            start_pos = PositionsAxis[0];
+            betw_pos = PositionsAxis[1];
+            stop_pos = PositionsAxis[2];
+            comp_flat_koef();
 
 
             calibrated = true;
@@ -448,12 +474,37 @@ namespace opengl3
             prin.t(oneMatrix);
         }
 
+        void comp_flat_koef()
+        {
+
+            /* int start_ind = (int)(LasFlats.Count / 2) + 1;
+                        int end_ind = (int)(LasFlats.Count / 2) - 1;*/
+            int grad = 2;
+            var flats = new Flat3d_GL[] { start_LasFlat, betw_LasFlat, stop_LasFlat };
+            var poses = new double[] { start_pos, betw_pos, stop_pos };
+            var aval = new double[flats.Length][];
+            var bval = new double[flats.Length][];
+            var cval = new double[flats.Length][];
+            var dval = new double[flats.Length][];
+            for (int i = 0; i < flats.Length; i++)
+            {
+                aval[i] = new double[] { poses[i], flats[i].A  };
+                bval[i] = new double[] { poses[i], flats[i].B };
+                cval[i] = new double[] { poses[i], flats[i].C };
+                dval[i] = new double[] { poses[i], flats[i].D };
+            }
+            akoef = Regression.regression(aval, grad);
+            bkoef = Regression.regression(bval, grad);
+            ckoef = Regression.regression(cval, grad);
+            dkoef = Regression.regression(dval, grad);
+
+            //var test_d = Regression.calcPolynSolv(dkoef, poses[0]);
+        }
+
         void compOneFlat()
         {
-           /* int start_ind = (int)(LasFlats.Count / 2) + 1;
-            int end_ind = (int)(LasFlats.Count / 2) - 1;*/
-
-             int start_ind = LasFlats.Count  - 1;
+         
+            int start_ind = LasFlats.Count  - 1;
             int end_ind = 0;
 
             oneLasFlat = (LasFlats[end_ind] - LasFlats[start_ind]) / (PositionsAxis[end_ind] - PositionsAxis[start_ind]);
@@ -479,7 +530,7 @@ namespace opengl3
             return null;
         }
 
-        public Flat3d_GL getLaserSurf(double PositionLinear)
+        public Flat3d_GL getLaserSurf_old(double PositionLinear)
         {
             if (calibrated)
             {
@@ -491,8 +542,20 @@ namespace opengl3
             return new Flat3d_GL();
         }
 
-
-        static public LinearAxis load(string path)
+        public Flat3d_GL getLaserSurf(double PositionLinear)
+        {
+            if (calibrated)
+            {
+                var a = Regression.calcPolynSolv(akoef, PositionLinear);
+                var b = Regression.calcPolynSolv(bkoef, PositionLinear);
+                var c = Regression.calcPolynSolv(ckoef, PositionLinear);
+                var d = Regression.calcPolynSolv(dkoef, PositionLinear);
+           
+                return new Flat3d_GL(a,b,c,d);
+            }
+            return new Flat3d_GL();
+        }
+        static public LinearAxis load_old(string path)
         {
             var settings = Settings_loader.load_data(path);
 
@@ -501,9 +564,22 @@ namespace opengl3
             var  stP= (double)settings[2];
             return new LinearAxis(oneF, stF, stP);
         }
+
+        static public LinearAxis load(string path)
+        {
+            var settings = Settings_loader.load_data(path);
+
+            var f1 = (Flat3d_GL)settings[0];
+            var f2 = (Flat3d_GL)settings[1];
+            var f3 = (Flat3d_GL)settings[2];
+            var pos1 = (double)settings[3];
+            var pos2 = (double)settings[4];
+            var pos3 = (double)settings[5];
+            return new LinearAxis(f1, f2, f3,pos1,pos2,pos3);
+        }
         public void save(string path)
         {
-            Settings_loader.save_file(path, new object[] { oneLasFlat, start_LasFlat, start_pos});
+            Settings_loader.save_file(path, new object[] { start_LasFlat, betw_LasFlat, stop_LasFlat , start_pos, betw_pos, stop_pos });
         }
 
 
