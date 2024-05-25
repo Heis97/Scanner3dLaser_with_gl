@@ -210,25 +210,34 @@ namespace opengl3
             //var data = Analyse.parse_data_txt("data_sing.txt");
             //Analyse.norm_align_data(data);
 
-           /* var frs = new RobotFrame[]
-          {
-                new RobotFrame(-549.6832, 231.2491, 164.4913, -1.5754, -0.6576, 1.5666),
-                new RobotFrame( -345.6098, 217.2007, 163.8482, -1.5752, -0.6579, 1.567),
-                new RobotFrame(  -346.2069, 348.3778, 174.2129, -1.5754, -0.6574, 1.5664),
-          };
+            /* var frs = new RobotFrame[]
+           {
+                 new RobotFrame(-549.6832, 231.2491, 164.4913, -1.5754, -0.6576, 1.5666),
+                 new RobotFrame( -345.6098, 217.2007, 163.8482, -1.5752, -0.6579, 1.567),
+                 new RobotFrame(  -346.2069, 348.3778, 174.2129, -1.5754, -0.6574, 1.5664),
+           };
 
-            var model = new RobotFrame(-549.6832, 231.2491, 164.4913, 0.0789, -0.0023, -0.0688).getMatrix();
-            //var model_inv = UtilMatr.to_inv_rot_matrix(model);
-            CvInvoke.Invert(model, model, DecompMethod.LU);
-            var m1 = new RobotFrame(model * frs[0].getMatrix());
-            var m2 = new RobotFrame(model * frs[1].getMatrix());
-            var m3 = new RobotFrame(model * frs[2].getMatrix());
-            Console.WriteLine("ps");
-            Console.WriteLine(m1.ToStr());
-            Console.WriteLine(m2.ToStr());
-            Console.WriteLine(m3.ToStr());*/
-           
-            
+             var model = new RobotFrame(-549.6832, 231.2491, 164.4913, 0.0789, -0.0023, -0.0688).getMatrix();
+             //var model_inv = UtilMatr.to_inv_rot_matrix(model);
+             CvInvoke.Invert(model, model, DecompMethod.LU);
+             var m1 = new RobotFrame(model * frs[0].getMatrix());
+             var m2 = new RobotFrame(model * frs[1].getMatrix());
+             var m3 = new RobotFrame(model * frs[2].getMatrix());
+             Console.WriteLine("ps");
+             Console.WriteLine(m1.ToStr());
+             Console.WriteLine(m2.ToStr());
+             Console.WriteLine(m3.ToStr());*/
+/*
+            var fl1 = new List<Flat3d_GL>();
+            for(int i = 0; i <100;i++)
+            {
+                fl1.Add(new Flat3d_GL(i));
+            }
+            fl1 = Flat3d_GL.gaussFilter_v2(fl1.ToArray(), 40).ToList();
+            for (int i = 0; i < 100; i++)
+            {
+                Console.WriteLine(fl1[i]);
+            }*/
         }
 
         void test_handeye()
@@ -1100,12 +1109,12 @@ namespace opengl3
         {
             var cam1 = CameraCV.load_camera(conf1);
             LinearAxis line = null;
-            if(laser_line != null)  line = LinearAxis.load(laser_line);
+            if(laser_line != null)  line = new LinearAxis(laser_line);
             var scanner = new Scanner( cam1,line);
             this.scanner = scanner;
             return scanner;
         }
-        void load_scan_sing(Scanner scanner,string scan_path, int strip = 1, double smooth = 0.8)
+        void load_scan_sing(Scanner scanner,string scan_path, int strip = 1, double smooth = -1)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner,strip);
@@ -1118,13 +1127,19 @@ namespace opengl3
 
         }
 
-        void load_calib_sing(Scanner scanner, string scan_path, int strip = 1, double smooth = 0.8)
+        void load_calib_sing(Scanner scanner, string scan_path, int strip = 1, double smooth =-1)
         {
 
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner, strip, true);
-            scanner.linearAxis.save("linear.txt");
-
+           // scanner.linearAxis.save("linear.txt");
+            if (scanner.pointCloud.points3d_lines == null) return;
+            if (scanner.pointCloud.points3d_lines.Count == 0) return;
+            var ps = scanner.getPointsLinesScene();
+            // foreach(var line in ps) GL1.addLineMeshTraj(line);  
+            var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
+            var scan_stl = Polygon3d_GL.toMesh(mesh);
+            scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, "scan_sing");
         }
 
         //-------------------------------------------------------------------------------------------
@@ -6249,7 +6264,7 @@ namespace opengl3
             var laser_line_path = textB_cam2_conf.Text;
 
             int strip = scanner_config.strip;
-            double smooth = Convert.ToDouble(tp_smooth_scan.Text);
+            double smooth = Convert.ToDouble(scanner_config.smooth);
 
             var scanner = loadScanner_sing(cam1_conf_path,laser_line_path);
             load_scan_sing(scanner, scan_path, strip, smooth);
@@ -6292,7 +6307,7 @@ namespace opengl3
             {
                 openFileDialog.InitialDirectory = init_direct;
                 //openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                openFileDialog.Filter = extns+" files (*."+ extns + ")|*." + extns ;
+                openFileDialog.Filter = extns+" files ("+ extns + ")|" + extns ;
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
 
@@ -6330,7 +6345,7 @@ namespace opengl3
 
         private void but_load_conf_cam2_Click(object sender, EventArgs e)
         {
-            textB_cam2_conf.Text = get_file_name(Directory.GetCurrentDirectory(), "txt");
+            textB_cam2_conf.Text = get_file_name(Directory.GetCurrentDirectory(), "*.txt; *.json");
             formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
         }
 

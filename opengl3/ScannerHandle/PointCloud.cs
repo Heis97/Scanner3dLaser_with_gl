@@ -81,13 +81,20 @@ namespace opengl3
             mat = cameraCV.undist(mat);
            // CvInvoke.Imshow("ps", mat);
             //CvInvoke.WaitKey();
-            var points_im = Detection.detectLineDiff(mat, 5, 0.05f, false, true);
+            var points_im = Detection.detectLineDiff(mat, 10, 0.05f, false, true);
             if (points_im == null) return false;
-            var y_im = 305;
-            var p_i = Detection.p_in_ps_by_y(points_im, y_im);
-            Console.Write(" "+ points_im[p_i].X);
-           /*CvInvoke.DrawMarker(mat, points_im[ Detection.p_in_ps_by_y(points_im, y_im)].toPoint(), new MCvScalar(255, 0, 0), Emgu.CV.CvEnum.MarkerTypes.Cross, 10, 2);
-            CvInvoke.Line(mat, new Point(0, y_im), new Point(mat.Width, y_im), new MCvScalar(0, 0, 255), 2);
+            //prin.t()
+          /*  var y1 = 325;
+            var y2 = 270;
+            var y3 = 240;
+            var p_i_1 = Detection.p_in_ps_by_y(points_im, y1);
+            var p_i_2 = Detection.p_in_ps_by_y(points_im, y2);
+            var p_i_3 = Detection.p_in_ps_by_y(points_im, y3);
+            Console.Write(" "+ points_im[p_i_1].X+ " " + points_im[p_i_2].X+ " " + points_im[p_i_3].X);*/
+           /*CvInvoke.DrawMarker(mat, points_im[p_i_1].toPoint(), new MCvScalar(255, 0, 0), Emgu.CV.CvEnum.MarkerTypes.Cross, 10, 2);
+            CvInvoke.Line(mat, new Point(0, y1), new Point(mat.Width, y1), new MCvScalar(0, 0, 255), 2);
+            CvInvoke.Line(mat, new Point(0, y2), new Point(mat.Width,y2), new MCvScalar(0, 0, 255), 2);
+            CvInvoke.Line(mat, new Point(0, y3), new Point(mat.Width, y3), new MCvScalar(0, 0, 255), 2);
             CvInvoke.Imshow("ps", mat);
             CvInvoke.WaitKey();*/
             //var points_im = Detection.detectLineDiff(mat);
@@ -104,7 +111,7 @@ namespace opengl3
             //prin.t(cameraCV.matrixSC);
             // var flat = LaserSurface.zeroFlatInCam(cameraCV.matrixSC, z);
             var las_fl_c = linearAxis.getLaserSurf(LinPos);
-            Console.WriteLine(" "+las_fl_c.D);
+            Console.Write(" "+las_fl_c+" ");
             var points_cam = fromLines(points_im, cameraCV, las_fl_c);
             //graphicGL?.addFlat3d_XY(flat);
 
@@ -113,17 +120,18 @@ namespace opengl3
             //graphicGL?.addPointMesh(points_cam, Color3d_GL.green());
             points_cam = color_points3d(points_im, points_cam, orig);
 
-            var las_fl = -flat_las_from_ps(points_cam[p_i], linearAxis);
+            //var las_fl = -flat_las_from_ps(points_cam[p_i], linearAxis);
 
             //graphicGL?.addFlat3d_YZ(las_fl);
 
 
-           // Console.WriteLine(" " + points_cam[p_i].z+" "+ pos_from_las_flat(las_fl, linearAxis));
+           // Console.Write(" " + points_cam[p_i_1].z + " " + points_cam[p_i_2].z+ " " + points_cam[p_i_3].z);// + pos_from_las_flat(las_fl, linearAxis));
 
             //graphicGL.addFlat3d_YZ(linearAxis.getLaserSurf(LinPos),null,0.1f,0.1f,0.4f);
             points3d_cur = points_cam;
             //points3d_cur = camToScene(points_cam, cameraCV.matrixCS);
             //prin.t(cameraCV.matrixCS);
+            Console.WriteLine();
             var ps_list = points3d.ToList();
             ps_list.AddRange(points3d_cur);
             points3d_lines.Add(points3d_cur);
@@ -596,7 +604,7 @@ namespace opengl3
             }
             return points2d;
         }
-        static Point3d_GL[] color_points3d(PointF[] points_im, Point3d_GL[] points3d, Image<Bgr,byte> image)
+        public static Point3d_GL[] color_points3d(PointF[] points_im, Point3d_GL[] points3d, Image<Bgr,byte> image)
         {
             for (int i = 0; i < points3d.Length; i++)
             {

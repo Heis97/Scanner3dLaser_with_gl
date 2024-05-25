@@ -14,7 +14,8 @@ namespace opengl3
         public double D;
         public bool exist;
         public Vector3d_GL n;
-        public Flat3d_GL(double _A, double _B, double _C, double _D)
+        public int numb;
+        public Flat3d_GL(double _A=0, double _B=0, double _C=0, double _D=0)
         {
             A = _A;
             B = _B;
@@ -22,6 +23,7 @@ namespace opengl3
             D = _D;
             n = new Vector3d_GL(A, B, C);
             exist = true;
+            numb = 0;
         }
         public Flat3d_GL(double[] vals)
         {
@@ -31,6 +33,7 @@ namespace opengl3
             D = 0;
             n = new Vector3d_GL(A, B, C);
             exist = true;
+            numb = 0;
         }
         public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3, Point3d_GL P4)
         {
@@ -49,6 +52,7 @@ namespace opengl3
             D = x1 * y2 * z3 - x1 * y3 * z2 - x2 * y1 * z3 + x2 * y3 * z1 + x3 * y1 * z2 - x3 * y2 * z1;
             n = new Vector3d_GL(A, B, C);
             exist = true;
+            numb = 0;
         }
 
         public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Point3d_GL P3)
@@ -63,6 +67,7 @@ namespace opengl3
             C = v3.z;
             n = new Vector3d_GL(A, B, C);
             exist = true;
+            numb = 0;
         }
 
         public Flat3d_GL(Point3d_GL P1, Point3d_GL P2, Flat3d_GL F)//perpendic
@@ -85,6 +90,7 @@ namespace opengl3
             D = A2 * y1 * z2 - A2 * y2 * z1 - B2 * x1 * z2 + B2 * x2 * z1 + C2 * x1 * y2 - C2 * x2 * y1;
             n = new Vector3d_GL(A, B, C);
             exist = true;
+            numb = 0;
 
         }
 
@@ -162,6 +168,50 @@ namespace opengl3
         {
 
             return new double[] { A, B, C };
+        }
+
+        public static Flat3d_GL[] gaussFilter(Flat3d_GL[] ps1, int wind = 3)
+        {
+            var ps1L = ps1.ToList();
+            var ps1ret = (Flat3d_GL[])ps1.Clone();
+            for (int i = 0; i < ps1.Length; i++)
+            {
+                if (i > 0)
+                {
+                    var beg = i - wind; if (beg < 0) beg = 0;
+                    var end = i + wind; if (end >= ps1.Length) end = ps1.Length - 1;
+                    var range = end - beg;
+                    Flat3d_GL sum = new Flat3d_GL(0,0,0,0);
+                    Array.ForEach(ps1L.GetRange(beg, range).ToArray(), p => sum += p);
+                    var aver = sum / range;
+                    ps1ret[i] = aver;
+                }
+            }
+            return ps1ret;
+        }
+
+        public static Flat3d_GL[] gaussFilter_v2(Flat3d_GL[] ps1, int wind = 3)
+        {
+            var ps1L = ps1.ToList();
+            var ps1ret = (Flat3d_GL[])ps1.Clone();
+            for (int i = 0; i < ps1.Length; i++)
+            {
+                if (i > wind && i< ps1.Length-wind)
+                {
+                    var beg = i - wind; if (beg < 0) beg = 0;
+                    var end = i + wind; if (end >= ps1.Length) end = ps1.Length - 1;
+                    var range = end - beg;
+                    Flat3d_GL sum = new Flat3d_GL(0, 0, 0, 0);
+                    Array.ForEach(ps1L.GetRange(beg, range).ToArray(), p => sum += p);
+                    var aver = sum / range;
+                    ps1ret[i] = aver;
+                }
+                else
+                {
+                    ps1ret[i] = ps1[i];
+                }
+            }
+            return ps1ret;
         }
     }
 }

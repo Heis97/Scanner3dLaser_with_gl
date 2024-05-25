@@ -459,13 +459,13 @@ namespace opengl3
                 for (int k1 = 0; k1 < ps_imp.Length; k1++)
                 {
                     vals_regr.Add(new double[] { ps_imp[k1].X, ps_imp[k1].Y });
-                    
+                   // Console.WriteLine(ps_imp[k1].Y);
                 }
-
+                //Console.WriteLine("___________");
                 //for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
-                   // vals_regr.Add(new double[] { data[k1, i],k1 });
-                
-                var threshold = 10;
+                // vals_regr.Add(new double[] { data[k1, i],k1 });
+
+                var threshold = 15;
                 var koef = Regression.regression(vals_regr.ToArray(), 2);
                 var a = koef[2];
                 var b = koef[1];

@@ -334,7 +334,7 @@ namespace opengl3
 
         public bool calibrateLinearStep(Mat[] mats,Mat orig, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
         {
-            return linearAxis.calibrateLas_step(mats, orig,positions, cameraCV, patternType,graphicGL);
+            return linearAxis.calibrateLas_step(mats, orig,positions, cameraCV, patternType,graphicGL,pointCloud);
         }
         
         public bool calibrateLinearLas(Mat[][] mats, Mat[] origs, double[] positions, PatternType patternType, GraphicGL graphicGL = null)

@@ -341,10 +341,10 @@ namespace opengl3
             {
                 enc_file = sr.ReadToEnd();
             }
-            var inc_pos = enc_pos(enc_file, (int)all_frames);
+            //var inc_pos = enc_pos(enc_file, (int)all_frames);
             var enc_pos_time = analys_sync(enc_path);
-           // enc_pos_time = recomp_pos_sing(enc_pos_time);
-           // var inc_pos = enc_pos(enc_pos_time);
+            enc_pos_time = recomp_pos_sing_linear(enc_pos_time);
+            var inc_pos = enc_pos(enc_pos_time);
 
             
 
@@ -368,8 +368,9 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
-                    if (videoframe_count % strip == 0 && videoframe_count> buff_len)// && videoframe_count > 18)// && videoframe_count <83)
+                    if ((videoframe_count % strip == 0 )&& (im1_buff_list.Count > buff_diff)) // && videoframe_count > 36)// && videoframe_count <83)
                     {
+
                         //var im1_or = im1.Clone();
                         im1 -= im1_buff_list[buff_len - buff_diff];
                        // im1 = scanner.cameraCV.undist(im1);
@@ -390,7 +391,7 @@ namespace opengl3
                         frames_show.Add(frame_d);
                         Console.Write(videoframe_count.ToString() + " " +
                             inc_pos[videoframe_count].ToString() + " " +
-                            enc_pos_time[(videoframe_count - 1) * 2, 3] + " ");
+                            enc_pos_time[(videoframe_count - 1) * 2, 4] + " ");
                            // enc_pos_time[(videoframe_count-1)*2, 0]);
                         if (calib)
                         {
@@ -605,7 +606,7 @@ namespace opengl3
             var enc_pos = new double[enc.GetLength(0)];
             for (int i = 1; i < enc.GetLength(0); i += 2)
             {
-                var ind = (int)enc[i, 1];
+                var ind = (int)enc[i, 2];
                 var var = enc[i, 0];
                 if (ind > 0)
                 {
@@ -786,12 +787,12 @@ namespace opengl3
                 {
                     var vals = line.Trim().Split(' ');
 
-                    if (vals.Length == 6)
+                   //if (vals.Length == 6)
                     {
                         for (int i = 0; i < vals.Length; i++)
                         //for (int i = vals.Length - 1; i >= 0; i--)
                         {
-                            if (i == 3)
+                            if (vals[i].Length>8)
                             {
                                 string time = "";
                                 for (int j = vals[i].Length / 2; j < vals[i].Length; j++)
@@ -799,24 +800,30 @@ namespace opengl3
                                     time += vals[i][j];
                                 }
                                 vals[i] = time;
-                            }
-                            enc_pos[ind, i] = Convert.ToInt32(vals[i]);
-                            if (i == 3)
-                            {
+                                enc_pos[ind, i] = Convert.ToInt32(vals[i]);
                                 enc_pos[ind, i] -= st_time;
                                 if (ind == 0)
                                 {
-                                    st_time =(int) enc_pos[ind, i];
+                                    st_time = (int)enc_pos[ind, i];
                                     enc_pos[ind, i] = 0;
                                 }
-
                             }
+                            else if(vals[i].Length ==0)
+                            {
+                                enc_pos[ind, i] = 0;
+                            }
+                            else
+                            {
+                                enc_pos[ind, i] = Convert.ToInt32(vals[i]);
+                            }
+                            
+
                         }
                         //Console.Write(vals[i] + ";");
-                        if (enc_pos[ind, 0] == 0) Console.WriteLine(enc_pos[ind, 3]+" ");
+                       /* if (enc_pos[ind, 0] == 0) Console.WriteLine(enc_pos[ind, 3]+" ");
                         if (enc_pos[ind, 0] != 0) Console.Write(enc_pos[ind, 3]+" ");
                         if (enc_pos[ind, 5] == 1) Console.Write(enc_pos[ind, 4] + ";" + ";");
-                         if (enc_pos[ind, 5] == 2) Console.Write(";" + enc_pos[ind, 4] + ";");
+                         if (enc_pos[ind, 5] == 2) Console.Write(";" + enc_pos[ind, 4] + ";");*/
 
 
                         // Console.WriteLine();
@@ -827,7 +834,7 @@ namespace opengl3
             return enc_pos;
         }
 
-        static double[,] recomp_pos_sing(double[,] data)
+        static double[,] recomp_pos_sing_time(double[,] data)
         {
             var len = data.GetLength(0)/2;
             if (len % 2 != 0) len -= 1;
@@ -850,7 +857,53 @@ namespace opengl3
             }
             return data_c;
         }
+        static double[,] recomp_pos_sing_linear(double[,] data)
+        {
+            var len = data.GetLength(0) ;
 
+            if (len % 2 != 0) len -= 1;
+            int f_ind = 6;
+            int l_ind = len;
+            double pos_f = data[f_ind, 0];
+            double pos_l = data[l_ind, 0];
+            double pos_m = data[l_ind/2, 0];
+            //double time_f = data[f_ind, 3];
+            //double time_l = data[l_ind, 3];
+            var data_c = (double[,])data.Clone();
+            var regr_pos = new List<double[]>();
+            var regr_time = new List<double[]>();
+            for (int i=l_ind/2-1;i<l_ind;i+=2)
+            {
+                if (data[i, 0] != 0)
+                {
+                    regr_pos.Add(new double[] { data[i, 2], data[i, 0] });
+                    regr_time.Add(new double[] { data[i, 2], data[i, 4] });
+                    Console.WriteLine(data[i, 2] + " " + data[i, 0]);
+                }
+                
+            }
+
+            var pos_koef = Regression.regression(regr_pos.ToArray(),1);
+            var time_koef = Regression.regression(regr_time.ToArray(), 1);
+
+            //var dd = (pos_l - pos_m) / (l_ind / 2);
+            for (int i = 0; i < len; i ++)
+            {
+                //var time = data[i + 1, 3];
+                //var pos = data[i, 0];
+                //var pos_re = ((time - time_f) / (time_l - time_f)) * (pos_l - pos_f) + pos_f;
+
+                //data_c[i, 0] = Regression.calcPolynSolv(pos_koef, data[i, 2]);
+                data_c[i, 0] = data_c[i, 2];
+            }
+            for (int i = f_ind - 1; i < l_ind; i += 2)
+            {
+                var time_del = Regression.calcPolynSolv(time_koef, data[i, 2]) - data[i, 4];
+                Console.WriteLine(data_c[i, 2] + " " + data_c[i, 0]+" "+time_del);
+            }
+
+            return data_c;
+        }
         static Mat get_frame_video(string video_path, int frame)
         {
             var capture = new VideoCapture(video_path);

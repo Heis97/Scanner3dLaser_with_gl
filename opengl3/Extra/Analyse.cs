@@ -58,7 +58,7 @@ namespace opengl3
                 }
                 
             }
-            norm_align_2_data(data_split[1], data_split[5]);
+            norm_align_2_data(data_split[1], data_split[5]);    
 
             for(int i = 0; i < data_split.Length;i++)
             {
