@@ -81,16 +81,18 @@ namespace opengl3
             mat = cameraCV.undist(mat);
            // CvInvoke.Imshow("ps", mat);
             //CvInvoke.WaitKey();
-            var points_im = Detection.detectLineDiff(mat, 10, 0.05f, false, true);
-            if (points_im == null) return false;
+            var points_im = Detection.detectLineDiff(mat, 10);
+            if (points_im == null) {
+                points3d_lines.Add(new Point3d_GL[0]);
+                return false; }
             //prin.t()
-          /*  var y1 = 325;
+            var y1 = 325;
             var y2 = 270;
             var y3 = 240;
             var p_i_1 = Detection.p_in_ps_by_y(points_im, y1);
             var p_i_2 = Detection.p_in_ps_by_y(points_im, y2);
             var p_i_3 = Detection.p_in_ps_by_y(points_im, y3);
-            Console.Write(" "+ points_im[p_i_1].X+ " " + points_im[p_i_2].X+ " " + points_im[p_i_3].X);*/
+            Console.Write(" "+ LinPos + " "+ points_im[p_i_1].X);
            /*CvInvoke.DrawMarker(mat, points_im[p_i_1].toPoint(), new MCvScalar(255, 0, 0), Emgu.CV.CvEnum.MarkerTypes.Cross, 10, 2);
             CvInvoke.Line(mat, new Point(0, y1), new Point(mat.Width, y1), new MCvScalar(0, 0, 255), 2);
             CvInvoke.Line(mat, new Point(0, y2), new Point(mat.Width,y2), new MCvScalar(0, 0, 255), 2);
@@ -248,14 +250,19 @@ namespace opengl3
             }
             PointF[] points_im;
             if (orig) points_im = Detection.detectLineDiff(mat, 7,0.05f,false,true,true);
-            else points_im = Detection.detectLineDiff(mat, 7);
+            else points_im = Detection.detectLineDiff(mat, 10);
           
             if (points_im != null)
             {
                 cameraCV.scan_points.Add(points_im);
                 Console.WriteLine(points_im.Length);
+                return true;
             }
-            return true;
+            //else
+            {
+               // cameraCV.scan_points.Add(new PointF[0]);
+            }
+            return false;
         }
 
         public void comp_cross(StereoCamera stereocamera)

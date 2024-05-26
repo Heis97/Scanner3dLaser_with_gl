@@ -1122,7 +1122,7 @@ namespace opengl3
            // foreach(var line in ps) GL1.addLineMeshTraj(line);  
             var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles,"scan_sing");
+            scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
             
 
         }

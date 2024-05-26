@@ -353,13 +353,14 @@ namespace opengl3
             
             var im1_buff = new Mat();
 
-
+            var im1_cals = new List<Mat>();
             var im1_buff_list = new List<Mat>();
             for(int i=0; i< inc_pos.Length; i++)
             {
                // Console.WriteLine(i+" "+inc_pos[i]);
             }
             //Console.WriteLine("start video_________");
+
             while (videoframe_count < all_frames - buff_len)//  "/2+1"   //-buff_len
             {
                 Mat im1 = new Mat();
@@ -368,7 +369,7 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
-                    if ((videoframe_count % strip == 0 )&& (im1_buff_list.Count > buff_diff)) // && videoframe_count > 36)// && videoframe_count <83)
+                    if ((videoframe_count % strip == 0 )&& (im1_buff_list.Count > buff_diff) && videoframe_count > 30)// && videoframe_count <83)
                     {
 
                         //var im1_or = im1.Clone();
@@ -387,8 +388,9 @@ namespace opengl3
                             CvInvoke.Imshow("im1-or_un", im1_or_un);
                             //CvInvoke.WaitKey();
                         }*/
-                        var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
-                        frames_show.Add(frame_d);
+                        //var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
+                        //frames_show.Add(frame_d);
+                        
                         Console.Write(videoframe_count.ToString() + " " +
                             inc_pos[videoframe_count].ToString() + " " +
                             enc_pos_time[(videoframe_count - 1) * 2, 4] + " ");
@@ -397,9 +399,14 @@ namespace opengl3
                         {
                             //var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                             // frames_show.Add(frame_d);
-                            pos_inc_cal.Add(inc_pos[videoframe_count]);
+
+                           if( scanner.addPointsSingLas_2d(im1, true, calib));
+
+                            {
+                                pos_inc_cal.Add(inc_pos[videoframe_count]);
+                                im1_cals.Add(im1);
+                            }
                             
-                            scanner.addPointsSingLas_2d(im1, false, calib);
                         }
                         else scanner.addPointsLinLas_step(im1, im_orig, inc_pos[videoframe_count], PatternType.Mesh);
 
@@ -418,7 +425,7 @@ namespace opengl3
             //comboImages.Items.AddRange(frames_show.ToArray());
             Console.WriteLine("stop video_________");
 
-            if (calib) scanner.calibrateLinearStep(Frame.getMats(frames_show.ToArray()), orig1, pos_inc_cal.ToArray(), PatternType.Mesh, form.GL1);
+            if (calib) scanner.calibrateLinearStep(im1_cals.ToArray(), orig1, pos_inc_cal.ToArray(), PatternType.Mesh, form.GL1);
 
             //var mats = Frame.getMats(frames_show.ToArray());
             //var corn = Detection.detectLineDiff_corn_calibr(mats);

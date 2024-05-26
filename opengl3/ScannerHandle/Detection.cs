@@ -465,7 +465,7 @@ namespace opengl3
                 //for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
                 // vals_regr.Add(new double[] { data[k1, i],k1 });
 
-                var threshold = 15;
+                var threshold = 13;
                 var koef = Regression.regression(vals_regr.ToArray(), 2);
                 var a = koef[2];
                 var b = koef[1];
@@ -1085,6 +1085,7 @@ namespace opengl3
       
         static public PointF[] parall_Points(PointF[] inp)
         {
+
             /* var ps = (from p in inp
                             orderby p.Y
                             select p).ToArray();*/
@@ -1244,7 +1245,8 @@ namespace opengl3
             for (int i=0; i<ps.Length;i++)
             {
                 if (ps[i]!=null)
-                {
+                    if (ps[i].Length != 0)
+                    {
                     var ps1 = filtr_y0_Points(ps[i]);
                     var paral = parall_Points(ps1);
                     var ps_or = (from p in paral

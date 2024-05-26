@@ -53,8 +53,10 @@ namespace opengl3
             MatrixesCamera = new List<Matrix<double>>();
             PositionsAxis = new List<double>();
             LasFlats = FileManage.loadFromJson_flats(path).ToList();
-            var ind = System.IO.Path.GetFileNameWithoutExtension(path).Split('_')[1];
-            start_flat = Convert.ToInt32(ind);
+            var st_ind = LasFlats[0].numb;
+            //LasFlats.ad
+            //var ind = System.IO.Path.GetFileNameWithoutExtension(path).Split('_')[1];
+            start_flat = LasFlats[0].numb;
 
 
             calibrated = true;
@@ -469,7 +471,7 @@ namespace opengl3
             }
             FileManage.saveToJson_flats(flats_cam_sm.ToArray(), "linearcal_" + positions[0] + "_.json");
             LasFlats = flats_cam_sm;
-            start_flat =(int) positions[0];
+            start_flat =(int)LasFlats[0].numb;
             var flats_del = new List<Flat3d_GL>();
             calibrated = true;
             Console.WriteLine("_____________");
@@ -487,6 +489,15 @@ namespace opengl3
                 {
                     var m_c = cameraCV.undist(mats_calib[i].Clone());
                     var points_im = Detection.detectLineDiff(m_c, 10);
+
+                    var y1 = 325;
+                    var y2 = 270;
+                    var y3 = 240;
+                    var p_i_1 = Detection.p_in_ps_by_y(points_im, y1);
+                    var p_i_2 = Detection.p_in_ps_by_y(points_im, y2);
+                    var p_i_3 = Detection.p_in_ps_by_y(points_im, y3);
+                    Console.Write(" " + positions[i] + " " + points_im[p_i_1].X);
+
                     var get_flat = getLaserSurf(positions[i]);
                     //LasFlats[i] = new Flat3d_GL(LasFlats[i].A, get_flat.B, LasFlats[i].C, LasFlats[i].D);
 
@@ -494,7 +505,7 @@ namespace opengl3
                     var points_cam = PointCloud.fromLines(points_im, cameraCV, get_flat);//flats_cam_sm[i]);
                     //flats_del.Add(flats_cam_sm[i] - getLaserSurf(positions[i]));
 
-                    Console.WriteLine(positions[i]+" "+ get_flat);
+                    Console.WriteLine(" "+ get_flat);
 
                   //  Console.WriteLine(LasFlats_all[i] - LasFlats[i]);
                     //Console.WriteLine((flats_cam_sm[i] - getLaserSurf(positions[i])).D +" "+ (LasFlats[i] - getLaserSurf(positions[i])).D);
