@@ -361,7 +361,7 @@ namespace opengl3
             }
             //Console.WriteLine("start video_________");
 
-            while (videoframe_count < all_frames - buff_len)//  "/2+1"   //-buff_len
+            while (videoframe_count < all_frames - buff_len-5)//  "/2+1"   //-buff_len
             {
                 Mat im1 = new Mat();
                 while (!capture1.Read(im1)) { }
