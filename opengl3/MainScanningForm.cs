@@ -6339,7 +6339,7 @@ namespace opengl3
 
         private void but_load_conf_cam1_Click(object sender, EventArgs e)
         {
-            textB_cam1_conf.Text =  get_file_name(Directory.GetCurrentDirectory(),"txt");
+            textB_cam1_conf.Text =  get_file_name(Directory.GetCurrentDirectory(),"*.txt");
             formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
         }
 
@@ -6455,7 +6455,7 @@ namespace opengl3
         }
         private void but_load_stl_Click(object sender, EventArgs e)
         {
-            var stl_name = get_file_name(Directory.GetCurrentDirectory(), "stl");
+            var stl_name = get_file_name(Directory.GetCurrentDirectory(), "*.stl");
             
             var scan_stl = new Model3d(stl_name, false);
 
