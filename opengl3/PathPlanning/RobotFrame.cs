@@ -48,6 +48,21 @@ namespace opengl3
             frame = new PositionRob(new Point3d_GL(x, y, z), new Point3d_GL(a, b, c));
             this.robotType = robotType;
         }
+
+        public RobotFrame(PositionRob pos, double v = 0, double d = 0, double f = 0, RobotType robotType = RobotType.PULSE)
+        {
+            X = pos.position.x;
+            Y = pos.position.y;
+            Z = pos.position.z;
+            A = pos.rotation.x;
+            B = pos.rotation.y;
+            C = pos.rotation.z;
+            V = v;
+            D = d;
+            F = f;
+            frame = pos;
+            this.robotType = robotType;
+        }
         public double str_to_double(string s)
         {
             var s1 = s;

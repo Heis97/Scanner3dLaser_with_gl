@@ -1244,8 +1244,17 @@ namespace PathPlanning
             }
             return traj_div;
         }
-        
+        //--------------------
+        public static List<Point3d_GL> unif_dist(List<Point3d_GL> ps, double fil_step)
+        {
+            var ps_u = new List<Point3d_GL>();
 
+
+            return null;
+        }
+
+
+        //--------------------
         static Vector3d_GL comp_vecx(Vector3d_GL vec_x_dir, Vector3d_GL n)
         {
             var y = (n | vec_x_dir).normalize();

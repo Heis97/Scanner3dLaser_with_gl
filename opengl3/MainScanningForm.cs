@@ -153,7 +153,7 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-
+            
             //comp_pores("rats\\2_1.png");
             //comp_pores("rats\\2_2.png");
             //comp_pores("rats\\2_3.png");
@@ -227,17 +227,17 @@ namespace opengl3
              Console.WriteLine(m1.ToStr());
              Console.WriteLine(m2.ToStr());
              Console.WriteLine(m3.ToStr());*/
-/*
-            var fl1 = new List<Flat3d_GL>();
-            for(int i = 0; i <100;i++)
-            {
-                fl1.Add(new Flat3d_GL(i));
-            }
-            fl1 = Flat3d_GL.gaussFilter_v2(fl1.ToArray(), 40).ToList();
-            for (int i = 0; i < 100; i++)
-            {
-                Console.WriteLine(fl1[i]);
-            }*/
+            /*
+                        var fl1 = new List<Flat3d_GL>();
+                        for(int i = 0; i <100;i++)
+                        {
+                            fl1.Add(new Flat3d_GL(i));
+                        }
+                        fl1 = Flat3d_GL.gaussFilter_v2(fl1.ToArray(), 40).ToList();
+                        for (int i = 0; i < 100; i++)
+                        {
+                            Console.WriteLine(fl1[i]);
+                        }*/
         }
 
         void test_handeye()
@@ -1764,7 +1764,7 @@ namespace opengl3
             //var g_code = File.ReadAllText("test_traj.txt");
             //var frames = RobotFrame.parse_g_code(g_code);
 
-            //load_3d_model_robot();
+
             /*var ps = new Point3d_GL[]
             {
                 new Point3d_GL(-583.4106, 68.5254, -25.249),
@@ -1785,9 +1785,9 @@ namespace opengl3
             GL1.addPointMesh(ps, Color3d_GL.red());
               GL1.addFrame(model, 200, "mod");*/
 
-          
 
-          
+            //load_3d_model_robot();
+            test_gen_traj();
 
         }
 
@@ -2144,7 +2144,7 @@ namespace opengl3
         void test_gen_traj()
         {
            
-            var g_code = File.ReadAllText("test_traj.txt");
+            var g_code = File.ReadAllText("test_traj_arc.txt");
             var frames = RobotFrame.parse_g_code(g_code);
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
             var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052).getMatrix();
@@ -2173,17 +2173,31 @@ namespace opengl3
                 // GL1.addFrame(matrs[i],3,"sf");
             }
 
-            set_pos_robot(frames_rob[10]);
 
+            //set_pos_robot(frames_rob[0]);
 
-
+            //---------analyse-----------------------------
+            for (int i = 0; i < frames_rob.Count; i++)
+            {
+                var solv = RobotFrame.comp_inv_kinem_priv(frames_rob[i].frame, new int[] { 1, 1, 1 });
+                var pos = new RobotFrame( RobotFrame.comp_forv_kinem(solv, 5, true));
+                if (i % 3 == 0)
+                {
+                    GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
+                    GL1.addFrame(pos.getMatrix(), 10, "sdf");
+                }
+                    
+            }
         }
         public void set_pos_traj_robot(int i)
         {
             if(i< frames_rob.Count)
                 set_pos_robot(frames_rob[i]);
-            if (i % 3 == 0)
-                GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
+            if (i % 3 == 0) 
+            {
+                //GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
+            }
+
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
             var tool_inv = tool.Clone();
             CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);

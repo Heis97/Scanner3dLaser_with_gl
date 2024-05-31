@@ -52,6 +52,34 @@ namespace opengl3
             }       
         }
 
+
+        public Point3d_GL[] calcCrossSphere(Point3d_GL c, double R)
+        {
+            var kx = k.x;
+            var ky = k.y;
+            var kz = k.z;
+            var u = p.x - c.x;
+            var v = p.y - c.y;
+            var w = p.z - c.z;
+            var D = R * R * kx * kx + R * R * ky * ky +
+                R * R * kz * kz - kx * kx * v * v - kx * kx * w * w + 
+                2 * kx * ky * u * v + 2 * kx * kz * u * w - ky * ky * u * u - 
+                ky * ky * w * w + 2 * ky * kz * v * w - kz * kz * u * u - kz * kz * v * v;
+
+            
+            var del = kx*kx + ky*ky+ kz*kz;
+
+            if (D < 0 || del==0) return null;
+            var t1 = (Math.Sqrt(D)+kx*u+ky*v+kz*w)/del;
+            var t2 = (-Math.Sqrt(D) + kx * u + ky * v + kz * w) / del;
+
+
+                return new Point3d_GL[]{ 
+                    new Point3d_GL(k.x * t1 + p.x,k.y * t1 + p.y,k.z * t1 + p.z, color),
+                    new Point3d_GL(k.x * t2 + p.x, k.y * t2 + p.y, k.z * t2 + p.z, color) };
+
+        }
+
         public Point3d_GL calcCrossFlat_deb(Flat3d_GL F)
         {
 
