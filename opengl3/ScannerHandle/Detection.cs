@@ -390,7 +390,11 @@ namespace opengl3
             
             var ps_list = new List<PointF>();
             var ps = ps_list.ToArray();
-            CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
+            if (mat.NumberOfChannels == 3)
+            {
+                CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
+            }
+           
             //var mats = mat.Split();
             //mat = mats[0];
             CvInvoke.GaussianBlur(mat, mat, new Size(17, 17), -1);
@@ -553,10 +557,16 @@ namespace opengl3
 
             var ps_list = new List<PointF>();
             var ps = ps_list.ToArray();
-            CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
+            if(mat.NumberOfChannels==3)
+            {
+                CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
+            }
+           
+            var mat_g = mat.Clone();
             //var mats = mat.Split();
             //mat = mats[0];
             CvInvoke.GaussianBlur(mat, mat, new Size(config.gauss_kern, config.gauss_kern), -1);
+            var mat_b = mat.Clone();
             //CvInvoke.Imshow("detect_dif",mat);
             //CvInvoke.WaitKey();
             var data = (byte[,])mat.GetData();
@@ -691,6 +701,25 @@ namespace opengl3
 
             // CvInvoke.Imshow("ds_rot", UtilOpenCV.drawPointsF(_mat, ps, 0, 255, 0));
             return ps;
+        }
+
+        public static Mat[] detectLineDiff_ex(Mat _mat,
+            ScannerConfig config)
+        {
+
+            if (_mat.GetData() == null) return null;
+            var mat = _mat.Clone();
+
+            var ps_list = new List<PointF>();
+            var ps = ps_list.ToArray();
+
+            CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
+            var mat_g = mat.Clone();
+            //var mats = mat.Split();
+            //mat = mats[0];
+            CvInvoke.GaussianBlur(mat, mat, new Size(config.gauss_kern, config.gauss_kern), -1);
+            var mat_b = mat.Clone();
+            return new Mat[] { mat_g, mat_b };
         }
         public static PointF[] detectLineDiff_debug(Mat _mat,
             ScannerConfig config)

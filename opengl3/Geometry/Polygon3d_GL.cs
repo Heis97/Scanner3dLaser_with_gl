@@ -185,15 +185,15 @@ namespace opengl3
             }
 
             var polygons = new List<Polygon3d_GL>();
-            var polygons_ind = new List<int[]>();
+            //var polygons_ind = new List<int[]>();
             int ind_2 = 0;
-            int ind_2_last = ind_2;
+            //int ind_2_last = ind_2;
             List<int>[] ps1_connect = new List<int>[ps1.Length];
             List<int>[] ps2_connect = new List<int>[ps2.Length];
             for (int i = 1; i < ps1.Length; i++)
             {
                 polygons.Add(new Polygon3d_GL(ps1[i - 1], ps1[i], ps2[ind_2]));
-                polygons_ind.Add(new int[] { i - 1, i, ind_2, 1 });
+                //polygons_ind.Add(new int[] { i - 1, i, ind_2, 1 });
                 if (ps1_connect[i - 1] == null)
                 {
                     ps1_connect[i - 1] = new List<int>();
@@ -229,7 +229,7 @@ namespace opengl3
                      Console.WriteLine("ind_2<ind_2_last");
                      Console.WriteLine(ind_2);
                  }*/
-                ind_2_last = ind_2;
+                //ind_2_last = ind_2;
             }
 
             for (int i = 1; i < ps2_connect.Length; i++)
@@ -250,7 +250,7 @@ namespace opengl3
                     if (ps2_connect[i - 1].Contains(j) && ps2_connect[i].Contains(j))
                     {
                         polygons.Add(new Polygon3d_GL(ps2[i], ps2[i - 1], ps1[j]));
-                        polygons_ind.Add(new int[] { i, i - 1, j, 2 });
+                        //polygons_ind.Add(new int[] { i, i - 1, j, 2 });
                     }
 
                 }

@@ -1787,7 +1787,7 @@ namespace opengl3
 
 
             //load_3d_model_robot();
-            test_gen_traj();
+            //test_gen_traj();
 
         }
 
@@ -4124,10 +4124,22 @@ namespace opengl3
         //-----------------------------------
         private void but_printer_traj_fab_Click(object sender, EventArgs e)
         {
+            var cont_v = new Point3d_GL[]
+            {
+                new Point3d_GL(0,0,0),
+                new Point3d_GL(30,0,0),
+                new Point3d_GL(30,20,0),
+                new Point3d_GL(20,20,0),
+                new Point3d_GL(20,10,0),
+                new Point3d_GL(10,10,0),
+                new Point3d_GL(10,20,0),
+                new Point3d_GL(0,20,0)
+            };
             var contours = new List<List<Point3d_GL>>();
             for(int i = 0; i < traj_config.layers; i++)
             {
                 var cont = SurfaceReconstraction.gen_random_cont_XY(10, 30, 0, new Point3d_GL(0,0,0.4*i)).ToList();
+                //cont = cont_v.ToList();
                 contours.Add(cont);
             }
             var traj_path = PathPlanner.gen_traj_2d(contours, traj_config, patt_config, GL1);
@@ -4135,10 +4147,13 @@ namespace opengl3
             var patterns = traj_path.to_ps_by_layers();
 
             var pattern = Point3d_GL.unifPoints2d(patterns);
+
+            GL1.addLineMeshTraj(pattern.ToArray(), Color3d_GL.red());
             //var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
             var traj = PathPlanner.ps_to_matr(pattern);
             var prog = PathPlanner.generate_printer_prog(traj, traj_config);
             debugBox.Text = prog;
+            
         }
 
         private void but_scan_virt_Click(object sender, EventArgs e)
@@ -6430,12 +6445,16 @@ namespace opengl3
 
         private void but_im_to_3d_im1_Click(object sender, EventArgs e)
         {
-            var im1 = (Mat)imageBox1.Image;
+            var im1 = ((Mat)imageBox1.Image).Clone();
             //var im = (Mat)imBox_base_1.Image;
-            var im2 = new Mat();
-            CvInvoke.CvtColor(im1, im2, ColorConversion.Bgr2Gray);
-            CvInvoke.GaussianBlur(im2, im2, new Size(7, 7), -1);
-            send_buffer_img(im2.ToImage<Gray,Byte>(), PrimitiveType.Triangles,GL1);
+            //var im2 = new Mat();
+            if(im1.NumberOfChannels==3)
+            {
+                CvInvoke.CvtColor(im1, im1, ColorConversion.Bgr2Gray);
+            }
+            
+            //CvInvoke.GaussianBlur(im2, im2, new Size(7, 7), -1);
+            send_buffer_img(im1.ToImage<Gray,Byte>(), PrimitiveType.Triangles,GL1);
             
         }
 

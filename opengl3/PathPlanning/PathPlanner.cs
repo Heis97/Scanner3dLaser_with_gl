@@ -1050,7 +1050,7 @@ namespace PathPlanning
             var traj_layers = new List<LayerPath>();
             var min_p = Point3d_GL.Min(contour) - new Point3d_GL(trajParams.step,trajParams.step, trajParams.step);
             var max_p = Point3d_GL.Max(contour) + new Point3d_GL(trajParams.step,  trajParams.step, trajParams.step);
-
+            var ang_saved = settings.angle;
             for (int i = 0; i < contour.Count; i++)
             {
                 var layer = gen_pattern_in_contour_xy(settings, trajParams, contour[i].ToList(), min_p, max_p, gl);
@@ -1062,6 +1062,7 @@ namespace PathPlanning
                 }
             }
             if (traj_layers.Count == 0) return null;
+            settings.angle = ang_saved;
             var traj = new TrajectoryPath { layers = traj_layers };
             Console.WriteLine("Layers__________");
             traj = Trajectory.OptimizeTranzitions2LayerPath(traj);

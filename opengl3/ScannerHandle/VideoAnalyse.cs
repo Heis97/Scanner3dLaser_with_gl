@@ -260,6 +260,14 @@ namespace opengl3
 
                         //if(videoframe_count!= 100 && videoframe_count != 103 && videoframe_count != 104 && videoframe_count != 145 && videoframe_count != 146 && videoframe_count <149 && videoframe_count > 100)
                         {
+
+                            //var mat_c = scanner.stereoCamera.cameraCVs[cam_min - 1].undist(im_min);
+                            var mats = Detection.detectLineDiff_ex(im_min, config);
+                           
+                            var frame_e = new Frame(mats[1].Clone(), mats[0].Clone(), "gauss_" + videoframe_count.ToString(), FrameType.LasDif);
+                            
+                            frame_e.stereo = true;
+                            frames_show.Add(frame_e);
                             if (config.save_im)
                             {
                                 var frame_d = new Frame(im_min.Clone(), im_max.Clone(), videoframe_count.ToString(), FrameType.LasDif);
