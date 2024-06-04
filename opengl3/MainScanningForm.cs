@@ -153,7 +153,7 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-            
+
             //comp_pores("rats\\2_1.png");
             //comp_pores("rats\\2_2.png");
             //comp_pores("rats\\2_3.png");
@@ -238,6 +238,8 @@ namespace opengl3
                         {
                             Console.WriteLine(fl1[i]);
                         }*/
+            //  Console.WriteLine(Math.Sin(90));
+           StereoCamera.calcSizesScanner(50,30, 100);
         }
 
         void test_handeye()

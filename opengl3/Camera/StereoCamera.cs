@@ -437,6 +437,21 @@ namespace opengl3
             var x = k * m2 + k1 - L / 2;
             Console.WriteLine("X: "+x + "; Y: " + y);
         }
+        static public void calcSizesScanner_v3(double alpha, double beta, double L)//alpha - fov, beta - cam_z^surf_n
+        {
+            var gamma = (180 - alpha) / 2;
+            var tetta = 180 - beta - gamma;
+            var omega = 90 - beta;
+            var m1 = (L * sin(tetta)) / (2 * sin(gamma));
+            var m2 = m1 * tg(beta);
+            var k1 = m1 / cos(beta);
+            var k2 = m1 * (tg(gamma) - tg(beta));
+            // var k = (tg(gamma) - tg(beta)) * cos(beta);
+            var y = k2 * cos(omega) - L / 2 + k1;
+
+            var z = k2 * sin(omega);
+            Console.WriteLine("X: " + y + "; Y: " + z);
+        }
         public static double calcFov(double size, double f)
         {
             return 2 * arctg(size / (2 * f));
