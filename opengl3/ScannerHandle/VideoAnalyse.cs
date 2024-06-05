@@ -292,6 +292,26 @@ namespace opengl3
             Console.WriteLine("Points computed.");
             return scanner;
         }
+
+        public static void photo_from_video(string filepath)
+        {    
+            var capture1 = new VideoCapture(filepath);
+            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
+            var f1 = 0;
+            while (f1 < all_frames1)
+            {
+                Mat im = new Mat();
+                while (!capture1.Read(im)) { }
+                if (f1%7==0)
+                {
+                    
+                    im.Save(filepath + "_" + f1 + ".png");
+                    
+                }
+                f1++;
+            }
+            
+        }
         static public Scanner loadVideo_sing_cam(string filepath, MainScanningForm form, Scanner scanner = null, int strip = 1, bool calib = false)
         {
             var videoframe_count = 0;

@@ -153,7 +153,7 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-
+           // VideoAnalyse.photo_from_video("vid//1.mp4");
             //comp_pores("rats\\2_1.png");
             //comp_pores("rats\\2_2.png");
             //comp_pores("rats\\2_3.png");
@@ -239,7 +239,7 @@ namespace opengl3
                             Console.WriteLine(fl1[i]);
                         }*/
             //  Console.WriteLine(Math.Sin(90));
-           StereoCamera.calcSizesScanner(50,30, 100);
+          // StereoCamera.calcSizesScanner(50,30, 100);
         }
 
         void test_handeye()
@@ -1789,7 +1789,7 @@ namespace opengl3
 
 
             //load_3d_model_robot();
-            //test_gen_traj();
+            test_gen_traj();
 
         }
 
@@ -2146,7 +2146,7 @@ namespace opengl3
         void test_gen_traj()
         {
            
-            var g_code = File.ReadAllText("test_traj_arc.txt");
+            var g_code = File.ReadAllText("test_traj.txt");
             var frames = RobotFrame.parse_g_code(g_code);
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
             var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052).getMatrix();
