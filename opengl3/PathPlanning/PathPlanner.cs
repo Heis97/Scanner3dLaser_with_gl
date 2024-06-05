@@ -805,8 +805,9 @@ namespace PathPlanning
 
             // var ps_div = divide_traj(layer_sq, trajParams.div_step);
             var ps_div = layer_sq.divide_traj(settings.min_dist).to_ps();
+
             var cont_layer = cut_pattern_in_contour_xy_cv(contour, ps_div);
-            //gl.addLineMeshTraj(cont_layer.ToArray(), Color3d_GL.red());
+            gl.addLineMeshTraj(cont_layer.ToArray(), Color3d_GL.red());
             var layer = parse_layerpath_from_ps(cont_layer, settings.min_dist, settings.step, gl);//step
             //gl.addLineMeshTraj(layer.to_ps().ToArray(), Color3d_GL.random());
             return layer;
@@ -1493,7 +1494,9 @@ namespace PathPlanning
             {
                 var map_xy = new RasterMap(surface[i], resolut, RasterMap.type_map.XY);
                 var traj_df = traj_2d.layers[i].filter_traj( trajParams.div_step / 2);
-                //if (imb != null) imb.Image = UtilOpenCV.draw_map_xy(map_xy, surface[i], traj_df.ToArray());
+               // if (imb != null) imb.Image = UtilOpenCV.draw_map_xy(map_xy, surface[i], traj_df.to_ps().ToArray());
+
+                UtilOpenCV.draw_map_xy(map_xy, surface[i], traj_df.to_ps().ToArray());
                 LayerPath proj_layer_xy;
                 List<Matrix<double>> proj_layer;
                 (proj_layer,proj_layer_xy) = project_layer_xy(surface[i], traj_df, map_xy, vec_x);

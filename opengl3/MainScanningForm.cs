@@ -4140,7 +4140,7 @@ namespace opengl3
             var contours = new List<List<Point3d_GL>>();
             for(int i = 0; i < traj_config.layers; i++)
             {
-                var cont = SurfaceReconstraction.gen_random_cont_XY(10, 30, 0, new Point3d_GL(0,0,0.4*i)).ToList();
+                var cont = SurfaceReconstraction.gen_random_cont_XY(10, 30, 0, new Point3d_GL(10,10,0.4*i)).ToList();
                 //cont = cont_v.ToList();
                 contours.Add(cont);
             }
@@ -4150,7 +4150,7 @@ namespace opengl3
 
             var pattern = Point3d_GL.unifPoints2d(patterns);
 
-            GL1.addLineMeshTraj(pattern.ToArray(), Color3d_GL.red());
+           // GL1.addLineMeshTraj(pattern.ToArray(), Color3d_GL.red());
             //var pattern = PathPlanner.gen_traj_3d_pores(patt_config, traj_config);
             var traj = PathPlanner.ps_to_matr(pattern);
             var prog = PathPlanner.generate_printer_prog(traj, traj_config);

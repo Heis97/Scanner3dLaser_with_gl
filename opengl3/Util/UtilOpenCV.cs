@@ -55,42 +55,49 @@ namespace opengl3
         public static Mat draw_map_xy(RasterMap map, Polygon3d_GL[] surface,Point3d_GL[] traj)
         {
             var res = map.res;
-            var k = 80;
+            var k = 280;
             var im = new Image<Bgr, byte>((int)(k * map.map.GetLength(0)), (int)(k * map.map.GetLength(1))).Mat;
             var color_triang = new MCvScalar(255, 0, 255);
             var color_grid = new MCvScalar(128, 128, 128);
             var color_traj = new MCvScalar(0, 255, 255);
+            // map.pt_min = 
+            Console.WriteLine("min= " + map.pt_min+";max= "+ map.pt_max);
+            //map.
+            var pt_min = map.pt_min;// new Point3d_GL(-41.7115, -17.9146, -1.379);
+            var x_d = 7700;
+            var y_d = 7700;
+            var dp = new Point3d_GL(x_d, y_d);
             for (int i = 1; i < traj.Length; i++)
             {
-                var p1 = ((traj[i] - map.pt_min) / res) * k;
-                var p0 = ((traj[i - 1] - map.pt_min) / res) * k;
+                var p1 = ((traj[i] - pt_min) / res) * k;
+                var p0 = ((traj[i - 1] - pt_min) / res) * k;
 
-                CvInvoke.Line(im, p0.get_syst_p(), p1.get_syst_p(), color_traj, 4);
-                CvInvoke.Circle(im, p0.get_syst_p(), 10, color_traj);
-                CvInvoke.PutText(im, i.ToString()+" "+ traj[i - 1], (p0 + new Point3d_GL(-60, -10)).get_syst_p(), FontFace.HersheyTriplex, 0.5, color_traj);
+                CvInvoke.Line(im, (p0- dp).get_syst_p(), (p1 - dp).get_syst_p(), color_traj, 4);
+                CvInvoke.Circle(im, (p0 - dp).get_syst_p(), 10, color_traj);
+                CvInvoke.PutText(im, i.ToString()+" "+ traj[i - 1], ((p0 - dp) + new Point3d_GL(-60, -10)).get_syst_p(), FontFace.HersheyTriplex, 0.5, color_traj);
             }
 
             for (int i = 0; i < surface.Length; i++)
             {
-                var pol =( (surface[i] - map.pt_min) / res)*k;
+                var pol =( (surface[i] - pt_min) / res)*k;
 
-                draw_polyg_xy(im, pol, color_triang);
-                CvInvoke.PutText(im, i.ToString(), (pol.centr+new Point3d_GL(-10,10)).get_syst_p(), FontFace.HersheyTriplex, 0.4, color_triang);
+                draw_polyg_xy(im, pol, color_triang,dp);
+                CvInvoke.PutText(im, i.ToString(), (pol.centr+new Point3d_GL(-10,10) - dp).get_syst_p(), FontFace.HersheyTriplex, 0.4, color_triang);
             }
 
-            
-
+            //grid
+           
             for (int x = 0; x < map.map.GetLength(0); x++)
             {
-                CvInvoke.Line(im, new Point((int)(k*x),0), new Point((int)(k * x), im.Height), color_grid);
-                CvInvoke.PutText(im, x.ToString(), new Point((int)(k * x ), 30), FontFace.HersheyComplexSmall, 1, color_grid);
+                CvInvoke.Line(im, new Point((int)(k*x ) - x_d, 0), new Point((int)(k * x) - x_d, im.Height), color_grid);
+                CvInvoke.PutText(im, x.ToString(), new Point((int)(k * x ) - x_d, 30), FontFace.HersheyComplexSmall, 1, color_grid);
             }
             for (int y = 0; y < map.map.GetLength(1); y++)
             {
-                CvInvoke.Line(im, new Point(0,(int)(k * y)), new Point(im.Width,(int)(k * y)), color_grid);
-                CvInvoke.PutText(im, y.ToString(), new Point(10,(int)(k * y )), FontFace.HersheyComplexSmall, 1, color_grid);
+                CvInvoke.Line(im, new Point(0,(int)(k * y) - y_d), new Point(im.Width,(int)(k * y) - y_d), color_grid);
+                CvInvoke.PutText(im, y.ToString(), new Point(10,(int)(k * y) - y_d), FontFace.HersheyComplexSmall, 1, color_grid);
             }
-
+            //---inds gray
             for (int x = 0; x < map.map.GetLength(0); x++)
             {
                 for (int y = 0; y < map.map.GetLength(1); y++)
@@ -107,29 +114,29 @@ namespace opengl3
                             {
                                 
                                
-                                CvInvoke.PutText(im, text, new Point((int)(k * x), (int)(k * y) + 10+dy), FontFace.HersheyTriplex, 0.4, color_grid);
+                                CvInvoke.PutText(im, text, new Point((int)(k * x) - x_d, (int)(k * y) + 10+ dy - y_d), FontFace.HersheyTriplex, 0.4, color_grid);
                                 text = "";
                                 dy += 10;
                             }
                         }
-                        CvInvoke.PutText(im, text, new Point((int)(k * x), (int)(k * y) + 10 + dy), FontFace.HersheyTriplex, 0.4, color_grid);
+                        CvInvoke.PutText(im, text, new Point((int)(k * x) - x_d, (int)(k * y) + 10 + dy - y_d), FontFace.HersheyTriplex, 0.4, color_grid);
 
                     }
                     
                 }
             }
-           //CvInvoke.Imshow("map_xy", im);
+           CvInvoke.Imshow("map_xy", im);
             return im;
         }
 
 
        
 
-        public static void draw_polyg_xy(Mat im, Polygon3d_GL polyg,MCvScalar color)
+        public static void draw_polyg_xy(Mat im, Polygon3d_GL polyg,MCvScalar color,Point3d_GL p_d)
         {
-            CvInvoke.Line(im, polyg.ps[0].get_syst_p(), polyg.ps[1].get_syst_p(), color);
-            CvInvoke.Line(im, polyg.ps[1].get_syst_p(), polyg.ps[2].get_syst_p(), color);
-            CvInvoke.Line(im, polyg.ps[2].get_syst_p(), polyg.ps[0].get_syst_p(), color);
+            CvInvoke.Line(im, (polyg.ps[0]- p_d).get_syst_p(), (polyg.ps[1] - p_d).get_syst_p(), color);
+            CvInvoke.Line(im, (polyg.ps[1] - p_d).get_syst_p(), (polyg.ps[2] - p_d).get_syst_p(), color);
+            CvInvoke.Line(im, (polyg.ps[2] - p_d).get_syst_p(), (polyg.ps[0] - p_d).get_syst_p(), color);
         }
 
         public static Mat[] resizeMats(Mat[] mats)
