@@ -154,7 +154,7 @@ namespace opengl3
             InitializeComponent();
             init_vars();
            // VideoAnalyse.photo_from_video("vid//1.mp4");
-            //comp_pores("rats\\2_1.png");
+            comp_pores("rats\\2_1.png");
             //comp_pores("rats\\2_2.png");
             //comp_pores("rats\\2_3.png");
             //comp_pores("rats\\3_1.png");
@@ -321,6 +321,7 @@ namespace opengl3
         {
             var im1 = new Mat(path);
             var im1_c = im1.Clone();
+            CvInvoke.Imshow("orig", im1_c);
             CvInvoke.CvtColor(im1, im1, ColorConversion.Bgr2Gray);
             //get_x_line_gray(im1, im1.Height / 2);
             //Console.WriteLine("________________");
@@ -328,8 +329,9 @@ namespace opengl3
             //get_x_line_gray(im1, im1.Height / 2);
             //CvInvoke.Threshold(im1, im1, 150, 255,ThresholdType.BinaryInv);
             var mat2 = new Mat();
+            CvInvoke.Imshow("gg", im1);
             CvInvoke.AdaptiveThreshold(im1, mat2, 255, AdaptiveThresholdType.GaussianC, ThresholdType.Binary, 9, 1);
-
+            CvInvoke.Imshow("ad_thr", mat2);
             Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(1, 1));
 
             Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
@@ -337,7 +339,7 @@ namespace opengl3
             Mat kernel2 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(2, 2), new Point(1, 1));
             Mat ellips7 = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(7, 7), new Point(1, 1));
             CvInvoke.MorphologyEx(mat2, mat2,MorphOp.Dilate, kernel2, new Point(-1, -1), 2, BorderType.Default, new MCvScalar());
-
+            CvInvoke.Imshow("m_ex", mat2);
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
             CvInvoke.FindContours(mat2, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
@@ -345,7 +347,7 @@ namespace opengl3
             contours = FindCircles.size_filter(contours, 50,300);
 
             CvInvoke.DrawContours(im1_c, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
-
+           //CvInvoke.Imshow("m_ex", mat2);
             for (int i = 0; i < contours.Size; i++)
             {
                 var area = CvInvoke.ContourArea(contours[i]);
@@ -355,7 +357,7 @@ namespace opengl3
                 }
             }
             Console.WriteLine("____________");
-            CvInvoke.Imshow(path, mat2);
+            CvInvoke.Imshow(path+"m", mat2);
             CvInvoke.Imshow(path, im1_c);
         }
         void roi_for_ims(string path)
