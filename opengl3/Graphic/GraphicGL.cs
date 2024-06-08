@@ -485,7 +485,7 @@ namespace opengl3
             Gl.Enable(EnableCap.Blend);
             Gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             //Gl.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
-            cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 53), new Matrix<double>(5, 1), new Size(400, 400));
+            cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(400, 400), 70), new Matrix<double>(5, 1), new Size(400, 400));//53fov
             cameraCV.distortmatrix[0,0] = -0.3;
             init_texture();
             // addLight();

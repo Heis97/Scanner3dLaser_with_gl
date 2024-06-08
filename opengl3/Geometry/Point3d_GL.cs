@@ -161,7 +161,18 @@ namespace opengl3
             return result;
         }
 
-
+        public static bool affil_p_seg(Point3d_GL p1,Point3d_GL p2, Point3d_GL p)
+        {
+            var d_all = (p1 - p2).magnitude();
+            var d1 = (p1 - p).magnitude();
+            var d2 = (p2 - p).magnitude();
+            var e = 0.0001;
+            if(d1<d_all && d2<d_all && ((d1+d2)<d_all+e))
+            {
+                return true;
+            }
+            return false;
+        }
         public static Point3d_GL[] dataToPoints_ex(float[] data)
         {
             var ps = new List<Point3d_GL>();

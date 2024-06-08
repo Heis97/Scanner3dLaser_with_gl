@@ -1296,7 +1296,7 @@ namespace opengl3
             Emgu.CV.Features2D.Features2DToolbox.DrawMatches(mat1, kps1, mat2, kps2, matches, mat3, new MCvScalar(255, 0, 0), new MCvScalar(0, 0, 255));
             return mat3;
         }
-        static public Mat drawChessboard(Mat im, Size size, bool subpix = false,bool blur = false, CalibCbType calibCbType = CalibCbType.AdaptiveThresh, System.Drawing.PointF[] points = null)
+        static public Mat drawChessboard(Mat im, Size size, ref System.Drawing.PointF[] points, bool subpix = false,bool blur = false, CalibCbType calibCbType = CalibCbType.AdaptiveThresh)
         {
             if(im==null)
             {
@@ -1319,10 +1319,10 @@ namespace opengl3
 
             //perspective2Dmatr(size, corn);
             
-            Console.WriteLine("chess: " + ret + " " + size.Width + " " + size.Height);
+        //    Console.WriteLine("chess: " + ret + " " + size.Width + " " + size.Height);
             
             CvInvoke.DrawChessboardCorners(mat_ch, size, corn, ret);
-
+            points = corn.ToArray();
             return mat_ch;
            // return gray.Mat;
         }

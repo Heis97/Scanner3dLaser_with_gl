@@ -62,7 +62,8 @@ namespace opengl3
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
         float markSize = 10f;
-        Size chess_size = new Size(10, 11);
+        Size chess_size = new Size(8, 9);
+       // Size chess_size = new Size(6, 7);
         Size chess_size_real = new Size(6, 7);
         StereoCameraCV stereocam = null;
         StereoCamera stereocam_scan = null;
@@ -153,8 +154,11 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-           // VideoAnalyse.photo_from_video("vid//1.mp4");
-            comp_pores("rats\\2_1.png");
+
+            // Console.WriteLine( Point3d_GL.affil_p_seg(new Point3d_GL(1, 1, 1), new Point3d_GL(4, 4, 4), new Point3d_GL(0.999, 0.999, 0.999)));
+
+            // VideoAnalyse.photo_from_video("vid//1.mp4");
+            //comp_pores("rats\\2_1.png");
             //comp_pores("rats\\2_2.png");
             //comp_pores("rats\\2_3.png");
             //comp_pores("rats\\3_1.png");
@@ -239,7 +243,12 @@ namespace opengl3
                             Console.WriteLine(fl1[i]);
                         }*/
             //  Console.WriteLine(Math.Sin(90));
-          // StereoCamera.calcSizesScanner(50,30, 100);
+            // StereoCamera.calcSizesScanner(50,30, 100);
+
+            var ps = new Point3d_GL[] { new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(10, 10, 0), new Point3d_GL(0, 10, 0) };
+
+            var ps_u = PathPlanner.unif_dist(ps.ToList(), 4.05);
+            Console.WriteLine("sf");
         }
 
         void test_handeye()
@@ -1651,8 +1660,10 @@ namespace opengl3
             var d = 100;
             var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
             GL1.buffersGl.setTranspobj(fr, 0.4f);
-            //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-           // GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
+           // generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+
+           // generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
+            // GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
             //GL1.SortObj();
             int monitor_num = 1;
             if(monitor_num==4)
@@ -1790,9 +1801,14 @@ namespace opengl3
               GL1.addFrame(model, 200, "mod");*/
 
 
-            //load_3d_model_robot();
-            test_gen_traj();
-
+            load_3d_model_robot();
+            //test_gen_traj();
+           /* for (double c = 0; c < 1.8; c += 0.1)
+            {
+                test_diff_angles(c);
+            }*/
+            //test_diff_angles(0.6);
+            //test_diff_angles(1.6);
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -1838,7 +1854,8 @@ namespace opengl3
 
                 var corn = new System.Drawing.PointF[0];
                 //var mat3 = UtilOpenCV.remapDistImOpenCvCentr(mat2, new Matrix<double>(new double[] { -0.5, 0, 0, 0, 0 }));
-                //imBox_mark1.Image = FindCircles.findCircles(mat1_or, ref corn, chess_size);
+                 imBox_mark1.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
+               // imBox_mark1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
                 //imBox_mark2.Image = FindCircles.findCircles(mat2_or, ref corn, chess_size);
 
 
@@ -2145,7 +2162,7 @@ namespace opengl3
             var solv = RobotFrame.comp_inv_kinem_priv(new RobotFrame(mf).frame, new int[] { 1, 1, 1 });
             set_conf_robot(solv);
         }
-        void test_gen_traj()
+        void test_gen_traj(double c = 0)
         {
            
             var g_code = File.ReadAllText("test_traj.txt");
@@ -2161,10 +2178,13 @@ namespace opengl3
             GL1.buffersGl.setMatrobj("scan", 0, UtilMatr.to_matrix(model_inv));
             GL1.buffersGl.setMatrobj("table", 0, UtilMatr.to_matrix(model_inv));
 
+           frames = PathPlanner.unif_dist(frames.ToList(), 0.5).ToArray();
+
+
             for (int i = 0; i < frames.Length; i++)
             {
                 // var mf =  tool_inv * frames[i].getMatrix() *  model_inv;
-
+                frames[i].C += c;
                 var mf_e = model_inv * frames[i].getMatrix();
 
                 var mf = model_inv * frames[i].getMatrix() * tool_inv;
@@ -2176,8 +2196,12 @@ namespace opengl3
                 frames_rob_end.Add(new RobotFrame(mf_e));
                 // GL1.addFrame(matrs[i],3,"sf");
             }
-
-
+            var ps_r = RobotFrame.to_points(frames_rob_end);
+          /*  var ps_u = PathPlanner.unif_dist(ps_r, 1.05);
+            GL1.addLineMeshTraj(ps_r.ToArray(), Color3d_GL.red());
+            GL1.addLineMeshTraj(ps_u.ToArray(), Color3d_GL.green());*/
+            var dists1 = Point3d_GL.dist_betw_ps(ps_r.ToArray());
+            prin.t(dists1,"\n");
             //set_pos_robot(frames_rob[0]);
 
             //---------analyse-----------------------------
@@ -2187,11 +2211,84 @@ namespace opengl3
                 var pos = new RobotFrame( RobotFrame.comp_forv_kinem(solv, 5, true));
                 if (i % 3 == 0)
                 {
-                    GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
-                    GL1.addFrame(pos.getMatrix(), 10, "sdf");
+                    //GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
+                    //GL1.addFrame(pos.getMatrix(), 10, "sdf");
                 }
                     
             }
+        }
+
+        void test_diff_angles(double c=0)
+        {
+
+            var g_code = File.ReadAllText("test_traj_arc.txt");
+            var frames = RobotFrame.parse_g_code(g_code);
+            var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
+            var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052).getMatrix();
+            var matrs = new List<Matrix<double>>();
+            frames_rob = new List<RobotFrame>();
+            var tool_inv = tool.Clone();
+            var model_inv = model.Clone();
+            CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
+            CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
+            GL1.buffersGl.setMatrobj("scan", 0, UtilMatr.to_matrix(model_inv));
+            GL1.buffersGl.setMatrobj("table", 0, UtilMatr.to_matrix(model_inv));
+
+            frames = PathPlanner.unif_dist(frames.ToList(), 0.5).ToArray();
+            
+
+            for (int i = 0; i < frames.Length; i++)
+            {
+                frames[i].C += c;
+                var mf_e = model_inv * frames[i].getMatrix();
+                var mf = model_inv * frames[i].getMatrix() * tool_inv;
+                matrs.Add(mf);
+                var fr = new RobotFrame(mf);
+                frames_rob.Add(fr);
+                frames_rob_end.Add(new RobotFrame(mf_e));
+            }
+ 
+            //---------analyse-----------------------------
+            var poses1 = new List<RobotFrame>();
+            var poses2 = new List<RobotFrame>();
+            var poses3 = new List<RobotFrame>();
+
+            var max_v1 = 0d;
+            var max_v2 = 0d;
+            var max_v3 = 0d;
+            for (int i = 0; i < frames_rob.Count; i++)
+            {
+                var solv = RobotFrame.comp_inv_kinem_priv(frames_rob[i].frame, new int[] { 1, 1, 1 });
+                var pos1 = new RobotFrame(RobotFrame.comp_forv_kinem(solv, 5, true));
+                var pos2 = new RobotFrame(RobotFrame.comp_forv_kinem(solv, 4, true));
+                var pos3 = new RobotFrame(RobotFrame.comp_forv_kinem(solv, 3, true));
+                poses1.Add(pos1);
+                poses2.Add(pos2);
+                poses3.Add(pos3);
+
+                if(i!=0)
+                {
+                    var v1 = 1/(poses1[i] - poses1[i - 1]).get_pos().magnitude();
+                    var v2 = 1/(poses2[i] - poses2[i - 1]).get_pos().magnitude();
+                    var v3 = 1/(poses3[i] - poses3[i - 1]).get_pos().magnitude();
+
+                    max_v1 = Math.Max(v1, max_v1);
+                    max_v2 = Math.Max(v2, max_v2);
+                    max_v3 = Math.Max(v3, max_v3);
+                }
+                 if (i % 3 == 0)
+                 {
+                     GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
+                     GL1.addFrame(pos1.getMatrix(), 10, "sdf");
+                     GL1.addFrame(pos2.getMatrix(), 10, "sdf");
+                     GL1.addFrame(pos3.getMatrix(), 10, "sdf");
+                 }
+                 
+            }
+
+            Console.WriteLine(c + " " + max_v1 + " " + max_v2 + " " + max_v3 + " ");
+
+
         }
         public void set_pos_traj_robot(int i)
         {
@@ -2926,7 +3023,8 @@ namespace opengl3
                     var mat3 = fr.im.Clone();
                     var rgb = mat1.Split();
                     var ps = Detection.detectLineDiff(mat2,5);
-                    mat3= UtilOpenCV.drawChessboard(mat3, chess_size);
+                    var psf = new System.Drawing.PointF[0];
+                    mat3 = UtilOpenCV.drawChessboard(mat3, chess_size, ref psf, false,false,CalibCbType.AdaptiveThresh);
                     //CvInvoke.GaussianBlur(mat1, mat1, new Size(3, 3), 0);
                     var im2 = mat2.ToImage<Gray, Byte>();
 
@@ -3015,7 +3113,8 @@ namespace opengl3
                         //fr.im = cameraCVcommon.undist(fr.im);
                         UtilOpenCV.drawPointsF(mat1, ps, 0, 255, 0);
                     }
-                    mat1 =  UtilOpenCV.drawChessboard(mat1, chess_size);
+                    var psf = new System.Drawing.PointF[0];
+                    mat1 =  UtilOpenCV.drawChessboard(mat1, chess_size, ref psf, false, false, CalibCbType.AdaptiveThresh);
                     imageBox1.Image = mat1;
 
                 }
@@ -3031,7 +3130,8 @@ namespace opengl3
 
                 else if (fr.frameType == FrameType.MarkBoard)
                 {
-                    imBox_debug1.Image = UtilOpenCV.drawChessboard(fr.im, chess_size);
+                    var psf = new System.Drawing.PointF[0];
+                    imBox_debug1.Image = UtilOpenCV.drawChessboard(fr.im, chess_size, ref psf, false, false, CalibCbType.AdaptiveThresh);
                     imageBox1.Image = UtilOpenCV.drawInsideRectChessboard(fr.im, chess_size);
 
                     cameraCVcommon.compPos(fr.im, PatternType.Chess,chess_size);
@@ -4188,7 +4288,7 @@ namespace opengl3
 
         private void but_start_anim_Click(object sender, EventArgs e)
         {
-            test_gen_traj();
+            test_gen_traj(0.6);
             GL1.start_animation(frames_rob.Count, this);
         }
 
@@ -4322,7 +4422,8 @@ namespace opengl3
                     //imb_base[ind-1].Image = mat;
                     break;
                 case FrameType.MarkBoard:
-                    imb_base[ind - 1].Image = UtilOpenCV.drawChessboard(mat, chess_size, false,false,CalibCbType.FastCheck);
+                    var psf = new System.Drawing.PointF[0];
+                    imb_base[ind - 1].Image = UtilOpenCV.drawChessboard(mat, chess_size,ref psf, false,false,CalibCbType.FastCheck);
                     break;
                 case FrameType.Undist:
                     imb_base[ind - 1].Image = stereocam.remapCam(mat, ind);
@@ -4642,7 +4743,11 @@ namespace opengl3
                     //imb_base[ind-1].Image = mat;
                     break;
                 case FrameType.MarkBoard:
-                    imb_base[ind].Image = UtilOpenCV.drawChessboard(mat, chess_size, false, false, CalibCbType.FastCheck);
+                    System.Drawing.PointF[] points = null;
+                    imb_base[ind].Image = UtilOpenCV.drawChessboard(mat, chess_size,ref  points, false, false, CalibCbType.Accuracy);
+                    if (points != null) Console.WriteLine(points[0].X + " " + points[0].Y + " " + points[1].X + " " + points[1].Y + " " + points[2].X + " " + points[2].Y);
+                    else Console.WriteLine("null");
+
                     break;
                 case FrameType.Undist:
                     imb_base[ind].Image = stereocam.remapCam(mat, ind);
@@ -4668,8 +4773,10 @@ namespace opengl3
                     //imb_base[ind - 1].Image = Detection.detectLineSensor(mat);
                     break;
                 case FrameType.Pattern:
-                    System.Drawing.PointF[] points = null;
-                    imb_base[ind].Image = FindCircles.findCircles(mat, ref points, chess_size);
+                    System.Drawing.PointF[] points2 = null;
+                    imb_base[ind].Image = FindCircles.findCircles(mat, ref points2, chess_size);
+                    if (points2 != null) Console.WriteLine(points2[0].X + " " + points2[0].Y + " " + points2[1].X + " " + points2[1].Y + " " + points2[2].X + " " + points2[2].Y);
+                    else Console.WriteLine("null");
                     break;
                 default:
                     break;

@@ -1250,12 +1250,76 @@ namespace PathPlanning
         public static List<Point3d_GL> unif_dist(List<Point3d_GL> ps, double fil_step)
         {
             var ps_u = new List<Point3d_GL>();
+            ps_u.Add(ps.First());
+            for(int i=1; i < ps.Count;)
+            {
+                var i_cur = i;
+                var p_cur = ps_u.Last();
+                var p1 = ps[i - 1];
+                var p2 = ps[i];
+                var line = new Line3d_GL(p1, p2);
+                var ps_cr = line.calcCrossSphere(p_cur, fil_step);
+                if(ps_cr!=null)
+                {
+                    var p_sel = new Point3d_GL();
+                    var d0 = (ps_cr[0] - p2).magnitude();
+                    var d1 = (ps_cr[1] - p2).magnitude();
+                    if(d0<d1)  p_sel = ps_cr[0];
+                    else p_sel = ps_cr[1];
 
+                    if(Point3d_GL.affil_p_seg(p1,p2,p_sel))
+                    {
+                        ps_u.Add(p_sel);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+            }
 
-            return null;
+            return ps_u;
         }
+        public static List<RobotFrame> unif_dist(List<RobotFrame> ps, double fil_step)
+        {
+            var ps_u = new List<RobotFrame>();
+            ps_u.Add(ps.First());
+            for (int i = 1; i < ps.Count;)
+            {
+                var p_cur = ps_u.Last();
+                var p1 = ps[i - 1];
+                var p2 = ps[i];
+                var line = new Line3d_GL(p1.get_pos(), p2.get_pos());
+                var ps_cr = line.calcCrossSphere(p_cur.get_pos(), fil_step);
+                if (ps_cr != null)
+                {
+                    var p_sel = new Point3d_GL();
+                    var d0 = (ps_cr[0] - p2.get_pos()).magnitude();
+                    var d1 = (ps_cr[1] - p2.get_pos()).magnitude();
+                    if (d0 < d1) p_sel = ps_cr[0];
+                    else p_sel = ps_cr[1];
 
+                    if (Point3d_GL.affil_p_seg(p1.get_pos(), p2.get_pos(), p_sel))
+                    {
+                        var k = (p_sel - p1.get_pos()).magnitude();
+                        var d = (p2.get_pos()- p1.get_pos()).magnitude();
+                        if(d!=0)
+                        {
+                            var p_bt = p1 +   (p2 - p1)* (k / d);
+                            ps_u.Add(p_bt);
+                        }
+                       
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+            }
 
+            return ps_u;
+        }
+        //static public Point3d_GL cross_sphere_vec(Point3d_GL p1, Point3d_GL p2, Point3d_GL p_c,)
         //--------------------
         static Vector3d_GL comp_vecx(Vector3d_GL vec_x_dir, Vector3d_GL n)
         {
