@@ -1772,11 +1772,11 @@ namespace opengl3
 
 
             //test_gen_traj();
-            /*var color_skin = new Color3d_GL(213 / 255f, 172 / 255f, 129 / 255f);
+            var color_skin = new Color3d_GL(213 / 255f, 172 / 255f, 129 / 255f);
             var scan_stl_orig = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
             GL1.add_buff_gl(scan_stl_orig.mesh, color_skin, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
             var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
-            GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");*/
+            GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
             //var g_code = File.ReadAllText("test_traj.txt");
             //var frames = RobotFrame.parse_g_code(g_code);
 
@@ -1802,33 +1802,15 @@ namespace opengl3
               GL1.addFrame(model, 200, "mod");*/
 
            
-            // load_3d_model_robot();
+            load_3d_model_robot();
            // test_gen_traj();
 
 
-           // vel_rob_map();
+            //vel_rob_map();
             //test_diff_angles(0.6);
             //test_diff_angles(1.6);
         }
-        void vel_rob_map()
-        {
-            var g_code = File.ReadAllText("test_traj_arc.txt");
-            var frames = RobotFrame.parse_g_code(g_code);
-            //frames = PathPlanner.line_aver_btw(frames, 10);
-           // frames = PathPlanner.unif_dist(frames.ToList(), 0.3).ToArray();
-
-            frames = PathPlanner.unif_dist(frames.ToList(), 0.3).ToArray();
-            frames = PathPlanner.line_aver_btw(frames, 10);
-            frames = PathPlanner.unif_dist(frames.ToList(), 0.3).ToArray();
-            var vs = new List<double[]>();
-            for (double c = 0; c > -2.8; c -= 0.02)
-            {
-                vs.Add(test_diff_angles(frames ,c));
-                GC.Collect();
-            }
-            var im = Analyse.mapSolv3D(vs);
-            imageBox1.Image = im.Mat;
-        }
+      
         private void glControl1_Render(object sender, GlControlEventArgs e)
         {
 
@@ -2045,6 +2027,26 @@ namespace opengl3
         #endregion
 
         #region test
+
+        void vel_rob_map()
+        {
+            var g_code = File.ReadAllText("test_traj_arc.txt");
+            var frames = RobotFrame.parse_g_code(g_code);
+            //frames = PathPlanner.line_aver_btw(frames, 10);
+            // frames = PathPlanner.unif_dist(frames.ToList(), 0.3).ToArray();
+
+            frames = PathPlanner.unif_dist(frames.ToList(), 0.3).ToArray();
+            frames = PathPlanner.line_aver_btw(frames, 10);
+            frames = PathPlanner.unif_dist(frames.ToList(), 0.3).ToArray();
+            var vs = new List<double[]>();
+            for (double c = -0.4; c < 0.4; c += 0.05)
+            {
+                vs.Add(test_diff_angles(frames, c));
+                GC.Collect();
+            }
+            var im = Analyse.mapSolv3D(vs);
+            imageBox1.Image = im.Mat;
+        }
         void test_go_to_point_robot()
         {
             load_3d_model_robot();
@@ -2202,7 +2204,7 @@ namespace opengl3
 
                 if (i % 3 == 0)
                 {
-                    GL1.addFrame(frames[i].getMatrix(), 10, "sdf");
+                    //GL1.addFrame(frames[i].getMatrix(), 10, "sdf");
 
                 }
 
@@ -2215,7 +2217,7 @@ namespace opengl3
 
                 if (i % 3 == 0)
                 {
-                    GL1.addFrame(frames[i].getMatrix(), 5, "sdf");
+                    //GL1.addFrame(frames[i].getMatrix(), 5, "sdf");
 
                 }
 
@@ -2237,13 +2239,17 @@ namespace opengl3
                 // GL1.addFrame(matrs[i],3,"sf");
             }
             var ps_r = RobotFrame.to_points(frames_rob_end);
-          /*  var ps_u = PathPlanner.unif_dist(ps_r, 1.05);
-            GL1.addLineMeshTraj(ps_r.ToArray(), Color3d_GL.red());
-            GL1.addLineMeshTraj(ps_u.ToArray(), Color3d_GL.green());*/
+            /*  var ps_u = PathPlanner.unif_dist(ps_r, 1.05);
+              GL1.addLineMeshTraj(ps_r.ToArray(), Color3d_GL.red());
+              GL1.addLineMeshTraj(ps_u.ToArray(), Color3d_GL.green());*/
             //var dists1 = Point3d_GL.dist_betw_ps(ps_r.ToArray());
             //prin.t(dists1,"\n");
             //set_pos_robot(frames_rob[0]);
-
+            var p1f = frames_rob_end[0].get_pos();
+            var p2f = frames_rob_end[frames_rob_end.Count/2].get_pos();
+            var p3f = frames_rob_end[frames_rob_end.Count-1].get_pos();
+            var fl = new Flat3d_GL(p1f, p2f, p3f);
+            GL1.addFlat3d_YZ(fl,null, Color3d_GL.green());
             //---------analyse-----------------------------
             for (int i = 0; i < frames_rob.Count; i++)
             {
@@ -4352,7 +4358,7 @@ namespace opengl3
 
         private void but_start_anim_Click(object sender, EventArgs e)
         {
-            test_gen_traj(-0.9);
+            test_gen_traj(0);
             GL1.start_animation(frames_rob.Count-2, this);
         }
 

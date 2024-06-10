@@ -1895,11 +1895,12 @@ namespace opengl3
 
         public string addFlat3d_YZ(Flat3d_GL flat3D_GL, Matrix<double> matrix = null, Color3d_GL color = null, string name = "new Flat YZ")
         {
-            var p0 = (new Line3d_GL(new Vector3d_GL(10, 0, 0), new Point3d_GL(0, -50,  -1000))).calcCrossFlat(flat3D_GL);
-            var p1 = (new Line3d_GL(new Vector3d_GL(10, 0, 0), new Point3d_GL(0, 50, -1000))).calcCrossFlat(flat3D_GL);
+            var dim = 100;
+            var p0 = (new Line3d_GL(new Vector3d_GL(10, 0, 0), new Point3d_GL(0, -dim,  -dim))).calcCrossFlat(flat3D_GL);
+            var p1 = (new Line3d_GL(new Vector3d_GL(10, 0, 0), new Point3d_GL(0, dim, -dim))).calcCrossFlat(flat3D_GL);
 
-            var p2 = (new Line3d_GL(new Vector3d_GL(10, 0,  0), new Point3d_GL(0, -50, 1000))).calcCrossFlat(flat3D_GL);
-            var p3 = (new Line3d_GL(new Vector3d_GL(10, 0,  0), new Point3d_GL(0, 50,  1000))).calcCrossFlat(flat3D_GL);
+            var p2 = (new Line3d_GL(new Vector3d_GL(10, 0,  0), new Point3d_GL(0, -dim, dim))).calcCrossFlat(flat3D_GL);
+            var p3 = (new Line3d_GL(new Vector3d_GL(10, 0,  0), new Point3d_GL(0, dim, dim))).calcCrossFlat(flat3D_GL);
 
             if (matrix != null)
             {
