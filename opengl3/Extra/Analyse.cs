@@ -969,10 +969,7 @@ namespace opengl3
 
             double range = max_val - min_val;
             double off = min_val;
-            if (off > 0)
-            {
-                off *= -1;
-            }
+
             double scalez = 255 / range;
             //var frs = frames.ToArray();
             Console.WriteLine(off);
@@ -984,7 +981,7 @@ namespace opengl3
                 for (int y = 0; y < im_res.Height - 1; y++)
                 {
                     //Console.WriteLine(frames[x][y]);
-                    var z = (off + frames[x][y]) * scalez;
+                    var z = (-off + frames[x][y]) * scalez;
 
                     if (z > 255)
                     {

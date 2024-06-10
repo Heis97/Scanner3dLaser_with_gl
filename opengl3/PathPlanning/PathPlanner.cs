@@ -1319,6 +1319,28 @@ namespace PathPlanning
 
             return ps_u;
         }
+
+        public static RobotFrame[] line_aver_btw(RobotFrame[] ps, int iter)
+        {
+            if (ps == null) return null;
+            if (ps.Length < 3) return null;
+            var ps_s = new RobotFrame[ps.Length];
+            ps_s[0] = ps[0];
+            ps_s[ps.Length-1] = ps[ps.Length - 1];
+            for (int i = 1; i < ps.Length - 1; i++)//from 0 to i
+            {
+                int beg = i - 1; //if (beg < 0) beg = 0;
+                int end = i + 1; //if (end > ps.Length - 1) end = ps.Length - 1;
+                                 // var L_p = (ps[end] - ps[i]) * 0.5 + (ps[beg] - ps[i]) * 0.5;
+                ps_s[i] = (ps[i - 1] + ps[i + 1]) / 2;
+            }
+            iter--;
+
+            if (iter <= 0)
+                return ps_s;
+            else
+                return line_aver_btw(ps_s, iter);
+        }
         //static public Point3d_GL cross_sphere_vec(Point3d_GL p1, Point3d_GL p2, Point3d_GL p_c,)
         //--------------------
         static Vector3d_GL comp_vecx(Vector3d_GL vec_x_dir, Vector3d_GL n)

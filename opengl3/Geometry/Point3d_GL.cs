@@ -1029,10 +1029,10 @@ namespace opengl3
             if (ps == null) return null;
             if (ps.Length < 3) return null;
             var ps_s = new Point3d_GL[ps.Length];
-            for (int i = 0; i < ps.Length; i++)
+            for (int i = 1; i < ps.Length-1; i++)//from 0 to i
             {
-                int beg = i - 1; if (beg < 0) beg = 0;
-                int end = i + 1; if (end > ps.Length - 1) end = ps.Length - 1;
+                int beg = i - 1; //if (beg < 0) beg = 0;
+                int end = i + 1; //if (end > ps.Length - 1) end = ps.Length - 1;
                 var L_p = (ps[end] - ps[i]) * 0.5 + (ps[beg] - ps[i]) * 0.5;
                 ps_s[i] = ps[i] + L_p * 0.5;
             }
@@ -1043,7 +1043,26 @@ namespace opengl3
             else
                 return line_laplace(ps_s, iter);
         }
+        public static Point3d_GL[] line_aver_btw(Point3d_GL[] ps, int iter)
+        {
+            if (ps == null) return null;
+            if (ps.Length < 3) return null;
+            var ps_s = new Point3d_GL[ps.Length];
+            for (int i = 1; i < ps.Length - 1; i++)//from 0 to i
+            {
+                int beg = i - 1; //if (beg < 0) beg = 0;
+                int end = i + 1; //if (end > ps.Length - 1) end = ps.Length - 1;
+               // var L_p = (ps[end] - ps[i]) * 0.5 + (ps[beg] - ps[i]) * 0.5;
+                ps_s[i] = (ps[i-1] + ps[i + 1])/2;
+            }
+            iter--;
 
+            if (iter <= 0)
+                return ps_s;
+            else
+                return line_aver_btw(ps_s, iter);
+        }
+       
         public static Point3d_GL aver(Point3d_GL[] ps, Color3d_GL color = null)
         {
             var p = new Point3d_GL(0, 0, 0);

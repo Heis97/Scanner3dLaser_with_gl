@@ -91,9 +91,14 @@ namespace opengl3
 
             CvInvoke.CvtColor(mat, im_tr, ColorConversion.Bgr2Gray);
             CvInvoke.GaussianBlur(im_tr, im_tr, new Size(7, 7), 3);
+            CvInvoke.Imshow("gauss", im_tr);
+            CvInvoke.WaitKey();
             im_tr = sobel_mat(im_tr);
+            CvInvoke.Imshow("sobel_d", im_tr);
+            CvInvoke.WaitKey();
             CvInvoke.Threshold(im_tr, im_tr, 95, 255, ThresholdType.Binary);
-
+            CvInvoke.Imshow("im_tr", im_tr);
+            CvInvoke.WaitKey();
 
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
@@ -101,11 +106,11 @@ namespace opengl3
             //var conts = sameContours_cv(contours);
             contours = size_filter(contours,20);
             orig = mat.Clone();
-           /* CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
-           CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
+            CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
+          // CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
             Console.WriteLine("find_circ");
-            CvInvoke.Imshow("orig", orig);
-            CvInvoke.WaitKey();*/
+            CvInvoke.Imshow("orig_c", orig);
+            CvInvoke.WaitKey();
             contours = only_same_centres(contours);
             var conts = sameContours(contours);
             if (conts == null)
@@ -131,7 +136,7 @@ namespace opengl3
             CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
             //CvInvoke.DrawContours(im_tr, conts_sc, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
 
-            //CvInvoke.Imshow("bin ", im_tr);
+            CvInvoke.Imshow("bin ", im_tr);
             
             counter++;
 
@@ -171,11 +176,12 @@ namespace opengl3
                 //Console.WriteLine(" corn______________________");
                 //Console.WriteLine(ps_ord.Length+" "+ corn.Length);
                 //prin.t(corn);
-                UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
-                UtilOpenCV.drawLines(im_tr, ps_ord, 0, 0, 255, 2);
+                UtilOpenCV.drawTours(orig, PointF.toPoint(corn), 255, 0, 0, 2);
+                //UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
+                UtilOpenCV.drawLines(orig, ps_ord, 0, 0, 255, 2);
 
                 
-                return im_tr;
+                return orig;//im_tr
             }
             else
             {

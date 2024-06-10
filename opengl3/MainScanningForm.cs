@@ -18,6 +18,7 @@ using System.IO.Ports;
 using PathPlanning;
 using Newtonsoft.Json;
 using Emgu.CV.Util;
+using Emgu.CV.Features2D;
 
 namespace opengl3
 {
@@ -529,7 +530,7 @@ namespace opengl3
         void init_vars()
         {
             #region important
-            combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "Ничего" });
+            combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "св Круги грид", "Ничего" });
 
             cameraDistortionCoeffs_dist[0, 0] = -0.3;
             for(int i=0; i<mat_global.Length;i++)
@@ -1800,17 +1801,34 @@ namespace opengl3
             GL1.addPointMesh(ps, Color3d_GL.red());
               GL1.addFrame(model, 200, "mod");*/
 
+           
+            // load_3d_model_robot();
+           // test_gen_traj();
 
-            load_3d_model_robot();
-            //test_gen_traj();
-           /* for (double c = 0; c < 1.8; c += 0.1)
-            {
-                test_diff_angles(c);
-            }*/
+
+           // vel_rob_map();
             //test_diff_angles(0.6);
             //test_diff_angles(1.6);
         }
+        void vel_rob_map()
+        {
+            var g_code = File.ReadAllText("test_traj_arc.txt");
+            var frames = RobotFrame.parse_g_code(g_code);
+            //frames = PathPlanner.line_aver_btw(frames, 10);
+           // frames = PathPlanner.unif_dist(frames.ToList(), 0.3).ToArray();
 
+            frames = PathPlanner.unif_dist(frames.ToList(), 0.3).ToArray();
+            frames = PathPlanner.line_aver_btw(frames, 10);
+            frames = PathPlanner.unif_dist(frames.ToList(), 0.3).ToArray();
+            var vs = new List<double[]>();
+            for (double c = 0; c > -2.8; c -= 0.02)
+            {
+                vs.Add(test_diff_angles(frames ,c));
+                GC.Collect();
+            }
+            var im = Analyse.mapSolv3D(vs);
+            imageBox1.Image = im.Mat;
+        }
         private void glControl1_Render(object sender, GlControlEventArgs e)
         {
 
@@ -2165,7 +2183,7 @@ namespace opengl3
         void test_gen_traj(double c = 0)
         {
            
-            var g_code = File.ReadAllText("test_traj.txt");
+            var g_code = File.ReadAllText("test_traj_arc.txt");
             var frames = RobotFrame.parse_g_code(g_code);
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
             var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052).getMatrix();
@@ -2178,8 +2196,30 @@ namespace opengl3
             GL1.buffersGl.setMatrobj("scan", 0, UtilMatr.to_matrix(model_inv));
             GL1.buffersGl.setMatrobj("table", 0, UtilMatr.to_matrix(model_inv));
 
-           frames = PathPlanner.unif_dist(frames.ToList(), 0.5).ToArray();
 
+            for (int i = 0; i < frames.Length; i++)
+            {
+
+                if (i % 3 == 0)
+                {
+                    GL1.addFrame(frames[i].getMatrix(), 10, "sdf");
+
+                }
+
+            }
+            frames = PathPlanner.unif_dist(frames.ToList(), 0.5).ToArray();
+            frames = PathPlanner.line_aver_btw(frames, 10);
+            frames = PathPlanner.unif_dist(frames.ToList(), 0.5).ToArray();
+            for (int i = 0; i < frames.Length; i++)
+            {
+
+                if (i % 3 == 0)
+                {
+                    GL1.addFrame(frames[i].getMatrix(), 5, "sdf");
+
+                }
+
+            }
 
             for (int i = 0; i < frames.Length; i++)
             {
@@ -2200,52 +2240,64 @@ namespace opengl3
           /*  var ps_u = PathPlanner.unif_dist(ps_r, 1.05);
             GL1.addLineMeshTraj(ps_r.ToArray(), Color3d_GL.red());
             GL1.addLineMeshTraj(ps_u.ToArray(), Color3d_GL.green());*/
-            var dists1 = Point3d_GL.dist_betw_ps(ps_r.ToArray());
-            prin.t(dists1,"\n");
+            //var dists1 = Point3d_GL.dist_betw_ps(ps_r.ToArray());
+            //prin.t(dists1,"\n");
             //set_pos_robot(frames_rob[0]);
 
             //---------analyse-----------------------------
             for (int i = 0; i < frames_rob.Count; i++)
             {
                 var solv = RobotFrame.comp_inv_kinem_priv(frames_rob[i].frame, new int[] { 1, 1, 1 });
-                var pos = new RobotFrame( RobotFrame.comp_forv_kinem(solv, 5, true));
+                //var pos = new RobotFrame( RobotFrame.comp_forv_kinem(solv, 5, true));
+
+                var pos1 = new RobotFrame(RobotFrame.comp_forv_kinem(solv, 5, true));
+                var pos2 = new RobotFrame(RobotFrame.comp_forv_kinem(solv, 4, true));
+                var pos3 = new RobotFrame(RobotFrame.comp_forv_kinem(solv, 3, true));
                 if (i % 3 == 0)
                 {
                     //GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
                     //GL1.addFrame(pos.getMatrix(), 10, "sdf");
+
+                    GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
+                    GL1.addFrame(pos1.getMatrix(), 10, "sdf");
+                    GL1.addFrame(pos2.getMatrix(), 10, "sdf");
+                    GL1.addFrame(pos3.getMatrix(), 10, "sdf");
                 }
                     
             }
+
         }
 
-        void test_diff_angles(double c=0)
+        double[] test_diff_angles(RobotFrame[] frames, double c=0)
         {
 
-            var g_code = File.ReadAllText("test_traj_arc.txt");
-            var frames = RobotFrame.parse_g_code(g_code);
+           // var g_code = File.ReadAllText("test_traj_arc.txt");
+           // var frames = RobotFrame.parse_g_code(g_code);
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
             var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052).getMatrix();
             var matrs = new List<Matrix<double>>();
-            frames_rob = new List<RobotFrame>();
+            var frames_rob = new List<RobotFrame>();
             var tool_inv = tool.Clone();
             var model_inv = model.Clone();
             CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
             CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
-            GL1.buffersGl.setMatrobj("scan", 0, UtilMatr.to_matrix(model_inv));
-            GL1.buffersGl.setMatrobj("table", 0, UtilMatr.to_matrix(model_inv));
+            //GL1.buffersGl.setMatrobj("scan", 0, UtilMatr.to_matrix(model_inv));
+            //GL1.buffersGl.setMatrobj("table", 0, UtilMatr.to_matrix(model_inv));
 
-            frames = PathPlanner.unif_dist(frames.ToList(), 0.5).ToArray();
-            
+           // frames = PathPlanner.unif_dist(frames.ToList(), 0.2).ToArray();
 
+            //Console.WriteLine(frames.Length);
             for (int i = 0; i < frames.Length; i++)
             {
-                frames[i].C += c;
-                var mf_e = model_inv * frames[i].getMatrix();
-                var mf = model_inv * frames[i].getMatrix() * tool_inv;
+                var frame_cur = frames[i].Clone();
+                frame_cur.C += c;
+                //frames[i].C += c;
+                var mf_e = model_inv * frame_cur.getMatrix();
+                var mf = model_inv * frame_cur.getMatrix() * tool_inv;
                 matrs.Add(mf);
                 var fr = new RobotFrame(mf);
                 frames_rob.Add(fr);
-                frames_rob_end.Add(new RobotFrame(mf_e));
+              // frames_rob_end.Add(new RobotFrame(mf_e));
             }
  
             //---------analyse-----------------------------
@@ -2256,6 +2308,12 @@ namespace opengl3
             var max_v1 = 0d;
             var max_v2 = 0d;
             var max_v3 = 0d;
+
+            var sum_v1 = 0d;
+            var sum_v2 = 0d;
+            var sum_v3 = 0d;
+
+            var vs1 = new List<double>();
             for (int i = 0; i < frames_rob.Count; i++)
             {
                 var solv = RobotFrame.comp_inv_kinem_priv(frames_rob[i].frame, new int[] { 1, 1, 1 });
@@ -2268,27 +2326,33 @@ namespace opengl3
 
                 if(i!=0)
                 {
-                    var v1 = 1/(poses1[i] - poses1[i - 1]).get_pos().magnitude();
-                    var v2 = 1/(poses2[i] - poses2[i - 1]).get_pos().magnitude();
-                    var v3 = 1/(poses3[i] - poses3[i - 1]).get_pos().magnitude();
+                    var v1 = (poses1[i] - poses1[i - 1]).get_pos().magnitude();
+                    var v2 = (poses2[i] - poses2[i - 1]).get_pos().magnitude();
+                    var v3 = (poses3[i] - poses3[i - 1]).get_pos().magnitude();
+
+                    vs1.Add(v3);
+
+                    sum_v1 += v1;
+                    sum_v2 += v2;
+                    sum_v3 += v3;
 
                     max_v1 = Math.Max(v1, max_v1);
                     max_v2 = Math.Max(v2, max_v2);
                     max_v3 = Math.Max(v3, max_v3);
                 }
-                 if (i % 3 == 0)
+                /* if (i % 3 == 0)
                  {
                      GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
                      GL1.addFrame(pos1.getMatrix(), 10, "sdf");
                      GL1.addFrame(pos2.getMatrix(), 10, "sdf");
                      GL1.addFrame(pos3.getMatrix(), 10, "sdf");
-                 }
+                 }*/
                  
             }
 
-            Console.WriteLine(c + " " + max_v1 + " " + max_v2 + " " + max_v3 + " ");
+            Console.WriteLine(c + " " + sum_v1/frames.Length + " " + sum_v2 / frames.Length + " " + sum_v3 / frames.Length + "| " + max_v1 + " " + max_v2 + " " + max_v3 + " ");
 
-
+            return vs1.ToArray();
         }
         public void set_pos_traj_robot(int i)
         {
@@ -4288,8 +4352,8 @@ namespace opengl3
 
         private void but_start_anim_Click(object sender, EventArgs e)
         {
-            test_gen_traj(0.6);
-            GL1.start_animation(frames_rob.Count, this);
+            test_gen_traj(-0.9);
+            GL1.start_animation(frames_rob.Count-2, this);
         }
 
         private void but_photo_gl_Click(object sender, EventArgs e)
@@ -4749,6 +4813,19 @@ namespace opengl3
                     else Console.WriteLine("null");
 
                     break;
+
+                case FrameType.CircleGrid:
+                    //not work
+                    System.Drawing.PointF[] points3 = null;
+                    Console.WriteLine("CircleGrid");
+                    var det = new SimpleBlobDetector();
+                    points3 = CvInvoke.FindCirclesGrid(mat.ToImage<Gray, byte>(), new Size(6,7), CalibCgType.SymmetricGrid, det);
+                   
+                    imb_base[ind].Image = UtilOpenCV.drawPointsF(mat, points3, 255, 0, 0);
+                    if (points3 != null) Console.WriteLine(points3[0].X + " " + points3[0].Y + " " + points3[1].X + " " + points3[1].Y + " " + points3[2].X + " " + points3[2].Y);
+                    else Console.WriteLine("null");
+
+                    break;
                 case FrameType.Undist:
                     imb_base[ind].Image = stereocam.remapCam(mat, ind);
                     break;
@@ -4906,7 +4983,7 @@ namespace opengl3
             int i = 0;
             Console.WriteLine(vertex_buffer_data.Length);
             Console.WriteLine("-----------------------------------");
-            var z_mult_cam = 5;
+            var z_mult_cam = 0.5f;
             for (int x = 0; x < im2.Width - 1; x++)
             {
                 for (int y = 0; y < im2.Height - 1; y++)
@@ -5608,6 +5685,10 @@ namespace opengl3
             {
                 imProcType = FrameType.LasLin;
                 laserLine?.onLaserSensor();
+            }
+            else if (combo_improc.SelectedIndex == 4)
+            {
+                imProcType = FrameType.CircleGrid;
             }
             else
             {
