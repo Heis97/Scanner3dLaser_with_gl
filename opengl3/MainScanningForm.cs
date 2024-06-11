@@ -71,8 +71,9 @@ namespace opengl3
         CameraCV cameraCVcommon;
         TCPclient con1;
         private const float PI = 3.14159265358979f;
+        private Size cameraSize = new Size(1280, 720);
         // private Size cameraSize = new Size(1280, 960);
-        private Size cameraSize = new Size(1184, 656);
+        // private Size cameraSize = new Size(1184, 656);
         // private Size cameraSize = new Size(1184, 656);
         //private Size cameraSize = new Size(1024, 576);
         //private Size cameraSize = new Size(1920, 1080);
@@ -174,7 +175,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-            //load_camers_v2();
+            load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -895,9 +896,9 @@ namespace opengl3
         {
             markSize = 6.2273f;//6.2273f//10f//9.6f
             chess_size = new Size(10, 11);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_sing_home_2205_1", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam2_cal1106b", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("cam_sing_home_2205_1.txt");            
+            cam1.save_camera("cam2_cal1106b.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* markSize = 6.2273f;//6.2273f

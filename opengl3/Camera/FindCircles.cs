@@ -176,12 +176,13 @@ namespace opengl3
                 //Console.WriteLine(" corn______________________");
                 //Console.WriteLine(ps_ord.Length+" "+ corn.Length);
                 //prin.t(corn);
-                UtilOpenCV.drawTours(orig, PointF.toPoint(corn), 255, 0, 0, 2);
+                UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
                 //UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
-                UtilOpenCV.drawLines(orig, ps_ord, 0, 0, 255, 2);
+                UtilOpenCV.drawLines(im_tr, ps_ord, 0, 0, 255, 2);
+                CvInvoke.Imshow("circ", im_tr);
+                CvInvoke.WaitKey();
 
-                
-                return orig;//im_tr
+                return im_tr;
             }
             else
             {
