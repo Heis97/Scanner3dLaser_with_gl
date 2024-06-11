@@ -47,11 +47,19 @@ namespace opengl3
         public T load_obj<T>(string path)
         {
             string jsontext = "";
-            using (StreamReader file = File.OpenText(path))
+            try
             {
-                jsontext = file.ReadToEnd();
+                using (StreamReader file = File.OpenText(path))
+                {
+                    jsontext = file.ReadToEnd();
+                }
+                return JsonConvert.DeserializeObject<T>(jsontext);
             }
-            return JsonConvert.DeserializeObject<T>(jsontext);
+            catch
+            {
+                return default(T);
+            }
+            
         }
         public void save_confs(object scan_conf, object traj_conf, object patt_conf)
         {

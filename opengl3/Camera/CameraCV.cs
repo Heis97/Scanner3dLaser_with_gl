@@ -517,15 +517,17 @@ namespace opengl3
                 //CvInvoke.Imshow("pos", mat_p1);
                 //CvInvoke.WaitKey();
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
+
+
                /* prin.t("points2d");
                 prin.t(points2d);
 
                 prin.t("points3d");
                 prin.t(points3d);*/
                 compPos(points3d, points2d);
-               /* UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 2);
+                UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 2);
                 CvInvoke.Imshow("pos", matDraw);
-                CvInvoke.WaitKey();*/
+                CvInvoke.WaitKey();
                 mat = null;
                 matDraw = null;
 

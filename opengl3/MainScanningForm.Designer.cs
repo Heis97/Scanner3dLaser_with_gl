@@ -101,6 +101,7 @@ namespace opengl3
             this.but_traj_clear = new System.Windows.Forms.Button();
             this.debugBox = new System.Windows.Forms.RichTextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.but_allign_cyl = new System.Windows.Forms.Button();
             this.but_wrap = new System.Windows.Forms.Button();
             this.but_unwrap = new System.Windows.Forms.Button();
             this.prop_grid_model = new System.Windows.Forms.PropertyGrid();
@@ -378,7 +379,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_allign_cyl = new System.Windows.Forms.Button();
+            this.tB_tool_inf = new System.Windows.Forms.TextBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1046,6 +1047,7 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
+            this.tabOpenGl.Controls.Add(this.tB_tool_inf);
             this.tabOpenGl.Controls.Add(this.win_tab_diff);
             this.tabOpenGl.Controls.Add(this.glControl1);
             this.tabOpenGl.Location = new System.Drawing.Point(4, 22);
@@ -1208,6 +1210,16 @@ namespace opengl3
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Объекты сцены";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // but_allign_cyl
+            // 
+            this.but_allign_cyl.Location = new System.Drawing.Point(501, 351);
+            this.but_allign_cyl.Name = "but_allign_cyl";
+            this.but_allign_cyl.Size = new System.Drawing.Size(96, 34);
+            this.but_allign_cyl.TabIndex = 156;
+            this.but_allign_cyl.Text = "Выровнять цилиндр";
+            this.but_allign_cyl.UseVisualStyleBackColor = true;
+            this.but_allign_cyl.Click += new System.EventHandler(this.but_allign_cyl_Click);
             // 
             // but_wrap
             // 
@@ -4094,19 +4106,17 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // but_allign_cyl
+            // tB_tool_inf
             // 
-            this.but_allign_cyl.Location = new System.Drawing.Point(501, 351);
-            this.but_allign_cyl.Name = "but_allign_cyl";
-            this.but_allign_cyl.Size = new System.Drawing.Size(96, 34);
-            this.but_allign_cyl.TabIndex = 156;
-            this.but_allign_cyl.Text = "Выровнять цилиндр";
-            this.but_allign_cyl.UseVisualStyleBackColor = true;
-            this.but_allign_cyl.Click += new System.EventHandler(this.but_allign_cyl_Click);
+            this.tB_tool_inf.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tB_tool_inf.Location = new System.Drawing.Point(791, 357);
+            this.tB_tool_inf.Name = "tB_tool_inf";
+            this.tB_tool_inf.Size = new System.Drawing.Size(328, 20);
+            this.tB_tool_inf.TabIndex = 166;
             // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.ClientSize = new System.Drawing.Size(1370, 749);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);
@@ -4144,6 +4154,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.histogramBox1)).EndInit();
             this.tabOpenGl.ResumeLayout(false);
+            this.tabOpenGl.PerformLayout();
             this.win_tab_diff.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
@@ -4565,6 +4576,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_wrap;
         private System.Windows.Forms.Button but_unwrap;
         private System.Windows.Forms.Button but_allign_cyl;
+        private System.Windows.Forms.TextBox tB_tool_inf;
     }
 }
 

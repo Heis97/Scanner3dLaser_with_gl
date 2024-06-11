@@ -1624,6 +1624,8 @@ namespace PathPlanning
             var v = trajParams.Vel;
             //s_syr*f = s_nos*v
             var f = ((trajParams.dz * trajParams.line_width) * v) / (3.1415 * r_syr * r_syr);
+
+           
             for (int i = 0; i < traj.Count; i++)
             {
                 var fr = new RobotFrame(traj[i],type_robot);
@@ -1633,6 +1635,10 @@ namespace PathPlanning
                 fr.F = f;
                 traj_rob.Add(fr);
             }
+            traj_rob = unif_dist(traj_rob, 0.5);
+            traj_rob = line_aver_btw(traj_rob.ToArray(), 10).ToList();
+            traj_rob = unif_dist(traj_rob, trajParams.div_step );
+
             traj_rob = RobotFrame.smooth_angle(traj_rob, trajParams.w_smooth_ang);
             traj_rob = RobotFrame.decrease_angle(traj_rob, trajParams.k_decr_ang);
             for (int i = 0; i < traj_rob.Count; i++)

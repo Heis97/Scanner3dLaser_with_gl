@@ -172,8 +172,8 @@ namespace opengl3
                         CvInvoke.Invert(r1_inv, r1_inv, DecompMethod.Svd);
                         CvInvoke.Invert(c1_inv, c1_inv, DecompMethod.Svd);
 
-                        ms_rob.Add(r1);
-                        ms_cam.Add(c1);
+                        ms_rob.Add(r1_inv);
+                        ms_cam.Add(c1_inv);
                         var p1 = new Point3d_GL(r1[0, 3], r1[1, 3], r1[2, 3]);
                         var p2 = new Point3d_GL(c1[0, 3], c1[1, 3], c1[2, 3]);
                         p_rob.Add(p1);
@@ -195,6 +195,7 @@ namespace opengl3
                 prin.t("result:");
                 prin.t(mr);
                 prin.t(mt);
+            prin.t("______");
                 for (int i = 1; i < p_cam.Count; i++)
                 {
                     Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
