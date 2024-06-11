@@ -131,6 +131,7 @@
     <Compile Include="Connection\DeviceArduino.cs" />
     <Compile Include="Connection\DevicesArduino\DeviceMarlin.cs" />
     <Compile Include="Connection\DevicesArduino\LaserLine.cs" />
+    <Compile Include="Connection\RTSerialCom.cs" />
     <Compile Include="Extra\Magnetic.cs" />
     <Compile Include="Frame\FrameBuf.cs" />
     <Compile Include="Frame\Settings_loader.cs" />

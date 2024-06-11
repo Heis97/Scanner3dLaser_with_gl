@@ -21,6 +21,7 @@ namespace opengl3
         }
         protected bool connect(string port, int baudrate)
         {
+            serialPort = new SerialPort();
             try
             {
                 serialPort.PortName = port;
