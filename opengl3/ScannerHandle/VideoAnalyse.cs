@@ -296,6 +296,7 @@ namespace opengl3
         public static void photo_from_video(string filepath)
         {    
             var capture1 = new VideoCapture(filepath);
+            var filename = Path.Combine( Path.GetPathRoot(filepath),Path.GetFileNameWithoutExtension(filepath));
             var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
             var f1 = 0;
             while (f1 < all_frames1)
