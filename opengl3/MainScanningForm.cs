@@ -5872,7 +5872,10 @@ namespace opengl3
 
                 rob_traj = PathPlanner.join_traj(_traj);
                 var ps = PathPlanner.matr_to_traj(rob_traj);
-
+                if (tool == null)
+                {
+                    tool = new RobotFrame(0);
+                }
                 var tool_inv = tool.getMatrix().Clone();
                 CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
                for(int i=0; i<rob_traj.Count;i++)
