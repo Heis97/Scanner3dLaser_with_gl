@@ -197,8 +197,8 @@ namespace opengl3
                 StereoRectifyType.Default, -1, Size.Empty, ref roi1, ref roi2);
 
             mx1 = new Mat(); my1 = new Mat(); mx2 = new Mat(); my2 = new Mat();
-            CvInvoke.InitUndistortRectifyMap(cam1.cameramatrix, cam1.distortmatrix, r1, p1, cam1.frames[0].im.Size, DepthType.Cv32F, mx1, my1);
-            CvInvoke.InitUndistortRectifyMap(cam2.cameramatrix, cam2.distortmatrix, r2, p2, cam2.frames[0].im.Size, DepthType.Cv32F, mx2, my2);
+            CvInvoke.InitUndistortRectifyMap(cam1.cameramatrix, cam1.distortmatrix, r1, p1, cam1.frames[0].im.Size, DepthType.Cv32F,1, mx1, my1);
+            CvInvoke.InitUndistortRectifyMap(cam2.cameramatrix, cam2.distortmatrix, r2, p2, cam2.frames[0].im.Size, DepthType.Cv32F,1, mx2, my2);
             prin.t("p1: ");
             prin.t(p1);
             prin.t("_________");

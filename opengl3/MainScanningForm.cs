@@ -159,7 +159,7 @@ namespace opengl3
 
             // Console.WriteLine( Point3d_GL.affil_p_seg(new Point3d_GL(1, 1, 1), new Point3d_GL(4, 4, 4), new Point3d_GL(0.999, 0.999, 0.999)));
 
-             VideoAnalyse.photo_from_video("vid//1.mp4");
+             //VideoAnalyse.photo_from_video("vid//1.mp4");
             //comp_pores("rats\\2_1.png");
             //comp_pores("rats\\2_2.png");
             //comp_pores("rats\\2_3.png");
@@ -207,7 +207,9 @@ namespace opengl3
             //comp_pores_ext_folder("hydro_mod");
             //VideoAnalyse.noise_analyse("noise.avi");
             //roi_for_ims("delt_ims");
-            // var im1 = new Mat("roi\\im2_149.png");
+          //   var im1 = new Mat("1.png");
+            //CvInvoke.Imshow("asd", im1);
+            //CvInvoke.WaitKey();
             // get_x_line_gray(im1, im1.Height / 2);
 
             //test_handeye();
@@ -251,6 +253,8 @@ namespace opengl3
 
            // var ps_u = PathPlanner.unif_dist(ps.ToList(), 4.05);
          //   Console.WriteLine("sf");
+
+
         }
 
         void test_handeye()
@@ -4706,12 +4710,12 @@ namespace opengl3
             var capture = new VideoCapture(number);
            
             //capture.SetCaptureProperty(CapProp.
-            capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
-
+            capture.Set(CapProp.FrameWidth, cameraSize.Width);
+            //capture.ser
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
-            Console.WriteLine(capture.GetCaptureProperty(CapProp.FrameWidth) + " " + capture.GetCaptureProperty(CapProp.FrameHeight)+" "+ capture.GetCaptureProperty(CapProp.Fps));
+            Console.WriteLine(capture.Get(CapProp.FrameWidth) + " " + capture.Get(CapProp.FrameHeight)+" "+ capture.Get(CapProp.Fps));
 
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
             camera_ind.Add(capture.Ptr);
@@ -4771,7 +4775,7 @@ namespace opengl3
             var capture = new VideoCapture(number);
 
             //capture.SetCaptureProperty(CapProp.
-            capture.SetCaptureProperty(CapProp.FrameWidth, cameraSize.Width);
+            capture.Set(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
@@ -4779,9 +4783,9 @@ namespace opengl3
 
 
             
-            cameraSize.Width =(int) capture.GetCaptureProperty(CapProp.FrameWidth);
-            cameraSize.Height = (int)capture.GetCaptureProperty(CapProp.FrameHeight);
-            Console.WriteLine(cameraSize.Width.ToString() + " " + cameraSize.Height.ToString() + " " + capture.GetCaptureProperty(CapProp.Fps));
+            cameraSize.Width =(int) capture.Get(CapProp.FrameWidth);
+            cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
+            Console.WriteLine(cameraSize.Width.ToString() + " " + cameraSize.Height.ToString() + " " + capture.Get(CapProp.Fps));
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
             camera_ind_ptr[number] = capture.Ptr;
             capture.ImageGrabbed += capturingVideo_sam;
@@ -5424,7 +5428,7 @@ namespace opengl3
             cap_mats = new List<Mat>();
             var orig_path = Directory.GetFiles( filepath + "\\orig")[0];
             var capture = new VideoCapture(Directory.GetFiles(filepath)[0]);
-            var all_frames = capture.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames = capture.Get(CapProp.FrameCount);
             capture.ImageGrabbed += loadingVideo;
             capture.Start();
            
@@ -5446,11 +5450,11 @@ namespace opengl3
             Console.WriteLine(filepath + "   ");
             cap_mats = new List<Mat>();
             var capture = new VideoCapture(filepath);
-            var all_frames = capture.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames = capture.Get(CapProp.FrameCount);
             all_frames = 10;
             capture.Start();
 
-            Console.WriteLine("vframe: " + videoframe_count + "/" + capture.GetCaptureProperty(CapProp.FrameCount));
+            Console.WriteLine("vframe: " + videoframe_count + "/" + capture.Get(CapProp.FrameCount));
             capture.ImageGrabbed += loadingVideo_s;
             while (videoframe_count < all_frames)
             {
@@ -5494,7 +5498,7 @@ namespace opengl3
             }
             //cap_mats.Add(im.Clone());
             videoframe_count++;
-            Console.WriteLine("vframe: " + videoframe_count + "/" + cap.GetCaptureProperty(CapProp.FrameCount));
+            Console.WriteLine("vframe: " + videoframe_count + "/" + cap.Get(CapProp.FrameCount));
         }
         void loadingVideo(object sender, EventArgs e)
         {
@@ -5507,7 +5511,7 @@ namespace opengl3
 
             cap_mats.Add(im.Clone());
             videoframe_count++;
-            Console.WriteLine("vframe: " + videoframe_count + "/" + cap.GetCaptureProperty(CapProp.FrameCount));
+            Console.WriteLine("vframe: " + videoframe_count + "/" + cap.Get(CapProp.FrameCount));
         }
         void streaming(object sender, EventArgs e)
         {

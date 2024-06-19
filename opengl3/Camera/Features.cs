@@ -89,7 +89,7 @@ namespace opengl3
         }
         public MKeyPoint[] drawDescriptors(ref Mat mat)
         {
-            var detector_ORB = new Emgu.CV.Features2D.ORBDetector(50);
+            var detector_ORB = new Emgu.CV.Features2D.ORB(50);
             var detector_SURF = new Emgu.CV.Features2D.FastFeatureDetector();
             var kp = detector_ORB.Detect(mat);
 

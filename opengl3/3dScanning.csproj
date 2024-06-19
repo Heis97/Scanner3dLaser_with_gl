@@ -14,6 +14,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -54,7 +54,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
@@ -102,6 +102,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '3dscanning_64|x86'">
     <OutputPath>bin\x86\3dscanning_64\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenGL.Net.Math, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
@@ -357,16 +361,16 @@
       <Version>3.8.2-alpha</Version>
     </PackageReference>
     <PackageReference Include="Emgu.CV">
-      <Version>4.5.1.4349</Version>
+      <Version>4.9.0.5494</Version>
     </PackageReference>
     <PackageReference Include="Emgu.CV.Bitmap">
-      <Version>4.5.1.4349</Version>
+      <Version>4.9.0.5494</Version>
     </PackageReference>
     <PackageReference Include="Emgu.CV.runtime.windows">
-      <Version>4.5.1.4349</Version>
+      <Version>4.9.0.5494</Version>
     </PackageReference>
     <PackageReference Include="Emgu.CV.UI">
-      <Version>4.5.1.4349</Version>
+      <Version>4.9.0.5494</Version>
     </PackageReference>
     <PackageReference Include="glfw-net">
       <Version>3.3.1</Version>
@@ -393,7 +397,7 @@
       <Version>0.8.4</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common">
-      <Version>6.0.0</Version>
+      <Version>8.0.6</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Primitives">
       <Version>4.3.0</Version>

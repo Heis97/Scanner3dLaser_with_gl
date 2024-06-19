@@ -1283,7 +1283,7 @@ namespace opengl3
             var desk1 = new Mat();
             var kps2 = new VectorOfKeyPoint();
             var desk2 = new Mat();
-            var detector_ORB = new Emgu.CV.Features2D.ORBDetector();
+            var detector_ORB = new Emgu.CV.Features2D.ORB();
 
             //CvInvoke.StereoRectify();
             // CvInvoke.ComputeCorrespondEpilines();
@@ -1495,7 +1495,7 @@ namespace opengl3
             matrixCamera[0, 2] = size.Width / 2;
             matrixCamera[1, 2] = size.Height / 2;
             var matr = new Mat();
-            CvInvoke.InitUndistortRectifyMap(matrixCamera, matrixDistCoef, null, matr, mat.Size, DepthType.Cv32F, mapx, mapy);
+            CvInvoke.InitUndistortRectifyMap(matrixCamera, matrixDistCoef, null, matr, mat.Size, DepthType.Cv32F,1, mapx, mapy);
 
             var und_pic = new Mat();
             CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
@@ -1521,7 +1521,7 @@ namespace opengl3
             var matrixData_T = matrixData.Transpose();
             var matrixCamera = new Matrix<double>(matrixData);
             // print(matrixCamera);
-            CvInvoke.InitUndistortRectifyMap(matrixCamera, reversDistor, null, matr, size, DepthType.Cv32F, mapx, mapy);
+            CvInvoke.InitUndistortRectifyMap(matrixCamera, reversDistor, null, matr, size, DepthType.Cv32F,1, mapx, mapy);
 
             var und_pic = new Mat();
             CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
@@ -1545,7 +1545,7 @@ namespace opengl3
             {
                 reversDistor[i, 0] = -matrixDistCoef[i, 0];
             }
-            CvInvoke.InitUndistortRectifyMap(matrixCamera, reversDistor, null, matr, size, DepthType.Cv32F, mapx, mapy);
+            CvInvoke.InitUndistortRectifyMap(matrixCamera, reversDistor, null, matr, size, DepthType.Cv32F,1, mapx, mapy);
             var und_pic = new Mat();
             CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
             return und_pic;

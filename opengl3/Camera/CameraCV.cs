@@ -291,7 +291,7 @@ namespace opengl3
             cameramatrix_opt_inv = invMatrix(cameramatrix_opt);
             //cameramatrix =
             im_centr = new PointF((float)cameramatrix_opt[0, 2], (float)cameramatrix_opt[1, 2]);
-            CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F, mapx, mapy);//_opt
+            CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F,1, mapx, mapy);//_opt
 
             pos = new float[3] { 0, 0, 0 };
         }
@@ -891,7 +891,7 @@ namespace opengl3
             matrP[1, 1] = 1;
             matrP[2, 2] = 1;
             var matrR = new Matrix<double>(3, 3);
-            Fisheye.EstimateNewCameraMatrixForUndistorRectify(_cameramatrix, _distortmatrix, this.image_size, matrR, matrP);
+            Fisheye.EstimateNewCameraMatrixForUndistortRectify(_cameramatrix, _distortmatrix, this.image_size, matrR, matrP);
             var mapx = new Mat();
             var mapy = new Mat();
             /* var matr = CvInvoke.GetOptimalNewCameraMatrix(_cameramatrix, _distortmatrix, frames[0].im.Size, 1, frames[0].im.Size, ref newRoI);
@@ -907,7 +907,7 @@ namespace opengl3
              cameramatrix_inv = invMatrix(cameramatrix);
              distortmatrix = _distortmatrix;*/
 
-            Fisheye.InitUndistorRectifyMap(_cameramatrix, _distortmatrix, matrR, matrP, frames[0].im.Size, DepthType.Cv32F, mapx, mapy);
+            Fisheye.InitUndistortRectifyMap(_cameramatrix, _distortmatrix, matrR, matrP, frames[0].im.Size, DepthType.Cv32F,1, mapx, mapy);
             //prin.t(mapx);
             prin.t(" matrR:");
             prin.t(matrR);
@@ -985,7 +985,7 @@ namespace opengl3
             {
                 Mat img = CvInvoke.Imread(file, ImreadModes.Grayscale);
                 Mat output = img.Clone();
-                Fisheye.UndistorImage(img, output, K, D);
+                Fisheye.UndistortImage(img, output, K, D);
                 CvInvoke.Imshow("output", output);
             }
         }
@@ -1087,7 +1087,7 @@ namespace opengl3
             prin.t("_____________TVECS ^^^^^^");
             var matrP = new Matrix<double>(3, 3);
             var matrR = new Matrix<double>(3, 3);
-            Fisheye.EstimateNewCameraMatrixForUndistorRectify(cameramatrix, distortmatrix, frames[0].im.Size, matrR, matrP);
+            Fisheye.EstimateNewCameraMatrixForUndistortRectify(cameramatrix, distortmatrix, frames[0].im.Size, matrR, matrP);
             var mapx = new Mat();
             var mapy = new Mat();
             Console.WriteLine("cameraDistortionCoeffs:");
@@ -1108,7 +1108,7 @@ namespace opengl3
             // Console.WriteLine("MAPX_________________");
             //print(mapx);
             // cameraDistortionCoeffs[0, 0] = 0.5;
-            Fisheye.InitUndistorRectifyMap(cameramatrix, distortmatrix, matrR, matrP, frames[0].im.Size, DepthType.Cv32F, mapx, mapy);
+            Fisheye.InitUndistortRectifyMap(cameramatrix, distortmatrix, matrR, matrP, frames[0].im.Size, DepthType.Cv32F,1, mapx, mapy);
 
             var und_pic = new Mat();
             CvInvoke.Remap(frames[0].im, und_pic, mapx, mapy, Inter.Linear);

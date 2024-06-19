@@ -46,8 +46,8 @@ namespace opengl3
 
             var capture1 = new VideoCapture(video_path1);
             var capture2 = new VideoCapture(video_path2);
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
-            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames1 = capture1.Get(CapProp.FrameCount);
+            var all_frames2 = capture2.Get(CapProp.FrameCount);
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
@@ -180,8 +180,8 @@ namespace opengl3
             var capture1 = new VideoCapture(video_path1);
             var capture2 = new VideoCapture(video_path2);
             var captures = new VideoCapture[] { capture1, capture2 };
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
-            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames1 = capture1.Get(CapProp.FrameCount);
+            var all_frames2 = capture2.Get(CapProp.FrameCount);
             Console.WriteLine(all_frames1 + " " + all_frames2);
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
@@ -297,7 +297,7 @@ namespace opengl3
         {    
             var capture1 = new VideoCapture(filepath);
             var filename = Path.Combine( Path.GetPathRoot(filepath),Path.GetFileNameWithoutExtension(filepath));
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames1 = capture1.Get  (CapProp.FrameCount);
             var f1 = 0;
             while (f1 < all_frames1)
             {
@@ -328,7 +328,7 @@ namespace opengl3
             string enc_path = ve_paths[1];
 
             var capture1 = new VideoCapture(video_path);
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames1 = capture1.Get  (CapProp.FrameCount);
             // orig1 = scanner.cameraCV.undist(orig1);
             var fr_st_vid = new Frame(orig1, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
@@ -515,7 +515,7 @@ namespace opengl3
         {
 
             var capture = new VideoCapture(path);
-            var all_frames = capture.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames = capture.Get(CapProp.FrameCount);
             var frames = new List<Mat>();
             var videoframe_count = 0;
 
@@ -944,7 +944,7 @@ namespace opengl3
         {
             var capture = new VideoCapture(video_path);
             var mat = new Mat();
-            capture.SetCaptureProperty(CapProp.PosFrames, frame);
+            capture.Set(CapProp.PosFrames, frame);
             capture.Retrieve(mat);
             capture.Dispose();
             return mat;
@@ -979,8 +979,8 @@ namespace opengl3
 
             var capture1 = new VideoCapture(video_path1);
             var capture2 = new VideoCapture(video_path2);
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
-            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames1 = capture1.Get(CapProp.FrameCount);
+            var all_frames2 = capture2.Get(CapProp.FrameCount);
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
@@ -1095,8 +1095,8 @@ namespace opengl3
 
             var capture1 = new VideoCapture(video_path1);
             var capture2 = new VideoCapture(video_path2);
-            var all_frames1 = capture1.GetCaptureProperty(CapProp.FrameCount);
-            var all_frames2 = capture2.GetCaptureProperty(CapProp.FrameCount);
+            var all_frames1 = capture1.Get(CapProp.FrameCount);
+            var all_frames2 = capture2.Get(CapProp.FrameCount);
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
