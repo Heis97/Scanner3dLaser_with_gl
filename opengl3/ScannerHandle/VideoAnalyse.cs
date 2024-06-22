@@ -403,7 +403,7 @@ namespace opengl3
 
                         //var im1_or = im1.Clone();
                         im1 -= im1_buff_list[buff_len - buff_diff];
-                       // im1 = scanner.cameraCV.undist(im1);
+                        // im1 = scanner.cameraCV.undist(im1);
                         /*//if (videoframe_count > 20)
                         {
                             var im1_or_un = scanner.cameraCV.undist(im1_or);
@@ -419,11 +419,13 @@ namespace opengl3
                         }*/
                         //var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                         //frames_show.Add(frame_d);
-                        
-                        Console.Write(videoframe_count.ToString() + " " +
-                            inc_pos[videoframe_count].ToString() + " " +
-                            enc_pos_time[(videoframe_count - 1) * 2, 4] + " ");
-                           // enc_pos_time[(videoframe_count-1)*2, 0]);
+
+                        /*  Console.Write(videoframe_count.ToString() + " " +
+                              inc_pos[videoframe_count].ToString() + " " +
+                              enc_pos_time[(videoframe_count - 1) * 2, 4] + " ");*/
+                        // enc_pos_time[(videoframe_count-1)*2, 0]);
+
+                        Console.Write(videoframe_count.ToString());
                         if (calib)
                         {
                             //var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
@@ -640,7 +642,7 @@ namespace opengl3
         static public double[] enc_pos(double[,] enc)
         {
             var enc_pos = new double[enc.GetLength(0)];
-            for (int i = 1; i < enc.GetLength(0); i += 2)
+            for (int i = 0; i < enc.GetLength(0); i += 2)
             {
                 var ind = (int)enc[i, 2];
                 var var = enc[i, 0];
@@ -908,13 +910,19 @@ namespace opengl3
             var data_c = (double[,])data.Clone();
             var regr_pos = new List<double[]>();
             var regr_time = new List<double[]>();
-            for (int i=l_ind/2-1;i<l_ind;i+=2)
+            for (int i= f_ind+30 ;i<l_ind;i+=2)
             {
                 if (data[i, 0] != 0)
                 {
-                    regr_pos.Add(new double[] { data[i, 2], data[i, 0] });
+                    /*regr_pos.Add(new double[] { data[i, 2], data[i, 0] });
                     regr_time.Add(new double[] { data[i, 2], data[i, 4] });
-                    Console.WriteLine(data[i, 2] + " " + data[i, 0]);
+                    Console.WriteLine(data[i, 2] + " " + data[i, 1] + " " + data[i, 0]);*/
+
+                    regr_pos.Add(new double[] { data[i, 2], data[i, 0] });
+                    regr_time.Add(new double[] { data[i, 1], data[i, 2] });
+                    //Console.WriteLine(data[i, 2] + " " + data[i, 1] + " " + data[i, 0]);
+
+                    Console.WriteLine(data[i, 2] + " " + data[i, 1] + " " + data[i, 0] + " " + data[i, 4]);
                 }
                 
             }
@@ -930,12 +938,17 @@ namespace opengl3
                 //var pos_re = ((time - time_f) / (time_l - time_f)) * (pos_l - pos_f) + pos_f;
 
                 //data_c[i, 0] = Regression.calcPolynSolv(pos_koef, data[i, 2]);
-                data_c[i, 0] = data_c[i, 2];
+                //data_c[i, 0] = data_c[i, 2];
             }
-            for (int i = f_ind - 1; i < l_ind; i += 2)
+            Console.WriteLine("time_delt");
+            for (int i = f_ind; i < l_ind; i += 2)//f_ind-1
             {
-                var time_del = Regression.calcPolynSolv(time_koef, data[i, 2]) - data[i, 4];
-                Console.WriteLine(data_c[i, 2] + " " + data_c[i, 0]+" "+time_del);
+                if (data[i, 0] != 0)
+                {
+                    var time_del = Regression.calcPolynSolv(time_koef, data[i, 1]) - data[i, 2];
+                    Console.WriteLine(data_c[i, 0] + " " + data_c[i, 1] + " " + time_del);
+                }
+                    
             }
 
             return data_c;

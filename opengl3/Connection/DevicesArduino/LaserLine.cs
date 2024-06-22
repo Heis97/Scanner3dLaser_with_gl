@@ -138,7 +138,7 @@ namespace opengl3
                 Console.WriteLine("k"+k+":"+res[k]);
                 for (int i = 0; i < res[k].Length; i++)
                 {
-                    if (res[k].Contains("lp"))
+                    if (res[k].Contains("lp") && res[k].Contains("end"))
                     {
 
                         var res_sp = res[k].Split(' ');

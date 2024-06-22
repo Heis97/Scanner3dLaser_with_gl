@@ -92,7 +92,7 @@ namespace opengl3
             var p_i_1 = Detection.p_in_ps_by_y(points_im, y1);
             var p_i_2 = Detection.p_in_ps_by_y(points_im, y2);
             var p_i_3 = Detection.p_in_ps_by_y(points_im, y3);
-            Console.Write(" "+ LinPos + " "+ points_im[p_i_1].X);
+            Console.Write(" "+ LinPos + " "+ points_im[p_i_2].X);
            /*CvInvoke.DrawMarker(mat, points_im[p_i_1].toPoint(), new MCvScalar(255, 0, 0), Emgu.CV.CvEnum.MarkerTypes.Cross, 10, 2);
             CvInvoke.Line(mat, new Point(0, y1), new Point(mat.Width, y1), new MCvScalar(0, 0, 255), 2);
             CvInvoke.Line(mat, new Point(0, y2), new Point(mat.Width,y2), new MCvScalar(0, 0, 255), 2);
@@ -113,7 +113,7 @@ namespace opengl3
             //prin.t(cameraCV.matrixSC);
             // var flat = LaserSurface.zeroFlatInCam(cameraCV.matrixSC, z);
             var las_fl_c = linearAxis.getLaserSurf(LinPos);
-            Console.Write(" "+las_fl_c+" ");
+           // Console.Write(" "+las_fl_c+" ");
             var points_cam = fromLines(points_im, cameraCV, las_fl_c);
             //graphicGL?.addFlat3d_XY(flat);
 
