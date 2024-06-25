@@ -89,6 +89,7 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
+            this.tB_tool_inf = new System.Windows.Forms.TextBox();
             this.win_tab_diff = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.but_hydro_model_grav = new System.Windows.Forms.Button();
@@ -379,7 +380,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.tB_tool_inf = new System.Windows.Forms.TextBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1057,6 +1057,14 @@ namespace opengl3
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
+            // 
+            // tB_tool_inf
+            // 
+            this.tB_tool_inf.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tB_tool_inf.Location = new System.Drawing.Point(876, 6);
+            this.tB_tool_inf.Name = "tB_tool_inf";
+            this.tB_tool_inf.Size = new System.Drawing.Size(328, 20);
+            this.tB_tool_inf.TabIndex = 166;
             // 
             // win_tab_diff
             // 
@@ -4106,17 +4114,9 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // tB_tool_inf
-            // 
-            this.tB_tool_inf.Cursor = System.Windows.Forms.Cursors.Default;
-            this.tB_tool_inf.Location = new System.Drawing.Point(791, 357);
-            this.tB_tool_inf.Name = "tB_tool_inf";
-            this.tB_tool_inf.Size = new System.Drawing.Size(328, 20);
-            this.tB_tool_inf.TabIndex = 166;
-            // 
             // MainScanningForm
             // 
-            this.ClientSize = new System.Drawing.Size(1370, 749);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.but_resize);
             this.Controls.Add(this.comboImages);
             this.Controls.Add(this.windowsTabs);

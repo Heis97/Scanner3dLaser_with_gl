@@ -379,7 +379,9 @@ namespace opengl3
                 //var Bbm = new RobotFrame("-218.37 -239.51 -33.85 -0.014 -0.0058 -1.5658").getMatrix(robotType);
 
                 //var Bbm = new RobotFrame("-227.8394 -380.7143 -33.724 -0.00703 -0.00259 -1.569604").getMatrix(robotType);
-                var Bbm = new RobotFrame("-226.7156 -339.505 -33.46688 -0.00779 -0.00117 -1.552798").getMatrix(robotType);
+                //var Bbm = new RobotFrame("-226.7156 -339.505 -33.46688 -0.00779 -0.00117 -1.552798").getMatrix(robotType);
+
+                var Bbm = new RobotFrame("-419.22153 -18.75754 43.3817 0.0120435 -0.0045299 1.64342").getMatrix(robotType);
 
                 /* prin.t("--------------------------------");
                  prin.t("Bsm");

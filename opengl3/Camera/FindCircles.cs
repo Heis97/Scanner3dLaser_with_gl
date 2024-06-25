@@ -179,8 +179,8 @@ namespace opengl3
                 UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
                 //UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
                 UtilOpenCV.drawLines(im_tr, ps_ord, 0, 0, 255, 2);
-                CvInvoke.Imshow("circ", im_tr);
-                CvInvoke.WaitKey();
+               // CvInvoke.Imshow("circ", im_tr);
+              //  CvInvoke.WaitKey();
 
                 return im_tr;
             }

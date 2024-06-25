@@ -175,7 +175,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-           // load_camers_v2();
+            //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -898,11 +898,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 6.2273f;//6.2273f//10f//9.6f
-            chess_size = new Size(10, 11);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam2_cal1106b", FrameType.Pattern, PatternType.Mesh);
+            markSize = 9.6f;//6.2273f//10f//9.6f
+            chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
+            var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam2_cal2506_1", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("cam2_cal1106b.txt");            
+            cam1.save_camera("cam2_cal2506_1.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* markSize = 6.2273f;//6.2273f
@@ -4780,9 +4780,9 @@ namespace opengl3
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
+            capture.Set(CapProp.AutoExposure, 0);
+            capture.Set(CapProp.Exposure, -7);
 
-
-            
             cameraSize.Width =(int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
             Console.WriteLine(cameraSize.Width.ToString() + " " + cameraSize.Height.ToString() + " " + capture.Get(CapProp.Fps));

@@ -526,8 +526,8 @@ namespace opengl3
                 prin.t(points3d);*/
                 compPos(points3d, points2d);
                 UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 2);
-                CvInvoke.Imshow("pos", matDraw);
-                CvInvoke.WaitKey();
+               // CvInvoke.Imshow("pos", matDraw);
+                //CvInvoke.WaitKey();
                 mat = null;
                 matDraw = null;
 
@@ -692,8 +692,8 @@ namespace opengl3
             {
                 CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
                 CvInvoke.DrawChessboardCorners(mat, size_patt, corn, ret);
-                CvInvoke.Imshow("asda", mat);
-                CvInvoke.WaitKey();
+              //  CvInvoke.Imshow("asda", mat);
+                //CvInvoke.WaitKey();
                 var corn2 = corn.ToArray();
                 return corn2;
                 /*if(obp_inp!=null)
