@@ -804,7 +804,7 @@ namespace opengl3
             pairs[0] = new double[] { cam_min, cam_max, frame_min, frame_max };
             return pairs;
         }
-        static double[,] analys_sync(string enc_path)
+        public static double[,] analys_sync(string enc_path)
         {
             string enc;
             using (StreamReader sr = new StreamReader(enc_path))
@@ -895,7 +895,7 @@ namespace opengl3
             }
             return data_c;
         }
-        static double[,] recomp_pos_sing_linear(double[,] data)
+        public static double[,] recomp_pos_sing_linear(double[,] data)
         {
             var len = data.GetLength(0) ;
 

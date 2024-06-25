@@ -1288,8 +1288,8 @@ namespace opengl3
             var delx = (float)(p2_cur_scan.x - p1_cur_scan.x) / (float)counts;
             if (laserLine == null)
             {
-                initLaserFast();
-                Thread.Sleep(200);
+               // initLaserFast();
+               // Thread.Sleep(200);
             }
             laserLine?.laserOff();
             Thread.Sleep(300);
@@ -4408,15 +4408,19 @@ namespace opengl3
             var scan_path = textB_scan_path.Text;
             var filepath = scan_path.Split('\\').Reverse().ToArray()[0];
             var ve_paths1 = get_video_path(1, filepath);
-            string video_path1 = ve_paths1[0];
+           // string video_path1 = ve_paths1[0];
 
             // string enc_path1 = ve_paths1[1];
 
-            var ve_paths2 = get_video_path(2, filepath);
-            string video_path2 = ve_paths2[0];
+            //var ve_paths2 = get_video_path(2, filepath);
+           // string video_path2 = ve_paths2[0];
             // string enc_path2 = ve_paths2[1];
 
             string enc_path = ve_paths1[1];
+
+            var enc_pos_time = VideoAnalyse.analys_sync(enc_path);
+            enc_pos_time = VideoAnalyse.recomp_pos_sing_linear(enc_pos_time);
+            var inc_pos = VideoAnalyse.enc_pos(enc_pos_time);
             var pairs = VideoAnalyse.frames_sync_from_file(enc_path, lab_scan_pres);
         }
        
@@ -4781,7 +4785,7 @@ namespace opengl3
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
             capture.Set(CapProp.AutoExposure, 0);
-            capture.Set(CapProp.Exposure, -7);
+            capture.Set(CapProp.Exposure, -3);
 
             cameraSize.Width =(int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
@@ -6856,8 +6860,9 @@ namespace opengl3
         {
             videoStart(2);
             videoStart(1); Thread.Sleep(5000);
-            find_ports(); Thread.Sleep(100);
-            laserLine = new LaserLine(portArd); Thread.Sleep(1000);
+            //find_ports(); Thread.Sleep(100);
+            //laserLine = new LaserLine(portArd); 
+            Thread.Sleep(1000);
             laserLine?.setShvpVel(200); Thread.Sleep(100);
             laserLine?.laserOn(); Thread.Sleep(100);
             laserLine?.set_home_laser(); Thread.Sleep(1000);
