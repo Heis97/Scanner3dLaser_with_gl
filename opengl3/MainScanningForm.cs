@@ -19,6 +19,7 @@ using PathPlanning;
 using Newtonsoft.Json;
 using Emgu.CV.Util;
 using Emgu.CV.Features2D;
+using System.Linq.Expressions;
 
 namespace opengl3
 {
@@ -4784,8 +4785,8 @@ namespace opengl3
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
-            capture.Set(CapProp.AutoExposure, 0);
-            capture.Set(CapProp.Exposure, -3);
+            capture.Set(CapProp.AutoExposure, 1);
+            //capture.Set(CapProp.Exposure, -3);
 
             cameraSize.Width =(int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
@@ -4925,16 +4926,24 @@ namespace opengl3
                     string path = "cam1" + "\\" + box_scanFolder.Text + "\\enc.txt";
                     box_scanFolder.BeginInvoke((MethodInvoker)(() => box_scanFolder.Text = scan_fold_name));
                     textB_scan_path.BeginInvoke((MethodInvoker)(() => textB_scan_path.Text = scan_fold_path));
-                    using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
+                    try
                     {
-                        if (sb_enc != null)
+                        using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
                         {
-                            sw.Write(sb_enc.ToString());
-                            sb_enc = null;
+                            if (sb_enc != null)
+                            {
+                                sw.Write(sb_enc.ToString());
+                                sb_enc = null;
+                            }
+
                         }
-
                     }
+                    catch
 
+                    {
+                        Console.WriteLine("don t save enc");
+                    }
+                                
                 }
 
 
