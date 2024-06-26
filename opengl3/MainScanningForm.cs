@@ -3095,8 +3095,8 @@ namespace opengl3
 
                     //VideoAnalyse.deviation_light_gauss(fr_im_cl);
 
-                    imBox_base_1.Image = UtilOpenCV.drawLines(fr_im_cl, ps1_dr, 0, 255, 0, 3,0);
-                    imBox_base_2.Image = UtilOpenCV.drawLines(fr_im_sec_cl, ps2_dr, 0, 255, 0, 3,0);
+                    imBox_base_1.Image = UtilOpenCV.drawLines(fr_im_cl, ps1_dr, 0, 255, 0, 1,0);
+                    imBox_base_2.Image = UtilOpenCV.drawLines(fr_im_sec_cl, ps2_dr, 0, 255, 0, 1,0);
                 }
                     
 
@@ -4419,9 +4419,9 @@ namespace opengl3
 
             string enc_path = ve_paths1[1];
 
-            var enc_pos_time = VideoAnalyse.analys_sync(enc_path);
-            enc_pos_time = VideoAnalyse.recomp_pos_sing_linear(enc_pos_time);
-            var inc_pos = VideoAnalyse.enc_pos(enc_pos_time);
+            //var enc_pos_time = VideoAnalyse.analys_sync(enc_path);
+           // enc_pos_time = VideoAnalyse.recomp_pos_sing_linear(enc_pos_time);
+           // var inc_pos = VideoAnalyse.enc_pos(enc_pos_time);
             var pairs = VideoAnalyse.frames_sync_from_file(enc_path, lab_scan_pres);
         }
        
@@ -4900,16 +4900,16 @@ namespace opengl3
 
             if (videoframe_counts[ind] > 0 && videoframe_counts[ind ] < videoframe_counts_stop[ind])
             {
-                 sb_enc?.Append(laserLine?.get_las_pos_time() + " " + videoframe_counts[ind] + " " + ind + " ");
+                sb_enc?.Append(LaserLine.get_las_pos_time(laserLine) + " " + videoframe_counts[ind] + " " + ind + " ");
                 //if (sb_enc == null) Console.WriteLine("NULL!");
-               // sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
+                //sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind] + " " + ind + " ");
                 sb_enc?.Append("\n");
                 //video_writer[ind - 1]?.Write(mat);
                 video_mats[ind]?.Add(mat.Clone());
                 //var p = Detection.detectLineSensor(mat)[0];
                 //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
-                sb_enc?.Append(laserLine?.get_las_pos_time() + " " + videoframe_counts[ind] + " " + ind + " ");
+                sb_enc?.Append(LaserLine.get_las_pos_time(laserLine) + " " + videoframe_counts[ind] + " " + ind + " ");
                 //sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
                 sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind ] + " " + ind + " ");
                 sb_enc?.Append("\n");

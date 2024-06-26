@@ -166,6 +166,19 @@ namespace opengl3
            // Thread.Sleep(10);
             return get_las_pos_res_time();
         }
+
+        static public string get_las_pos_time(LaserLine laserLine)
+        {
+            if(laserLine == null)
+            {
+                return "0 0";
+            }
+            else
+            {
+                laserLine.get_las_pos_send();
+                return laserLine.get_las_pos_res_time();
+            }
+        }
         static int comp_vel_div(double vel)
         {
             return Math.Abs((int)(5000 / vel));

@@ -695,7 +695,7 @@ namespace opengl3
             var end_data = new List<int[]>();
             for (int i = data.GetLength(0) - analyse_len; i < data.GetLength(0) - 1; i++)
             {
-                end_data.Add(new int[] {(int) data[i, 1],(int) data[i, 2] });
+                end_data.Add(new int[] {(int) data[i, 2],(int) data[i, 3] });
             }
             var ed_s = (from d in end_data
                         orderby d[0] descending
@@ -725,9 +725,9 @@ namespace opengl3
             var data_s = new int[3, fr_max + 1][];
             for (int i = 0; i < data.GetLength(0); i++)
             {
-                var fr_n =(int) data[i, 1];
-                var cam_n = (int)data[i, 2];
-                var time = (int)data[i, 3];
+                var fr_n =(int) data[i, 2];
+                var cam_n = (int)data[i, 3];
+                var time = (int)data[i, 4];
                 if (data_s[cam_n, fr_n] == null)
                 {
                     data_s[cam_n, fr_n] = new int[0];
@@ -761,7 +761,7 @@ namespace opengl3
             var prs = compare_frames(data_s, fr_min, fr_max, cam_min, cam_max);
             return prs;
         }
-
+       
         static double find_aver_dev(double[] vals)
         {
             double len = vals.Length;
