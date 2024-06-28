@@ -160,7 +160,7 @@ namespace opengl3
 
             // Console.WriteLine( Point3d_GL.affil_p_seg(new Point3d_GL(1, 1, 1), new Point3d_GL(4, 4, 4), new Point3d_GL(0.999, 0.999, 0.999)));
 
-             //VideoAnalyse.photo_from_video("vid//1.mp4");
+            //VideoAnalyse.photo_from_video("vid//1.mp4");
             //comp_pores("rats\\2_1.png");
             //comp_pores("rats\\2_2.png");
             //comp_pores("rats\\2_3.png");
@@ -208,7 +208,7 @@ namespace opengl3
             //comp_pores_ext_folder("hydro_mod");
             //VideoAnalyse.noise_analyse("noise.avi");
             //roi_for_ims("delt_ims");
-          //   var im1 = new Mat("1.png");
+            //   var im1 = new Mat("1.png");
             //CvInvoke.Imshow("asd", im1);
             //CvInvoke.WaitKey();
             // get_x_line_gray(im1, im1.Height / 2);
@@ -250,12 +250,18 @@ namespace opengl3
             //  Console.WriteLine(Math.Sin(90));
             // StereoCamera.calcSizesScanner(50,30, 100);
 
-          //  var ps = new Point3d_GL[] { new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(10, 10, 0), new Point3d_GL(0, 10, 0) };
+            //  var ps = new Point3d_GL[] { new Point3d_GL(0, 0, 0), new Point3d_GL(10, 0, 0), new Point3d_GL(10, 10, 0), new Point3d_GL(0, 10, 0) };
 
-           // var ps_u = PathPlanner.unif_dist(ps.ToList(), 4.05);
-         //   Console.WriteLine("sf");
+            // var ps_u = PathPlanner.unif_dist(ps.ToList(), 4.05);
+            //   Console.WriteLine("sf");
 
+            var im_patt = new Mat("2v2.png");
+            var ps = new System.Drawing.PointF[3];
+            //var find = FindCircles.findCircles(im_patt,ref ps, new Size(6, 7));
 
+            var find = GeometryAnalyse.findCirclesIter(im_patt.Clone(), ref ps, new Size(6, 7));
+            CvInvoke.Imshow("find",find );
+            CvInvoke.WaitKey();
         }
 
         void test_handeye()

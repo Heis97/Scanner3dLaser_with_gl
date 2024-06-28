@@ -82,7 +82,7 @@ namespace opengl3
             var orig = new Mat();
 
 
-            /*mat.CopyTo(rec);
+           /* mat.CopyTo(rec);
             mat.CopyTo(orig);
             var im = rec.ToImage<Gray, byte>();
             var im_blur = im.SmoothGaussian(7);
@@ -98,7 +98,7 @@ namespace opengl3
             //CvInvoke.WaitKey();
             CvInvoke.Threshold(im_tr, im_tr, 95, 255, ThresholdType.Binary);
            // CvInvoke.Imshow("im_tr", im_tr);
-            //CvInvoke.WaitKey();
+           // CvInvoke.WaitKey();
 
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
@@ -107,9 +107,9 @@ namespace opengl3
             contours = size_filter(contours,20);
             orig = mat.Clone();
             CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
-          // CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
+            //CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
             Console.WriteLine("find_circ");
-           // CvInvoke.Imshow("orig_c", orig);
+            //CvInvoke.Imshow("orig_c", orig);
             //CvInvoke.WaitKey();
             contours = only_same_centres(contours);
             var conts = sameContours(contours);
@@ -127,7 +127,7 @@ namespace opengl3
             conts = filter_same_centres(conts);
             var cents = findCentres(conts);
             CvInvoke.CvtColor(im_tr, im_tr, ColorConversion.Gray2Bgr);
-           // CvInvoke.WaitKey();
+            //CvInvoke.WaitKey();
             if (conts!=null)
             {
                 //CvInvoke.DrawContours(im_tr, conts, -1, new MCvScalar(255, 0, 0), 2, LineType.EightConnected);
@@ -136,7 +136,7 @@ namespace opengl3
             CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
             //CvInvoke.DrawContours(im_tr, conts_sc, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
 
-           // CvInvoke.Imshow("bin ", im_tr);
+            //CvInvoke.Imshow("bin ", im_tr);
             
             counter++;
 
@@ -145,24 +145,30 @@ namespace opengl3
                 Console.WriteLine("find_circ ret null");
                 return null;
             }
-          
-            
+
+
             //prin.t(cents);
             //prin.t("____________");
-            // CvInvoke.Imshow("fnd", orig);
-            // CvInvoke.WaitKey();
+            orig = UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0);
+            //CvInvoke.Imshow("fnd", orig);
+             //CvInvoke.WaitKey();
             corn = new System.Drawing.PointF[pattern_size.Width * pattern_size.Height];
+           // UtilOpenCV.drawLines(orig, cents, 0, 255, 0, 2);
             
-            if(order)
+            if (order)
             {
                 var ps_ord = orderPoints(cents, pattern_size);
+                corn = new System.Drawing.PointF[ps_ord.Length];
                 //ps_ord = ps_ord.Reverse().ToArray();
-
                 if (ps_ord != null && ps_ord.Length<=corn.Length)
                 {
                     ps_ord.CopyTo(corn, 0);
-                    
-                    
+                    Console.WriteLine("cents");
+                    UtilOpenCV.drawTours(im_tr, PointF.toPoint(ps_ord), 255, 0, 0, 2);
+                    //UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
+                    //UtilOpenCV.drawLines(im_tr, corn, 0, 0, 255, 2);
+                    CvInvoke.Imshow("circ", im_tr);
+                    CvInvoke.WaitKey();
                 }
                 else
                 {
@@ -172,23 +178,15 @@ namespace opengl3
                         return null;                     
                     }
                 }
-
                 //Console.WriteLine(" corn______________________");
                 //Console.WriteLine(ps_ord.Length+" "+ corn.Length);
                 //prin.t(corn);
-                UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
-                //UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
-                UtilOpenCV.drawLines(im_tr, ps_ord, 0, 0, 255, 2);
-               // CvInvoke.Imshow("circ", im_tr);
-              //  CvInvoke.WaitKey();
-
                 return im_tr;
             }
             else
             {
                 cents.CopyTo(corn, 0);
-                UtilOpenCV.drawLines(orig, cents, 0, 255, 0, 2);
-                Console.WriteLine("cents");
+                
                 return orig;
             }          
         }
@@ -536,10 +534,10 @@ namespace opengl3
         static System.Drawing.PointF[] orderPoints(System.Drawing.PointF[] ps, Size size_patt)
         {
 
-            var mainDiag = findMainDiag(ps);
+             var mainDiag = findMainDiag(ps);
             var step = mainDiag[2];
             var angle = calcAngleX(ps[mainDiag[0]], ps[mainDiag[1]]);//!!!add if dx small rot Y
-            var additDiag = findAdditDiag(ps, angle);
+             var additDiag = findAdditDiag(ps, angle);
 
             var starts = findStarts(ps, mainDiag, additDiag);
 
@@ -554,6 +552,7 @@ namespace opengl3
 
             return arrFromP(ps, ind_size);
         }
+
         static public System.Drawing.PointF[] findGab(System.Drawing.PointF[] ps)
         {
             var mainDiag = findMainDiag(ps);
@@ -587,7 +586,7 @@ namespace opengl3
         {
             if(!checkTransp(inds))
             {
-               // Console.WriteLine("TRANSP FALSE");
+                Console.WriteLine("TRANSP FALSE");
                 return inds;
             }
             var inds_tr = new int[inds[0].Length][];
@@ -656,11 +655,11 @@ namespace opengl3
                     if (dist < min)
                     {
                         min = dist;
-                      //  Console.WriteLine("min: "+min);
+                        //Console.WriteLine("min: "+min);
                     }
                 }
             }
-            return new int[] { ind1, ind2,(int)min };
+            return new int[] { ind1, ind2,(int)Math.Sqrt( min) };
         }
 
         static int[] findAdditDiag(System.Drawing.PointF[]  ps,double angle)
@@ -896,6 +895,24 @@ namespace opengl3
                 }
             }
             return ps_arr.ToArray();
+        }
+
+        static System.Drawing.PointF[,] arr2FromP(System.Drawing.PointF[] ps, int[][] ind)
+        {
+            var ps_arr2 = new System.Drawing.PointF[ind.Length,ind[0].Length];
+            var ps_list = new List<System.Drawing.PointF>();
+            var dist = 0d;
+            for (int i = 0; i < ind.Length; i++)
+            {
+                for (int j = 0; j < ind[i].Length; j++)
+                {
+                    
+                    ps_list.Add(ps[ind[i][j]]);
+                    //dist = distSq(ps_list[ps_list.Count - 1], ps_list[ps_list.Count - 2]);
+                    ps_arr2 [i,j] = ps[ind[i][j]];
+                }
+            }
+            return ps_arr2;
         }
     }
 }

@@ -175,7 +175,8 @@ namespace opengl3
             Console.WriteLine("take ob: "+w + " "+h);
             var inds_1 = new int[4] {
                 0             ,          w - 1,
-                w * (h - 1)   ,        w * h - 1 };
+               obp.Length- w   ,    obp.Length - 1 };
+            Console.WriteLine(inds_1[0] + " " + inds_1[1] + " " + inds_1[2] + " " + inds_1[3] + " ");
             for (int i = 0; i < inds_1.Length; i++)
             {
                 ps2d[i] = obp[inds_1[i]];
@@ -831,7 +832,7 @@ namespace opengl3
         {
             drawPoints(im, PointF.toPoint(points), r, g, b, size);
         }
-        static public void drawTours(Mat im, Point[] points, int r, int g, int b, int size = 4)
+        static public void drawTours(Mat im, Point[] points, int r=0, int g=0, int b=0, int size = 4)
         {
             int ind = 0;
             if (points.Length != 0)

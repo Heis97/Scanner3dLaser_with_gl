@@ -51,7 +51,7 @@ namespace opengl3
                     new System.Drawing.PointF(offset_xy*size_patt.Width+offset_xy,offset_xy*size_patt.Height+offset_xy)       
             };
 
-            var matDraw = FindCircles.findCircles(mat,ref corn, size_patt);
+            var matDraw = FindCircles.findCircles(mat,ref corn, size_patt,true);
             if(matDraw == null)
                 return null;
             //CvInvoke.Imshow("find1"+ count_1, matDraw);
@@ -59,7 +59,10 @@ namespace opengl3
             count_1++;
             var points2d = UtilOpenCV.takeGabObp(corn, size_patt);
             var orig1 = mat.Clone();
-            UtilOpenCV.drawPointsF(orig1, points2d, 0, 255, 0,0,true);
+            UtilOpenCV.drawTours(orig1, PointF.toPoint(points2d), 0, 255);
+            
+            CvInvoke.Imshow("orig1", orig1);
+            CvInvoke.WaitKey();
             var persp_Norm = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(points3d), new VectorOfPointF(points2d));
             var im_pers = mat.Clone();
             var persp_Norm_inv = new Mat();
@@ -67,6 +70,7 @@ namespace opengl3
             CvInvoke.WarpPerspective(mat, im_pers, persp_Norm_inv, 
                 new Size(offset_xy * size_patt.Width + 2* offset_xy, offset_xy * size_patt.Height + 2*offset_xy),
                 Inter.Linear,Warp.Default,BorderType.Replicate);           
+
             var matDraw_pers = FindCircles.findCircles(im_pers,ref corn, size_patt);
             if(matDraw_pers == null) return null;
 
