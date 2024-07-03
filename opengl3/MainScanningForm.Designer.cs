@@ -380,6 +380,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.button2 = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2993,6 +2994,7 @@ namespace opengl3
             // 
             // tabPage11
             // 
+            this.tabPage11.Controls.Add(this.button2);
             this.tabPage11.Controls.Add(this.but_con_scan_sam);
             this.tabPage11.Controls.Add(this.but_start_scan_sam);
             this.tabPage11.Controls.Add(this.but_scan_start_laser);
@@ -4068,6 +4070,7 @@ namespace opengl3
             this.imageBox1.Size = new System.Drawing.Size(640, 480);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
+            this.imageBox1.Click += new System.EventHandler(this.imageBox1_Click);
             // 
             // but_resize
             // 
@@ -4113,6 +4116,17 @@ namespace opengl3
             // timer2
             // 
             this.timer2.Enabled = true;
+            // 
+            // button2
+            // 
+            this.button2.AccessibleName = "1";
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button2.Location = new System.Drawing.Point(197, 207);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(148, 33);
+            this.button2.TabIndex = 141;
+            this.button2.Text = "Scan Laser";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // MainScanningForm
             // 
@@ -4577,6 +4591,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_unwrap;
         private System.Windows.Forms.Button but_allign_cyl;
         private System.Windows.Forms.TextBox tB_tool_inf;
+        private System.Windows.Forms.Button button2;
     }
 }
 

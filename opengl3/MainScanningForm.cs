@@ -1693,7 +1693,7 @@ namespace opengl3
            // generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
             // GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
             //GL1.SortObj();
-            int monitor_num = 1;
+            int monitor_num = 4;
             if(monitor_num==4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -6884,7 +6884,10 @@ namespace opengl3
             laserLine?.setShvpPos(350); Thread.Sleep(100);
         }
 
-        
+        private void imageBox1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
