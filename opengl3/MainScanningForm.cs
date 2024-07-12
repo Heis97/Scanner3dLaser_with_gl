@@ -176,7 +176,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-            load_camers_v2();
+           //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -556,6 +556,8 @@ namespace opengl3
         }
         void init_vars()
         {
+            
+
             #region important
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "св Круги грид", "Ничего" });
             combo_robot_ch.Items.AddRange(new string[] { "Pulse", "Kuka" });
@@ -5615,7 +5617,7 @@ namespace opengl3
         #region laser_but
         string portArd;
 
-        void find_ports()
+        void find_ports(bool last = false)
         {
             //comboBox_portsArd.Items.Add("COM3");
             comboBox_portsArd.Items.Clear();
@@ -5635,6 +5637,10 @@ namespace opengl3
                 if (portnames[0] != null)
                 {
                     comboBox_portsArd.SelectedItem = portnames[0];
+                    if(last)
+                    {
+                        comboBox_portsArd.SelectedItem = portnames[portnames.Length-1];
+                    }
                 }
             }
         }
@@ -6893,11 +6899,6 @@ namespace opengl3
             laserLine?.setShvpPos(350); Thread.Sleep(100);
         }
 
-        private void imageBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void send_rob_Click(object sender, EventArgs e)
         {
             var mes = nameX.Text + " " + nameY.Text + " " + nameZ.Text + " " + nameA.Text + " " + nameB.Text + " " + nameC.Text + " " + boxN.Text + " \n";
@@ -6908,6 +6909,41 @@ namespace opengl3
         {
 
         }
+
+        #region samara_con
+        private void but_con_set_ard_con_Click(object sender, EventArgs e)
+        {
+            find_ports(true);
+            
+        }
+        private void but_con_set_rob_con_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+        #endregion
+
+        #region samara_scan
+
+        private void but_scan_simp_scan_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void but_scan_simp_gen_traj_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void but_scan_simp_start_print_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        #endregion
+
+
     }
 }
 
