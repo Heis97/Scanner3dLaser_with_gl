@@ -165,7 +165,7 @@ namespace opengl3
                     corn = new System.Drawing.PointF[ps_ord.Length];
                     ps_ord.CopyTo(corn, 0);
                     Console.WriteLine("cents");
-                    //UtilOpenCV.drawTours(im_tr, PointF.toPoint(ps_ord), 255, 0, 0, 2);
+                    UtilOpenCV.drawTours(im_tr, PointF.toPoint(ps_ord), 255, 0, 0, 2);
                     //UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
                     //UtilOpenCV.drawLines(im_tr, corn, 0, 0, 255, 2);
                     //CvInvoke.Imshow("circ", im_tr);

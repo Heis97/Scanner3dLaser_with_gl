@@ -176,7 +176,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-            //load_camers_v2();
+            load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -558,7 +558,8 @@ namespace opengl3
         {
             #region important
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "св Круги грид", "Ничего" });
-
+            combo_robot_ch.Items.AddRange(new string[] { "Pulse", "Kuka" });
+          
             cameraDistortionCoeffs_dist[0, 0] = -0.3;
             for(int i=0; i<mat_global.Length;i++)
             {
@@ -907,9 +908,9 @@ namespace opengl3
         {
             markSize = 9.6f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam2_cal2506_1", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\sam_cam2_1207", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("cam2_cal2506_1.txt");            
+            cam1.save_camera("sam_cam2_1207.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* markSize = 6.2273f;//6.2273f
@@ -1693,7 +1694,7 @@ namespace opengl3
            // generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
             // GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
             //GL1.SortObj();
-            int monitor_num = 4;
+            int monitor_num = 1;
             if(monitor_num==4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -3728,20 +3729,6 @@ namespace opengl3
             nameA_in.Text = posRob.a.ToString();
             nameB_in.Text = posRob.b.ToString();
             nameC_in.Text = posRob.c.ToString();
-        }
-        private void rob_send_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var mes = nameX.Text + " " + nameY.Text + " " + nameZ.Text + " " + nameA.Text + " " + nameB.Text + " " + nameC.Text + " " + boxN.Text + " \n";
-                con1.send_mes(mes);
-                Console.WriteLine(mes);
-            }
-            catch
-            {
-
-            }
-
         }
 
 
@@ -6770,10 +6757,31 @@ namespace opengl3
             {
                 con1 = new TCPclient();
             }
+            string ip = "";
+            if((string)combo_robot_ch.SelectedItem=="Kuka")
+            {
+                ip = "172.31.1.147";
+            }
+            else if((string)combo_robot_ch.SelectedItem == "Pulse")
+            {
+                ip =  "localhost";
+            }
+
+
+
             var pulse = "localhost";
             var kuka = "172.31.1.147";
             port_tcp = Convert.ToInt32(tb_port_tcp.Text);
-            con1.Connection(port_tcp, kuka);
+            Console.WriteLine(ip);
+            //con1.Connection(port_tcp, kuka);
+
+
+            con1 = new TCPclient();
+            port_tcp = Convert.ToInt32(tb_port_tcp.Text);
+            con1.Connection(port_tcp, ip);
+
+            Thread tcp_thread = new Thread(recieve_tcp);
+            tcp_thread.Start(con1);
         }
 
         private void but_rob_discon_sc_Click(object sender, EventArgs e)
@@ -6782,6 +6790,7 @@ namespace opengl3
             {
                 con1.send_mes("q\n");
                 con1.close_con();
+                
             }
             catch
             {
@@ -6885,6 +6894,17 @@ namespace opengl3
         }
 
         private void imageBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void send_rob_Click(object sender, EventArgs e)
+        {
+            var mes = nameX.Text + " " + nameY.Text + " " + nameZ.Text + " " + nameA.Text + " " + nameB.Text + " " + nameC.Text + " " + boxN.Text + " \n";
+            try_send_rob(mes);
+        }
+
+        private void combo_robot_ch_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

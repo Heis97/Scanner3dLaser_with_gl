@@ -59,10 +59,10 @@ namespace opengl3
             count_1++;
             var points2d = UtilOpenCV.takeGabObp(corn, size_patt);
             var orig1 = mat.Clone();
-            UtilOpenCV.drawTours(orig1, PointF.toPoint(points2d), 0, 255);
+           // UtilOpenCV.drawTours(orig1, PointF.toPoint(points2d), 0, 255);
             
-            CvInvoke.Imshow("orig1", orig1);
-            CvInvoke.WaitKey();
+            //CvInvoke.Imshow("orig1", orig1);
+            //CvInvoke.WaitKey();
             var persp_Norm = CvInvoke.GetPerspectiveTransform(new VectorOfPointF(points3d), new VectorOfPointF(points2d));
             var im_pers = mat.Clone();
             var persp_Norm_inv = new Mat();

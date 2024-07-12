@@ -266,6 +266,7 @@ namespace opengl3
             this.label54 = new System.Windows.Forms.Label();
             this.trackBar20 = new System.Windows.Forms.TrackBar();
             this.tabPage11 = new System.Windows.Forms.TabPage();
+            this.button2 = new System.Windows.Forms.Button();
             this.but_con_scan_sam = new System.Windows.Forms.Button();
             this.but_start_scan_sam = new System.Windows.Forms.Button();
             this.but_scan_start_laser = new System.Windows.Forms.Button();
@@ -380,7 +381,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.button2 = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -3026,6 +3026,17 @@ namespace opengl3
             this.tabPage11.Text = "3Д сканер";
             this.tabPage11.UseVisualStyleBackColor = true;
             // 
+            // button2
+            // 
+            this.button2.AccessibleName = "1";
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button2.Location = new System.Drawing.Point(197, 207);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(148, 33);
+            this.button2.TabIndex = 141;
+            this.button2.Text = "Scan Laser";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
             // but_con_scan_sam
             // 
             this.but_con_scan_sam.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -3280,6 +3291,7 @@ namespace opengl3
             this.combo_robot_ch.Name = "combo_robot_ch";
             this.combo_robot_ch.Size = new System.Drawing.Size(121, 28);
             this.combo_robot_ch.TabIndex = 145;
+            this.combo_robot_ch.SelectedIndexChanged += new System.EventHandler(this.combo_robot_ch_SelectedIndexChanged);
             // 
             // tb_port_tcp
             // 
@@ -3308,7 +3320,7 @@ namespace opengl3
             this.rob_con.TabIndex = 138;
             this.rob_con.Text = "Подключиться";
             this.rob_con.UseVisualStyleBackColor = true;
-            this.rob_con.Click += new System.EventHandler(this.rob_con_Click);
+            this.rob_con.Click += new System.EventHandler(this.but_rob_con_sc_Click);
             // 
             // disc_rob
             // 
@@ -3330,6 +3342,7 @@ namespace opengl3
             this.send_rob.TabIndex = 140;
             this.send_rob.Text = "Отправить";
             this.send_rob.UseVisualStyleBackColor = true;
+            this.send_rob.Click += new System.EventHandler(this.send_rob_Click);
             // 
             // but_scan_start
             // 
@@ -4116,17 +4129,6 @@ namespace opengl3
             // timer2
             // 
             this.timer2.Enabled = true;
-            // 
-            // button2
-            // 
-            this.button2.AccessibleName = "1";
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(197, 207);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(148, 33);
-            this.button2.TabIndex = 141;
-            this.button2.Text = "Scan Laser";
-            this.button2.UseVisualStyleBackColor = true;
             // 
             // MainScanningForm
             // 
