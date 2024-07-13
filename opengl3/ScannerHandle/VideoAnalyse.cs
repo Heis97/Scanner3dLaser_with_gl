@@ -60,7 +60,11 @@ namespace opengl3
             if (scanner != null)
             {
                 var orig2_im = orig2.ToImage<Bgr, byte>();
-                CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
+                if(config.rotate_cam)
+                {
+                    CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
+                }
+                
                 scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
                 scanner.pointCloud.graphicGL = form.GL1;
             }
@@ -99,8 +103,10 @@ namespace opengl3
                         im2 -= im2_buff_list[buff_len - buff_diff];
                         // CvInvoke.Imshow("im1_dif", im1);
                         // CvInvoke.WaitKey();
-
-                        CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
+                        if (config.rotate_cam)
+                        {
+                            CvInvoke.Rotate(im2, im2, RotateFlags.Rotate180);
+                        }
                         if (config.save_im)
                         {
                             var frame_d = new Frame(im1, im2, videoframe_count.ToString(), FrameType.LasDif);
@@ -199,7 +205,10 @@ namespace opengl3
             if (scanner != null)
             {
                 var orig2_im = orig2.ToImage<Bgr, byte>();
-                CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
+                if (config.rotate_cam)
+                {
+                    CvInvoke.Rotate(orig2_im, orig2_im, RotateFlags.Rotate180);
+                }
                 scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>(), orig2_im };
                 scanner.pointCloud.graphicGL = form.GL1;
             }
@@ -236,22 +245,26 @@ namespace opengl3
                         //var im_min2 = im_min_buff_list[buff_len - 1];
 
                         //var im_max2 = im_max_buff_list[buff_len - 1];
-
-                        if (cam_min == 2)
+                        if (config.rotate_cam)
                         {
-                            CvInvoke.Rotate(im_min, im_min, RotateFlags.Rotate180);
+                            if (cam_min == 2)
+                            {
+                                CvInvoke.Rotate(im_min, im_min, RotateFlags.Rotate180);
 
-                            CvInvoke.Rotate(im_min, im_min, RotateFlags.Rotate180);
+                                CvInvoke.Rotate(im_min, im_min, RotateFlags.Rotate180);
+
+                            }
+                            if (cam_max == 2)
+                            {
+                                CvInvoke.Rotate(im_max, im_max, RotateFlags.Rotate180);
+                                CvInvoke.Rotate(im_max_prev, im_max_prev, RotateFlags.Rotate180);
+
+                                // CvInvoke.Rotate(im_min2, im_min2, RotateFlags.Rotate180);
+                                // CvInvoke.Rotate(im_max2, im_max2, RotateFlags.Rotate180);
+                            }
 
                         }
-                        if (cam_max == 2)
-                        {
-                            CvInvoke.Rotate(im_max, im_max, RotateFlags.Rotate180);
-                            CvInvoke.Rotate(im_max_prev, im_max_prev, RotateFlags.Rotate180);
-
-                           // CvInvoke.Rotate(im_min2, im_min2, RotateFlags.Rotate180);
-                           // CvInvoke.Rotate(im_max2, im_max2, RotateFlags.Rotate180);
-                        }
+                            
                         //Console.WriteLine(f1 + " " + f2);
 
 

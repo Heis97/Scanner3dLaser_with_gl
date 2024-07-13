@@ -213,7 +213,7 @@ namespace opengl3
             //CvInvoke.WaitKey();
             // get_x_line_gray(im1, im1.Height / 2);
 
-            //test_handeye();
+            test_handeye();
 
 
             //var data = Analyse.parse_data_txt("data_sing.txt");
@@ -940,7 +940,7 @@ namespace opengl3
             chess_size = new Size(6, 7);
             var marksize = 10f;
             var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
-            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, true);
+            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, scanner_config.rotate_cam);
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,marksize);
 
             comboImages.Items.AddRange(frms_stereo);
@@ -4449,9 +4449,9 @@ namespace opengl3
             var stereo_cal_1 = get_folder_name_cam(textB_scan_path.Text);
             //Console.WriteLine(stereo_cal_1+" "+ stereo_cal_2);
             
-            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
+            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; //var reverse = true;
             //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
-            var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
+            var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, scanner_config.rotate_cam);
             
             var cam1_conf_path = textB_cam1_conf.Text;
             var cam2_conf_path = textB_cam2_conf.Text;
@@ -4781,7 +4781,7 @@ namespace opengl3
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
             capture.Set(CapProp.AutoExposure, 1);
-            //capture.Set(CapProp.Exposure, -3);
+           // capture.Set(CapProp.Exposure, -8);
 
             cameraSize.Width =(int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);

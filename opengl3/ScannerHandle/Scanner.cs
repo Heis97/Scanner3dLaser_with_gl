@@ -104,6 +104,17 @@ namespace opengl3
             set { las_offs = value; }
         }
 
+        public bool rotate_cam;
+        [Description("Поворот камеры")]
+        [Category("Видео")]
+        [DisplayName("rotate_cam")]
+        public bool Rotate_cam
+        {
+            get { return rotate_cam; }
+            set { rotate_cam = value; }
+        }
+
+
         public int wind_regr;
         [Description("Окно регрессии")]
         [Category("Лазерная линия")]
