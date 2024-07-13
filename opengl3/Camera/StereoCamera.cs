@@ -144,64 +144,82 @@ namespace opengl3
 
             }
         }
-        static public void calibrate_stereo_rob_handeye(CameraCV cameraCV, Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize)
+        static public void calibrate_stereo_rob_handeye(CameraCV cameraCV, Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize, string file_name = "bfs_cal.txt")
         {
 
-                var p_rob = new List<Point3d_GL>();
-                var p_cam = new List<Point3d_GL>();
+            var p_rob = new List<Point3d_GL>();
+            var p_cam = new List<Point3d_GL>();
 
-                var ms_rob = new List<Matrix<double>>();
-                var ms_cam = new List<Matrix<double>>();
-                Console.WriteLine("calibrate_stereo_rob");
+            var ms_rob = new List<Matrix<double>>();
+            var ms_cam = new List<Matrix<double>>();
+            Console.WriteLine("calibrate_stereo_rob");
 
-                for (int i = 0; i < frames.Length; i++)
+            for (int i = 0; i < frames.Length; i++)
+            {
+                var pos1 = cameraCV.compPos(frames[i].im, patternType, pattern_size, markSize);
+                if (pos1 )
                 {
-                    var pos1 = cameraCV.compPos(frames[i].im, patternType, pattern_size, markSize);
-                    if (pos1 )
-                    {
-                        var inv_cs1 = new Matrix<double>(4, 4);//
-                        CvInvoke.Invert(cameraCV.matrixCS, inv_cs1, DecompMethod.LU);
+                    var inv_cs1 = new Matrix<double>(4, 4);//
+                    CvInvoke.Invert(cameraCV.matrixCS, inv_cs1, DecompMethod.LU);
 
-                        //R = inv_cs1 * cameraCV.matrixCS;
-                        var c1 = cameraCV.matrixCS;
-                        var rob_pos = new RobotFrame(frames[i].name);
-                        var r1 = rob_pos.getMatrix();
+                    //R = inv_cs1 * cameraCV.matrixCS;
+                    var c1 = cameraCV.matrixCS;
+                    var rob_pos = new RobotFrame(frames[i].name,RobotFrame.RobotType.KUKA);
+                    var r1 = rob_pos.getMatrix();
                        
-                        var r1_inv = r1.Clone();
-                        var c1_inv = c1.Clone();
-                        CvInvoke.Invert(r1_inv, r1_inv, DecompMethod.Svd);
-                        CvInvoke.Invert(c1_inv, c1_inv, DecompMethod.Svd);
+                    var r1_inv = r1.Clone();
+                    var c1_inv = c1.Clone();
+                    CvInvoke.Invert(r1_inv, r1_inv, DecompMethod.Svd);
+                    CvInvoke.Invert(c1_inv, c1_inv, DecompMethod.Svd);
 
-                        ms_rob.Add(r1);
-                        ms_cam.Add(c1_inv);
-                        var p1 = new Point3d_GL(r1[0, 3], r1[1, 3], r1[2, 3]);
-                        var p2 = new Point3d_GL(c1[0, 3], c1[1, 3], c1[2, 3]);
-                        p_rob.Add(p1);
-                        p_cam.Add(p2);
+                    ms_rob.Add(r1);
+                    ms_cam.Add(c1_inv);
+                    var p1 = new Point3d_GL(r1[0, 3], r1[1, 3], r1[2, 3]);
+                    var p2 = new Point3d_GL(c1[0, 3], c1[1, 3], c1[2, 3]);
+                    p_rob.Add(p1);
+                    p_cam.Add(p2);
 
-                        //Console.WriteLine(i + " " + r1[0, 3] + " " + r1[1, 3] + " " + r1[2, 3]+" ");// + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");
-                        //Console.WriteLine(R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");// + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
-                        GC.Collect();
-                    }
-
-                    //Console.WriteLine(comp_pos);
+                    //Console.WriteLine(i + " " + r1[0, 3] + " " + r1[1, 3] + " " + r1[2, 3]+" ");// + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");
+                    //Console.WriteLine(R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " ");// + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
+                    GC.Collect();
                 }
-                VectorOfMat mr_r, mr_t, mc_r, mc_t;
-                (mr_r, mr_t) = UtilOpenCV.to_vec_mat(ms_rob.ToArray());
-                (mc_r, mc_t) = UtilOpenCV.to_vec_mat(ms_cam.ToArray());
-                Mat mr = new Mat();
-                Mat mt = new Mat();
-                CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt,HandEyeCalibrationMethod.Tsai);
-                prin.t("result:");
-                prin.t(mr);
-                prin.t(mt);
-                prin.t("______");
-                for (int i = 1; i < p_cam.Count; i++)
+
+                //Console.WriteLine(comp_pos);
+            }
+            VectorOfMat mr_r, mr_t, mc_r, mc_t;
+            (mr_r, mr_t) = UtilOpenCV.to_vec_mat(ms_rob.ToArray());
+            (mc_r, mc_t) = UtilOpenCV.to_vec_mat(ms_cam.ToArray());
+            Mat mr = new Mat();
+            Mat mt = new Mat();
+            CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt,HandEyeCalibrationMethod.Tsai);
+            prin.t("result:");
+            prin.t(mr);
+            prin.t(mt);
+            prin.t("______");
+            var mt_m= new Matrix<double>( (double[,])(mt.GetData()));
+            var mr_m = new Matrix<double>((double[,])(mr.GetData()));
+            Console.WriteLine(new Point3d_GL(mt_m[0,0], mt_m[1,0], mt_m[2,0]).magnitude()+" ");
+
+            var Bfs_med = new Matrix<double>(new double[4, 4]);
+
+            for(int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
                 {
-                    Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
+                    Bfs_med[i, j] = mr_m[i, j];
                 }
+            }
+            Bfs_med[0, 3] = mt_m[0, 0];
+            Bfs_med[1, 3] = mt_m[1, 0];
+            Bfs_med[2, 3] = mt_m[2, 0];
+            Bfs_med[3, 3] = 1;
 
-            
+            for (int i = 1; i < p_cam.Count; i++)
+            {
+                //Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
+            }
+
+            Settings_loader.save_file(file_name, new object[] { Bfs_med });
         }
 
 
@@ -367,7 +385,7 @@ namespace opengl3
             {
                 cameraCVs[0].compPos(pos[i].im, PatternType.Mesh, pattern_size, markSize);
                 var Bsm = cameraCVs[0].matrixCS.Clone();
-                var Bbf = new RobotFrame(pos[i].name).getMatrix(robotType);
+                var Bbf = new RobotFrame(pos[i].name,robotType).getMatrix();
                 //var Bft = new RobotFrame("-0.1709395 0.0687465 0.0480957 1.55116 1.1946166 0.0").getMatrix(robotType);
                 //Bbf *= Bft;
                 //prin.t(pos[i].name);
@@ -381,7 +399,7 @@ namespace opengl3
                 //var Bbm = new RobotFrame("-227.8394 -380.7143 -33.724 -0.00703 -0.00259 -1.569604").getMatrix(robotType);
                 //var Bbm = new RobotFrame("-226.7156 -339.505 -33.46688 -0.00779 -0.00117 -1.552798").getMatrix(robotType);
 
-                var Bbm = new RobotFrame("-419.22153 -18.75754 43.3817 0.0120435 -0.0045299 1.64342").getMatrix(robotType);
+                var Bbm = new RobotFrame("-419.22153 -18.75754 43.3817 0.0120435 -0.0045299 1.64342",robotType).getMatrix();
 
                 /* prin.t("--------------------------------");
                  prin.t("Bsm");

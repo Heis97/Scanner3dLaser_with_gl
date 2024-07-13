@@ -213,7 +213,7 @@ namespace opengl3
             //CvInvoke.WaitKey();
             // get_x_line_gray(im1, im1.Height / 2);
 
-            test_handeye();
+            //test_handeye();
 
 
             //var data = Analyse.parse_data_txt("data_sing.txt");
@@ -272,12 +272,15 @@ namespace opengl3
             var ms_gb = new List<Matrix<double>>();
             var ms_tc = new List<Matrix<double>>();
 
-            var bt = new RobotFrame(0, 350, 75, 0, 0,0.5);
+            var bt = new RobotFrame(-120, -350, 75, 0, 0,0.5);
             //var bm = new RobotFrame(20, 0, 0, 0, 0, -3);
 
-            var gc = new RobotFrame(0, 10, 50, 0, 0, 1.54);
+            var gc = new RobotFrame(60, 60, 50, 0, 0.2, 0.3);
 
             var rpos_2 = new List<RobotFrame>();
+
+            var frms = FrameLoader.load_rob_frames(@"C:\Users\1\source\repos\Scanner3dLaser_with_gl\opengl3\bin\x64\Debug\cam1\fl_cal_kuka_1307_2\1");
+
 
 
             var gbs = new List<RobotFrame>
@@ -298,6 +301,12 @@ namespace opengl3
                 new RobotFrame(0,0,210,0,0,2),
             };
 
+
+            gbs = new List<RobotFrame>();
+            for (int i=0; i < frms.Length; i++)
+            {
+                gbs.Add(frms[i].RobotFrame);
+            }
             
 
 
@@ -318,8 +327,26 @@ namespace opengl3
 
 
                 ms_rob.Add(bg);
-              //  ms_cam.Add(bt_m * gb *  gc_inv);
-                ms_cam.Add(gc_inv * gb *  bt_m);
+                //  ms_cam.Add(bt_m * gb *  gc_inv);
+                var cam_matr = gc_inv * gb * bt_m;
+                var rand = new Matrix<double>(4, 4);
+                rand.SetRandNormal(new MCvScalar(2), new MCvScalar(2));
+                for(int k=0; k<4; k++)
+                {
+                    for (int w = 0; w < 3; w++)
+                    {
+                        rand[k,w] *= 0.0001;
+                    }
+                }
+                 prin.t("cam_matr");
+                prin.t(cam_matr);
+                prin.t("rand");
+                prin.t(rand);
+                
+                cam_matr += rand;
+                prin.t("cam_matr+");
+                prin.t(cam_matr);
+                ms_cam.Add(cam_matr);
 
 
 
@@ -4451,8 +4478,10 @@ namespace opengl3
             
             var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; //var reverse = true;
             //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
-            var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, scanner_config.rotate_cam);
-            
+           //var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, scanner_config.rotate_cam);
+
+            var frms_stereo = FrameLoader.load_rob_frames(cams_path[0]);
+
             var cam1_conf_path = textB_cam1_conf.Text;
             var cam2_conf_path = textB_cam2_conf.Text;
             var cam1 = CameraCV.load_camera(cam1_conf_path);

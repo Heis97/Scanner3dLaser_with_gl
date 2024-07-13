@@ -138,7 +138,7 @@ namespace opengl3
             C = r.z;
             return this;
         }
-        public Matrix<double>  getMatrix(RobotType robotType = RobotType.PULSE)
+        public Matrix<double>  getMatrix()
         {
 
             return ABCmatr(X, Y, Z, A, B, C, robotType);
