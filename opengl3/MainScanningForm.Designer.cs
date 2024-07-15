@@ -383,20 +383,20 @@ namespace opengl3
             this.but_con_set_rob_con = new System.Windows.Forms.Button();
             this.but_con_set_ard_con = new System.Windows.Forms.Button();
             this.tabP_connect_set_ext = new System.Windows.Forms.TabPage();
-            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.groupBox_rob_con_ext = new System.Windows.Forms.GroupBox();
             this.but_con_ext_rob_discon = new System.Windows.Forms.Button();
             this.but_con_ext_rob_con = new System.Windows.Forms.Button();
-            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.groupBox_disp_contr_ext = new System.Windows.Forms.GroupBox();
             this.label76 = new System.Windows.Forms.Label();
             this.textBox_con_ext_disp_vel = new System.Windows.Forms.TextBox();
             this.label75 = new System.Windows.Forms.Label();
             this.but_con_ext_disp_up = new System.Windows.Forms.Button();
             this.but_con_ext_disp_down = new System.Windows.Forms.Button();
             this.but_con_ext_disp_stop = new System.Windows.Forms.Button();
-            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.groupBox_cam_con_ext = new System.Windows.Forms.GroupBox();
             this.label59 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.groupBox_con_ard_ext = new System.Windows.Forms.GroupBox();
             this.but_con_ext_discon_com = new System.Windows.Forms.Button();
             this.but_con_ext_find_ports = new System.Windows.Forms.Button();
             this.but_con_ext_con_com = new System.Windows.Forms.Button();
@@ -408,7 +408,7 @@ namespace opengl3
             this.but_scan_simp_start_print = new System.Windows.Forms.Button();
             this.but_scan_simp_gen_traj = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.button3 = new System.Windows.Forms.Button();
+            this.but_scan_centr = new System.Windows.Forms.Button();
             this.but_scan_simp_xy = new System.Windows.Forms.Button();
             this.but_scan_simp_cont_save = new System.Windows.Forms.Button();
             this.but_scan_simp_cont_beg = new System.Windows.Forms.Button();
@@ -452,6 +452,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.but_show_traj_fr_tb = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -537,10 +538,10 @@ namespace opengl3
             this.tabC_connect_ins.SuspendLayout();
             this.tabP_connect_set.SuspendLayout();
             this.tabP_connect_set_ext.SuspendLayout();
-            this.groupBox12.SuspendLayout();
-            this.groupBox11.SuspendLayout();
-            this.groupBox10.SuspendLayout();
-            this.groupBox9.SuspendLayout();
+            this.groupBox_rob_con_ext.SuspendLayout();
+            this.groupBox_disp_contr_ext.SuspendLayout();
+            this.groupBox_cam_con_ext.SuspendLayout();
+            this.groupBox_con_ard_ext.SuspendLayout();
             this.tabP_scanning_printing.SuspendLayout();
             this.tabC_scanning_printing_ins.SuspendLayout();
             this.tabP_scanning_printing_scan.SuspendLayout();
@@ -1176,6 +1177,7 @@ namespace opengl3
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.but_show_traj_fr_tb);
             this.tabPage1.Controls.Add(this.but_hydro_model_grav);
             this.tabPage1.Controls.Add(this.propGrid_pattern);
             this.tabPage1.Controls.Add(this.propGrid_traj);
@@ -4260,10 +4262,10 @@ namespace opengl3
             // 
             // tabP_connect_set_ext
             // 
-            this.tabP_connect_set_ext.Controls.Add(this.groupBox12);
-            this.tabP_connect_set_ext.Controls.Add(this.groupBox11);
-            this.tabP_connect_set_ext.Controls.Add(this.groupBox10);
-            this.tabP_connect_set_ext.Controls.Add(this.groupBox9);
+            this.tabP_connect_set_ext.Controls.Add(this.groupBox_rob_con_ext);
+            this.tabP_connect_set_ext.Controls.Add(this.groupBox_disp_contr_ext);
+            this.tabP_connect_set_ext.Controls.Add(this.groupBox_cam_con_ext);
+            this.tabP_connect_set_ext.Controls.Add(this.groupBox_con_ard_ext);
             this.tabP_connect_set_ext.Location = new System.Drawing.Point(4, 22);
             this.tabP_connect_set_ext.Name = "tabP_connect_set_ext";
             this.tabP_connect_set_ext.Padding = new System.Windows.Forms.Padding(3);
@@ -4272,16 +4274,16 @@ namespace opengl3
             this.tabP_connect_set_ext.Text = "Расширенные настройки";
             this.tabP_connect_set_ext.UseVisualStyleBackColor = true;
             // 
-            // groupBox12
+            // groupBox_rob_con_ext
             // 
-            this.groupBox12.Controls.Add(this.but_con_ext_rob_discon);
-            this.groupBox12.Controls.Add(this.but_con_ext_rob_con);
-            this.groupBox12.Location = new System.Drawing.Point(6, 697);
-            this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(953, 262);
-            this.groupBox12.TabIndex = 1;
-            this.groupBox12.TabStop = false;
-            this.groupBox12.Text = "Подключение к роботу";
+            this.groupBox_rob_con_ext.Controls.Add(this.but_con_ext_rob_discon);
+            this.groupBox_rob_con_ext.Controls.Add(this.but_con_ext_rob_con);
+            this.groupBox_rob_con_ext.Location = new System.Drawing.Point(6, 697);
+            this.groupBox_rob_con_ext.Name = "groupBox_rob_con_ext";
+            this.groupBox_rob_con_ext.Size = new System.Drawing.Size(953, 262);
+            this.groupBox_rob_con_ext.TabIndex = 1;
+            this.groupBox_rob_con_ext.TabStop = false;
+            this.groupBox_rob_con_ext.Text = "Подключение к роботу";
             // 
             // but_con_ext_rob_discon
             // 
@@ -4301,20 +4303,20 @@ namespace opengl3
             this.but_con_ext_rob_con.Text = "Подключиться";
             this.but_con_ext_rob_con.UseVisualStyleBackColor = true;
             // 
-            // groupBox11
+            // groupBox_disp_contr_ext
             // 
-            this.groupBox11.Controls.Add(this.label76);
-            this.groupBox11.Controls.Add(this.textBox_con_ext_disp_vel);
-            this.groupBox11.Controls.Add(this.label75);
-            this.groupBox11.Controls.Add(this.but_con_ext_disp_up);
-            this.groupBox11.Controls.Add(this.but_con_ext_disp_down);
-            this.groupBox11.Controls.Add(this.but_con_ext_disp_stop);
-            this.groupBox11.Location = new System.Drawing.Point(6, 370);
-            this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(953, 321);
-            this.groupBox11.TabIndex = 1;
-            this.groupBox11.TabStop = false;
-            this.groupBox11.Text = "Управление дозатором";
+            this.groupBox_disp_contr_ext.Controls.Add(this.label76);
+            this.groupBox_disp_contr_ext.Controls.Add(this.textBox_con_ext_disp_vel);
+            this.groupBox_disp_contr_ext.Controls.Add(this.label75);
+            this.groupBox_disp_contr_ext.Controls.Add(this.but_con_ext_disp_up);
+            this.groupBox_disp_contr_ext.Controls.Add(this.but_con_ext_disp_down);
+            this.groupBox_disp_contr_ext.Controls.Add(this.but_con_ext_disp_stop);
+            this.groupBox_disp_contr_ext.Location = new System.Drawing.Point(6, 370);
+            this.groupBox_disp_contr_ext.Name = "groupBox_disp_contr_ext";
+            this.groupBox_disp_contr_ext.Size = new System.Drawing.Size(953, 321);
+            this.groupBox_disp_contr_ext.TabIndex = 1;
+            this.groupBox_disp_contr_ext.TabStop = false;
+            this.groupBox_disp_contr_ext.Text = "Управление дозатором";
             // 
             // label76
             // 
@@ -4349,6 +4351,7 @@ namespace opengl3
             this.but_con_ext_disp_up.TabIndex = 4;
             this.but_con_ext_disp_up.Text = "Движение вверх";
             this.but_con_ext_disp_up.UseVisualStyleBackColor = true;
+            this.but_con_ext_disp_up.Click += new System.EventHandler(this.but_con_ext_disp_up_Click);
             // 
             // but_con_ext_disp_down
             // 
@@ -4358,6 +4361,7 @@ namespace opengl3
             this.but_con_ext_disp_down.TabIndex = 3;
             this.but_con_ext_disp_down.Text = "Движение вниз";
             this.but_con_ext_disp_down.UseVisualStyleBackColor = true;
+            this.but_con_ext_disp_down.Click += new System.EventHandler(this.but_con_ext_disp_down_Click);
             // 
             // but_con_ext_disp_stop
             // 
@@ -4367,17 +4371,18 @@ namespace opengl3
             this.but_con_ext_disp_stop.TabIndex = 2;
             this.but_con_ext_disp_stop.Text = "Стоп";
             this.but_con_ext_disp_stop.UseVisualStyleBackColor = true;
+            this.but_con_ext_disp_stop.Click += new System.EventHandler(this.but_con_ext_disp_stop_Click);
             // 
-            // groupBox10
+            // groupBox_cam_con_ext
             // 
-            this.groupBox10.Controls.Add(this.label59);
-            this.groupBox10.Controls.Add(this.label18);
-            this.groupBox10.Location = new System.Drawing.Point(6, 197);
-            this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(953, 167);
-            this.groupBox10.TabIndex = 1;
-            this.groupBox10.TabStop = false;
-            this.groupBox10.Text = "Подключение к камерам";
+            this.groupBox_cam_con_ext.Controls.Add(this.label59);
+            this.groupBox_cam_con_ext.Controls.Add(this.label18);
+            this.groupBox_cam_con_ext.Location = new System.Drawing.Point(6, 197);
+            this.groupBox_cam_con_ext.Name = "groupBox_cam_con_ext";
+            this.groupBox_cam_con_ext.Size = new System.Drawing.Size(953, 167);
+            this.groupBox_cam_con_ext.TabIndex = 1;
+            this.groupBox_cam_con_ext.TabStop = false;
+            this.groupBox_cam_con_ext.Text = "Подключение к камерам";
             // 
             // label59
             // 
@@ -4397,18 +4402,18 @@ namespace opengl3
             this.label18.TabIndex = 0;
             this.label18.Text = "Камера 1";
             // 
-            // groupBox9
+            // groupBox_con_ard_ext
             // 
-            this.groupBox9.Controls.Add(this.but_con_ext_discon_com);
-            this.groupBox9.Controls.Add(this.but_con_ext_find_ports);
-            this.groupBox9.Controls.Add(this.but_con_ext_con_com);
-            this.groupBox9.Controls.Add(this.listBox1);
-            this.groupBox9.Location = new System.Drawing.Point(6, 6);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(953, 185);
-            this.groupBox9.TabIndex = 0;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Подключение к системе in situ";
+            this.groupBox_con_ard_ext.Controls.Add(this.but_con_ext_discon_com);
+            this.groupBox_con_ard_ext.Controls.Add(this.but_con_ext_find_ports);
+            this.groupBox_con_ard_ext.Controls.Add(this.but_con_ext_con_com);
+            this.groupBox_con_ard_ext.Controls.Add(this.listBox1);
+            this.groupBox_con_ard_ext.Location = new System.Drawing.Point(6, 6);
+            this.groupBox_con_ard_ext.Name = "groupBox_con_ard_ext";
+            this.groupBox_con_ard_ext.Size = new System.Drawing.Size(953, 185);
+            this.groupBox_con_ard_ext.TabIndex = 0;
+            this.groupBox_con_ard_ext.TabStop = false;
+            this.groupBox_con_ard_ext.Text = "Подключение к системе in situ";
             // 
             // but_con_ext_discon_com
             // 
@@ -4515,7 +4520,7 @@ namespace opengl3
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.button3);
+            this.groupBox4.Controls.Add(this.but_scan_centr);
             this.groupBox4.Controls.Add(this.but_scan_simp_xy);
             this.groupBox4.Controls.Add(this.but_scan_simp_cont_save);
             this.groupBox4.Controls.Add(this.but_scan_simp_cont_beg);
@@ -4526,14 +4531,14 @@ namespace opengl3
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Обработка 3D модели";
             // 
-            // button3
+            // but_scan_centr
             // 
-            this.button3.Location = new System.Drawing.Point(169, 35);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(160, 28);
-            this.button3.TabIndex = 4;
-            this.button3.Text = "Центрировать на модели";
-            this.button3.UseVisualStyleBackColor = true;
+            this.but_scan_centr.Location = new System.Drawing.Point(169, 35);
+            this.but_scan_centr.Name = "but_scan_centr";
+            this.but_scan_centr.Size = new System.Drawing.Size(160, 28);
+            this.but_scan_centr.TabIndex = 4;
+            this.but_scan_centr.Text = "Центрировать на модели";
+            this.but_scan_centr.UseVisualStyleBackColor = true;
             // 
             // but_scan_simp_xy
             // 
@@ -4543,6 +4548,7 @@ namespace opengl3
             this.but_scan_simp_xy.TabIndex = 3;
             this.but_scan_simp_xy.Text = "XY";
             this.but_scan_simp_xy.UseVisualStyleBackColor = true;
+            this.but_scan_simp_xy.Click += new System.EventHandler(this.but_scan_simp_xy_Click);
             // 
             // but_scan_simp_cont_save
             // 
@@ -4552,6 +4558,7 @@ namespace opengl3
             this.but_scan_simp_cont_save.TabIndex = 2;
             this.but_scan_simp_cont_save.Text = "Сохранить контур";
             this.but_scan_simp_cont_save.UseVisualStyleBackColor = true;
+            this.but_scan_simp_cont_save.Click += new System.EventHandler(this.but_scan_simp_cont_save_Click);
             // 
             // but_scan_simp_cont_beg
             // 
@@ -4561,6 +4568,7 @@ namespace opengl3
             this.but_scan_simp_cont_beg.TabIndex = 1;
             this.but_scan_simp_cont_beg.Text = "Выделить контур";
             this.but_scan_simp_cont_beg.UseVisualStyleBackColor = true;
+            this.but_scan_simp_cont_beg.Click += new System.EventHandler(this.but_scan_simp_cont_beg_Click);
             // 
             // groupBox3
             // 
@@ -4928,6 +4936,16 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
+            // but_show_traj_fr_tb
+            // 
+            this.but_show_traj_fr_tb.Location = new System.Drawing.Point(127, 754);
+            this.but_show_traj_fr_tb.Name = "but_show_traj_fr_tb";
+            this.but_show_traj_fr_tb.Size = new System.Drawing.Size(75, 34);
+            this.but_show_traj_fr_tb.TabIndex = 165;
+            this.but_show_traj_fr_tb.Text = "Показать траекторию";
+            this.but_show_traj_fr_tb.UseVisualStyleBackColor = true;
+            this.but_show_traj_fr_tb.Click += new System.EventHandler(this.but_show_traj_fr_tb_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -5037,12 +5055,12 @@ namespace opengl3
             this.tabC_connect_ins.ResumeLayout(false);
             this.tabP_connect_set.ResumeLayout(false);
             this.tabP_connect_set_ext.ResumeLayout(false);
-            this.groupBox12.ResumeLayout(false);
-            this.groupBox11.ResumeLayout(false);
-            this.groupBox11.PerformLayout();
-            this.groupBox10.ResumeLayout(false);
-            this.groupBox10.PerformLayout();
-            this.groupBox9.ResumeLayout(false);
+            this.groupBox_rob_con_ext.ResumeLayout(false);
+            this.groupBox_disp_contr_ext.ResumeLayout(false);
+            this.groupBox_disp_contr_ext.PerformLayout();
+            this.groupBox_cam_con_ext.ResumeLayout(false);
+            this.groupBox_cam_con_ext.PerformLayout();
+            this.groupBox_con_ard_ext.ResumeLayout(false);
             this.tabP_scanning_printing.ResumeLayout(false);
             this.tabC_scanning_printing_ins.ResumeLayout(false);
             this.tabP_scanning_printing_scan.ResumeLayout(false);
@@ -5420,20 +5438,20 @@ namespace opengl3
         private System.Windows.Forms.Button but_con_set_rob_con;
         private System.Windows.Forms.Button but_con_set_ard_con;
         private System.Windows.Forms.TabPage tabP_connect_set_ext;
-        private System.Windows.Forms.GroupBox groupBox12;
+        private System.Windows.Forms.GroupBox groupBox_rob_con_ext;
         private System.Windows.Forms.Button but_con_ext_rob_discon;
         private System.Windows.Forms.Button but_con_ext_rob_con;
-        private System.Windows.Forms.GroupBox groupBox11;
+        private System.Windows.Forms.GroupBox groupBox_disp_contr_ext;
         private System.Windows.Forms.Label label76;
         private System.Windows.Forms.TextBox textBox_con_ext_disp_vel;
         private System.Windows.Forms.Label label75;
         private System.Windows.Forms.Button but_con_ext_disp_up;
         private System.Windows.Forms.Button but_con_ext_disp_down;
         private System.Windows.Forms.Button but_con_ext_disp_stop;
-        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.GroupBox groupBox_cam_con_ext;
         private System.Windows.Forms.Label label59;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.GroupBox groupBox_con_ard_ext;
         private System.Windows.Forms.Button but_con_ext_con_com;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.TabControl tabC_scanning_printing_ins;
@@ -5483,7 +5501,8 @@ namespace opengl3
         private System.Windows.Forms.Button but_con_ext_find_ports;
         private System.Windows.Forms.Button but_con_ext_discon_com;
         private System.Windows.Forms.Button but_scan_simp_xy;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button but_scan_centr;
+        private System.Windows.Forms.Button but_show_traj_fr_tb;
     }
 }
 

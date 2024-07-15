@@ -324,7 +324,7 @@ namespace opengl3
         }
         public Scanner set_rob_pos(string pos)
         {
-            stereoCamera.Bbf = new RobotFrame(pos).getMatrix();
+            stereoCamera.Bbf = new RobotFrame(pos,RobotFrame.RobotType.KUKA).getMatrix();
             return this;
         }
 

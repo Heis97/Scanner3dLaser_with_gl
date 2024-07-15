@@ -78,10 +78,11 @@ namespace opengl3
         }
         public RobotFrame(string coords, RobotType robotType = RobotType.PULSE)
         {
-            var coords_s = coords.Trim().Split(' ');
+            var coords_w = coords.ToLower();
+            var coords_s = coords_w.Trim().Split(' ');
             if (coords_s.Length < 6)
                 return;
-            if(coords_s[0][0]=='G')
+            if(coords_s[0][0]=='g')
             {
                 X = str_to_double(coords_s[1].Substring(1));
                 Y = str_to_double(coords_s[2].Substring(1));
@@ -99,10 +100,18 @@ namespace opengl3
                 B = str_to_double(coords_s[4]);
                 C = str_to_double(coords_s[5]);
             }
-            
+            this.robotType = robotType;
+            if (coords_w.Contains("k"))
+            {
+                this.robotType = RobotType.KUKA;
+            }
+            if (coords_w.Contains("p"))
+            {
+                this.robotType = RobotType.PULSE;
+            }
             V = 0;
             D = 0;
-            this.robotType = robotType;
+            
         }
 
         public static RobotFrame[] parse_g_code(string g_code, RobotType robotType = RobotType.PULSE)
@@ -159,18 +168,18 @@ namespace opengl3
                         var y = m[1, 3];
                         var z = m[2, 3];
 
-                        var sRy = m[0, 2];
+                        var sRy = -m[0, 2];
                         var cRy = Math.Pow((1-sRy*sRy), 0.5);
 
-                        var sRz = -m[0, 1] / cRy;
+                        var sRz = m[1,0] / cRy;
                         var cRz = m[0, 0] / cRy;
 
-                        var sRx = -m[1, 2] / cRy;
+                        var sRx = m[2, 1] / cRy;
                         var cRx = m[2, 2] / cRy;
 
                         //Console.WriteLine(cRx + " "+ sRx+" "+arccos(cRx));
                         var Rx = Math.Sign(sRx) * arccos(cRx);
-                        var Ry = Math.Asin(-m[0, 2]);
+                        var Ry = Math.Asin(sRy);
                         var Rz = Math.Sign(sRz) * arccos(cRz);
 
                         int d = (int)m[3, 3];

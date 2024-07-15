@@ -1617,7 +1617,7 @@ namespace PathPlanning
             return matr_to_ps(proj_c);
         }
 
-        public static string generate_robot_traj(List<Matrix<double>> traj, RobotFrame.RobotType type_robot,TrajParams trajParams = null,GraphicGL graphic = null)
+        public static List<RobotFrame> generate_robot_traj(List<Matrix<double>> traj, RobotFrame.RobotType type_robot,TrajParams trajParams = null,GraphicGL graphic = null)
         {
             var traj_rob = new List<RobotFrame>();
             var r_syr = 18.5/2;
@@ -1646,7 +1646,7 @@ namespace PathPlanning
                 graphic?.addFrame(traj_rob[i].getMatrix(), 5, "sda");
             }
 
-            return RobotFrame.generate_string(traj_rob.ToArray());
+            return traj_rob;
         }
         public static string generate_printer_prog(List<Matrix<double>> traj,  TrajParams trajParams = null)
         {
@@ -1695,6 +1695,20 @@ namespace PathPlanning
                     { 0,0,1,ps[i].z},
                     { color_cur.r,color_cur.g,color_cur.b,1 }
                 }));
+            }
+
+            return traj_rob;
+        }
+
+        public static List<Matrix<double>> traj_to_matr(List<RobotFrame> ps)
+        {
+            var traj_rob = new List<Matrix<double>>();
+
+            for (int i = 0; i < ps.Count; i++)
+            {
+                //var color_cur = new Color3d_GL(0, 0, 0);
+               // if (ps[i].color != null) color_cur = ps[i].color;
+                traj_rob.Add(ps[i].getMatrix());
             }
 
             return traj_rob;

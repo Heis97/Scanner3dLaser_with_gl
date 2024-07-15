@@ -31,7 +31,7 @@ namespace opengl3
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
-
+        RobotFrame.RobotType current_robot = RobotFrame.RobotType.FABION2;
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4,4);
         Point3d_GL off_cyl = new Point3d_GL ();
@@ -1099,7 +1099,7 @@ namespace opengl3
             var ps_traj  = PathPlanner.matr_to_ps(rob_traj);
             
             var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, traj_config,GL1);
-            debugBox.Text = traj_rob;
+            debugBox.Text = RobotFrame.generate_string(traj_rob.ToArray());
             GL1.remove_buff_gl_id(traj_i);
             traj_i = GL1.addLineMeshTraj(ps_traj.ToArray(), new Color3d_GL(0.9f), "gen_traj");
 
@@ -4809,8 +4809,8 @@ namespace opengl3
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
-            capture.Set(CapProp.AutoExposure, 1);
-           // capture.Set(CapProp.Exposure, -8);
+            //capture.Set(CapProp.AutoExposure, 1);
+            capture.Set(CapProp.Exposure, -8);
 
             cameraSize.Width =(int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
@@ -5928,14 +5928,17 @@ namespace opengl3
                     rob_traj[i] *= tool_inv;
                 }
 
-                if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
+               // if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
 
-                //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
+                for (int i = 0; i < rob_traj.Count; i+=5) GL1.addFrame(rob_traj[i],2);
 
                 traj_i = GL1.addLineMeshTraj(ps.ToArray(),new Color3d_GL(0.9f),"gen_traj");
 
                 var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType,traj_config);
-                return traj_rob;
+
+                var matrs_end = PathPlanner.traj_to_matr(traj_rob);
+                for (int i = 0; i < matrs_end.Count; i += 5) GL1.addFrame(matrs_end[i], 2);
+                return RobotFrame.generate_string(traj_rob.ToArray()); ;
 
             }
             return "";
@@ -6788,26 +6791,29 @@ namespace opengl3
 
         private void but_rob_con_sc_Click(object sender, EventArgs e)
         {
+            connect_robot(current_robot);
+        }
+
+        void connect_robot(RobotFrame.RobotType robot)
+        {
             if (con1 == null)
             {
                 con1 = new TCPclient();
             }
             string ip = "";
-            if((string)combo_robot_ch.SelectedItem=="Kuka")
+            //if((string)combo_robot_ch.SelectedItem=="Kuka")
+            if (robot == RobotFrame.RobotType.KUKA)
             {
                 ip = "172.31.1.147";
             }
-            else if((string)combo_robot_ch.SelectedItem == "Pulse")
+            else if (robot == RobotFrame.RobotType.PULSE)
+            //else if((string)combo_robot_ch.SelectedItem == "Pulse")
             {
-                ip =  "localhost";
+                ip = "localhost";
             }
 
-
-
-            var pulse = "localhost";
-            var kuka = "172.31.1.147";
             port_tcp = Convert.ToInt32(tb_port_tcp.Text);
-            Console.WriteLine(ip);
+            Console.WriteLine(ip + " " + port_tcp);
             //con1.Connection(port_tcp, kuka);
 
 
@@ -6936,43 +6942,111 @@ namespace opengl3
 
         private void combo_robot_ch_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if((string)combo_robot_ch.SelectedItem == "Kuka")
+            {
+                current_robot = RobotFrame.RobotType.KUKA;
+            }
+            if((string)combo_robot_ch.SelectedItem == "Pulse")
+            {
+                current_robot = RobotFrame.RobotType.PULSE;
+            }
         }
 
         #region samara_con
+        //__________________SIMP______________________
         private void but_con_set_ard_con_Click(object sender, EventArgs e)
         {
             find_ports(true);
-            
+            laserLine = new LaserLine(portArd);
         }
         private void but_con_set_rob_con_Click(object sender, EventArgs e)
+        {
+            connect_robot(RobotFrame.RobotType.KUKA);
+        }
+        //-----------------EXT--------------------
+        private void but_con_ext_disp_down_Click(object sender, EventArgs e)
+        {
+            var div = get_vel(tb_print_vel, tb_print_nozzle_d, tb_print_syr_d);
+            laserLine?.set_dir_disp(-1);
+            laserLine?.set_div_disp(div);
+        }
+
+        private void but_con_ext_disp_up_Click(object sender, EventArgs e)
+        {
+            //var div = get_vel(tb_print_vel, tb_print_nozzle_d, tb_print_syr_d);
+
+            var div = LaserLine.vel_pist_to_ard(Convert.ToDouble( textBox_con_ext_disp_vel.Text));
+            laserLine?.set_dir_disp(1);
+            laserLine?.set_div_disp(div);
+        }
+
+        private void but_con_ext_disp_stop_Click(object sender, EventArgs e)
         {
 
         }
 
-
+        int get_vel(TextBox pr_vel, TextBox pr_nos_d, TextBox pr_syr_d)
+        {
+            double vel_noz = Convert.ToDouble(pr_vel.Text);
+            double d_noz = Convert.ToDouble(pr_nos_d.Text);
+            double d_syr = Convert.ToDouble(pr_syr_d.Text);
+            var div = LaserLine.vel_div(vel_noz, d_noz, d_syr);
+            return div;
+        }
         #endregion
 
         #region samara_scan
 
         private void but_scan_simp_scan_Click(object sender, EventArgs e)
         {
-
+            var pos_rob = positionFromRobot(con1);
+            if (pos_rob != null)
+            {
+                video_scan_name = pos_rob.ToString();
+            }
+            else
+            {
+                video_scan_name = "1";
+            }
+            startScanLaser(3);
         }
 
         private void but_scan_simp_gen_traj_Click(object sender, EventArgs e)
         {
-
+            var tool = new RobotFrame(tB_tool_inf.Text);
+            if (tool.get_pos().magnitude() + tool.get_rot().magnitude() < 0.0001) tool = null;
+            debugBox.Text = gen_traj_rob(RobotFrame.RobotType.PULSE, tool);
         }
 
         private void but_scan_simp_start_print_Click(object sender, EventArgs e)
         {
-
+            try_send_rob("s\n");
         }
+        private void but_scan_simp_cont_beg_Click(object sender, EventArgs e)
+        {
+            GL1.modeGL = modeGL.Paint;
+            GL1.get_contour();
+        }
+
+        private void but_scan_simp_cont_save_Click(object sender, EventArgs e)
+        {
+            GL1.modeGL = modeGL.View;
+        }
+
+        private void but_scan_simp_xy_Click(object sender, EventArgs e)
+        {
+            GL1.planeXY();
+        }
+
 
         #endregion
 
-
+        private void but_show_traj_fr_tb_Click(object sender, EventArgs e)
+        {
+            var traj_rob = RobotFrame.parse_g_code(debugBox.Text, RobotFrame.RobotType.KUKA);
+            var matrs_end = PathPlanner.traj_to_matr(traj_rob.ToList());
+            for (int i = 0; i < matrs_end.Count; i += 5) GL1.addFrame(matrs_end[i], 2);
+        }
     }
 }
 

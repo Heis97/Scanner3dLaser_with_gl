@@ -212,9 +212,14 @@ namespace opengl3
         public static int vel_div(double vel_nos, double d_nos, double d_syr)
         {
             double vel = (vel_nos * d_nos * d_nos) / (d_syr * d_syr);//vel pist
+            return vel_pist_to_ard(vel);
+        }
+
+        public static int vel_pist_to_ard(double vel)
+        {
             double nT = 5000;  //  #timer freq
             double p = 0.8;//     #step mm
-            double rev = 100 * 16 * (60d/16d); //# - reduct steps per revol
+            double rev = 100 * 16 * (60d / 16d); //# - reduct steps per revol
             int st = (int)((nT * p) / (vel * rev));
             //vel = (nT * p) / (st * rev);
             return st;

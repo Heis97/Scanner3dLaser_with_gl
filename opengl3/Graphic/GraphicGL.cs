@@ -1472,6 +1472,11 @@ namespace opengl3
             }
             return null;
         }
+        public void clear_contour()
+        {
+            pointsPaint = new List<Vertex4f>();
+        }
+
         public void Form1_mousewheel(object sender, MouseEventArgs e)
         {
             //Console.WriteLine("P m = " + Pm);
