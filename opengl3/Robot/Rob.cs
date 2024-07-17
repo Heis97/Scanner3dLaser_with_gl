@@ -183,7 +183,7 @@ namespace opengl3
 
 			return Answer;
 		}
-		void calcRob()
+		static public void calcRob()
 		{
 			float[] q = new float[8]{ UtilMatr.toRad(-7.85f),
 					UtilMatr.toRad(44.46f),
@@ -225,6 +225,10 @@ namespace opengl3
 			prin.t(UtilMatr.AbcToMatrix(94.43f, 12.03f, 132.04f));
 			//print(AbcToMatrix(90f, 90f, 90f));
 			Console.WriteLine(pos1);
+			Console.WriteLine("--------------");
+			RobotFrame frame = new RobotFrame("566.31 -30.62 220.70 94.43 12.03 132.04 k",RobotFrame.RobotType.KUKA,false);
+			Console.WriteLine("--------------");
+			prin.t(frame.getMatrix());
 		}
 
 

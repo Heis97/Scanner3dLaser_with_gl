@@ -76,7 +76,7 @@ namespace opengl3
             }
             return Convert.ToDouble(s1);
         }
-        public RobotFrame(string coords, RobotType robotType = RobotType.PULSE)
+        public RobotFrame(string coords, RobotType robotType = RobotType.PULSE, bool rad = true)
         {
             var coords_w = coords.ToLower();
             var coords_s = coords_w.Trim().Split(' ');
@@ -99,6 +99,12 @@ namespace opengl3
                 A = str_to_double(coords_s[3]);
                 B = str_to_double(coords_s[4]);
                 C = str_to_double(coords_s[5]);
+            }
+            if(!rad)
+            {
+                A = to_rad(A);
+                B = to_rad(B);
+                C = to_rad(C);
             }
             this.robotType = robotType;
             if (coords_w.Contains("k"))
@@ -649,6 +655,10 @@ namespace opengl3
                 q_r[i] = q[i] * Math.PI / 180;
             }
             return q_r;
+        }
+        static double to_rad(double q)
+        {
+            return q * Math.PI / 180;
         }
         static public PositionRob comp_forv_kinem(double[] q,int count, bool rad = true, RobotType robotType = RobotType.PULSE)
         {

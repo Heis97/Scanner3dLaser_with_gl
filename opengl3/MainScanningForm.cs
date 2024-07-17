@@ -176,7 +176,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-           //load_camers_v2();
+            //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -255,13 +255,15 @@ namespace opengl3
             // var ps_u = PathPlanner.unif_dist(ps.ToList(), 4.05);
             //   Console.WriteLine("sf");
 
-           // var im_patt = new Mat("2v2.png");
-           // var ps = new System.Drawing.PointF[3];
+            // var im_patt = new Mat("2v2.png");
+            // var ps = new System.Drawing.PointF[3];
             //var find = FindCircles.findCircles(im_patt,ref ps, new Size(6, 7));
 
             //var find = GeometryAnalyse.findCirclesIter(im_patt.Clone(), ref ps, new Size(6, 7));
             //CvInvoke.Imshow("find",find );
             //CvInvoke.WaitKey();
+
+            //Manipulator.calcRob();
         }
 
         void test_handeye()
@@ -6956,6 +6958,20 @@ namespace opengl3
         //__________________SIMP______________________
         private void but_con_set_ard_con_Click(object sender, EventArgs e)
         {
+            var ind_cam = 1;
+            if (camera_ind_ptr[ind_cam] == (IntPtr)0)
+            {
+                videoStart_sam(ind_cam);
+            }
+            imb_ind_cam[0] = ind_cam;
+            ind_cam = 2;
+            if (camera_ind_ptr[ind_cam] == (IntPtr)0)
+            {
+                videoStart_sam(ind_cam);
+            }
+            imb_ind_cam[1] = ind_cam;
+
+
             find_ports(true);
             laserLine = new LaserLine(portArd);
         }
@@ -7009,6 +7025,8 @@ namespace opengl3
                 video_scan_name = "1";
             }
             startScanLaser(3);
+
+            //load
         }
 
         private void but_scan_simp_gen_traj_Click(object sender, EventArgs e)
@@ -7021,6 +7039,10 @@ namespace opengl3
         private void but_scan_simp_start_print_Click(object sender, EventArgs e)
         {
             try_send_rob("s\n");
+        }
+        private void but_scan_simp_stop_print_Click(object sender, EventArgs e)
+        {
+
         }
         private void but_scan_simp_cont_beg_Click(object sender, EventArgs e)
         {

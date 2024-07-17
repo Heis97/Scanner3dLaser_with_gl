@@ -355,7 +355,7 @@ namespace opengl3
             {
                 for (uint j = 0; j < 4; j++)
                 {
-                    Console.Write(Math.Round(matr[i, j],3) + " ");
+                    Console.Write(Math.Round(matr[i, j],5) + " ");
                 }
                 Console.WriteLine(" ");
             }

@@ -92,6 +92,7 @@ namespace opengl3
             this.tB_tool_inf = new System.Windows.Forms.TextBox();
             this.win_tab_diff = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.but_show_traj_fr_tb = new System.Windows.Forms.Button();
             this.but_hydro_model_grav = new System.Windows.Forms.Button();
             this.propGrid_pattern = new System.Windows.Forms.PropertyGrid();
             this.propGrid_traj = new System.Windows.Forms.PropertyGrid();
@@ -405,6 +406,7 @@ namespace opengl3
             this.tabC_scanning_printing_ins = new System.Windows.Forms.TabControl();
             this.tabP_scanning_printing_scan = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.but_scan_simp_stop_print = new System.Windows.Forms.Button();
             this.but_scan_simp_start_print = new System.Windows.Forms.Button();
             this.but_scan_simp_gen_traj = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -417,42 +419,42 @@ namespace opengl3
             this.tabP_scanning_printing_ext = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.label70 = new System.Windows.Forms.Label();
-            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.tb_scan_ext_scan_freq = new System.Windows.Forms.TextBox();
             this.label66 = new System.Windows.Forms.Label();
-            this.button10 = new System.Windows.Forms.Button();
-            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.but_scan_ext_scan = new System.Windows.Forms.Button();
+            this.tb_scan_ext_scan_pres = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.label68 = new System.Windows.Forms.Label();
             this.label69 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.tb_scan_ext_scan_smooth = new System.Windows.Forms.TextBox();
             this.label67 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.tb_scan_ext_scan_strip = new System.Windows.Forms.TextBox();
             this.button15 = new System.Windows.Forms.Button();
             this.button11 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label73 = new System.Windows.Forms.Label();
             this.label74 = new System.Windows.Forms.Label();
-            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.tb_scan_extprinting_vel = new System.Windows.Forms.TextBox();
             this.label71 = new System.Windows.Forms.Label();
             this.label72 = new System.Windows.Forms.Label();
-            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.tb_scan_ext_line_w = new System.Windows.Forms.TextBox();
             this.label64 = new System.Windows.Forms.Label();
             this.label65 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.tb_scan_ext_grid_d = new System.Windows.Forms.TextBox();
             this.label62 = new System.Windows.Forms.Label();
             this.label63 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.tb_scan_ext_syr_d = new System.Windows.Forms.TextBox();
             this.label60 = new System.Windows.Forms.Label();
             this.label61 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.tb_scan_ext_noozle_d = new System.Windows.Forms.TextBox();
             this.button13 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
             this.tabP_developer = new System.Windows.Forms.TabPage();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_show_traj_fr_tb = new System.Windows.Forms.Button();
+            this.but_scan_ext_stop_print = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1194,6 +1196,16 @@ namespace opengl3
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Траектория";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // but_show_traj_fr_tb
+            // 
+            this.but_show_traj_fr_tb.Location = new System.Drawing.Point(127, 754);
+            this.but_show_traj_fr_tb.Name = "but_show_traj_fr_tb";
+            this.but_show_traj_fr_tb.Size = new System.Drawing.Size(75, 34);
+            this.but_show_traj_fr_tb.TabIndex = 165;
+            this.but_show_traj_fr_tb.Text = "Показать траекторию";
+            this.but_show_traj_fr_tb.UseVisualStyleBackColor = true;
+            this.but_show_traj_fr_tb.Click += new System.EventHandler(this.but_show_traj_fr_tb_Click);
             // 
             // but_hydro_model_grav
             // 
@@ -4489,6 +4501,7 @@ namespace opengl3
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.but_scan_simp_stop_print);
             this.groupBox5.Controls.Add(this.but_scan_simp_start_print);
             this.groupBox5.Controls.Add(this.but_scan_simp_gen_traj);
             this.groupBox5.Location = new System.Drawing.Point(6, 428);
@@ -4498,9 +4511,19 @@ namespace opengl3
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Настройки траектории и печати";
             // 
+            // but_scan_simp_stop_print
+            // 
+            this.but_scan_simp_stop_print.Location = new System.Drawing.Point(335, 229);
+            this.but_scan_simp_stop_print.Name = "but_scan_simp_stop_print";
+            this.but_scan_simp_stop_print.Size = new System.Drawing.Size(316, 117);
+            this.but_scan_simp_stop_print.TabIndex = 5;
+            this.but_scan_simp_stop_print.Text = "Остановить печать";
+            this.but_scan_simp_stop_print.UseVisualStyleBackColor = true;
+            this.but_scan_simp_stop_print.Click += new System.EventHandler(this.but_scan_simp_stop_print_Click);
+            // 
             // but_scan_simp_start_print
             // 
-            this.but_scan_simp_start_print.Location = new System.Drawing.Point(335, 212);
+            this.but_scan_simp_start_print.Location = new System.Drawing.Point(335, 106);
             this.but_scan_simp_start_print.Name = "but_scan_simp_start_print";
             this.but_scan_simp_start_print.Size = new System.Drawing.Size(316, 117);
             this.but_scan_simp_start_print.TabIndex = 4;
@@ -4510,7 +4533,7 @@ namespace opengl3
             // 
             // but_scan_simp_gen_traj
             // 
-            this.but_scan_simp_gen_traj.Location = new System.Drawing.Point(13, 212);
+            this.but_scan_simp_gen_traj.Location = new System.Drawing.Point(13, 165);
             this.but_scan_simp_gen_traj.Name = "but_scan_simp_gen_traj";
             this.but_scan_simp_gen_traj.Size = new System.Drawing.Size(316, 117);
             this.but_scan_simp_gen_traj.TabIndex = 3;
@@ -4606,10 +4629,10 @@ namespace opengl3
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.label70);
-            this.groupBox6.Controls.Add(this.textBox8);
+            this.groupBox6.Controls.Add(this.tb_scan_ext_scan_freq);
             this.groupBox6.Controls.Add(this.label66);
-            this.groupBox6.Controls.Add(this.button10);
-            this.groupBox6.Controls.Add(this.textBox7);
+            this.groupBox6.Controls.Add(this.but_scan_ext_scan);
+            this.groupBox6.Controls.Add(this.tb_scan_ext_scan_pres);
             this.groupBox6.Location = new System.Drawing.Point(6, 6);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(657, 192);
@@ -4626,13 +4649,13 @@ namespace opengl3
             this.label70.TabIndex = 17;
             this.label70.Text = "Кадровая частота сканирования";
             // 
-            // textBox8
+            // tb_scan_ext_scan_freq
             // 
-            this.textBox8.Location = new System.Drawing.Point(188, 45);
-            this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(100, 20);
-            this.textBox8.TabIndex = 16;
-            this.textBox8.Text = "30";
+            this.tb_scan_ext_scan_freq.Location = new System.Drawing.Point(188, 45);
+            this.tb_scan_ext_scan_freq.Name = "tb_scan_ext_scan_freq";
+            this.tb_scan_ext_scan_freq.Size = new System.Drawing.Size(100, 20);
+            this.tb_scan_ext_scan_freq.TabIndex = 16;
+            this.tb_scan_ext_scan_freq.Text = "30";
             // 
             // label66
             // 
@@ -4643,30 +4666,30 @@ namespace opengl3
             this.label66.TabIndex = 15;
             this.label66.Text = "Точность сканирования";
             // 
-            // button10
+            // but_scan_ext_scan
             // 
-            this.button10.Location = new System.Drawing.Point(148, 69);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(333, 117);
-            this.button10.TabIndex = 0;
-            this.button10.Text = "Сканировать";
-            this.button10.UseVisualStyleBackColor = true;
+            this.but_scan_ext_scan.Location = new System.Drawing.Point(148, 69);
+            this.but_scan_ext_scan.Name = "but_scan_ext_scan";
+            this.but_scan_ext_scan.Size = new System.Drawing.Size(333, 117);
+            this.but_scan_ext_scan.TabIndex = 0;
+            this.but_scan_ext_scan.Text = "Сканировать";
+            this.but_scan_ext_scan.UseVisualStyleBackColor = true;
             // 
-            // textBox7
+            // tb_scan_ext_scan_pres
             // 
-            this.textBox7.Location = new System.Drawing.Point(188, 19);
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(100, 20);
-            this.textBox7.TabIndex = 14;
-            this.textBox7.Text = "200";
+            this.tb_scan_ext_scan_pres.Location = new System.Drawing.Point(188, 19);
+            this.tb_scan_ext_scan_pres.Name = "tb_scan_ext_scan_pres";
+            this.tb_scan_ext_scan_pres.Size = new System.Drawing.Size(100, 20);
+            this.tb_scan_ext_scan_pres.TabIndex = 14;
+            this.tb_scan_ext_scan_pres.Text = "200";
             // 
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.label68);
             this.groupBox7.Controls.Add(this.label69);
-            this.groupBox7.Controls.Add(this.textBox6);
+            this.groupBox7.Controls.Add(this.tb_scan_ext_scan_smooth);
             this.groupBox7.Controls.Add(this.label67);
-            this.groupBox7.Controls.Add(this.textBox5);
+            this.groupBox7.Controls.Add(this.tb_scan_ext_scan_strip);
             this.groupBox7.Controls.Add(this.button15);
             this.groupBox7.Controls.Add(this.button11);
             this.groupBox7.Controls.Add(this.button12);
@@ -4695,13 +4718,13 @@ namespace opengl3
             this.label69.TabIndex = 12;
             this.label69.Text = "Сглаживание";
             // 
-            // textBox6
+            // tb_scan_ext_scan_smooth
             // 
-            this.textBox6.Location = new System.Drawing.Point(499, 83);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(100, 20);
-            this.textBox6.TabIndex = 11;
-            this.textBox6.Text = "0.5";
+            this.tb_scan_ext_scan_smooth.Location = new System.Drawing.Point(499, 83);
+            this.tb_scan_ext_scan_smooth.Name = "tb_scan_ext_scan_smooth";
+            this.tb_scan_ext_scan_smooth.Size = new System.Drawing.Size(100, 20);
+            this.tb_scan_ext_scan_smooth.TabIndex = 11;
+            this.tb_scan_ext_scan_smooth.Text = "0.5";
             // 
             // label67
             // 
@@ -4712,13 +4735,13 @@ namespace opengl3
             this.label67.TabIndex = 9;
             this.label67.Text = "Разреженность модели";
             // 
-            // textBox5
+            // tb_scan_ext_scan_strip
             // 
-            this.textBox5.Location = new System.Drawing.Point(499, 54);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(100, 20);
-            this.textBox5.TabIndex = 8;
-            this.textBox5.Text = "200";
+            this.tb_scan_ext_scan_strip.Location = new System.Drawing.Point(499, 54);
+            this.tb_scan_ext_scan_strip.Name = "tb_scan_ext_scan_strip";
+            this.tb_scan_ext_scan_strip.Size = new System.Drawing.Size(100, 20);
+            this.tb_scan_ext_scan_strip.TabIndex = 8;
+            this.tb_scan_ext_scan_strip.Text = "3";
             // 
             // button15
             // 
@@ -4749,21 +4772,22 @@ namespace opengl3
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.but_scan_ext_stop_print);
             this.groupBox8.Controls.Add(this.label73);
             this.groupBox8.Controls.Add(this.label74);
-            this.groupBox8.Controls.Add(this.textBox10);
+            this.groupBox8.Controls.Add(this.tb_scan_extprinting_vel);
             this.groupBox8.Controls.Add(this.label71);
             this.groupBox8.Controls.Add(this.label72);
-            this.groupBox8.Controls.Add(this.textBox9);
+            this.groupBox8.Controls.Add(this.tb_scan_ext_line_w);
             this.groupBox8.Controls.Add(this.label64);
             this.groupBox8.Controls.Add(this.label65);
-            this.groupBox8.Controls.Add(this.textBox4);
+            this.groupBox8.Controls.Add(this.tb_scan_ext_grid_d);
             this.groupBox8.Controls.Add(this.label62);
             this.groupBox8.Controls.Add(this.label63);
-            this.groupBox8.Controls.Add(this.textBox3);
+            this.groupBox8.Controls.Add(this.tb_scan_ext_syr_d);
             this.groupBox8.Controls.Add(this.label60);
             this.groupBox8.Controls.Add(this.label61);
-            this.groupBox8.Controls.Add(this.textBox2);
+            this.groupBox8.Controls.Add(this.tb_scan_ext_noozle_d);
             this.groupBox8.Controls.Add(this.button13);
             this.groupBox8.Controls.Add(this.button14);
             this.groupBox8.Location = new System.Drawing.Point(6, 504);
@@ -4791,12 +4815,12 @@ namespace opengl3
             this.label74.TabIndex = 18;
             this.label74.Text = "Скорость печати";
             // 
-            // textBox10
+            // tb_scan_extprinting_vel
             // 
-            this.textBox10.Location = new System.Drawing.Point(171, 138);
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(100, 20);
-            this.textBox10.TabIndex = 17;
+            this.tb_scan_extprinting_vel.Location = new System.Drawing.Point(171, 138);
+            this.tb_scan_extprinting_vel.Name = "tb_scan_extprinting_vel";
+            this.tb_scan_extprinting_vel.Size = new System.Drawing.Size(100, 20);
+            this.tb_scan_extprinting_vel.TabIndex = 17;
             // 
             // label71
             // 
@@ -4816,12 +4840,12 @@ namespace opengl3
             this.label72.TabIndex = 15;
             this.label72.Text = "Толщина линии";
             // 
-            // textBox9
+            // tb_scan_ext_line_w
             // 
-            this.textBox9.Location = new System.Drawing.Point(171, 112);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(100, 20);
-            this.textBox9.TabIndex = 14;
+            this.tb_scan_ext_line_w.Location = new System.Drawing.Point(171, 112);
+            this.tb_scan_ext_line_w.Name = "tb_scan_ext_line_w";
+            this.tb_scan_ext_line_w.Size = new System.Drawing.Size(100, 20);
+            this.tb_scan_ext_line_w.TabIndex = 14;
             // 
             // label64
             // 
@@ -4841,12 +4865,12 @@ namespace opengl3
             this.label65.TabIndex = 12;
             this.label65.Text = "Ширина решётки";
             // 
-            // textBox4
+            // tb_scan_ext_grid_d
             // 
-            this.textBox4.Location = new System.Drawing.Point(171, 86);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 11;
+            this.tb_scan_ext_grid_d.Location = new System.Drawing.Point(171, 86);
+            this.tb_scan_ext_grid_d.Name = "tb_scan_ext_grid_d";
+            this.tb_scan_ext_grid_d.Size = new System.Drawing.Size(100, 20);
+            this.tb_scan_ext_grid_d.TabIndex = 11;
             // 
             // label62
             // 
@@ -4866,12 +4890,12 @@ namespace opengl3
             this.label63.TabIndex = 9;
             this.label63.Text = "Диаметр шприца";
             // 
-            // textBox3
+            // tb_scan_ext_syr_d
             // 
-            this.textBox3.Location = new System.Drawing.Point(171, 60);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 8;
+            this.tb_scan_ext_syr_d.Location = new System.Drawing.Point(171, 60);
+            this.tb_scan_ext_syr_d.Name = "tb_scan_ext_syr_d";
+            this.tb_scan_ext_syr_d.Size = new System.Drawing.Size(100, 20);
+            this.tb_scan_ext_syr_d.TabIndex = 8;
             // 
             // label60
             // 
@@ -4891,16 +4915,16 @@ namespace opengl3
             this.label61.TabIndex = 6;
             this.label61.Text = "Толщина сопла";
             // 
-            // textBox2
+            // tb_scan_ext_noozle_d
             // 
-            this.textBox2.Location = new System.Drawing.Point(171, 34);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 5;
+            this.tb_scan_ext_noozle_d.Location = new System.Drawing.Point(171, 34);
+            this.tb_scan_ext_noozle_d.Name = "tb_scan_ext_noozle_d";
+            this.tb_scan_ext_noozle_d.Size = new System.Drawing.Size(100, 20);
+            this.tb_scan_ext_noozle_d.TabIndex = 5;
             // 
             // button13
             // 
-            this.button13.Location = new System.Drawing.Point(328, 224);
+            this.button13.Location = new System.Drawing.Point(328, 160);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(316, 117);
             this.button13.TabIndex = 4;
@@ -4936,15 +4960,14 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // but_show_traj_fr_tb
+            // but_scan_ext_stop_print
             // 
-            this.but_show_traj_fr_tb.Location = new System.Drawing.Point(127, 754);
-            this.but_show_traj_fr_tb.Name = "but_show_traj_fr_tb";
-            this.but_show_traj_fr_tb.Size = new System.Drawing.Size(75, 34);
-            this.but_show_traj_fr_tb.TabIndex = 165;
-            this.but_show_traj_fr_tb.Text = "Показать траекторию";
-            this.but_show_traj_fr_tb.UseVisualStyleBackColor = true;
-            this.but_show_traj_fr_tb.Click += new System.EventHandler(this.but_show_traj_fr_tb_Click);
+            this.but_scan_ext_stop_print.Location = new System.Drawing.Point(328, 283);
+            this.but_scan_ext_stop_print.Name = "but_scan_ext_stop_print";
+            this.but_scan_ext_stop_print.Size = new System.Drawing.Size(316, 117);
+            this.but_scan_ext_stop_print.TabIndex = 20;
+            this.but_scan_ext_stop_print.Text = "Остановить печать";
+            this.but_scan_ext_stop_print.UseVisualStyleBackColor = true;
             // 
             // MainScanningForm
             // 
@@ -5467,35 +5490,35 @@ namespace opengl3
         private System.Windows.Forms.TabPage tabP_scanning_printing_ext;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Label label70;
-        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.TextBox tb_scan_ext_scan_freq;
         private System.Windows.Forms.Label label66;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.Button but_scan_ext_scan;
+        private System.Windows.Forms.TextBox tb_scan_ext_scan_pres;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Label label68;
         private System.Windows.Forms.Label label69;
-        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox tb_scan_ext_scan_smooth;
         private System.Windows.Forms.Label label67;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox tb_scan_ext_scan_strip;
         private System.Windows.Forms.Button button15;
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.Label label73;
         private System.Windows.Forms.Label label74;
-        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.TextBox tb_scan_extprinting_vel;
         private System.Windows.Forms.Label label71;
         private System.Windows.Forms.Label label72;
-        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.TextBox tb_scan_ext_line_w;
         private System.Windows.Forms.Label label64;
         private System.Windows.Forms.Label label65;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox tb_scan_ext_grid_d;
         private System.Windows.Forms.Label label62;
         private System.Windows.Forms.Label label63;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox tb_scan_ext_syr_d;
         private System.Windows.Forms.Label label60;
         private System.Windows.Forms.Label label61;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox tb_scan_ext_noozle_d;
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Button button14;
         private System.Windows.Forms.Button but_con_ext_find_ports;
@@ -5503,6 +5526,8 @@ namespace opengl3
         private System.Windows.Forms.Button but_scan_simp_xy;
         private System.Windows.Forms.Button but_scan_centr;
         private System.Windows.Forms.Button but_show_traj_fr_tb;
+        private System.Windows.Forms.Button but_scan_simp_stop_print;
+        private System.Windows.Forms.Button but_scan_ext_stop_print;
     }
 }
 
