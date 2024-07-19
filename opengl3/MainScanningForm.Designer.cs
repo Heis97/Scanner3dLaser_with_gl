@@ -433,6 +433,7 @@ namespace opengl3
             this.button11 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.but_scan_ext_stop_print = new System.Windows.Forms.Button();
             this.label73 = new System.Windows.Forms.Label();
             this.label74 = new System.Windows.Forms.Label();
             this.tb_scan_extprinting_vel = new System.Windows.Forms.TextBox();
@@ -454,7 +455,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_scan_ext_stop_print = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2588,7 +2588,7 @@ namespace opengl3
             this.glControl1.Margin = new System.Windows.Forms.Padding(4);
             this.glControl1.MultisampleBits = ((uint)(8u));
             this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(1200, 1000);
+            this.glControl1.Size = new System.Drawing.Size(1000, 1000);
             this.glControl1.StencilBits = ((uint)(0u));
             this.glControl1.TabIndex = 65;
             this.glControl1.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_ContextCreated);
@@ -4797,6 +4797,15 @@ namespace opengl3
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Настройки траектории и печати";
             // 
+            // but_scan_ext_stop_print
+            // 
+            this.but_scan_ext_stop_print.Location = new System.Drawing.Point(328, 283);
+            this.but_scan_ext_stop_print.Name = "but_scan_ext_stop_print";
+            this.but_scan_ext_stop_print.Size = new System.Drawing.Size(316, 117);
+            this.but_scan_ext_stop_print.TabIndex = 20;
+            this.but_scan_ext_stop_print.Text = "Остановить печать";
+            this.but_scan_ext_stop_print.UseVisualStyleBackColor = true;
+            // 
             // label73
             // 
             this.label73.AutoSize = true;
@@ -4959,15 +4968,6 @@ namespace opengl3
             // timer2
             // 
             this.timer2.Enabled = true;
-            // 
-            // but_scan_ext_stop_print
-            // 
-            this.but_scan_ext_stop_print.Location = new System.Drawing.Point(328, 283);
-            this.but_scan_ext_stop_print.Name = "but_scan_ext_stop_print";
-            this.but_scan_ext_stop_print.Size = new System.Drawing.Size(316, 117);
-            this.but_scan_ext_stop_print.TabIndex = 20;
-            this.but_scan_ext_stop_print.Text = "Остановить печать";
-            this.but_scan_ext_stop_print.UseVisualStyleBackColor = true;
             // 
             // MainScanningForm
             // 

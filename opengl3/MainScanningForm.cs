@@ -585,9 +585,13 @@ namespace opengl3
         }
         void init_vars()
         {
-            
+
 
             #region important
+
+            
+
+
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "св Круги грид", "Ничего" });
             combo_robot_ch.Items.AddRange(new string[] { "Pulse", "Kuka" });
           
@@ -1656,7 +1660,8 @@ namespace opengl3
                 var but = addButton(control, i.ToString(), control.AccessibleName, new Size(33 * i, 1));
                 but.Click += start_video_but;
                 //but.
-                tabMain.Controls.Add(but);
+
+                control.Parent.Controls.Add(but);
             }
         }
 
@@ -6675,6 +6680,9 @@ namespace opengl3
 
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
+            this.tabP_scanning_printing.Controls.Add(this.imageBox1);
+            this.tabP_scanning_printing.Controls.Add(this.imageBox2);
+
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
             //resize();
             for (int i = 0; i < imb_main.Length; i++)

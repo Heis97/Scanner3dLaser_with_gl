@@ -1348,7 +1348,7 @@ namespace opengl3
                             new Color3d_GL(1, 0, 0), name_cont);
 
                             buffersGl.setTranspobj(name_cont, 0.3f);
-                            addLineMeshTraj(cont_p3d,Color3d_GL.red(), name_cont_l);
+                            addLineMeshTrajLoop(cont_p3d,Color3d_GL.red(), name_cont_l);
 
                         }
                            
@@ -1358,7 +1358,9 @@ namespace opengl3
                     {
                         pointsPaint.Clear();
                         var name_cont = "cont";
+                        var name_cont_l = "cont_l";
                         buffersGl.removeObj(name_cont);
+                        buffersGl.removeObj(name_cont_l);
                     }
                     break;
             }
@@ -2306,13 +2308,13 @@ namespace opengl3
                 mesh.Add((float)points[i].y);
                 mesh.Add((float)points[i].z);
             }
-           /* mesh.Add((float)points[i - 1].x);
-            mesh.Add((float)points[i - 1].y);
-            mesh.Add((float)points[i - 1].z);
+            mesh.Add((float)points[points.Length - 1].x);
+            mesh.Add((float)points[points.Length - 1].y);
+            mesh.Add((float)points[points.Length - 1].z);
 
             mesh.Add((float)points[0].x);
             mesh.Add((float)points[0].y);
-            mesh.Add((float)points[0].z);*/
+            mesh.Add((float)points[0].z);
             return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color, name);
         }
 
