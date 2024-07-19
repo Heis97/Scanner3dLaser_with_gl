@@ -5904,9 +5904,17 @@ namespace opengl3
             debugBox.Text = gen_traj_rob(RobotFrame.RobotType.KUKA);
         }
 
-        string gen_traj_rob(RobotFrame.RobotType robotType, RobotFrame tool = null)
+        string gen_traj_rob(RobotFrame.RobotType robotType, RobotFrame tool = null,string obj_3d = null)
         {
-            var selected_obj = selected_object(); if (selected_obj == null) return "";
+            string selected_obj = "";
+            if (obj_3d!=null) selected_obj = obj_3d;
+            else
+            {
+                selected_obj = selected_object();
+                if (selected_obj == null) return "";
+            }
+            
+
             var mesh = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
             var cont = GL1.get_contour()?.ToList();
             if (mesh != null && cont != null)
@@ -6964,6 +6972,7 @@ namespace opengl3
                 videoStart_sam(ind_cam);
             }
             imb_ind_cam[0] = ind_cam;
+
             ind_cam = 2;
             if (camera_ind_ptr[ind_cam] == (IntPtr)0)
             {
@@ -6971,9 +6980,15 @@ namespace opengl3
             }
             imb_ind_cam[1] = ind_cam;
 
-
+            Thread.Sleep(5000);
             find_ports(true);
+            Thread.Sleep(300);
             laserLine = new LaserLine(portArd);
+            laserLine?.setShvpVel(200); Thread.Sleep(100);
+            laserLine?.laserOn(); Thread.Sleep(100);
+            laserLine?.set_home_laser(); Thread.Sleep(1000);
+            laserLine?.setShvpPos(350); Thread.Sleep(100);
+            laserLine?.laserOff();
         }
         private void but_con_set_rob_con_Click(object sender, EventArgs e)
         {
@@ -6998,7 +7013,7 @@ namespace opengl3
 
         private void but_con_ext_disp_stop_Click(object sender, EventArgs e)
         {
-
+            laserLine?.set_dir_disp(0);
         }
 
         int get_vel(TextBox pr_vel, TextBox pr_nos_d, TextBox pr_syr_d)
@@ -7024,16 +7039,38 @@ namespace opengl3
             {
                 video_scan_name = "1";
             }
-            startScanLaser(3);
-
+            startScanLaser(8);
+            Thread.Sleep(20000);
+            start_load_scan();
             //load
+        }
+
+        public void load_scan_full()
+        {
+            var scan_path = textB_scan_path.Text;
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var stereo_cal_path = textB_stereo_cal_path.Text;
+            string bfs_path = "bfs_cal.txt";
+
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
+            this.scanner = scanner;
+            load_scan_v2(scanner, scan_path, scanner_config);
+        }
+
+        public void start_load_scan()
+        {
+            try
+            {
+                Thread robot_thread = new Thread(load_scan_full);
+                robot_thread.Start();
+            }
+            catch{}
         }
 
         private void but_scan_simp_gen_traj_Click(object sender, EventArgs e)
         {
-            var tool = new RobotFrame(tB_tool_inf.Text);
-            if (tool.get_pos().magnitude() + tool.get_rot().magnitude() < 0.0001) tool = null;
-            debugBox.Text = gen_traj_rob(RobotFrame.RobotType.PULSE, tool);
+            debugBox.Text = gen_traj_rob(RobotFrame.RobotType.KUKA,null,scan_i);
         }
 
         private void but_scan_simp_start_print_Click(object sender, EventArgs e)

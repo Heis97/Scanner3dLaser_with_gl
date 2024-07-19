@@ -274,10 +274,6 @@ namespace opengl3
 
             return -1;
         }
-        void draw_cont()
-        {
-
-        }
 
         public void glControl_Render(object sender, GlControlEventArgs e)
         {
@@ -1342,13 +1338,18 @@ namespace opengl3
                         if(pointsPaint.Count>2)
                         {
                             var name_cont = "cont";
+                            var name_cont_l = "cont_l";
                             buffersGl.removeObj(name_cont);
-                        addMeshWithoutNorm(
-                            z_mesh_from_cont_xy(
-                                Point3d_GL.toPoints(pointsPaint.ToArray()), 400),
+                            buffersGl.removeObj(name_cont_l);
+                            var cont_p3d = Point3d_GL.toPoints(pointsPaint.ToArray());
+                            addMeshWithoutNorm(
+                            z_mesh_from_cont_xy(cont_p3d, 400),
                             PrimitiveType.Triangles,
                             new Color3d_GL(1, 0, 0), name_cont);
+
                             buffersGl.setTranspobj(name_cont, 0.3f);
+                            addLineMeshTraj(cont_p3d,Color3d_GL.red(), name_cont_l);
+
                         }
                            
 
@@ -2273,8 +2274,8 @@ namespace opengl3
             var mesh = new List<float>();
             //Gl.LineStipple(2, 58360);
             // Gl.Enable(EnableCap.LineStipple);
-            if (points == null) return "null";
-            if (points.Length == 0) return "null";
+            if (points == null) return null;
+            if (points.Length == 0) return null;
             for (int i=1; i<points.Length;i++)
             {
                 mesh.Add((float)points[i - 1].x);
@@ -2286,6 +2287,33 @@ namespace opengl3
                 mesh.Add((float)points[i].z);
             }
             return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
+        }
+
+        public string addLineMeshTrajLoop(Point3d_GL[] points, Color3d_GL color = null, string name = "new LineMesh")
+        {
+            var mesh = new List<float>();
+            //Gl.LineStipple(2, 58360);
+            // Gl.Enable(EnableCap.LineStipple);
+            if (points == null) return null;
+            if (points.Length < 2) return null;
+            for (int i = 1; i < points.Length; i++)
+            {
+                mesh.Add((float)points[i - 1].x);
+                mesh.Add((float)points[i - 1].y);
+                mesh.Add((float)points[i - 1].z);
+
+                mesh.Add((float)points[i].x);
+                mesh.Add((float)points[i].y);
+                mesh.Add((float)points[i].z);
+            }
+           /* mesh.Add((float)points[i - 1].x);
+            mesh.Add((float)points[i - 1].y);
+            mesh.Add((float)points[i - 1].z);
+
+            mesh.Add((float)points[0].x);
+            mesh.Add((float)points[0].y);
+            mesh.Add((float)points[0].z);*/
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color, name);
         }
 
         public string addTraj(Point3d_GL[] points, string name = "new LineMesh")
