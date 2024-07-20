@@ -7114,6 +7114,107 @@ namespace opengl3
             var matrs_end = PathPlanner.traj_to_matr(traj_rob.ToList());
             for (int i = 0; i < matrs_end.Count; i += 5) GL1.addFrame(matrs_end[i], 2);
         }
+
+
+
+        Scanner load_scanner_v3()
+        {
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var stereo_cal_path = textB_stereo_cal_path.Text;
+            string bfs_path = "bfs_cal.txt";
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
+            this.scanner = scanner;
+            return scanner;
+        }
+
+        //private void imageBox1_Click(object sender, EventArgs e)
+        //{
+        //    var scanner = load_scanner_v3();
+        //    pos_cameras(scanner);
+        //}
+        RobotFrame get_pos_robot()
+        {
+            return null;
+        }
+        void start_find_point_laser(PointF p_u)//передаём точку пользователя везде
+        {
+            Thread laser_find_thread = new Thread(laser_on_point);//создаём поток
+            laser_find_thread.Start(p_u);//запускаем поток
+        }
+        private PointF get_laser_x(PointF p_u)
+        {
+            laserLine?.laserOff();//выключаем лазер и ждём 
+            Thread.Sleep(300);
+            /* makePhotoLaser(                       //фото сохранять нет необходимости
+                     new float[] { x },
+                     new string[] { "cam1\\" + folder_san + "\\orig", "cam2\\" + folder_scan + "\\orig" },
+                     new ImageBox[] { imageBox1, imageBox2 }
+                     );
+             Thread.Sleep(200);
+             //var im1 = (Mat)imageBox1.Image;
+            // var im2 = (Mat)imageBox2.Image;*///сейчас получается что избражения с разных камер будут получены
+                                                //нужно примерно так:
+            var im1 = (Mat)imageBox1.Image;//сохраняем изображение
+            laserLine?.laserOn();//выключаем лазер , ждём, делаем ещё фото
+            Thread.Sleep(300);
+            var im2 = (Mat)imageBox1.Image;
+            laserLine?.laserOff();
+            var new_im = im2 - im1;//теперь считаем их разность
+            var ps = Detection.detectLineDiff(new_im);
+            
+            var p_las_x = ps[Detection.p_in_ps_by_y(ps, (int)p_u.Y)];//далее получаем текущий x для лазерной линии
+            return p_las_x;
+        }
+        private void laser_on_point(object ob_u)
+        {
+            PointF p_u = (PointF)ob_u;
+            PointF p_las_cam = get_laser_x(p_u);//текущая позиция лазера на линии точки пользователя
+            while (Math.Abs(p_u.X - p_las_cam.X)>1)//пока разница по х с точкой пользователя больше 1 пикселя
+            {
+                var cur_pos_las = laserLine.get_las_pos();//получаем текущую координату двигателя лазера
+                laserLine.setShvpPos(cur_pos_las + (int)(p_u.X - p_las_cam.X));//перемещаемся в сторону для уменьшения разницы
+                Thread.Sleep(200);//ждём пока лазер завершит движение
+                p_las_cam = get_laser_x(p_u);//заного снимаем текущую координату лазера на изображении
+            }
+            
+            
+
+        }
+
+
+        private void imageBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            var scanner = load_scanner_v3();
+            pos_cameras(scanner);
+            var ib = (ImageBox)sender;
+            var x_offset = ib.HorizontalScrollBar.Value;
+            var y_offset = ib.VerticalScrollBar.Value;
+            var x = e.Location.X;
+            var y = e.Location.Y;
+            var zoom = ib.ZoomScale;
+            int Xs = (int)((x / zoom) + x_offset);
+            int ys = (int)((y / zoom) + y_offset);
+            start_find_point_laser(new PointF(Xs,ys));
+            //p_in_ps_by_y(X, Y);
+
+            //MessageBox.Show(String.Format("{0}, {1}", X, Y));
+
+        }
+        private void pos_cameras(Scanner scanner)
+        {
+            var rob_pos = get_pos_robot();
+            var stereo_cam = scanner.stereoCamera;
+            Matrix<double> robotPosition = rob_pos.getMatrix();
+            Matrix<double> Bfs = stereo_cam.Bfs;
+            Matrix<double> R = stereo_cam.R;
+            Matrix<double> camera1Position = robotPosition * Bfs;
+            Matrix<double> camera2Position = camera1Position * R;
+            Console.WriteLine("Позиция Камеры 1:");
+            prin.t(camera1Position);
+            Console.WriteLine("Позиция Камеры 2:");
+            prin.t(camera2Position);
+        }
     }
 }
 
