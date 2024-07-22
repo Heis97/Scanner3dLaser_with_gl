@@ -5649,8 +5649,8 @@ namespace opengl3
         void find_ports(bool last = false)
         {
             //comboBox_portsArd.Items.Add("COM3");
-            comboBox_portsArd.Items.Clear();
-
+           // comboBox_portsArd.Items.Clear();
+            comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.Items.Clear()));
             // Получаем список COM портов доступных в системе
             string[] portnames = SerialPort.GetPortNames();
             // Проверяем есть ли доступные
@@ -5661,14 +5661,14 @@ namespace opengl3
             foreach (string portName in portnames)
             {
                 //добавляем доступные COM порты в список           
-                comboBox_portsArd.Items.Add(portName);
+                comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.Items.Add(portName)));
                 //Console.WriteLine(portnames.Length);
                 if (portnames[0] != null)
                 {
-                    comboBox_portsArd.SelectedItem = portnames[0];
+                    comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.SelectedItem = portnames[0]));
                     if(last)
                     {
-                        comboBox_portsArd.SelectedItem = portnames[portnames.Length-1];
+                        comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.SelectedItem = portnames[portnames.Length-1]));
                     }
                 }
             }
@@ -6678,12 +6678,13 @@ namespace opengl3
 
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
             //resize();
+            
+            add_buttons_rob_contr();
             for (int i = 0; i < imb_main.Length; i++)
             {
                 imb_main[i].AccessibleName = i.ToString();
                 addButsForControl((Control)imb_main[i], 4);
             }
-            add_buttons_rob_contr();
             for (int i = 0; i < imb_main.Length; i++)
             {
                 imb_main[i].SendToBack();
@@ -6975,29 +6976,33 @@ namespace opengl3
         //__________________SIMP______________________
         private void but_con_set_ard_con_Click(object sender, EventArgs e)
         {
-            var ind_cam = 1;
-            if (camera_ind_ptr[ind_cam] == (IntPtr)0)
-            {
-                videoStart_sam(ind_cam);
-            }
-            imb_ind_cam[0] = ind_cam;
+            Thread connect_las_thread = new Thread(connect_las);
+            Thread connect_cam_thread = new Thread(connect_cams);
+            connect_las_thread.Start();
+            connect_cam_thread.Start();
+        }
 
-            ind_cam = 2;
-            if (camera_ind_ptr[ind_cam] == (IntPtr)0)
-            {
-                videoStart_sam(ind_cam);
-            }
-            imb_ind_cam[1] = ind_cam;
-
-            Thread.Sleep(5000);
+        void connect_las()
+        {
             find_ports(true);
             Thread.Sleep(300);
-            laserLine = new LaserLine(portArd);
+            laserLine = new LaserLine(portArd); Thread.Sleep(1500);
             laserLine?.setShvpVel(200); Thread.Sleep(100);
             laserLine?.laserOn(); Thread.Sleep(100);
             laserLine?.set_home_laser(); Thread.Sleep(1000);
             laserLine?.setShvpPos(350); Thread.Sleep(100);
             laserLine?.laserOff();
+            label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Контр РО подключён"));
+        }
+        void connect_cams()
+        {
+            var ind_cam = 1;
+            videoStart_sam(ind_cam);
+            imb_ind_cam[0] = ind_cam;
+            ind_cam = 2;
+            videoStart_sam(ind_cam);
+            imb_ind_cam[1] = ind_cam;
+            label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.Text = "Камеры подключены"));
         }
         private void but_con_set_rob_con_Click(object sender, EventArgs e)
         {
@@ -7019,7 +7024,15 @@ namespace opengl3
             laserLine?.set_dir_disp(1);
             laserLine?.set_div_disp(div);
         }
+        private void but_con_ext_disp_up_push_Click(object sender, EventArgs e)
+        {
+            laserLine?.push_back_();
+        }
 
+        private void but_con_ext_disp_down_push_Click(object sender, EventArgs e)
+        {
+            laserLine?.push_forward();
+        }
         private void but_con_ext_disp_stop_Click(object sender, EventArgs e)
         {
             laserLine?.set_dir_disp(0);
@@ -7308,6 +7321,8 @@ namespace opengl3
                 dist_contr_rob = Convert.ToDouble(checkBox.AccessibleName);
             }
         }
+
+       
     }
 }
 

@@ -215,7 +215,7 @@ namespace opengl3
         {
             send(0, push_forw);
         }
-        public void push_bac()
+        public void push_back_()
         {
             send(0, push_back);
         }
