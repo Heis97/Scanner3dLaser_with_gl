@@ -26,6 +26,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        double dist_contr_rob = 10;
         Matrix4x4f[] ms = new Matrix4x4f[8];
         //var qs = new Matrix4x4f[8];
         Matrix4x4f[] qms = new Matrix4x4f[8];
@@ -589,8 +590,8 @@ namespace opengl3
 
             #region important
 
-            
 
+            
 
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "св Круги грид", "Ничего" });
             combo_robot_ch.Items.AddRange(new string[] { "Pulse", "Kuka" });
@@ -3655,10 +3656,10 @@ namespace opengl3
             if (mes.Length < 2) return;
             var vals_str = mes.Split(' ');
             if (vals_str.Length != 2) return;
-            var vel = Convert.ToDouble(vals_str[0]);
-            var dir = Convert.ToDouble(vals_str[1]);
-            Console.WriteLine(vel + " " + dir);
-            ard.set_dir_disp((int)-dir);
+            var var = Convert.ToDouble(vals_str[0]);
+            var val = Convert.ToDouble(vals_str[1]);
+            Console.WriteLine("resend_from_rob: "+val + " " + var);
+            ard.send((int)val, (int)var);
             //ard.set_div_disp(vel);
         }
 
@@ -3667,12 +3668,12 @@ namespace opengl3
             var posRob = positionFromRobot(con1);
             if (posRob != null)
             {
-                nameX.Text = posRob.x.ToString();
-                nameY.Text = posRob.y.ToString();
-                nameZ.Text = posRob.z.ToString();
-                nameA.Text = posRob.a.ToString();
-                nameB.Text = posRob.b.ToString();
-                nameC.Text = posRob.c.ToString();
+                nameX.Text = posRob.X.ToString();
+                nameY.Text = posRob.Y.ToString();
+                nameZ.Text = posRob.Z.ToString();
+                nameA.Text = posRob.A.ToString();
+                nameB.Text = posRob.B.ToString();
+                nameC.Text = posRob.C.ToString();
             }
            
         }
@@ -3680,12 +3681,12 @@ namespace opengl3
         private void but_res_pos_2_Click(object sender, EventArgs e)
         {
             var posRob = positionFromRobot(con1);
-            nameX2.Text = posRob.x.ToString();
-            nameY2.Text = posRob.y.ToString();
-            nameZ2.Text = posRob.z.ToString();
-            nameA2.Text = posRob.a.ToString();
-            nameB2.Text = posRob.b.ToString();
-            nameC2.Text = posRob.c.ToString();
+            nameX2.Text = posRob.X.ToString();
+            nameY2.Text = posRob.Y.ToString();
+            nameZ2.Text = posRob.Z.ToString();
+            nameA2.Text = posRob.A.ToString();
+            nameB2.Text = posRob.B.ToString();
+            nameC2.Text = posRob.C.ToString();
         }
         private void rob_res_Click(object sender, EventArgs e)
         {
@@ -3720,7 +3721,7 @@ namespace opengl3
 
             }
         }
-        robFrame positionFromRobot(TCPclient con)
+        RobotFrame positionFromRobot(TCPclient con)
         {
             if (con != null)
             {
@@ -3743,7 +3744,7 @@ namespace opengl3
                     double b = Convert.ToDouble(res_s[4]);
                     double c = Convert.ToDouble(res_s[5]);
                     Console.WriteLine(res);
-                    return new robFrame(x, y, z, a, b, c);
+                    return new RobotFrame(x, y, z, a, b, c,0,0,0,current_robot);
                 }
                 catch
                 {
@@ -3759,12 +3760,12 @@ namespace opengl3
         {
             var posRob = positionFromRobot(con1);
             if (posRob == null) return;
-            nameX_in.Text = posRob.x.ToString();
-            nameY_in.Text = posRob.y.ToString();
-            nameZ_in.Text = posRob.z.ToString();
-            nameA_in.Text = posRob.a.ToString();
-            nameB_in.Text = posRob.b.ToString();
-            nameC_in.Text = posRob.c.ToString();
+            nameX_in.Text = posRob.X.ToString();
+            nameY_in.Text = posRob.Y.ToString();
+            nameZ_in.Text = posRob.Z.ToString();
+            nameA_in.Text = posRob.A.ToString();
+            nameB_in.Text = posRob.B.ToString();
+            nameC_in.Text = posRob.C.ToString();
         }
 
 
@@ -3780,14 +3781,6 @@ namespace opengl3
             try_send_rob(debugBox.Text + "\n");
             try_send_rob("s\n");
         }
-        public RobotFrame get_rob_fr()
-        {
-            var posRob = positionFromRobot(con1);
-
-            var fr = new RobotFrame(posRob.x, posRob.y, posRob.z, posRob.a, posRob.b, posRob.c);
-            return fr;
-        }
-
         private void but_save_im_base1_Click(object sender, EventArgs e)
         {
             var im = (Mat)imBox_base_1.Image;
@@ -6690,7 +6683,7 @@ namespace opengl3
                 imb_main[i].AccessibleName = i.ToString();
                 addButsForControl((Control)imb_main[i], 4);
             }
-
+            add_buttons_rob_contr();
             for (int i = 0; i < imb_main.Length; i++)
             {
                 imb_main[i].SendToBack();
@@ -6817,6 +6810,14 @@ namespace opengl3
             if (con1 == null)
             {
                 con1 = new TCPclient();
+            }
+            if(robot == RobotFrame.RobotType.KUKA)
+            {
+                var res = MessageBox.Show("1. Переведите робот в автоматичекий режим управления\n2. Запустите программу 'In situ bioprinter' на пульте робота\n3. Убедитесь что на пульте выведено сообщение 'Готов к работе'", "Сообщение",MessageBoxButtons.OKCancel);
+                if(res == DialogResult.Cancel)
+                {
+                    return;
+                }
             }
             string ip = "";
             //if((string)combo_robot_ch.SelectedItem=="Kuka")
@@ -7032,6 +7033,83 @@ namespace opengl3
             var div = LaserLine.vel_div(vel_noz, d_noz, d_syr);
             return div;
         }
+
+        void add_buttons_rob_contr()
+        {
+            var axis = "XYZABC";
+            var st_x = 540;
+            var st_y = 80;
+            var dim_x = 40;
+            var dim_y = 40;
+            for (int i = 0; i < axis.Length; i++)
+            {
+                add_but_rob_contr("+" + axis[i], new Rectangle(st_x + dim_x * i+10, st_y,         dim_x, dim_y),  groupBox_rob_con_ext );
+                add_but_rob_contr("-" + axis[i], new Rectangle(st_x + dim_x * i+10, st_y + dim_y+20, dim_x, dim_y),  groupBox_rob_con_ext);
+            }
+        }
+        Button add_but_rob_contr_old(string ax, Rectangle pos,Control[] parents)
+        {
+            var but = new Button();
+            but.Location = new Point(parents[0].Location.X+pos.X, parents[0].Location.Y + pos.Y);
+            but.Size = pos.Size;
+            but.AccessibleName = ax;
+            but.Text = ax;
+            but.Click += but_rob_contr_Click;
+            for(int i= 0; i < parents.Length; i++)
+            {
+                parents[i].Controls.Add(but);
+                parents[i].SendToBack();
+            }
+            
+            return but;
+        }
+        Button add_but_rob_contr(string ax, Rectangle pos, Control parent)
+        {
+            var but = new Button();
+            but.Location = new Point(parent.Location.X + pos.X, parent.Location.Y + pos.Y);
+            but.Size = pos.Size;
+            but.AccessibleName = ax;
+            but.Text = ax;
+            but.Click += but_rob_contr_Click;
+            parent.Parent.Controls.Add(but);
+            parent.SendToBack();
+            return but;
+        }
+        private void but_rob_contr_Click(object sender, EventArgs e)
+        {
+            var but = (Button)sender;
+            var ax = but.AccessibleName;
+            var delt = mask_from_ax(ax) * dist_contr_rob;
+            var cur_pos = positionFromRobot(con1);
+
+            var dest_pos = cur_pos+delt;
+            try_send_rob(dest_pos.ToStr(" ",false,false));
+        }
+
+
+        RobotFrame mask_from_ax(string ax)
+        {
+            RobotFrame mask = new RobotFrame();
+            double sign = 1;
+            var angle_del = 0.001;
+            if(ax[1] == '-')
+            {
+                sign = -1;
+            }
+            switch(ax[0])
+            {
+                case 'X': mask.X = sign; break;
+                case 'Y': mask.Y = sign; break;
+                case 'Z': mask.Z = sign; break;
+                case 'A': mask.A = angle_del* sign; break;
+                case 'B': mask.B = angle_del * sign; break;
+                case 'C': mask.C = angle_del * sign; break;
+            }
+
+            return mask;
+        }
+
+
         #endregion
 
         #region samara_scan
@@ -7083,11 +7161,16 @@ namespace opengl3
 
         private void but_scan_simp_start_print_Click(object sender, EventArgs e)
         {
+            var res = MessageBox.Show("1. Убедитесь, что шприц установлен\n2. Убедитесь, что материал готов к подаче", "Сообщение", MessageBoxButtons.OKCancel);
+            if (res == DialogResult.Cancel)
+            {
+                return;
+            }
             try_send_rob("s\n");
         }
         private void but_scan_simp_stop_print_Click(object sender, EventArgs e)
         {
-
+            try_send_rob("e\n");
         }
         private void but_scan_simp_cont_beg_Click(object sender, EventArgs e)
         {
@@ -7116,7 +7199,7 @@ namespace opengl3
         }
 
 
-
+        #region correct_scan_pos
         Scanner load_scanner_v3()
         {
             var cam1_conf_path = textB_cam1_conf.Text;
@@ -7214,6 +7297,16 @@ namespace opengl3
             prin.t(camera1Position);
             Console.WriteLine("Позиция Камеры 2:");
             prin.t(camera2Position);
+        }
+        #endregion
+
+        private void rb_mm_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton checkBox = (RadioButton)sender; // приводим отправителя к элементу типа CheckBox
+            if (checkBox.Checked == true)
+            {
+                dist_contr_rob = Convert.ToDouble(checkBox.AccessibleName);
+            }
         }
     }
 }

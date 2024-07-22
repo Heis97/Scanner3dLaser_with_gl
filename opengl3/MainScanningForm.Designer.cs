@@ -385,6 +385,10 @@ namespace opengl3
             this.but_con_set_ard_con = new System.Windows.Forms.Button();
             this.tabP_connect_set_ext = new System.Windows.Forms.TabPage();
             this.groupBox_rob_con_ext = new System.Windows.Forms.GroupBox();
+            this.rb_1mm = new System.Windows.Forms.RadioButton();
+            this.rb_100mm = new System.Windows.Forms.RadioButton();
+            this.rb_10mm = new System.Windows.Forms.RadioButton();
+            this.rb_01mm = new System.Windows.Forms.RadioButton();
             this.but_con_ext_rob_discon = new System.Windows.Forms.Button();
             this.but_con_ext_rob_con = new System.Windows.Forms.Button();
             this.groupBox_disp_contr_ext = new System.Windows.Forms.GroupBox();
@@ -4288,6 +4292,10 @@ namespace opengl3
             // 
             // groupBox_rob_con_ext
             // 
+            this.groupBox_rob_con_ext.Controls.Add(this.rb_1mm);
+            this.groupBox_rob_con_ext.Controls.Add(this.rb_100mm);
+            this.groupBox_rob_con_ext.Controls.Add(this.rb_10mm);
+            this.groupBox_rob_con_ext.Controls.Add(this.rb_01mm);
             this.groupBox_rob_con_ext.Controls.Add(this.but_con_ext_rob_discon);
             this.groupBox_rob_con_ext.Controls.Add(this.but_con_ext_rob_con);
             this.groupBox_rob_con_ext.Location = new System.Drawing.Point(6, 697);
@@ -4297,9 +4305,60 @@ namespace opengl3
             this.groupBox_rob_con_ext.TabStop = false;
             this.groupBox_rob_con_ext.Text = "Подключение к роботу";
             // 
+            // rb_1mm
+            // 
+            this.rb_1mm.AccessibleName = "1";
+            this.rb_1mm.AutoSize = true;
+            this.rb_1mm.Location = new System.Drawing.Point(862, 113);
+            this.rb_1mm.Name = "rb_1mm";
+            this.rb_1mm.Size = new System.Drawing.Size(50, 17);
+            this.rb_1mm.TabIndex = 7;
+            this.rb_1mm.Text = "1 мм";
+            this.rb_1mm.UseVisualStyleBackColor = true;
+            this.rb_1mm.CheckedChanged += new System.EventHandler(this.rb_mm_CheckedChanged);
+            // 
+            // rb_100mm
+            // 
+            this.rb_100mm.AccessibleName = "100";
+            this.rb_100mm.AutoSize = true;
+            this.rb_100mm.Location = new System.Drawing.Point(862, 159);
+            this.rb_100mm.Name = "rb_100mm";
+            this.rb_100mm.Size = new System.Drawing.Size(62, 17);
+            this.rb_100mm.TabIndex = 6;
+            this.rb_100mm.Text = "100 мм";
+            this.rb_100mm.UseVisualStyleBackColor = true;
+            this.rb_100mm.CheckedChanged += new System.EventHandler(this.rb_mm_CheckedChanged);
+            // 
+            // rb_10mm
+            // 
+            this.rb_10mm.AccessibleName = "10";
+            this.rb_10mm.AutoSize = true;
+            this.rb_10mm.Checked = true;
+            this.rb_10mm.Location = new System.Drawing.Point(862, 136);
+            this.rb_10mm.Name = "rb_10mm";
+            this.rb_10mm.Size = new System.Drawing.Size(56, 17);
+            this.rb_10mm.TabIndex = 5;
+            this.rb_10mm.TabStop = true;
+            this.rb_10mm.Text = "10 мм";
+            this.rb_10mm.UseVisualStyleBackColor = true;
+            this.rb_10mm.CheckedChanged += new System.EventHandler(this.rb_mm_CheckedChanged);
+            // 
+            // rb_01mm
+            // 
+            this.rb_01mm.AccessibleName = "0.1";
+            this.rb_01mm.AutoSize = true;
+            this.rb_01mm.Location = new System.Drawing.Point(862, 90);
+            this.rb_01mm.Name = "rb_01mm";
+            this.rb_01mm.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.rb_01mm.Size = new System.Drawing.Size(59, 17);
+            this.rb_01mm.TabIndex = 4;
+            this.rb_01mm.Text = "0.1 мм";
+            this.rb_01mm.UseVisualStyleBackColor = true;
+            this.rb_01mm.CheckedChanged += new System.EventHandler(this.rb_mm_CheckedChanged);
+            // 
             // but_con_ext_rob_discon
             // 
-            this.but_con_ext_rob_discon.Location = new System.Drawing.Point(469, 93);
+            this.but_con_ext_rob_discon.Location = new System.Drawing.Point(231, 93);
             this.but_con_ext_rob_discon.Name = "but_con_ext_rob_discon";
             this.but_con_ext_rob_discon.Size = new System.Drawing.Size(219, 95);
             this.but_con_ext_rob_discon.TabIndex = 3;
@@ -4308,7 +4367,7 @@ namespace opengl3
             // 
             // but_con_ext_rob_con
             // 
-            this.but_con_ext_rob_con.Location = new System.Drawing.Point(244, 93);
+            this.but_con_ext_rob_con.Location = new System.Drawing.Point(6, 93);
             this.but_con_ext_rob_con.Name = "but_con_ext_rob_con";
             this.but_con_ext_rob_con.Size = new System.Drawing.Size(219, 95);
             this.but_con_ext_rob_con.TabIndex = 2;
@@ -5079,6 +5138,7 @@ namespace opengl3
             this.tabP_connect_set.ResumeLayout(false);
             this.tabP_connect_set_ext.ResumeLayout(false);
             this.groupBox_rob_con_ext.ResumeLayout(false);
+            this.groupBox_rob_con_ext.PerformLayout();
             this.groupBox_disp_contr_ext.ResumeLayout(false);
             this.groupBox_disp_contr_ext.PerformLayout();
             this.groupBox_cam_con_ext.ResumeLayout(false);
@@ -5528,6 +5588,10 @@ namespace opengl3
         private System.Windows.Forms.Button but_show_traj_fr_tb;
         private System.Windows.Forms.Button but_scan_simp_stop_print;
         private System.Windows.Forms.Button but_scan_ext_stop_print;
+        private System.Windows.Forms.RadioButton rb_100mm;
+        private System.Windows.Forms.RadioButton rb_10mm;
+        private System.Windows.Forms.RadioButton rb_01mm;
+        private System.Windows.Forms.RadioButton rb_1mm;
     }
 }
 

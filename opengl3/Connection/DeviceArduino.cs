@@ -46,7 +46,7 @@ namespace opengl3
                 serialPort.Close();
             }
         }
-        protected void send(int val, int var)
+        public void send(int val, int var)
         {
             //Console.WriteLine("send: "+val+" " + var);
             if (serialPort.IsOpen)

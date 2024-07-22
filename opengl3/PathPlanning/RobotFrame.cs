@@ -340,17 +340,19 @@ namespace opengl3
                     ", V" + round(V) + ", D" + D + " \n";
         }
 
-        public string ToStr(string del = " ",bool nums = false)
+        public string ToStr(string del = " ",bool nums = false,bool full = true)
         {
             var str = del + "X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) +
-                    del + "A" + round(A) + del + "B" + round(B) + del + "C" + round(C) +
-                    del + "F" + round(F) + del + "V" + round(V) + del + "D" + D + " \n";
+                    del + "A" + round(A) + del + "B" + round(B) + del + "C" + round(C);
+            if (full) { str += del + "F" + round(F) + del + "V" + round(V) + del + "D" + D;}
             if (nums)
             {
-                str = del +  round(X) + del +  round(Y) + del + round(Z) +
-                    del +  round(A) + del +  round(B) + del +  round(C) +
-                    del +  round(F) + del +  round(V) + del +  D;
+                str = del + round(X) + del + round(Y) + del + round(Z) +
+                    del + round(A) + del + round(B) + del + round(C);
+                if (full) { str += del + round(F) + del + round(V) + del + D; }
+                
             }
+            str+= " \n";
             return str;
         }
         public string ToStr_start(int num, string del = " ")

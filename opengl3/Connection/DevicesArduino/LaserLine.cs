@@ -27,7 +27,9 @@ namespace opengl3
             home_laser = 14,
             div_z = 15,
             posit_z = 16,
-            home_z = 17;
+            home_z = 17,
+            push_forw = 18,
+            push_back = 19;
 
         int on = 1, off = 2;
         public LaserLine(string _port)
@@ -35,6 +37,7 @@ namespace opengl3
             port = _port;
             connect(port, baudrate);
         }
+
         public bool connectStart()
         {
             return connect(port, baudrate);
@@ -208,7 +211,14 @@ namespace opengl3
         {
             send(0, home_z);
         }
-
+        public void push_forward()
+        {
+            send(0, push_forw);
+        }
+        public void push_bac()
+        {
+            send(0, push_back);
+        }
         public static int vel_div(double vel_nos, double d_nos, double d_syr)
         {
             double vel = (vel_nos * d_nos * d_nos) / (d_syr * d_syr);//vel pist
