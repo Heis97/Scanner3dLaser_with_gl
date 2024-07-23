@@ -306,8 +306,8 @@ namespace opengl3
 
            var up_surf = bin_to_green( get_corners_calibrate_model(mats, cameraCV));
 
-            //CvInvoke.Imshow(" up_surf", up_surf);
-            //CvInvoke.WaitKey();
+            CvInvoke.Imshow(" up_surf", up_surf);
+            CvInvoke.WaitKey();
             var aff_matr = CameraCV.affinematr(Math.PI / 4,1,500);
 
             var aff_matr_inv = aff_matr.Clone();
