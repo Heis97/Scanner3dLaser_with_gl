@@ -51,8 +51,8 @@ namespace opengl3
             var fr_st_vid = new Frame(orig1, orig2, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
             fr_st_vid.stereo = true;
-            form.get_combo_im().Items.Add(fr_st_vid);
-
+            //form.get_combo_im().Items.Add(fr_st_vid);
+            form.get_combo_im().BeginInvoke((MethodInvoker)(() => form.get_combo_im().Items.Add(fr_st_vid)));
 
             int buff_diff = config.buff_delt;
             int buff_len = buff_diff + 1;
@@ -142,7 +142,8 @@ namespace opengl3
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
-            form.get_combo_im().Items.AddRange(frames_show.ToArray());
+            //form.get_combo_im().Items.AddRange(frames_show.ToArray());
+            form.get_combo_im().BeginInvoke((MethodInvoker)(() => form.get_combo_im().Items.AddRange(frames_show.ToArray())));
             scanner.compPointsStereoLas_2d();
             Console.WriteLine("Points computed.");
             return scanner;
@@ -300,7 +301,7 @@ namespace opengl3
                 videoframe_count++;
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
-            form.get_combo_im().Items.AddRange(frames_show.ToArray());
+            form.get_combo_im().BeginInvoke((MethodInvoker)(() => form.get_combo_im().Items.AddRange(frames_show.ToArray())));
             scanner.compPointsStereoLas_2d();
             Console.WriteLine("Points computed.");
             return scanner;

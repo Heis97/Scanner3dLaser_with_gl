@@ -225,7 +225,6 @@ namespace opengl3
             this.glControl1 = new OpenGL.GlControl();
             this.tabMain = new System.Windows.Forms.TabPage();
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
-            this.imageBox2 = new Emgu.CV.UI.ImageBox();
             this.but_resize = new System.Windows.Forms.Button();
             this.but_save_im_base1 = new System.Windows.Forms.Button();
             this.but_rob_ph = new System.Windows.Forms.Button();
@@ -377,6 +376,7 @@ namespace opengl3
             this.comboVideo = new System.Windows.Forms.ComboBox();
             this.comboNumber = new System.Windows.Forms.ComboBox();
             this.imBox_base = new Emgu.CV.UI.ImageBox();
+            this.imageBox2 = new Emgu.CV.UI.ImageBox();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.tabP_connect = new System.Windows.Forms.TabPage();
             this.tabC_connect_ins = new System.Windows.Forms.TabControl();
@@ -522,7 +522,6 @@ namespace opengl3
             this.tabPage9.SuspendLayout();
             this.tabMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage10.SuspendLayout();
@@ -543,6 +542,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
             this.windowsTabs.SuspendLayout();
             this.tabP_connect.SuspendLayout();
             this.tabC_connect_ins.SuspendLayout();
@@ -2609,7 +2609,6 @@ namespace opengl3
             // tabMain
             // 
             this.tabMain.Controls.Add(this.imageBox1);
-            this.tabMain.Controls.Add(this.imageBox2);
             this.tabMain.Controls.Add(this.but_resize);
             this.tabMain.Controls.Add(this.comboImages);
             this.tabMain.Controls.Add(this.but_save_im_base1);
@@ -2662,6 +2661,7 @@ namespace opengl3
             this.tabMain.Controls.Add(this.comboVideo);
             this.tabMain.Controls.Add(this.comboNumber);
             this.tabMain.Controls.Add(this.imBox_base);
+            this.tabMain.Controls.Add(this.imageBox2);
             this.tabMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabMain.Location = new System.Drawing.Point(4, 22);
             this.tabMain.Name = "tabMain";
@@ -2678,14 +2678,6 @@ namespace opengl3
             this.imageBox1.Size = new System.Drawing.Size(593, 484);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
-            // 
-            // imageBox2
-            // 
-            this.imageBox2.Location = new System.Drawing.Point(604, 3);
-            this.imageBox2.Name = "imageBox2";
-            this.imageBox2.Size = new System.Drawing.Size(698, 484);
-            this.imageBox2.TabIndex = 18;
-            this.imageBox2.TabStop = false;
             // 
             // but_resize
             // 
@@ -3440,7 +3432,7 @@ namespace opengl3
             this.tb_port_tcp.Name = "tb_port_tcp";
             this.tb_port_tcp.Size = new System.Drawing.Size(100, 26);
             this.tb_port_tcp.TabIndex = 144;
-            this.tb_port_tcp.Text = "30006";
+            this.tb_port_tcp.Text = "30007";
             // 
             // rob_res
             // 
@@ -3853,7 +3845,7 @@ namespace opengl3
             this.nameX.Name = "nameX";
             this.nameX.Size = new System.Drawing.Size(69, 26);
             this.nameX.TabIndex = 11;
-            this.nameX.Text = "250";
+            this.nameX.Text = "500";
             // 
             // nameY
             // 
@@ -3911,7 +3903,7 @@ namespace opengl3
             this.nameX2.Name = "nameX2";
             this.nameX2.Size = new System.Drawing.Size(69, 26);
             this.nameX2.TabIndex = 25;
-            this.nameX2.Text = "450";
+            this.nameX2.Text = "1100";
             // 
             // nameZ_in
             // 
@@ -4209,6 +4201,14 @@ namespace opengl3
             this.imBox_base.TabIndex = 94;
             this.imBox_base.TabStop = false;
             // 
+            // imageBox2
+            // 
+            this.imageBox2.Location = new System.Drawing.Point(3, 489);
+            this.imageBox2.Name = "imageBox2";
+            this.imageBox2.Size = new System.Drawing.Size(698, 484);
+            this.imageBox2.TabIndex = 18;
+            this.imageBox2.TabStop = false;
+            // 
             // windowsTabs
             // 
             this.windowsTabs.Controls.Add(this.tabMain);
@@ -4397,6 +4397,7 @@ namespace opengl3
             this.but_con_ext_rob_con.TabIndex = 2;
             this.but_con_ext_rob_con.Text = "Подключиться";
             this.but_con_ext_rob_con.UseVisualStyleBackColor = true;
+            this.but_con_ext_rob_con.Click += new System.EventHandler(this.but_rob_con_sc_Click);
             // 
             // groupBox_disp_contr_ext
             // 
@@ -5151,7 +5152,6 @@ namespace opengl3
             this.tabMain.ResumeLayout(false);
             this.tabMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -5178,6 +5178,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).EndInit();
             this.windowsTabs.ResumeLayout(false);
             this.tabP_connect.ResumeLayout(false);
             this.tabC_connect_ins.ResumeLayout(false);

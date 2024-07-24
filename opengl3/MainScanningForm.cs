@@ -977,8 +977,8 @@ namespace opengl3
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, scanner_config.rotate_cam);
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,marksize);
 
-            comboImages.Items.AddRange(frms_stereo);
-
+            //comboImages.Items.AddRange(frms_stereo);
+            comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
             return scanner;
         }
         Scanner load_scan_v2(Scanner scanner,string scan_path, ScannerConfig config)
@@ -4912,7 +4912,7 @@ namespace opengl3
                 case FrameType.Pattern:
                     System.Drawing.PointF[] points2 = null;
                     imb_base[ind].Image = FindCircles.findCircles(mat, ref points2, chess_size);
-                    if (points2 != null) Console.WriteLine(points2[0].X + " " + points2[0].Y + " " + points2[1].X + " " + points2[1].Y + " " + points2[2].X + " " + points2[2].Y);
+                    if (points2 != null) if (points2.Length >3) Console.WriteLine(points2[0].X + " " + points2[0].Y + " " + points2[1].X + " " + points2[1].Y + " " + points2[2].X + " " + points2[2].Y);
                     else Console.WriteLine("null");
                     break;
                 default:
@@ -6676,9 +6676,9 @@ namespace opengl3
 
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
-            this.tabP_scanning_printing.Controls.Add(this.imageBox1);
-            this.tabP_scanning_printing.Controls.Add(this.imageBox2);
-
+            this.tabP_connect.Controls.Add(this.imageBox1);
+            this.tabP_connect.Controls.Add(this.imageBox2);
+            this.tabP_scanning_printing.Controls.Add(this.glControl1);
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
             //resize();
             
@@ -6842,6 +6842,7 @@ namespace opengl3
 
             con1 = new TCPclient();
             port_tcp = Convert.ToInt32(tb_port_tcp.Text);
+            
             con1.Connection(port_tcp, ip);
 
             Thread tcp_thread = new Thread(recieve_tcp);
@@ -6999,10 +7000,10 @@ namespace opengl3
         }
         void connect_cams()
         {
-            var ind_cam = 1;
+            var ind_cam =2;
             videoStart_sam(ind_cam);
             imb_ind_cam[0] = ind_cam;
-            ind_cam = 2;
+            ind_cam = 0;
             videoStart_sam(ind_cam);
             imb_ind_cam[1] = ind_cam;
             label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.Text = "Камеры подключены"));
@@ -7096,10 +7097,16 @@ namespace opengl3
             var but = (Button)sender;
             var ax = but.AccessibleName;
             var delt = mask_from_ax(ax) * dist_contr_rob;
-            var cur_pos = positionFromRobot(con1);
-
+            // Console.WriteLine(delt.ToStr(" ", false, false));
+            try_send_rob("m\n");
+             var cur_pos = positionFromRobot(con1);
+            if(cur_pos==null)
+            {
+                cur_pos = new RobotFrame();
+            }
             var dest_pos = cur_pos+delt;
-            try_send_rob(dest_pos.ToStr(" ",false,false));
+            //Console.WriteLine(dest_pos.ToStr(" ", false, false));
+            try_send_rob(dest_pos.ToStr(" ",true,false)+"\n");
         }
 
 
@@ -7108,11 +7115,11 @@ namespace opengl3
             RobotFrame mask = new RobotFrame();
             double sign = 1;
             var angle_del = 0.001;
-            if(ax[1] == '-')
+            if(ax[0] == '-')
             {
                 sign = -1;
             }
-            switch(ax[0])
+            switch(ax[1])
             {
                 case 'X': mask.X = sign; break;
                 case 'Y': mask.Y = sign; break;
@@ -7132,7 +7139,14 @@ namespace opengl3
 
         private void but_scan_simp_scan_Click(object sender, EventArgs e)
         {
-            var pos_rob = positionFromRobot(con1);
+            Thread scan_and_load_thread = new Thread(scan_and_load);
+            scan_and_load_thread.Start();
+            //load
+        }
+
+        void scan_and_load()
+        {
+           /* var pos_rob = positionFromRobot(con1);
             if (pos_rob != null)
             {
                 video_scan_name = pos_rob.ToString();
@@ -7141,10 +7155,11 @@ namespace opengl3
             {
                 video_scan_name = "1";
             }
-            startScanLaser(8);
-            Thread.Sleep(20000);
+            startScanLaser(3);*/
+            Console.WriteLine("Start scan");
+            Thread.Sleep(3);
+            Console.WriteLine("Start load scan");
             start_load_scan();
-            //load
         }
 
         public void load_scan_full()
@@ -7182,6 +7197,9 @@ namespace opengl3
             {
                 return;
             }
+            try_send_rob("a\n");
+            try_send_rob("c\n");
+            try_send_rob(debugBox.Text + "\n");
             try_send_rob("s\n");
         }
         private void but_scan_simp_stop_print_Click(object sender, EventArgs e)
@@ -7324,8 +7342,6 @@ namespace opengl3
                 dist_contr_rob = Convert.ToDouble(checkBox.AccessibleName);
             }
         }
-
-       
     }
 }
 
