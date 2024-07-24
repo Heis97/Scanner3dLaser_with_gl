@@ -343,9 +343,9 @@ namespace opengl3
             return linearAxis.calibrate(mats, positions, cameraCV, patternType, graphicGL);
         }
 
-        public bool calibrateLinearStep(Mat[] mats,Mat orig, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
+        public bool calibrateLinearStep(Mat[] mats,Mat orig, double[] positions, PatternType patternType, GraphicGL graphicGL = null, ScannerConfig config=null)
         {
-            return linearAxis.calibrateLas_step(mats, orig,positions, cameraCV, patternType,graphicGL,pointCloud);
+            return linearAxis.calibrateLas_step(mats, orig,positions, cameraCV, patternType,graphicGL,pointCloud, config);
         }
         
         public bool calibrateLinearLas(Mat[][] mats, Mat[] origs, double[] positions, PatternType patternType, GraphicGL graphicGL = null)
@@ -403,9 +403,9 @@ namespace opengl3
             return pointCloud.addPointsLinLas(mat, linPos, cameraCV, linearAxis,orig, patternType);
         }
 
-        public bool addPointsLinLas_step(Mat mat, Image<Bgr, byte> orig, double linPos, PatternType patternType)
+        public bool addPointsLinLas_step(Mat mat, Image<Bgr, byte> orig, double linPos, PatternType patternType,ScannerConfig config = null)
         {
-            return pointCloud.addPointsLinLas_step(mat,orig, linPos, cameraCV, linearAxis, patternType);
+            return pointCloud.addPointsLinLas_step(mat,orig, linPos, cameraCV, linearAxis, patternType, config);
         }
         public int addPointsLinLas(Mat[] mats, double[] linPos,Mat orig, PatternType patternType)
         {

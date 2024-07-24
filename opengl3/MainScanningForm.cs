@@ -1189,13 +1189,16 @@ namespace opengl3
             LinearAxis line = null;
             if(laser_line != null)  line = new LinearAxis(laser_line);
             var scanner = new Scanner( cam1,line);
+            var stereo = new StereoCamera(new CameraCV[] { cam1, cam1 });
+            scanner.stereoCamera = stereo;
             this.scanner = scanner;
+            
             return scanner;
         }
         void load_scan_sing(Scanner scanner,string scan_path, int strip = 1, double smooth = -1)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner,strip);
+            scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner,scanner_config);
             var ps = scanner.getPointsLinesScene();
            // foreach(var line in ps) GL1.addLineMeshTraj(line);  
             var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
@@ -1209,7 +1212,7 @@ namespace opengl3
         {
 
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner, strip, true);
+            scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner, scanner_config, true);
            // scanner.linearAxis.save("linear.txt");
             if (scanner.pointCloud.points3d_lines == null) return;
             if (scanner.pointCloud.points3d_lines.Count == 0) return;

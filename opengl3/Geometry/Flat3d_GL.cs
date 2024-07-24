@@ -135,6 +135,17 @@ namespace opengl3
             return A * p.x + B * p.y + C * p.z + D;
         }
 
+       /* public Flat3d_GL normalise()
+        {
+            D = -v3 * P1;
+            
+            n = n.normalize();
+            A = n.x;
+            B = n.y;
+            C = n.z;
+            return this;
+        }*/
+
         public static Flat3d_GL operator *(Flat3d_GL f, double k)
         {
             return new Flat3d_GL(f.A * k, f.B * k, f.C * k,f.D * k);

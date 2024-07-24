@@ -76,12 +76,12 @@ namespace opengl3
             points3d = ps_list.ToArray();
             return true;
         }
-        public bool addPointsLinLas_step(Mat mat, Image<Bgr,byte> orig, double LinPos, CameraCV cameraCV, LinearAxis linearAxis, PatternType patternType)
+        public bool addPointsLinLas_step(Mat mat, Image<Bgr,byte> orig, double LinPos, CameraCV cameraCV, LinearAxis linearAxis, PatternType patternType, ScannerConfig config = null)
         {
             mat = cameraCV.undist(mat);
            // CvInvoke.Imshow("ps", mat);
             //CvInvoke.WaitKey();
-            var points_im = Detection.detectLineDiff(mat, 10);
+            var points_im = Detection.detectLineDiff(mat, config);
             if (points_im == null) {
                 points3d_lines.Add(new Point3d_GL[0]);
                 return false; }

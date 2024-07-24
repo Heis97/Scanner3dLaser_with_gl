@@ -326,7 +326,7 @@ namespace opengl3
             }
             
         }
-        static public Scanner loadVideo_sing_cam(string filepath, MainScanningForm form, Scanner scanner = null, int strip = 1, bool calib = false)
+        static public Scanner loadVideo_sing_cam(string filepath, MainScanningForm form, Scanner scanner = null, ScannerConfig config = null, bool calib = false)
         {
             var videoframe_count = 0;
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
@@ -347,7 +347,7 @@ namespace opengl3
             var frames_show = new List<Frame>();
             var pos_inc_cal = new List<double>();
             //comboImages.Items.Add(fr_st_vid);
-            int buff_diff = 4;
+            int buff_diff = config.Buff_delt;
             int buff_len = buff_diff + 1;
             var all_frames = all_frames1;
             if (scanner != null)
@@ -378,15 +378,15 @@ namespace opengl3
                   { 0 ,0, 0, 1} });
               }*/
             }
-        var enc_file = "";
+            var enc_file = "";
             using (StreamReader sr = new StreamReader(enc_path))
             {
                 enc_file = sr.ReadToEnd();
             }
             //var inc_pos = enc_pos(enc_file, (int)all_frames);
             var enc_pos_time = analys_sync(enc_path);
-            enc_pos_time = recomp_pos_sing_linear(enc_pos_time);
-            var inc_pos = enc_pos(enc_pos_time);
+            //enc_pos_time = recomp_pos_sing_linear(enc_pos_time);
+            var inc_pos = enc_pos(enc_pos_time,false);
 
             
 
@@ -411,11 +411,16 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
-                    if ((videoframe_count % strip == 0 )&& (im1_buff_list.Count > buff_diff) && videoframe_count > 30)// && videoframe_count <83)
+                    if ((videoframe_count % config.strip == 0 )&& (im1_buff_list.Count > buff_diff) && videoframe_count > 30)// && videoframe_count <83)
                     {
 
                         //var im1_or = im1.Clone();
                         im1 -= im1_buff_list[buff_len - buff_diff];
+                        if (config.save_im) {
+                            var frame_d = new Frame(im1.Clone(), im1.Clone(), videoframe_count.ToString(), FrameType.LasDif);
+                            frame_d.stereo = true;
+                            frames_show.Add(frame_d);
+                        }
                         // im1 = scanner.cameraCV.undist(im1);
                         /*//if (videoframe_count > 20)
                         {
@@ -452,7 +457,7 @@ namespace opengl3
                             }
                             
                         }
-                        else scanner.addPointsLinLas_step(im1, im_orig, inc_pos[videoframe_count], PatternType.Mesh);
+                        else scanner.addPointsLinLas_step(im1, im_orig, inc_pos[videoframe_count], PatternType.Mesh,config);
 
                     }
                     im1_buff = buffer_mat1.Clone();
@@ -469,13 +474,14 @@ namespace opengl3
             //comboImages.Items.AddRange(frames_show.ToArray());
             Console.WriteLine("stop video_________");
 
-            if (calib) scanner.calibrateLinearStep(im1_cals.ToArray(), orig1, pos_inc_cal.ToArray(), PatternType.Mesh, form.GL1);
+            if (calib) scanner.calibrateLinearStep(im1_cals.ToArray(), orig1, pos_inc_cal.ToArray(), PatternType.Mesh, form.GL1, config);
 
             //var mats = Frame.getMats(frames_show.ToArray());
             //var corn = Detection.detectLineDiff_corn_calibr(mats);
 
             //UtilOpenCV.drawPointsF(orig1, corn, 255, 0, 0, 2, true);
             //CvInvoke.Imshow("corn", orig1);
+            form.get_combo_im().Items.AddRange(frames_show.ToArray());
             return scanner;
         }
         static public void loadVideo_test_laser(string filepath)
@@ -652,13 +658,14 @@ namespace opengl3
             return enc_pos;
         }
 
-        static public double[] enc_pos(double[,] enc)
+        static public double[] enc_pos(double[,] enc,bool pos = true)
         {
             var enc_pos = new double[enc.GetLength(0)];
             for (int i = 0; i < enc.GetLength(0); i += 2)
             {
                 var ind = (int)enc[i, 2];
                 var var = enc[i, 0];
+                if (!pos) { var = ind; }
                 if (ind > 0)
                 {
                     enc_pos[ind] = var;

@@ -53,6 +53,10 @@ namespace opengl3
             MatrixesCamera = new List<Matrix<double>>();
             PositionsAxis = new List<double>();
             LasFlats = FileManage.loadFromJson_flats(path).ToList();
+            akoef = LasFlats[0];
+            bkoef = LasFlats[1];
+            ckoef = LasFlats[2];
+            dkoef = LasFlats[3];
             var st_ind = LasFlats[0].numb;
             //LasFlats.ad
             //var ind = System.IO.Path.GetFileNameWithoutExtension(path).Split('_')[1];
@@ -236,7 +240,7 @@ namespace opengl3
                     {
                         var bin = new Mat();
                         var r = mats[i].Split()[2];
-                        // CvInvoke.Rotate(r, r, RotateFlags.Rotate180);
+                         CvInvoke.Rotate(r, r, RotateFlags.Rotate180);
                        
                       //  CvInvoke.WaitKey();
                         CvInvoke.GaussianBlur(r, r, new System.Drawing.Size(7, 7), -1);
@@ -256,7 +260,7 @@ namespace opengl3
                        
                         CvInvoke.FillPoly(bin, new VectorOfPoint(ps_rec), new MCvScalar(0));
 
-                        //CvInvoke.Rotate(bin, bin, RotateFlags.Rotate180);
+                        CvInvoke.Rotate(bin, bin, RotateFlags.Rotate180);
                         //CvInvoke.Imshow("bin", bin);
                        // CvInvoke.WaitKey();
                         if (up_surf == null)
@@ -290,7 +294,7 @@ namespace opengl3
         }
 
 
-        public bool calibrateLas_step(Mat[] mats, Mat orig, double[] positions, CameraCV cameraCV, PatternType patternType, GraphicGL graphicGL=null,PointCloud pointCloud = null)
+        public bool calibrateLas_step(Mat[] mats, Mat orig, double[] positions, CameraCV cameraCV, PatternType patternType, GraphicGL graphicGL = null, PointCloud pointCloud = null, ScannerConfig config = null)
         {
 
             var pos_all = (double[])positions.Clone();
@@ -306,7 +310,7 @@ namespace opengl3
 
            var up_surf = bin_to_green( get_corners_calibrate_model(mats, cameraCV));
 
-            CvInvoke.Imshow(" up_surf", up_surf);
+            CvInvoke.Imshow(" up_surf", up_surf+orig);
             CvInvoke.WaitKey();
             var aff_matr = CameraCV.affinematr(Math.PI / 4,1,500);
 
@@ -462,6 +466,8 @@ namespace opengl3
             positions = PositionsAxis.ToArray();
             //---------------------------------------
             //comp_flat_koef_full(LasFlats.ToArray(), PositionsAxis.ToArray());
+
+
             var flats_cam_sm = Flat3d_GL.gaussFilter_v2(LasFlats.ToArray(), 3).ToList();
             for(int i=0; i< LasFlats.Count;i++)
             {
@@ -469,13 +475,14 @@ namespace opengl3
                 fl.numb = (int)positions[i];
                 flats_cam_sm[i] = fl;
             }
+
             FileManage.saveToJson_flats(flats_cam_sm.ToArray(), "linearcal_" + positions[0] + "_.json");
             LasFlats = flats_cam_sm;
             start_flat =(int)LasFlats[0].numb;
             var flats_del = new List<Flat3d_GL>();
             calibrated = true;
             Console.WriteLine("_____________");
-            //pointCloud = null;
+           // pointCloud = null;
 
             if (pointCloud!=null)
             {
@@ -488,7 +495,7 @@ namespace opengl3
                 for (int i = 0; i < mats_calib.Length; i++)
                 {
                     var m_c = cameraCV.undist(mats_calib[i].Clone());
-                    var points_im = Detection.detectLineDiff(m_c, 10);
+                    var points_im = Detection.detectLineDiff(m_c, config);
 
                     var y1 = 325;
                     var y2 = 270;
@@ -557,14 +564,14 @@ namespace opengl3
 
             CvInvoke.CvtColor(orig1, orig1, ColorConversion.Rgb2Gray);
             CvInvoke.MedianBlur(orig1, orig1, 5);
-          //  CvInvoke.Threshold(orig1, orig1, 30, 255, ThresholdType.Binary);
+            //CvInvoke.Threshold(orig1, orig1, 30, 255, ThresholdType.Binary);
             CvInvoke.Imshow("corn1s", orig1);
             var cont = FindCircles.find_max_contour(orig1);
             var c_f = PointF.from_contour(cont);
             var corn = FindCircles.findGab(PointF.toSystemPoint(c_f));
-           // UtilOpenCV.drawPointsF(orig1, corn, 255, 0, 0, 2, true);
+            //UtilOpenCV.drawPointsF(orig1, corn, 255, 0, 0, 2, true);
             //UtilOpenCV.drawPointsF(orig, corn, 255, 0, 0, 2, true);
-           // CvInvoke.Imshow("corns", orig1);
+            //CvInvoke.Imshow("corns", orig1);
 
 
             return corn;
@@ -722,12 +729,12 @@ namespace opengl3
             ckoef = new Flat3d_GL(Regression.regression(cval, grad));
             dkoef = new Flat3d_GL(Regression.regression(dval, grad));
 
-            
+            FileManage.saveToJson_flats(new Flat3d_GL[] {akoef, bkoef, ckoef, dkoef}, "linearcal_" + poses[0] + "_.json");
             calibrated = true;
-            var fl1 = getLaserSurf(poses[0]);
+           /* var fl1 = getLaserSurf(poses[0]);
 
             var fl2 = getLaserSurf(poses[1]);
-            var fl3 = getLaserSurf(poses[2]);
+            var fl3 = getLaserSurf(poses[2]);*/
         }
 
         void compOneFlat()
@@ -771,7 +778,7 @@ namespace opengl3
             return new Flat3d_GL();
         }
 
-        public Flat3d_GL getLaserSurf_v2(double PositionLinear)
+        public Flat3d_GL getLaserSurf_regr2(double PositionLinear)
         {
             if (calibrated)
             {
@@ -785,7 +792,7 @@ namespace opengl3
             return new Flat3d_GL();
         }
 
-        public Flat3d_GL getLaserSurf(double PositionLinear)
+        public Flat3d_GL getLaserSurf(double PositionLinear)//_match
         {
             if (calibrated)
             {
@@ -800,8 +807,8 @@ namespace opengl3
             var settings = Settings_loader.load_data(path);
 
             var oneF = (Flat3d_GL)settings[0];
-            var stF= (Flat3d_GL)settings[1];
-            var  stP= (double)settings[2];
+            var stF = (Flat3d_GL)settings[1];
+            var stP = (double)settings[2];
             return new LinearAxis(oneF, stF, stP);
         }
         static public LinearAxis load_old2(string path)
