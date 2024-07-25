@@ -1620,8 +1620,8 @@ namespace PathPlanning
         public static List<RobotFrame> generate_robot_traj(List<Matrix<double>> traj, RobotFrame.RobotType type_robot,TrajParams trajParams = null,GraphicGL graphic = null)
         {
             var traj_rob = new List<RobotFrame>();
-            var r_syr = 18.5/2;
-            var v = trajParams.Vel;
+            var r_syr = 14.8/2;
+            var v = trajParams.vel;
             //s_syr*f = s_nos*v
             var f = ((trajParams.dz * trajParams.line_width) * v) / (3.1415 * r_syr * r_syr);
 

@@ -3673,12 +3673,24 @@ namespace opengl3
             if (ard == null) return;
             if (mes == null) return;
             if (mes.Length < 2) return;
+            mes = mes.Trim();
+            Console.WriteLine(mes);
             var vals_str = mes.Split(' ');
             if (vals_str.Length != 2) return;
-            var var = Convert.ToDouble(vals_str[0]);
-            var val = Convert.ToDouble(vals_str[1]);
+            var val = Convert.ToDouble(vals_str[0]);
+            var var = Convert.ToDouble(vals_str[1]);
+            if(Math.Abs( var - 25)<0.1)
+            {
+                var div = LaserLine.vel_pist_to_ard(val);
+                ard.set_dir_disp(-1);
+                ard.set_div_disp(div);
+            }
+            else
+            {
+                ard.send((int)val, (int)var);
+            }
             Console.WriteLine("resend_from_rob: "+val + " " + var);
-            //ard.send((int)val, (int)var);
+            
             //ard.set_div_disp(vel);
         }
 
@@ -7171,14 +7183,22 @@ namespace opengl3
             // Console.WriteLine(delt.ToStr(" ", false, false));
             try_send_rob("m\n");
             Thread.Sleep(50);
-             var cur_pos = positionFromRobot(con1);
+            try_send_rob("c\n");
+            Thread.Sleep(50);
+            try_send_rob("m\n");
+            Thread.Sleep(50);
+            var cur_pos = positionFromRobot(con1);
             if(cur_pos==null)
             {
                 cur_pos = new RobotFrame();
             }
-            var dest_pos = cur_pos+delt;
-            //Console.WriteLine(dest_pos.ToStr(" ", false, false));
-            try_send_rob(dest_pos.ToStr(" ",true,false)+"\n");
+            else
+            {
+                var dest_pos = cur_pos + delt;
+                //Console.WriteLine(dest_pos.ToStr(" ", false, false));
+                try_send_rob(dest_pos.ToStr(" ", true, false) + "\n");
+            }
+            
         }
 
 
@@ -7274,6 +7294,7 @@ namespace opengl3
             {
                 return;
             }
+            printing = true;
             try_send_rob("a\n");
             Thread.Sleep(50);
             try_send_rob("c\n");
