@@ -1346,7 +1346,7 @@ namespace opengl3
                             z_mesh_from_cont_xy(cont_p3d, 400),
                             PrimitiveType.Triangles,
                             new Color3d_GL(1, 0, 0), name_cont);
-
+                            cont_p3d = Point3d_GL.add_arr(cont_p3d, new Point3d_GL(0, 0, 500));
                             buffersGl.setTranspobj(name_cont, 0.3f);
                             addLineMeshTrajLoop(cont_p3d,Color3d_GL.red(), name_cont_l);
 

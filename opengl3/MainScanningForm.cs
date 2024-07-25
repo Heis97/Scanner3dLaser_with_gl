@@ -26,6 +26,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        int save_vid_count = 0;
         double dist_contr_rob = 10;
         Matrix4x4f[] ms = new Matrix4x4f[8];
         //var qs = new Matrix4x4f[8];
@@ -1009,8 +1010,13 @@ namespace opengl3
                 var scan_stl = Polygon3d_GL.toMesh(mesh);
                 //mesh = GL1.addNormals(mesh, 1);
                 this.scanner = scanner;
-                if (scan_stl != null) scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
-                smooth_mesh(scan_i, config.smooth);
+                if (scan_stl != null)
+                {
+                   // comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
+                    //this.BeginInvoke((MethodInvoker)(() => GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1)));
+                    scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
+                }
+                //smooth_mesh(scan_i, config.smooth);
                 // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
 
                 
@@ -1358,6 +1364,8 @@ namespace opengl3
                 var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
                 laserLine?.laserOn();
                 Thread.Sleep(100);
+                laserLine?.set_home_laser();
+                Thread.Sleep(2000);
                 laserLine?.setShvpVel(2000);
                 Thread.Sleep(200);
 
@@ -4923,6 +4931,7 @@ namespace opengl3
                 //initWrite(ind,cameraSize.Width,cameraSize.Height);
                 video_mats[ind] = new List<Mat>();
                 videoframe_counts[ind]++;
+                save_vid_count=0;
             }
 
             if (videoframe_counts[ind] > 0 && videoframe_counts[ind ] < videoframe_counts_stop[ind])
@@ -4945,7 +4954,7 @@ namespace opengl3
             }
             else
             {
-                if (video_mats[ind] != null) save_video_sam(ind, cameraSize.Width, cameraSize.Height);
+                if (video_mats[ind] != null) { save_video_sam(ind, cameraSize.Width, cameraSize.Height); save_vid_count++; }
                 if (sb_enc != null)
                 {
                     laserLine?.laserOff();
@@ -5908,13 +5917,17 @@ namespace opengl3
         string gen_traj_rob(RobotFrame.RobotType robotType, RobotFrame tool = null,string obj_3d = null)
         {
             string selected_obj = "";
-            if (obj_3d!=null) selected_obj = obj_3d;
+            if (obj_3d != null)
+            {
+                selected_obj = obj_3d;
+                //traj_config.line_width = 
+            }
             else
             {
                 selected_obj = selected_object();
                 if (selected_obj == null) return "";
             }
-            
+
 
             var mesh = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[selected_obj].vertex_buffer_data);
             var cont = GL1.get_contour()?.ToList();
@@ -5948,7 +5961,7 @@ namespace opengl3
                 var traj_rob = PathPlanner.generate_robot_traj(rob_traj,robotType,traj_config);
 
                 var matrs_end = PathPlanner.traj_to_matr(traj_rob);
-                for (int i = 0; i < matrs_end.Count; i += 5) GL1.addFrame(matrs_end[i], 2);
+                //for (int i = 0; i < matrs_end.Count; i += 5) GL1.addFrame(matrs_end[i], 2);
                 return RobotFrame.generate_string(traj_rob.ToArray()); ;
 
             }
@@ -6676,9 +6689,9 @@ namespace opengl3
 
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
-          /*  this.tabP_connect.Controls.Add(this.imageBox1);
+            this.tabP_connect.Controls.Add(this.imageBox1);
             this.tabP_connect.Controls.Add(this.imageBox2);
-            this.tabP_scanning_printing.Controls.Add(this.glControl1);*/
+            this.tabP_scanning_printing.Controls.Add(this.glControl1);
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
             //resize();
             
@@ -7000,12 +7013,11 @@ namespace opengl3
         }
         void connect_cams()
         {
-            var ind_cam =2;
-            videoStart_sam(ind_cam);
-            imb_ind_cam[0] = ind_cam;
-            ind_cam = 0;
-            videoStart_sam(ind_cam);
-            imb_ind_cam[1] = ind_cam;
+            var inds_cam = new int[] { 0, 2 };
+            videoStart_sam(inds_cam[0]);
+            imb_ind_cam[0] = inds_cam[0];
+            videoStart_sam(inds_cam[1]);
+            imb_ind_cam[1] = inds_cam[1];
             label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.Text = "Камеры подключены"));
         }
         private void but_con_set_rob_con_Click(object sender, EventArgs e)
@@ -7139,14 +7151,15 @@ namespace opengl3
 
         private void but_scan_simp_scan_Click(object sender, EventArgs e)
         {
-            Thread scan_and_load_thread = new Thread(scan_and_load);
-            scan_and_load_thread.Start();
+            //Thread scan_and_load_thread = new Thread(scan_and_load);
+            //scan_and_load_thread.Start();
             //load
+            scan_and_load();
         }
 
         void scan_and_load()
         {
-           /* var pos_rob = positionFromRobot(con1);
+            var pos_rob = positionFromRobot(con1);
             if (pos_rob != null)
             {
                 video_scan_name = pos_rob.ToString();
@@ -7155,13 +7168,14 @@ namespace opengl3
             {
                 video_scan_name = "1";
             }
-            startScanLaser(3);*/
-            Console.WriteLine("Start scan");
-            Thread.Sleep(3);
-            Console.WriteLine("Start load scan");
-            start_load_scan();
+            startScanLaser(3);
+            
+            //start_load_scan();
         }
-
+        private void but_scan_simp_scan_load_Click(object sender, EventArgs e)
+        {
+            load_scan_full();
+        }
         public void load_scan_full()
         {
             var scan_path = textB_scan_path.Text;
@@ -7342,6 +7356,8 @@ namespace opengl3
                 dist_contr_rob = Convert.ToDouble(checkBox.AccessibleName);
             }
         }
+
+       
     }
 }
 

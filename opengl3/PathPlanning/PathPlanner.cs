@@ -1528,8 +1528,8 @@ namespace PathPlanning
                 var traj_df = filter_traj(divide_traj(traj_2d[i], trajParams.div_step), trajParams.div_step / 2);
                 traj_3d.Add(project_layer(surface, traj_df, map_xy, vec_x));
             }
-            //traj_3d = add_transit(traj_3d, trajParams.h_transf);
-           // traj_3d = add_transit_out(traj_3d, trajParams.h_transf_out);
+            traj_3d = add_transit(traj_3d, trajParams.h_transf);
+            traj_3d = add_transit_out(traj_3d, trajParams.h_transf_out);
             return traj_3d;
         }
 

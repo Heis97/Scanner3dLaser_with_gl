@@ -420,6 +420,7 @@ namespace opengl3
             this.but_scan_simp_cont_save = new System.Windows.Forms.Button();
             this.but_scan_simp_cont_beg = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.but_scan_simp_scan_load = new System.Windows.Forms.Button();
             this.but_scan_simp_scan = new System.Windows.Forms.Button();
             this.tabP_scanning_printing_ext = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -460,6 +461,8 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.label_scan_ready = new System.Windows.Forms.Label();
+            this.label_scan_ready_load = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2671,7 +2674,7 @@ namespace opengl3
             // 
             this.imageBox1.Location = new System.Drawing.Point(5, 3);
             this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(593, 484);
+            this.imageBox1.Size = new System.Drawing.Size(985, 484);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
             // 
@@ -4201,7 +4204,7 @@ namespace opengl3
             // 
             this.imageBox2.Location = new System.Drawing.Point(3, 489);
             this.imageBox2.Name = "imageBox2";
-            this.imageBox2.Size = new System.Drawing.Size(698, 484);
+            this.imageBox2.Size = new System.Drawing.Size(987, 484);
             this.imageBox2.TabIndex = 18;
             this.imageBox2.TabStop = false;
             // 
@@ -4616,16 +4619,16 @@ namespace opengl3
             this.groupBox5.Controls.Add(this.but_scan_simp_stop_print);
             this.groupBox5.Controls.Add(this.but_scan_simp_start_print);
             this.groupBox5.Controls.Add(this.but_scan_simp_gen_traj);
-            this.groupBox5.Location = new System.Drawing.Point(6, 428);
+            this.groupBox5.Location = new System.Drawing.Point(6, 683);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(657, 534);
+            this.groupBox5.Size = new System.Drawing.Size(657, 279);
             this.groupBox5.TabIndex = 3;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Настройки траектории и печати";
             // 
             // but_scan_simp_stop_print
             // 
-            this.but_scan_simp_stop_print.Location = new System.Drawing.Point(335, 229);
+            this.but_scan_simp_stop_print.Location = new System.Drawing.Point(335, 142);
             this.but_scan_simp_stop_print.Name = "but_scan_simp_stop_print";
             this.but_scan_simp_stop_print.Size = new System.Drawing.Size(316, 117);
             this.but_scan_simp_stop_print.TabIndex = 5;
@@ -4635,7 +4638,7 @@ namespace opengl3
             // 
             // but_scan_simp_start_print
             // 
-            this.but_scan_simp_start_print.Location = new System.Drawing.Point(335, 106);
+            this.but_scan_simp_start_print.Location = new System.Drawing.Point(335, 19);
             this.but_scan_simp_start_print.Name = "but_scan_simp_start_print";
             this.but_scan_simp_start_print.Size = new System.Drawing.Size(316, 117);
             this.but_scan_simp_start_print.TabIndex = 4;
@@ -4645,7 +4648,7 @@ namespace opengl3
             // 
             // but_scan_simp_gen_traj
             // 
-            this.but_scan_simp_gen_traj.Location = new System.Drawing.Point(13, 165);
+            this.but_scan_simp_gen_traj.Location = new System.Drawing.Point(13, 142);
             this.but_scan_simp_gen_traj.Name = "but_scan_simp_gen_traj";
             this.but_scan_simp_gen_traj.Size = new System.Drawing.Size(316, 117);
             this.but_scan_simp_gen_traj.TabIndex = 3;
@@ -4659,9 +4662,9 @@ namespace opengl3
             this.groupBox4.Controls.Add(this.but_scan_simp_xy);
             this.groupBox4.Controls.Add(this.but_scan_simp_cont_save);
             this.groupBox4.Controls.Add(this.but_scan_simp_cont_beg);
-            this.groupBox4.Location = new System.Drawing.Point(6, 204);
+            this.groupBox4.Location = new System.Drawing.Point(6, 385);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(657, 218);
+            this.groupBox4.Size = new System.Drawing.Size(657, 292);
             this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Обработка 3D модели";
@@ -4707,19 +4710,32 @@ namespace opengl3
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label_scan_ready_load);
+            this.groupBox3.Controls.Add(this.label_scan_ready);
+            this.groupBox3.Controls.Add(this.but_scan_simp_scan_load);
             this.groupBox3.Controls.Add(this.but_scan_simp_scan);
             this.groupBox3.Location = new System.Drawing.Point(6, 6);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(657, 192);
+            this.groupBox3.Size = new System.Drawing.Size(657, 373);
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Сканирование";
             // 
+            // but_scan_simp_scan_load
+            // 
+            this.but_scan_simp_scan_load.Location = new System.Drawing.Point(335, 33);
+            this.but_scan_simp_scan_load.Name = "but_scan_simp_scan_load";
+            this.but_scan_simp_scan_load.Size = new System.Drawing.Size(316, 117);
+            this.but_scan_simp_scan_load.TabIndex = 1;
+            this.but_scan_simp_scan_load.Text = "Загрузить скан";
+            this.but_scan_simp_scan_load.UseVisualStyleBackColor = true;
+            this.but_scan_simp_scan_load.Click += new System.EventHandler(this.but_scan_simp_scan_load_Click);
+            // 
             // but_scan_simp_scan
             // 
-            this.but_scan_simp_scan.Location = new System.Drawing.Point(158, 41);
+            this.but_scan_simp_scan.Location = new System.Drawing.Point(13, 33);
             this.but_scan_simp_scan.Name = "but_scan_simp_scan";
-            this.but_scan_simp_scan.Size = new System.Drawing.Size(333, 117);
+            this.but_scan_simp_scan.Size = new System.Drawing.Size(316, 117);
             this.but_scan_simp_scan.TabIndex = 0;
             this.but_scan_simp_scan.Text = "Сканировать";
             this.but_scan_simp_scan.UseVisualStyleBackColor = true;
@@ -4747,7 +4763,7 @@ namespace opengl3
             this.groupBox6.Controls.Add(this.tb_scan_ext_scan_pres);
             this.groupBox6.Location = new System.Drawing.Point(6, 6);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(657, 192);
+            this.groupBox6.Size = new System.Drawing.Size(657, 328);
             this.groupBox6.TabIndex = 4;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Сканирование";
@@ -4780,9 +4796,9 @@ namespace opengl3
             // 
             // but_scan_ext_scan
             // 
-            this.but_scan_ext_scan.Location = new System.Drawing.Point(148, 69);
+            this.but_scan_ext_scan.Location = new System.Drawing.Point(6, 69);
             this.but_scan_ext_scan.Name = "but_scan_ext_scan";
-            this.but_scan_ext_scan.Size = new System.Drawing.Size(333, 117);
+            this.but_scan_ext_scan.Size = new System.Drawing.Size(316, 117);
             this.but_scan_ext_scan.TabIndex = 0;
             this.but_scan_ext_scan.Text = "Сканировать";
             this.but_scan_ext_scan.UseVisualStyleBackColor = true;
@@ -4805,7 +4821,7 @@ namespace opengl3
             this.groupBox7.Controls.Add(this.button15);
             this.groupBox7.Controls.Add(this.button11);
             this.groupBox7.Controls.Add(this.button12);
-            this.groupBox7.Location = new System.Drawing.Point(6, 204);
+            this.groupBox7.Location = new System.Drawing.Point(6, 340);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(657, 294);
             this.groupBox7.TabIndex = 5;
@@ -4902,16 +4918,16 @@ namespace opengl3
             this.groupBox8.Controls.Add(this.tb_scan_ext_noozle_d);
             this.groupBox8.Controls.Add(this.button13);
             this.groupBox8.Controls.Add(this.button14);
-            this.groupBox8.Location = new System.Drawing.Point(6, 504);
+            this.groupBox8.Location = new System.Drawing.Point(6, 640);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(657, 458);
+            this.groupBox8.Size = new System.Drawing.Size(657, 322);
             this.groupBox8.TabIndex = 6;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Настройки траектории и печати";
             // 
             // but_scan_ext_stop_print
             // 
-            this.but_scan_ext_stop_print.Location = new System.Drawing.Point(328, 283);
+            this.but_scan_ext_stop_print.Location = new System.Drawing.Point(328, 174);
             this.but_scan_ext_stop_print.Name = "but_scan_ext_stop_print";
             this.but_scan_ext_stop_print.Size = new System.Drawing.Size(316, 117);
             this.but_scan_ext_stop_print.TabIndex = 20;
@@ -4942,6 +4958,7 @@ namespace opengl3
             this.tb_scan_extprinting_vel.Name = "tb_scan_extprinting_vel";
             this.tb_scan_extprinting_vel.Size = new System.Drawing.Size(100, 20);
             this.tb_scan_extprinting_vel.TabIndex = 17;
+            this.tb_scan_extprinting_vel.Text = "10";
             // 
             // label71
             // 
@@ -4957,9 +4974,9 @@ namespace opengl3
             this.label72.AutoSize = true;
             this.label72.Location = new System.Drawing.Point(20, 115);
             this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(86, 13);
+            this.label72.Size = new System.Drawing.Size(72, 13);
             this.label72.TabIndex = 15;
-            this.label72.Text = "Толщина линии";
+            this.label72.Text = "Высота слоя";
             // 
             // tb_scan_ext_line_w
             // 
@@ -4967,6 +4984,7 @@ namespace opengl3
             this.tb_scan_ext_line_w.Name = "tb_scan_ext_line_w";
             this.tb_scan_ext_line_w.Size = new System.Drawing.Size(100, 20);
             this.tb_scan_ext_line_w.TabIndex = 14;
+            this.tb_scan_ext_line_w.Text = "0.4";
             // 
             // label64
             // 
@@ -4992,6 +5010,7 @@ namespace opengl3
             this.tb_scan_ext_grid_d.Name = "tb_scan_ext_grid_d";
             this.tb_scan_ext_grid_d.Size = new System.Drawing.Size(100, 20);
             this.tb_scan_ext_grid_d.TabIndex = 11;
+            this.tb_scan_ext_grid_d.Text = "2";
             // 
             // label62
             // 
@@ -5017,6 +5036,7 @@ namespace opengl3
             this.tb_scan_ext_syr_d.Name = "tb_scan_ext_syr_d";
             this.tb_scan_ext_syr_d.Size = new System.Drawing.Size(100, 20);
             this.tb_scan_ext_syr_d.TabIndex = 8;
+            this.tb_scan_ext_syr_d.Text = "16.8";
             // 
             // label60
             // 
@@ -5034,7 +5054,7 @@ namespace opengl3
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(86, 13);
             this.label61.TabIndex = 6;
-            this.label61.Text = "Толщина сопла";
+            this.label61.Text = "Толщина линии";
             // 
             // tb_scan_ext_noozle_d
             // 
@@ -5042,10 +5062,11 @@ namespace opengl3
             this.tb_scan_ext_noozle_d.Name = "tb_scan_ext_noozle_d";
             this.tb_scan_ext_noozle_d.Size = new System.Drawing.Size(100, 20);
             this.tb_scan_ext_noozle_d.TabIndex = 5;
+            this.tb_scan_ext_noozle_d.Text = "0.8";
             // 
             // button13
             // 
-            this.button13.Location = new System.Drawing.Point(328, 160);
+            this.button13.Location = new System.Drawing.Point(328, 41);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(316, 117);
             this.button13.TabIndex = 4;
@@ -5054,7 +5075,7 @@ namespace opengl3
             // 
             // button14
             // 
-            this.button14.Location = new System.Drawing.Point(6, 224);
+            this.button14.Location = new System.Drawing.Point(6, 174);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(316, 117);
             this.button14.TabIndex = 3;
@@ -5080,6 +5101,24 @@ namespace opengl3
             // timer2
             // 
             this.timer2.Enabled = true;
+            // 
+            // label_scan_ready
+            // 
+            this.label_scan_ready.AutoSize = true;
+            this.label_scan_ready.Location = new System.Drawing.Point(23, 163);
+            this.label_scan_ready.Name = "label_scan_ready";
+            this.label_scan_ready.Size = new System.Drawing.Size(80, 13);
+            this.label_scan_ready.TabIndex = 4;
+            this.label_scan_ready.Text = "Сканирование";
+            // 
+            // label_scan_ready_load
+            // 
+            this.label_scan_ready_load.AutoSize = true;
+            this.label_scan_ready_load.Location = new System.Drawing.Point(345, 163);
+            this.label_scan_ready_load.Name = "label_scan_ready_load";
+            this.label_scan_ready_load.Size = new System.Drawing.Size(87, 13);
+            this.label_scan_ready_load.TabIndex = 5;
+            this.label_scan_ready_load.Text = "Загрузка скана";
             // 
             // MainScanningForm
             // 
@@ -5202,6 +5241,7 @@ namespace opengl3
             this.groupBox5.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.tabP_scanning_printing_ext.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
@@ -5645,6 +5685,9 @@ namespace opengl3
         private System.Windows.Forms.Button but_con_ext_disp_up_push;
         private System.Windows.Forms.Label label_ard_connect;
         private System.Windows.Forms.Label label_cam_connect;
+        private System.Windows.Forms.Button but_scan_simp_scan_load;
+        private System.Windows.Forms.Label label_scan_ready_load;
+        private System.Windows.Forms.Label label_scan_ready;
     }
 }
 
