@@ -327,6 +327,32 @@ namespace opengl3
             }
             
         }
+
+        static void comp_glare(Mat mat)
+        {
+            CvInvoke.CvtColor(mat, mat, ColorConversion.Bgr2Gray);
+            CvInvoke.Threshold(mat, mat, 235, 255, ThresholdType.Binary);
+           // CvInvoke.Imshow("glare", mat);
+            //CvInvoke.WaitKey();
+            
+            var im = mat.ToImage<Gray, byte>();
+            var i_nz = 0;
+            for(int y = 0; y < im.Height; y++)
+            {
+                for (int x = 0; x < im.Width; x++)
+                {
+                    if (im.Data[y, x, 0] > 0)
+                    {
+                        i_nz++;
+                        break;
+                    }
+                }
+            }
+            var nz = im.CountNonzero()[0];
+            Console.WriteLine("NZ: "+i_nz+" "+im.Height+" "+nz + " " + (im.Size.Width * im.Size.Height));
+
+        }
+
         static public Scanner loadVideo_sing_cam(string filepath, MainScanningForm form, Scanner scanner = null, ScannerConfig config = null, bool calib = false)
         {
             var videoframe_count = 0;
@@ -355,7 +381,8 @@ namespace opengl3
             {
                 scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>() };
                 scanner.pointCloud.graphicGL = form.GL1;
-                // scanner.cameraCV.matrixSC = new Matrix<double>(
+                comp_glare(orig1);        
+                    // scanner.cameraCV.matrixSC = new Matrix<double>(
                 /*new double[,]
                 {
                     { 0.9986744136, 0.0156131588, 0.0490473742, 25.2702716137 },
@@ -403,7 +430,7 @@ namespace opengl3
                // Console.WriteLine(i+" "+inc_pos[i]);
             }
             //Console.WriteLine("start video_________");
-
+            var p_match = new Point3d_GL();
             while (videoframe_count < all_frames - buff_len-5)//  "/2+1"   //-buff_len
             {
                 Mat im1 = new Mat();
@@ -416,12 +443,16 @@ namespace opengl3
                     {
 
                         //var im1_or = im1.Clone();
+                        var ps_or = Detection.detectLineDiff(im1, config);
                         if(buff_diff>0)
                         {
                             im1 -= im1_buff_list[buff_len - buff_diff];
 
                         }
-                        
+                        var ps_diff = Detection.detectLineDiff(im1, config);
+
+                        p_match+=match_points(ps_or, ps_diff);
+
                         if (config.save_im) {
                             var frame_d = new Frame(im1.Clone(), im1.Clone(), videoframe_count.ToString(), FrameType.LasDif);
                             frame_d.stereo = true;
@@ -477,6 +508,7 @@ namespace opengl3
                 videoframe_count++;
                // Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
+            Console.WriteLine("p_match: "+p_match);
             //comboImages.Items.AddRange(frames_show.ToArray());
             Console.WriteLine("stop video_________");
 
@@ -489,6 +521,24 @@ namespace opengl3
             //CvInvoke.Imshow("corn", orig1);
             form.get_combo_im().Items.AddRange(frames_show.ToArray());
             return scanner;
+        }
+
+        static Point3d_GL match_points(PointF[] ps_or, PointF[] ps_diff)
+        {
+            var i_all = 0;
+            var i_match = 0;
+            for(int i = 0; i < 700; i++)
+            {
+                var i_or =  LaserSurface.ind_y(ps_or, i);
+                var i_diff = LaserSurface.ind_y(ps_diff, i);
+                if(i_or>0 && i_diff>0)
+                {
+                    var dx = ps_or[i_or].X - ps_diff[i_diff].X;
+                    i_all++;
+                    if(Math.Abs(dx)<3) i_match++;
+                }
+            }
+            return new Point3d_GL(i_all,i_match);
         }
         static public void loadVideo_test_laser(string filepath)
         {

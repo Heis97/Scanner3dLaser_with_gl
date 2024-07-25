@@ -174,9 +174,8 @@ namespace opengl3
                     orderby p.X
                     select p).ToArray();
         }
-        static int ind_y(PointF[] ps,float y)
+        public static int ind_y(PointF[] ps,float y)
         {
-            var i_y = 0;
             for(int i = 0; i < ps.Length; i++)
             {
                 if (Math.Abs(ps[i].Y-y)<0.01)
