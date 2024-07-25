@@ -407,7 +407,6 @@ namespace opengl3
             this.groupBox_con_ard_ext = new System.Windows.Forms.GroupBox();
             this.but_con_ext_find_ports = new System.Windows.Forms.Button();
             this.but_con_ext_con_com = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
             this.tabP_scanning_printing = new System.Windows.Forms.TabPage();
             this.tabC_scanning_printing_ins = new System.Windows.Forms.TabControl();
             this.tabP_scanning_printing_scan = new System.Windows.Forms.TabPage();
@@ -465,6 +464,7 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.label62 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -4584,9 +4584,9 @@ namespace opengl3
             // groupBox_con_ard_ext
             // 
             this.groupBox_con_ard_ext.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.groupBox_con_ard_ext.Controls.Add(this.comboBox1);
             this.groupBox_con_ard_ext.Controls.Add(this.but_con_ext_find_ports);
             this.groupBox_con_ard_ext.Controls.Add(this.but_con_ext_con_com);
-            this.groupBox_con_ard_ext.Controls.Add(this.listBox1);
             this.groupBox_con_ard_ext.Font = new System.Drawing.Font("Arial Unicode MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox_con_ard_ext.ForeColor = System.Drawing.Color.Black;
             this.groupBox_con_ard_ext.Location = new System.Drawing.Point(6, 6);
@@ -4625,15 +4625,6 @@ namespace opengl3
             this.but_con_ext_con_com.Text = "Подключиться к печатающему устройству";
             this.but_con_ext_con_com.UseVisualStyleBackColor = false;
             this.but_con_ext_con_com.Click += new System.EventHandler(this.but_open_Click);
-            // 
-            // listBox1
-            // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 18;
-            this.listBox1.Location = new System.Drawing.Point(35, 58);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(174, 76);
-            this.listBox1.TabIndex = 0;
             // 
             // tabP_scanning_printing
             // 
@@ -5307,6 +5298,14 @@ namespace opengl3
             this.label62.TabIndex = 20;
             this.label62.Text = "Дистанция";
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(35, 92);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(174, 26);
+            this.comboBox1.TabIndex = 7;
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -5812,7 +5811,6 @@ namespace opengl3
         private System.Windows.Forms.Button but_con_ext_disp_stop;
         private System.Windows.Forms.GroupBox groupBox_con_ard_ext;
         private System.Windows.Forms.Button but_con_ext_con_com;
-        private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.TabControl tabC_scanning_printing_ins;
         private System.Windows.Forms.TabPage tabP_scanning_printing_scan;
         private System.Windows.Forms.GroupBox groupBox5;
@@ -5877,6 +5875,7 @@ namespace opengl3
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label62;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 
