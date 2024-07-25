@@ -1012,11 +1012,13 @@ namespace opengl3
                 this.scanner = scanner;
                 if (scan_stl != null)
                 {
-                   // comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
+                    // comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
                     //this.BeginInvoke((MethodInvoker)(() => GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1)));
+                    if (GL1.buffersGl.objs.Keys.Contains(scan_i))
+                        GL1.buffersGl.removeObj(scan_i);
                     scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
                 }
-                //smooth_mesh(scan_i, config.smooth);
+                smooth_mesh(scan_i, config.smooth);
                 // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
 
                 
@@ -1662,6 +1664,12 @@ namespace opengl3
             but1.Size = new Size(30, 30);
             but1.AccessibleName = ass_name;
             but1.Text = name;
+            but1.BackColor = System.Drawing.Color.SteelBlue;
+            but1.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            but1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            but1.Font = new System.Drawing.Font("Arial Unicode MS", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            but1.ForeColor = System.Drawing.SystemColors.HighlightText;
+            but1.UseVisualStyleBackColor = false;
             return but1;
         }
 
@@ -3670,7 +3678,7 @@ namespace opengl3
             var var = Convert.ToDouble(vals_str[0]);
             var val = Convert.ToDouble(vals_str[1]);
             Console.WriteLine("resend_from_rob: "+val + " " + var);
-            ard.send((int)val, (int)var);
+            //ard.send((int)val, (int)var);
             //ard.set_div_disp(vel);
         }
 
@@ -3756,6 +3764,33 @@ namespace opengl3
                     double c = Convert.ToDouble(res_s[5]);
                     Console.WriteLine(res);
                     return new RobotFrame(x, y, z, a, b, c,0,0,0,current_robot);
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+        string positionFromRobot_str(TCPclient con)
+        {
+            if (con != null)
+            {
+                try
+                {
+                    con1.send_mes("f\n");
+                    Thread.Sleep(50);
+                    var res = con1.reseav();
+                    if (res == null || res.Length < 10)
+                    {
+                        return null;
+                    }
+                    res = res.Trim();
+                    Console.WriteLine(res);
+                    return res;
                 }
                 catch
                 {
@@ -4697,16 +4732,15 @@ namespace opengl3
 
         void save_video_sam(int ind, int w, int h)
         {
-            int fcc = VideoWriter.Fourcc('h', '2', '6', '4'); //'M', 'J', 'P', 'G';'m', 'p', '4', 'v';'M', 'P', '4', 'V';'H', '2', '6', '4'
-
+            int fcc = VideoWriter.Fourcc('h', '2', '6', '4'); //'M', 'J', 'P', 'G';'m', 'p', '4', 'v';'M', 'P', '4', 'V';'H', '2', '6', '4';'h', '2', '6', '4'
             int fps = 30;
             var dir = "cam" + (ind+1).ToString() + "\\" + box_scanFolder.Text;
             Directory.CreateDirectory(dir);
             string name = dir + "\\" + video_scan_name + ".mp4";
-            Console.WriteLine("wr" + " " + w + " " + h);
+            Console.WriteLine("wr" + " " + w + " " + h+" "+fps);
             video_writer[ind ] = new VideoWriter(name, -1, fps, new Size(w, h), true);
-            var reswr = video_writer[ind ].Set(VideoWriter.WriterProperty.Quality, 100);
-            Console.WriteLine(reswr);
+            //var reswr = video_writer[ind ].Set(VideoWriter.WriterProperty.Quality, 100);
+            //Console.WriteLine(reswr);
             for (int i = 0; i < video_mats[ind].Count; i++)
             {
                 video_writer[ind].Write(video_mats[ind][i]);
@@ -4954,7 +4988,17 @@ namespace opengl3
             }
             else
             {
-                if (video_mats[ind] != null) { save_video_sam(ind, cameraSize.Width, cameraSize.Height); save_vid_count++; }
+                if (video_mats[ind] != null) {
+                    try
+                    {
+                        save_video_sam(ind, cameraSize.Width, cameraSize.Height); save_vid_count++;
+                    }
+                    catch
+                    {
+                        label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.Text = "Сканирование неудачно"));
+                    }
+                    
+                }
                 if (sb_enc != null)
                 {
                     laserLine?.laserOff();
@@ -4978,6 +5022,7 @@ namespace opengl3
                     catch
 
                     {
+                        label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.Text = "Сканирование неудачно"));
                         Console.WriteLine("don t save enc");
                     }
                     label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.Text = "Сканирование завершено"));
@@ -5920,6 +5965,7 @@ namespace opengl3
             string selected_obj = "";
             if (obj_3d != null)
             {
+                traj_config.ang_x = scanner.stereoCamera.cur_pos.A;
                 selected_obj = obj_3d;
                 traj_config.line_width = Convert.ToDouble(tb_scan_line_width_d.Text);
                 traj_config.dz = Convert.ToDouble(tb_scan_ext_line_h.Text);
@@ -5956,7 +6002,7 @@ namespace opengl3
                     rob_traj[i] *= tool_inv;
                 }
 
-               // if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
+                if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
 
                // for (int i = 0; i < rob_traj.Count; i+=5) GL1.addFrame(rob_traj[i],2);
 
@@ -7078,8 +7124,8 @@ namespace opengl3
             var dim_y = 40;
             for (int i = 0; i < axis.Length; i++)
             {
-                add_but_rob_contr("+" + axis[i], new Rectangle(st_x + dim_x * i+10, st_y,         dim_x, dim_y),  groupBox_rob_con_ext );
-                add_but_rob_contr("-" + axis[i], new Rectangle(st_x + dim_x * i+10, st_y + dim_y+20, dim_x, dim_y),  groupBox_rob_con_ext);
+                add_but_rob_contr("+" + axis[i], new Rectangle(st_x + (dim_x+3) * i+10, st_y,         dim_x, dim_y),  groupBox_rob_con_ext );
+                add_but_rob_contr("-" + axis[i], new Rectangle(st_x +( dim_x+3) * i+10, st_y + dim_y+20, dim_x, dim_y),  groupBox_rob_con_ext);
             }
         }
         Button add_but_rob_contr_old(string ax, Rectangle pos,Control[] parents)
@@ -7106,6 +7152,13 @@ namespace opengl3
             but.AccessibleName = ax;
             but.Text = ax;
             but.Click += but_rob_contr_Click;
+            //but.BackColor
+            but.BackColor = System.Drawing.Color.SteelBlue;
+            but.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            but.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            but.Font = new System.Drawing.Font("Arial Unicode MS", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            but.ForeColor = System.Drawing.SystemColors.HighlightText;
+            but.UseVisualStyleBackColor = false;
             parent.Parent.Controls.Add(but);
             parent.SendToBack();
             return but;
@@ -7117,6 +7170,7 @@ namespace opengl3
             var delt = mask_from_ax(ax) * dist_contr_rob;
             // Console.WriteLine(delt.ToStr(" ", false, false));
             try_send_rob("m\n");
+            Thread.Sleep(50);
              var cur_pos = positionFromRobot(con1);
             if(cur_pos==null)
             {
@@ -7166,10 +7220,10 @@ namespace opengl3
         void scan_and_load()
         {
             label_scan_ready.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Сканирование запущено..."));
-            var pos_rob = positionFromRobot(con1);
+            var pos_rob = positionFromRobot_str(con1);
             if (pos_rob != null)
             {
-                video_scan_name = pos_rob.ToString();
+                video_scan_name = pos_rob;
             }
             else
             {
@@ -7221,8 +7275,11 @@ namespace opengl3
                 return;
             }
             try_send_rob("a\n");
+            Thread.Sleep(50);
             try_send_rob("c\n");
+            Thread.Sleep(50);
             try_send_rob(debugBox.Text + "\n");
+            Thread.Sleep(150);
             try_send_rob("s\n");
         }
         private void but_scan_simp_stop_print_Click(object sender, EventArgs e)

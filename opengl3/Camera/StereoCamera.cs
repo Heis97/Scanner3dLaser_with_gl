@@ -15,6 +15,7 @@ namespace opengl3
         //base = world, flange, scanner = cam1, model = local cord
         public enum mode {model,world,camera,world_virt };
         public CameraCV[] cameraCVs;
+        public RobotFrame cur_pos;
         public Matrix<double> R;//1 * R -> 2
         public Matrix<double> Bfs;//Flange->scaner
 

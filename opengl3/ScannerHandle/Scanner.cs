@@ -324,7 +324,20 @@ namespace opengl3
         }
         public Scanner set_rob_pos(string pos)
         {
-            stereoCamera.Bbf = new RobotFrame(pos,RobotFrame.RobotType.KUKA).getMatrix();
+            if(pos.Contains(";"))
+            {
+                var poses = pos.Split(';');
+                var pos_fr = new RobotFrame(poses[0]);
+                stereoCamera.Bbf = pos_fr.getMatrix();
+                stereoCamera.cur_pos = new RobotFrame(poses[1]);
+
+            }
+            else
+            {
+                var pos_fr = new RobotFrame(pos, RobotFrame.RobotType.KUKA);
+                stereoCamera.Bbf = pos_fr.getMatrix();
+            }
+            
             return this;
         }
 

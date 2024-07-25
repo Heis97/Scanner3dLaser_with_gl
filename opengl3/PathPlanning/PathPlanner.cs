@@ -1635,8 +1635,9 @@ namespace PathPlanning
                 fr.F = f;
                 traj_rob.Add(fr);
             }
-            traj_rob = unif_dist(traj_rob, 0.5);
-            traj_rob = line_aver_btw(traj_rob.ToArray(), 10).ToList();
+            // traj_rob = unif_dist(traj_rob, 0.5);
+            //traj_rob = line_aver_btw(traj_rob.ToArray(), 10).ToList();
+            //traj_rob = divide_traj(traj_rob, trajParams.div_step);
             traj_rob = unif_dist(traj_rob, trajParams.div_step );
 
             traj_rob = RobotFrame.smooth_angle(traj_rob, trajParams.w_smooth_ang);
