@@ -3142,8 +3142,8 @@ namespace opengl3
 
                     //VideoAnalyse.deviation_light_gauss(fr_im_cl);
 
-                    imBox_base_1.Image = UtilOpenCV.drawLines(fr_im_cl, ps1_dr, 0, 255, 0, 1,0);
-                    imBox_base_2.Image = UtilOpenCV.drawLines(fr_im_sec_cl, ps2_dr, 0, 255, 0, 1,0);
+                    imBox_base_1.Image = UtilOpenCV.drawPoints(fr_im_cl, ps1_dr, 0, 255, 0, 1);
+                    imBox_base_2.Image = UtilOpenCV.drawPoints(fr_im_sec_cl, ps2_dr, 0, 255, 0, 1);
                 }
                     
 
@@ -6676,9 +6676,9 @@ namespace opengl3
 
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
-            this.tabP_connect.Controls.Add(this.imageBox1);
+          /*  this.tabP_connect.Controls.Add(this.imageBox1);
             this.tabP_connect.Controls.Add(this.imageBox2);
-            this.tabP_scanning_printing.Controls.Add(this.glControl1);
+            this.tabP_scanning_printing.Controls.Add(this.glControl1);*/
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
             //resize();
             

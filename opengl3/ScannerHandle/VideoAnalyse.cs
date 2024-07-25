@@ -416,7 +416,12 @@ namespace opengl3
                     {
 
                         //var im1_or = im1.Clone();
-                        im1 -= im1_buff_list[buff_len - buff_diff];
+                        if(buff_diff>0)
+                        {
+                            im1 -= im1_buff_list[buff_len - buff_diff];
+
+                        }
+                        
                         if (config.save_im) {
                             var frame_d = new Frame(im1.Clone(), im1.Clone(), videoframe_count.ToString(), FrameType.LasDif);
                             frame_d.stereo = true;
@@ -450,7 +455,7 @@ namespace opengl3
                             //var frame_d = new Frame(im1, videoframe_count.ToString(), FrameType.LasDif);
                             // frames_show.Add(frame_d);
 
-                           if( scanner.addPointsSingLas_2d(im1, true, calib));
+                           if( scanner.addPointsSingLas_2d(im1, true, calib,config));
 
                             {
                                 pos_inc_cal.Add(inc_pos[videoframe_count]);

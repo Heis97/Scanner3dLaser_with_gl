@@ -496,7 +496,9 @@ namespace opengl3
                 {
                     var m_c = cameraCV.undist(mats_calib[i].Clone());
                     var points_im = Detection.detectLineDiff(m_c, config);
-
+                    var mat_p = UtilOpenCV.drawPointsF(m_c, points_im, 0, 255, 0, 1);
+                    //CvInvoke.Imshow("sf", mat_p);
+                   // CvInvoke.WaitKey();
                     var y1 = 325;
                     var y2 = 270;
                     var y3 = 240;

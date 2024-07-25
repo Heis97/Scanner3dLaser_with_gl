@@ -242,16 +242,16 @@ namespace opengl3
             return true;
         }
 
-        public bool addPoints2dSingLas(Mat mat, CameraCV cameraCV, bool undist,bool orig = false)
+        public bool addPoints2dSingLas(Mat mat, CameraCV cameraCV, bool undist,bool orig = false, ScannerConfig config = null)
         {
             if (undist)
             {
                 mat = cameraCV.undist(mat);
             }
             PointF[] points_im;
-            if (orig) points_im = Detection.detectLineDiff(mat, 7,0.05f,false,true,true);
-            else points_im = Detection.detectLineDiff(mat, 10);
-          
+            if (orig) points_im = Detection.detectLineDiff(mat, config);//Detection.detectLineDiff(mat, 7,0.05f,false,true,true);
+            else points_im = Detection.detectLineDiff(mat, config);
+
             if (points_im != null)
             {
                 cameraCV.scan_points.Add(points_im);
@@ -306,6 +306,7 @@ namespace opengl3
 
         public static Point3d_GL[] fromLines(PointF[] points_im, CameraCV cameraCV, Flat3d_GL laserSurface)
         {
+            //var points_ord = 
             var lines3d = computeTracesCam(points_im, cameraCV);
             var points_cam = intersectWithLaser(lines3d, laserSurface);
             return points_cam;
