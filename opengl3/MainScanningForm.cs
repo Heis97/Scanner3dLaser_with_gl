@@ -4970,6 +4970,7 @@ namespace opengl3
                             {
                                 sw.Write(sb_enc.ToString());
                                 sb_enc = null;
+                                
                             }
 
                         }
@@ -4979,7 +4980,7 @@ namespace opengl3
                     {
                         Console.WriteLine("don t save enc");
                     }
-                                
+                    label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.Text = "Сканирование завершено"));
                 }
 
 
@@ -5920,7 +5921,10 @@ namespace opengl3
             if (obj_3d != null)
             {
                 selected_obj = obj_3d;
-                //traj_config.line_width = 
+                traj_config.line_width = Convert.ToDouble(tb_scan_line_width_d.Text);
+                traj_config.dz = Convert.ToDouble(tb_scan_ext_line_h.Text);
+                traj_config.Step = Convert.ToDouble(tb_scan_ext_grid_d.Text);
+                traj_config.vel = Convert.ToDouble(tb_scan_extprinting_vel.Text);
             }
             else
             {
@@ -5954,7 +5958,7 @@ namespace opengl3
 
                // if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
 
-                for (int i = 0; i < rob_traj.Count; i+=5) GL1.addFrame(rob_traj[i],2);
+               // for (int i = 0; i < rob_traj.Count; i+=5) GL1.addFrame(rob_traj[i],2);
 
                 traj_i = GL1.addLineMeshTraj(ps.ToArray(),new Color3d_GL(0.9f),"gen_traj");
 
@@ -7001,6 +7005,7 @@ namespace opengl3
 
         void connect_las()
         {
+            label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Подключение контр РО..."));
             find_ports(true);
             Thread.Sleep(300);
             laserLine = new LaserLine(portArd); Thread.Sleep(1500);
@@ -7013,7 +7018,8 @@ namespace opengl3
         }
         void connect_cams()
         {
-            var inds_cam = new int[] { 0, 2 };
+            label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.Text = "Подключение камер...Это может занять несколько минут"));
+            var inds_cam = new int[] { 2, 0 };
             videoStart_sam(inds_cam[0]);
             imb_ind_cam[0] = inds_cam[0];
             videoStart_sam(inds_cam[1]);
@@ -7159,6 +7165,7 @@ namespace opengl3
 
         void scan_and_load()
         {
+            label_scan_ready.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Сканирование запущено..."));
             var pos_rob = positionFromRobot(con1);
             if (pos_rob != null)
             {
@@ -7169,12 +7176,14 @@ namespace opengl3
                 video_scan_name = "1";
             }
             startScanLaser(3);
-            
+           
             //start_load_scan();
         }
         private void but_scan_simp_scan_load_Click(object sender, EventArgs e)
         {
+            label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Загрузка скана..."));
             load_scan_full();
+            label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Скан загружен"));
         }
         public void load_scan_full()
         {
