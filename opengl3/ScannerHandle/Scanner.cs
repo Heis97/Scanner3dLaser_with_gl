@@ -114,6 +114,26 @@ namespace opengl3
             set { rotate_cam = value; }
         }
 
+        public int cam1_ind;
+        [Description("Индекс камеры 1")]
+        [Category("Видео")]
+        [DisplayName("cam1_ind")]
+        public int Cam1_ind
+        {
+            get { return cam1_ind; }
+            set { cam1_ind = value; }
+        }
+
+        public int cam2_ind;
+        [Description("Индекс камеры 2")]
+        [Category("Видео")]
+        [DisplayName("cam2_ind")]
+        public int Cam2_ind
+        {
+            get { return cam2_ind; }
+            set { cam2_ind = value; }
+        }
+
 
         public int wind_regr;
         [Description("Окно регрессии")]

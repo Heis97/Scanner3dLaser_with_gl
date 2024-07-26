@@ -30,8 +30,10 @@ namespace opengl3
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.TabPage tabCalibMonit;
+            System.Windows.Forms.TabPage tabMain;
+            System.Windows.Forms.TabPage tabP_scanning_printing;
             this.comboImages = new System.Windows.Forms.ComboBox();
-            this.tabCalibMonit = new System.Windows.Forms.TabPage();
             this.lab_pos_mouse = new System.Windows.Forms.Label();
             this.but_set_wind = new System.Windows.Forms.Button();
             this.but_ph_1 = new System.Windows.Forms.Button();
@@ -223,7 +225,6 @@ namespace opengl3
             this.but_calibr_Bfs = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.glControl1 = new OpenGL.GlControl();
-            this.tabMain = new System.Windows.Forms.TabPage();
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.but_resize = new System.Windows.Forms.Button();
             this.but_save_im_base1 = new System.Windows.Forms.Button();
@@ -389,6 +390,7 @@ namespace opengl3
             this.but_con_set_ard_con = new System.Windows.Forms.Button();
             this.tabP_connect_set_ext = new System.Windows.Forms.TabPage();
             this.groupBox_rob_con_ext = new System.Windows.Forms.GroupBox();
+            this.label62 = new System.Windows.Forms.Label();
             this.rb_1mm = new System.Windows.Forms.RadioButton();
             this.rb_100mm = new System.Windows.Forms.RadioButton();
             this.rb_10mm = new System.Windows.Forms.RadioButton();
@@ -405,9 +407,9 @@ namespace opengl3
             this.but_con_ext_disp_down = new System.Windows.Forms.Button();
             this.but_con_ext_disp_stop = new System.Windows.Forms.Button();
             this.groupBox_con_ard_ext = new System.Windows.Forms.GroupBox();
+            this.cb_ard_ext = new System.Windows.Forms.ComboBox();
             this.but_con_ext_find_ports = new System.Windows.Forms.Button();
             this.but_con_ext_con_com = new System.Windows.Forms.Button();
-            this.tabP_scanning_printing = new System.Windows.Forms.TabPage();
             this.tabC_scanning_printing_ins = new System.Windows.Forms.TabControl();
             this.tabP_scanning_printing_scan = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -444,6 +446,8 @@ namespace opengl3
             this.button15 = new System.Windows.Forms.Button();
             this.button11 = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label77 = new System.Windows.Forms.Label();
+            this.tb_scan_ext_layer_n = new System.Windows.Forms.TextBox();
             this.but_scan_ext_stop_print = new System.Windows.Forms.Button();
             this.label73 = new System.Windows.Forms.Label();
             this.label74 = new System.Windows.Forms.Label();
@@ -463,9 +467,10 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.label62 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.tabCalibMonit.SuspendLayout();
+            tabCalibMonit = new System.Windows.Forms.TabPage();
+            tabMain = new System.Windows.Forms.TabPage();
+            tabP_scanning_printing = new System.Windows.Forms.TabPage();
+            tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar29)).BeginInit();
@@ -522,7 +527,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_disparity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).BeginInit();
             this.tabPage9.SuspendLayout();
-            this.tabMain.SuspendLayout();
+            tabMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -553,7 +558,7 @@ namespace opengl3
             this.groupBox_rob_con_ext.SuspendLayout();
             this.groupBox_disp_contr_ext.SuspendLayout();
             this.groupBox_con_ard_ext.SuspendLayout();
-            this.tabP_scanning_printing.SuspendLayout();
+            tabP_scanning_printing.SuspendLayout();
             this.tabC_scanning_printing_ins.SuspendLayout();
             this.tabP_scanning_printing_scan.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -577,43 +582,43 @@ namespace opengl3
             // 
             // tabCalibMonit
             // 
-            this.tabCalibMonit.AutoScroll = true;
-            this.tabCalibMonit.Controls.Add(this.lab_pos_mouse);
-            this.tabCalibMonit.Controls.Add(this.but_set_wind);
-            this.tabCalibMonit.Controls.Add(this.but_ph_1);
-            this.tabCalibMonit.Controls.Add(this.but_calib_Start);
-            this.tabCalibMonit.Controls.Add(this.textBoxK_8);
-            this.tabCalibMonit.Controls.Add(this.textBoxK_7);
-            this.tabCalibMonit.Controls.Add(this.textBoxK_6);
-            this.tabCalibMonit.Controls.Add(this.textBoxK_5);
-            this.tabCalibMonit.Controls.Add(this.textBoxK_4);
-            this.tabCalibMonit.Controls.Add(this.textBoxK_3);
-            this.tabCalibMonit.Controls.Add(this.textBoxK_2);
-            this.tabCalibMonit.Controls.Add(this.textBoxK_1);
-            this.tabCalibMonit.Controls.Add(this.textBoxK_0);
-            this.tabCalibMonit.Controls.Add(this.trackBar27);
-            this.tabCalibMonit.Controls.Add(this.trackBar28);
-            this.tabCalibMonit.Controls.Add(this.trackBar29);
-            this.tabCalibMonit.Controls.Add(this.trackBar24);
-            this.tabCalibMonit.Controls.Add(this.trackBar25);
-            this.tabCalibMonit.Controls.Add(this.trackBar26);
-            this.tabCalibMonit.Controls.Add(this.trackBar23);
-            this.tabCalibMonit.Controls.Add(this.trackBar22);
-            this.tabCalibMonit.Controls.Add(this.trackBar21);
-            this.tabCalibMonit.Controls.Add(this.imBox_input_2);
-            this.tabCalibMonit.Controls.Add(this.imBox_input_1);
-            this.tabCalibMonit.Controls.Add(this.imBox_pattern);
-            this.tabCalibMonit.Location = new System.Drawing.Point(4, 27);
-            this.tabCalibMonit.Name = "tabCalibMonit";
-            this.tabCalibMonit.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCalibMonit.Size = new System.Drawing.Size(1891, 998);
-            this.tabCalibMonit.TabIndex = 5;
-            this.tabCalibMonit.Text = "Калибровка";
-            this.tabCalibMonit.UseVisualStyleBackColor = true;
-            this.tabCalibMonit.Paint += new System.Windows.Forms.PaintEventHandler(this.tabCalibMonit_Paint);
-            this.tabCalibMonit.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabCalibMonit_MouseDown);
-            this.tabCalibMonit.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tabCalibMonit_MouseMove);
-            this.tabCalibMonit.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tabCalibMonit_MouseUp);
+            tabCalibMonit.AutoScroll = true;
+            tabCalibMonit.Controls.Add(this.lab_pos_mouse);
+            tabCalibMonit.Controls.Add(this.but_set_wind);
+            tabCalibMonit.Controls.Add(this.but_ph_1);
+            tabCalibMonit.Controls.Add(this.but_calib_Start);
+            tabCalibMonit.Controls.Add(this.textBoxK_8);
+            tabCalibMonit.Controls.Add(this.textBoxK_7);
+            tabCalibMonit.Controls.Add(this.textBoxK_6);
+            tabCalibMonit.Controls.Add(this.textBoxK_5);
+            tabCalibMonit.Controls.Add(this.textBoxK_4);
+            tabCalibMonit.Controls.Add(this.textBoxK_3);
+            tabCalibMonit.Controls.Add(this.textBoxK_2);
+            tabCalibMonit.Controls.Add(this.textBoxK_1);
+            tabCalibMonit.Controls.Add(this.textBoxK_0);
+            tabCalibMonit.Controls.Add(this.trackBar27);
+            tabCalibMonit.Controls.Add(this.trackBar28);
+            tabCalibMonit.Controls.Add(this.trackBar29);
+            tabCalibMonit.Controls.Add(this.trackBar24);
+            tabCalibMonit.Controls.Add(this.trackBar25);
+            tabCalibMonit.Controls.Add(this.trackBar26);
+            tabCalibMonit.Controls.Add(this.trackBar23);
+            tabCalibMonit.Controls.Add(this.trackBar22);
+            tabCalibMonit.Controls.Add(this.trackBar21);
+            tabCalibMonit.Controls.Add(this.imBox_input_2);
+            tabCalibMonit.Controls.Add(this.imBox_input_1);
+            tabCalibMonit.Controls.Add(this.imBox_pattern);
+            tabCalibMonit.Location = new System.Drawing.Point(4, 27);
+            tabCalibMonit.Name = "tabCalibMonit";
+            tabCalibMonit.Padding = new System.Windows.Forms.Padding(3);
+            tabCalibMonit.Size = new System.Drawing.Size(1891, 998);
+            tabCalibMonit.TabIndex = 5;
+            tabCalibMonit.Text = "Калибровка";
+            tabCalibMonit.UseVisualStyleBackColor = true;
+            tabCalibMonit.Paint += new System.Windows.Forms.PaintEventHandler(this.tabCalibMonit_Paint);
+            tabCalibMonit.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabCalibMonit_MouseDown);
+            tabCalibMonit.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tabCalibMonit_MouseMove);
+            tabCalibMonit.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tabCalibMonit_MouseUp);
             // 
             // lab_pos_mouse
             // 
@@ -2609,74 +2614,74 @@ namespace opengl3
             // 
             // tabMain
             // 
-            this.tabMain.Controls.Add(this.imageBox1);
-            this.tabMain.Controls.Add(this.but_resize);
-            this.tabMain.Controls.Add(this.comboImages);
-            this.tabMain.Controls.Add(this.but_save_im_base1);
-            this.tabMain.Controls.Add(this.but_rob_ph);
-            this.tabMain.Controls.Add(this.groupBox2);
-            this.tabMain.Controls.Add(this.tabControl1);
-            this.tabMain.Controls.Add(this.lab_fps_cam1);
-            this.tabMain.Controls.Add(this.but_load_scan);
-            this.tabMain.Controls.Add(this.groupBox1);
-            this.tabMain.Controls.Add(this.nameC2);
-            this.tabMain.Controls.Add(this.nameB2);
-            this.tabMain.Controls.Add(this.nameA2);
-            this.tabMain.Controls.Add(this.nameX);
-            this.tabMain.Controls.Add(this.nameY);
-            this.tabMain.Controls.Add(this.label_timer);
-            this.tabMain.Controls.Add(this.nameC_in);
-            this.tabMain.Controls.Add(this.nameZ);
-            this.tabMain.Controls.Add(this.nameB_in);
-            this.tabMain.Controls.Add(this.nameA_in);
-            this.tabMain.Controls.Add(this.nameX2);
-            this.tabMain.Controls.Add(this.nameZ_in);
-            this.tabMain.Controls.Add(this.nameY2);
-            this.tabMain.Controls.Add(this.nameY_in);
-            this.tabMain.Controls.Add(this.nameZ2);
-            this.tabMain.Controls.Add(this.nameX_in);
-            this.tabMain.Controls.Add(this.nameC);
-            this.tabMain.Controls.Add(this.nameB);
-            this.tabMain.Controls.Add(this.nameA);
-            this.tabMain.Controls.Add(this.imBox_base_2);
-            this.tabMain.Controls.Add(this.imBox_base_1);
-            this.tabMain.Controls.Add(this.but_ph);
-            this.tabMain.Controls.Add(this.but_addBufRob);
-            this.tabMain.Controls.Add(this.but_robMod);
-            this.tabMain.Controls.Add(this.label24);
-            this.tabMain.Controls.Add(this.label25);
-            this.tabMain.Controls.Add(this.butStop);
-            this.tabMain.Controls.Add(this.label26);
-            this.tabMain.Controls.Add(this.butStart);
-            this.tabMain.Controls.Add(this.videoCapt);
-            this.tabMain.Controls.Add(this.but_res_pos_2);
-            this.tabMain.Controls.Add(this.but_res_pos1);
-            this.tabMain.Controls.Add(this.bet_res_pos);
-            this.tabMain.Controls.Add(this.label17);
-            this.tabMain.Controls.Add(this.butCalcIm);
-            this.tabMain.Controls.Add(this.label7);
-            this.tabMain.Controls.Add(this.label6);
-            this.tabMain.Controls.Add(this.label15);
-            this.tabMain.Controls.Add(this.label5);
-            this.tabMain.Controls.Add(this.label14);
-            this.tabMain.Controls.Add(this.comboVideo);
-            this.tabMain.Controls.Add(this.comboNumber);
-            this.tabMain.Controls.Add(this.imBox_base);
-            this.tabMain.Controls.Add(this.imageBox2);
-            this.tabMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tabMain.Location = new System.Drawing.Point(4, 27);
-            this.tabMain.Name = "tabMain";
-            this.tabMain.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMain.Size = new System.Drawing.Size(1891, 998);
-            this.tabMain.TabIndex = 1;
-            this.tabMain.Text = "Основное";
-            this.tabMain.UseVisualStyleBackColor = true;
+            tabMain.Controls.Add(this.imageBox1);
+            tabMain.Controls.Add(this.but_resize);
+            tabMain.Controls.Add(this.comboImages);
+            tabMain.Controls.Add(this.but_save_im_base1);
+            tabMain.Controls.Add(this.but_rob_ph);
+            tabMain.Controls.Add(this.groupBox2);
+            tabMain.Controls.Add(this.tabControl1);
+            tabMain.Controls.Add(this.lab_fps_cam1);
+            tabMain.Controls.Add(this.but_load_scan);
+            tabMain.Controls.Add(this.groupBox1);
+            tabMain.Controls.Add(this.nameC2);
+            tabMain.Controls.Add(this.nameB2);
+            tabMain.Controls.Add(this.nameA2);
+            tabMain.Controls.Add(this.nameX);
+            tabMain.Controls.Add(this.nameY);
+            tabMain.Controls.Add(this.label_timer);
+            tabMain.Controls.Add(this.nameC_in);
+            tabMain.Controls.Add(this.nameZ);
+            tabMain.Controls.Add(this.nameB_in);
+            tabMain.Controls.Add(this.nameA_in);
+            tabMain.Controls.Add(this.nameX2);
+            tabMain.Controls.Add(this.nameZ_in);
+            tabMain.Controls.Add(this.nameY2);
+            tabMain.Controls.Add(this.nameY_in);
+            tabMain.Controls.Add(this.nameZ2);
+            tabMain.Controls.Add(this.nameX_in);
+            tabMain.Controls.Add(this.nameC);
+            tabMain.Controls.Add(this.nameB);
+            tabMain.Controls.Add(this.nameA);
+            tabMain.Controls.Add(this.imBox_base_2);
+            tabMain.Controls.Add(this.imBox_base_1);
+            tabMain.Controls.Add(this.but_ph);
+            tabMain.Controls.Add(this.but_addBufRob);
+            tabMain.Controls.Add(this.but_robMod);
+            tabMain.Controls.Add(this.label24);
+            tabMain.Controls.Add(this.label25);
+            tabMain.Controls.Add(this.butStop);
+            tabMain.Controls.Add(this.label26);
+            tabMain.Controls.Add(this.butStart);
+            tabMain.Controls.Add(this.videoCapt);
+            tabMain.Controls.Add(this.but_res_pos_2);
+            tabMain.Controls.Add(this.but_res_pos1);
+            tabMain.Controls.Add(this.bet_res_pos);
+            tabMain.Controls.Add(this.label17);
+            tabMain.Controls.Add(this.butCalcIm);
+            tabMain.Controls.Add(this.label7);
+            tabMain.Controls.Add(this.label6);
+            tabMain.Controls.Add(this.label15);
+            tabMain.Controls.Add(this.label5);
+            tabMain.Controls.Add(this.label14);
+            tabMain.Controls.Add(this.comboVideo);
+            tabMain.Controls.Add(this.comboNumber);
+            tabMain.Controls.Add(this.imBox_base);
+            tabMain.Controls.Add(this.imageBox2);
+            tabMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            tabMain.Location = new System.Drawing.Point(4, 27);
+            tabMain.Name = "tabMain";
+            tabMain.Padding = new System.Windows.Forms.Padding(3);
+            tabMain.Size = new System.Drawing.Size(1891, 998);
+            tabMain.TabIndex = 1;
+            tabMain.Text = "Основное";
+            tabMain.UseVisualStyleBackColor = true;
             // 
             // imageBox1
             // 
-            this.imageBox1.Location = new System.Drawing.Point(5, 3);
+            this.imageBox1.Location = new System.Drawing.Point(3, 3);
             this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(985, 484);
+            this.imageBox1.Size = new System.Drawing.Size(862, 484);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
             // 
@@ -4206,19 +4211,19 @@ namespace opengl3
             // 
             this.imageBox2.Location = new System.Drawing.Point(3, 489);
             this.imageBox2.Name = "imageBox2";
-            this.imageBox2.Size = new System.Drawing.Size(987, 484);
+            this.imageBox2.Size = new System.Drawing.Size(863, 484);
             this.imageBox2.TabIndex = 18;
             this.imageBox2.TabStop = false;
             // 
             // windowsTabs
             // 
-            this.windowsTabs.Controls.Add(this.tabMain);
+            this.windowsTabs.Controls.Add(tabMain);
             this.windowsTabs.Controls.Add(this.tabOpenGl);
             this.windowsTabs.Controls.Add(this.tabDebug);
             this.windowsTabs.Controls.Add(this.tabDistort);
-            this.windowsTabs.Controls.Add(this.tabCalibMonit);
+            this.windowsTabs.Controls.Add(tabCalibMonit);
             this.windowsTabs.Controls.Add(this.tabP_connect);
-            this.windowsTabs.Controls.Add(this.tabP_scanning_printing);
+            this.windowsTabs.Controls.Add(tabP_scanning_printing);
             this.windowsTabs.Controls.Add(this.tabP_developer);
             this.windowsTabs.Font = new System.Drawing.Font("Arial Unicode MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.windowsTabs.Location = new System.Drawing.Point(3, 0);
@@ -4375,6 +4380,17 @@ namespace opengl3
             this.groupBox_rob_con_ext.TabStop = false;
             this.groupBox_rob_con_ext.Text = "Подключение к роботической системе";
             // 
+            // label62
+            // 
+            this.label62.AutoSize = true;
+            this.label62.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label62.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.label62.Location = new System.Drawing.Point(845, 43);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(90, 21);
+            this.label62.TabIndex = 20;
+            this.label62.Text = "Дистанция";
+            // 
             // rb_1mm
             // 
             this.rb_1mm.AccessibleName = "1";
@@ -4443,6 +4459,7 @@ namespace opengl3
             this.but_con_ext_rob_discon.TabIndex = 3;
             this.but_con_ext_rob_discon.Text = "Отключиться от роботической системы\r\nKUKA LBR Med 14 R820\r\n";
             this.but_con_ext_rob_discon.UseVisualStyleBackColor = false;
+            this.but_con_ext_rob_discon.Click += new System.EventHandler(this.rob_discon_Click);
             // 
             // but_con_ext_rob_con
             // 
@@ -4524,6 +4541,7 @@ namespace opengl3
             this.textBox_con_ext_disp_vel.Name = "textBox_con_ext_disp_vel";
             this.textBox_con_ext_disp_vel.Size = new System.Drawing.Size(100, 25);
             this.textBox_con_ext_disp_vel.TabIndex = 5;
+            this.textBox_con_ext_disp_vel.Text = "0.5";
             // 
             // label75
             // 
@@ -4584,7 +4602,7 @@ namespace opengl3
             // groupBox_con_ard_ext
             // 
             this.groupBox_con_ard_ext.BackColor = System.Drawing.SystemColors.MenuBar;
-            this.groupBox_con_ard_ext.Controls.Add(this.comboBox1);
+            this.groupBox_con_ard_ext.Controls.Add(this.cb_ard_ext);
             this.groupBox_con_ard_ext.Controls.Add(this.but_con_ext_find_ports);
             this.groupBox_con_ard_ext.Controls.Add(this.but_con_ext_con_com);
             this.groupBox_con_ard_ext.Font = new System.Drawing.Font("Arial Unicode MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -4595,6 +4613,15 @@ namespace opengl3
             this.groupBox_con_ard_ext.TabIndex = 0;
             this.groupBox_con_ard_ext.TabStop = false;
             this.groupBox_con_ard_ext.Text = "Подключение к печатающему устройству";
+            // 
+            // cb_ard_ext
+            // 
+            this.cb_ard_ext.FormattingEnabled = true;
+            this.cb_ard_ext.Location = new System.Drawing.Point(35, 92);
+            this.cb_ard_ext.Name = "cb_ard_ext";
+            this.cb_ard_ext.Size = new System.Drawing.Size(174, 26);
+            this.cb_ard_ext.TabIndex = 7;
+            this.cb_ard_ext.SelectedIndexChanged += new System.EventHandler(this.comboBox_portsArd_SelectedIndexChanged);
             // 
             // but_con_ext_find_ports
             // 
@@ -4628,14 +4655,14 @@ namespace opengl3
             // 
             // tabP_scanning_printing
             // 
-            this.tabP_scanning_printing.Controls.Add(this.tabC_scanning_printing_ins);
-            this.tabP_scanning_printing.Location = new System.Drawing.Point(4, 27);
-            this.tabP_scanning_printing.Name = "tabP_scanning_printing";
-            this.tabP_scanning_printing.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_scanning_printing.Size = new System.Drawing.Size(1891, 998);
-            this.tabP_scanning_printing.TabIndex = 7;
-            this.tabP_scanning_printing.Text = "Сканирование и печать";
-            this.tabP_scanning_printing.UseVisualStyleBackColor = true;
+            tabP_scanning_printing.Controls.Add(this.tabC_scanning_printing_ins);
+            tabP_scanning_printing.Location = new System.Drawing.Point(4, 27);
+            tabP_scanning_printing.Name = "tabP_scanning_printing";
+            tabP_scanning_printing.Padding = new System.Windows.Forms.Padding(3);
+            tabP_scanning_printing.Size = new System.Drawing.Size(1891, 998);
+            tabP_scanning_printing.TabIndex = 7;
+            tabP_scanning_printing.Text = "Сканирование и печать";
+            tabP_scanning_printing.UseVisualStyleBackColor = true;
             // 
             // tabC_scanning_printing_ins
             // 
@@ -4871,10 +4898,10 @@ namespace opengl3
             this.tabP_scanning_printing_ext.Controls.Add(this.groupBox6);
             this.tabP_scanning_printing_ext.Controls.Add(this.groupBox7);
             this.tabP_scanning_printing_ext.Controls.Add(this.groupBox8);
-            this.tabP_scanning_printing_ext.Location = new System.Drawing.Point(4, 22);
+            this.tabP_scanning_printing_ext.Location = new System.Drawing.Point(4, 27);
             this.tabP_scanning_printing_ext.Name = "tabP_scanning_printing_ext";
             this.tabP_scanning_printing_ext.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_scanning_printing_ext.Size = new System.Drawing.Size(669, 968);
+            this.tabP_scanning_printing_ext.Size = new System.Drawing.Size(669, 963);
             this.tabP_scanning_printing_ext.TabIndex = 1;
             this.tabP_scanning_printing_ext.Text = "Расширенные настройки";
             this.tabP_scanning_printing_ext.UseVisualStyleBackColor = true;
@@ -4936,6 +4963,7 @@ namespace opengl3
             this.but_scan_ext_scan.TabIndex = 0;
             this.but_scan_ext_scan.Text = "Запустить сканирование";
             this.but_scan_ext_scan.UseVisualStyleBackColor = false;
+            this.but_scan_ext_scan.Click += new System.EventHandler(this.but_scan_simp_scan_Click);
             // 
             // tb_scan_ext_scan_pres
             // 
@@ -4993,6 +5021,7 @@ namespace opengl3
             this.button4.TabIndex = 14;
             this.button4.Text = "Дом";
             this.button4.UseVisualStyleBackColor = false;
+            this.button4.Click += new System.EventHandler(this.but_scan_simp_xy_Click);
             // 
             // label68
             // 
@@ -5017,6 +5046,7 @@ namespace opengl3
             this.button12.TabIndex = 1;
             this.button12.Text = "Выделить контур";
             this.button12.UseVisualStyleBackColor = false;
+            this.button12.Click += new System.EventHandler(this.but_scan_simp_cont_beg_Click);
             // 
             // label69
             // 
@@ -5069,6 +5099,7 @@ namespace opengl3
             this.button15.TabIndex = 3;
             this.button15.Text = "Загрузить 3D модель";
             this.button15.UseVisualStyleBackColor = false;
+            this.button15.Click += new System.EventHandler(this.but_scan_simp_scan_load_Click);
             // 
             // button11
             // 
@@ -5083,10 +5114,13 @@ namespace opengl3
             this.button11.TabIndex = 2;
             this.button11.Text = "Сохранить контур";
             this.button11.UseVisualStyleBackColor = false;
+            this.button11.Click += new System.EventHandler(this.but_scan_simp_cont_save_Click);
             // 
             // groupBox8
             // 
             this.groupBox8.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.groupBox8.Controls.Add(this.label77);
+            this.groupBox8.Controls.Add(this.tb_scan_ext_layer_n);
             this.groupBox8.Controls.Add(this.but_scan_ext_stop_print);
             this.groupBox8.Controls.Add(this.label73);
             this.groupBox8.Controls.Add(this.label74);
@@ -5109,6 +5143,25 @@ namespace opengl3
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Настройки траектории и печати";
             // 
+            // label77
+            // 
+            this.label77.AutoSize = true;
+            this.label77.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label77.Location = new System.Drawing.Point(13, 176);
+            this.label77.Name = "label77";
+            this.label77.Size = new System.Drawing.Size(145, 21);
+            this.label77.TabIndex = 22;
+            this.label77.Text = "Количество слоёв";
+            // 
+            // tb_scan_ext_layer_n
+            // 
+            this.tb_scan_ext_layer_n.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_scan_ext_layer_n.Location = new System.Drawing.Point(171, 173);
+            this.tb_scan_ext_layer_n.Name = "tb_scan_ext_layer_n";
+            this.tb_scan_ext_layer_n.Size = new System.Drawing.Size(100, 29);
+            this.tb_scan_ext_layer_n.TabIndex = 21;
+            this.tb_scan_ext_layer_n.Text = "2";
+            // 
             // but_scan_ext_stop_print
             // 
             this.but_scan_ext_stop_print.BackColor = System.Drawing.Color.PaleVioletRed;
@@ -5122,6 +5175,7 @@ namespace opengl3
             this.but_scan_ext_stop_print.TabIndex = 20;
             this.but_scan_ext_stop_print.Text = "Остановить печать";
             this.but_scan_ext_stop_print.UseVisualStyleBackColor = false;
+            this.but_scan_ext_stop_print.Click += new System.EventHandler(this.but_scan_simp_stop_print_Click);
             // 
             // label73
             // 
@@ -5137,7 +5191,7 @@ namespace opengl3
             // 
             this.label74.AutoSize = true;
             this.label74.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label74.Location = new System.Drawing.Point(13, 145);
+            this.label74.Location = new System.Drawing.Point(14, 141);
             this.label74.Name = "label74";
             this.label74.Size = new System.Drawing.Size(135, 21);
             this.label74.TabIndex = 18;
@@ -5195,7 +5249,7 @@ namespace opengl3
             // 
             this.label65.AutoSize = true;
             this.label65.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label65.Location = new System.Drawing.Point(14, 73);
+            this.label65.Location = new System.Drawing.Point(14, 74);
             this.label65.Name = "label65";
             this.label65.Size = new System.Drawing.Size(137, 21);
             this.label65.TabIndex = 12;
@@ -5214,6 +5268,7 @@ namespace opengl3
             this.button14.TabIndex = 3;
             this.button14.Text = "Сгенерировать траекторию";
             this.button14.UseVisualStyleBackColor = false;
+            this.button14.Click += new System.EventHandler(this.but_scan_simp_gen_traj_Click);
             // 
             // tb_scan_ext_grid_d
             // 
@@ -5238,7 +5293,7 @@ namespace opengl3
             // 
             this.label61.AutoSize = true;
             this.label61.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label61.Location = new System.Drawing.Point(14, 36);
+            this.label61.Location = new System.Drawing.Point(14, 39);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(127, 21);
             this.label61.TabIndex = 6;
@@ -5266,6 +5321,7 @@ namespace opengl3
             this.button13.TabIndex = 4;
             this.button13.Text = "Запустить печать";
             this.button13.UseVisualStyleBackColor = false;
+            this.button13.Click += new System.EventHandler(this.but_scan_simp_start_print_Click);
             // 
             // tabP_developer
             // 
@@ -5287,25 +5343,6 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // label62
-            // 
-            this.label62.AutoSize = true;
-            this.label62.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label62.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.label62.Location = new System.Drawing.Point(845, 43);
-            this.label62.Name = "label62";
-            this.label62.Size = new System.Drawing.Size(90, 21);
-            this.label62.TabIndex = 20;
-            this.label62.Text = "Дистанция";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(35, 92);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(174, 26);
-            this.comboBox1.TabIndex = 7;
-            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -5315,8 +5352,8 @@ namespace opengl3
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.MainScanningForm_Load);
-            this.tabCalibMonit.ResumeLayout(false);
-            this.tabCalibMonit.PerformLayout();
+            tabCalibMonit.ResumeLayout(false);
+            tabCalibMonit.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar29)).EndInit();
@@ -5380,8 +5417,8 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_3dDebug)).EndInit();
             this.tabPage9.ResumeLayout(false);
             this.tabPage9.PerformLayout();
-            this.tabMain.ResumeLayout(false);
-            this.tabMain.PerformLayout();
+            tabMain.ResumeLayout(false);
+            tabMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -5421,7 +5458,7 @@ namespace opengl3
             this.groupBox_disp_contr_ext.ResumeLayout(false);
             this.groupBox_disp_contr_ext.PerformLayout();
             this.groupBox_con_ard_ext.ResumeLayout(false);
-            this.tabP_scanning_printing.ResumeLayout(false);
+            tabP_scanning_printing.ResumeLayout(false);
             this.tabC_scanning_printing_ins.ResumeLayout(false);
             this.tabP_scanning_printing_scan.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
@@ -5443,7 +5480,6 @@ namespace opengl3
         #endregion
         private System.Windows.Forms.ComboBox comboImages;
         private System.Windows.Forms.BindingSource graphicGLBindingSource;
-        private System.Windows.Forms.TabPage tabCalibMonit;
         private System.Windows.Forms.Label lab_pos_mouse;
         private System.Windows.Forms.Button but_set_wind;
         private System.Windows.Forms.Button but_ph_1;
@@ -5502,7 +5538,6 @@ namespace opengl3
         private Emgu.CV.UI.HistogramBox histogramBox1;
         private System.Windows.Forms.TabPage tabOpenGl;
         private OpenGL.GlControl glControl1;
-        private System.Windows.Forms.TabPage tabMain;
         private System.Windows.Forms.Label label55;
         private System.Windows.Forms.TextBox txBx_photoName;
         private System.Windows.Forms.TextBox nameC2;
@@ -5792,7 +5827,6 @@ namespace opengl3
         private System.Windows.Forms.Button but_allign_cyl;
         private System.Windows.Forms.TextBox tB_tool_inf;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TabPage tabP_scanning_printing;
         private System.Windows.Forms.TabPage tabP_developer;
         private System.Windows.Forms.TabControl tabC_connect_ins;
         private System.Windows.Forms.TabPage tabP_connect_set;
@@ -5875,7 +5909,9 @@ namespace opengl3
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label62;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cb_ard_ext;
+        private System.Windows.Forms.Label label77;
+        private System.Windows.Forms.TextBox tb_scan_ext_layer_n;
     }
 }
 

@@ -1332,8 +1332,8 @@ namespace opengl3
         {
             Thread.Sleep(100);
             int typescan = (int)obj;
-            int counts = Convert.ToInt32(boxN.Text);
-            
+            //int counts = Convert.ToInt32(boxN.Text);
+            int counts = Convert.ToInt32(tb_scan_ext_scan_pres.Text);
             string folder_scan = box_scanFolder.Text;
             var p1_cur_scan = robFrameFromTextBox(nameX, nameY, nameZ, nameA, nameB, nameC);
             var p2_cur_scan = robFrameFromTextBox(nameX2, nameY2, nameZ2, nameA, nameB, nameC);
@@ -1691,7 +1691,9 @@ namespace opengl3
             Console.WriteLine(but.Text + " " + but.AccessibleName);
             var ind_cam = Convert.ToInt32(but.Text);
             var ind_box = Convert.ToInt32(but.AccessibleName);
-            if(ind_cam<camera_ind_ptr.Length)
+            if (ind_box == 0) scanner_config.cam1_ind = ind_cam;
+            if (ind_box == 1) scanner_config.cam2_ind = ind_cam;
+            if (ind_cam<camera_ind_ptr.Length)
             {
                 if (camera_ind_ptr[ind_cam] == (IntPtr)0)
                 {
@@ -5038,6 +5040,7 @@ namespace opengl3
                         Console.WriteLine("don t save enc");
                     }
                     label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.Text = "Сканирование завершено"));
+                    label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.ForeColor = Color.ForestGreen));
                 }
 
 
@@ -5721,6 +5724,7 @@ namespace opengl3
             //comboBox_portsArd.Items.Add("COM3");
            // comboBox_portsArd.Items.Clear();
             comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.Items.Clear()));
+            cb_ard_ext.BeginInvoke((MethodInvoker)(() => cb_ard_ext.Items.Clear()));
             // Получаем список COM портов доступных в системе
             string[] portnames = SerialPort.GetPortNames();
             // Проверяем есть ли доступные
@@ -5732,17 +5736,21 @@ namespace opengl3
             {
                 //добавляем доступные COM порты в список           
                 comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.Items.Add(portName)));
+                cb_ard_ext.BeginInvoke((MethodInvoker)(() => cb_ard_ext.Items.Add(portName)));
                 //Console.WriteLine(portnames.Length);
                 if (portnames[0] != null)
                 {
                     comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.SelectedItem = portnames[0]));
-                    if(last)
+                    cb_ard_ext.BeginInvoke((MethodInvoker)(() => cb_ard_ext.SelectedItem = portnames[0]));
+                    if (last)
                     {
                         comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.SelectedItem = portnames[portnames.Length-1]));
+                        cb_ard_ext.BeginInvoke((MethodInvoker)(() => cb_ard_ext.SelectedItem = portnames[portnames.Length - 1]));
                     }
                 }
             }
         }
+
         private void but_find_ports_Click(object sender, EventArgs e)
         {
             find_ports();
@@ -5977,12 +5985,13 @@ namespace opengl3
             string selected_obj = "";
             if (obj_3d != null)
             {
-                traj_config.ang_x = scanner.stereoCamera.cur_pos.A;
                 selected_obj = obj_3d;
+                traj_config.ang_x = scanner.stereoCamera.cur_pos.A;               
                 traj_config.line_width = Convert.ToDouble(tb_scan_line_width_d.Text);
                 traj_config.dz = Convert.ToDouble(tb_scan_ext_line_h.Text);
                 traj_config.Step = Convert.ToDouble(tb_scan_ext_grid_d.Text);
                 traj_config.vel = Convert.ToDouble(tb_scan_extprinting_vel.Text);
+                traj_config.layers = Convert.ToInt32(tb_scan_ext_layer_n.Text);
             }
             else
             {
@@ -7064,6 +7073,7 @@ namespace opengl3
         void connect_las()
         {
             label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Подключение контр РО..."));
+            label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.ForeColor = Color.Firebrick));
             find_ports(true);
             Thread.Sleep(300);
             laserLine = new LaserLine(portArd); Thread.Sleep(1500);
@@ -7073,16 +7083,36 @@ namespace opengl3
             laserLine?.setShvpPos(350); Thread.Sleep(100);
             laserLine?.laserOff();
             label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Контр РО подключён"));
+            label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.ForeColor = Color.ForestGreen));
         }
         void connect_cams()
         {
             label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.Text = "Подключение камер...Это может занять несколько минут"));
-            var inds_cam = new int[] { 2, 0 };
+            label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.ForeColor = Color.Firebrick));
+            var inds_cam = new int[] { scanner_config.cam1_ind, scanner_config.cam2_ind };
             videoStart_sam(inds_cam[0]);
             imb_ind_cam[0] = inds_cam[0];
             videoStart_sam(inds_cam[1]);
             imb_ind_cam[1] = inds_cam[1];
-            label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.Text = "Камеры подключены"));
+            Thread.Sleep(200);
+            if(imb_main[0].Image!=null && imb_main[1].Image != null)
+            {
+                var mat = (Mat)imb_main[0].Image;
+                var scale = (double)imb_main[0].Width/mat.Width  ;
+                imb_main[0].BeginInvoke((MethodInvoker)(() => imb_main[0].SetZoomScale(scale, new Point(0, 0))));
+                imb_main[1].BeginInvoke((MethodInvoker)(() => imb_main[1].SetZoomScale(scale, new Point(0, 0))));
+                label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.Text = "Камеры подключены"));
+                label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.ForeColor = Color.ForestGreen));
+
+
+            }
+            else
+            {
+                label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.Text = "Камеры не подключены"));
+                label_cam_connect.BeginInvoke((MethodInvoker)(() => label_cam_connect.ForeColor = Color.Firebrick));
+            }
+
+            
         }
         private void but_con_set_rob_con_Click(object sender, EventArgs e)
         {
@@ -7091,7 +7121,7 @@ namespace opengl3
         //-----------------EXT--------------------
         private void but_con_ext_disp_down_Click(object sender, EventArgs e)
         {
-            var div = get_vel(tb_print_vel, tb_print_nozzle_d, tb_print_syr_d);
+            var div = LaserLine.vel_pist_to_ard(Convert.ToDouble(textBox_con_ext_disp_vel.Text));
             laserLine?.set_dir_disp(-1);
             laserLine?.set_div_disp(div);
         }
@@ -7239,7 +7269,8 @@ namespace opengl3
 
         void scan_and_load()
         {
-            label_scan_ready.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Сканирование запущено..."));
+            label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.Text = "Сканирование запущено..."));
+            label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.ForeColor = Color.Firebrick));
             var pos_rob = positionFromRobot_str(con1);
             if (pos_rob != null)
             {
@@ -7255,9 +7286,11 @@ namespace opengl3
         }
         private void but_scan_simp_scan_load_Click(object sender, EventArgs e)
         {
-            label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Загрузка скана..."));
+            label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_scan_ready_load.Text = "Загрузка скана..."));
+            label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_scan_ready_load.ForeColor = Color.Firebrick));
             load_scan_full();
-            label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Скан загружен"));
+            label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_scan_ready_load.Text = "Скан загружен"));
+            label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_scan_ready_load.ForeColor = Color.ForestGreen));
         }
         public void load_scan_full()
         {
@@ -7269,6 +7302,8 @@ namespace opengl3
 
             var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
             this.scanner = scanner;
+            scanner_config.strip = Convert.ToInt32(tb_scan_ext_scan_strip.Text);
+            scanner_config.smooth = Convert.ToInt32(tb_scan_ext_scan_smooth.Text);
             load_scan_v2(scanner, scan_path, scanner_config);
         }
 
