@@ -14,6 +14,24 @@ namespace opengl3
 {
     public class ScannerConfig
     {
+        public int start_pos_scan;
+        [Description("Начальная точка скана")]
+        [Category("Настройки сканирования")]
+        [DisplayName("start_p")]
+        public int Start_pos_scan
+        {
+            get { return start_pos_scan; }
+            set { start_pos_scan = value; }
+        }
+        public int stop_pos_scan;
+        [Description("Конечная точка скана")]
+        [Category("Настройки сканирования")]
+        [DisplayName("start_p")]
+        public int Stop_pos_scan
+        {
+            get { return stop_pos_scan; }
+            set { stop_pos_scan = value; }
+        }
 
         public int strip;
         [Description("Разреженность скана")]

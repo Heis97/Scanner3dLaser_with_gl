@@ -1335,8 +1335,13 @@ namespace opengl3
             //int counts = Convert.ToInt32(boxN.Text);
             int counts = Convert.ToInt32(tb_scan_ext_scan_pres.Text);
             string folder_scan = box_scanFolder.Text;
-            var p1_cur_scan = robFrameFromTextBox(nameX, nameY, nameZ, nameA, nameB, nameC);
-            var p2_cur_scan = robFrameFromTextBox(nameX2, nameY2, nameZ2, nameA, nameB, nameC);
+            var start_p = scanner_config.start_pos_scan;
+            var stop_p = scanner_config.stop_pos_scan;
+            Console.WriteLine("stp_p: " + start_p + " " + stop_p);
+            //var p1_cur_scan = robFrameFromTextBox(nameX, nameY, nameZ, nameA, nameB, nameC);
+            //var p2_cur_scan = robFrameFromTextBox(nameX2, nameY2, nameZ2, nameA, nameB, nameC);
+            var p1_cur_scan = new robFrame(start_p, 0, 0, 0, 0, 0);
+            var p2_cur_scan = new robFrame(stop_p, 0, 0, 0, 0, 0);
             var fps = Convert.ToInt32(tB_fps_scan.Text);
             float x = (float)p1_cur_scan.x;
             
@@ -1367,12 +1372,12 @@ namespace opengl3
                 laserLine?.laserOn();
                 Thread.Sleep(100);
                 laserLine?.set_home_laser();
-                Thread.Sleep(2000);
-                laserLine?.setShvpVel(2000);
+                Thread.Sleep(5000);
+                laserLine?.setShvpVel(200);
                 Thread.Sleep(200);
 
                 laserLine?.setShvpPos((int)p1_cur_scan.x);
-                Thread.Sleep(2000);
+                Thread.Sleep(4000);
                 startWrite(1, counts);
                 startWrite(2, counts);
                 Console.WriteLine(v_laser + " v_las");
@@ -6763,9 +6768,8 @@ namespace opengl3
             this.tabP_connect.Controls.Add(this.imageBox1);
             this.tabP_connect.Controls.Add(this.imageBox2);
             this.tabP_scanning_printing.Controls.Add(this.glControl1);
+
             formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-            //resize();
-            
             add_buttons_rob_contr();
             for (int i = 0; i < imb_main.Length; i++)
             {
@@ -6776,6 +6780,13 @@ namespace opengl3
             {
                 imb_main[i].SendToBack();
             }
+
+            windowsTabs.Controls.Remove(tabMain);
+            windowsTabs.Controls.Remove(tabOpenGl);
+            windowsTabs.Controls.Remove(tabDistort);
+            windowsTabs.Controls.Remove(tabP_developer);
+            windowsTabs.Controls.Remove(tabCalibMonit);
+            windowsTabs.Controls.Remove(tabDebug);
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)
@@ -7264,6 +7275,7 @@ namespace opengl3
             //Thread scan_and_load_thread = new Thread(scan_and_load);
             //scan_and_load_thread.Start();
             //load
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
             scan_and_load();
         }
 
@@ -7478,8 +7490,6 @@ namespace opengl3
                 dist_contr_rob = Convert.ToDouble(checkBox.AccessibleName);
             }
         }
-
-       
     }
 }
 
