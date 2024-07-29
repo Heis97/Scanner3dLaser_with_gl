@@ -526,8 +526,8 @@ namespace opengl3
                 prin.t(points3d);*/
                 compPos(points3d, points2d);
                 UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 2);
-                //CvInvoke.Imshow("pos", matDraw);
-               //CvInvoke.WaitKey();
+                CvInvoke.Imshow("pos", matDraw);
+                CvInvoke.WaitKey();
                 mat = null;
                 matDraw = null;
 

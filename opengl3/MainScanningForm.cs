@@ -4873,8 +4873,8 @@ namespace opengl3
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
-            //capture.Set(CapProp.AutoExposure, 1);
-            capture.Set(CapProp.Exposure, -8);
+            capture.Set(CapProp.AutoExposure, 1);
+            //capture.Set(CapProp.Exposure, -8);
 
             cameraSize.Width =(int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
@@ -6781,8 +6781,8 @@ namespace opengl3
                 imb_main[i].SendToBack();
             }
 
-            windowsTabs.Controls.Remove(tabMain);
-            windowsTabs.Controls.Remove(tabOpenGl);
+            //windowsTabs.Controls.Remove(tabMain);
+           // windowsTabs.Controls.Remove(tabOpenGl);
             windowsTabs.Controls.Remove(tabDistort);
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabCalibMonit);
@@ -7315,7 +7315,7 @@ namespace opengl3
             var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
             this.scanner = scanner;
             scanner_config.strip = Convert.ToInt32(tb_scan_ext_scan_strip.Text);
-            scanner_config.smooth = Convert.ToInt32(tb_scan_ext_scan_smooth.Text);
+            scanner_config.smooth = Convert.ToDouble(tb_scan_ext_scan_smooth.Text);
             load_scan_v2(scanner, scan_path, scanner_config);
         }
 
