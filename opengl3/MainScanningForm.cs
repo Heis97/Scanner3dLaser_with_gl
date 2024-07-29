@@ -973,7 +973,7 @@ namespace opengl3
                 stereocam_scan = stereo_cam;
             }
             chess_size = new Size(6, 7);
-            var marksize = 10f;
+            var marksize = 9.6f;// 10f;
             var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, scanner_config.rotate_cam);
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,marksize);
