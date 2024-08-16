@@ -34,10 +34,11 @@ namespace opengl3
             drill_dir = 21;
 
         int on = 1, off = 2;
-        public LaserLine(string _port)
+        public LaserLine(string _port, int adr=-1)
         {
             port = _port;
             connect(port, baudrate);
+            set_adr(adr);
         }
 
         public bool connectStart()

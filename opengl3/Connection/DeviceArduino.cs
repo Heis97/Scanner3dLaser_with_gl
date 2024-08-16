@@ -14,7 +14,7 @@ namespace opengl3
     {
         protected SerialPort serialPort;
         protected bool isConnected = false;
-
+        public int adr = -1;
         protected DeviceArduino()
         {
             serialPort = new SerialPort();
@@ -38,7 +38,10 @@ namespace opengl3
                 return false;
             }
         }
-
+        public void set_adr(int adr)
+        {
+            this.adr = adr;
+        }
         protected void close()
         {
             if(serialPort.IsOpen)
@@ -54,11 +57,13 @@ namespace opengl3
                 
                     string Mes1 = "0";
                     string Mes2 = "0";
-                    try
+                string Mes3 = "0";
+                try
                     {
                         Mes1 = Convert.ToString(val);
                         Mes2 = Convert.ToString(var);
-                    }
+                    Mes3 = Convert.ToString(adr);
+                }
                     catch
                     {
                         Console.WriteLine("except convert");
@@ -78,6 +83,10 @@ namespace opengl3
                             Mes2 = "0" + Mes2;
                         }
                         Mes1 = "b" + Mes1 + Mes2;
+                    if(adr>0)
+                    {
+                        Mes1 += Mes3;
+                    }
                         try
                         {
                             Console.WriteLine("Out: " + Mes1);

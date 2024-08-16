@@ -7503,6 +7503,7 @@ namespace opengl3
 
         private void but_drill_vel_Click(object sender, EventArgs e)
         {
+            laserLine?.set_adr(50);
            laserLine?.set_drill_vel(Convert.ToInt32(textBox_drill_vel.Text));
         }
     }
