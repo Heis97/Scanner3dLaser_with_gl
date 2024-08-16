@@ -467,6 +467,11 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.textBox_drill_vel = new System.Windows.Forms.TextBox();
+            this.but_drill_ch_dir = new System.Windows.Forms.Button();
+            this.but_drill_vel = new System.Windows.Forms.Button();
+            this.label63 = new System.Windows.Forms.Label();
+            this.but_drill_dir_2 = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1899,6 +1904,11 @@ namespace opengl3
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.but_drill_dir_2);
+            this.groupBox1.Controls.Add(this.label63);
+            this.groupBox1.Controls.Add(this.but_drill_vel);
+            this.groupBox1.Controls.Add(this.but_drill_ch_dir);
+            this.groupBox1.Controls.Add(this.textBox_drill_vel);
             this.groupBox1.Controls.Add(this.but_setShvpVel);
             this.groupBox1.Controls.Add(this.but_home_las);
             this.groupBox1.Controls.Add(this.textBox_shvpVel);
@@ -1916,7 +1926,7 @@ namespace opengl3
             this.groupBox1.Controls.Add(this.textBox_powerLaser);
             this.groupBox1.Location = new System.Drawing.Point(1263, 489);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(304, 415);
+            this.groupBox1.Size = new System.Drawing.Size(304, 506);
             this.groupBox1.TabIndex = 121;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Ручное управление лазером";
@@ -1933,7 +1943,7 @@ namespace opengl3
             // 
             // but_home_las
             // 
-            this.but_home_las.Location = new System.Drawing.Point(139, 366);
+            this.but_home_las.Location = new System.Drawing.Point(188, 150);
             this.but_home_las.Name = "but_home_las";
             this.but_home_las.Size = new System.Drawing.Size(110, 46);
             this.but_home_las.TabIndex = 136;
@@ -1962,7 +1972,7 @@ namespace opengl3
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(196, 82);
+            this.label20.Location = new System.Drawing.Point(193, 72);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(56, 20);
             this.label20.TabIndex = 132;
@@ -2008,7 +2018,7 @@ namespace opengl3
             // 
             // but_laserOn
             // 
-            this.but_laserOn.Location = new System.Drawing.Point(188, 105);
+            this.but_laserOn.Location = new System.Drawing.Point(188, 89);
             this.but_laserOn.Name = "but_laserOn";
             this.but_laserOn.Size = new System.Drawing.Size(110, 26);
             this.but_laserOn.TabIndex = 2;
@@ -2018,7 +2028,7 @@ namespace opengl3
             // 
             // but_laserOff
             // 
-            this.but_laserOff.Location = new System.Drawing.Point(188, 134);
+            this.but_laserOff.Location = new System.Drawing.Point(188, 118);
             this.but_laserOff.Name = "but_laserOff";
             this.but_laserOff.Size = new System.Drawing.Size(110, 26);
             this.but_laserOff.TabIndex = 3;
@@ -2030,7 +2040,7 @@ namespace opengl3
             // 
             this.but_setPower.Location = new System.Drawing.Point(23, 192);
             this.but_setPower.Name = "but_setPower";
-            this.but_setPower.Size = new System.Drawing.Size(110, 50);
+            this.but_setPower.Size = new System.Drawing.Size(110, 48);
             this.but_setPower.TabIndex = 4;
             this.but_setPower.Text = "Установить мощность";
             this.but_setPower.UseVisualStyleBackColor = true;
@@ -2059,7 +2069,7 @@ namespace opengl3
             // 
             // textBox_powerLaser
             // 
-            this.textBox_powerLaser.Location = new System.Drawing.Point(139, 204);
+            this.textBox_powerLaser.Location = new System.Drawing.Point(139, 203);
             this.textBox_powerLaser.Name = "textBox_powerLaser";
             this.textBox_powerLaser.Size = new System.Drawing.Size(110, 26);
             this.textBox_powerLaser.TabIndex = 5;
@@ -4646,10 +4656,10 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 27);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(642, 960);
+            this.tabPage9.Size = new System.Drawing.Size(642, 965);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -5340,6 +5350,53 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
+            // textBox_drill_vel
+            // 
+            this.textBox_drill_vel.Location = new System.Drawing.Point(138, 462);
+            this.textBox_drill_vel.Name = "textBox_drill_vel";
+            this.textBox_drill_vel.Size = new System.Drawing.Size(110, 26);
+            this.textBox_drill_vel.TabIndex = 149;
+            this.textBox_drill_vel.Text = "0";
+            // 
+            // but_drill_ch_dir
+            // 
+            this.but_drill_ch_dir.Location = new System.Drawing.Point(151, 390);
+            this.but_drill_ch_dir.Name = "but_drill_ch_dir";
+            this.but_drill_ch_dir.Size = new System.Drawing.Size(140, 54);
+            this.but_drill_ch_dir.TabIndex = 150;
+            this.but_drill_ch_dir.Text = "Направление 2";
+            this.but_drill_ch_dir.UseVisualStyleBackColor = true;
+            this.but_drill_ch_dir.Click += new System.EventHandler(this.but_drill_ch_dir_Click);
+            // 
+            // but_drill_vel
+            // 
+            this.but_drill_vel.Location = new System.Drawing.Point(22, 448);
+            this.but_drill_vel.Name = "but_drill_vel";
+            this.but_drill_vel.Size = new System.Drawing.Size(110, 55);
+            this.but_drill_vel.TabIndex = 151;
+            this.but_drill_vel.Text = "Установить скорость";
+            this.but_drill_vel.UseVisualStyleBackColor = true;
+            this.but_drill_vel.Click += new System.EventHandler(this.but_drill_vel_Click);
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(56, 367);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(57, 20);
+            this.label63.TabIndex = 152;
+            this.label63.Text = "Сверл";
+            // 
+            // but_drill_dir_2
+            // 
+            this.but_drill_dir_2.Location = new System.Drawing.Point(6, 390);
+            this.but_drill_dir_2.Name = "but_drill_dir_2";
+            this.but_drill_dir_2.Size = new System.Drawing.Size(139, 54);
+            this.but_drill_dir_2.TabIndex = 153;
+            this.but_drill_dir_2.Text = "Направление 1";
+            this.but_drill_dir_2.UseVisualStyleBackColor = true;
+            this.but_drill_dir_2.Click += new System.EventHandler(this.but_drill_dir_2_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -5912,6 +5969,11 @@ namespace opengl3
         private System.Windows.Forms.TabPage tabCalibMonit;
         private System.Windows.Forms.TabPage tabMain;
         private System.Windows.Forms.TabPage tabP_scanning_printing;
+        private System.Windows.Forms.Label label63;
+        private System.Windows.Forms.Button but_drill_vel;
+        private System.Windows.Forms.Button but_drill_ch_dir;
+        private System.Windows.Forms.TextBox textBox_drill_vel;
+        private System.Windows.Forms.Button but_drill_dir_2;
     }
 }
 

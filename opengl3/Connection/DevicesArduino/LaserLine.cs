@@ -29,7 +29,9 @@ namespace opengl3
             posit_z = 16,
             home_z = 17,
             push_forw = 18,
-            push_back = 19;
+            push_back = 19,
+            drill_vel = 20,
+            drill_dir = 21;
 
         int on = 1, off = 2;
         public LaserLine(string _port)
@@ -202,6 +204,15 @@ namespace opengl3
         public void set_z_pos(int _pos)
         {
             send(_pos + 5000, posit_z);
+        }
+
+        public void set_drill_dir(int dir)//0 or 1
+        {
+            send(dir, drill_dir);
+        }
+        public void set_drill_vel(int vel)//0...255
+        {
+            send(vel, drill_vel);
         }
         public void set_z_div(int _vel)
         {

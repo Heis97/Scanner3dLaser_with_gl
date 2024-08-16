@@ -7490,6 +7490,21 @@ namespace opengl3
                 dist_contr_rob = Convert.ToDouble(checkBox.AccessibleName);
             }
         }
+
+        private void but_drill_dir_2_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_drill_dir(1);
+        }
+
+        private void but_drill_ch_dir_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_drill_dir(0);
+        }
+
+        private void but_drill_vel_Click(object sender, EventArgs e)
+        {
+           laserLine?.set_drill_vel(Convert.ToInt32(textBox_drill_vel.Text));
+        }
     }
 }
 
