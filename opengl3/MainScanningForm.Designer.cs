@@ -152,6 +152,11 @@ namespace opengl3
             this.lab_fps_cam1 = new System.Windows.Forms.Label();
             this.but_load_scan = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.but_drill_dir_2 = new System.Windows.Forms.Button();
+            this.label63 = new System.Windows.Forms.Label();
+            this.but_drill_vel = new System.Windows.Forms.Button();
+            this.but_drill_ch_dir = new System.Windows.Forms.Button();
+            this.textBox_drill_vel = new System.Windows.Forms.TextBox();
             this.but_setShvpVel = new System.Windows.Forms.Button();
             this.but_home_las = new System.Windows.Forms.Button();
             this.textBox_shvpVel = new System.Windows.Forms.TextBox();
@@ -464,14 +469,36 @@ namespace opengl3
             this.but_con_ext_find_ports = new System.Windows.Forms.Button();
             this.but_con_ext_con_com = new System.Windows.Forms.Button();
             this.tabP_developer = new System.Windows.Forms.TabPage();
+            this.tabPage_tube = new System.Windows.Forms.TabPage();
+            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.label79 = new System.Windows.Forms.Label();
+            this.textBox_pump2_vel = new System.Windows.Forms.TextBox();
+            this.button_pump2_stop = new System.Windows.Forms.Button();
+            this.button_pump2_start = new System.Windows.Forms.Button();
+            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.label78 = new System.Windows.Forms.Label();
+            this.textBox_pump1_vel = new System.Windows.Forms.TextBox();
+            this.button_pump1_stop = new System.Windows.Forms.Button();
+            this.button_pump1_start = new System.Windows.Forms.Button();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.label84 = new System.Windows.Forms.Label();
+            this.rb_mm_acust_1mm = new System.Windows.Forms.RadioButton();
+            this.rb_mm_acust_10mm = new System.Windows.Forms.RadioButton();
+            this.rb_mm_acust_01mm = new System.Windows.Forms.RadioButton();
+            this.label83 = new System.Windows.Forms.Label();
+            this.label82 = new System.Windows.Forms.Label();
+            this.but_z2_min = new System.Windows.Forms.Button();
+            this.but_z2_pl = new System.Windows.Forms.Button();
+            this.label81 = new System.Windows.Forms.Label();
+            this.textBox_z2_vel = new System.Windows.Forms.TextBox();
+            this.but_z1_min = new System.Windows.Forms.Button();
+            this.but_z1_pl = new System.Windows.Forms.Button();
+            this.label80 = new System.Windows.Forms.Label();
+            this.textBox_z1_vel = new System.Windows.Forms.TextBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.textBox_drill_vel = new System.Windows.Forms.TextBox();
-            this.but_drill_ch_dir = new System.Windows.Forms.Button();
-            this.but_drill_vel = new System.Windows.Forms.Button();
-            this.label63 = new System.Windows.Forms.Label();
-            this.but_drill_dir_2 = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -570,6 +597,10 @@ namespace opengl3
             this.groupBox_rob_con_ext.SuspendLayout();
             this.groupBox_disp_contr_ext.SuspendLayout();
             this.groupBox_con_ard_ext.SuspendLayout();
+            this.tabPage_tube.SuspendLayout();
+            this.groupBox11.SuspendLayout();
+            this.groupBox10.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -1930,6 +1961,53 @@ namespace opengl3
             this.groupBox1.TabIndex = 121;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Ручное управление лазером";
+            // 
+            // but_drill_dir_2
+            // 
+            this.but_drill_dir_2.Location = new System.Drawing.Point(6, 390);
+            this.but_drill_dir_2.Name = "but_drill_dir_2";
+            this.but_drill_dir_2.Size = new System.Drawing.Size(139, 54);
+            this.but_drill_dir_2.TabIndex = 153;
+            this.but_drill_dir_2.Text = "Направление 1";
+            this.but_drill_dir_2.UseVisualStyleBackColor = true;
+            this.but_drill_dir_2.Click += new System.EventHandler(this.but_drill_dir_2_Click);
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(56, 367);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(57, 20);
+            this.label63.TabIndex = 152;
+            this.label63.Text = "Сверл";
+            // 
+            // but_drill_vel
+            // 
+            this.but_drill_vel.Location = new System.Drawing.Point(22, 448);
+            this.but_drill_vel.Name = "but_drill_vel";
+            this.but_drill_vel.Size = new System.Drawing.Size(110, 55);
+            this.but_drill_vel.TabIndex = 151;
+            this.but_drill_vel.Text = "Установить скорость";
+            this.but_drill_vel.UseVisualStyleBackColor = true;
+            this.but_drill_vel.Click += new System.EventHandler(this.but_drill_vel_Click);
+            // 
+            // but_drill_ch_dir
+            // 
+            this.but_drill_ch_dir.Location = new System.Drawing.Point(151, 390);
+            this.but_drill_ch_dir.Name = "but_drill_ch_dir";
+            this.but_drill_ch_dir.Size = new System.Drawing.Size(140, 54);
+            this.but_drill_ch_dir.TabIndex = 150;
+            this.but_drill_ch_dir.Text = "Направление 2";
+            this.but_drill_ch_dir.UseVisualStyleBackColor = true;
+            this.but_drill_ch_dir.Click += new System.EventHandler(this.but_drill_ch_dir_Click);
+            // 
+            // textBox_drill_vel
+            // 
+            this.textBox_drill_vel.Location = new System.Drawing.Point(138, 462);
+            this.textBox_drill_vel.Name = "textBox_drill_vel";
+            this.textBox_drill_vel.Size = new System.Drawing.Size(110, 26);
+            this.textBox_drill_vel.TabIndex = 149;
+            this.textBox_drill_vel.Text = "0";
             // 
             // but_setShvpVel
             // 
@@ -4902,6 +4980,7 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabP_connect);
             this.windowsTabs.Controls.Add(this.tabP_scanning_printing);
             this.windowsTabs.Controls.Add(this.tabP_developer);
+            this.windowsTabs.Controls.Add(this.tabPage_tube);
             this.windowsTabs.Font = new System.Drawing.Font("Arial Unicode MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.windowsTabs.Location = new System.Drawing.Point(3, 0);
             this.windowsTabs.Name = "windowsTabs";
@@ -5340,6 +5419,298 @@ namespace opengl3
             this.tabP_developer.Text = "Режим разработчика";
             this.tabP_developer.UseVisualStyleBackColor = true;
             // 
+            // tabPage_tube
+            // 
+            this.tabPage_tube.Controls.Add(this.groupBox11);
+            this.tabPage_tube.Controls.Add(this.groupBox12);
+            this.tabPage_tube.Controls.Add(this.groupBox10);
+            this.tabPage_tube.Controls.Add(this.groupBox9);
+            this.tabPage_tube.Location = new System.Drawing.Point(4, 27);
+            this.tabPage_tube.Name = "tabPage_tube";
+            this.tabPage_tube.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_tube.Size = new System.Drawing.Size(1891, 998);
+            this.tabPage_tube.TabIndex = 9;
+            this.tabPage_tube.Text = "Трубочка";
+            this.tabPage_tube.UseVisualStyleBackColor = true;
+            // 
+            // groupBox11
+            // 
+            this.groupBox11.Controls.Add(this.label79);
+            this.groupBox11.Controls.Add(this.textBox_pump2_vel);
+            this.groupBox11.Controls.Add(this.button_pump2_stop);
+            this.groupBox11.Controls.Add(this.button_pump2_start);
+            this.groupBox11.Location = new System.Drawing.Point(419, 176);
+            this.groupBox11.Name = "groupBox11";
+            this.groupBox11.Size = new System.Drawing.Size(250, 164);
+            this.groupBox11.TabIndex = 4;
+            this.groupBox11.TabStop = false;
+            this.groupBox11.Text = "Насос 2";
+            // 
+            // label79
+            // 
+            this.label79.AutoSize = true;
+            this.label79.Location = new System.Drawing.Point(57, 93);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(64, 18);
+            this.label79.TabIndex = 3;
+            this.label79.Text = "Скорость";
+            // 
+            // textBox_pump2_vel
+            // 
+            this.textBox_pump2_vel.Location = new System.Drawing.Point(127, 90);
+            this.textBox_pump2_vel.Name = "textBox_pump2_vel";
+            this.textBox_pump2_vel.Size = new System.Drawing.Size(100, 25);
+            this.textBox_pump2_vel.TabIndex = 2;
+            this.textBox_pump2_vel.Text = "0";
+            // 
+            // button_pump2_stop
+            // 
+            this.button_pump2_stop.Location = new System.Drawing.Point(127, 34);
+            this.button_pump2_stop.Name = "button_pump2_stop";
+            this.button_pump2_stop.Size = new System.Drawing.Size(115, 39);
+            this.button_pump2_stop.TabIndex = 1;
+            this.button_pump2_stop.Text = "Остановить";
+            this.button_pump2_stop.UseVisualStyleBackColor = true;
+            // 
+            // button_pump2_start
+            // 
+            this.button_pump2_start.Location = new System.Drawing.Point(6, 34);
+            this.button_pump2_start.Name = "button_pump2_start";
+            this.button_pump2_start.Size = new System.Drawing.Size(115, 39);
+            this.button_pump2_start.TabIndex = 0;
+            this.button_pump2_start.Text = "Запустить";
+            this.button_pump2_start.UseVisualStyleBackColor = true;
+            // 
+            // groupBox12
+            // 
+            this.groupBox12.Location = new System.Drawing.Point(12, 176);
+            this.groupBox12.Name = "groupBox12";
+            this.groupBox12.Size = new System.Drawing.Size(401, 164);
+            this.groupBox12.TabIndex = 2;
+            this.groupBox12.TabStop = false;
+            this.groupBox12.Text = "Циклич нагрузка";
+            // 
+            // groupBox10
+            // 
+            this.groupBox10.Controls.Add(this.label78);
+            this.groupBox10.Controls.Add(this.textBox_pump1_vel);
+            this.groupBox10.Controls.Add(this.button_pump1_stop);
+            this.groupBox10.Controls.Add(this.button_pump1_start);
+            this.groupBox10.Location = new System.Drawing.Point(419, 6);
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.Size = new System.Drawing.Size(250, 164);
+            this.groupBox10.TabIndex = 1;
+            this.groupBox10.TabStop = false;
+            this.groupBox10.Text = "Насос 1";
+            // 
+            // label78
+            // 
+            this.label78.AutoSize = true;
+            this.label78.Location = new System.Drawing.Point(57, 93);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(64, 18);
+            this.label78.TabIndex = 3;
+            this.label78.Text = "Скорость";
+            // 
+            // textBox_pump1_vel
+            // 
+            this.textBox_pump1_vel.Location = new System.Drawing.Point(127, 90);
+            this.textBox_pump1_vel.Name = "textBox_pump1_vel";
+            this.textBox_pump1_vel.Size = new System.Drawing.Size(100, 25);
+            this.textBox_pump1_vel.TabIndex = 2;
+            this.textBox_pump1_vel.Text = "0";
+            this.textBox_pump1_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_pump1_vel_KeyDown);
+            // 
+            // button_pump1_stop
+            // 
+            this.button_pump1_stop.Location = new System.Drawing.Point(127, 34);
+            this.button_pump1_stop.Name = "button_pump1_stop";
+            this.button_pump1_stop.Size = new System.Drawing.Size(115, 39);
+            this.button_pump1_stop.TabIndex = 1;
+            this.button_pump1_stop.Text = "Остановить";
+            this.button_pump1_stop.UseVisualStyleBackColor = true;
+            this.button_pump1_stop.Click += new System.EventHandler(this.button_pump1_stop_Click);
+            // 
+            // button_pump1_start
+            // 
+            this.button_pump1_start.Location = new System.Drawing.Point(6, 34);
+            this.button_pump1_start.Name = "button_pump1_start";
+            this.button_pump1_start.Size = new System.Drawing.Size(115, 39);
+            this.button_pump1_start.TabIndex = 0;
+            this.button_pump1_start.Text = "Запустить";
+            this.button_pump1_start.UseVisualStyleBackColor = true;
+            this.button_pump1_start.Click += new System.EventHandler(this.button_pump1_start_Click);
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.label84);
+            this.groupBox9.Controls.Add(this.rb_mm_acust_1mm);
+            this.groupBox9.Controls.Add(this.rb_mm_acust_10mm);
+            this.groupBox9.Controls.Add(this.rb_mm_acust_01mm);
+            this.groupBox9.Controls.Add(this.label83);
+            this.groupBox9.Controls.Add(this.label82);
+            this.groupBox9.Controls.Add(this.but_z2_min);
+            this.groupBox9.Controls.Add(this.but_z2_pl);
+            this.groupBox9.Controls.Add(this.label81);
+            this.groupBox9.Controls.Add(this.textBox_z2_vel);
+            this.groupBox9.Controls.Add(this.but_z1_min);
+            this.groupBox9.Controls.Add(this.but_z1_pl);
+            this.groupBox9.Controls.Add(this.label80);
+            this.groupBox9.Controls.Add(this.textBox_z1_vel);
+            this.groupBox9.Location = new System.Drawing.Point(6, 6);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(407, 164);
+            this.groupBox9.TabIndex = 0;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Положение акуст";
+            // 
+            // label84
+            // 
+            this.label84.AutoSize = true;
+            this.label84.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label84.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.label84.Location = new System.Drawing.Point(292, 21);
+            this.label84.Name = "label84";
+            this.label84.Size = new System.Drawing.Size(90, 21);
+            this.label84.TabIndex = 24;
+            this.label84.Text = "Дистанция";
+            // 
+            // rb_mm_acust_1mm
+            // 
+            this.rb_mm_acust_1mm.AccessibleName = "1";
+            this.rb_mm_acust_1mm.AutoSize = true;
+            this.rb_mm_acust_1mm.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rb_mm_acust_1mm.Location = new System.Drawing.Point(309, 79);
+            this.rb_mm_acust_1mm.Name = "rb_mm_acust_1mm";
+            this.rb_mm_acust_1mm.Size = new System.Drawing.Size(79, 25);
+            this.rb_mm_acust_1mm.TabIndex = 23;
+            this.rb_mm_acust_1mm.Text = "1     мм";
+            this.rb_mm_acust_1mm.UseVisualStyleBackColor = true;
+            this.rb_mm_acust_1mm.CheckedChanged += new System.EventHandler(this.rb_mm_acust_01mm_CheckedChanged);
+            // 
+            // rb_mm_acust_10mm
+            // 
+            this.rb_mm_acust_10mm.AccessibleName = "10";
+            this.rb_mm_acust_10mm.AutoSize = true;
+            this.rb_mm_acust_10mm.Checked = true;
+            this.rb_mm_acust_10mm.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rb_mm_acust_10mm.Location = new System.Drawing.Point(309, 110);
+            this.rb_mm_acust_10mm.Name = "rb_mm_acust_10mm";
+            this.rb_mm_acust_10mm.Size = new System.Drawing.Size(80, 25);
+            this.rb_mm_acust_10mm.TabIndex = 22;
+            this.rb_mm_acust_10mm.TabStop = true;
+            this.rb_mm_acust_10mm.Text = "10   мм";
+            this.rb_mm_acust_10mm.UseVisualStyleBackColor = true;
+            this.rb_mm_acust_10mm.CheckedChanged += new System.EventHandler(this.rb_mm_acust_01mm_CheckedChanged);
+            // 
+            // rb_mm_acust_01mm
+            // 
+            this.rb_mm_acust_01mm.AccessibleName = "0.1";
+            this.rb_mm_acust_01mm.AutoSize = true;
+            this.rb_mm_acust_01mm.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rb_mm_acust_01mm.Location = new System.Drawing.Point(309, 48);
+            this.rb_mm_acust_01mm.Name = "rb_mm_acust_01mm";
+            this.rb_mm_acust_01mm.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.rb_mm_acust_01mm.Size = new System.Drawing.Size(80, 25);
+            this.rb_mm_acust_01mm.TabIndex = 21;
+            this.rb_mm_acust_01mm.Text = "0.1  мм";
+            this.rb_mm_acust_01mm.UseVisualStyleBackColor = true;
+            this.rb_mm_acust_01mm.CheckedChanged += new System.EventHandler(this.rb_mm_acust_01mm_CheckedChanged);
+            // 
+            // label83
+            // 
+            this.label83.AutoSize = true;
+            this.label83.Location = new System.Drawing.Point(3, 94);
+            this.label83.Name = "label83";
+            this.label83.Size = new System.Drawing.Size(19, 18);
+            this.label83.TabIndex = 12;
+            this.label83.Text = "2:";
+            // 
+            // label82
+            // 
+            this.label82.AutoSize = true;
+            this.label82.Location = new System.Drawing.Point(3, 35);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(19, 18);
+            this.label82.TabIndex = 11;
+            this.label82.Text = "1:";
+            // 
+            // but_z2_min
+            // 
+            this.but_z2_min.Location = new System.Drawing.Point(250, 102);
+            this.but_z2_min.Name = "but_z2_min";
+            this.but_z2_min.Size = new System.Drawing.Size(36, 39);
+            this.but_z2_min.TabIndex = 10;
+            this.but_z2_min.Text = "Z-";
+            this.but_z2_min.UseVisualStyleBackColor = true;
+            this.but_z2_min.Click += new System.EventHandler(this.but_z2_min_Click);
+            // 
+            // but_z2_pl
+            // 
+            this.but_z2_pl.Location = new System.Drawing.Point(208, 102);
+            this.but_z2_pl.Name = "but_z2_pl";
+            this.but_z2_pl.Size = new System.Drawing.Size(36, 39);
+            this.but_z2_pl.TabIndex = 7;
+            this.but_z2_pl.Text = "Z+";
+            this.but_z2_pl.UseVisualStyleBackColor = true;
+            this.but_z2_pl.Click += new System.EventHandler(this.but_z2_pl_Click);
+            // 
+            // label81
+            // 
+            this.label81.AutoSize = true;
+            this.label81.Location = new System.Drawing.Point(15, 112);
+            this.label81.Name = "label81";
+            this.label81.Size = new System.Drawing.Size(64, 18);
+            this.label81.TabIndex = 9;
+            this.label81.Text = "Скорость";
+            // 
+            // textBox_z2_vel
+            // 
+            this.textBox_z2_vel.Location = new System.Drawing.Point(85, 109);
+            this.textBox_z2_vel.Name = "textBox_z2_vel";
+            this.textBox_z2_vel.Size = new System.Drawing.Size(100, 25);
+            this.textBox_z2_vel.TabIndex = 8;
+            this.textBox_z2_vel.Text = "0";
+            this.textBox_z2_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_z2_vel_KeyDown);
+            // 
+            // but_z1_min
+            // 
+            this.but_z1_min.Location = new System.Drawing.Point(250, 43);
+            this.but_z1_min.Name = "but_z1_min";
+            this.but_z1_min.Size = new System.Drawing.Size(36, 39);
+            this.but_z1_min.TabIndex = 6;
+            this.but_z1_min.Text = "Z-";
+            this.but_z1_min.UseVisualStyleBackColor = true;
+            this.but_z1_min.Click += new System.EventHandler(this.but_z1_min_Click);
+            // 
+            // but_z1_pl
+            // 
+            this.but_z1_pl.Location = new System.Drawing.Point(208, 43);
+            this.but_z1_pl.Name = "but_z1_pl";
+            this.but_z1_pl.Size = new System.Drawing.Size(36, 39);
+            this.but_z1_pl.TabIndex = 4;
+            this.but_z1_pl.Text = "Z+";
+            this.but_z1_pl.UseVisualStyleBackColor = true;
+            this.but_z1_pl.Click += new System.EventHandler(this.but_z1_pl_Click);
+            // 
+            // label80
+            // 
+            this.label80.AutoSize = true;
+            this.label80.Location = new System.Drawing.Point(15, 53);
+            this.label80.Name = "label80";
+            this.label80.Size = new System.Drawing.Size(64, 18);
+            this.label80.TabIndex = 5;
+            this.label80.Text = "Скорость";
+            // 
+            // textBox_z1_vel
+            // 
+            this.textBox_z1_vel.Location = new System.Drawing.Point(85, 50);
+            this.textBox_z1_vel.Name = "textBox_z1_vel";
+            this.textBox_z1_vel.Size = new System.Drawing.Size(100, 25);
+            this.textBox_z1_vel.TabIndex = 4;
+            this.textBox_z1_vel.Text = "0";
+            this.textBox_z1_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_z1_vel_KeyDown);
+            // 
             // timer1
             // 
             this.timer1.Enabled = true;
@@ -5349,53 +5720,6 @@ namespace opengl3
             // timer2
             // 
             this.timer2.Enabled = true;
-            // 
-            // textBox_drill_vel
-            // 
-            this.textBox_drill_vel.Location = new System.Drawing.Point(138, 462);
-            this.textBox_drill_vel.Name = "textBox_drill_vel";
-            this.textBox_drill_vel.Size = new System.Drawing.Size(110, 26);
-            this.textBox_drill_vel.TabIndex = 149;
-            this.textBox_drill_vel.Text = "0";
-            // 
-            // but_drill_ch_dir
-            // 
-            this.but_drill_ch_dir.Location = new System.Drawing.Point(151, 390);
-            this.but_drill_ch_dir.Name = "but_drill_ch_dir";
-            this.but_drill_ch_dir.Size = new System.Drawing.Size(140, 54);
-            this.but_drill_ch_dir.TabIndex = 150;
-            this.but_drill_ch_dir.Text = "Направление 2";
-            this.but_drill_ch_dir.UseVisualStyleBackColor = true;
-            this.but_drill_ch_dir.Click += new System.EventHandler(this.but_drill_ch_dir_Click);
-            // 
-            // but_drill_vel
-            // 
-            this.but_drill_vel.Location = new System.Drawing.Point(22, 448);
-            this.but_drill_vel.Name = "but_drill_vel";
-            this.but_drill_vel.Size = new System.Drawing.Size(110, 55);
-            this.but_drill_vel.TabIndex = 151;
-            this.but_drill_vel.Text = "Установить скорость";
-            this.but_drill_vel.UseVisualStyleBackColor = true;
-            this.but_drill_vel.Click += new System.EventHandler(this.but_drill_vel_Click);
-            // 
-            // label63
-            // 
-            this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(56, 367);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(57, 20);
-            this.label63.TabIndex = 152;
-            this.label63.Text = "Сверл";
-            // 
-            // but_drill_dir_2
-            // 
-            this.but_drill_dir_2.Location = new System.Drawing.Point(6, 390);
-            this.but_drill_dir_2.Name = "but_drill_dir_2";
-            this.but_drill_dir_2.Size = new System.Drawing.Size(139, 54);
-            this.but_drill_dir_2.TabIndex = 153;
-            this.but_drill_dir_2.Text = "Направление 1";
-            this.but_drill_dir_2.UseVisualStyleBackColor = true;
-            this.but_drill_dir_2.Click += new System.EventHandler(this.but_drill_dir_2_Click);
             // 
             // MainScanningForm
             // 
@@ -5526,6 +5850,13 @@ namespace opengl3
             this.groupBox_disp_contr_ext.ResumeLayout(false);
             this.groupBox_disp_contr_ext.PerformLayout();
             this.groupBox_con_ard_ext.ResumeLayout(false);
+            this.tabPage_tube.ResumeLayout(false);
+            this.groupBox11.ResumeLayout(false);
+            this.groupBox11.PerformLayout();
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -5974,6 +6305,33 @@ namespace opengl3
         private System.Windows.Forms.Button but_drill_ch_dir;
         private System.Windows.Forms.TextBox textBox_drill_vel;
         private System.Windows.Forms.Button but_drill_dir_2;
+        private System.Windows.Forms.TabPage tabPage_tube;
+        private System.Windows.Forms.GroupBox groupBox11;
+        private System.Windows.Forms.Label label79;
+        private System.Windows.Forms.TextBox textBox_pump2_vel;
+        private System.Windows.Forms.Button button_pump2_stop;
+        private System.Windows.Forms.Button button_pump2_start;
+        private System.Windows.Forms.GroupBox groupBox12;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.Label label78;
+        private System.Windows.Forms.TextBox textBox_pump1_vel;
+        private System.Windows.Forms.Button button_pump1_stop;
+        private System.Windows.Forms.Button button_pump1_start;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.Label label80;
+        private System.Windows.Forms.TextBox textBox_z1_vel;
+        private System.Windows.Forms.Label label83;
+        private System.Windows.Forms.Label label82;
+        private System.Windows.Forms.Button but_z2_min;
+        private System.Windows.Forms.Button but_z2_pl;
+        private System.Windows.Forms.Label label81;
+        private System.Windows.Forms.TextBox textBox_z2_vel;
+        private System.Windows.Forms.Button but_z1_min;
+        private System.Windows.Forms.Button but_z1_pl;
+        private System.Windows.Forms.Label label84;
+        private System.Windows.Forms.RadioButton rb_mm_acust_1mm;
+        private System.Windows.Forms.RadioButton rb_mm_acust_10mm;
+        private System.Windows.Forms.RadioButton rb_mm_acust_01mm;
     }
 }
 

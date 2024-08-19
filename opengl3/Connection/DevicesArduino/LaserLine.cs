@@ -31,7 +31,11 @@ namespace opengl3
             push_forw = 18,
             push_back = 19,
             drill_vel = 20,
-            drill_dir = 21;
+            drill_dir = 21,
+
+            rel_pos_z = 22,
+            rel_pos_disp = 23
+            ;
 
         int on = 1, off = 2;
         public LaserLine(string _port, int adr=-1)
@@ -66,7 +70,14 @@ namespace opengl3
         {
             send(_pos+5000, posit);
         }
-
+        public void set_rel_pos_z(int rel_pos)
+        {
+            send(rel_pos + 5000, rel_pos_z);
+        }
+        public void set_rel_pos_disp(int rel_pos)
+        {
+            send(rel_pos + 5000, rel_pos_disp);
+        }
         public void setShvpVel(double _vel)
         {
             if(_vel>0) send(comp_vel_div(_vel), shvp_vel);

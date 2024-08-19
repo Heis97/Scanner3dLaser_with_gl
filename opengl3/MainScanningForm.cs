@@ -7506,6 +7506,74 @@ namespace opengl3
             laserLine?.set_adr(50);
            laserLine?.set_drill_vel(Convert.ToInt32(textBox_drill_vel.Text));
         }
+
+        private void textBox_z1_vel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                laserLine?.set_div_disp(Convert.ToInt32(textBox_z1_vel.Text));
+            }
+        }
+
+        private void textBox_z2_vel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                laserLine?.set_z_div(Convert.ToInt32(textBox_z2_vel.Text));
+            }
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void but_z1_pl_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_rel_pos_disp(Convert.ToInt32(dist_contr_rob));
+        }
+
+        private void but_z1_min_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_rel_pos_disp(-Convert.ToInt32(dist_contr_rob));
+        }
+
+        private void but_z2_pl_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_rel_pos_z(Convert.ToInt32(dist_contr_rob));
+        }
+
+        private void but_z2_min_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_rel_pos_z(-Convert.ToInt32(dist_contr_rob));
+        }
+
+        private void button_pump1_start_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_dir_disp(0);
+        }
+
+        private void button_pump1_stop_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_dir_disp(1);
+        }
+
+        private void rb_mm_acust_01mm_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton checkBox = (RadioButton)sender;
+            if (checkBox.Checked == true)
+            {
+                dist_contr_rob = Convert.ToDouble(checkBox.AccessibleName);
+            }
+        }
+
+        private void textBox_pump1_vel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                laserLine?.set_div_disp(Convert.ToInt32(textBox_pump1_vel.Text));
+            }
+        }
     }
 }
 
