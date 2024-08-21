@@ -7530,32 +7530,38 @@ namespace opengl3
 
         private void but_z1_pl_Click(object sender, EventArgs e)
         {
+            laserLine.set_adr(-1);
             laserLine?.set_rel_pos_disp(Convert.ToInt32(dist_contr_rob));
         }
 
         private void but_z1_min_Click(object sender, EventArgs e)
         {
+            laserLine.set_adr(-1);
             laserLine?.set_rel_pos_disp(-Convert.ToInt32(dist_contr_rob));
         }
 
         private void but_z2_pl_Click(object sender, EventArgs e)
         {
+            laserLine.set_adr(-1);
             laserLine?.set_rel_pos_z(Convert.ToInt32(dist_contr_rob));
         }
 
         private void but_z2_min_Click(object sender, EventArgs e)
         {
+            laserLine.set_adr(-1);
             laserLine?.set_rel_pos_z(-Convert.ToInt32(dist_contr_rob));
         }
 
         private void button_pump1_start_Click(object sender, EventArgs e)
         {
-            laserLine?.set_dir_disp(0);
+            laserLine.set_adr(50);
+            laserLine?.set_dir_disp(1);
         }
 
         private void button_pump1_stop_Click(object sender, EventArgs e)
         {
-            laserLine?.set_dir_disp(1);
+            laserLine.set_adr(50);
+            laserLine?.set_dir_disp(0);
         }
 
         private void rb_mm_acust_01mm_CheckedChanged(object sender, EventArgs e)
@@ -7563,7 +7569,8 @@ namespace opengl3
             RadioButton checkBox = (RadioButton)sender;
             if (checkBox.Checked == true)
             {
-                dist_contr_rob = Convert.ToDouble(checkBox.AccessibleName);
+                laserLine.set_adr(-1);
+                dist_contr_rob = 100* Convert.ToDouble(checkBox.AccessibleName);
             }
         }
 
@@ -7571,6 +7578,7 @@ namespace opengl3
         {
             if (e.KeyCode == Keys.Enter)
             {
+                laserLine.set_adr(50);
                 laserLine?.set_div_disp(Convert.ToInt32(textBox_pump1_vel.Text));
             }
         }
