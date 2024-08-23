@@ -6770,7 +6770,7 @@ namespace opengl3
                 imb_main[i].SendToBack();
             }
 
-            windowsTabs.Controls.Remove(tabMain);
+           /* windowsTabs.Controls.Remove(tabMain);
             windowsTabs.Controls.Remove(tabOpenGl);
             windowsTabs.Controls.Remove(tabDistort);
             windowsTabs.Controls.Remove(tabP_developer);
@@ -6778,7 +6778,7 @@ namespace opengl3
             windowsTabs.Controls.Remove(tabDebug);
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);
+            windowsTabs.Controls.Remove(tabP_connect);*/
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)
@@ -7588,6 +7588,11 @@ namespace opengl3
         private void but_disc_ard_tube_Click(object sender, EventArgs e)
         {
             laserLine?.connectStop();
+        }
+
+        private void comboBox_ard_tube_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            portArd = (string)((ComboBox)sender).SelectedItem;
         }
     }
 }
