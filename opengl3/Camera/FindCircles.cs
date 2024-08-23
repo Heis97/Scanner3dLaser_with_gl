@@ -157,8 +157,12 @@ namespace opengl3
             
             if (order)
             {
+                orig = UtilOpenCV.drawTours(orig, PointF.toPoint(cents), 255, 0,2);
+                CvInvoke.Imshow("fnd", orig);
+                CvInvoke.WaitKey();
                 var ps_ord = orderPoints(cents, pattern_size);
-                orig = UtilOpenCV.drawPointsF(orig, ps_ord,0, 255,  0);
+                //var ps_ord = orderPoints_assym(cents, pattern_size);
+                //orig = UtilOpenCV.drawPointsF(orig, ps_ord,0, 255,  0);
                 //CvInvoke.Imshow("fnd", orig);
                 //CvInvoke.WaitKey();
                 //ps_ord = ps_ord.Reverse().ToArray();
@@ -537,23 +541,71 @@ namespace opengl3
         static System.Drawing.PointF[] orderPoints(System.Drawing.PointF[] ps, Size size_patt)
         {
 
-             var mainDiag = findMainDiag(ps);
+            var mainDiag = findMainDiag(ps);
             var step = mainDiag[2];
             var angle = calcAngleX(ps[mainDiag[0]], ps[mainDiag[1]]);//!!!add if dx small rot Y
-             var additDiag = findAdditDiag(ps, angle);
-
+            var additDiag = findAdditDiag(ps, angle);
             var starts = findStarts(ps, mainDiag, additDiag);
-
 
             var inds_ord = findAllLines(ps, starts, step);
             var ind_size = ordBySize(inds_ord, size_patt);
             if(ind_size == null)
             {
-               // Console.WriteLine("ind_size NULL");
+                Console.WriteLine("ind_size NULL");
                 return null;
             }
 
             return arrFromP(ps, ind_size);
+        }
+        static System.Drawing.PointF[] orderPoints_assym(System.Drawing.PointF[] ps, Size size_patt)
+        {
+
+            var mainDiag = findMainDiag(ps);
+            var step = mainDiag[2];
+            var angle = calcAngleX(ps[mainDiag[0]], ps[mainDiag[1]]);//!!!add if dx small rot Y
+            var additDiag = findAdditDiag(ps, angle);
+
+            var inds_ps = new int[size_patt.Width*size_patt.Height][];
+            for(int i=0; i < inds_ps.Length; i++)
+            {
+                inds_ps[i] = new int[] { -1, -1 };
+            }
+
+            var starts1 = findStarts(ps, mainDiag, additDiag);
+            var inds_ord1 = findAllLines(ps, starts1, step);
+            var ind_size1 = ordBySize(inds_ord1, size_patt);
+            inds_ps = set_inds_from_lines(inds_ps, inds_ord1, 1);
+            if (ind_size1 == null)
+            {
+                //Console.WriteLine("ind_size NULL");
+                return null;
+            }
+
+            var starts2 = findStarts(ps, additDiag, mainDiag);
+            var inds_ord2 = findAllLines(ps, starts2, step);
+            var ind_size2 = ordBySize(inds_ord2, size_patt);
+            inds_ps = set_inds_from_lines(inds_ps, inds_ord2,0);
+            if (ind_size2 == null)
+            {
+                //Console.WriteLine("ind_size NULL");
+                return null;
+            }
+
+            return arrFromP(ps, ind_size1);
+        }
+
+        static int[][] set_inds_from_lines(int[][] inds_patt, int[][] inds_lines,int coord)
+        {
+            for (int i = 0; i < inds_lines.Length; i++)
+            {
+                for (int j = 0; j < inds_lines[i].Length; j++)
+                {
+                    var ind_p = inds_lines[i][j];
+                    inds_patt[ind_p][coord] = i;
+                }
+            }
+
+            return inds_patt;
         }
 
         static public System.Drawing.PointF[] findGab(System.Drawing.PointF[] ps)
@@ -666,12 +718,12 @@ namespace opengl3
         }
 
         static int[] findAdditDiag(System.Drawing.PointF[]  ps,double angle)
-         {
+        {
             var matAffMatr = new Matrix<double>(2,3);
             CvInvoke.GetRotationMatrix2D(new System.Drawing.PointF(0, 0), angle, 1, matAffMatr);
             var ps_rot = UtilOpenCV.transfAffine(ps, matAffMatr);            
             return findAdditFromRot(ps_rot);
-         }
+        }
          
         static int[] findLinePoints(System.Drawing.PointF[] ps, int p1, int p2, float min)
          {
@@ -752,9 +804,9 @@ namespace opengl3
         }
         static double calcAngleX(System.Drawing.PointF p1, System.Drawing.PointF p2)
         {
-            if(p1.X - p2.X == 0)
+            if(p1.X - p2.X <= 0.001)
             {
-                return 1000000000;
+                return toDegree(Math.PI/2);
             }
             return toDegree(Math.Atan((p1.Y - p2.Y) / (p1.X - p2.X)));
         }

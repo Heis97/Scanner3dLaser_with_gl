@@ -832,7 +832,7 @@ namespace opengl3
         {
             drawPoints(im, PointF.toPoint(points), r, g, b, size);
         }
-        static public void drawTours(Mat im, Point[] points, int r=0, int g=0, int b=0, int size = 4)
+        static public Mat drawTours(Mat im, Point[] points, int r=0, int g=0, int b=0, int size = 4)
         {
             int ind = 0;
             if (points.Length != 0)
@@ -843,6 +843,7 @@ namespace opengl3
                     ind++;
                 }
             }
+            return im;
         }
 
         static public Mat drawTours(Mat im, PointF[] d_points, int r, int g, int b, int size = 4)

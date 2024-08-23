@@ -257,13 +257,13 @@ namespace opengl3
             // var ps_u = PathPlanner.unif_dist(ps.ToList(), 4.05);
             //   Console.WriteLine("sf");
 
-            // var im_patt = new Mat("2v2.png");
-            // var ps = new System.Drawing.PointF[3];
-            //var find = FindCircles.findCircles(im_patt,ref ps, new Size(6, 7));
+             var im_patt = new Mat("2.png");
+             var ps = new System.Drawing.PointF[3];
+            var find = FindCircles.findCircles(im_patt,ref ps, new Size(6, 7));
 
             //var find = GeometryAnalyse.findCirclesIter(im_patt.Clone(), ref ps, new Size(6, 7));
-            //CvInvoke.Imshow("find",find );
-            //CvInvoke.WaitKey();
+            CvInvoke.Imshow("find",find );
+            CvInvoke.WaitKey();
 
             //Manipulator.calcRob();
         }
@@ -571,15 +571,7 @@ namespace opengl3
             
         }
 
-        void python_c_sh()
-        {
-            var eng = IronPython.Hosting.Python.CreateEngine();
-            var scope = eng.CreateScope();
-            eng.Execute(@"def greetings(name): return 'Hello ' + name.title() + '!'", scope);
-            dynamic greetings = scope.GetVariable("greetings");
-            System.Console.WriteLine(greetings("world"));
-        }
-
+ 
         private void timer1_Tick(object sender, EventArgs e)
         {
             label_timer.Text = DateTime.Now.Second + " : " + DateTime.Now.Millisecond;// +" "+ DateTime.Now.Ticks/ TimeSpan.TicksPerMillisecond;
