@@ -470,6 +470,11 @@ namespace opengl3
             this.but_con_ext_con_com = new System.Windows.Forms.Button();
             this.tabP_developer = new System.Windows.Forms.TabPage();
             this.tabPage_tube = new System.Windows.Forms.TabPage();
+            this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.but_find_ard_tube = new System.Windows.Forms.Button();
+            this.but_con_ard_tube = new System.Windows.Forms.Button();
+            this.comboBox_ard_tube = new System.Windows.Forms.ComboBox();
+            this.but_disc_ard_tube = new System.Windows.Forms.Button();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.label79 = new System.Windows.Forms.Label();
             this.textBox_pump2_vel = new System.Windows.Forms.TextBox();
@@ -598,6 +603,7 @@ namespace opengl3
             this.groupBox_disp_contr_ext.SuspendLayout();
             this.groupBox_con_ard_ext.SuspendLayout();
             this.tabPage_tube.SuspendLayout();
+            this.groupBox13.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -5421,6 +5427,7 @@ namespace opengl3
             // 
             // tabPage_tube
             // 
+            this.tabPage_tube.Controls.Add(this.groupBox13);
             this.tabPage_tube.Controls.Add(this.groupBox11);
             this.tabPage_tube.Controls.Add(this.groupBox12);
             this.tabPage_tube.Controls.Add(this.groupBox10);
@@ -5432,6 +5439,59 @@ namespace opengl3
             this.tabPage_tube.TabIndex = 9;
             this.tabPage_tube.Text = "Трубочка";
             this.tabPage_tube.UseVisualStyleBackColor = true;
+            // 
+            // groupBox13
+            // 
+            this.groupBox13.Controls.Add(this.but_find_ard_tube);
+            this.groupBox13.Controls.Add(this.but_con_ard_tube);
+            this.groupBox13.Controls.Add(this.comboBox_ard_tube);
+            this.groupBox13.Controls.Add(this.but_disc_ard_tube);
+            this.groupBox13.Location = new System.Drawing.Point(675, 10);
+            this.groupBox13.Name = "groupBox13";
+            this.groupBox13.Size = new System.Drawing.Size(160, 197);
+            this.groupBox13.TabIndex = 12;
+            this.groupBox13.TabStop = false;
+            this.groupBox13.Text = "Подключение";
+            // 
+            // but_find_ard_tube
+            // 
+            this.but_find_ard_tube.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.but_find_ard_tube.Location = new System.Drawing.Point(6, 27);
+            this.but_find_ard_tube.Name = "but_find_ard_tube";
+            this.but_find_ard_tube.Size = new System.Drawing.Size(143, 36);
+            this.but_find_ard_tube.TabIndex = 11;
+            this.but_find_ard_tube.Text = "Найти порты";
+            this.but_find_ard_tube.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.but_find_ard_tube.UseVisualStyleBackColor = true;
+            this.but_find_ard_tube.Click += new System.EventHandler(this.but_find_ard_tube_Click);
+            // 
+            // but_con_ard_tube
+            // 
+            this.but_con_ard_tube.Location = new System.Drawing.Point(7, 104);
+            this.but_con_ard_tube.Name = "but_con_ard_tube";
+            this.but_con_ard_tube.Size = new System.Drawing.Size(143, 38);
+            this.but_con_ard_tube.TabIndex = 8;
+            this.but_con_ard_tube.Text = "Подключиться";
+            this.but_con_ard_tube.UseVisualStyleBackColor = true;
+            this.but_con_ard_tube.Click += new System.EventHandler(this.but_con_ard_tube_Click);
+            // 
+            // comboBox_ard_tube
+            // 
+            this.comboBox_ard_tube.FormattingEnabled = true;
+            this.comboBox_ard_tube.Location = new System.Drawing.Point(6, 69);
+            this.comboBox_ard_tube.Name = "comboBox_ard_tube";
+            this.comboBox_ard_tube.Size = new System.Drawing.Size(143, 26);
+            this.comboBox_ard_tube.TabIndex = 10;
+            // 
+            // but_disc_ard_tube
+            // 
+            this.but_disc_ard_tube.Location = new System.Drawing.Point(7, 145);
+            this.but_disc_ard_tube.Name = "but_disc_ard_tube";
+            this.but_disc_ard_tube.Size = new System.Drawing.Size(143, 36);
+            this.but_disc_ard_tube.TabIndex = 9;
+            this.but_disc_ard_tube.Text = "Отключиться";
+            this.but_disc_ard_tube.UseVisualStyleBackColor = true;
+            this.but_disc_ard_tube.Click += new System.EventHandler(this.but_disc_ard_tube_Click);
             // 
             // groupBox11
             // 
@@ -5851,6 +5911,7 @@ namespace opengl3
             this.groupBox_disp_contr_ext.PerformLayout();
             this.groupBox_con_ard_ext.ResumeLayout(false);
             this.tabPage_tube.ResumeLayout(false);
+            this.groupBox13.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
             this.groupBox11.PerformLayout();
             this.groupBox10.ResumeLayout(false);
@@ -6332,6 +6393,11 @@ namespace opengl3
         private System.Windows.Forms.RadioButton rb_mm_acust_1mm;
         private System.Windows.Forms.RadioButton rb_mm_acust_10mm;
         private System.Windows.Forms.RadioButton rb_mm_acust_01mm;
+        private System.Windows.Forms.GroupBox groupBox13;
+        private System.Windows.Forms.Button but_find_ard_tube;
+        private System.Windows.Forms.Button but_con_ard_tube;
+        private System.Windows.Forms.ComboBox comboBox_ard_tube;
+        private System.Windows.Forms.Button but_disc_ard_tube;
     }
 }
 

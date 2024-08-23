@@ -256,14 +256,14 @@ namespace opengl3
 
             // var ps_u = PathPlanner.unif_dist(ps.ToList(), 4.05);
             //   Console.WriteLine("sf");
-
+/*
              var im_patt = new Mat("2.png");
              var ps = new System.Drawing.PointF[3];
             var find = FindCircles.findCircles(im_patt,ref ps, new Size(6, 7));
 
             //var find = GeometryAnalyse.findCirclesIter(im_patt.Clone(), ref ps, new Size(6, 7));
             CvInvoke.Imshow("find",find );
-            CvInvoke.WaitKey();
+            CvInvoke.WaitKey();*/
 
             //Manipulator.calcRob();
         }
@@ -1464,7 +1464,7 @@ namespace opengl3
 
         void initLaserFast()
         {
-            find_ports();
+            find_ports(comboBox_portsArd);
             Thread.Sleep(100);
             laserLine = new LaserLine(portArd);
         }
@@ -4475,7 +4475,7 @@ namespace opengl3
         {
             videoStart(2);
             videoStart(1); Thread.Sleep(5000);
-            find_ports(); Thread.Sleep(100);
+            find_ports(comboBox_portsArd); Thread.Sleep(100);
             laserLine = new LaserLine(portArd); Thread.Sleep(1000);
             laserLine?.setShvpVel(200); Thread.Sleep(100);
             laserLine?.laserOn(); Thread.Sleep(100);
@@ -5716,12 +5716,11 @@ namespace opengl3
         #region laser_but
         string portArd;
 
-        void find_ports(bool last = false)
+        void find_ports(ComboBox comboBox, bool last = false)
         {
             //comboBox_portsArd.Items.Add("COM3");
-           // comboBox_portsArd.Items.Clear();
-            comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.Items.Clear()));
-            cb_ard_ext.BeginInvoke((MethodInvoker)(() => cb_ard_ext.Items.Clear()));
+            // comboBox_portsArd.Items.Clear();
+            comboBox.BeginInvoke((MethodInvoker)(() => comboBox.Items.Clear()));
             // Получаем список COM портов доступных в системе
             string[] portnames = SerialPort.GetPortNames();
             // Проверяем есть ли доступные
@@ -5732,17 +5731,15 @@ namespace opengl3
             foreach (string portName in portnames)
             {
                 //добавляем доступные COM порты в список           
-                comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.Items.Add(portName)));
-                cb_ard_ext.BeginInvoke((MethodInvoker)(() => cb_ard_ext.Items.Add(portName)));
+                comboBox.BeginInvoke((MethodInvoker)(() => comboBox.Items.Add(portName)));
                 //Console.WriteLine(portnames.Length);
                 if (portnames[0] != null)
                 {
-                    comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.SelectedItem = portnames[0]));
-                    cb_ard_ext.BeginInvoke((MethodInvoker)(() => cb_ard_ext.SelectedItem = portnames[0]));
+                    comboBox.BeginInvoke((MethodInvoker)(() => comboBox.SelectedItem = portnames[0]));
                     if (last)
                     {
-                        comboBox_portsArd.BeginInvoke((MethodInvoker)(() => comboBox_portsArd.SelectedItem = portnames[portnames.Length-1]));
-                        cb_ard_ext.BeginInvoke((MethodInvoker)(() => cb_ard_ext.SelectedItem = portnames[portnames.Length - 1]));
+                        comboBox.BeginInvoke((MethodInvoker)(() => comboBox.SelectedItem = portnames[portnames.Length-1]));
+
                     }
                 }
             }
@@ -5750,7 +5747,7 @@ namespace opengl3
 
         private void but_find_ports_Click(object sender, EventArgs e)
         {
-            find_ports();
+            find_ports(comboBox_portsArd);
         }
         private void but_close_Click(object sender, EventArgs e)
         {
@@ -6773,12 +6770,15 @@ namespace opengl3
                 imb_main[i].SendToBack();
             }
 
-            //windowsTabs.Controls.Remove(tabMain);
-           // windowsTabs.Controls.Remove(tabOpenGl);
+            windowsTabs.Controls.Remove(tabMain);
+            windowsTabs.Controls.Remove(tabOpenGl);
             windowsTabs.Controls.Remove(tabDistort);
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabCalibMonit);
             windowsTabs.Controls.Remove(tabDebug);
+            windowsTabs.Controls.Remove(tabP_developer);
+            windowsTabs.Controls.Remove(tabP_scanning_printing);
+            windowsTabs.Controls.Remove(tabP_connect);
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)
@@ -7077,7 +7077,7 @@ namespace opengl3
         {
             label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Подключение контр РО..."));
             label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.ForeColor = Color.Firebrick));
-            find_ports(true);
+            find_ports(cb_ard_ext,true);
             Thread.Sleep(300);
             laserLine = new LaserLine(portArd); Thread.Sleep(1500);
             laserLine?.setShvpVel(200); Thread.Sleep(100);
@@ -7573,6 +7573,21 @@ namespace opengl3
                 laserLine.set_adr(50);
                 laserLine?.set_div_disp(Convert.ToInt32(textBox_pump1_vel.Text));
             }
+        }
+
+        private void but_find_ard_tube_Click(object sender, EventArgs e)
+        {
+            find_ports(comboBox_ard_tube);
+        }
+
+        private void but_con_ard_tube_Click(object sender, EventArgs e)
+        {
+            laserLine = new LaserLine(portArd);
+        }
+
+        private void but_disc_ard_tube_Click(object sender, EventArgs e)
+        {
+            laserLine?.connectStop();
         }
     }
 }
