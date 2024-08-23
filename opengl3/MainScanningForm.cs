@@ -6770,7 +6770,7 @@ namespace opengl3
                 imb_main[i].SendToBack();
             }
 
-           /* windowsTabs.Controls.Remove(tabMain);
+            windowsTabs.Controls.Remove(tabMain);
             windowsTabs.Controls.Remove(tabOpenGl);
             windowsTabs.Controls.Remove(tabDistort);
             windowsTabs.Controls.Remove(tabP_developer);
@@ -6778,7 +6778,7 @@ namespace opengl3
             windowsTabs.Controls.Remove(tabDebug);
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);*/
+            windowsTabs.Controls.Remove(tabP_connect);
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)
