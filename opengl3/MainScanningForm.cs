@@ -256,14 +256,14 @@ namespace opengl3
 
             // var ps_u = PathPlanner.unif_dist(ps.ToList(), 4.05);
             //   Console.WriteLine("sf");
-/*
+
              var im_patt = new Mat("2.png");
              var ps = new System.Drawing.PointF[3];
             var find = FindCircles.findCircles(im_patt,ref ps, new Size(6, 7));
 
             //var find = GeometryAnalyse.findCirclesIter(im_patt.Clone(), ref ps, new Size(6, 7));
             CvInvoke.Imshow("find",find );
-            CvInvoke.WaitKey();*/
+            CvInvoke.WaitKey();
 
             //Manipulator.calcRob();
         }

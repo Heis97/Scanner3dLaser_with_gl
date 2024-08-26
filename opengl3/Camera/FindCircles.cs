@@ -804,7 +804,7 @@ namespace opengl3
         }
         static double calcAngleX(System.Drawing.PointF p1, System.Drawing.PointF p2)
         {
-            if(p1.X - p2.X <= 0.001)
+            if( Math.Abs( p1.X - p2.X) <= 0.001)
             {
                 return toDegree(Math.PI/2);
             }
