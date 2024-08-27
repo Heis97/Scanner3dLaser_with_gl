@@ -149,7 +149,7 @@ namespace opengl3
 
             //prin.t(cents);
             //prin.t("____________");
-            orig = UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0);
+           // orig = UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0);
            // CvInvoke.Imshow("fnd", orig);
             //CvInvoke.WaitKey();
             corn = new System.Drawing.PointF[pattern_size.Width * pattern_size.Height];
@@ -158,13 +158,13 @@ namespace opengl3
             if (order)
             {
                 orig = UtilOpenCV.drawTours(orig, PointF.toPoint(cents), 255, 0,2);
-                CvInvoke.Imshow("fnd", orig);
-                CvInvoke.WaitKey();
-                var ps_ord = orderPoints(cents, pattern_size);
-                //var ps_ord = orderPoints_assym(cents, pattern_size);
-                //orig = UtilOpenCV.drawPointsF(orig, ps_ord,0, 255,  0);
                 //CvInvoke.Imshow("fnd", orig);
                 //CvInvoke.WaitKey();
+                var ps_ord = orderPoints(cents, pattern_size);
+                var ps_ord2 = orderPoints_assym(cents, pattern_size);
+                orig = UtilOpenCV.drawPoints_2d(orig,PointF.toSystemPoint_ss_2d( ps_ord2),0, 255,  0);
+                CvInvoke.Imshow("fnd", orig);
+                CvInvoke.WaitKey();
                 //ps_ord = ps_ord.Reverse().ToArray();
                 if (ps_ord != null && ps_ord.Length<=corn.Length)
                 {
@@ -557,41 +557,42 @@ namespace opengl3
 
             return arrFromP(ps, ind_size);
         }
-        static System.Drawing.PointF[] orderPoints_assym(System.Drawing.PointF[] ps, Size size_patt)
+        static System.Drawing.PointF[,] orderPoints_assym(System.Drawing.PointF[] ps, Size size_patt)
         {
 
             var mainDiag = findMainDiag(ps);
             var step = mainDiag[2];
             var angle = calcAngleX(ps[mainDiag[0]], ps[mainDiag[1]]);//!!!add if dx small rot Y
             var additDiag = findAdditDiag(ps, angle);
-
+            additDiag[2] = mainDiag[2];
             var inds_ps = new int[size_patt.Width*size_patt.Height][];
             for(int i=0; i < inds_ps.Length; i++)
             {
                 inds_ps[i] = new int[] { -1, -1 };
             }
 
-            var starts1 = findStarts(ps, mainDiag, additDiag);
+            var starts1 = findStarts_asym(ps, mainDiag, additDiag);
             var inds_ord1 = findAllLines(ps, starts1, step);
             var ind_size1 = ordBySize(inds_ord1, size_patt);
-            inds_ps = set_inds_from_lines(inds_ps, inds_ord1, 1);
+            inds_ps = set_inds_from_lines(inds_ps, inds_ord1, 0);
             if (ind_size1 == null)
             {
                 //Console.WriteLine("ind_size NULL");
                 return null;
             }
-
-            var starts2 = findStarts(ps, additDiag, mainDiag);
+            mainDiag = new int[] { mainDiag[1], mainDiag[0], mainDiag[2] };
+            //additDiag = new int[] { additDiag[1], additDiag[0], mainDiag[2] };
+            var starts2 = findStarts_asym(ps, additDiag, mainDiag);
             var inds_ord2 = findAllLines(ps, starts2, step);
             var ind_size2 = ordBySize(inds_ord2, size_patt);
-            inds_ps = set_inds_from_lines(inds_ps, inds_ord2,0);
+            inds_ps = set_inds_from_lines(inds_ps, inds_ord2,1);
             if (ind_size2 == null)
             {
                 //Console.WriteLine("ind_size NULL");
                 return null;
             }
 
-            return arrFromP(ps, ind_size1);
+            return arrFromP_2d(ps, inds_ps, new Size( inds_ord1.Length, inds_ord2.Length));
         }
 
         static int[][] set_inds_from_lines(int[][] inds_patt, int[][] inds_lines,int coord)
@@ -758,7 +759,21 @@ namespace opengl3
            
             return new int[][] { line1_sort ,  line2_sort };
         }
+        static int[][] findStarts_asym(System.Drawing.PointF[] ps, int[] main, int[] addit)
+        {
+            int st_line1 = main[0];
+            int st_line2 = addit[1];
 
+
+            var line1 = findLinePoints(ps, main[0], addit[0], main[2]);
+            var line1_sort = sortLine(ps, line1, st_line1);
+
+            var line2 = findLinePoints(ps, main[1], addit[1], main[2]);
+            var line2_sort = sortLine(ps, line2, st_line2);
+
+
+            return new int[][] { line1_sort, line2_sort };
+        }
         static int[][] findAllLines(System.Drawing.PointF[] ps, int[][] starts, float min)
         {
             if (starts == null)
@@ -810,6 +825,13 @@ namespace opengl3
             }
             return toDegree(Math.Atan((p1.Y - p2.Y) / (p1.X - p2.X)));
         }
+        static double calcAngleX_(System.Drawing.PointF p1, System.Drawing.PointF p2)
+        {
+            var v1 = new Point3d_GL(p1.X - p2.X, p1.Y - p2.Y);
+            var v2 = new Point3d_GL(1);
+            var angle = Math.Sign(p1.Y - p2.Y)* Math.Acos( v1 ^ v2);
+            return toDegree(angle);
+        }
         static double toDegree(double rad)
         {
             return 180 * rad / 3.1415926535;
@@ -834,7 +856,7 @@ namespace opengl3
                     i_min = i;
                 }
             }
-            return new int[] { i_min, i_max };
+            return new int[] { i_min, i_max,0 };
         }
         static int[] findLineFromRot(System.Drawing.PointF[] ps, float offset, float _min)
         {
@@ -951,7 +973,24 @@ namespace opengl3
             }
             return ps_arr.ToArray();
         }
+        static System.Drawing.PointF[,] arrFromP_2d(System.Drawing.PointF[] ps, int[][] ind, Size size)
+        {
+            var ps_arr = new System.Drawing.PointF[size.Width, size.Height];
+            int k = 0;
+            for (int i = 0; i < size.Width; i++)
+            {
+                for (int j = 0; j < size.Height; j++)
+                {
 
+                    if(k<ps.Length)
+                    {
+                        ps_arr[ind[k][0], ind[k][1]] = ps[k]; k++;
+                    }
+                    
+                }
+            }
+            return ps_arr;
+        }
         static System.Drawing.PointF[,] arr2FromP(System.Drawing.PointF[] ps, int[][] ind)
         {
             var ps_arr2 = new System.Drawing.PointF[ind.Length,ind[0].Length];

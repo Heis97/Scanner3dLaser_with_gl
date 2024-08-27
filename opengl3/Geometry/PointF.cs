@@ -166,6 +166,64 @@ namespace opengl3
             }
             return ret;
         }
+        public static System.Drawing.Point[,] toSystemPoint_d_2d(PointF[,] ps)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new System.Drawing.Point[ps.GetLength(0), ps.GetLength(1)];
+            for (int i = 0; i < ps.GetLength(0); i++)
+                for (int j = 0; j < ps.GetLength(1); j++)
+                {
+                    ret[i,j] = new System.Drawing.Point((int)ps[i,j].X, (int)ps[i,j].Y);
+                }
+            return ret;
+        }
+        public static System.Drawing.PointF[,] toSystemPoint_2d(PointF[,] ps)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new System.Drawing.PointF[ps.GetLength(0), ps.GetLength(1)];
+            for (int i = 0; i < ps.GetLength(0); i++)
+                for (int j = 0; j < ps.GetLength(1); j++)
+                {
+                    ret[i, j] = new System.Drawing.PointF(ps[i, j].X, ps[i, j].Y);
+                }
+            return ret;
+        }
+        public static PointF[,] toSystemPoint_s_2d(System.Drawing.PointF[,] ps)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new PointF[ps.GetLength(0), ps.GetLength(1)];
+            for (int i = 0; i < ps.GetLength(0); i++)
+                for (int j = 0; j < ps.GetLength(1); j++)
+                {
+                    ret[i, j] = new PointF(ps[i, j].X, ps[i, j].Y);
+                }
+            return ret;
+        }
+
+        public static System.Drawing.Point[,] toSystemPoint_ss_2d(System.Drawing.PointF[,] ps)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new System.Drawing.Point[ps.GetLength(0), ps.GetLength(1)];
+            for (int i = 0; i < ps.GetLength(0); i++)
+                for (int j = 0; j < ps.GetLength(1); j++)
+                {
+                    if(ps[i, j] != null)
+                        ret[i, j] = new System.Drawing.Point((int)ps[i, j].X,(int) ps[i, j].Y);
+                }
+            return ret;
+        }
         public static System.Drawing.PointF[] toSystemPoint(PointF[] ps)
         {
             if (ps == null)

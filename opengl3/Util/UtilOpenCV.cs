@@ -808,6 +808,35 @@ namespace opengl3
             return im;
         }
 
+        static public Mat drawPoints_2d(Mat im, Point[,] points, int r, int g, int b, int size = 0, bool text = true)
+        {
+            var color = new MCvScalar(b, g, r);//bgr            
+            if (points == null || im == null)
+            {
+                return im;
+            }
+            if (points.Length != 0)
+            {
+                for (int i = 0; i < points.GetLength(0); i++)
+                {
+                    for (int j = 0; j < points.GetLength(1); j++)
+                    {
+                        if (points[i,j]!=null)
+                        {
+                            CvInvoke.Circle(im, points[i, j], size, color, -1);
+                            if (text)
+                            {
+                                CvInvoke.PutText(im, "P" + i + ", " + j, points[i, j], FontFace.HersheyComplex, 0.5, new MCvScalar(r, g, b), 1);
+                            }
+                            //
+                        }
+
+
+                    }
+                }
+            }
+            return im;
+        }
 
         static public void drawPoints(Mat im, PointF[] points, int r, int g, int b, int size = 1)
         {
