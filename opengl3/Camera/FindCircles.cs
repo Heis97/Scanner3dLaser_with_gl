@@ -562,7 +562,7 @@ namespace opengl3
 
             var mainDiag = findMainDiag(ps);
             var step = mainDiag[2];
-            var angle = calcAngleX(ps[mainDiag[0]], ps[mainDiag[1]]);//!!!add if dx small rot Y
+            var angle = calcAngleX(ps[mainDiag[0]], ps[mainDiag[1]]);
             var additDiag = findAdditDiag(ps, angle);
             additDiag[2] = mainDiag[2];
             var inds_ps = new int[size_patt.Width*size_patt.Height][];
@@ -817,7 +817,7 @@ namespace opengl3
         {
             return (p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y);
         }
-        static double calcAngleX(System.Drawing.PointF p1, System.Drawing.PointF p2)
+        static double calcAngleX_o(System.Drawing.PointF p1, System.Drawing.PointF p2)
         {
             if( Math.Abs( p1.X - p2.X) <= 0.001)
             {
@@ -825,7 +825,7 @@ namespace opengl3
             }
             return toDegree(Math.Atan((p1.Y - p2.Y) / (p1.X - p2.X)));
         }
-        static double calcAngleX_(System.Drawing.PointF p1, System.Drawing.PointF p2)
+        static double calcAngleX(System.Drawing.PointF p1, System.Drawing.PointF p2)
         {
             var v1 = new Point3d_GL(p1.X - p2.X, p1.Y - p2.Y);
             var v2 = new Point3d_GL(1);

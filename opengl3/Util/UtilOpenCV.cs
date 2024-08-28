@@ -826,7 +826,7 @@ namespace opengl3
                             CvInvoke.Circle(im, points[i, j], size, color, -1);
                             if (text)
                             {
-                                CvInvoke.PutText(im, "P" + i + ", " + j, points[i, j], FontFace.HersheyComplex, 0.5, new MCvScalar(r, g, b), 1);
+                                CvInvoke.PutText(im, "P " + i + ", " + j, points[i, j], FontFace.HersheyComplex, 0.5, new MCvScalar(r, g, b), 1);
                             }
                             //
                         }
