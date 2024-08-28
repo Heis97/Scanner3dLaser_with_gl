@@ -82,8 +82,12 @@ namespace opengl3
                         {
                             Mes2 = "0" + Mes2;
                         }
-                        Mes1 = "b" + Mes1 + Mes2;
-                    if(adr>0)
+                    while (Mes3.Length < 2)
+                    {
+                        Mes3 = "0" + Mes3;
+                    }
+                    Mes1 = "b" + Mes1 + Mes2;
+                    if(adr>=0)
                     {
                         Mes1 += Mes3;
                     }
