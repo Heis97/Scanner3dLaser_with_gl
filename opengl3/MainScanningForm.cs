@@ -584,12 +584,20 @@ namespace opengl3
         }
         void init_vars()
         {
-
+            windowsTabs.Controls.Remove(tabMain);
+            windowsTabs.Controls.Remove(tabOpenGl);
+            windowsTabs.Controls.Remove(tabDistort);
+            windowsTabs.Controls.Remove(tabP_developer);
+            windowsTabs.Controls.Remove(tabCalibMonit);
+            windowsTabs.Controls.Remove(tabDebug);
+            windowsTabs.Controls.Remove(tabP_developer);
+            windowsTabs.Controls.Remove(tabP_scanning_printing);
+            windowsTabs.Controls.Remove(tabP_connect);
 
             #region important
 
 
-            
+
 
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "св Круги грид", "Ничего" });
             combo_robot_ch.Items.AddRange(new string[] { "Pulse", "Kuka" });
@@ -6775,15 +6783,7 @@ namespace opengl3
                 imb_main[i].SendToBack();
             }
 
-           // windowsTabs.Controls.Remove(tabMain);
-            windowsTabs.Controls.Remove(tabOpenGl);
-            windowsTabs.Controls.Remove(tabDistort);
-            windowsTabs.Controls.Remove(tabP_developer);
-            windowsTabs.Controls.Remove(tabCalibMonit);
-            windowsTabs.Controls.Remove(tabDebug);
-            windowsTabs.Controls.Remove(tabP_developer);
-            windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);
+           
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)
