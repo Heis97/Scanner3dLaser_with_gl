@@ -584,7 +584,7 @@ namespace opengl3
         }
         void init_vars()
         {
-            windowsTabs.Controls.Remove(tabMain);
+           /* windowsTabs.Controls.Remove(tabMain);
             windowsTabs.Controls.Remove(tabOpenGl);
             windowsTabs.Controls.Remove(tabDistort);
             windowsTabs.Controls.Remove(tabP_developer);
@@ -592,7 +592,7 @@ namespace opengl3
             windowsTabs.Controls.Remove(tabDebug);
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);
+            windowsTabs.Controls.Remove(tabP_connect);*/
 
             #region important
 
