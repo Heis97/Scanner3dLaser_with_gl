@@ -3533,7 +3533,7 @@ namespace opengl3
             // tB_tool_inf
             // 
             this.tB_tool_inf.Cursor = System.Windows.Forms.Cursors.Default;
-            this.tB_tool_inf.Location = new System.Drawing.Point(876, 6);
+            this.tB_tool_inf.Location = new System.Drawing.Point(676, 7);
             this.tB_tool_inf.Name = "tB_tool_inf";
             this.tB_tool_inf.Size = new System.Drawing.Size(328, 25);
             this.tB_tool_inf.TabIndex = 166;
@@ -3549,10 +3549,10 @@ namespace opengl3
             this.win_tab_diff.Controls.Add(this.tabPage7);
             this.win_tab_diff.Controls.Add(this.tabPage8);
             this.win_tab_diff.Controls.Add(this.tabPage9);
-            this.win_tab_diff.Location = new System.Drawing.Point(1213, 6);
+            this.win_tab_diff.Location = new System.Drawing.Point(1011, 7);
             this.win_tab_diff.Name = "win_tab_diff";
             this.win_tab_diff.SelectedIndex = 0;
-            this.win_tab_diff.Size = new System.Drawing.Size(650, 991);
+            this.win_tab_diff.Size = new System.Drawing.Size(877, 991);
             this.win_tab_diff.TabIndex = 165;
             // 
             // tabPage1
@@ -3570,7 +3570,7 @@ namespace opengl3
             this.tabPage1.Location = new System.Drawing.Point(4, 27);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(642, 960);
+            this.tabPage1.Size = new System.Drawing.Size(869, 960);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Траектория";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -3694,10 +3694,10 @@ namespace opengl3
             this.tabPage2.Controls.Add(this.lab_check);
             this.tabPage2.Controls.Add(this.lab_TRZ);
             this.tabPage2.Controls.Add(this.but_point_type);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 27);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(642, 965);
+            this.tabPage2.Size = new System.Drawing.Size(869, 960);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Объекты сцены";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -4740,10 +4740,10 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Location = new System.Drawing.Point(4, 27);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(642, 965);
+            this.tabPage9.Size = new System.Drawing.Size(869, 960);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -4800,7 +4800,7 @@ namespace opengl3
             // 
             this.but_scan_load_ex.Location = new System.Drawing.Point(25, 758);
             this.but_scan_load_ex.Name = "but_scan_load_ex";
-            this.but_scan_load_ex.Size = new System.Drawing.Size(111, 42);
+            this.but_scan_load_ex.Size = new System.Drawing.Size(111, 58);
             this.but_scan_load_ex.TabIndex = 105;
             this.but_scan_load_ex.Text = "Загрузить скан стерео";
             this.but_scan_load_ex.UseVisualStyleBackColor = true;
@@ -4872,7 +4872,7 @@ namespace opengl3
             // 
             this.but_load_sing_calib.Location = new System.Drawing.Point(259, 758);
             this.but_load_sing_calib.Name = "but_load_sing_calib";
-            this.but_load_sing_calib.Size = new System.Drawing.Size(111, 42);
+            this.but_load_sing_calib.Size = new System.Drawing.Size(111, 58);
             this.but_load_sing_calib.TabIndex = 133;
             this.but_load_sing_calib.Text = "Загрузить калиб одиноч";
             this.but_load_sing_calib.UseVisualStyleBackColor = true;
@@ -4882,7 +4882,7 @@ namespace opengl3
             // 
             this.but_scan_load_sing.Location = new System.Drawing.Point(142, 758);
             this.but_scan_load_sing.Name = "but_scan_load_sing";
-            this.but_scan_load_sing.Size = new System.Drawing.Size(111, 42);
+            this.but_scan_load_sing.Size = new System.Drawing.Size(111, 58);
             this.but_scan_load_sing.TabIndex = 132;
             this.but_scan_load_sing.Text = "Загрузить скан одиноч";
             this.but_scan_load_sing.UseVisualStyleBackColor = true;

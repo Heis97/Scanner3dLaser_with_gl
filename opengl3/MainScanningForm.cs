@@ -74,10 +74,10 @@ namespace opengl3
         CameraCV cameraCVcommon;
         TCPclient con1;
         private const float PI = 3.14159265358979f;
-        private Size cameraSize = new Size(1280, 720);
+        //private Size cameraSize = new Size(1280, 720);
         // private Size cameraSize = new Size(1280, 960);
         // private Size cameraSize = new Size(1184, 656);
-        // private Size cameraSize = new Size(1184, 656);
+         private Size cameraSize = new Size(1184, 656);
         //private Size cameraSize = new Size(1024, 576);
         //private Size cameraSize = new Size(1920, 1080);
         //private Size cameraSize = new Size(640, 480);
@@ -1211,7 +1211,8 @@ namespace opengl3
         void load_scan_sing(Scanner scanner,string scan_path, int strip = 1, double smooth = -1)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner,scanner_config);
+            if(scanner_config.fast_load) scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner,scanner_config);
+            else scanner = VideoAnalyse.loadVideo_sing_cam_move(scan_path_1, this, scanner, scanner_config);
             var ps = scanner.getPointsLinesScene();
            // foreach(var line in ps) GL1.addLineMeshTraj(line);  
             var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
@@ -1338,7 +1339,7 @@ namespace opengl3
             Thread.Sleep(100);
             int typescan = (int)obj;
             //int counts = Convert.ToInt32(boxN.Text);
-            int counts = Convert.ToInt32(tb_scan_ext_scan_pres.Text);
+            int counts = scanner_config.frames_n;
             string folder_scan = box_scanFolder.Text;
             var start_p = scanner_config.start_pos_scan;
             var stop_p = scanner_config.stop_pos_scan;
@@ -1420,11 +1421,12 @@ namespace opengl3
                 Thread.Sleep(200);
 
 
-                startWrite_sam(0, counts);
+                startWrite_sam(0, counts+200);
                 sb_enc = new StringBuilder();
                 Thread.Sleep(200);
                 laserLine?.setShvpVel(v_laser);
                 Thread.Sleep(200);
+
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
 
             }
@@ -6767,12 +6769,13 @@ namespace opengl3
 
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
-            this.tabP_connect.Controls.Add(this.imageBox1);
+            /*this.tabP_connect.Controls.Add(this.imageBox1);
             this.tabP_connect.Controls.Add(this.imageBox2);
             this.tabP_scanning_printing.Controls.Add(this.glControl1);
 
-            formSettings.load_settings(textB_cam1_conf,textB_cam2_conf,textB_stereo_cal_path,textB_scan_path);
-            add_buttons_rob_contr();
+            
+            add_buttons_rob_contr();*/
+            formSettings.load_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
             for (int i = 0; i < imb_main.Length; i++)
             {
                 imb_main[i].AccessibleName = i.ToString();
@@ -7504,6 +7507,7 @@ namespace opengl3
            laserLine?.set_drill_vel(Convert.ToInt32(textBox_drill_vel.Text));
         }
 
+        #region tube
         private void textBox_z1_vel_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -7599,6 +7603,7 @@ namespace opengl3
         {
             portArd = (string)((ComboBox)sender).SelectedItem;
         }
+        #endregion
     }
 }
 

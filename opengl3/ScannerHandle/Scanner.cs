@@ -26,13 +26,21 @@ namespace opengl3
         public int stop_pos_scan;
         [Description("Конечная точка скана")]
         [Category("Настройки сканирования")]
-        [DisplayName("start_p")]
+        [DisplayName("stop_p")]
         public int Stop_pos_scan
         {
             get { return stop_pos_scan; }
             set { stop_pos_scan = value; }
         }
-
+        public int frames_n;
+        [Description("Количество кадров")]
+        [Category("Настройки сканирования")]
+        [DisplayName("frames_n")]
+        public int Frames_n
+        {
+            get { return frames_n; }
+            set { frames_n = value; }
+        }
         public int strip;
         [Description("Разреженность скана")]
         [Category("Настройки скана")]

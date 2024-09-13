@@ -667,8 +667,8 @@ namespace opengl3
             }
             if (add_count < 5) return null;
             ps = ps_list.ToArray();
-            //ps = PointF.filter_exist(ps);
-            //ps = filtr_y0_Points(ps);
+            ps = PointF.filter_exist(ps);
+            ps = filtr_y0_Points(ps);
             if (!config.orig)
             {
                 //ps = medianFilter_real(ps, 20);

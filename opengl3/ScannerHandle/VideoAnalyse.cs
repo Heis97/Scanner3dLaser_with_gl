@@ -382,7 +382,7 @@ namespace opengl3
             {
                 scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>() };
                 scanner.pointCloud.graphicGL = form.GL1;
-                comp_glare(orig1);        
+                //comp_glare(orig1);        
                     // scanner.cameraCV.matrixSC = new Matrix<double>(
                 /*new double[,]
                 {
@@ -440,19 +440,19 @@ namespace opengl3
                 {
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
-                    if ((videoframe_count % config.strip == 0 )&& (im1_buff_list.Count > buff_diff) && videoframe_count > 30)// && videoframe_count <83)
+                    if ((videoframe_count % config.strip == 0 )&& (im1_buff_list.Count > buff_diff) && videoframe_count > 3)// && videoframe_count <83)
                     {
 
                         //var im1_or = im1.Clone();
-                        var ps_or = Detection.detectLineDiff(im1, config);
+                       // var ps_or = Detection.detectLineDiff(im1, config);
                         if(buff_diff>0)
                         {
                             im1 -= im1_buff_list[buff_len - buff_diff];
 
                         }
-                        var ps_diff = Detection.detectLineDiff(im1, config);
+                        //var ps_diff = Detection.detectLineDiff(im1, config);
 
-                        p_match+=match_points(ps_or, ps_diff);
+                        //p_match+=match_points(ps_or, ps_diff);
 
                         if (config.save_im) {
                             var frame_d = new Frame(im1.Clone(), im1.Clone(), videoframe_count.ToString(), FrameType.LasDif);
@@ -513,7 +513,7 @@ namespace opengl3
             //comboImages.Items.AddRange(frames_show.ToArray());
             Console.WriteLine("stop video_________");
 
-            if (calib) scanner.calibrateLinearStep(im1_cals.ToArray(), orig1, pos_inc_cal.ToArray(), PatternType.Mesh, form.GL1, config);
+            if (calib) scanner.calibrateLinearStep(im1_cals.ToArray(), im_orig.Mat, pos_inc_cal.ToArray(), PatternType.Mesh, form.GL1, config);
 
             //var mats = Frame.getMats(frames_show.ToArray());
             //var corn = Detection.detectLineDiff_corn_calibr(mats);
@@ -523,7 +523,124 @@ namespace opengl3
             form.get_combo_im().Items.AddRange(frames_show.ToArray());
             return scanner;
         }
+        static public Scanner loadVideo_sing_cam_move(string filepath, MainScanningForm form, Scanner scanner = null, ScannerConfig config = null, bool calib = false)
+        {
+            var videoframe_count = 0;
+            var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
+            Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
+            var ve_paths = get_video_path(1, filepath);
+            string video_path = ve_paths[0];
+            string enc_path = ve_paths[1];
 
+            var capture1 = new VideoCapture(video_path);
+            var all_frames1 = capture1.Get(CapProp.FrameCount);
+            // orig1 = scanner.cameraCV.undist(orig1);
+            var fr_st_vid = new Frame(orig1, "sd", FrameType.Test);
+            var frames_show = new List<Frame>();
+            var pos_inc_cal = new List<double>();
+            //comboImages.Items.Add(fr_st_vid);
+            int buff_diff = config.Buff_delt;
+            int buff_len = buff_diff + 1;
+            var all_frames = all_frames1;
+            if (scanner != null)
+            {
+                scanner.pointCloud.color_im = new Image<Bgr, byte>[] { orig1.ToImage<Bgr, byte>() };
+                scanner.pointCloud.graphicGL = form.GL1;
+               // comp_glare(orig1);
+            }
+            var enc_file = "";
+            using (StreamReader sr = new StreamReader(enc_path))
+            {
+                enc_file = sr.ReadToEnd();
+            }
+            //var inc_pos = enc_pos(enc_file, (int)all_frames);
+            var enc_pos_time = analys_sync(enc_path);
+            //enc_pos_time = recomp_pos_sing_linear(enc_pos_time);
+            var inc_pos = enc_pos(enc_pos_time, false);
+
+
+
+            var buffer_mat = new Mat();
+            var im_orig = orig1.ToImage<Bgr, byte>();
+
+            var im1_buff = new Mat();
+
+            var im1_cals = new List<Mat>();
+            var im1_buff_list = new List<Mat>();
+
+
+
+            var ims1 = new List<Mat>();
+            
+            while (videoframe_count < all_frames)
+            {
+
+                Mat im1 = new Mat();
+                while (!capture1.Read(im1)) { }
+                ims1.Add(im1);
+
+                videoframe_count++;
+                Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+            }
+           
+            
+            
+            var len = ims1.Count-300;
+            var ims1_diff = diff_mats_bf(ims1.ToArray(), 20,len,config.strip);
+            for (int i = 0; i < len; i++)
+            {
+                if (scanner != null && ims1_diff[i] != null)
+                {
+                    if (i % config.strip == 0)
+                    {
+                        if (config.save_im)
+                        {
+                            var frame_d = new Frame(ims1_diff[i], ims1_diff[i], i.ToString(), FrameType.LasDif);
+                            frame_d.stereo = true;
+                            frames_show.Add(frame_d);
+                        }
+                        scanner.addPointsLinLas_step(ims1_diff[i], im_orig, inc_pos[i], PatternType.Mesh, config);
+                        GC.Collect();
+                    }
+                }
+
+            }
+
+
+
+
+            /*
+
+            while (videoframe_count < all_frames - buff_len - 5)//  "/2+1"   //-buff_len
+            {
+                Mat im1 = new Mat();
+                while (!capture1.Read(im1)) { }
+                if (scanner != null)
+                {
+                    var buffer_mat1 = im1.Clone();
+                    //if (videoframe_count % strip == 0)
+                    if ((videoframe_count % config.strip == 0) && (im1_buff_list.Count > buff_diff) && videoframe_count > 30)// && videoframe_count <83)
+                    {
+
+                   
+                         scanner.addPointsLinLas_step(im1, im_orig, inc_pos[videoframe_count], PatternType.Mesh, config);
+
+                    }
+                    im1_buff = buffer_mat1.Clone();
+                    im1_buff_list.Add(im1_buff);
+                    if (im1_buff_list.Count > buff_len)
+                    {
+                        im1_buff_list.RemoveAt(0);
+                    }
+                }
+                videoframe_count++;
+                // Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
+            }*/
+           
+            Console.WriteLine("stop video_________");
+            form.get_combo_im().Items.AddRange(frames_show.ToArray());
+            return scanner;
+        }
         static Point3d_GL match_points(PointF[] ps_or, PointF[] ps_diff)
         {
             var i_all = 0;
@@ -1250,34 +1367,48 @@ namespace opengl3
             return scanner;
         }
 
-        static Mat[] diff_mats_bf(Mat[] mats,int wind)
+        static Mat[] diff_mats_bf(Mat[] mats, int wind, int len = -1, int strip = -1, int wind_max = 300)
         {
             var mats_diff = new Mat[mats.Length];
-            for(int i=0; i<mats.Length;i++)
+            var mats_len = mats.Length;
+            if (len > 0) mats_len = len;
+            var strp = 1;
+            if (strip > 0)strp  = strip;
+            for (int i=0; i<mats_len;i++)
             {
-                var err = double.MaxValue;
-                var j_min = 0;
-                for(int j=0; j<mats.Length;j++)
+                if (i % strp == 0)
                 {
-                    if (Math.Abs(i - j) > wind)
+                    var err = double.MaxValue;
+                    var j_min = 0;
+                    for (int j = 0; j < mats.Length; j++)
                     {
-                        var cur_err = deviation_light_gauss(mats[i] - mats[j]);
-                        if (cur_err < err)
+                        bool wall_i = false;
+                        // if (i > 200)
+                        wall_i = j > i;
+                        // if (i < 200) wall_i = j<i;
+                        if (Math.Abs(i - j) > wind && Math.Abs(i - j) < wind_max)
                         {
-                            err = cur_err;
-                            j_min = j;
+                            var cur_err = deviation_light(mats[i] - mats[j]);
+                            //Console.WriteLine(cur_err);
+                            if (cur_err < err)
+                            {
+                                err = cur_err;
+                                j_min = j;
+                            }
                         }
                     }
-                    
+
+                    mats_diff[i] = mats[i] - mats[j_min];
+                    /*CvInvoke.PutText(mats_diff[i], 
+                        j_min.ToString(),
+                        new Point(100, 100),
+                        FontFace.HersheyScriptSimplex,
+                        4, new MCvScalar(255));
+                    CvInvoke.Imshow("diff", mats_diff[i]);
+                    CvInvoke.WaitKey();*/
+                    GC.Collect();
+                    Console.WriteLine("comp_diff...      di: " + (j_min-i)+"   "+ i + "/" + mats.Length);
                 }
-                mats_diff[i] = mats[i] - mats[j_min];
-                /*CvInvoke.PutText(mats_diff[i], 
-                    j_min.ToString(),
-                    new Point(100, 100),
-                    FontFace.HersheyScriptSimplex,
-                    4, new MCvScalar(255));*/
-                GC.Collect();
-                Console.WriteLine("comp_diff...      " + i + "/" + mats.Length);
             }
 
             return mats_diff;
@@ -1300,16 +1431,16 @@ namespace opengl3
         }
 
 
-        static public double deviation_light_gauss(Mat mat)//bin_ связь с config.thresh
+        static public double deviation_light_gauss(Mat mat,int ind = 0)//bin_ связь с config.thresh
         {
 
             var dev = 0d;
             var gauss = new Mat();
             var im = mat.ToImage<Gray, byte>();
-            CvInvoke.GaussianBlur(im, gauss, new Size(13, 13), 7);
-            CvInvoke.GaussianBlur(gauss, gauss, new Size(13, 13), 7);
-            CvInvoke.Imshow("gauss", gauss);
-            CvInvoke.Threshold(gauss, gauss, 15, 255, ThresholdType.Binary);
+            CvInvoke.GaussianBlur(im, gauss, new Size(17, 17), 8);
+           // CvInvoke.GaussianBlur(gauss, gauss, new Size(13, 13), 7);
+           // CvInvoke.Imshow("gauss", gauss);
+            CvInvoke.Threshold(gauss, gauss, 10, 255, ThresholdType.Binary);
 
             Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
             Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(1, 1));
@@ -1323,8 +1454,13 @@ namespace opengl3
             im -= im_g;
             dev = im.GetAverage().Intensity;
             //CvInvoke.AdaptiveThreshold(gauss, gauss, 255, AdaptiveThresholdType.GaussianC, ThresholdType.Binary, 13, 20);
+           /* CvInvoke.PutText(gauss,
+                    ind+" "+dev.ToString(),
+                    new Point(100, 100),
+                    FontFace.HersheyScriptSimplex,
+                    4, new MCvScalar(255));
             CvInvoke.Imshow("thresh", gauss);
-
+            CvInvoke.WaitKey();*/
             return dev;
         }
     }

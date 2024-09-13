@@ -310,8 +310,8 @@ namespace opengl3
 
            var up_surf = bin_to_green( get_corners_calibrate_model(mats, cameraCV));
 
-            CvInvoke.Imshow(" up_surf", up_surf+orig);
-            CvInvoke.WaitKey();
+            //CvInvoke.Imshow(" up_surf", up_surf+orig);
+            //CvInvoke.WaitKey();
             var aff_matr = CameraCV.affinematr(Math.PI / 4,1,500);
 
             var aff_matr_inv = aff_matr.Clone();
@@ -347,8 +347,8 @@ namespace opengl3
             for(int i= inds_part.Length/6; i<5* inds_part.Length/6;i++ )
             {
                 mats_calib_l.Add(mats[inds_part[i]]);
-              // CvInvoke.Imshow(" mats[inds_part[i]]", mats[inds_part[i]]);
-               // CvInvoke.WaitKey();
+               //CvInvoke.Imshow(" mats[inds_part[i]]", mats[inds_part[i]]);
+                //CvInvoke.WaitKey();
                 positions_l.Add(positions[inds_part[i]]);
             }
             mats_calib = mats_calib_l.ToArray();
@@ -442,7 +442,7 @@ namespace opengl3
                 var points_im = Detection.detectLineDiff(cameraCV.undist ( mats[i].Clone()), 10, 0.05f, false, true);
                 if (points_im == null) continue;
                 var ps_l = new List<PointF>();
-                var len_from_board = 30;
+                var len_from_board = 10;
 
                 ps_l.Add(new PointF(points_im[len_from_board]));
                 ps_l.Add(new PointF(points_im[points_im.Length - 1 - len_from_board]));
