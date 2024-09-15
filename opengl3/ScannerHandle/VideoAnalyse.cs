@@ -583,8 +583,8 @@ namespace opengl3
                 Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
 
-            var p_match = new Point3d_GL();
-
+            var p_match1 = new Point3d_GL();
+            var p_match2 = new Point3d_GL();
             var len = ims1.Count-config.las_offs;
             var ims1_diff = diff_mats_bf(ims1.ToArray(), 20,len,config.strip);
             
@@ -600,7 +600,7 @@ namespace opengl3
                         var ps_or = Detection.detectLineDiff(im1_or.Clone(), config);
                         var ps_diff = Detection.detectLineDiff(ims1_diff[i].Clone(), config);
 
-                        if(i==360)
+                       /* if(i==15)
                         {
                             var m_or = orig1.Clone();
                             var m_diff_or = im1_or.Clone();
@@ -608,7 +608,7 @@ namespace opengl3
                             var m_diff_opt = ims1_diff[i].Clone();
                             var j_min = 235;
                             var m_diff_opt_sec = ims1[j_min].Clone();
-                            var y = 500;
+                            var y = 403;
                             var pixs = new List<int[]>();
 
                             CvInvoke.GaussianBlur(m_diff_or, m_diff_or, new Size(7, 7), 3);
@@ -619,7 +619,6 @@ namespace opengl3
                             pixs.Add(UtilOpenCV.takeLineFromMat(m_diff_or, y));
                             pixs.Add(UtilOpenCV.takeLineFromMat(m_diff_opt, y));
                             pixs.Add(UtilOpenCV.takeLineFromMat(m_cur, y));
-                            pixs.Add(UtilOpenCV.takeLineFromMat(m_diff_opt_sec, y));
                             pixs.Add(UtilOpenCV.takeLineFromMat(m_diff_opt_sec, y));
 
                            
@@ -633,15 +632,23 @@ namespace opengl3
                                 Console.WriteLine();
                             }
 
-                            UtilOpenCV.drawLines(m_diff_or, new System.Drawing.PointF[] { new System.Drawing.PointF(0, y), new System.Drawing.PointF(m_diff_or.Width - 1, y) }, 255, 255, 255);
-                            UtilOpenCV.drawLines(m_diff_opt, new System.Drawing.PointF[] { new System.Drawing.PointF(0, y), new System.Drawing.PointF(m_diff_or.Width - 1, y) }, 255, 255, 255);
-                            UtilOpenCV.drawLines(m_cur, new System.Drawing.PointF[] { new System.Drawing.PointF(0, y), new System.Drawing.PointF(m_diff_or.Width - 1, y) }, 255, 255, 255);
+                            UtilOpenCV.drawLines(m_diff_or, new System.Drawing.PointF[] { new System.Drawing.PointF(0, y), new System.Drawing.PointF(m_diff_or.Width - 1, y) }, 255, 255, 255,2);
+                            UtilOpenCV.drawLines(m_diff_opt, new System.Drawing.PointF[] { new System.Drawing.PointF(0, y), new System.Drawing.PointF(m_diff_or.Width - 1, y) }, 255, 255, 255,2);
+                            UtilOpenCV.drawLines(m_cur, new System.Drawing.PointF[] { new System.Drawing.PointF(0, y), new System.Drawing.PointF(m_diff_or.Width - 1, y) }, 255, 255, 255,2);
 
-                            m_diff_or = UtilOpenCV.drawPointsF(m_diff_or, ps_or, 0, 255, 0);
-                            m_diff_opt = UtilOpenCV.drawPointsF(m_diff_opt, ps_diff, 0, 255, 0);
-                            m_cur = UtilOpenCV.drawPointsF(m_cur, ps_or, 0, 255, 0);
+                            m_diff_or =  UtilOpenCV.drawPointsF(m_diff_or, ps_or, 0, 255, 0,2);
+                            m_diff_opt = UtilOpenCV.drawPointsF(m_diff_opt, ps_diff, 0, 255, 0,2);
+                            m_cur =   UtilOpenCV.drawPointsF(m_cur, ps_cur, 0, 255,0,2);
+                            var roi = new Rectangle(0, y-100, m_diff_or.Width - 1, 200);
+                            m_diff_or = new Mat(m_diff_or, roi);
+                            m_diff_opt = new Mat(m_diff_opt, roi);
+                            m_cur = new Mat(ims1[i].Clone(), roi);
 
-                            CvInvoke.Imshow("m_or :", m_or);
+                            m_or = new Mat(m_or, roi);
+                            m_diff_opt_sec = new Mat(m_diff_opt_sec, roi);
+
+
+                           CvInvoke.Imshow("m_or :", m_or);
                             CvInvoke.Imshow("m_diff_or :", m_diff_or);
                             CvInvoke.Imshow("m_diff_opt :", m_diff_opt);
                             CvInvoke.Imshow("m_cur :", m_cur);
@@ -649,10 +656,12 @@ namespace opengl3
                             Console.Write(i + " ");
                             UtilOpenCV.drawPointsF(im1_or, ps_or, 255, 0, 0);
                             UtilOpenCV.drawPointsF(im1_or, ps_diff, 0, 255, 0);
+                            UtilOpenCV.drawPointsF(im1_or, ps_cur, 100, 100, 255);
                             CvInvoke.Imshow("ps_or:", im1_or);
                             CvInvoke.WaitKey();
-                        }                       
-                        p_match+=match_points(ps_or, ps_diff);
+                        }                       */
+                        p_match1+=match_points(ps_or, ps_diff);
+                        p_match2 += match_points(ps_cur, ps_diff);
                         if (config.save_im)
                         {
                             var frame_d = new Frame(ims1_diff[i].Clone(), ims1_diff[i].Clone(), i.ToString(), FrameType.LasDif);
@@ -696,7 +705,7 @@ namespace opengl3
                 videoframe_count++;
                 // Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }*/
-            Console.WriteLine("p_match: " + p_match);
+            Console.WriteLine("p_match_or: " + p_match1+ "p_match_curr: " + p_match2);
             Console.WriteLine("stop video_________");
             form.get_combo_im().Items.AddRange(frames_show.ToArray());
             return scanner;

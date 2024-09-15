@@ -176,6 +176,7 @@ namespace opengl3
         }
         public static int ind_y(PointF[] ps,float y)
         {
+            if(ps == null) return 0;
             for(int i = 0; i < ps.Length; i++)
             {
                 if (Math.Abs(ps[i].Y-y)<0.01)
