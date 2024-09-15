@@ -665,6 +665,7 @@ namespace opengl3
 
 
             }
+            
             if (add_count < 5) return null;
             ps = ps_list.ToArray();
             ps = PointF.filter_exist(ps);
@@ -707,7 +708,7 @@ namespace opengl3
         public static Mat[] detectLineDiff_ex(Mat _mat,
             ScannerConfig config)
         {
-
+            
             if (_mat.GetData() == null) return null;
             var mat = _mat.Clone();
 

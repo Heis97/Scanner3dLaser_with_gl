@@ -582,6 +582,7 @@ namespace opengl3
 
         bool addPositions(Mat[] mats, double[] positions, CameraCV cameraCV, PatternType patternType)
         {
+            
             MatrixesCamera = new List<Matrix<double>>();
             PositionsAxis = new List<double>();
             if (mats.Length == positions.Length)

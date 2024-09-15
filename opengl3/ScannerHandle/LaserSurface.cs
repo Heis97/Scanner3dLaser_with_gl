@@ -258,6 +258,7 @@ namespace opengl3
         //half--div--half
         public static PointF[] takePointsForFlat(PointF[] ps,bool oneMat=false,int div = -1)
         {
+            
             if(div>0)
             {
                 var quart = (int)(ps.Length / ((double)div));

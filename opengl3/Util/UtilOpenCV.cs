@@ -426,7 +426,16 @@ namespace opengl3
             }
             return line;
         }
-
+        public static int[] takeLineFromMat(Mat mat, int y)
+        {
+            var im = mat.ToImage<Gray, byte>();
+            var line = new int[im.Width];
+            for (int i = 0; i < line.Length; i++)
+            {
+                line[i] = im.Data[y, i, 0];
+            }
+            return line;
+        }
         public static int[][] takeLineFromMat(Image<Bgr, byte> im, int y)
         {
             var line = new int[im.Width][];

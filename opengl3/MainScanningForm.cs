@@ -205,7 +205,7 @@ namespace opengl3
             //test_detect_spher();
             // test_matr();
             //comp_pores_ext("test_pores.png");
-            // comp_pores_ext("test_pores_2.png");
+            //comp_pores_ext("test_pores_2.png");
 
             //comp_pores_ext_folder("hydro_mod");
             //VideoAnalyse.noise_analyse("noise.avi");
