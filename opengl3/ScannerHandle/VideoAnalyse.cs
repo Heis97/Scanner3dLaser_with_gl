@@ -668,6 +668,7 @@ namespace opengl3
                             frame_d.stereo = true;
                             frames_show.Add(frame_d);
                         }
+                        ims1_diff[i] = ims1[i].Clone();
                         scanner.addPointsLinLas_step(ims1_diff[i].Clone(), im_orig, inc_pos[i], PatternType.Mesh, config);
                         GC.Collect();
                     }
