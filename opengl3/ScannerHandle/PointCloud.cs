@@ -477,8 +477,16 @@ namespace opengl3
             var ps1 = comp_points_for_gpu_2d(points3d_1, m1);
             var ps2 = comp_points_for_gpu_2d(points3d_2, m2);
             Console.WriteLine("points prepared.");
+           /* for (int i = 0; i < ps1.Length; i++)
+            {
+                graphicGL.addPointMesh(ps1[i],Color3d_GL.green(),"ps1");
+                graphicGL.addPointMesh(ps2[i], Color3d_GL.red(), "ps2");
+            }*/
+                
+
 
             var points_cam2b = graphicGL.cross_flat_gpu_all(ps1, ps2);
+            
 
             //Console.WriteLine(graphicGL.toStringBuf(Point3d_GL.toMesh(points_cam2b), 3, 0, "orig ps"));
 

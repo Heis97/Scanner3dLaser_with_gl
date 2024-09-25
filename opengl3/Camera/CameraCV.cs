@@ -514,8 +514,8 @@ namespace opengl3
                 }
                 var mat_p1 = UtilOpenCV.drawPointsF(_mat, cornF, 255, 0, 0);
                 last_corners = (System.Drawing.PointF[])cornF.Clone();
-                //CvInvoke.Imshow("pos", mat_p1);
-                //CvInvoke.WaitKey();
+               // CvInvoke.Imshow("pos", mat_p1);
+               // CvInvoke.WaitKey();
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
 
 
@@ -527,7 +527,7 @@ namespace opengl3
                 compPos(points3d, points2d);
                 UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 2);
                 //CvInvoke.Imshow("pos", matDraw);
-                //CvInvoke.WaitKey();
+               // CvInvoke.WaitKey();
                 mat = null;
                 matDraw = null;
 
