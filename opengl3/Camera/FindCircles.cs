@@ -161,10 +161,10 @@ namespace opengl3
                 //CvInvoke.Imshow("fnd", orig);
                 //CvInvoke.WaitKey();
                 var ps_ord = orderPoints(cents, pattern_size);
-                var ps_ord2 = orderPoints_assym(cents, pattern_size);
+                /*var ps_ord2 = orderPoints_assym(cents, pattern_size);
                 orig = UtilOpenCV.drawPoints_2d(orig,PointF.toSystemPoint_ss_2d( ps_ord2),0, 255,  0);
                 CvInvoke.Imshow("fnd", orig);
-                CvInvoke.WaitKey();
+                CvInvoke.WaitKey();*/
                 //ps_ord = ps_ord.Reverse().ToArray();
                 if (ps_ord != null && ps_ord.Length<=corn.Length)
                 {

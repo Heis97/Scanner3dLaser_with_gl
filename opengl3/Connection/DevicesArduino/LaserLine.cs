@@ -34,7 +34,9 @@ namespace opengl3
             drill_dir = 21,
 
             rel_pos_z = 22,
-            rel_pos_disp = 23
+            rel_pos_disp = 23,
+
+            water_vel = 24
             ;
 
         int on = 1, off = 2;
@@ -225,6 +227,10 @@ namespace opengl3
         public void set_drill_vel(int vel)//0...255
         {
             send(vel, drill_vel);
+        }
+        public void set_water_vel(int vel)//0...255
+        {
+            send(vel, water_vel);
         }
         public void set_z_div(int _vel)
         {

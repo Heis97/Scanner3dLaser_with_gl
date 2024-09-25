@@ -4880,8 +4880,8 @@ namespace opengl3
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
-            capture.Set(CapProp.AutoExposure, 1);
-            //capture.Set(CapProp.Exposure, -8);
+           // capture.Set(CapProp.AutoExposure, 1);
+            capture.Set(CapProp.Exposure, -8);
 
             cameraSize.Width =(int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
@@ -7503,8 +7503,12 @@ namespace opengl3
 
         private void but_drill_vel_Click(object sender, EventArgs e)
         {
-            laserLine?.set_adr(50);
+           // laserLine?.set_adr(50);
            laserLine?.set_drill_vel(Convert.ToInt32(textBox_drill_vel.Text));
+        }
+        private void but_water_vel_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_water_vel(Convert.ToInt32(textBox_water_vel.Text));
         }
 
         #region tube
@@ -7604,6 +7608,8 @@ namespace opengl3
             portArd = (string)((ComboBox)sender).SelectedItem;
         }
         #endregion
+
+        
     }
 }
 
