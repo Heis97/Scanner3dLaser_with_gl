@@ -683,7 +683,7 @@ namespace opengl3
             }
 
             GC.Collect();
-            // CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255));
+             //CvInvoke.Imshow("ds", UtilOpenCV.drawPointsF(mat, ps, 255, 255,255));
             //  CvInvoke.WaitKey();
             if (config.rotate)
             {

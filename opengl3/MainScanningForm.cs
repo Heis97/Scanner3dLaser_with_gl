@@ -4762,6 +4762,7 @@ namespace opengl3
             int fps = 30;
             var dir = "cam" + (ind+1).ToString() + "\\" + box_scanFolder.Text;
             Directory.CreateDirectory(dir);
+            video_scan_name = video_scan_name.Replace("\n"," ");
             string name = dir + "\\" + video_scan_name + ".mp4";
             Console.WriteLine("wr" + " " + w + " " + h+" "+fps);
             video_writer[ind ] = new VideoWriter(name, -1, fps, new Size(w, h), true);
@@ -5891,7 +5892,7 @@ namespace opengl3
             var pos_rob = positionFromRobot(con1);
             if(pos_rob != null)
             {
-                video_scan_name = pos_rob.ToString();
+                video_scan_name = pos_rob.ToStr(" ",true);
             }
             else
             {
