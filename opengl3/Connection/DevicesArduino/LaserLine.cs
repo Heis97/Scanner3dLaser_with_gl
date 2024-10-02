@@ -36,7 +36,11 @@ namespace opengl3
             rel_pos_z = 22,
             rel_pos_disp = 23,
 
-            water_vel = 24
+            water_vel = 24,
+            cycle_type = 25,
+            cycle_ampl = 26,
+            cycle_time = 27,
+            cycle_time_rel = 28
             ;
 
         int on = 1, off = 2;
@@ -85,10 +89,26 @@ namespace opengl3
             if(_vel>0) send(comp_vel_div(_vel), shvp_vel);
         }
 
-
         public void setLaserCur(int _pos)
         {
             send(_pos, laser_cur);
+        }
+
+        public void set_comp_cycle_type(int _type)
+        {
+            send(_type, cycle_type);
+        }
+        public void set_comp_cycle_ampl(int _ampl)
+        {
+            send(_ampl, cycle_ampl);
+        }
+        public void set_comp_cycle_time(int _time)
+        {
+            send(_time, cycle_time);
+        }
+        public void set_comp_cycle_time_rel(int _time)
+        {
+            send(_time, cycle_time_rel);
         }
         public void setLaserDest(int _pos)
         {
