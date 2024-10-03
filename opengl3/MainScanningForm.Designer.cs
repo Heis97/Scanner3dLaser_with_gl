@@ -82,7 +82,15 @@ namespace opengl3
             this.tb_print_vel = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.but_cycle_time_rel = new System.Windows.Forms.Button();
+            this.textBox_cycle_time_rel = new System.Windows.Forms.TextBox();
+            this.but_cycle_time = new System.Windows.Forms.Button();
+            this.textBox_cycle_time = new System.Windows.Forms.TextBox();
+            this.but_cycle_ampl = new System.Windows.Forms.Button();
+            this.textBox_cycle_ampl = new System.Windows.Forms.TextBox();
+            this.but_cycle_type = new System.Windows.Forms.Button();
             this.label45 = new System.Windows.Forms.Label();
+            this.textBox_cycle_type = new System.Windows.Forms.TextBox();
             this.trackBar11 = new System.Windows.Forms.TrackBar();
             this.label46 = new System.Windows.Forms.Label();
             this.trackBar12 = new System.Windows.Forms.TrackBar();
@@ -507,14 +515,8 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_cycle_type = new System.Windows.Forms.Button();
-            this.textBox_cycle_type = new System.Windows.Forms.TextBox();
-            this.but_cycle_ampl = new System.Windows.Forms.Button();
-            this.textBox_cycle_ampl = new System.Windows.Forms.TextBox();
-            this.but_cycle_time = new System.Windows.Forms.Button();
-            this.textBox_cycle_time = new System.Windows.Forms.TextBox();
-            this.but_cycle_time_rel = new System.Windows.Forms.Button();
-            this.textBox_cycle_time_rel = new System.Windows.Forms.TextBox();
+            this.but_pos_disp = new System.Windows.Forms.Button();
+            this.textBox_pos_disp = new System.Windows.Forms.TextBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1210,6 +1212,8 @@ namespace opengl3
             // 
             // tabPage10
             // 
+            this.tabPage10.Controls.Add(this.but_pos_disp);
+            this.tabPage10.Controls.Add(this.textBox_pos_disp);
             this.tabPage10.Controls.Add(this.but_cycle_time_rel);
             this.tabPage10.Controls.Add(this.textBox_cycle_time_rel);
             this.tabPage10.Controls.Add(this.but_cycle_time);
@@ -1246,6 +1250,70 @@ namespace opengl3
             this.tabPage10.Text = "Отладка";
             this.tabPage10.UseVisualStyleBackColor = true;
             // 
+            // but_cycle_time_rel
+            // 
+            this.but_cycle_time_rel.Location = new System.Drawing.Point(242, 184);
+            this.but_cycle_time_rel.Name = "but_cycle_time_rel";
+            this.but_cycle_time_rel.Size = new System.Drawing.Size(152, 48);
+            this.but_cycle_time_rel.TabIndex = 163;
+            this.but_cycle_time_rel.Text = "Время отдыха";
+            this.but_cycle_time_rel.UseVisualStyleBackColor = true;
+            this.but_cycle_time_rel.Click += new System.EventHandler(this.but_cycle_time_rel_Click);
+            // 
+            // textBox_cycle_time_rel
+            // 
+            this.textBox_cycle_time_rel.Location = new System.Drawing.Point(400, 193);
+            this.textBox_cycle_time_rel.Name = "textBox_cycle_time_rel";
+            this.textBox_cycle_time_rel.Size = new System.Drawing.Size(137, 30);
+            this.textBox_cycle_time_rel.TabIndex = 164;
+            this.textBox_cycle_time_rel.Text = "0";
+            // 
+            // but_cycle_time
+            // 
+            this.but_cycle_time.Location = new System.Drawing.Point(242, 130);
+            this.but_cycle_time.Name = "but_cycle_time";
+            this.but_cycle_time.Size = new System.Drawing.Size(152, 48);
+            this.but_cycle_time.TabIndex = 161;
+            this.but_cycle_time.Text = "Время цикла";
+            this.but_cycle_time.UseVisualStyleBackColor = true;
+            this.but_cycle_time.Click += new System.EventHandler(this.but_cycle_time_Click);
+            // 
+            // textBox_cycle_time
+            // 
+            this.textBox_cycle_time.Location = new System.Drawing.Point(400, 139);
+            this.textBox_cycle_time.Name = "textBox_cycle_time";
+            this.textBox_cycle_time.Size = new System.Drawing.Size(137, 30);
+            this.textBox_cycle_time.TabIndex = 162;
+            this.textBox_cycle_time.Text = "15";
+            // 
+            // but_cycle_ampl
+            // 
+            this.but_cycle_ampl.Location = new System.Drawing.Point(242, 76);
+            this.but_cycle_ampl.Name = "but_cycle_ampl";
+            this.but_cycle_ampl.Size = new System.Drawing.Size(152, 48);
+            this.but_cycle_ampl.TabIndex = 159;
+            this.but_cycle_ampl.Text = "Амплитуда";
+            this.but_cycle_ampl.UseVisualStyleBackColor = true;
+            this.but_cycle_ampl.Click += new System.EventHandler(this.but_cycle_ampl_Click);
+            // 
+            // textBox_cycle_ampl
+            // 
+            this.textBox_cycle_ampl.Location = new System.Drawing.Point(400, 85);
+            this.textBox_cycle_ampl.Name = "textBox_cycle_ampl";
+            this.textBox_cycle_ampl.Size = new System.Drawing.Size(137, 30);
+            this.textBox_cycle_ampl.TabIndex = 160;
+            this.textBox_cycle_ampl.Text = "7";
+            // 
+            // but_cycle_type
+            // 
+            this.but_cycle_type.Location = new System.Drawing.Point(242, 22);
+            this.but_cycle_type.Name = "but_cycle_type";
+            this.but_cycle_type.Size = new System.Drawing.Size(152, 48);
+            this.but_cycle_type.TabIndex = 157;
+            this.but_cycle_type.Text = "Тип цикла";
+            this.but_cycle_type.UseVisualStyleBackColor = true;
+            this.but_cycle_type.Click += new System.EventHandler(this.but_cycle_type_Click);
+            // 
             // label45
             // 
             this.label45.AutoSize = true;
@@ -1254,6 +1322,14 @@ namespace opengl3
             this.label45.Size = new System.Drawing.Size(82, 25);
             this.label45.TabIndex = 135;
             this.label45.Text = "minDisp";
+            // 
+            // textBox_cycle_type
+            // 
+            this.textBox_cycle_type.Location = new System.Drawing.Point(400, 31);
+            this.textBox_cycle_type.Name = "textBox_cycle_type";
+            this.textBox_cycle_type.Size = new System.Drawing.Size(137, 30);
+            this.textBox_cycle_type.TabIndex = 158;
+            this.textBox_cycle_type.Text = "3";
             // 
             // trackBar11
             // 
@@ -5831,73 +5907,23 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // but_cycle_type
+            // but_pos_disp
             // 
-            this.but_cycle_type.Location = new System.Drawing.Point(242, 22);
-            this.but_cycle_type.Name = "but_cycle_type";
-            this.but_cycle_type.Size = new System.Drawing.Size(152, 48);
-            this.but_cycle_type.TabIndex = 157;
-            this.but_cycle_type.Text = "Тип цикла";
-            this.but_cycle_type.UseVisualStyleBackColor = true;
+            this.but_pos_disp.Location = new System.Drawing.Point(242, 238);
+            this.but_pos_disp.Name = "but_pos_disp";
+            this.but_pos_disp.Size = new System.Drawing.Size(152, 48);
+            this.but_pos_disp.TabIndex = 165;
+            this.but_pos_disp.Text = "Позиция";
+            this.but_pos_disp.UseVisualStyleBackColor = true;
+            this.but_pos_disp.Click += new System.EventHandler(this.but_pos_disp_Click);
             // 
-            // textBox_cycle_type
+            // textBox_pos_disp
             // 
-            this.textBox_cycle_type.Location = new System.Drawing.Point(400, 31);
-            this.textBox_cycle_type.Name = "textBox_cycle_type";
-            this.textBox_cycle_type.Size = new System.Drawing.Size(137, 30);
-            this.textBox_cycle_type.TabIndex = 158;
-            this.textBox_cycle_type.Text = "3";
-            // 
-            // but_cycle_ampl
-            // 
-            this.but_cycle_ampl.Location = new System.Drawing.Point(242, 76);
-            this.but_cycle_ampl.Name = "but_cycle_ampl";
-            this.but_cycle_ampl.Size = new System.Drawing.Size(152, 48);
-            this.but_cycle_ampl.TabIndex = 159;
-            this.but_cycle_ampl.Text = "Амплитуда";
-            this.but_cycle_ampl.UseVisualStyleBackColor = true;
-            // 
-            // textBox_cycle_ampl
-            // 
-            this.textBox_cycle_ampl.Location = new System.Drawing.Point(400, 85);
-            this.textBox_cycle_ampl.Name = "textBox_cycle_ampl";
-            this.textBox_cycle_ampl.Size = new System.Drawing.Size(137, 30);
-            this.textBox_cycle_ampl.TabIndex = 160;
-            this.textBox_cycle_ampl.Text = "7";
-            // 
-            // but_cycle_time
-            // 
-            this.but_cycle_time.Location = new System.Drawing.Point(242, 130);
-            this.but_cycle_time.Name = "but_cycle_time";
-            this.but_cycle_time.Size = new System.Drawing.Size(152, 48);
-            this.but_cycle_time.TabIndex = 161;
-            this.but_cycle_time.Text = "Время цикла";
-            this.but_cycle_time.UseVisualStyleBackColor = true;
-            // 
-            // textBox_cycle_time
-            // 
-            this.textBox_cycle_time.Location = new System.Drawing.Point(400, 139);
-            this.textBox_cycle_time.Name = "textBox_cycle_time";
-            this.textBox_cycle_time.Size = new System.Drawing.Size(137, 30);
-            this.textBox_cycle_time.TabIndex = 162;
-            this.textBox_cycle_time.Text = "15";
-            // 
-            // but_cycle_time_rel
-            // 
-            this.but_cycle_time_rel.Location = new System.Drawing.Point(242, 184);
-            this.but_cycle_time_rel.Name = "but_cycle_time_rel";
-            this.but_cycle_time_rel.Size = new System.Drawing.Size(152, 48);
-            this.but_cycle_time_rel.TabIndex = 163;
-            this.but_cycle_time_rel.Text = "Время отдыха";
-            this.but_cycle_time_rel.UseVisualStyleBackColor = true;
-            // 
-            // textBox_cycle_time_rel
-            // 
-            this.textBox_cycle_time_rel.Location = new System.Drawing.Point(400, 193);
-            this.textBox_cycle_time_rel.Name = "textBox_cycle_time_rel";
-            this.textBox_cycle_time_rel.Size = new System.Drawing.Size(137, 30);
-            this.textBox_cycle_time_rel.TabIndex = 164;
-            this.textBox_cycle_time_rel.Text = "0";
+            this.textBox_pos_disp.Location = new System.Drawing.Point(400, 247);
+            this.textBox_pos_disp.Name = "textBox_pos_disp";
+            this.textBox_pos_disp.Size = new System.Drawing.Size(137, 30);
+            this.textBox_pos_disp.TabIndex = 166;
+            this.textBox_pos_disp.Text = "0";
             // 
             // MainScanningForm
             // 
@@ -6527,6 +6553,8 @@ namespace opengl3
         private System.Windows.Forms.TextBox textBox_cycle_ampl;
         private System.Windows.Forms.Button but_cycle_type;
         private System.Windows.Forms.TextBox textBox_cycle_type;
+        private System.Windows.Forms.Button but_pos_disp;
+        private System.Windows.Forms.TextBox textBox_pos_disp;
     }
 }
 

@@ -40,7 +40,8 @@ namespace opengl3
             cycle_type = 25,
             cycle_ampl = 26,
             cycle_time = 27,
-            cycle_time_rel = 28
+            cycle_time_rel = 28,
+            pos_disp = 29
             ;
 
         int on = 1, off = 2;
@@ -98,17 +99,25 @@ namespace opengl3
         {
             send(_type, cycle_type);
         }
-        public void set_comp_cycle_ampl(int _ampl)
+        public void set_comp_cycle_ampl(double _ampl)//mm
         {
-            send(_ampl, cycle_ampl);
+            int val =(int)(_ampl * 10);
+            send(val, cycle_ampl);
         }
-        public void set_comp_cycle_time(int _time)
+        public void set_comp_cycle_time(double _time)//sec
         {
-            send(_time, cycle_time);
+            int val = (int)(_time * 10);
+            send(val, cycle_time);
         }
-        public void set_comp_cycle_time_rel(int _time)
+        public void set_comp_cycle_time_rel(double _time)//sec
         {
-            send(_time, cycle_time_rel);
+            int val = (int)(_time * 10);
+            send(val, cycle_time_rel);
+        }
+        public void set_pos_disp(double _pos)//mm
+        {
+            int val = (int)(_pos * 10);
+            send(val, pos_disp);
         }
         public void setLaserDest(int _pos)
         {

@@ -7608,6 +7608,40 @@ namespace opengl3
         {
             portArd = (string)((ComboBox)sender).SelectedItem;
         }
+
+        #endregion
+
+        #region movm_mash
+        private void but_cycle_type_Click(object sender, EventArgs e)//
+        {
+            laserLine?.set_comp_cycle_type(Convert.ToInt32(textBox_cycle_type.Text));
+        }
+
+        private void but_cycle_ampl_Click(object sender, EventArgs e)//mm
+        {
+            laserLine?.set_comp_cycle_ampl(to_double(textBox_cycle_ampl.Text));
+        }
+
+        private void but_cycle_time_Click(object sender, EventArgs e)//sec
+        {
+            laserLine?.set_comp_cycle_time(to_double(textBox_cycle_time.Text));
+        }
+
+        private void but_cycle_time_rel_Click(object sender, EventArgs e)//sec
+        {
+            laserLine?.set_comp_cycle_time_rel(to_double(textBox_cycle_time_rel.Text));
+        }
+        private void but_pos_disp_Click(object sender, EventArgs e)//mm
+        {
+            laserLine?.set_pos_disp(to_double(textBox_pos_disp.Text));
+        }
+        double to_double(string val)
+        {
+            if (val == null) return 0;
+            if (val.Length == 0) return 0;
+            val = val.Replace(',', '.');
+            return Convert.ToDouble(val);
+        }
         #endregion
 
         
