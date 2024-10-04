@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 using OpenGL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace opengl3
         public RobotScanner()
         {
             InitializeComponent();
+            var test_com = new ScannerCommand("Scan", "Create", null);
+            Console.WriteLine(test_com.toStr());
         }
 
         private void glControl1_Resize(object sender, EventArgs e)
@@ -128,9 +131,9 @@ namespace opengl3
 
         public class ScannerCommand
         {
-            string section = "";
-            string command = "";
-            string[] value = new string[] {""};
+            public string section {get;set;}
+            public string command { get; set; }
+            public string[] value { get; set; }
             public ScannerCommand(string _section = "",string _command = "",string[] _value = null)
             {
                 section = _section; 
@@ -139,12 +142,8 @@ namespace opengl3
             }
             public string toStr()
             {
-                JsonSerializer serializer = new JsonSerializer();
-                
-                JsonTextWriter jsonWriter = new JsonTextWriter();
-                serializer.NullValueHandling = NullValueHandling.Ignore;
-                serializer.Formatting = Formatting.Indented;
-                serializer.Serialize(writer, this);
+                var json = JsonSerializer.Serialize(this);
+                return json;
             }
         }
     }
