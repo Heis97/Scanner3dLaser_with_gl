@@ -160,6 +160,12 @@
     <Compile Include="PathPlanning\RobotFrame.cs" />
     <Compile Include="PathPlanning\RozumPoint.cs" />
     <Compile Include="PathPlanning\TrajParams.cs" />
+    <Compile Include="RobotScanner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RobotScanner.Designer.cs">
+      <DependentUpon>RobotScanner.cs</DependentUpon>
+    </Compile>
     <Compile Include="Robot\RobotModel_old.cs" />
     <Compile Include="ScannerHandle\GeometryAnalyse.cs" />
     <Compile Include="ScannerHandle\LaserSurface.cs" />
@@ -220,6 +226,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="RobotScanner.resx">
+      <DependentUpon>RobotScanner.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Connection\DevicesArduino\arduino-timer-api-master\.gitignore" />
     <None Include="Connection\DevicesArduino\arduino-timer-api-master\examples\timer-api-2timers\timer-api-2timers.ino" />
     <None Include="Connection\DevicesArduino\arduino-timer-api-master\examples\timer-api-counter\timer-api-counter.ino" />
