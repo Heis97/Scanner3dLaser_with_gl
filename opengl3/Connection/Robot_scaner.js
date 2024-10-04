@@ -3,9 +3,6 @@
 
 const anglesMethod = "BY_ANGLES_LIST"; // "BY_TOTAL_NUMBER" - the number of positions is specified; "BY_ANGLES_LIST" - custom angle values are specified
 const returnTableToStartPosition = true; // true or false
-const positionCount = 4; // number of positions (integer greater than 0)
-const customAngles = [0, 30, 60]; // custom angle values (inside square brackets, separated by a comma)
-
 const NoMarkers = true; // script can be run in projects without markers
 const WithMarkers = false; // script can be run in projects with markers
 const RotationTable = false; // script can be run in projects with a turntable
@@ -20,22 +17,48 @@ let newScans = new Array();
 
 function ProcessEvent(module, event, value)
 {
-	Application.LogMessage("module = " + module + ", event = " + event+", value1 = " + JSON.stringify(value));
+	Application.LogMessage("event module = " + module + ", event = " + event+", value = " + JSON.stringify(value));
 	if( module === "Script" )
 	{
 		if ( event === "OnStarted" )
 		{
 			CheckFeasibility();
-            Application.LogMessage("CheckFeasibility");
-            FinishScript();
+			//MakeScan();
+			
+			Application.LogMessage("CheckFeasibility");
+
+
+           // FinishScript();
 		}
 	}
 
     if( module === "Application" )
-    {
-	    if ( event === "OnModelBuilt" )
+	{
+		if (event === "OnCheckPassed") {
+			//  Write here what a script should do when started
+			Application.LogMessage("Script started");
+			let mes = "{\"module\":\"Scan\",\"command\":\"Create\",\"value\":[\"asd\"]}";
+			let back = "\\";
+			//mes = mes.replace(back, "");
+			//let test_com = "{"module":"Scan","command":"Create","value":["asd"]}"
+			let test_com2 = new Command("Scan", "create", ['asd']);
+			//Application.LogMessage(mes);
+			var res = JSON.parse(JSON.stringify(test_com2));
+			var res = JSON.parse(mes);
+			//Application.LogMessage("mes0: " +mes["module"]);
+
+			Application.LogMessage("test: " + JSON.stringify(test_com2));
+			Application.LogMessage(mes);
+			
+			//StartScanCreation();
+			//FinishScript();
+			TcpServer.Start(31000);
+		}
+		else if ( event === "OnModelBuilt" )
 		{
+
 			Application.LogMessage("Model built");
+			//FinishScript();
 		}
        else if ( event === "OnScanCreated" )
        {
@@ -45,6 +68,7 @@ function ProcessEvent(module, event, value)
 				let newScan = value["newScanName"];
 				newScans.push(newScan);
 			}
+			//BuildModel();
        }
 		else if ( event === "OnNoiseRemoved" )
 		{
@@ -90,14 +114,7 @@ function ProcessEvent(module, event, value)
 			Application.LogMessage("Script could not be run because scanning is not available in processing mode. Create a new project suitable for the script type!");
 			Application.ScriptFinished();
 		}
-		else if ( event === "OnCheckPassed" )
-		{
-			//  Write here what a script should do when started
-			console.log("Script started");
-			Application.LogMessage("Script started");
-			
-			StartScanCreation();
-		}
+		
 		else if ( event === "OnCheckFailed" )
 		{
 			Application.LogMessage("Error! Script could not be run due to unsuitable command or project type");
@@ -115,31 +132,25 @@ function ProcessEvent(module, event, value)
 			Application.LogMessage("TCP-client disconnected");
 		}
 		
-		if (event === "CommandResult")
+		else if (event === "OnEvent")
 		{
-			console.log("TcpServer::CommandResult: value = " + JSON.stringify(value));
-			
-			if (value["result"] === false)
-			{
-				Application.LogMessage("false");
-			}
-			
-			let response = JSON.parse(value["response"]);
-            if (response["result"] === true && response["command"]==="Finish")
-            {
-                Application.ScriptFinished();
-            }
-			if (response["result"] === true)
-			{
-                Application.LogMessage("section = " + response["section"]+ ", command = " + response["value"]+", value1 = " + response["value"]);
-				Application.ExecuteCommand(response["section"], response["command"],response["value"]);				
-			}
-
+			Application.LogMessage("TcpServer::CommandResult: value = " + JSON.stringify(value));
+			let response = JSON.parse(value);
+			Application.LogMessage("section = " + response["module"] + ", command = " + response["command"]+", value = " + response["value"]);
+			Application.ExecuteCommand(response["module"], response["command"],response["value"]);				
 		}
 	}
 
 }
 
+
+class Command {
+	constructor(module1, command1, value1) {
+		this.module1 = module1;
+		this.command1 = command1;
+		this.value1 = value1;
+	}
+}
 
 function CheckFeasibility()
 {

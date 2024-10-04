@@ -61,8 +61,7 @@ namespace opengl3
             }
         }
         public void send_mes(string send_prog)
-        {
-            
+        {            
             byte[] send = System.Text.Encoding.UTF8.GetBytes(send_prog);
             _stream?.Write(send, 0, send.Length);
         }

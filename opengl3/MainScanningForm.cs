@@ -159,7 +159,7 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-
+            
             // Console.WriteLine( Point3d_GL.affil_p_seg(new Point3d_GL(1, 1, 1), new Point3d_GL(4, 4, 4), new Point3d_GL(0.999, 0.999, 0.999)));
 
             //VideoAnalyse.photo_from_video("vid//1.mp4");

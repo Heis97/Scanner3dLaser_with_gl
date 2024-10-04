@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace opengl3
 {
@@ -17,14 +18,15 @@ namespace opengl3
     {
         GraphicGL GL1 = new GraphicGL();
         TCPclient scanner_client = new TCPclient();
-        string scanner_ip = "";
-        int scanner_port = 10000;
+        string scanner_ip = "localhost";
+        int scanner_port = 31000;
         string robot_ip = "";
         int robot_port = 10000;
         public RobotScanner()
         {
             InitializeComponent();
-            var test_com = new ScannerCommand("Scan", "Create", null);
+            var test_com = new ScannerCommand(ScannerCommand.Module.Scan, ScannerCommand.Command.Create, null);
+            var str_j = test_com.toStr();
             Console.WriteLine(test_com.toStr());
         }
 
@@ -109,8 +111,8 @@ namespace opengl3
 
         private void but_scan_make_scan_Click(object sender, EventArgs e)
         {
-
-            scanner_client.send_mes("");
+            var com = new ScannerCommand(ScannerCommand.Module.Scan, ScannerCommand.Command.Create, null);
+            scanner_client.send_mes(com.toStr());
         }
 
         private void but_scan_clear_scan_Click(object sender, EventArgs e)
@@ -127,22 +129,40 @@ namespace opengl3
         {
 
         }
-
+        string send_command(ScannerCommand command)
+        {
+            scanner_client.send_mes("00" + command.toStr());
+            Thread.Sleep(100);
+            return scanner_client.reseav();
+        }
 
         public class ScannerCommand
         {
-            public string section {get;set;}
+            public enum Module{ Scan,General,Table,Processing};
+            public enum Command { CheckFeasibility, Create, Rotate, RemoveNoise,RegisterGlobally, BuildModel };
+            public string module {get;set;}
             public string command { get; set; }
             public string[] value { get; set; }
-            public ScannerCommand(string _section = "",string _command = "",string[] _value = null)
+            public ScannerCommand(Module _module, Command _command ,string[] _value =null)
             {
-                section = _section; 
-                command = _command;
-                value = _value;
+                module = _module.ToString(); 
+                command = _command.ToString();
+                if(_value==null)
+                {
+                    value = new string[] { "asd"};
+                }  
+                else
+                {
+                    value = _value;
+                }
+               
             }
             public string toStr()
             {
+                JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
+                //jsonSerializerOptions.MaxDepth = 0;
                 var json = JsonSerializer.Serialize(this);
+                //var json2 = json.Replace(@"\\", "");
                 return json;
             }
         }
