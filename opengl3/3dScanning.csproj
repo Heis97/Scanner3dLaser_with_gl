@@ -213,6 +213,7 @@
     <Compile Include="Util\UtilOpenCV.cs" />
     <Compile Include="Geometry\Vector3d_GL.cs" />
     <Compile Include="Frame\VideoFrame.cs" />
+    <Content Include="Connection\Robot_scaner.js" />
     <Content Include="Screenshot_2-Photoroom.png-Photoroom.ico" />
     <EmbeddedResource Include="MainScanningForm.resx">
       <DependentUpon>MainScanningForm.cs</DependentUpon>
