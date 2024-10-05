@@ -26,8 +26,8 @@ namespace opengl3
             {
                 serialPort.PortName = port;
                 serialPort.BaudRate = baudrate;
-                serialPort.RtsEnable = true;
-                serialPort.DtrEnable = true;
+               // serialPort.RtsEnable = true;
+               // serialPort.DtrEnable = true;
                 serialPort.Open();
                 isConnected = true;
                 Console.WriteLine("open " + port + " " + baudrate);
@@ -95,8 +95,8 @@ namespace opengl3
                         {
                             Console.WriteLine("Out: " + Mes1);
                             this.serialPort.WriteLine(Mes1);
-                            //Thread.Sleep(5);
-                            //Console.WriteLine(reseav());
+                            Thread.Sleep(5);
+                            Console.WriteLine(reseav());
                         }
                         catch
                         {
