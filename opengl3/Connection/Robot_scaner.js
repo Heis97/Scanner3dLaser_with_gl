@@ -52,7 +52,7 @@ function ProcessEvent(module, event, value)
 			
 			//StartScanCreation();
 			//FinishScript();
-			TcpServer.Start(31000);
+			//TcpServer.Start(31000);
 		}
 		else if ( event === "OnModelBuilt" )
 		{
