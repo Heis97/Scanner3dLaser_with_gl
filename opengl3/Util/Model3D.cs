@@ -417,7 +417,7 @@ namespace opengl3
             _center = new Point3d_GL(x_sr, y_sr, z_sr);
             return new object[] { ret1, ret2, polygs.ToArray() };
         }
-        private static object[] parsing_raw_binary(string fileName)
+        public static object[] parsing_raw_binary(string fileName)
         {
             int i2 = 0;
             int i3 = 0;
@@ -427,63 +427,38 @@ namespace opengl3
             float[] ret2 = null;
             var polygs = new List<Polygon3d_GL>();
             var ps = new List<Point3d_GL>();
-
+            bool cont = true;
             using (BinaryReader br = new BinaryReader(File.Open(fileName, FileMode.Open)))
             {
                 // Read header info
-                byte[] header = br.ReadBytes(80);
+                
+                byte[] header = br.ReadBytes(4);
                 byte[] length = br.ReadBytes(4);
                 int len_f = BitConverter.ToInt32(length, 0);
                 string headerInfo = Encoding.UTF8.GetString(header, 0, header.Length).Trim();
-                //Console.WriteLine(String.Format("\nImporting: {0}\n\tHeader: {1}\n\tNumber of faces:{2}\n", fileName, headerInfo, len_f));
-                ret1 = new float[len_f * 9];
-                ret2 = new float[len_f * 9];
-                // Read Data
 
 
-                for (int b = 0; b < len_f * 3; b++)
+                for (int b = 0; cont; b++)
                 {
-                    byte[] block = br.ReadBytes(50);
-                    if (block.Length > 47)
+                    byte[] block = br.ReadBytes(12);
+                    if (block.Length > 11)
                     {
-                        byte[] xComp = new byte[4];
-                        byte[] yComp = new byte[4];
-                        byte[] zComp = new byte[4];
-
-                        for (int i = 1; i < 4; i++)
-                        {
-
-                            float x = BitConverter.ToSingle(block, i * 12);
-                            float y = BitConverter.ToSingle(block, i * 12 + 4);
-                            float z = BitConverter.ToSingle(block, i * 12 + 8);
-
-                            ret1[i2] = x; i2++;
-                            ret1[i2] =  y; i2++;
-                            ret1[i2] =  z; i2++;
-                            ps.Add(new Point3d_GL( x, y, z));
-                            min_v = minCompar(new float[] { ret1[i2 - 3], ret1[i2 - 2], ret1[i2 - 1] }, min_v);
-                            max_v = maxCompar(new float[] { ret1[i2 - 3], ret1[i2 - 2], ret1[i2 - 1] }, max_v);
-
-                        }
-
-                        var p = new Polygon3d_GL(ps[0], ps[1], ps[2]);
-                        polygs.Add(p);
-                        var n = p.v3;
-                        for (int j = 0; j < 3; j++)
-                        {
-                            ret2[i3] = (float)n.x; i3++;
-                            ret2[i3] = (float)n.y; i3++;
-                            ret2[i3] = (float)n.z; i3++;
-                        }
-                        ps = new List<Point3d_GL>();
+                        //if (block[])
+                        float x = BitConverter.ToSingle(block, 0);
+                        float y = BitConverter.ToSingle(block, 4);
+                        float z = BitConverter.ToSingle(block, 8);
+                        ps.Add(new Point3d_GL(x, y, z));
+                       
+                    }
+                    else
+                    {
+                        cont = false;
                     }
                 }
             }
 
-            float x_sr = (max_v[0] - min_v[0]) / 2 + min_v[0];
-            float y_sr = (max_v[1] - min_v[1]) / 2 + min_v[1];
-            float z_sr = (max_v[2] - min_v[2]) / 2 + min_v[2];
-            return new object[] { ret1, ret2, polygs.ToArray() };
+
+            return new object[] { ps.ToArray()};
         }
 
 

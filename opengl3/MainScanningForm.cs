@@ -1870,7 +1870,7 @@ namespace opengl3
 
 
             //test_gen_traj();
-            
+
             //var g_code = File.ReadAllText("test_traj.txt");
             //var frames = RobotFrame.parse_g_code(g_code);
 
@@ -1895,14 +1895,17 @@ namespace opengl3
             GL1.addPointMesh(ps, Color3d_GL.red());
               GL1.addFrame(model, 200, "mod");*/
 
-           
+
             //load_3d_model_robot();
-           // test_gen_traj();
+            // test_gen_traj();
 
 
             //vel_rob_map();
             //test_diff_angles(0.6);
             //test_diff_angles(1.6);
+
+            //var ps_ob =(Point3d_GL[]) Model3d.parsing_raw_binary("body.bin")[0];
+            //GL1.addPointMesh(ps_ob);
         }
       
         private void glControl1_Render(object sender, GlControlEventArgs e)
