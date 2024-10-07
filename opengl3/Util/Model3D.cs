@@ -419,26 +419,17 @@ namespace opengl3
         }
         public static object[] parsing_raw_binary(string fileName)
         {
-            int i2 = 0;
-            int i3 = 0;
-            float[] min_v = new float[] { float.MaxValue, float.MaxValue, float.MaxValue };
-            float[] max_v = new float[] { float.MinValue, float.MinValue, float.MinValue };
-            float[] ret1 = null;
-            float[] ret2 = null;
             var polygs = new List<Polygon3d_GL>();
             var ps = new List<Point3d_GL>();
-            bool cont = true;
+            var tr_ind = new List<Point3d_GL>();
             using (BinaryReader br = new BinaryReader(File.Open(fileName, FileMode.Open)))
-            {
-                // Read header info
-                
-                byte[] header = br.ReadBytes(4);
+            {            
+                byte[] header = br.ReadBytes(16);
                 byte[] length = br.ReadBytes(4);
                 int len_f = BitConverter.ToInt32(length, 0);
                 string headerInfo = Encoding.UTF8.GetString(header, 0, header.Length).Trim();
-
-
-                for (int b = 0; cont; b++)
+                Console.WriteLine(headerInfo);
+                for (int b = 0; b< len_f; b++)
                 {
                     byte[] block = br.ReadBytes(12);
                     if (block.Length > 11)
@@ -450,15 +441,38 @@ namespace opengl3
                         ps.Add(new Point3d_GL(x, y, z));
                        
                     }
-                    else
+                }
+
+                header = br.ReadBytes(16);
+                length = br.ReadBytes(4);
+               
+                len_f = BitConverter.ToInt32(length, 0);
+                headerInfo = Encoding.Unicode.GetString(header, 0, header.Length).Trim();
+                Console.WriteLine(headerInfo);
+                for (int b = 0; b < len_f; b++)
+                {
+                    byte[] block = br.ReadBytes(12);
+                    if (block.Length > 11)
                     {
-                        cont = false;
+                        float x = BitConverter.ToInt32(block, 0);
+                        float y = BitConverter.ToInt32(block, 4);
+                        float z = BitConverter.ToInt32(block, 8);
+                        tr_ind.Add(new Point3d_GL(x, y, z));
+
                     }
                 }
+
             }
 
-
-            return new object[] { ps.ToArray()};
+            for(int i=0; i<tr_ind.Count;i++)
+            { 
+                var i1 = tr_ind[i].x;
+                var i2 = tr_ind[i].y;
+                var i3 = tr_ind[i].z;
+                polygs.Add(new Polygon3d_GL(ps[(int)i1], ps[(int)i2], ps[(int)i3]));
+            }
+            
+            return new object[] { ps.ToArray(),polygs.ToArray()};
         }
 
 

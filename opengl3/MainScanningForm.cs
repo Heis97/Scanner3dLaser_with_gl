@@ -1904,8 +1904,8 @@ namespace opengl3
             //test_diff_angles(0.6);
             //test_diff_angles(1.6);
 
-            //var ps_ob =(Point3d_GL[]) Model3d.parsing_raw_binary("body.bin")[0];
-            //GL1.addPointMesh(ps_ob);
+            var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
+            GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
         }
       
         private void glControl1_Render(object sender, GlControlEventArgs e)

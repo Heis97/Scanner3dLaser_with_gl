@@ -23,7 +23,7 @@ function ProcessEvent(module, event, value)
 		if ( event === "OnStarted" )
 		{
 			CheckFeasibility();
-			//MakeScan();
+			MakeScan();
 			
 			Application.LogMessage("CheckFeasibility");
 
@@ -58,7 +58,7 @@ function ProcessEvent(module, event, value)
 		{
 
 			Application.LogMessage("Model built");
-			//FinishScript();
+			FinishScript();
 		}
        else if ( event === "OnScanCreated" )
        {
@@ -68,7 +68,7 @@ function ProcessEvent(module, event, value)
 				let newScan = value["newScanName"];
 				newScans.push(newScan);
 			}
-			//BuildModel();
+			BuildModel();
        }
 		else if ( event === "OnNoiseRemoved" )
 		{
