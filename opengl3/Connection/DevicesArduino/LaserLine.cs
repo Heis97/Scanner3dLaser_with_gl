@@ -9,6 +9,8 @@ namespace opengl3
 {
     public class LaserLine : DeviceArduino
     {
+        public double steps_per_unit_z = 1600;
+        double steps_per_unit_disp = 4000;
         string port;
         int baudrate = 250000;
         int laser = 1, 
@@ -246,7 +248,7 @@ namespace opengl3
         }
         public void set_z_pos(int _pos)
         {
-            send(_pos + 5000, posit_z);
+            send(_pos, posit_z);
         }
 
         public void set_drill_dir(int dir)//0 or 1

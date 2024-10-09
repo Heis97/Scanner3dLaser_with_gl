@@ -1904,8 +1904,8 @@ namespace opengl3
             //test_diff_angles(0.6);
             //test_diff_angles(1.6);
 
-            var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
-            GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
+            //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
+            //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
         }
       
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -4524,7 +4524,11 @@ namespace opengl3
        
         private void but_set_z_pos_Click(object sender, EventArgs e)
         {
-            laserLine?.set_z_pos(Convert.ToInt32(textB_set_z_pos.Text));
+            var text = textB_set_z_pos.Text;
+            text = text.Replace(',', '.');
+            var pos_z_mm = Convert.ToDouble(text);
+            var pos_z_steps = (int)(pos_z_mm / 10 * laserLine.steps_per_unit_z);
+            laserLine?.set_z_pos(pos_z_steps);
         }
 
         private void but_z_home_Click(object sender, EventArgs e)
