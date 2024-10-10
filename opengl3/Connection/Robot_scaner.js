@@ -58,7 +58,7 @@ function ProcessEvent(module, event, value)
 		{
 
 			Application.LogMessage("Model built");
-			FinishScript();
+			//FinishScript();
 		}
        else if ( event === "OnScanCreated" )
        {
@@ -68,7 +68,7 @@ function ProcessEvent(module, event, value)
 				let newScan = value["newScanName"];
 				newScans.push(newScan);
 			}
-			BuildModel();
+			//BuildModel();
        }
 		else if ( event === "OnNoiseRemoved" )
 		{
@@ -136,8 +136,16 @@ function ProcessEvent(module, event, value)
 		{
 			Application.LogMessage("TcpServer::CommandResult: value = " + JSON.stringify(value));
 			let response = JSON.parse(value);
-			Application.LogMessage("section = " + response["module"] + ", command = " + response["command"]+", value = " + response["value"]);
-			Application.ExecuteCommand(response["module"], response["command"],response["value"]);				
+			if (response["value"] == "clear") {
+				newScans = new Array();
+			}
+			else {
+				Application.LogMessage("section = " + response["module"] + ", command = " + response["command"] + ", value = " + response["value"]);
+				//Application.ExecuteCommand(response["module"], response["command"], response["value"]);
+				Application.ExecuteCommand(response["module"], response["command"], newScans);
+            }
+			
+			
 		}
 	}
 

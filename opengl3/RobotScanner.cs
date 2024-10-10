@@ -15,36 +15,7 @@ using jakaApi;
 
 namespace opengl3
 {
-    public class ScannerCommand
-    {
-        public enum Module { Scan, General, Table, Processing };
-        public enum Command { CheckFeasibility, Create, Rotate, RemoveNoise, RegisterGlobally, BuildModel };
-        public string module { get; set; }
-        public string command { get; set; }
-        public string[] value { get; set; }
-        public ScannerCommand(Module _module, Command _command, string[] _value = null)
-        {
-            module = _module.ToString();
-            command = _command.ToString();
-            if (_value == null)
-            {
-                value = new string[] { "asd" };
-            }
-            else
-            {
-                value = _value;
-            }
-
-        }
-        public string toStr()
-        {
-            JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
-            //jsonSerializerOptions.MaxDepth = 0;
-            var json = JsonSerializer.Serialize(this);
-            //var json2 = json.Replace(@"\\", "");
-            return json;
-        }
-    }
+   
     public partial class RobotScanner : Form
     {
         GraphicGL GL1 = new GraphicGL();
@@ -249,6 +220,41 @@ namespace opengl3
         private void but_rob_home_Click(object sender, EventArgs e)
         {
             robot.move_home();
+        }
+
+        private void but_robscan_scan_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
+    public class ScannerCommand
+    {
+        public enum Module { Scan, General, Table, Processing };
+        public enum Command { CheckFeasibility, Create, Rotate, RemoveNoise, RegisterGlobally, BuildModel };
+        public string module { get; set; }
+        public string command { get; set; }
+        public string[] value { get; set; }
+        public ScannerCommand(Module _module, Command _command, string[] _value = null)
+        {
+            module = _module.ToString();
+            command = _command.ToString();
+            if (_value == null)
+            {
+                value = new string[] { "asd" };
+            }
+            else
+            {
+                value = _value;
+            }
+
+        }
+        public string toStr()
+        {
+            JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
+            //jsonSerializerOptions.MaxDepth = 0;
+            var json = JsonSerializer.Serialize(this);
+            //var json2 = json.Replace(@"\\", "");
+            return json;
         }
     }
 }

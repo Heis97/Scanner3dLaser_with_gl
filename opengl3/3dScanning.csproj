@@ -163,7 +163,9 @@
     <Compile Include="PathPlanning\RobotFrame.cs" />
     <Compile Include="PathPlanning\RozumPoint.cs" />
     <Compile Include="PathPlanning\TrajParams.cs" />
-    <Compile Include="RobotScanner.cs" />
+    <Compile Include="RobotScanner.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="RobotScanner.Designer.cs">
       <DependentUpon>RobotScanner.cs</DependentUpon>
     </Compile>
