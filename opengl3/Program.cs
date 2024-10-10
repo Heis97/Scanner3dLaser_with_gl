@@ -18,8 +18,8 @@ namespace opengl3
             Application.SetCompatibleTextRenderingDefault(false);
            // try
             {
-                Application.Run(new MainScanningForm());
-                //Application.Run(new RobotScanner());
+                //Application.Run(new MainScanningForm());
+                Application.Run(new RobotScanner());
             }
            // catch (Exception ex){ MessageBox.Show(ex.Message);}
             

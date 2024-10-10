@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using Emgu.CV.Util;
 using Emgu.CV.Features2D;
 using System.Linq.Expressions;
+using jakaApi;
 
 namespace opengl3
 {
@@ -159,7 +160,7 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-            
+
             // Console.WriteLine( Point3d_GL.affil_p_seg(new Point3d_GL(1, 1, 1), new Point3d_GL(4, 4, 4), new Point3d_GL(0.999, 0.999, 0.999)));
 
             //VideoAnalyse.photo_from_video("vid//1.mp4");
@@ -257,21 +258,22 @@ namespace opengl3
             // var ps_u = PathPlanner.unif_dist(ps.ToList(), 4.05);
             //   Console.WriteLine("sf");
 
-           /* var im_patt = new Mat("2v2.png");
-             var ps = new System.Drawing.PointF[3];
-            // CvInvoke
-            //CvInvoke.CvtColor(im_patt, im_patt, ColorConversion.Bgr2Gray);
-            CvInvoke.WarpAffine(im_patt, im_patt, CameraCV.affinematr(1.9,1,1000),new Size(2000,2000));
-            CvInvoke.Imshow("im_patt", im_patt);
-            CvInvoke.WaitKey();
-            var find = FindCircles.findCircles(im_patt,ref ps, new Size(6, 7));
-            
-            //var find = GeometryAnalyse.findCirclesIter(im_patt.Clone(), ref ps, new Size(6, 7));
-            CvInvoke.Imshow("find",find );
-            CvInvoke.WaitKey();
-            */
+            /* var im_patt = new Mat("2v2.png");
+              var ps = new System.Drawing.PointF[3];
+             // CvInvoke
+             //CvInvoke.CvtColor(im_patt, im_patt, ColorConversion.Bgr2Gray);
+             CvInvoke.WarpAffine(im_patt, im_patt, CameraCV.affinematr(1.9,1,1000),new Size(2000,2000));
+             CvInvoke.Imshow("im_patt", im_patt);
+             CvInvoke.WaitKey();
+             var find = FindCircles.findCircles(im_patt,ref ps, new Size(6, 7));
+
+             //var find = GeometryAnalyse.findCirclesIter(im_patt.Clone(), ref ps, new Size(6, 7));
+             CvInvoke.Imshow("find",find );
+             CvInvoke.WaitKey();
+             */
             //Manipulator.calcRob();
         }
+       
 
         void test_handeye()
         {

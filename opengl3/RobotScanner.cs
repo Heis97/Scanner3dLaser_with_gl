@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using jakaApi;
 
 namespace opengl3
 {
@@ -22,6 +23,7 @@ namespace opengl3
         int scanner_port = 31000;
         string robot_ip = "";
         int robot_port = 10000;
+        int jaka_handle;
         public RobotScanner()
         {
             InitializeComponent();
@@ -29,7 +31,17 @@ namespace opengl3
             var str_j = test_com.toStr();
             Console.WriteLine(test_com.toStr());
         }
+        void test_jaka()
+        {
 
+            int result = jakaAPI.create_handler("10.5.5.100", ref jaka_handle);
+            jakaAPI.power_on(ref jaka_handle);//机器人上电
+            jakaAPI.enable_robot(ref jaka_handle);//机器人上使能
+            Thread.Sleep(1000);
+            jakaAPI.disable_robot(ref jaka_handle);
+            jakaAPI.power_off(ref jaka_handle);
+            jakaAPI.destory_handler(ref jaka_handle);
+        }
         private void glControl1_Resize(object sender, EventArgs e)
         {
             GL1.resize(sender, e);
