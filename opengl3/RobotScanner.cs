@@ -15,32 +15,52 @@ using jakaApi;
 
 namespace opengl3
 {
+    public class ScannerCommand
+    {
+        public enum Module { Scan, General, Table, Processing };
+        public enum Command { CheckFeasibility, Create, Rotate, RemoveNoise, RegisterGlobally, BuildModel };
+        public string module { get; set; }
+        public string command { get; set; }
+        public string[] value { get; set; }
+        public ScannerCommand(Module _module, Command _command, string[] _value = null)
+        {
+            module = _module.ToString();
+            command = _command.ToString();
+            if (_value == null)
+            {
+                value = new string[] { "asd" };
+            }
+            else
+            {
+                value = _value;
+            }
+
+        }
+        public string toStr()
+        {
+            JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
+            //jsonSerializerOptions.MaxDepth = 0;
+            var json = JsonSerializer.Serialize(this);
+            //var json2 = json.Replace(@"\\", "");
+            return json;
+        }
+    }
     public partial class RobotScanner : Form
     {
         GraphicGL GL1 = new GraphicGL();
+        RobotJaka robot = new RobotJaka();
         TCPclient scanner_client = new TCPclient();
         string scanner_ip = "localhost";
         int scanner_port = 31000;
-        string robot_ip = "";
-        int robot_port = 10000;
         int jaka_handle;
+        double tcp_incr_lin = 1;
+        double k_ori = 0.1;
         public RobotScanner()
         {
             InitializeComponent();
             var test_com = new ScannerCommand(ScannerCommand.Module.Scan, ScannerCommand.Command.Create, null);
             var str_j = test_com.toStr();
             Console.WriteLine(test_com.toStr());
-        }
-        void test_jaka()
-        {
-
-            int result = jakaAPI.create_handler("10.5.5.100", ref jaka_handle);
-            jakaAPI.power_on(ref jaka_handle);//机器人上电
-            jakaAPI.enable_robot(ref jaka_handle);//机器人上使能
-            Thread.Sleep(1000);
-            jakaAPI.disable_robot(ref jaka_handle);
-            jakaAPI.power_off(ref jaka_handle);
-            jakaAPI.destory_handler(ref jaka_handle);
         }
         private void glControl1_Resize(object sender, EventArgs e)
         {
@@ -148,35 +168,87 @@ namespace opengl3
             return scanner_client.reseav();
         }
 
-        public class ScannerCommand
+      
+        private void but_x_p_Click(object sender, EventArgs e)
         {
-            public enum Module{ Scan,General,Table,Processing};
-            public enum Command { CheckFeasibility, Create, Rotate, RemoveNoise,RegisterGlobally, BuildModel };
-            public string module {get;set;}
-            public string command { get; set; }
-            public string[] value { get; set; }
-            public ScannerCommand(Module _module, Command _command ,string[] _value =null)
-            {
-                module = _module.ToString(); 
-                command = _command.ToString();
-                if(_value==null)
-                {
-                    value = new string[] { "asd"};
-                }  
-                else
-                {
-                    value = _value;
-                }
-               
-            }
-            public string toStr()
-            {
-                JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
-                //jsonSerializerOptions.MaxDepth = 0;
-                var json = JsonSerializer.Serialize(this);
-                //var json2 = json.Replace(@"\\", "");
-                return json;
-            }
+            robot.move_lin_rel(tcp_incr_lin);
+        }
+
+        private void but_x_m_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(-tcp_incr_lin);
+        }
+
+        private void but_y_p_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(0,tcp_incr_lin);
+        }
+
+        private void but_y_m_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(0,-tcp_incr_lin);
+        }
+
+        private void but_z_p_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(0,0,tcp_incr_lin);
+        }
+
+        private void but_z_m_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(0,0,-tcp_incr_lin);
+        }
+
+        private void but_rx_p_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(0,0,0,k_ori*tcp_incr_lin);
+        }
+
+        private void but_rx_m_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(0, 0, 0, -k_ori * tcp_incr_lin);
+        }
+
+        private void but_ry_p_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(0, 0, 0,0, k_ori * tcp_incr_lin);
+        }
+
+        private void but_ry_m_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(0, 0, 0,0, -k_ori * tcp_incr_lin);
+        }
+
+        private void but_rz_p_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(0, 0, 0,0,0, k_ori * tcp_incr_lin);
+        }
+
+        private void but_rz_m_Click(object sender, EventArgs e)
+        {
+            robot.move_lin_rel(0, 0, 0,0,0, -k_ori * tcp_incr_lin);
+        }
+
+        private void but_rob_con_Click(object sender, EventArgs e)
+        {
+            robot.on();
+        }
+
+        private void but_rob_discon_Click(object sender, EventArgs e)
+        {
+            robot.off();
+        }
+
+       
+
+        private void but_rob_cur_pos_Click(object sender, EventArgs e)
+        {
+           Console.WriteLine( robot.get_cur_pos());
+        }
+
+        private void but_rob_home_Click(object sender, EventArgs e)
+        {
+            robot.move_home();
         }
     }
 }
