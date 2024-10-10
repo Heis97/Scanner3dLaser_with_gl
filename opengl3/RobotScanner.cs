@@ -25,7 +25,7 @@ namespace opengl3
         int scanner_port = 31000;
         int jaka_handle;
         double tcp_incr_lin = 1;
-        double k_ori = 0.1;
+        double k_ori = 0.01;
         public RobotScanner()
         {
             InitializeComponent();
@@ -203,6 +203,7 @@ namespace opengl3
         private void but_rob_con_Click(object sender, EventArgs e)
         {
             robot.on();
+            robot.set_tool();
         }
 
         private void but_rob_discon_Click(object sender, EventArgs e)
@@ -226,7 +227,26 @@ namespace opengl3
         {
 
         }
+
+        private void but_rob_work_pos_Click(object sender, EventArgs e)
+        {
+            robot.move_work();
+        }
+
+        private void but_rob_stop_Click(object sender, EventArgs e)
+        {
+            robot.stop();
+        }
+        private void radioButton_mm_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton checkBox = (RadioButton)sender; // приводим отправителя к элементу типа CheckBox
+            if (checkBox.Checked == true)
+            {
+                tcp_incr_lin = Convert.ToDouble(checkBox.Text);
+            }
+        }
     }
+
     public class ScannerCommand
     {
         public enum Module { Scan, General, Table, Processing };
