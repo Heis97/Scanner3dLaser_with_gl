@@ -130,25 +130,53 @@ function ProcessEvent(module, event, value)
 		{
 			Application.LogMessage("TCP-client connected");
 		}
-		else if (event === "ClientDisconnected")
+		if (event === "ClientDisconnected")
 		{
 			Application.LogMessage("TCP-client disconnected");
+			TcpServer.Start(31000);
 		}
 		
-		else if (event === "OnEvent")
+		if (event === "OnEvent")
 		{
-			Application.LogMessage("TcpServer::CommandResult: value = " + JSON.stringify(value));
-			let response = JSON.parse(value);
-			if (response["value"] == "clear") {
-				newScans = new Array();
+			Application.LogMessage(value.length);
+			if (value.length > 10)
+			{
+				Application.LogMessage("TcpServer::CommandResult: value = " + JSON.stringify(value));
+				let response = JSON.parse(value);
+				if (response["value"] == "clear")
+				{
+					newScans = new Array();
+				}
+				else
+				{
+					Application.LogMessage("section = " + response["module"] + ", command = " + response["command"] + ", value = " + response["value"]);
+					//Application.ExecuteCommand(response["module"], response["command"], response["value"]);
+					Application.ExecuteCommand(response["module"], response["command"], { scans: newScans });
+				}
 			}
-			else {
-				Application.LogMessage("section = " + response["module"] + ", command = " + response["command"] + ", value = " + response["value"]);
-				//Application.ExecuteCommand(response["module"], response["command"], response["value"]);
-				Application.ExecuteCommand(response["module"], response["command"], newScans);
-            }
-			
-			
+		}
+
+		if (event === "CommandResult")
+		{
+			Application.LogMessage("com_res");
+			Application.LogMessage(JSON.stringify(value).length);
+			if (JSON.stringify(value).length > 35)
+			{			
+				let value_com = value["response"]
+				Application.LogMessage("TcpServer::CommandResult: value = " + JSON.stringify(value_com));
+				let response = JSON.parse(value_com);
+				
+				if (response["value"] == "clear")
+				{
+					newScans = new Array();
+				}
+				else
+				{
+					Application.LogMessage("section = " + response["module"] + ", command = " + response["command"] + ", value = " + response["value"]);
+					//Application.ExecuteCommand(response["module"], response["command"], response["value"]);
+					Application.ExecuteCommand(response["module"], response["command"], { scans: newScans });
+				}
+			}
 		}
 	}
 

@@ -15,14 +15,14 @@ using jakaApi;
 
 namespace opengl3
 {
-   
+
     public partial class RobotScanner : Form
     {
         GraphicGL GL1 = new GraphicGL();
         RobotJaka robot = new RobotJaka();
         TCPclient scanner_client = new TCPclient();
         string scanner_ip = "localhost";
-        string path_model = "C:\\Users\\User\\Documents\\RV 3D Studio Scans\\test_robot_0410_folder\\Processing\\Models";
+        string path_model_global = "C:\\Users\\User\\Documents\\RV 3D Studio Scans\\test_robot_0410_folder\\Processing\\Models";
         int scanner_port = 31000;
         int jaka_handle;
         double tcp_incr_lin = 1;
@@ -30,6 +30,7 @@ namespace opengl3
         string res_scan = "";
         bool scanning = false;
         bool modeling = false;
+        string scan_name = "";
         public RobotScanner()
         {
             InitializeComponent();
@@ -48,27 +49,31 @@ namespace opengl3
             while (con.is_connect())
             {
                 var res = con.reseav();
-                
+
                 Thread.Sleep(10);
-                if (res!= null)
-                    if (res.Length>3)
+                if (res != null)
+                    if (res.Length > 3)
                     {
                         res = res.Substring(2);
-                        if(res.Contains("scan"))
+                        if (res.Contains("scan"))
                         {
                             label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.Text = "Сканирование завершено"));
                             label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.ForeColor = Color.ForestGreen));
                             scanning = false;
                         }
-                        if (res.Contains("model"))
+                        if (res.Contains("built"))
                         {
                             label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.Text = "Создание модели завершено"));
                             label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.ForeColor = Color.ForestGreen));
                             modeling = false;
                         }
+                        if (res.Contains("model_"))
+                        {
+                            scan_name = res;
+                        }
                         Console.WriteLine(res);
                     }
-                        
+
             }
         }
         #region event gl
@@ -130,7 +135,7 @@ namespace opengl3
         {
             GL1.glControl_MouseDown(sender, e);
         }
-    
+
         private void Form1_mousewheel(object sender, MouseEventArgs e)
         {
             GL1.Form1_mousewheel(sender, e);
@@ -138,14 +143,18 @@ namespace opengl3
         #endregion
         private void but_scan_con_Click(object sender, EventArgs e)
         {
-            scanner_client.Connection(scanner_port,scanner_ip);
+            scanner_client = new TCPclient();
+            scanner_client.Connection(scanner_port, scanner_ip);
             Thread tcp_thread = new Thread(recieve_tcp);
             tcp_thread.Start(scanner_client);
+            label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.Text = "Сканер подключён"));
+            label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.ForeColor = Color.ForestGreen));
         }
 
         private void but_scan_discon_Click(object sender, EventArgs e)
         {
-            scanner_client.close_con();
+            scanner_client?.close_con();
+            scanner_client = null;
         }
 
         private void but_scan_make_scan_Click(object sender, EventArgs e)
@@ -154,6 +163,7 @@ namespace opengl3
         }
         private void make_scan()
         {
+            wait_scanner();
             var com = new ScannerCommand(ScannerCommand.Module.Scan, ScannerCommand.Command.Create, null);
             send_command(com);
             label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.Text = "Сканирование запущено..."));
@@ -162,21 +172,35 @@ namespace opengl3
         }
         private void build_model()
         {
+            wait_scanner();
             var com = new ScannerCommand(ScannerCommand.Module.Processing, ScannerCommand.Command.BuildModel, null);
             send_command(com);
             label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.Text = "Создание модели..."));
             label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.ForeColor = Color.Firebrick));
             modeling = true;
             //wait
-            var ps_ob = (Polygon3d_GL[])Model3d.parsing_raw_binary("body")[1];
-            GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
+            Thread.Sleep(100);
+            wait_scanner();
+            Thread.Sleep(500);
+            
+            var last_folder = GetLatestCreatedFolder(path_model_global);
+            var path_model = Path.Combine(last_folder, "Raw", "body");
+            var ps_ob = (Polygon3d_GL[])Model3d.parsing_raw_binary( path_model)[1];
+             GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles,null,"model");
         }
 
-
+        private void wait_scanner()
+        {
+            while (scanning || modeling) 
+            {
+                Console.WriteLine(scanning+ " " + modeling);
+                Thread.Sleep(100);
+            };
+        }
 
         private void but_scan_clear_scan_Click(object sender, EventArgs e)
         {
-            var com = new ScannerCommand(ScannerCommand.Module.General, ScannerCommand.Command.CheckFeasibility,  "clear" );
+            var com = new ScannerCommand(ScannerCommand.Module.General, ScannerCommand.Command.CheckFeasibility, "clear");
             send_command(com);
         }
 
@@ -187,10 +211,41 @@ namespace opengl3
 
         private void but_save_stl_Click(object sender, EventArgs e)
         {
-            
+           
+
+        }
+
+        static string GetLatestCreatedFolder(string directoryPath)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+            DirectoryInfo[] directories = directoryInfo.GetDirectories();
+
+            if (directories.Length == 0)
+            {
+                return null;
+            }
+
+            DirectoryInfo latestDirectory = directories[0];
+
+            foreach (var dir in directories)
+            {
+                if (dir.CreationTime > latestDirectory.CreationTime)
+                {
+                    latestDirectory = dir;
+                }
+            }
+
+            return latestDirectory.FullName;
+        
         }
         string send_command(ScannerCommand command)
         {
+
+            if (!scanner_client.is_connect())
+            {
+                label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.Text = "Сканер не подключён"));
+                label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.ForeColor = Color.Firebrick));
+            }
             scanner_client.send_mes("00" + command.toStr());
             Thread.Sleep(100);
             return scanner_client.reseav();
@@ -199,62 +254,62 @@ namespace opengl3
         //__________TRANSLATION_____________
         private void but_x_p_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(tcp_incr_lin);
+            move(tcp_incr_lin);
         }
 
         private void but_x_m_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(-tcp_incr_lin);
+            move(-tcp_incr_lin);
         }
 
         private void but_y_p_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(0,tcp_incr_lin);
+            move(0, tcp_incr_lin);
         }
 
         private void but_y_m_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(0,-tcp_incr_lin);
+            move(0, -tcp_incr_lin);
         }
 
         private void but_z_p_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(0,0,tcp_incr_lin);
+            move(0, 0, tcp_incr_lin);
         }
 
         private void but_z_m_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(0,0,-tcp_incr_lin);
+            move(0, 0, -tcp_incr_lin);
         }
         //__________ROTATION_____________
         private void but_rx_p_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel_or(0,0,0,k_ori*tcp_incr_lin);
+            move(0, 0, 0, k_ori * tcp_incr_lin);
         }
 
         private void but_rx_m_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel_or(0, 0, 0, -k_ori * tcp_incr_lin);
+            move(0, 0, 0, -k_ori * tcp_incr_lin);
         }
 
         private void but_ry_p_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel_or(0, 0, 0,0, k_ori * tcp_incr_lin);
+            move(0, 0, 0, 0, k_ori * tcp_incr_lin);
         }
 
         private void but_ry_m_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel_or(0, 0, 0,0, -k_ori * tcp_incr_lin);
+            move(0, 0, 0, 0, -k_ori * tcp_incr_lin);
         }
 
         private void but_rz_p_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel_or(0, 0, 0,0,0, k_ori * tcp_incr_lin);
+            move(0, 0, 0, 0, 0, k_ori * tcp_incr_lin);
         }
 
         private void but_rz_m_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel_or(0, 0, 0,0,0, -k_ori * tcp_incr_lin);
+            move(0, 0, 0, 0, 0, -k_ori * tcp_incr_lin);
         }
 
         private void but_rob_con_Click(object sender, EventArgs e)
@@ -272,7 +327,7 @@ namespace opengl3
 
         private void but_rob_cur_pos_Click(object sender, EventArgs e)
         {
-           Console.WriteLine( robot.get_cur_pos());
+            Console.WriteLine(robot.get_cur_pos());
         }
 
         private void but_rob_home_Click(object sender, EventArgs e)
@@ -282,50 +337,52 @@ namespace opengl3
 
         private void but_robscan_scan_Click(object sender, EventArgs e)
         {
-            var rx_amp = 0.1;
-            var ry_amp = 0.1;
-            var nx = 4;
+            Thread robot_thread = new Thread(scan_area);
+            robot_thread.Start();
+        }
+        private void scan_area(){
+            var rx_amp = 0.2;
+            var ry_amp = 0.2;
+            var nx = 3;
             var ny = 4;
             var rx_delt = rx_amp / nx;
             var ry_delt = ry_amp / ny;
-            move(0,0,0,0,-rx_amp,0);
-            for (int i = -nx; i < 2*nx; i++)
+            move(0, 0, 0, -rx_amp, 0, 0);
+            for (int i = -nx; i < 2 * nx; i++)
             {
-                move_and_scan(0,0,0,0, rx_delt, 0);
+                move_and_scan(0, 0, 0, rx_delt, 0, 0);
             }
+            move(0, 0, 0, -rx_amp, 0, 0);
 
+            /* move(0, 0, 0, 0, -ry_amp, 0);
+             for (int i = -ny; i < 2 * ny; i++)
+             {
+                 move_and_scan(0, 0, 0, 0, ry_delt, 0);
+             }
+             move(0, 0, 0, 0, -ry_amp, 0);*/
         }
-
-        private void move_and_scan(double x, double y, double z, double rx, double ry, double rz)
+        private void move_and_scan(double x = 0, double y = 0, double z = 0, double rx = 0, double ry = 0, double rz=0)
         {
-            if(x ==0 && y == 0 && z == 0)
-            {
-                robot.move_lin_rel(x, y, z, rx, ry, rz);
-            }
-            else
-            {
-                robot.move_lin_rel_or(x, y, z, rx, ry, rz);
-            }
+            move(x,y,z,rx,ry,rz);
             Thread.Sleep(400);
             make_scan();
             Thread.Sleep(100);
-            while(scanning)
-            {
+            wait_scanner();
 
-            }
-
+           
         }
-        private void move(double x, double y, double z, double rx, double ry, double rz)
+        private void move(double x = 0, double y = 0, double z = 0, double rx = 0, double ry = 0, double rz = 0)
         {
             if (x == 0 && y == 0 && z == 0)
             {
-                robot.move_lin_rel(x, y, z, rx, ry, rz);
+                robot.move_lin_rel_or(x, y, z, rx, ry, rz);
             }
             else
             {
-                robot.move_lin_rel_or(x, y, z, rx, ry, rz);
+                robot.move_lin_rel(x, y, z, rx, ry, rz);
             }
             Thread.Sleep(1000);
+            Console.WriteLine(robot.get_cur_pos());
         }
         private void but_rob_work_pos_Click(object sender, EventArgs e)
         {
@@ -343,6 +400,14 @@ namespace opengl3
             {
                 tcp_incr_lin = Convert.ToDouble(checkBox.Text);
             }
+        }
+
+        private void but_model_save_stl_Click(object sender, EventArgs e)
+        {
+            var stl_name = MainScanningForm.save_file_name(Directory.GetCurrentDirectory(), treeView_models.SelectedNode.Text, "stl");
+            //var scan_stl = Polygon3d_GL.toMesh(mesh);
+            if (stl_name == null) return;
+            STLmodel.saveMesh(GL1.buffersGl.objs[treeView_models.SelectedNode.Text].vertex_buffer_data, stl_name);
         }
     }
 

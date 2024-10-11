@@ -42,6 +42,7 @@ namespace opengl3
         public string reseav()
         {
             byte[] data = new byte[1024];
+            if(_response == null) _response = new StringBuilder();
             _response.Clear();
             if(_stream.DataAvailable)
             {
