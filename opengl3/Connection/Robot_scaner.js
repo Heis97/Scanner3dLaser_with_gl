@@ -57,8 +57,8 @@ function ProcessEvent(module, event, value)
 		else if ( event === "OnModelBuilt" )
 		{
 
-			Application.LogMessage("Model built");
-			TcpServer.SendCommand("Model built");
+			Application.LogMessage("model built");
+			TcpServer.SendCommand("model built");
 			//FinishScript();
 		}
        else if ( event === "OnScanCreated" )
@@ -69,8 +69,8 @@ function ProcessEvent(module, event, value)
 				let newScan = value["newScanName"];
 				newScans.push(newScan);
 			}
-			Application.LogMessage("Scan created");
-			TcpServer.SendCommand("Scan created");
+			Application.LogMessage("scan created");
+			TcpServer.SendCommand("scan created");
 			//BuildModel();
        }
 		else if ( event === "OnNoiseRemoved" )

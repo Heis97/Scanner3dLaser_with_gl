@@ -28,6 +28,8 @@ namespace opengl3
         double tcp_incr_lin = 1;
         double k_ori = 0.01;
         string res_scan = "";
+        bool scanning = false;
+        bool modeling = false;
         public RobotScanner()
         {
             InitializeComponent();
@@ -46,12 +48,30 @@ namespace opengl3
             while (con.is_connect())
             {
                 var res = con.reseav();
+                
                 Thread.Sleep(10);
                 if (res!= null)
-                    if (res.Length>2)  
+                    if (res.Length>3)
+                    {
+                        res = res.Substring(2);
+                        if(res.Contains("scan"))
+                        {
+                            label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.Text = "Сканирование завершено"));
+                            label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.ForeColor = Color.ForestGreen));
+                            scanning = false;
+                        }
+                        if (res.Contains("model"))
+                        {
+                            label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.Text = "Создание модели завершено"));
+                            label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.ForeColor = Color.ForestGreen));
+                            modeling = false;
+                        }
                         Console.WriteLine(res);
+                    }
+                        
             }
         }
+        #region event gl
         private void glControl1_ContextCreated(object sender, GlControlEventArgs e)
         {
             var send = (Control)sender;
@@ -115,7 +135,7 @@ namespace opengl3
         {
             GL1.Form1_mousewheel(sender, e);
         }
-
+        #endregion
         private void but_scan_con_Click(object sender, EventArgs e)
         {
             scanner_client.Connection(scanner_port,scanner_ip);
@@ -130,9 +150,29 @@ namespace opengl3
 
         private void but_scan_make_scan_Click(object sender, EventArgs e)
         {
+            make_scan();
+        }
+        private void make_scan()
+        {
             var com = new ScannerCommand(ScannerCommand.Module.Scan, ScannerCommand.Command.Create, null);
             send_command(com);
+            label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.Text = "Сканирование запущено..."));
+            label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.ForeColor = Color.Firebrick));
+            scanning = true;
         }
+        private void build_model()
+        {
+            var com = new ScannerCommand(ScannerCommand.Module.Processing, ScannerCommand.Command.BuildModel, null);
+            send_command(com);
+            label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.Text = "Создание модели..."));
+            label_cur_status.BeginInvoke((MethodInvoker)(() => label_cur_status.ForeColor = Color.Firebrick));
+            modeling = true;
+            //wait
+            var ps_ob = (Polygon3d_GL[])Model3d.parsing_raw_binary("body")[1];
+            GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
+        }
+
+
 
         private void but_scan_clear_scan_Click(object sender, EventArgs e)
         {
@@ -142,12 +182,7 @@ namespace opengl3
 
         private void but_scan_make_model_Click(object sender, EventArgs e)
         {
-            var com = new ScannerCommand(ScannerCommand.Module.Processing, ScannerCommand.Command.BuildModel, null);
-            send_command(com);
-            label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.ForeColor = Color.Firebrick));
-            //wait
-            var ps_ob = (Polygon3d_GL[])Model3d.parsing_raw_binary("body")[1];
-            GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
+            build_model();
         }
 
         private void but_save_stl_Click(object sender, EventArgs e)
@@ -160,7 +195,7 @@ namespace opengl3
             Thread.Sleep(100);
             return scanner_client.reseav();
         }
-
+        #region buts_jog
         //__________TRANSLATION_____________
         private void but_x_p_Click(object sender, EventArgs e)
         {
@@ -233,7 +268,7 @@ namespace opengl3
             robot.off();
         }
 
-       
+        #endregion
 
         private void but_rob_cur_pos_Click(object sender, EventArgs e)
         {
@@ -247,9 +282,51 @@ namespace opengl3
 
         private void but_robscan_scan_Click(object sender, EventArgs e)
         {
+            var rx_amp = 0.1;
+            var ry_amp = 0.1;
+            var nx = 4;
+            var ny = 4;
+            var rx_delt = rx_amp / nx;
+            var ry_delt = ry_amp / ny;
+            move(0,0,0,0,-rx_amp,0);
+            for (int i = -nx; i < 2*nx; i++)
+            {
+                move_and_scan(0,0,0,0, rx_delt, 0);
+            }
 
         }
 
+        private void move_and_scan(double x, double y, double z, double rx, double ry, double rz)
+        {
+            if(x ==0 && y == 0 && z == 0)
+            {
+                robot.move_lin_rel(x, y, z, rx, ry, rz);
+            }
+            else
+            {
+                robot.move_lin_rel_or(x, y, z, rx, ry, rz);
+            }
+            Thread.Sleep(400);
+            make_scan();
+            Thread.Sleep(100);
+            while(scanning)
+            {
+
+            }
+
+        }
+        private void move(double x, double y, double z, double rx, double ry, double rz)
+        {
+            if (x == 0 && y == 0 && z == 0)
+            {
+                robot.move_lin_rel(x, y, z, rx, ry, rz);
+            }
+            else
+            {
+                robot.move_lin_rel_or(x, y, z, rx, ry, rz);
+            }
+            Thread.Sleep(1000);
+        }
         private void but_rob_work_pos_Click(object sender, EventArgs e)
         {
             robot.move_work();

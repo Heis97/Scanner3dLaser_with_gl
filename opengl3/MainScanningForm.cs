@@ -7302,8 +7302,7 @@ namespace opengl3
             {
                 video_scan_name = "1";
             }
-            startScanLaser(3);
-           
+            startScanLaser(3);           
             //start_load_scan();
         }
         private void but_scan_simp_scan_load_Click(object sender, EventArgs e)
