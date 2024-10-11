@@ -56,10 +56,12 @@
             this.but_robscan_scan = new System.Windows.Forms.Button();
             this.but_rob_work_pos = new System.Windows.Forms.Button();
             this.but_rob_stop = new System.Windows.Forms.Button();
-            this.radioButton_100 = new System.Windows.Forms.RadioButton();
             this.radioButton_1 = new System.Windows.Forms.RadioButton();
             this.radioButton_10 = new System.Windows.Forms.RadioButton();
             this.radioButton_01 = new System.Windows.Forms.RadioButton();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // glControl_main
@@ -401,18 +403,6 @@
             this.but_rob_stop.UseVisualStyleBackColor = true;
             this.but_rob_stop.Click += new System.EventHandler(this.but_rob_stop_Click);
             // 
-            // radioButton_100
-            // 
-            this.radioButton_100.AutoSize = true;
-            this.radioButton_100.Location = new System.Drawing.Point(1284, 27);
-            this.radioButton_100.Name = "radioButton_100";
-            this.radioButton_100.Size = new System.Drawing.Size(43, 17);
-            this.radioButton_100.TabIndex = 28;
-            this.radioButton_100.TabStop = true;
-            this.radioButton_100.Text = "100";
-            this.radioButton_100.UseVisualStyleBackColor = true;
-            this.radioButton_100.CheckedChanged += new System.EventHandler(this.radioButton_mm_CheckedChanged);
-            // 
             // radioButton_1
             // 
             this.radioButton_1.AutoSize = true;
@@ -450,15 +440,44 @@
             this.radioButton_01.UseVisualStyleBackColor = true;
             this.radioButton_01.CheckedChanged += new System.EventHandler(this.radioButton_mm_CheckedChanged);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(1321, 52);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(23, 13);
+            this.label1.TabIndex = 32;
+            this.label1.Text = "мм";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(1321, 98);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(23, 13);
+            this.label2.TabIndex = 33;
+            this.label2.Text = "мм";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(1314, 75);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(23, 13);
+            this.label3.TabIndex = 34;
+            this.label3.Text = "мм";
+            // 
             // RobotScanner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.radioButton_01);
             this.Controls.Add(this.radioButton_10);
             this.Controls.Add(this.radioButton_1);
-            this.Controls.Add(this.radioButton_100);
             this.Controls.Add(this.but_rob_stop);
             this.Controls.Add(this.but_rob_work_pos);
             this.Controls.Add(this.but_robscan_scan);
@@ -525,9 +544,11 @@
         private System.Windows.Forms.Button but_robscan_scan;
         private System.Windows.Forms.Button but_rob_work_pos;
         private System.Windows.Forms.Button but_rob_stop;
-        private System.Windows.Forms.RadioButton radioButton_100;
         private System.Windows.Forms.RadioButton radioButton_1;
         private System.Windows.Forms.RadioButton radioButton_10;
         private System.Windows.Forms.RadioButton radioButton_01;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }

@@ -22,10 +22,12 @@ namespace opengl3
         RobotJaka robot = new RobotJaka();
         TCPclient scanner_client = new TCPclient();
         string scanner_ip = "localhost";
+        string path_model = "C:\\Users\\User\\Documents\\RV 3D Studio Scans\\test_robot_0410_folder\\Processing\\Models";
         int scanner_port = 31000;
         int jaka_handle;
         double tcp_incr_lin = 1;
         double k_ori = 0.01;
+        string res_scan = "";
         public RobotScanner()
         {
             InitializeComponent();
@@ -37,7 +39,19 @@ namespace opengl3
         {
             GL1.resize(sender, e);
         }
+        void recieve_tcp(object obj)
+        {
+            var con = (TCPclient)obj;
 
+            while (con.is_connect())
+            {
+                var res = con.reseav();
+                Thread.Sleep(10);
+                if (res!= null)
+                    if (res.Length>2)  
+                        Console.WriteLine(res);
+            }
+        }
         private void glControl1_ContextCreated(object sender, GlControlEventArgs e)
         {
             var send = (Control)sender;
@@ -105,6 +119,8 @@ namespace opengl3
         private void but_scan_con_Click(object sender, EventArgs e)
         {
             scanner_client.Connection(scanner_port,scanner_ip);
+            Thread tcp_thread = new Thread(recieve_tcp);
+            tcp_thread.Start(scanner_client);
         }
 
         private void but_scan_discon_Click(object sender, EventArgs e)
@@ -115,22 +131,28 @@ namespace opengl3
         private void but_scan_make_scan_Click(object sender, EventArgs e)
         {
             var com = new ScannerCommand(ScannerCommand.Module.Scan, ScannerCommand.Command.Create, null);
-            scanner_client.send_mes(com.toStr());
+            send_command(com);
         }
 
         private void but_scan_clear_scan_Click(object sender, EventArgs e)
         {
-
+            var com = new ScannerCommand(ScannerCommand.Module.General, ScannerCommand.Command.CheckFeasibility,  "clear" );
+            send_command(com);
         }
 
         private void but_scan_make_model_Click(object sender, EventArgs e)
         {
-
+            var com = new ScannerCommand(ScannerCommand.Module.Processing, ScannerCommand.Command.BuildModel, null);
+            send_command(com);
+            label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.ForeColor = Color.Firebrick));
+            //wait
+            var ps_ob = (Polygon3d_GL[])Model3d.parsing_raw_binary("body")[1];
+            GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
         }
 
         private void but_save_stl_Click(object sender, EventArgs e)
         {
-
+            
         }
         string send_command(ScannerCommand command)
         {
@@ -139,7 +161,7 @@ namespace opengl3
             return scanner_client.reseav();
         }
 
-      
+        //__________TRANSLATION_____________
         private void but_x_p_Click(object sender, EventArgs e)
         {
             robot.move_lin_rel(tcp_incr_lin);
@@ -169,35 +191,35 @@ namespace opengl3
         {
             robot.move_lin_rel(0,0,-tcp_incr_lin);
         }
-
+        //__________ROTATION_____________
         private void but_rx_p_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(0,0,0,k_ori*tcp_incr_lin);
+            robot.move_lin_rel_or(0,0,0,k_ori*tcp_incr_lin);
         }
 
         private void but_rx_m_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(0, 0, 0, -k_ori * tcp_incr_lin);
+            robot.move_lin_rel_or(0, 0, 0, -k_ori * tcp_incr_lin);
         }
 
         private void but_ry_p_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(0, 0, 0,0, k_ori * tcp_incr_lin);
+            robot.move_lin_rel_or(0, 0, 0,0, k_ori * tcp_incr_lin);
         }
 
         private void but_ry_m_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(0, 0, 0,0, -k_ori * tcp_incr_lin);
+            robot.move_lin_rel_or(0, 0, 0,0, -k_ori * tcp_incr_lin);
         }
 
         private void but_rz_p_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(0, 0, 0,0,0, k_ori * tcp_incr_lin);
+            robot.move_lin_rel_or(0, 0, 0,0,0, k_ori * tcp_incr_lin);
         }
 
         private void but_rz_m_Click(object sender, EventArgs e)
         {
-            robot.move_lin_rel(0, 0, 0,0,0, -k_ori * tcp_incr_lin);
+            robot.move_lin_rel_or(0, 0, 0,0,0, -k_ori * tcp_incr_lin);
         }
 
         private void but_rob_con_Click(object sender, EventArgs e)
@@ -253,14 +275,14 @@ namespace opengl3
         public enum Command { CheckFeasibility, Create, Rotate, RemoveNoise, RegisterGlobally, BuildModel };
         public string module { get; set; }
         public string command { get; set; }
-        public string[] value { get; set; }
-        public ScannerCommand(Module _module, Command _command, string[] _value = null)
+        public string value { get; set; }
+        public ScannerCommand(Module _module, Command _command, string _value = null)
         {
             module = _module.ToString();
             command = _command.ToString();
             if (_value == null)
             {
-                value = new string[] { "asd" };
+                value ="asd" ;
             }
             else
             {

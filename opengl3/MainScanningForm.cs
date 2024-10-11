@@ -3664,7 +3664,7 @@ namespace opengl3
             string iiwa = "172.31.1.147";
             string pulse = "localhost";
             port_tcp = Convert.ToInt32(tb_port_tcp.Text);
-            con1.Connection(port_tcp,pulse );
+            con1.Connection(port_tcp, pulse);
 
             Thread tcp_thread = new Thread(recieve_tcp);
             tcp_thread.Start(con1);

@@ -30,8 +30,6 @@ namespace opengl3
         public void stop()
         {
             jakaAPI.motion_abort(ref handle);
-
-            
         }
 
         public string get_cur_pos()
@@ -60,16 +58,20 @@ namespace opengl3
             JKTYPE.CartesianPose tcp_pos = new JKTYPE.CartesianPose();
             tcp_pos.tran.x = x; tcp_pos.tran.y = y; tcp_pos.tran.z = z; 
             tcp_pos.rpy.rx = rx; tcp_pos.rpy.ry = ry; tcp_pos.rpy.rz = rz;
-            //jakaAPI.linear_move(ref handle, ref tcp_pos, JKTYPE.MoveMode.INCR, false, vel);
             JKTYPE.OptionalCond cond = new JKTYPE.OptionalCond();
-            Console.WriteLine("lin");
-            jakaAPI.linear_move_extend_ori(ref handle, ref tcp_pos, JKTYPE.MoveMode.INCR, false, vel,20,0,ref cond,0.00000000001,0.00000000005);
+            jakaAPI.linear_move_extend_ori(ref handle, ref tcp_pos, JKTYPE.MoveMode.INCR, false, vel,1,0,ref cond,1,1);
+        }
+
+        public void move_lin_rel_or(double x = 0, double y = 0, double z = 0, double rx = 0, double ry = 0, double rz = 0,
+            double vel = 0.8,double draif_dist = 0.3)
+        {
+            move_lin_rel(draif_dist, 0, 0,rx, ry, rz, vel);
+            move_lin_rel(-draif_dist, 0, 0, 0, 0, 0, vel);
         }
 
         public void move_joint(JKTYPE.JointValue j_pos)
         {
             jakaAPI.joint_move(ref handle, ref j_pos, JKTYPE.MoveMode.ABS, false, 0.1);
-
         }
 
         public void move_home()

@@ -23,7 +23,7 @@ function ProcessEvent(module, event, value)
 		if ( event === "OnStarted" )
 		{
 			CheckFeasibility();
-			MakeScan();
+			//MakeScan();
 			
 			Application.LogMessage("CheckFeasibility");
 
@@ -37,7 +37,7 @@ function ProcessEvent(module, event, value)
 		if (event === "OnCheckPassed") {
 			//  Write here what a script should do when started
 			Application.LogMessage("Script started");
-			let mes = "{\"module\":\"Scan\",\"command\":\"Create\",\"value\":[\"asd\"]}";
+			/*let mes = "{\"module\":\"Scan\",\"command\":\"Create\",\"value\":[\"asd\"]}";
 			let back = "\\";
 			//mes = mes.replace(back, "");
 			//let test_com = "{"module":"Scan","command":"Create","value":["asd"]}"
@@ -49,15 +49,16 @@ function ProcessEvent(module, event, value)
 
 			Application.LogMessage("test: " + JSON.stringify(test_com2));
 			Application.LogMessage(mes);
-			
+			*/
 			//StartScanCreation();
 			//FinishScript();
-			//TcpServer.Start(31000);
+			TcpServer.Start(31000);
 		}
 		else if ( event === "OnModelBuilt" )
 		{
 
 			Application.LogMessage("Model built");
+			TcpServer.SendCommand("Model built");
 			//FinishScript();
 		}
        else if ( event === "OnScanCreated" )
@@ -68,6 +69,8 @@ function ProcessEvent(module, event, value)
 				let newScan = value["newScanName"];
 				newScans.push(newScan);
 			}
+			Application.LogMessage("Scan created");
+			TcpServer.SendCommand("Scan created");
 			//BuildModel();
        }
 		else if ( event === "OnNoiseRemoved" )
