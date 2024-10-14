@@ -16,7 +16,7 @@ namespace opengl3
 
     public static class Detection
     {
-        public static PointF[] detectLineSensor(Mat mat, int wind = 5)
+        public static PointF[] detectLineSensor(Mat mat, int wind = 5, int wind_regr = 3)
         {
             var mat_data = mat.Clone();
 
@@ -35,14 +35,60 @@ namespace opengl3
                 for (int k = -wind; k < wind; k++)
                     br_sum += data[j + k, i];
                 float br_cur = br_sum / (wind * 2);
-                ps_b.Add(new PointF(i, 480 - br_cur));//480
+                ps_b.Add(new PointF(i, br_cur));//480-
                 if (br_cur > br)
                 {
                     br = br_cur;
                     i_m = i;
                 }
             }
-            var ps_imp = ps_b.GetRange(i_m - 3, 7).ToArray();
+            var ps_imp = ps_b.GetRange(i_m - wind_regr, wind_regr*2+1).ToArray();
+            var vals_regr = new List<double[]>();
+            for (int i = 0; i < ps_imp.Length; i++)
+            {
+                vals_regr.Add(new double[] { ps_imp[i].X, ps_imp[i].Y });
+            }
+
+            var koef = Regression.regression(vals_regr.ToArray(), 2);
+            var a = koef[2];
+            var b = koef[1];
+            var x_cent = (-b / (2 * a));
+
+            var ps = new PointF[] { new PointF(x_cent, j) };
+
+            /*return Regression.paintRegression(mat, vals_regr.ToArray(),2);
+
+            var color = UtilOpenCV.drawPointsF(mat, ps_imp, 0, 0, 255);
+            color = UtilOpenCV.drawPointsF(color, ps, 255, 0, 0);
+            Console.WriteLine(ps[0].X);
+            return color;*/
+            return ps;
+        }
+        public static PointF[] detectLineSensor_v2(Mat mat, int wind = 5, int wind_regr = 3)
+        {
+            var mat_data = mat.Clone();
+
+            CvInvoke.CvtColor(mat_data, mat_data, ColorConversion.Bgr2Gray);
+            CvInvoke.GaussianBlur(mat_data, mat_data, new Size(13, 13), -1);
+            var data = (byte[,])mat_data.GetData();
+
+            int j = (int)(data.GetLength(0) / 2);
+            float br = 0;
+            int i_m = 0;
+            var ps_b = new List<PointF>();
+            for (int i = 0; i < data.GetLength(1); i++)
+            {
+                float br_cur = data[j , i];
+                ps_b.Add(new PointF(i, br_cur));//480-
+                if (br_cur > br)
+                {
+                    br = br_cur;
+                    i_m = i;
+                }
+            }
+            var beg = i_m - wind_regr; if (beg < 0) beg = 0;
+            var end = i_m + wind_regr; if (end > ps_b.Count-1) end = ps_b.Count - 1;
+            var ps_imp = ps_b.GetRange(i_m - wind_regr, wind_regr * 2 + 1).ToArray();
             var vals_regr = new List<double[]>();
             for (int i = 0; i < ps_imp.Length; i++)
             {

@@ -82,17 +82,7 @@ namespace opengl3
             this.tb_print_vel = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage10 = new System.Windows.Forms.TabPage();
-            this.but_pos_disp = new System.Windows.Forms.Button();
-            this.textBox_pos_disp = new System.Windows.Forms.TextBox();
-            this.but_cycle_time_rel = new System.Windows.Forms.Button();
-            this.textBox_cycle_time_rel = new System.Windows.Forms.TextBox();
-            this.but_cycle_time = new System.Windows.Forms.Button();
-            this.textBox_cycle_time = new System.Windows.Forms.TextBox();
-            this.but_cycle_ampl = new System.Windows.Forms.Button();
-            this.textBox_cycle_ampl = new System.Windows.Forms.TextBox();
-            this.but_cycle_type = new System.Windows.Forms.Button();
             this.label45 = new System.Windows.Forms.Label();
-            this.textBox_cycle_type = new System.Windows.Forms.TextBox();
             this.trackBar11 = new System.Windows.Forms.TrackBar();
             this.label46 = new System.Windows.Forms.Label();
             this.trackBar12 = new System.Windows.Forms.TrackBar();
@@ -120,6 +110,10 @@ namespace opengl3
             this.but_con_scan = new System.Windows.Forms.Button();
             this.tB_fps_scan = new System.Windows.Forms.TextBox();
             this.textNimVid = new System.Windows.Forms.TextBox();
+            this.txBx_photoName = new System.Windows.Forms.TextBox();
+            this.box_photoFolder = new System.Windows.Forms.TextBox();
+            this.box_scanFolder = new System.Windows.Forms.TextBox();
+            this.boxN = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
             this.combo_improc = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -127,16 +121,12 @@ namespace opengl3
             this.label56 = new System.Windows.Forms.Label();
             this.label55 = new System.Windows.Forms.Label();
             this.but_scan_sing_las = new System.Windows.Forms.Button();
-            this.txBx_photoName = new System.Windows.Forms.TextBox();
             this.but_scan_marl = new System.Windows.Forms.Button();
             this.but_scan_stereolas = new System.Windows.Forms.Button();
-            this.box_photoFolder = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this.box_scanFolder = new System.Windows.Forms.TextBox();
-            this.boxN = new System.Windows.Forms.TextBox();
             this.tabPage12 = new System.Windows.Forms.TabPage();
             this.combo_robot_ch = new System.Windows.Forms.ComboBox();
             this.tb_port_tcp = new System.Windows.Forms.TextBox();
@@ -149,16 +139,31 @@ namespace opengl3
             this.tabPage13 = new System.Windows.Forms.TabPage();
             this.but_marl_setShvpPos = new System.Windows.Forms.Button();
             this.textBox_marl_shcpPos = new System.Windows.Forms.TextBox();
+            this.textBox_set_kvp = new System.Windows.Forms.TextBox();
+            this.textBox_set_kpp = new System.Windows.Forms.TextBox();
+            this.textBox_laser_dest = new System.Windows.Forms.TextBox();
             this.butset_kvp = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox_set_kvp = new System.Windows.Forms.TextBox();
             this.but_marl_open = new System.Windows.Forms.Button();
             this.but_set_kpp = new System.Windows.Forms.Button();
             this.but_marl_close = new System.Windows.Forms.Button();
-            this.textBox_set_kpp = new System.Windows.Forms.TextBox();
             this.but_marl_receav = new System.Windows.Forms.Button();
             this.but_laser_dest = new System.Windows.Forms.Button();
-            this.textBox_laser_dest = new System.Windows.Forms.TextBox();
+            this.tabPage14 = new System.Windows.Forms.TabPage();
+            this.label_cur_las_dist = new System.Windows.Forms.Label();
+            this.label86 = new System.Windows.Forms.Label();
+            this.textBox_laser_roi = new System.Windows.Forms.TextBox();
+            this.textBox_pos_disp = new System.Windows.Forms.TextBox();
+            this.textBox_cycle_time_rel = new System.Windows.Forms.TextBox();
+            this.textBox_cycle_time = new System.Windows.Forms.TextBox();
+            this.textBox_cycle_ampl = new System.Windows.Forms.TextBox();
+            this.textBox_cycle_type = new System.Windows.Forms.TextBox();
+            this.button_laser_roi = new System.Windows.Forms.Button();
+            this.but_pos_disp = new System.Windows.Forms.Button();
+            this.but_cycle_time_rel = new System.Windows.Forms.Button();
+            this.but_cycle_time = new System.Windows.Forms.Button();
+            this.but_cycle_ampl = new System.Windows.Forms.Button();
+            this.but_cycle_type = new System.Windows.Forms.Button();
             this.lab_fps_cam1 = new System.Windows.Forms.Label();
             this.but_load_scan = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -517,6 +522,8 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.but_compens_begin = new System.Windows.Forms.Button();
+            this.but_compens_end = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -548,6 +555,7 @@ namespace opengl3
             this.tabPage11.SuspendLayout();
             this.tabPage12.SuspendLayout();
             this.tabPage13.SuspendLayout();
+            this.tabPage14.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -1204,6 +1212,7 @@ namespace opengl3
             this.tabControl1.Controls.Add(this.tabPage11);
             this.tabControl1.Controls.Add(this.tabPage12);
             this.tabControl1.Controls.Add(this.tabPage13);
+            this.tabControl1.Controls.Add(this.tabPage14);
             this.tabControl1.Location = new System.Drawing.Point(1304, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -1212,17 +1221,7 @@ namespace opengl3
             // 
             // tabPage10
             // 
-            this.tabPage10.Controls.Add(this.but_pos_disp);
-            this.tabPage10.Controls.Add(this.textBox_pos_disp);
-            this.tabPage10.Controls.Add(this.but_cycle_time_rel);
-            this.tabPage10.Controls.Add(this.textBox_cycle_time_rel);
-            this.tabPage10.Controls.Add(this.but_cycle_time);
-            this.tabPage10.Controls.Add(this.textBox_cycle_time);
-            this.tabPage10.Controls.Add(this.but_cycle_ampl);
-            this.tabPage10.Controls.Add(this.textBox_cycle_ampl);
-            this.tabPage10.Controls.Add(this.but_cycle_type);
             this.tabPage10.Controls.Add(this.label45);
-            this.tabPage10.Controls.Add(this.textBox_cycle_type);
             this.tabPage10.Controls.Add(this.trackBar11);
             this.tabPage10.Controls.Add(this.label46);
             this.tabPage10.Controls.Add(this.trackBar12);
@@ -1250,88 +1249,6 @@ namespace opengl3
             this.tabPage10.Text = "Отладка";
             this.tabPage10.UseVisualStyleBackColor = true;
             // 
-            // but_pos_disp
-            // 
-            this.but_pos_disp.Location = new System.Drawing.Point(242, 238);
-            this.but_pos_disp.Name = "but_pos_disp";
-            this.but_pos_disp.Size = new System.Drawing.Size(152, 48);
-            this.but_pos_disp.TabIndex = 165;
-            this.but_pos_disp.Text = "Позиция";
-            this.but_pos_disp.UseVisualStyleBackColor = true;
-            this.but_pos_disp.Click += new System.EventHandler(this.but_pos_disp_Click);
-            // 
-            // textBox_pos_disp
-            // 
-            this.textBox_pos_disp.Location = new System.Drawing.Point(400, 247);
-            this.textBox_pos_disp.Name = "textBox_pos_disp";
-            this.textBox_pos_disp.Size = new System.Drawing.Size(137, 26);
-            this.textBox_pos_disp.TabIndex = 166;
-            this.textBox_pos_disp.Text = "0";
-            // 
-            // but_cycle_time_rel
-            // 
-            this.but_cycle_time_rel.Location = new System.Drawing.Point(242, 184);
-            this.but_cycle_time_rel.Name = "but_cycle_time_rel";
-            this.but_cycle_time_rel.Size = new System.Drawing.Size(152, 48);
-            this.but_cycle_time_rel.TabIndex = 163;
-            this.but_cycle_time_rel.Text = "Время отдыха";
-            this.but_cycle_time_rel.UseVisualStyleBackColor = true;
-            this.but_cycle_time_rel.Click += new System.EventHandler(this.but_cycle_time_rel_Click);
-            // 
-            // textBox_cycle_time_rel
-            // 
-            this.textBox_cycle_time_rel.Location = new System.Drawing.Point(400, 193);
-            this.textBox_cycle_time_rel.Name = "textBox_cycle_time_rel";
-            this.textBox_cycle_time_rel.Size = new System.Drawing.Size(137, 26);
-            this.textBox_cycle_time_rel.TabIndex = 164;
-            this.textBox_cycle_time_rel.Text = "0";
-            // 
-            // but_cycle_time
-            // 
-            this.but_cycle_time.Location = new System.Drawing.Point(242, 130);
-            this.but_cycle_time.Name = "but_cycle_time";
-            this.but_cycle_time.Size = new System.Drawing.Size(152, 48);
-            this.but_cycle_time.TabIndex = 161;
-            this.but_cycle_time.Text = "Время цикла";
-            this.but_cycle_time.UseVisualStyleBackColor = true;
-            this.but_cycle_time.Click += new System.EventHandler(this.but_cycle_time_Click);
-            // 
-            // textBox_cycle_time
-            // 
-            this.textBox_cycle_time.Location = new System.Drawing.Point(400, 139);
-            this.textBox_cycle_time.Name = "textBox_cycle_time";
-            this.textBox_cycle_time.Size = new System.Drawing.Size(137, 26);
-            this.textBox_cycle_time.TabIndex = 162;
-            this.textBox_cycle_time.Text = "15";
-            // 
-            // but_cycle_ampl
-            // 
-            this.but_cycle_ampl.Location = new System.Drawing.Point(242, 76);
-            this.but_cycle_ampl.Name = "but_cycle_ampl";
-            this.but_cycle_ampl.Size = new System.Drawing.Size(152, 48);
-            this.but_cycle_ampl.TabIndex = 159;
-            this.but_cycle_ampl.Text = "Амплитуда";
-            this.but_cycle_ampl.UseVisualStyleBackColor = true;
-            this.but_cycle_ampl.Click += new System.EventHandler(this.but_cycle_ampl_Click);
-            // 
-            // textBox_cycle_ampl
-            // 
-            this.textBox_cycle_ampl.Location = new System.Drawing.Point(400, 85);
-            this.textBox_cycle_ampl.Name = "textBox_cycle_ampl";
-            this.textBox_cycle_ampl.Size = new System.Drawing.Size(137, 26);
-            this.textBox_cycle_ampl.TabIndex = 160;
-            this.textBox_cycle_ampl.Text = "7";
-            // 
-            // but_cycle_type
-            // 
-            this.but_cycle_type.Location = new System.Drawing.Point(242, 22);
-            this.but_cycle_type.Name = "but_cycle_type";
-            this.but_cycle_type.Size = new System.Drawing.Size(152, 48);
-            this.but_cycle_type.TabIndex = 157;
-            this.but_cycle_type.Text = "Тип цикла";
-            this.but_cycle_type.UseVisualStyleBackColor = true;
-            this.but_cycle_type.Click += new System.EventHandler(this.but_cycle_type_Click);
-            // 
             // label45
             // 
             this.label45.AutoSize = true;
@@ -1340,14 +1257,6 @@ namespace opengl3
             this.label45.Size = new System.Drawing.Size(66, 20);
             this.label45.TabIndex = 135;
             this.label45.Text = "minDisp";
-            // 
-            // textBox_cycle_type
-            // 
-            this.textBox_cycle_type.Location = new System.Drawing.Point(400, 31);
-            this.textBox_cycle_type.Name = "textBox_cycle_type";
-            this.textBox_cycle_type.Size = new System.Drawing.Size(137, 26);
-            this.textBox_cycle_type.TabIndex = 158;
-            this.textBox_cycle_type.Text = "3";
             // 
             // trackBar11
             // 
@@ -1539,6 +1448,10 @@ namespace opengl3
             this.tabPage11.Controls.Add(this.but_con_scan);
             this.tabPage11.Controls.Add(this.tB_fps_scan);
             this.tabPage11.Controls.Add(this.textNimVid);
+            this.tabPage11.Controls.Add(this.txBx_photoName);
+            this.tabPage11.Controls.Add(this.box_photoFolder);
+            this.tabPage11.Controls.Add(this.box_scanFolder);
+            this.tabPage11.Controls.Add(this.boxN);
             this.tabPage11.Controls.Add(this.label21);
             this.tabPage11.Controls.Add(this.combo_improc);
             this.tabPage11.Controls.Add(this.label1);
@@ -1546,16 +1459,12 @@ namespace opengl3
             this.tabPage11.Controls.Add(this.label56);
             this.tabPage11.Controls.Add(this.label55);
             this.tabPage11.Controls.Add(this.but_scan_sing_las);
-            this.tabPage11.Controls.Add(this.txBx_photoName);
             this.tabPage11.Controls.Add(this.but_scan_marl);
             this.tabPage11.Controls.Add(this.but_scan_stereolas);
-            this.tabPage11.Controls.Add(this.box_photoFolder);
             this.tabPage11.Controls.Add(this.label9);
             this.tabPage11.Controls.Add(this.label10);
             this.tabPage11.Controls.Add(this.label8);
             this.tabPage11.Controls.Add(this.label16);
-            this.tabPage11.Controls.Add(this.box_scanFolder);
-            this.tabPage11.Controls.Add(this.boxN);
             this.tabPage11.Location = new System.Drawing.Point(4, 29);
             this.tabPage11.Name = "tabPage11";
             this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
@@ -1638,6 +1547,38 @@ namespace opengl3
             this.textNimVid.Text = "1";
             this.textNimVid.DoubleClick += new System.EventHandler(this.videoStart_Click);
             // 
+            // txBx_photoName
+            // 
+            this.txBx_photoName.Location = new System.Drawing.Point(355, 138);
+            this.txBx_photoName.Name = "txBx_photoName";
+            this.txBx_photoName.Size = new System.Drawing.Size(103, 26);
+            this.txBx_photoName.TabIndex = 119;
+            this.txBx_photoName.Text = "photo_13";
+            // 
+            // box_photoFolder
+            // 
+            this.box_photoFolder.Location = new System.Drawing.Point(355, 40);
+            this.box_photoFolder.Name = "box_photoFolder";
+            this.box_photoFolder.Size = new System.Drawing.Size(130, 26);
+            this.box_photoFolder.TabIndex = 59;
+            this.box_photoFolder.Text = "test";
+            // 
+            // box_scanFolder
+            // 
+            this.box_scanFolder.Location = new System.Drawing.Point(355, 9);
+            this.box_scanFolder.Name = "box_scanFolder";
+            this.box_scanFolder.Size = new System.Drawing.Size(130, 26);
+            this.box_scanFolder.TabIndex = 57;
+            this.box_scanFolder.Text = "scan";
+            // 
+            // boxN
+            // 
+            this.boxN.Location = new System.Drawing.Point(355, 85);
+            this.boxN.Name = "boxN";
+            this.boxN.Size = new System.Drawing.Size(69, 26);
+            this.boxN.TabIndex = 31;
+            this.boxN.Text = "200";
+            // 
             // label21
             // 
             this.label21.AutoSize = true;
@@ -1709,14 +1650,6 @@ namespace opengl3
             this.but_scan_sing_las.UseVisualStyleBackColor = true;
             this.but_scan_sing_las.Click += new System.EventHandler(this.but_scan_sing_las_Click);
             // 
-            // txBx_photoName
-            // 
-            this.txBx_photoName.Location = new System.Drawing.Point(355, 138);
-            this.txBx_photoName.Name = "txBx_photoName";
-            this.txBx_photoName.Size = new System.Drawing.Size(103, 26);
-            this.txBx_photoName.TabIndex = 119;
-            this.txBx_photoName.Text = "photo_13";
-            // 
             // but_scan_marl
             // 
             this.but_scan_marl.AccessibleName = "2";
@@ -1740,14 +1673,6 @@ namespace opengl3
             this.but_scan_stereolas.Text = "Scan StereoLaser";
             this.but_scan_stereolas.UseVisualStyleBackColor = true;
             this.but_scan_stereolas.Click += new System.EventHandler(this.but_scan_stereolas_Click);
-            // 
-            // box_photoFolder
-            // 
-            this.box_photoFolder.Location = new System.Drawing.Point(355, 40);
-            this.box_photoFolder.Name = "box_photoFolder";
-            this.box_photoFolder.Size = new System.Drawing.Size(130, 26);
-            this.box_photoFolder.TabIndex = 59;
-            this.box_photoFolder.Text = "test";
             // 
             // label9
             // 
@@ -1787,22 +1712,6 @@ namespace opengl3
             this.label16.Size = new System.Drawing.Size(123, 20);
             this.label16.TabIndex = 69;
             this.label16.Text = "Number Point ->";
-            // 
-            // box_scanFolder
-            // 
-            this.box_scanFolder.Location = new System.Drawing.Point(355, 9);
-            this.box_scanFolder.Name = "box_scanFolder";
-            this.box_scanFolder.Size = new System.Drawing.Size(130, 26);
-            this.box_scanFolder.TabIndex = 57;
-            this.box_scanFolder.Text = "scan";
-            // 
-            // boxN
-            // 
-            this.boxN.Location = new System.Drawing.Point(355, 85);
-            this.boxN.Name = "boxN";
-            this.boxN.Size = new System.Drawing.Size(69, 26);
-            this.boxN.TabIndex = 31;
-            this.boxN.Text = "200";
             // 
             // tabPage12
             // 
@@ -1906,16 +1815,16 @@ namespace opengl3
             // 
             this.tabPage13.Controls.Add(this.but_marl_setShvpPos);
             this.tabPage13.Controls.Add(this.textBox_marl_shcpPos);
+            this.tabPage13.Controls.Add(this.textBox_set_kvp);
+            this.tabPage13.Controls.Add(this.textBox_set_kpp);
+            this.tabPage13.Controls.Add(this.textBox_laser_dest);
             this.tabPage13.Controls.Add(this.butset_kvp);
             this.tabPage13.Controls.Add(this.label2);
-            this.tabPage13.Controls.Add(this.textBox_set_kvp);
             this.tabPage13.Controls.Add(this.but_marl_open);
             this.tabPage13.Controls.Add(this.but_set_kpp);
             this.tabPage13.Controls.Add(this.but_marl_close);
-            this.tabPage13.Controls.Add(this.textBox_set_kpp);
             this.tabPage13.Controls.Add(this.but_marl_receav);
             this.tabPage13.Controls.Add(this.but_laser_dest);
-            this.tabPage13.Controls.Add(this.textBox_laser_dest);
             this.tabPage13.Location = new System.Drawing.Point(4, 29);
             this.tabPage13.Name = "tabPage13";
             this.tabPage13.Padding = new System.Windows.Forms.Padding(3);
@@ -1942,6 +1851,30 @@ namespace opengl3
             this.textBox_marl_shcpPos.TabIndex = 11;
             this.textBox_marl_shcpPos.Text = "0";
             // 
+            // textBox_set_kvp
+            // 
+            this.textBox_set_kvp.Location = new System.Drawing.Point(130, 106);
+            this.textBox_set_kvp.Name = "textBox_set_kvp";
+            this.textBox_set_kvp.Size = new System.Drawing.Size(70, 26);
+            this.textBox_set_kvp.TabIndex = 124;
+            this.textBox_set_kvp.Text = "100";
+            // 
+            // textBox_set_kpp
+            // 
+            this.textBox_set_kpp.Location = new System.Drawing.Point(130, 27);
+            this.textBox_set_kpp.Name = "textBox_set_kpp";
+            this.textBox_set_kpp.Size = new System.Drawing.Size(70, 26);
+            this.textBox_set_kpp.TabIndex = 122;
+            this.textBox_set_kpp.Text = "20";
+            // 
+            // textBox_laser_dest
+            // 
+            this.textBox_laser_dest.Location = new System.Drawing.Point(319, 27);
+            this.textBox_laser_dest.Name = "textBox_laser_dest";
+            this.textBox_laser_dest.Size = new System.Drawing.Size(70, 26);
+            this.textBox_laser_dest.TabIndex = 120;
+            this.textBox_laser_dest.Text = "3500";
+            // 
             // butset_kvp
             // 
             this.butset_kvp.Location = new System.Drawing.Point(14, 92);
@@ -1960,14 +1893,6 @@ namespace opengl3
             this.label2.Size = new System.Drawing.Size(51, 20);
             this.label2.TabIndex = 114;
             this.label2.Text = "Marlin";
-            // 
-            // textBox_set_kvp
-            // 
-            this.textBox_set_kvp.Location = new System.Drawing.Point(130, 106);
-            this.textBox_set_kvp.Name = "textBox_set_kvp";
-            this.textBox_set_kvp.Size = new System.Drawing.Size(70, 26);
-            this.textBox_set_kvp.TabIndex = 124;
-            this.textBox_set_kvp.Text = "100";
             // 
             // but_marl_open
             // 
@@ -1999,14 +1924,6 @@ namespace opengl3
             this.but_marl_close.UseVisualStyleBackColor = true;
             this.but_marl_close.Click += new System.EventHandler(this.but_marl_close_Click);
             // 
-            // textBox_set_kpp
-            // 
-            this.textBox_set_kpp.Location = new System.Drawing.Point(130, 27);
-            this.textBox_set_kpp.Name = "textBox_set_kpp";
-            this.textBox_set_kpp.Size = new System.Drawing.Size(70, 26);
-            this.textBox_set_kpp.TabIndex = 122;
-            this.textBox_set_kpp.Text = "20";
-            // 
             // but_marl_receav
             // 
             this.but_marl_receav.Location = new System.Drawing.Point(131, 169);
@@ -2027,13 +1944,157 @@ namespace opengl3
             this.but_laser_dest.UseVisualStyleBackColor = true;
             this.but_laser_dest.Click += new System.EventHandler(this.but_laser_dest_Click);
             // 
-            // textBox_laser_dest
+            // tabPage14
             // 
-            this.textBox_laser_dest.Location = new System.Drawing.Point(319, 27);
-            this.textBox_laser_dest.Name = "textBox_laser_dest";
-            this.textBox_laser_dest.Size = new System.Drawing.Size(70, 26);
-            this.textBox_laser_dest.TabIndex = 120;
-            this.textBox_laser_dest.Text = "3500";
+            this.tabPage14.Controls.Add(this.but_compens_end);
+            this.tabPage14.Controls.Add(this.but_compens_begin);
+            this.tabPage14.Controls.Add(this.label_cur_las_dist);
+            this.tabPage14.Controls.Add(this.label86);
+            this.tabPage14.Controls.Add(this.textBox_laser_roi);
+            this.tabPage14.Controls.Add(this.textBox_pos_disp);
+            this.tabPage14.Controls.Add(this.textBox_cycle_time_rel);
+            this.tabPage14.Controls.Add(this.textBox_cycle_time);
+            this.tabPage14.Controls.Add(this.textBox_cycle_ampl);
+            this.tabPage14.Controls.Add(this.textBox_cycle_type);
+            this.tabPage14.Controls.Add(this.button_laser_roi);
+            this.tabPage14.Controls.Add(this.but_pos_disp);
+            this.tabPage14.Controls.Add(this.but_cycle_time_rel);
+            this.tabPage14.Controls.Add(this.but_cycle_time);
+            this.tabPage14.Controls.Add(this.but_cycle_ampl);
+            this.tabPage14.Controls.Add(this.but_cycle_type);
+            this.tabPage14.Location = new System.Drawing.Point(4, 29);
+            this.tabPage14.Name = "tabPage14";
+            this.tabPage14.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage14.Size = new System.Drawing.Size(543, 366);
+            this.tabPage14.TabIndex = 4;
+            this.tabPage14.Text = "Имитация дыхания";
+            this.tabPage14.UseVisualStyleBackColor = true;
+            // 
+            // label_cur_las_dist
+            // 
+            this.label_cur_las_dist.AutoSize = true;
+            this.label_cur_las_dist.Location = new System.Drawing.Point(335, 114);
+            this.label_cur_las_dist.Name = "label_cur_las_dist";
+            this.label_cur_las_dist.Size = new System.Drawing.Size(70, 20);
+            this.label_cur_las_dist.TabIndex = 180;
+            this.label_cur_las_dist.Text = "X Y W H";
+            // 
+            // label86
+            // 
+            this.label86.AutoSize = true;
+            this.label86.Location = new System.Drawing.Point(29, 311);
+            this.label86.Name = "label86";
+            this.label86.Size = new System.Drawing.Size(70, 20);
+            this.label86.TabIndex = 179;
+            this.label86.Text = "X Y W H";
+            // 
+            // textBox_laser_roi
+            // 
+            this.textBox_laser_roi.Location = new System.Drawing.Point(20, 276);
+            this.textBox_laser_roi.Name = "textBox_laser_roi";
+            this.textBox_laser_roi.Size = new System.Drawing.Size(517, 26);
+            this.textBox_laser_roi.TabIndex = 178;
+            this.textBox_laser_roi.Text = "600 360 80 10";
+            // 
+            // textBox_pos_disp
+            // 
+            this.textBox_pos_disp.Location = new System.Drawing.Point(176, 231);
+            this.textBox_pos_disp.Name = "textBox_pos_disp";
+            this.textBox_pos_disp.Size = new System.Drawing.Size(137, 26);
+            this.textBox_pos_disp.TabIndex = 176;
+            this.textBox_pos_disp.Text = "0";
+            // 
+            // textBox_cycle_time_rel
+            // 
+            this.textBox_cycle_time_rel.Location = new System.Drawing.Point(176, 177);
+            this.textBox_cycle_time_rel.Name = "textBox_cycle_time_rel";
+            this.textBox_cycle_time_rel.Size = new System.Drawing.Size(137, 26);
+            this.textBox_cycle_time_rel.TabIndex = 174;
+            this.textBox_cycle_time_rel.Text = "0";
+            // 
+            // textBox_cycle_time
+            // 
+            this.textBox_cycle_time.Location = new System.Drawing.Point(176, 123);
+            this.textBox_cycle_time.Name = "textBox_cycle_time";
+            this.textBox_cycle_time.Size = new System.Drawing.Size(137, 26);
+            this.textBox_cycle_time.TabIndex = 172;
+            this.textBox_cycle_time.Text = "15";
+            // 
+            // textBox_cycle_ampl
+            // 
+            this.textBox_cycle_ampl.Location = new System.Drawing.Point(176, 69);
+            this.textBox_cycle_ampl.Name = "textBox_cycle_ampl";
+            this.textBox_cycle_ampl.Size = new System.Drawing.Size(137, 26);
+            this.textBox_cycle_ampl.TabIndex = 170;
+            this.textBox_cycle_ampl.Text = "7";
+            // 
+            // textBox_cycle_type
+            // 
+            this.textBox_cycle_type.Location = new System.Drawing.Point(176, 15);
+            this.textBox_cycle_type.Name = "textBox_cycle_type";
+            this.textBox_cycle_type.Size = new System.Drawing.Size(137, 26);
+            this.textBox_cycle_type.TabIndex = 168;
+            this.textBox_cycle_type.Text = "3";
+            // 
+            // button_laser_roi
+            // 
+            this.button_laser_roi.Location = new System.Drawing.Point(238, 308);
+            this.button_laser_roi.Name = "button_laser_roi";
+            this.button_laser_roi.Size = new System.Drawing.Size(124, 41);
+            this.button_laser_roi.TabIndex = 177;
+            this.button_laser_roi.Text = "Применить";
+            this.button_laser_roi.UseVisualStyleBackColor = true;
+            this.button_laser_roi.Click += new System.EventHandler(this.button_laser_roi_Click);
+            // 
+            // but_pos_disp
+            // 
+            this.but_pos_disp.Location = new System.Drawing.Point(18, 222);
+            this.but_pos_disp.Name = "but_pos_disp";
+            this.but_pos_disp.Size = new System.Drawing.Size(152, 48);
+            this.but_pos_disp.TabIndex = 175;
+            this.but_pos_disp.Text = "Позиция";
+            this.but_pos_disp.UseVisualStyleBackColor = true;
+            this.but_pos_disp.Click += new System.EventHandler(this.but_pos_disp_Click);
+            // 
+            // but_cycle_time_rel
+            // 
+            this.but_cycle_time_rel.Location = new System.Drawing.Point(18, 168);
+            this.but_cycle_time_rel.Name = "but_cycle_time_rel";
+            this.but_cycle_time_rel.Size = new System.Drawing.Size(152, 48);
+            this.but_cycle_time_rel.TabIndex = 173;
+            this.but_cycle_time_rel.Text = "Время отдыха";
+            this.but_cycle_time_rel.UseVisualStyleBackColor = true;
+            this.but_cycle_time_rel.Click += new System.EventHandler(this.but_cycle_time_rel_Click);
+            // 
+            // but_cycle_time
+            // 
+            this.but_cycle_time.Location = new System.Drawing.Point(18, 114);
+            this.but_cycle_time.Name = "but_cycle_time";
+            this.but_cycle_time.Size = new System.Drawing.Size(152, 48);
+            this.but_cycle_time.TabIndex = 171;
+            this.but_cycle_time.Text = "Время цикла";
+            this.but_cycle_time.UseVisualStyleBackColor = true;
+            this.but_cycle_time.Click += new System.EventHandler(this.but_cycle_time_Click);
+            // 
+            // but_cycle_ampl
+            // 
+            this.but_cycle_ampl.Location = new System.Drawing.Point(18, 60);
+            this.but_cycle_ampl.Name = "but_cycle_ampl";
+            this.but_cycle_ampl.Size = new System.Drawing.Size(152, 48);
+            this.but_cycle_ampl.TabIndex = 169;
+            this.but_cycle_ampl.Text = "Амплитуда";
+            this.but_cycle_ampl.UseVisualStyleBackColor = true;
+            this.but_cycle_ampl.Click += new System.EventHandler(this.but_cycle_ampl_Click);
+            // 
+            // but_cycle_type
+            // 
+            this.but_cycle_type.Location = new System.Drawing.Point(18, 6);
+            this.but_cycle_type.Name = "but_cycle_type";
+            this.but_cycle_type.Size = new System.Drawing.Size(152, 48);
+            this.but_cycle_type.TabIndex = 167;
+            this.but_cycle_type.Text = "Тип цикла";
+            this.but_cycle_type.UseVisualStyleBackColor = true;
+            this.but_cycle_type.Click += new System.EventHandler(this.but_cycle_type_Click);
             // 
             // lab_fps_cam1
             // 
@@ -5925,6 +5986,26 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
+            // but_compens_begin
+            // 
+            this.but_compens_begin.Location = new System.Drawing.Point(356, 162);
+            this.but_compens_begin.Name = "but_compens_begin";
+            this.but_compens_begin.Size = new System.Drawing.Size(124, 41);
+            this.but_compens_begin.TabIndex = 181;
+            this.but_compens_begin.Text = "Запуск";
+            this.but_compens_begin.UseVisualStyleBackColor = true;
+            this.but_compens_begin.Click += new System.EventHandler(this.but_compens_begin_Click);
+            // 
+            // but_compens_end
+            // 
+            this.but_compens_end.Location = new System.Drawing.Point(356, 209);
+            this.but_compens_end.Name = "but_compens_end";
+            this.but_compens_end.Size = new System.Drawing.Size(124, 41);
+            this.but_compens_end.TabIndex = 182;
+            this.but_compens_end.Text = "Остановка";
+            this.but_compens_end.UseVisualStyleBackColor = true;
+            this.but_compens_end.Click += new System.EventHandler(this.but_compens_end_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -5972,6 +6053,8 @@ namespace opengl3
             this.tabPage12.PerformLayout();
             this.tabPage13.ResumeLayout(false);
             this.tabPage13.PerformLayout();
+            this.tabPage14.ResumeLayout(false);
+            this.tabPage14.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).EndInit();
@@ -6128,11 +6211,8 @@ namespace opengl3
         private Emgu.CV.UI.HistogramBox histogramBox1;
         private System.Windows.Forms.TabPage tabOpenGl;
         private OpenGL.GlControl glControl1;
-        private System.Windows.Forms.Label label55;
-        private System.Windows.Forms.TextBox txBx_photoName;
         private System.Windows.Forms.TextBox nameC2;
         private System.Windows.Forms.TextBox nameB2;
-        private System.Windows.Forms.TextBox textNimVid;
         private System.Windows.Forms.TextBox nameA2;
         private System.Windows.Forms.TextBox nameX;
         private System.Windows.Forms.TextBox nameY;
@@ -6146,12 +6226,9 @@ namespace opengl3
         private System.Windows.Forms.TextBox nameY_in;
         private System.Windows.Forms.TextBox nameZ2;
         private System.Windows.Forms.TextBox nameX_in;
-        private System.Windows.Forms.TextBox boxN;
         private System.Windows.Forms.TextBox nameC;
         private System.Windows.Forms.TextBox nameB;
         private System.Windows.Forms.TextBox nameA;
-        private System.Windows.Forms.TextBox box_scanFolder;
-        private System.Windows.Forms.TextBox box_photoFolder;
         private System.Windows.Forms.TextBox textBox_powerLaser;
         private Emgu.CV.UI.ImageBox imBox_base_2;
         private Emgu.CV.UI.ImageBox imBox_base_1;
@@ -6173,16 +6250,12 @@ namespace opengl3
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Button butCalcIm;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboVideo;
         private System.Windows.Forms.ComboBox comboNumber;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button but_find_ports;
         private System.Windows.Forms.ComboBox comboBox_portsArd;
         private System.Windows.Forms.Button but_setPower;
@@ -6194,33 +6267,11 @@ namespace opengl3
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button but_setShvpPos;
         private System.Windows.Forms.TextBox textBox_shvpPos;
-        private System.Windows.Forms.Label label56;
-        private System.Windows.Forms.ComboBox combo_improc;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button but_scan_start_laser;
-        private System.Windows.Forms.Button but_scan_def;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox_marl_shcpPos;
-        private System.Windows.Forms.Button but_marl_setShvpPos;
-        private System.Windows.Forms.Button but_marl_close;
-        private System.Windows.Forms.Button but_marl_open;
-        private System.Windows.Forms.Button but_marl_receav;
-        private System.Windows.Forms.Button but_scan_marl;
-        private System.Windows.Forms.Button but_scan_stereolas;
         private System.Windows.Forms.Button but_load_scan;
         private System.Windows.Forms.Label label_timer;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Button but_laser_dest;
-        private System.Windows.Forms.TextBox textBox_laser_dest;
-        private System.Windows.Forms.Button but_set_kpp;
-        private System.Windows.Forms.TextBox textBox_set_kpp;
-        private System.Windows.Forms.Button butset_kvp;
-        private System.Windows.Forms.TextBox textBox_set_kvp;
         private System.Windows.Forms.Button but_las_enc;
         private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Button but_scan_sing_las;
-        private System.Windows.Forms.TextBox tB_fps_scan;
-        private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Button but_resize;
         private System.Windows.Forms.Label lab_fps_cam1;
         private System.Windows.Forms.Button but_dir_disp;
@@ -6236,41 +6287,7 @@ namespace opengl3
         private System.Windows.Forms.TextBox tb_print_syr_d;
         private System.Windows.Forms.Button but_extr_st;
         private System.Windows.Forms.Timer timer2;
-        private System.Windows.Forms.Button but_con_scan;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage10;
-        private System.Windows.Forms.Label label45;
-        private System.Windows.Forms.TrackBar trackBar11;
-        private System.Windows.Forms.Label label46;
-        private System.Windows.Forms.TrackBar trackBar12;
-        private System.Windows.Forms.Label label47;
-        private System.Windows.Forms.TrackBar trackBar13;
-        private System.Windows.Forms.Label label48;
-        private System.Windows.Forms.TrackBar trackBar14;
-        private System.Windows.Forms.Label label49;
-        private System.Windows.Forms.TrackBar trackBar15;
-        private System.Windows.Forms.Label label50;
-        private System.Windows.Forms.TrackBar trackBar16;
-        private System.Windows.Forms.Label label51;
-        private System.Windows.Forms.TrackBar trackBar17;
-        private System.Windows.Forms.Label label52;
-        private System.Windows.Forms.TrackBar trackBar18;
-        private System.Windows.Forms.Label label53;
-        private System.Windows.Forms.TrackBar trackBar19;
-        private System.Windows.Forms.Label label54;
-        private System.Windows.Forms.TrackBar trackBar20;
-        private System.Windows.Forms.TabPage tabPage11;
-        private System.Windows.Forms.TabPage tabPage12;
-        private System.Windows.Forms.ComboBox combo_robot_ch;
-        private System.Windows.Forms.TextBox tb_port_tcp;
-        private System.Windows.Forms.Button rob_res;
-        private System.Windows.Forms.Button rob_con;
-        private System.Windows.Forms.Button disc_rob;
-        private System.Windows.Forms.Button send_rob;
-        private System.Windows.Forms.Button but_scan_start;
-        private System.Windows.Forms.Button but_photo;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TabPage tabPage13;
         private System.Windows.Forms.Button but_set_z_pos;
         private System.Windows.Forms.TextBox textB_set_z_pos;
         private System.Windows.Forms.Label label58;
@@ -6409,14 +6426,11 @@ namespace opengl3
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Button but_hydro_model_grav;
         private System.Windows.Forms.Button but_gl_detect_line;
-        private System.Windows.Forms.Button but_con_scan_sam;
-        private System.Windows.Forms.Button but_start_scan_sam;
         private System.Windows.Forms.TabPage tabP_connect;
         private System.Windows.Forms.Button but_wrap;
         private System.Windows.Forms.Button but_unwrap;
         private System.Windows.Forms.Button but_allign_cyl;
         private System.Windows.Forms.TextBox tB_tool_inf;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TabPage tabP_developer;
         private System.Windows.Forms.TabControl tabC_connect_ins;
         private System.Windows.Forms.TabPage tabP_connect_set;
@@ -6545,16 +6559,92 @@ namespace opengl3
         private System.Windows.Forms.Button but_water_vel;
         private System.Windows.Forms.TextBox textBox_water_vel;
         private System.Windows.Forms.Label label85;
-        private System.Windows.Forms.Button but_cycle_time_rel;
-        private System.Windows.Forms.TextBox textBox_cycle_time_rel;
-        private System.Windows.Forms.Button but_cycle_time;
-        private System.Windows.Forms.TextBox textBox_cycle_time;
-        private System.Windows.Forms.Button but_cycle_ampl;
-        private System.Windows.Forms.TextBox textBox_cycle_ampl;
-        private System.Windows.Forms.Button but_cycle_type;
-        private System.Windows.Forms.TextBox textBox_cycle_type;
-        private System.Windows.Forms.Button but_pos_disp;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage10;
+        private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.TrackBar trackBar11;
+        private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.TrackBar trackBar12;
+        private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.TrackBar trackBar13;
+        private System.Windows.Forms.Label label48;
+        private System.Windows.Forms.TrackBar trackBar14;
+        private System.Windows.Forms.Label label49;
+        private System.Windows.Forms.TrackBar trackBar15;
+        private System.Windows.Forms.Label label50;
+        private System.Windows.Forms.TrackBar trackBar16;
+        private System.Windows.Forms.Label label51;
+        private System.Windows.Forms.TrackBar trackBar17;
+        private System.Windows.Forms.Label label52;
+        private System.Windows.Forms.TrackBar trackBar18;
+        private System.Windows.Forms.Label label53;
+        private System.Windows.Forms.TrackBar trackBar19;
+        private System.Windows.Forms.Label label54;
+        private System.Windows.Forms.TrackBar trackBar20;
+        private System.Windows.Forms.TabPage tabPage11;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button but_con_scan_sam;
+        private System.Windows.Forms.Button but_start_scan_sam;
+        private System.Windows.Forms.Button but_scan_start_laser;
+        private System.Windows.Forms.Button but_con_scan;
+        private System.Windows.Forms.TextBox tB_fps_scan;
+        private System.Windows.Forms.TextBox textNimVid;
+        private System.Windows.Forms.TextBox txBx_photoName;
+        private System.Windows.Forms.TextBox box_photoFolder;
+        private System.Windows.Forms.TextBox box_scanFolder;
+        private System.Windows.Forms.TextBox boxN;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.ComboBox combo_improc;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button but_scan_def;
+        private System.Windows.Forms.Label label56;
+        private System.Windows.Forms.Label label55;
+        private System.Windows.Forms.Button but_scan_sing_las;
+        private System.Windows.Forms.Button but_scan_marl;
+        private System.Windows.Forms.Button but_scan_stereolas;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TabPage tabPage12;
+        private System.Windows.Forms.ComboBox combo_robot_ch;
+        private System.Windows.Forms.TextBox tb_port_tcp;
+        private System.Windows.Forms.Button rob_res;
+        private System.Windows.Forms.Button rob_con;
+        private System.Windows.Forms.Button disc_rob;
+        private System.Windows.Forms.Button send_rob;
+        private System.Windows.Forms.Button but_scan_start;
+        private System.Windows.Forms.Button but_photo;
+        private System.Windows.Forms.TabPage tabPage13;
+        private System.Windows.Forms.Button but_marl_setShvpPos;
+        private System.Windows.Forms.TextBox textBox_marl_shcpPos;
+        private System.Windows.Forms.TextBox textBox_set_kvp;
+        private System.Windows.Forms.TextBox textBox_set_kpp;
+        private System.Windows.Forms.TextBox textBox_laser_dest;
+        private System.Windows.Forms.Button butset_kvp;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button but_marl_open;
+        private System.Windows.Forms.Button but_set_kpp;
+        private System.Windows.Forms.Button but_marl_close;
+        private System.Windows.Forms.Button but_marl_receav;
+        private System.Windows.Forms.Button but_laser_dest;
+        private System.Windows.Forms.TabPage tabPage14;
+        private System.Windows.Forms.Label label86;
+        private System.Windows.Forms.TextBox textBox_laser_roi;
         private System.Windows.Forms.TextBox textBox_pos_disp;
+        private System.Windows.Forms.TextBox textBox_cycle_time_rel;
+        private System.Windows.Forms.TextBox textBox_cycle_time;
+        private System.Windows.Forms.TextBox textBox_cycle_ampl;
+        private System.Windows.Forms.TextBox textBox_cycle_type;
+        private System.Windows.Forms.Button button_laser_roi;
+        private System.Windows.Forms.Button but_pos_disp;
+        private System.Windows.Forms.Button but_cycle_time_rel;
+        private System.Windows.Forms.Button but_cycle_time;
+        private System.Windows.Forms.Button but_cycle_ampl;
+        private System.Windows.Forms.Button but_cycle_type;
+        private System.Windows.Forms.Label label_cur_las_dist;
+        private System.Windows.Forms.Button but_compens_end;
+        private System.Windows.Forms.Button but_compens_begin;
     }
 }
 

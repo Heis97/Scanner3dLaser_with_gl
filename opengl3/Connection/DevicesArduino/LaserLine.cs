@@ -10,7 +10,8 @@ namespace opengl3
     public class LaserLine : DeviceArduino
     {
         public double steps_per_unit_z = 1600;
-        double steps_per_unit_disp = 4000;
+        public double steps_per_unit_disp = 4000;
+        public double steps_per_unit_movm_mash = 2025;//3200:1.58
         string port;
         int baudrate = 250000;
         int laser = 1, 
@@ -118,8 +119,8 @@ namespace opengl3
         }
         public void set_pos_disp(double _pos)//mm
         {
-            int val = (int)(_pos * 10);
-            send(val, pos_disp);
+            //int val = (int)(_pos * 10);
+            send((int)_pos+5000, pos_disp);
         }
         public void setLaserDest(int _pos)
         {

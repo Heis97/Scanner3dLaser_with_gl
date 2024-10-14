@@ -27,6 +27,8 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        Rectangle laser_roi = new Rectangle(600, 400, 40, 20);
+
         int save_vid_count = 0;
         double dist_contr_rob = 10;
         Matrix4x4f[] ms = new Matrix4x4f[8];
@@ -137,11 +139,13 @@ namespace opengl3
         Matrix<double> cameraDistortionCoeffs_dist = new Matrix<double>(5, 1);
         Matrix<double> cameraMatrix_dist = new Matrix<double>(3, 3);
 
+        bool compensation = false;
 
+        
         int k = 1;
         bool writ = false;
         int bin_pos = 40;
-
+        double cur_pos_z = 30;
         Mat mat0 = new Mat();
         List<Mat> cap_mats = new List<Mat>();
         Features features = new Features();
@@ -152,7 +156,8 @@ namespace opengl3
                 new MCvPoint3D32f(0, 60, 0),
                 new MCvPoint3D32f(60, 60, 0)
             };
-
+        double[] koef = null;
+        double[] koef_y = null;
         Scanner scanner;
         #endregion
 
@@ -160,7 +165,24 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
+            var vals_regr = new double[][]
+                {
+                    new double[] {38.2 ,0 },
+                    new double[] {41.2, -2 },
+                    new double[] {44.8, -4},
+            };
+            koef = Regression.regression(vals_regr, 2);
+            var cur = Regression.calcPolynSolv(koef, 37);
+            Console.WriteLine("test_regr "+cur);
 
+            vals_regr = new double[][]
+                {
+                    new double[] {30 ,364},
+                    new double[] {32 ,356},
+                    new double[] {34, 349 },
+            };
+            koef_y = Regression.regression(vals_regr, 1);
+            //cur = Regression.calcPolynSolv(koef, 37);
             // Console.WriteLine( Point3d_GL.affil_p_seg(new Point3d_GL(1, 1, 1), new Point3d_GL(4, 4, 4), new Point3d_GL(0.999, 0.999, 0.999)));
 
             //VideoAnalyse.photo_from_video("vid//1.mp4");
@@ -4971,15 +4993,49 @@ namespace opengl3
                 case FrameType.LasLin://laser sensor
                     try
                     {
-                        var ps = Detection.detectLineSensor(mat);
-                        Console.Write(ps[0].X + " ");
-                        laserLine?.setLaserCur((int)(10 * ps[0].X));
-                        // Console.WriteLine((int)(10 * ps[0].X));
-                        CvInvoke.Line(mat, new Point(350, 0), new Point(350, mat.Width - 1), new MCvScalar(0, 255, 0));
-                        imb_base[ind].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
-                        //Console.Write(laserLine?.reseav());
+                        /* var ps = Detection.detectLineSensor(mat);
+                         Console.Write(ps[0].X + " ");
+                         laserLine?.setLaserCur((int)(10 * ps[0].X));
+                         // Console.WriteLine((int)(10 * ps[0].X));
 
-                        //imb_base[ind - 1].Image = Detection.detectLineSensor(mat);
+                         CvInvoke.Line(mat, new Point(350, 0), new Point(350, mat.Width - 1), new MCvScalar(0, 255, 0));
+                         imb_base[ind].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
+                         //Console.Write(laserLine?.reseav());
+                         */
+                        laser_roi.Y = (int)Regression.calcPolynSolv(koef_y, cur_pos_z);
+                        var mat_s = new Mat(mat, laser_roi);
+                        var ps = Detection.detectLineSensor_v2(mat_s,5,2);
+                        var x =(int) ps[0].X+ laser_roi.X;
+                        var y = (int)ps[0].Y + laser_roi.Y;
+                        // Console.Write(ps[0].X + " ");
+                        //laserLine?.setLaserCur((int)(10 * ps[0].X));
+                        //Console.WriteLine( ps[0].X);
+
+                        var cur = Regression.calcPolynSolv(koef, ps[0].X);
+                        var pos_z_mm = 30 - cur-0.8;
+                        cur_pos_z = pos_z_mm;
+                        Console.WriteLine(pos_z_mm);
+                        if (pos_z_mm < 35 || pos_z_mm > 28)
+                        {
+                            var pos_z_steps = (int)(pos_z_mm / 10 * laserLine?.steps_per_unit_z);
+                            if (compensation)
+                            {
+                                laserLine?.set_z_pos(pos_z_steps);
+                            }
+
+                        }
+                        else
+                        {
+                           
+                        }
+                        label_cur_las_dist.BeginInvoke((MethodInvoker)(() => label_cur_las_dist.Text = ps[0].X.ToString()));
+                        CvInvoke.Line(mat, new Point(0,y), new Point( mat.Width - 1,y), new MCvScalar(255, 0, 0));
+
+                        CvInvoke.Line(mat, new Point(x, 0), new Point(x, mat.Height-1), new MCvScalar(0, 255, 0));
+
+                        CvInvoke.Rectangle(mat, laser_roi, new MCvScalar(0, 255, 255));
+                        imb_base[ind].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
+
                     }
                     catch
                     {
@@ -7647,8 +7703,15 @@ namespace opengl3
         private void but_pos_disp_Click(object sender, EventArgs e)//mm
         {
             laserLine?.set_adr(i2c_adr_movm_mash);
-            laserLine?.set_pos_disp(to_double(textBox_pos_disp.Text));
+           // laserLine?.set_pos_disp(to_double(textBox_pos_disp.Text));
+            
+            var text = textBox_pos_disp.Text;
+            text = text.Replace(',', '.');
+            var pos_z_mm = Convert.ToDouble(text);
+            var pos_z_steps = (int)(pos_z_mm / 10 * laserLine.steps_per_unit_movm_mash);
+            laserLine?.set_pos_disp(pos_z_steps);
         }
+
         double to_double(string val)
         {
             if (val == null) return 0;
@@ -7656,9 +7719,34 @@ namespace opengl3
             val = val.Replace(',', '.');
             return Convert.ToDouble(val);
         }
+
         #endregion
 
-        
+        private void button_laser_roi_Click(object sender, EventArgs e)
+        {
+            var vals = textBox_laser_roi.Text.Split(' ');
+            if(vals!=null)
+            {
+                if (vals.Length == 4)
+                {
+                    var x = Convert.ToInt32(vals[0]);
+                    var y = Convert.ToInt32(vals[1]);
+                    var w = Convert.ToInt32(vals[2]);
+                    var h = Convert.ToInt32(vals[3]);
+                    laser_roi = new Rectangle(x, y, w, h);
+                }
+            }
+        }
+
+        private void but_compens_begin_Click(object sender, EventArgs e)
+        {
+            compensation = true;
+        }
+
+        private void but_compens_end_Click(object sender, EventArgs e)
+        {
+            compensation = false;
+        }
     }
 }
 
