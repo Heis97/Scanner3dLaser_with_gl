@@ -9,7 +9,7 @@ namespace opengl3
 {
     public class LaserLine : DeviceArduino
     {
-        public double steps_per_unit_z = 1600;
+        public double steps_per_unit_z = 1600;// 1600 16 micr; 800 8 micr;
         public double steps_per_unit_disp = 4000;
         public double steps_per_unit_movm_mash = 2025;//3200:1.58
         string port;

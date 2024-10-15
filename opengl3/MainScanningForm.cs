@@ -121,6 +121,8 @@ namespace opengl3
         const int scanning_len = 330;
         volatile int videoframe_count = 0;
 
+        double compens_gap = 0.8;
+
         volatile int[] videoframe_counts = new int[5] { -1, -1,-1,-1,-1 };
 
         volatile int[] videoframe_counts_stop = new int[5] { int.MaxValue , int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue };
@@ -5005,14 +5007,14 @@ namespace opengl3
                         laser_roi.Y = (int)Regression.calcPolynSolv(koef_y, cur_pos_z);
                         var mat_s = new Mat(mat, laser_roi);
                         var ps = Detection.detectLineSensor_v2(mat_s,5,2);
-                        var x =(int) ps[0].X+ laser_roi.X;
+                        var x = (int)ps[0].X + laser_roi.X;
                         var y = (int)ps[0].Y + laser_roi.Y;
                         // Console.Write(ps[0].X + " ");
                         //laserLine?.setLaserCur((int)(10 * ps[0].X));
                         //Console.WriteLine( ps[0].X);
 
                         var cur = Regression.calcPolynSolv(koef, ps[0].X);
-                        var pos_z_mm = 30 - cur-0.8;
+                        var pos_z_mm = 30 - cur - compens_gap;
                         cur_pos_z = pos_z_mm;
                         Console.WriteLine(pos_z_mm);
                         if (pos_z_mm < 35 || pos_z_mm > 28)
