@@ -54,7 +54,30 @@ namespace opengl3
             connect(port, baudrate);
             set_adr(adr);
         }
+        public double parse_pos_z()
+        {
+            if(response==null) return -1;           
+            var resp = response.ToString();
+            var lines = resp.Split('\n');                
+            for(int i = lines.Length-1; i >=0;i--)
+            {
+                var l = lines[i];
+                l = l.Trim();
+                if(l.Contains("cur_pos")|| l.Contains("q"))
+                {
+                    response.Clear();
+                    var resp_vals = resp.Split();
+                    var pos_str = resp_vals[1];
+                    var pos_int = Convert.ToInt32(pos_str);
+                    return pos_int / steps_per_unit_z;
+                }
+                    
 
+            }
+               
+            
+            return -1;
+        }
         public bool connectStart()
         {
             return connect(port, baudrate);
@@ -67,6 +90,12 @@ namespace opengl3
         {
             send(on, laser);
         }
+
+        public void test()
+        {
+            send(0, 0);
+        }
+
         public void laserOff()
         {
             send(off, laser);

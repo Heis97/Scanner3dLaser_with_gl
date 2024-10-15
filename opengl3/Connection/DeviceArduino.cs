@@ -15,6 +15,7 @@ namespace opengl3
         protected SerialPort serialPort;
         protected bool isConnected = false;
         public int adr = -1;
+        static protected StringBuilder response;
         protected DeviceArduino()
         {
             serialPort = new SerialPort();
@@ -51,6 +52,7 @@ namespace opengl3
         }
         public void send(int val, int var)
         {
+
             //Console.WriteLine("send: "+val+" " + var);
             if (serialPort.IsOpen)
             {
@@ -119,8 +121,11 @@ namespace opengl3
                 res += serialPort.ReadLine();
             }*/
             //return res;
-            
-            return serialPort.ReadExisting();
+            if (response == null) response = new StringBuilder();
+            //response.Clear();
+            var res = serialPort.ReadExisting();
+            response.Append(res);
+            return res;
             
         }
         private async void func(int val,int var)

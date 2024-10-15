@@ -150,6 +150,10 @@ namespace opengl3
             this.but_marl_receav = new System.Windows.Forms.Button();
             this.but_laser_dest = new System.Windows.Forms.Button();
             this.tabPage14 = new System.Windows.Forms.TabPage();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.button5 = new System.Windows.Forms.Button();
+            this.but_compens_end = new System.Windows.Forms.Button();
+            this.but_compens_begin = new System.Windows.Forms.Button();
             this.label_cur_las_dist = new System.Windows.Forms.Label();
             this.label86 = new System.Windows.Forms.Label();
             this.textBox_laser_roi = new System.Windows.Forms.TextBox();
@@ -522,8 +526,8 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_compens_begin = new System.Windows.Forms.Button();
-            this.but_compens_end = new System.Windows.Forms.Button();
+            this.textBox_send_con = new System.Windows.Forms.TextBox();
+            this.but_jaka_send = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1715,6 +1719,8 @@ namespace opengl3
             // 
             // tabPage12
             // 
+            this.tabPage12.Controls.Add(this.but_jaka_send);
+            this.tabPage12.Controls.Add(this.textBox_send_con);
             this.tabPage12.Controls.Add(this.combo_robot_ch);
             this.tabPage12.Controls.Add(this.tb_port_tcp);
             this.tabPage12.Controls.Add(this.rob_res);
@@ -1946,6 +1952,8 @@ namespace opengl3
             // 
             // tabPage14
             // 
+            this.tabPage14.Controls.Add(this.textBox1);
+            this.tabPage14.Controls.Add(this.button5);
             this.tabPage14.Controls.Add(this.but_compens_end);
             this.tabPage14.Controls.Add(this.but_compens_begin);
             this.tabPage14.Controls.Add(this.label_cur_las_dist);
@@ -1970,10 +1978,47 @@ namespace opengl3
             this.tabPage14.Text = "Имитация дыхания";
             this.tabPage14.UseVisualStyleBackColor = true;
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(453, 17);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(84, 26);
+            this.textBox1.TabIndex = 184;
+            this.textBox1.Text = "3";
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(326, 6);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(121, 48);
+            this.button5.TabIndex = 183;
+            this.button5.Text = "Тип цикла";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
+            // but_compens_end
+            // 
+            this.but_compens_end.Location = new System.Drawing.Point(356, 209);
+            this.but_compens_end.Name = "but_compens_end";
+            this.but_compens_end.Size = new System.Drawing.Size(124, 41);
+            this.but_compens_end.TabIndex = 182;
+            this.but_compens_end.Text = "Остановка";
+            this.but_compens_end.UseVisualStyleBackColor = true;
+            this.but_compens_end.Click += new System.EventHandler(this.but_compens_end_Click);
+            // 
+            // but_compens_begin
+            // 
+            this.but_compens_begin.Location = new System.Drawing.Point(356, 162);
+            this.but_compens_begin.Name = "but_compens_begin";
+            this.but_compens_begin.Size = new System.Drawing.Size(124, 41);
+            this.but_compens_begin.TabIndex = 181;
+            this.but_compens_begin.Text = "Запуск";
+            this.but_compens_begin.UseVisualStyleBackColor = true;
+            this.but_compens_begin.Click += new System.EventHandler(this.but_compens_begin_Click);
+            // 
             // label_cur_las_dist
             // 
             this.label_cur_las_dist.AutoSize = true;
-            this.label_cur_las_dist.Location = new System.Drawing.Point(335, 114);
+            this.label_cur_las_dist.Location = new System.Drawing.Point(335, 88);
             this.label_cur_las_dist.Name = "label_cur_las_dist";
             this.label_cur_las_dist.Size = new System.Drawing.Size(70, 20);
             this.label_cur_las_dist.TabIndex = 180;
@@ -5986,25 +6031,23 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // but_compens_begin
+            // textBox_send_con
             // 
-            this.but_compens_begin.Location = new System.Drawing.Point(356, 162);
-            this.but_compens_begin.Name = "but_compens_begin";
-            this.but_compens_begin.Size = new System.Drawing.Size(124, 41);
-            this.but_compens_begin.TabIndex = 181;
-            this.but_compens_begin.Text = "Запуск";
-            this.but_compens_begin.UseVisualStyleBackColor = true;
-            this.but_compens_begin.Click += new System.EventHandler(this.but_compens_begin_Click);
+            this.textBox_send_con.Location = new System.Drawing.Point(16, 304);
+            this.textBox_send_con.Name = "textBox_send_con";
+            this.textBox_send_con.Size = new System.Drawing.Size(521, 26);
+            this.textBox_send_con.TabIndex = 146;
             // 
-            // but_compens_end
+            // but_jaka_send
             // 
-            this.but_compens_end.Location = new System.Drawing.Point(356, 209);
-            this.but_compens_end.Name = "but_compens_end";
-            this.but_compens_end.Size = new System.Drawing.Size(124, 41);
-            this.but_compens_end.TabIndex = 182;
-            this.but_compens_end.Text = "Остановка";
-            this.but_compens_end.UseVisualStyleBackColor = true;
-            this.but_compens_end.Click += new System.EventHandler(this.but_compens_end_Click);
+            this.but_jaka_send.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_jaka_send.Location = new System.Drawing.Point(213, 167);
+            this.but_jaka_send.Name = "but_jaka_send";
+            this.but_jaka_send.Size = new System.Drawing.Size(116, 33);
+            this.but_jaka_send.TabIndex = 147;
+            this.but_jaka_send.Text = "Отправить";
+            this.but_jaka_send.UseVisualStyleBackColor = true;
+            this.but_jaka_send.Click += new System.EventHandler(this.but_jaka_send_Click);
             // 
             // MainScanningForm
             // 
@@ -6645,6 +6688,10 @@ namespace opengl3
         private System.Windows.Forms.Label label_cur_las_dist;
         private System.Windows.Forms.Button but_compens_end;
         private System.Windows.Forms.Button but_compens_begin;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.TextBox textBox_send_con;
+        private System.Windows.Forms.Button but_jaka_send;
     }
 }
 

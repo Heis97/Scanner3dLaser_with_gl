@@ -29,8 +29,11 @@ namespace opengl3
         {
             try
             {
+                Console.WriteLine("connect");
                 _client.Connect(server, port);
+                Console.WriteLine("con");
                 _response = new StringBuilder();
+                Console.WriteLine("get");
                 _stream = _client.GetStream();
             }
             catch
@@ -65,6 +68,7 @@ namespace opengl3
         {            
             byte[] send = System.Text.Encoding.UTF8.GetBytes(send_prog);
             _stream?.Write(send, 0, send.Length);
+            Console.WriteLine(send_prog);
         }
         public void close_con()
         {

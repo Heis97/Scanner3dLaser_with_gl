@@ -3701,11 +3701,19 @@ namespace opengl3
             
             while (con.is_connect())
             {
-                if (printing)
+              //  if (printing)
                 {
                     var res = con.reseav();
-                    //Console.WriteLine(res);
-                    resend_rob_to_ard_extr(res, laserLine);
+                    if (res != null)
+                    {
+                        if(res.Length>3)
+                        {
+                            Console.WriteLine("tcp res: " + res);
+                        }
+                    }
+                   
+                    
+                    //resend_rob_to_ard_extr(res, laserLine);
                 }  
                 Thread.Sleep(10);
             }
@@ -5014,12 +5022,19 @@ namespace opengl3
                         //Console.WriteLine( ps[0].X);
 
                         var cur = Regression.calcPolynSolv(koef, ps[0].X);
-                        var pos_z_mm = 30 - cur - compens_gap;
-                        cur_pos_z = pos_z_mm;
-                        Console.WriteLine(pos_z_mm);
-                        if (pos_z_mm < 35 || pos_z_mm > 28)
+                        var comp_z_mm = 30 - cur - compens_gap;
+                        //cur_pos_z = pos_z_mm;
+                        //Console.WriteLine(pos_z_mm);
+                        laserLine?.test();
+                        if (laserLine != null)
                         {
-                            var pos_z_steps = (int)(pos_z_mm / 10 * laserLine?.steps_per_unit_z);
+                            var cur_pos_z_c = laserLine.parse_pos_z();
+                            if(cur_pos_z_c>0) cur_pos_z = cur_pos_z_c;
+                        }
+                        
+                        if (comp_z_mm < 35 || comp_z_mm > 28)
+                        {
+                            var pos_z_steps = (int)(comp_z_mm / 10 * laserLine?.steps_per_unit_z);
                             if (compensation)
                             {
                                 laserLine?.set_z_pos(pos_z_steps);
@@ -5030,7 +5045,7 @@ namespace opengl3
                         {
                            
                         }
-                        label_cur_las_dist.BeginInvoke((MethodInvoker)(() => label_cur_las_dist.Text = ps[0].X.ToString()));
+                        label_cur_las_dist.BeginInvoke((MethodInvoker)(() => label_cur_las_dist.Text = (ps[0].X.ToString()+"\n "+ comp_z_mm + "\n " + cur_pos_z)));
                         CvInvoke.Line(mat, new Point(0,y), new Point( mat.Width - 1,y), new MCvScalar(255, 0, 0));
 
                         CvInvoke.Line(mat, new Point(x, 0), new Point(x, mat.Height-1), new MCvScalar(0, 255, 0));
@@ -6978,7 +6993,7 @@ namespace opengl3
             {
                 con1 = new TCPclient();
             }
-            if(robot == RobotFrame.RobotType.KUKA)
+            /*if(robot == RobotFrame.RobotType.KUKA)
             {
                 var res = MessageBox.Show("1. Переведите робот в автоматичекий режим управления\n2. Запустите программу 'In situ bioprinter' на пульте робота\n3. Убедитесь что на пульте выведено сообщение 'Готов к работе'", "Сообщение",MessageBoxButtons.OKCancel);
                 if(res == DialogResult.Cancel)
@@ -6997,19 +7012,22 @@ namespace opengl3
             {
                 ip = "localhost";
             }
-
-            port_tcp = Convert.ToInt32(tb_port_tcp.Text);
-            Console.WriteLine(ip + " " + port_tcp);
+            */
+            // port_tcp = Convert.ToInt32(tb_port_tcp.Text);
+            // Console.WriteLine(ip + " " + port_tcp);
             //con1.Connection(port_tcp, kuka);
 
 
             con1 = new TCPclient();
-            port_tcp = Convert.ToInt32(tb_port_tcp.Text);
-            
-            con1.Connection(port_tcp, ip);
+            //port_tcp = Convert.ToInt32(tb_port_tcp.Text);
+
+            // con1.Connection(port_tcp, ip);
+
+            con1.Connection(10000, "10.5.5.100");
 
             Thread tcp_thread = new Thread(recieve_tcp);
             tcp_thread.Start(con1);
+           
         }
 
         private void but_rob_discon_sc_Click(object sender, EventArgs e)
@@ -7748,6 +7766,11 @@ namespace opengl3
         private void but_compens_end_Click(object sender, EventArgs e)
         {
             compensation = false;
+        }
+
+        private void but_jaka_send_Click(object sender, EventArgs e)
+        {
+            con1.send_mes(textBox_send_con.Text);
         }
     }
 }
