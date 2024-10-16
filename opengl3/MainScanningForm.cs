@@ -27,7 +27,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
-        Rectangle laser_roi = new Rectangle(600, 400, 40, 20);
+        Rectangle laser_roi = new Rectangle(600, 360, 80, 10);
 
         int save_vid_count = 0;
         double dist_contr_rob = 10;
@@ -7771,6 +7771,21 @@ namespace opengl3
         private void but_jaka_send_Click(object sender, EventArgs e)
         {
             con1.send_mes(textBox_send_con.Text);
+        }
+
+        private void but_compens_gap_Click(object sender, EventArgs e)
+        {
+            compens_gap = to_double(textBox_compens_gap.Text);
+        }
+
+        private void but_comp_period_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void but_execut_period_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
