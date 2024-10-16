@@ -5032,7 +5032,7 @@ namespace opengl3
                             if(cur_pos_z_c>0) cur_pos_z = cur_pos_z_c;
                         }
                         
-                        if (comp_z_mm < 35 || comp_z_mm > 28)
+                        if (comp_z_mm < 37 || comp_z_mm > 25)
                         {
                             var pos_z_steps = (int)(comp_z_mm / 10 * laserLine?.steps_per_unit_z);
                             if (compensation)
