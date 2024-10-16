@@ -27,10 +27,14 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        List<PosTimestamp> timestamps = new List<PosTimestamp>();
+        bool record_times = false;
         Rectangle laser_roi = new Rectangle(600, 360, 80, 10);
-
+        long start_record_time = 0;
+        long record_time = 0;
         int save_vid_count = 0;
         double dist_contr_rob = 10;
+        double cur_pos_movm = 0;
         Matrix4x4f[] ms = new Matrix4x4f[8];
         //var qs = new Matrix4x4f[8];
         Matrix4x4f[] qms = new Matrix4x4f[8];
@@ -5001,7 +5005,7 @@ namespace opengl3
                     break;
 
                 case FrameType.LasLin://laser sensor
-                    try
+                    //try
                     {
                         /* var ps = Detection.detectLineSensor(mat);
                          Console.Write(ps[0].X + " ");
@@ -5013,6 +5017,10 @@ namespace opengl3
                          //Console.Write(laserLine?.reseav());
                          */
                         laser_roi.Y = (int)Regression.calcPolynSolv(koef_y, cur_pos_z);
+                        if( laser_roi.Y<0 || laser_roi.Y > mat.Height + laser_roi.Height)
+                        {
+                            laser_roi.Y = mat.Height / 2;
+                        }
                         var mat_s = new Mat(mat, laser_roi);
                         var ps = Detection.detectLineSensor_v2(mat_s,5,2);
                         var x = (int)ps[0].X + laser_roi.X;
@@ -5023,13 +5031,16 @@ namespace opengl3
 
                         var cur = Regression.calcPolynSolv(koef, ps[0].X);
                         var comp_z_mm = 30 - cur - compens_gap;
+
+                        handler_compens_record(cur);
                         //cur_pos_z = pos_z_mm;
                         //Console.WriteLine(pos_z_mm);
                         laserLine?.test();
                         if (laserLine != null)
                         {
                             var cur_pos_z_c = laserLine.parse_pos_z();
-                            if(cur_pos_z_c>0) cur_pos_z = cur_pos_z_c;
+                            if (cur_pos_z_c[0] >0) cur_pos_z = cur_pos_z_c[0]/laserLine.steps_per_unit_z;
+                            if (cur_pos_z_c[1] > 0) cur_pos_movm = cur_pos_z_c[1];
                         }
                         
                         if (comp_z_mm < 37 || comp_z_mm > 25)
@@ -5045,7 +5056,7 @@ namespace opengl3
                         {
                            
                         }
-                        label_cur_las_dist.BeginInvoke((MethodInvoker)(() => label_cur_las_dist.Text = (ps[0].X.ToString()+"\n "+ comp_z_mm + "\n " + cur_pos_z)));
+                        label_cur_las_dist.BeginInvoke((MethodInvoker)(() => label_cur_las_dist.Text = (ps[0].X.ToString()+"\n "+ comp_z_mm + "\n " + cur_pos_z + "\n " + cur_pos_movm)));
                         CvInvoke.Line(mat, new Point(0,y), new Point( mat.Width - 1,y), new MCvScalar(255, 0, 0));
 
                         CvInvoke.Line(mat, new Point(x, 0), new Point(x, mat.Height-1), new MCvScalar(0, 255, 0));
@@ -5054,7 +5065,7 @@ namespace opengl3
                         imb_base[ind].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
 
                     }
-                    catch
+                    //catch
                     {
 
                     }
@@ -7786,6 +7797,40 @@ namespace opengl3
         private void but_execut_period_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void but_compens_record_Click(object sender, EventArgs e)
+        {
+            record_time =(long)( to_double(textBox_compens_time_rec.Text) * 1000d);
+            timestamps = new List<PosTimestamp>();
+            start_record_time = cur_time_to_int();
+            record_times = true;
+        }
+        void handler_compens_record(double pos)
+        {
+            if(record_times)
+            {
+                var time = cur_time_to_int();
+                if(time < start_record_time+record_time)
+                {
+                    timestamps.Add(new PosTimestamp(pos, time));
+                }
+                else
+                {
+                    record_times = false;
+                    foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
+                }
+            }
+            
+        }
+        void end_compens_record()
+        {
+
+        }
+        int cur_time_to_int()
+        {
+            var time = DateTime.Now.Hour * 1000 * 60*60 + DateTime.Now.Minute * 1000 *60+ DateTime.Now.Second *1000 + DateTime.Now.Millisecond;
+            return time;
         }
     }
 }

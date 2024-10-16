@@ -87,8 +87,8 @@ namespace opengl3
                 }
             }
             var beg = i_m - wind_regr; if (beg < 0) beg = 0;
-            var end = i_m + wind_regr; if (end > ps_b.Count-1) end = ps_b.Count - 1;
-            var ps_imp = ps_b.GetRange(i_m - wind_regr, wind_regr * 2 + 1).ToArray();
+            var end = 2*wind_regr; if (beg + end > ps_b.Count-1) end = ps_b.Count - 1-beg;
+            var ps_imp = ps_b.GetRange(beg, end).ToArray();
             var vals_regr = new List<double[]>();
             for (int i = 0; i < ps_imp.Length; i++)
             {

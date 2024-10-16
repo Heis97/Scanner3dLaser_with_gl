@@ -9,9 +9,9 @@ namespace opengl3
 {
     public class LaserLine : DeviceArduino
     {
-        public double steps_per_unit_z = 800;// 1600 16 micr; 800 8 micr;
+        public double steps_per_unit_z = 1600;// 1600 16 micr; 800 8 micr;
         public double steps_per_unit_disp = 4000;
-        public double steps_per_unit_movm_mash = 2025;//3200:1.58
+        public double steps_per_unit_movm_mash = 1012;//3200:1.58 ||1600:1.58 
         string port;
         int baudrate = 250000;
         int laser = 1, 
@@ -54,29 +54,42 @@ namespace opengl3
             connect(port, baudrate);
             set_adr(adr);
         }
-        public double parse_pos_z()
+        public double[] parse_pos_z()
         {
-            if(response==null) return -1;           
+            var ret = new double[] { -1, -1 };
+            if (response==null) return ret;           
             var resp = response.ToString();
             var lines = resp.Split('\n');                
             for(int i = lines.Length-1; i >=0;i--)
             {
                 var l = lines[i];
                 l = l.Trim();
-                if(l.Contains("cur_pos")|| l.Contains("q"))
+                if(l.Contains("cur_pos")&& l.Contains("q"))
                 {
                     response.Clear();
-                    var resp_vals = resp.Split();
-                    var pos_str = resp_vals[1];
+                    for(int k=0; k<5; k++)
+                    {
+                        l = l.Replace("  ", " ");
+                    }
+                    var resp_vals = l.Split();
+
+                    var pos_str = resp_vals[1].Trim();
                     var pos_int = Convert.ToInt32(pos_str);
-                    return pos_int / steps_per_unit_z;
+                    ret[0] = pos_int;
+                    if(resp_vals.Length==4)
+                    {
+                        var pos_movm_str = resp_vals[2].Trim();
+                        var pos_movm_int = Convert.ToDouble(pos_movm_str);
+                        ret[1] = pos_movm_int;
+                    }
+                    return ret;
                 }
                     
 
             }
                
             
-            return -1;
+            return ret;
         }
         public bool connectStart()
         {
