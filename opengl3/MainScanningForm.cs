@@ -171,23 +171,25 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-            var vals_regr = new double[][]
-                {
-                    new double[] {38.2 ,0 },
-                    new double[] {41.2, -2 },
-                    new double[] {44.8, -4},
-            };
-            koef = Regression.regression(vals_regr, 2);
-            var cur = Regression.calcPolynSolv(koef, 37);
-            Console.WriteLine("test_regr "+cur);
+              var vals_regr = new double[][]
+                  {
+                      new double[] {38.2 ,0 },
+                      new double[] {41.2, -2 },
+                      new double[] {44.8, -4},
+              };
+              koef = Regression.regression(vals_regr, 2);
+              var cur = Regression.calcPolynSolv(koef, 37);
+             // Console.WriteLine("test_regr "+cur);
 
-            vals_regr = new double[][]
-                {
-                    new double[] {30 ,364},
-                    new double[] {32 ,356},
-                    new double[] {34, 349 },
-            };
-            koef_y = Regression.regression(vals_regr, 1);
+              vals_regr = new double[][]
+                  {
+                      new double[] {30 ,364},
+                      new double[] {32 ,356},
+                      new double[] {34, 349 },
+              };
+              koef_y = Regression.regression(vals_regr, 1);
+
+
             //cur = Regression.calcPolynSolv(koef, 37);
             // Console.WriteLine( Point3d_GL.affil_p_seg(new Point3d_GL(1, 1, 1), new Point3d_GL(4, 4, 4), new Point3d_GL(0.999, 0.999, 0.999)));
 
@@ -5032,7 +5034,7 @@ namespace opengl3
                         var cur = Regression.calcPolynSolv(koef, ps[0].X);
                         var comp_z_mm = 30 - cur - compens_gap;
 
-                        handler_compens_record(cur);
+                       
                         //cur_pos_z = pos_z_mm;
                         //Console.WriteLine(pos_z_mm);
                         laserLine?.test();
@@ -5056,6 +5058,7 @@ namespace opengl3
                         {
                            
                         }
+                        handler_compens_record(cur, cur_pos_movm, cur_pos_z);
                         label_cur_las_dist.BeginInvoke((MethodInvoker)(() => label_cur_las_dist.Text = (ps[0].X.ToString()+"\n "+ comp_z_mm + "\n " + cur_pos_z + "\n " + cur_pos_movm)));
                         CvInvoke.Line(mat, new Point(0,y), new Point( mat.Width - 1,y), new MCvScalar(255, 0, 0));
 
@@ -7791,7 +7794,11 @@ namespace opengl3
 
         private void but_comp_period_Click(object sender, EventArgs e)
         {
-
+            timestamps = FormSettings.load_obj<List<PosTimestamp>>("timestamps1_movm.json");
+            foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
+            Console.WriteLine("__________________________");
+            timestamps = FormSettings.load_obj<List<PosTimestamp>>("timestamps1_stay.json");
+            foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
         }
 
         private void but_execut_period_Click(object sender, EventArgs e)
@@ -7806,26 +7813,27 @@ namespace opengl3
             start_record_time = cur_time_to_int();
             record_times = true;
         }
-        void handler_compens_record(double pos)
+        void handler_compens_record(double pos1,double pos2=0, double pos3 = 0)
         {
             if(record_times)
             {
                 var time = cur_time_to_int();
                 if(time < start_record_time+record_time)
                 {
-                    timestamps.Add(new PosTimestamp(pos, time));
+                    timestamps.Add(new PosTimestamp(time, pos1, pos2, pos3));
                 }
                 else
                 {
-                    record_times = false;
-                    foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
+                    end_compens_record();
                 }
             }
             
         }
         void end_compens_record()
         {
-
+            record_times = false;
+            //foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
+            FormSettings.save_obj("timestamps1.json",timestamps);
         }
         int cur_time_to_int()
         {

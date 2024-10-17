@@ -33,7 +33,7 @@ namespace opengl3
             save_confs(scan_conf, traj_conf, patt_conf);
         }
 
-        public void save_obj(string path, object obj)
+        static public void save_obj(string path, object obj)
         {
             JsonSerializer serializer = new JsonSerializer();
             serializer.NullValueHandling = NullValueHandling.Ignore;
@@ -44,7 +44,7 @@ namespace opengl3
                 serializer.Serialize(writer, obj);
             }
         }
-        public T load_obj<T>(string path)
+        static public T load_obj<T>(string path)
         {
             string jsontext = "";
             try

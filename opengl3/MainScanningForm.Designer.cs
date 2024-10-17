@@ -152,6 +152,9 @@ namespace opengl3
             this.but_marl_receav = new System.Windows.Forms.Button();
             this.but_laser_dest = new System.Windows.Forms.Button();
             this.tabPage14 = new System.Windows.Forms.TabPage();
+            this.but_compens_record = new System.Windows.Forms.Button();
+            this.label87 = new System.Windows.Forms.Label();
+            this.textBox_compens_time_rec = new System.Windows.Forms.TextBox();
             this.but_execut_period = new System.Windows.Forms.Button();
             this.but_comp_period = new System.Windows.Forms.Button();
             this.textBox_compens_gap = new System.Windows.Forms.TextBox();
@@ -530,9 +533,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.textBox_compens_time_rec = new System.Windows.Forms.TextBox();
-            this.label87 = new System.Windows.Forms.Label();
-            this.but_compens_record = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2005,6 +2005,33 @@ namespace opengl3
             this.tabPage14.TabIndex = 4;
             this.tabPage14.Text = "Имитация дыхания";
             this.tabPage14.UseVisualStyleBackColor = true;
+            // 
+            // but_compens_record
+            // 
+            this.but_compens_record.Location = new System.Drawing.Point(248, 212);
+            this.but_compens_record.Name = "but_compens_record";
+            this.but_compens_record.Size = new System.Drawing.Size(126, 65);
+            this.but_compens_record.TabIndex = 190;
+            this.but_compens_record.Text = "Запись периода";
+            this.but_compens_record.UseVisualStyleBackColor = true;
+            this.but_compens_record.Click += new System.EventHandler(this.but_compens_record_Click);
+            // 
+            // label87
+            // 
+            this.label87.AutoSize = true;
+            this.label87.Location = new System.Drawing.Point(354, 180);
+            this.label87.Name = "label87";
+            this.label87.Size = new System.Drawing.Size(34, 20);
+            this.label87.TabIndex = 189;
+            this.label87.Text = "сек";
+            // 
+            // textBox_compens_time_rec
+            // 
+            this.textBox_compens_time_rec.Location = new System.Drawing.Point(264, 177);
+            this.textBox_compens_time_rec.Name = "textBox_compens_time_rec";
+            this.textBox_compens_time_rec.Size = new System.Drawing.Size(84, 26);
+            this.textBox_compens_time_rec.TabIndex = 188;
+            this.textBox_compens_time_rec.Text = "15";
             // 
             // but_execut_period
             // 
@@ -6079,33 +6106,6 @@ namespace opengl3
             // timer2
             // 
             this.timer2.Enabled = true;
-            // 
-            // textBox_compens_time_rec
-            // 
-            this.textBox_compens_time_rec.Location = new System.Drawing.Point(264, 177);
-            this.textBox_compens_time_rec.Name = "textBox_compens_time_rec";
-            this.textBox_compens_time_rec.Size = new System.Drawing.Size(84, 26);
-            this.textBox_compens_time_rec.TabIndex = 188;
-            this.textBox_compens_time_rec.Text = "10";
-            // 
-            // label87
-            // 
-            this.label87.AutoSize = true;
-            this.label87.Location = new System.Drawing.Point(354, 180);
-            this.label87.Name = "label87";
-            this.label87.Size = new System.Drawing.Size(34, 20);
-            this.label87.TabIndex = 189;
-            this.label87.Text = "сек";
-            // 
-            // but_compens_record
-            // 
-            this.but_compens_record.Location = new System.Drawing.Point(248, 212);
-            this.but_compens_record.Name = "but_compens_record";
-            this.but_compens_record.Size = new System.Drawing.Size(126, 65);
-            this.but_compens_record.TabIndex = 190;
-            this.but_compens_record.Text = "Запись периода";
-            this.but_compens_record.UseVisualStyleBackColor = true;
-            this.but_compens_record.Click += new System.EventHandler(this.but_compens_record_Click);
             // 
             // MainScanningForm
             // 
