@@ -188,8 +188,19 @@ namespace opengl3
                       new double[] {34, 349 },
               };
               koef_y = Regression.regression(vals_regr, 1);
+           /* var p1 = new PosTimestamp(7000, 1);
+            var p2 = new PosTimestamp(8000, 3);
+            var p3 = PosTimestamp.betw(p1, p2,7500);
+            int period = 3;
+
+            var arr_a = new List<double>( new double[] {0,1,2,3,4,5,6,7,8,9});
+            var st_ind = arr_a.Count / 2;
+            var arr1 = arr_a.GetRange(st_ind, period);
+            var arr2 = arr_a.GetRange(st_ind-period, period);
+            Console.WriteLine("s");*/
 
 
+            //Console.WriteLine(p3);
             //cur = Regression.calcPolynSolv(koef, 37);
             // Console.WriteLine( Point3d_GL.affil_p_seg(new Point3d_GL(1, 1, 1), new Point3d_GL(4, 4, 4), new Point3d_GL(0.999, 0.999, 0.999)));
 
@@ -7795,12 +7806,17 @@ namespace opengl3
         private void but_comp_period_Click(object sender, EventArgs e)
         {
             timestamps = FormSettings.load_obj<List<PosTimestamp>>("timestamps1_movm.json");
-            foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
+            /*foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
             Console.WriteLine("__________________________");
-            timestamps = FormSettings.load_obj<List<PosTimestamp>>("timestamps1_stay.json");
-            foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
-        }
+            var unif_t = MovmentCompensation.uniform_time(timestamps);
+            foreach (PosTimestamp timestamp in unif_t) Console.WriteLine(timestamp.ToString());
+            Console.WriteLine("__________________________");*/
 
+            var movm = MovmentCompensation.comp_period(timestamps);
+            //timestamps = FormSettings.load_obj<List<PosTimestamp>>("timestamps1_stay.json");
+            //foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
+        }
+       
         private void but_execut_period_Click(object sender, EventArgs e)
         {
 
