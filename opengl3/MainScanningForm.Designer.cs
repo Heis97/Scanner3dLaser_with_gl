@@ -103,6 +103,9 @@ namespace opengl3
             this.label54 = new System.Windows.Forms.Label();
             this.trackBar20 = new System.Windows.Forms.TrackBar();
             this.tabPage11 = new System.Windows.Forms.TabPage();
+            this.label89 = new System.Windows.Forms.Label();
+            this.but_set_expos = new System.Windows.Forms.Button();
+            this.textBox_exp_val = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.but_con_scan_sam = new System.Windows.Forms.Button();
             this.but_start_scan_sam = new System.Windows.Forms.Button();
@@ -152,10 +155,13 @@ namespace opengl3
             this.but_marl_receav = new System.Windows.Forms.Button();
             this.but_laser_dest = new System.Windows.Forms.Button();
             this.tabPage14 = new System.Windows.Forms.TabPage();
+            this.but_period_fi = new System.Windows.Forms.Button();
+            this.label88 = new System.Windows.Forms.Label();
+            this.textBox_movm_fi = new System.Windows.Forms.TextBox();
+            this.checkBox_compens_period = new System.Windows.Forms.CheckBox();
             this.but_compens_record = new System.Windows.Forms.Button();
             this.label87 = new System.Windows.Forms.Label();
             this.textBox_compens_time_rec = new System.Windows.Forms.TextBox();
-            this.but_execut_period = new System.Windows.Forms.Button();
             this.but_comp_period = new System.Windows.Forms.Button();
             this.textBox_compens_gap = new System.Windows.Forms.TextBox();
             this.but_compens_gap = new System.Windows.Forms.Button();
@@ -921,6 +927,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.imBox_base_2);
             this.tabMain.Controls.Add(this.imageBox1);
             this.tabMain.Controls.Add(this.but_resize);
             this.tabMain.Controls.Add(this.comboImages);
@@ -973,7 +980,6 @@ namespace opengl3
             this.tabMain.Controls.Add(this.comboVideo);
             this.tabMain.Controls.Add(this.comboNumber);
             this.tabMain.Controls.Add(this.imageBox2);
-            this.tabMain.Controls.Add(this.imBox_base_2);
             this.tabMain.Controls.Add(this.imBox_base);
             this.tabMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabMain.Location = new System.Drawing.Point(4, 27);
@@ -1450,6 +1456,9 @@ namespace opengl3
             // 
             // tabPage11
             // 
+            this.tabPage11.Controls.Add(this.label89);
+            this.tabPage11.Controls.Add(this.but_set_expos);
+            this.tabPage11.Controls.Add(this.textBox_exp_val);
             this.tabPage11.Controls.Add(this.button2);
             this.tabPage11.Controls.Add(this.but_con_scan_sam);
             this.tabPage11.Controls.Add(this.but_start_scan_sam);
@@ -1482,6 +1491,36 @@ namespace opengl3
             this.tabPage11.Text = "3Д сканер";
             this.tabPage11.UseVisualStyleBackColor = true;
             // 
+            // label89
+            // 
+            this.label89.AutoSize = true;
+            this.label89.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label89.Location = new System.Drawing.Point(294, 314);
+            this.label89.Name = "label89";
+            this.label89.Size = new System.Drawing.Size(108, 20);
+            this.label89.TabIndex = 145;
+            this.label89.Text = "Камера, эксп";
+            // 
+            // but_set_expos
+            // 
+            this.but_set_expos.AccessibleName = "1";
+            this.but_set_expos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_set_expos.Location = new System.Drawing.Point(407, 310);
+            this.but_set_expos.Name = "but_set_expos";
+            this.but_set_expos.Size = new System.Drawing.Size(148, 50);
+            this.but_set_expos.TabIndex = 144;
+            this.but_set_expos.Text = "Установить экспозицию";
+            this.but_set_expos.UseVisualStyleBackColor = true;
+            this.but_set_expos.Click += new System.EventHandler(this.but_set_expos_Click);
+            // 
+            // textBox_exp_val
+            // 
+            this.textBox_exp_val.Location = new System.Drawing.Point(425, 278);
+            this.textBox_exp_val.Name = "textBox_exp_val";
+            this.textBox_exp_val.Size = new System.Drawing.Size(130, 26);
+            this.textBox_exp_val.TabIndex = 142;
+            this.textBox_exp_val.Text = "-8";
+            // 
             // button2
             // 
             this.button2.AccessibleName = "1";
@@ -1496,7 +1535,7 @@ namespace opengl3
             // but_con_scan_sam
             // 
             this.but_con_scan_sam.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_con_scan_sam.Location = new System.Drawing.Point(369, 285);
+            this.but_con_scan_sam.Location = new System.Drawing.Point(464, 215);
             this.but_con_scan_sam.Name = "but_con_scan_sam";
             this.but_con_scan_sam.Size = new System.Drawing.Size(106, 57);
             this.but_con_scan_sam.TabIndex = 140;
@@ -1508,7 +1547,7 @@ namespace opengl3
             // 
             this.but_start_scan_sam.AccessibleName = "1";
             this.but_start_scan_sam.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_start_scan_sam.Location = new System.Drawing.Point(369, 246);
+            this.but_start_scan_sam.Location = new System.Drawing.Point(425, 176);
             this.but_start_scan_sam.Name = "but_start_scan_sam";
             this.but_start_scan_sam.Size = new System.Drawing.Size(148, 33);
             this.but_start_scan_sam.TabIndex = 139;
@@ -1549,7 +1588,7 @@ namespace opengl3
             // 
             // textNimVid
             // 
-            this.textNimVid.Location = new System.Drawing.Point(109, 6);
+            this.textNimVid.Location = new System.Drawing.Point(369, 278);
             this.textNimVid.Name = "textNimVid";
             this.textNimVid.Size = new System.Drawing.Size(45, 26);
             this.textNimVid.TabIndex = 40;
@@ -1610,11 +1649,12 @@ namespace opengl3
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(34, 9);
+            this.label1.Location = new System.Drawing.Point(294, 281);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(69, 20);
             this.label1.TabIndex = 124;
             this.label1.Text = "Camera:";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // but_scan_def
             // 
@@ -1975,10 +2015,13 @@ namespace opengl3
             // 
             // tabPage14
             // 
+            this.tabPage14.Controls.Add(this.but_period_fi);
+            this.tabPage14.Controls.Add(this.label88);
+            this.tabPage14.Controls.Add(this.textBox_movm_fi);
+            this.tabPage14.Controls.Add(this.checkBox_compens_period);
             this.tabPage14.Controls.Add(this.but_compens_record);
             this.tabPage14.Controls.Add(this.label87);
             this.tabPage14.Controls.Add(this.textBox_compens_time_rec);
-            this.tabPage14.Controls.Add(this.but_execut_period);
             this.tabPage14.Controls.Add(this.but_comp_period);
             this.tabPage14.Controls.Add(this.textBox_compens_gap);
             this.tabPage14.Controls.Add(this.but_compens_gap);
@@ -2006,20 +2049,58 @@ namespace opengl3
             this.tabPage14.Text = "Имитация дыхания";
             this.tabPage14.UseVisualStyleBackColor = true;
             // 
+            // but_period_fi
+            // 
+            this.but_period_fi.Location = new System.Drawing.Point(248, 209);
+            this.but_period_fi.Name = "but_period_fi";
+            this.but_period_fi.Size = new System.Drawing.Size(192, 32);
+            this.but_period_fi.TabIndex = 194;
+            this.but_period_fi.Text = "Смещение периода";
+            this.but_period_fi.UseVisualStyleBackColor = true;
+            this.but_period_fi.Click += new System.EventHandler(this.but_period_fi_Click);
+            // 
+            // label88
+            // 
+            this.label88.AutoSize = true;
+            this.label88.Location = new System.Drawing.Point(536, 215);
+            this.label88.Name = "label88";
+            this.label88.Size = new System.Drawing.Size(28, 20);
+            this.label88.TabIndex = 193;
+            this.label88.Text = "мс";
+            // 
+            // textBox_movm_fi
+            // 
+            this.textBox_movm_fi.Location = new System.Drawing.Point(446, 212);
+            this.textBox_movm_fi.Name = "textBox_movm_fi";
+            this.textBox_movm_fi.Size = new System.Drawing.Size(84, 26);
+            this.textBox_movm_fi.TabIndex = 192;
+            this.textBox_movm_fi.Text = "100";
+            // 
+            // checkBox_compens_period
+            // 
+            this.checkBox_compens_period.AutoSize = true;
+            this.checkBox_compens_period.Location = new System.Drawing.Point(378, 322);
+            this.checkBox_compens_period.Name = "checkBox_compens_period";
+            this.checkBox_compens_period.Size = new System.Drawing.Size(198, 24);
+            this.checkBox_compens_period.TabIndex = 191;
+            this.checkBox_compens_period.Text = "Компенсация периода";
+            this.checkBox_compens_period.UseVisualStyleBackColor = true;
+            this.checkBox_compens_period.CheckedChanged += new System.EventHandler(this.checkBox_compens_period_CheckedChanged);
+            // 
             // but_compens_record
             // 
-            this.but_compens_record.Location = new System.Drawing.Point(248, 212);
+            this.but_compens_record.Location = new System.Drawing.Point(248, 171);
             this.but_compens_record.Name = "but_compens_record";
-            this.but_compens_record.Size = new System.Drawing.Size(126, 65);
+            this.but_compens_record.Size = new System.Drawing.Size(192, 32);
             this.but_compens_record.TabIndex = 190;
-            this.but_compens_record.Text = "Запись периода";
+            this.but_compens_record.Text = "Вычисление периода";
             this.but_compens_record.UseVisualStyleBackColor = true;
             this.but_compens_record.Click += new System.EventHandler(this.but_compens_record_Click);
             // 
             // label87
             // 
             this.label87.AutoSize = true;
-            this.label87.Location = new System.Drawing.Point(354, 180);
+            this.label87.Location = new System.Drawing.Point(536, 177);
             this.label87.Name = "label87";
             this.label87.Size = new System.Drawing.Size(34, 20);
             this.label87.TabIndex = 189;
@@ -2027,21 +2108,11 @@ namespace opengl3
             // 
             // textBox_compens_time_rec
             // 
-            this.textBox_compens_time_rec.Location = new System.Drawing.Point(264, 177);
+            this.textBox_compens_time_rec.Location = new System.Drawing.Point(446, 174);
             this.textBox_compens_time_rec.Name = "textBox_compens_time_rec";
             this.textBox_compens_time_rec.Size = new System.Drawing.Size(84, 26);
             this.textBox_compens_time_rec.TabIndex = 188;
             this.textBox_compens_time_rec.Text = "15";
-            // 
-            // but_execut_period
-            // 
-            this.but_execut_period.Location = new System.Drawing.Point(380, 289);
-            this.but_execut_period.Name = "but_execut_period";
-            this.but_execut_period.Size = new System.Drawing.Size(126, 65);
-            this.but_execut_period.TabIndex = 187;
-            this.but_execut_period.Text = "Компенсация периода";
-            this.but_execut_period.UseVisualStyleBackColor = true;
-            this.but_execut_period.Click += new System.EventHandler(this.but_execut_period_Click);
             // 
             // but_comp_period
             // 
@@ -2049,7 +2120,7 @@ namespace opengl3
             this.but_comp_period.Name = "but_comp_period";
             this.but_comp_period.Size = new System.Drawing.Size(126, 65);
             this.but_comp_period.TabIndex = 186;
-            this.but_comp_period.Text = "Вычисление периода";
+            this.but_comp_period.Text = "Загрузка периода";
             this.but_comp_period.UseVisualStyleBackColor = true;
             this.but_comp_period.Click += new System.EventHandler(this.but_comp_period_Click);
             // 
@@ -2073,7 +2144,7 @@ namespace opengl3
             // 
             // but_compens_end
             // 
-            this.but_compens_end.Location = new System.Drawing.Point(432, 209);
+            this.but_compens_end.Location = new System.Drawing.Point(302, 124);
             this.but_compens_end.Name = "but_compens_end";
             this.but_compens_end.Size = new System.Drawing.Size(124, 41);
             this.but_compens_end.TabIndex = 182;
@@ -2083,7 +2154,7 @@ namespace opengl3
             // 
             // but_compens_begin
             // 
-            this.but_compens_begin.Location = new System.Drawing.Point(432, 162);
+            this.but_compens_begin.Location = new System.Drawing.Point(302, 77);
             this.but_compens_begin.Name = "but_compens_begin";
             this.but_compens_begin.Size = new System.Drawing.Size(124, 41);
             this.but_compens_begin.TabIndex = 181;
@@ -2832,9 +2903,9 @@ namespace opengl3
             this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label14.Location = new System.Drawing.Point(555, 525);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(143, 20);
+            this.label14.Size = new System.Drawing.Size(135, 20);
             this.label14.TabIndex = 67;
-            this.label14.Text = "Start Scan Point ->";
+            this.label14.Text = "Kuka from here ->";
             // 
             // comboVideo
             // 
@@ -2864,7 +2935,7 @@ namespace opengl3
             // 
             // imBox_base_2
             // 
-            this.imBox_base_2.Location = new System.Drawing.Point(799, 587);
+            this.imBox_base_2.Location = new System.Drawing.Point(840, 593);
             this.imBox_base_2.Name = "imBox_base_2";
             this.imBox_base_2.Size = new System.Drawing.Size(480, 360);
             this.imBox_base_2.TabIndex = 118;
@@ -6751,10 +6822,16 @@ namespace opengl3
         private System.Windows.Forms.TextBox textBox_send_con;
         private System.Windows.Forms.Button but_jaka_send;
         private System.Windows.Forms.Button but_comp_period;
-        private System.Windows.Forms.Button but_execut_period;
         private System.Windows.Forms.Button but_compens_record;
         private System.Windows.Forms.Label label87;
         private System.Windows.Forms.TextBox textBox_compens_time_rec;
+        private System.Windows.Forms.CheckBox checkBox_compens_period;
+        private System.Windows.Forms.Button but_period_fi;
+        private System.Windows.Forms.Label label88;
+        private System.Windows.Forms.TextBox textBox_movm_fi;
+        private System.Windows.Forms.Label label89;
+        private System.Windows.Forms.Button but_set_expos;
+        private System.Windows.Forms.TextBox textBox_exp_val;
     }
 }
 

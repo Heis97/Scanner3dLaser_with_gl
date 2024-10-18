@@ -102,6 +102,7 @@ namespace opengl3
     }
     public class MovmentCompensation
     {
+        long fi;
         long dt;
         long start_time;
         long period;
@@ -115,6 +116,7 @@ namespace opengl3
             period = _period;
             period_poses = _period_poses;
             dt = _dt;
+            fi = 0;
         }
         static public MovmentCompensation comp_period(List<PosTimestamp> poses, double min_period = 1, double max_period = 6)//sec
         {
@@ -136,9 +138,13 @@ namespace opengl3
         }
         public PosTimestamp compute_cur_pos(long time)
         {
-            var time_rel = (time - start_time) % period;
-            var time_int = time_rel / period;
-            return period_poses[(int)time_int];
+            var time_rel = ((time - start_time + fi) % period)/dt ;
+            return period_poses[(int)time_rel];
+        }
+
+        public void set_fi(int _fi)
+        {
+            fi = _fi;
         }
         static long find_periodic(List<PosTimestamp> poses,long min_period, long max_period,long dt, int st_ind)
         {

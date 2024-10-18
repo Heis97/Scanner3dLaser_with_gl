@@ -54,65 +54,66 @@ namespace opengl3
         {
 
             //Console.WriteLine("send: "+val+" " + var);
-            if (serialPort.IsOpen)
+           
+                
+            string Mes1 = "0";
+            string Mes2 = "0";
+            string Mes3 = "0";
+            // try
             {
-                
-                    string Mes1 = "0";
-                    string Mes2 = "0";
-                string Mes3 = "0";
-                try
-                    {
-                        Mes1 = Convert.ToString(val);
-                        Mes2 = Convert.ToString(var);
-                    Mes3 = Convert.ToString(adr);
-                }
-                    catch
-                    {
-                        Console.WriteLine("except convert");
-                    }
-                    //Console.WriteLine("Mes12.Length: " + Mes1.Length + " " + Mes2.Length);
-                    if (Mes1.Length <= 4 && Mes2.Length <= 2)
-                    {
-
-
-
-                        while (Mes1.Length < 4)
-                        {
-                            Mes1 = "0" + Mes1;
-                        }
-                        while (Mes2.Length < 2)
-                        {
-                            Mes2 = "0" + Mes2;
-                        }
-                    while (Mes3.Length < 2)
-                    {
-                        Mes3 = "0" + Mes3;
-                    }
-                    Mes1 = "b" + Mes1 + Mes2;
-                    if(adr>=0)
-                    {
-                        Mes1 += Mes3;
-                    }
-                        try
-                        {
-                            //Console.WriteLine("Out: " + Mes1);
-                            this.serialPort.WriteLine(Mes1);
-                            Thread.Sleep(1);
-                            reseav();
-                           // Console.WriteLine(reseav());
-                        }
-                        catch
-                        {
-                            Console.WriteLine("except sending");
-                        }
-
-                    }
-                    else
-                    {
-                        Console.WriteLine("message lengh too long");
-                    }
-                
+                Mes1 = Convert.ToString(val);
+                Mes2 = Convert.ToString(var);
+                Mes3 = Convert.ToString(adr);
             }
+            //catch
+            {
+                // Console.WriteLine("except convert");
+            }
+            //Console.WriteLine("Mes12.Length: " + Mes1.Length + " " + Mes2.Length);
+            if (Mes1.Length <= 4 && Mes2.Length <= 2)
+            {
+                while (Mes1.Length < 4)
+                {
+                    Mes1 = "0" + Mes1;
+                }
+                while (Mes2.Length < 2)
+                {
+                    Mes2 = "0" + Mes2;
+                }
+                while (Mes3.Length < 2)
+                {
+                    Mes3 = "0" + Mes3;
+                }
+                Mes1 = "b" + Mes1 + Mes2;
+                if(adr>=0)
+                {
+                    Mes1 += Mes3;
+                }
+                //try
+                {
+                    //Console.WriteLine("Out: " + Mes1);
+                if(this.serialPort.IsOpen)
+                {
+                    this.serialPort.WriteLine(Mes1);
+                    //Thread.Sleep(1);
+                    var resp = reseav();
+                }
+                            
+
+                    // Console.WriteLine("resp:\n"+resp);
+                }
+                // catch
+                {
+                    // Console.WriteLine("except sending");
+                }
+
+                }
+                else
+                {
+                    Console.WriteLine("message lengh too long");
+                }
+               
+            
         }
         public  string reseav()
         {
@@ -125,7 +126,9 @@ namespace opengl3
             if (response == null) response = new StringBuilder();
             //response.Clear();
             var res = serialPort.ReadExisting();
-            response.Append(res);
+            //serialPort.
+            if(res!=null) response.Append(res);
+
             return res;
             
         }

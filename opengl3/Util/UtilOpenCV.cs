@@ -860,7 +860,7 @@ namespace opengl3
             {
                 for(int i=0; i<points2d.Length; i++)
                 {
-                    CvInvoke.PutText(im, points3d[i].X + " " + points3d[i].Y + " " + points3d[i].Z, points2d[i], FontFace.HersheyComplex, 0.5, new MCvScalar(r, g, b), size);
+                    CvInvoke.PutText(im, points3d[i].X + " " + points3d[i].Y + " " + points3d[i].Z, points2d[i], FontFace.HersheyComplex, 1, new MCvScalar(r, g, b), size);
                 }
             }
 

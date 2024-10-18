@@ -300,7 +300,8 @@ namespace opengl3
             }
             var fr = new Frame(im1, im2, name1, frameType);
             fr.stereo = true;
-
+          //  CvInvoke.Imshow("im1", im1);
+        //    CvInvoke.Imshow("im2", im2);
             fr.dateTime = File.GetCreationTime(filepath1);
             return fr;
         }
@@ -602,6 +603,7 @@ namespace opengl3
             var mat = new Mat(path);
             var fr = new Frame(mat,name);
             fr.RobotFrame = rob_fr;
+            fr.frameType = FrameType.Pattern;
             return fr;
         }
     }

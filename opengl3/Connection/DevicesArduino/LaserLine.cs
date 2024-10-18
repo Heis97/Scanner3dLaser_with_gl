@@ -66,7 +66,7 @@ namespace opengl3
                 l = l.Trim();
                 if(l.Contains("cur_pos")&& l.Contains("q"))
                 {
-                    response.Clear();
+                    
                     for(int k=0; k<5; k++)
                     {
                         l = l.Replace("  ", " ");
@@ -82,6 +82,7 @@ namespace opengl3
                         var pos_movm_int = Convert.ToDouble(pos_movm_str);
                         ret[1] = pos_movm_int;
                     }
+                    response.Clear();
                     return ret;
                 }
                     
@@ -106,7 +107,7 @@ namespace opengl3
 
         public void test()
         {
-            send(0, 0);
+            send(99, 0);
         }
 
         public void laserOff()
@@ -260,9 +261,10 @@ namespace opengl3
             return get_las_pos_res_time();
         }
 
-        static public string get_las_pos_time(LaserLine laserLine)
+        static public string get_las_pos_time(LaserLine laserLine,bool returned = false)
         {
-            if(laserLine == null)
+           
+            if(laserLine == null || returned)
             {
                 return "0 0";
             }
