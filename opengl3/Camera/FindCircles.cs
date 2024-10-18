@@ -966,11 +966,15 @@ namespace opengl3
             var ps_arr = new List<System.Drawing.PointF>();
             for (int i = 0; i < ind.Length; i++)
             {
-                for (int j= 0; j < ind[i].Length; j++)
+                if (ind[i]!=null)
                 {
+                    for (int j = 0; j < ind[i].Length; j++)
+                    {
 
-                    ps_arr.Add(ps[ind[i][j]]);
+                        ps_arr.Add(ps[ind[i][j]]);
+                    }
                 }
+                
             }
             return ps_arr.ToArray();
         }

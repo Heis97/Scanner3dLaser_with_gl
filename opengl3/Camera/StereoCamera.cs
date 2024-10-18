@@ -154,6 +154,7 @@ namespace opengl3
             var ms_rob = new List<Matrix<double>>();
             var ms_cam = new List<Matrix<double>>();
             Console.WriteLine("calibrate_stereo_rob");
+            var robot = RobotFrame.RobotType.PULSE;
 
             for (int i = 0; i < frames.Length; i++)
             {
@@ -165,7 +166,7 @@ namespace opengl3
 
                     //R = inv_cs1 * cameraCV.matrixCS;
                     var c1 = cameraCV.matrixCS;
-                    var rob_pos = new RobotFrame(frames[i].name,RobotFrame.RobotType.KUKA);
+                    var rob_pos = new RobotFrame(frames[i].name,robot);
                     var r1 = rob_pos.getMatrix();
                        
                     var r1_inv = r1.Clone();
