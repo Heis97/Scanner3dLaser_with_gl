@@ -97,6 +97,7 @@ namespace opengl3
                     this.serialPort.WriteLine(Mes1);
                     //Thread.Sleep(1);
                     var resp = reseav();
+                    Console.WriteLine(resp);
                 }
                             
 

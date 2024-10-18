@@ -33,7 +33,8 @@ namespace opengl3
         VideoCapture[] videoCaptures = new VideoCapture[4];
         bool record_times = false;
         bool compens_period = false;
-        Rectangle laser_roi = new Rectangle(600, 360, 80, 10);
+        bool window_auto = false;
+        Rectangle laser_roi_static = new Rectangle(600, 360, 80, 10);
         long start_record_time = 0;
         long record_time = 0;
         int save_vid_count = 0;
@@ -167,6 +168,7 @@ namespace opengl3
                 new MCvPoint3D32f(60, 60, 0)
             };
         double[] koef = null;
+        double[] koef_x = null;
         double[] koef_y = null;
         Scanner scanner;
         #endregion
@@ -175,17 +177,17 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-              var vals_regr = new double[][]
+              var vals_regr = new double[][]//laser and pos
                   {
                       new double[] {38.2 ,0 },
                       new double[] {41.2, -2 },
                       new double[] {44.8, -4},
               };
               koef = Regression.regression(vals_regr, 2);
-              var cur = Regression.calcPolynSolv(koef, 37);
+              //var cur = Regression.calcPolynSolv(koef, 37);
              // Console.WriteLine("test_regr "+cur);
 
-              vals_regr = new double[][]
+              vals_regr = new double[][]   //pos and y
                   {
                       new double[] {30 ,364},
                       new double[] {32 ,356},
@@ -193,21 +195,93 @@ namespace opengl3
               };
               koef_y = Regression.regression(vals_regr, 1);
 
-            var mat = new Mat(@"C:\Users\1\source\repos\Heis97\Scanner3dLaser_with_gl\opengl3\bin\x64\Debug\cam1\stereo_cal_2509\photo_13_0.png");
-            CvInvoke.Rotate(mat, mat, RotateFlags.Rotate90Clockwise);
-            var corn = new System.Drawing.PointF[1];
-            var findc = FindCircles.findCircles(mat, ref corn, chess_size_real);
-            CvInvoke.Imshow("findc", findc);
-           /* var p1 = new PosTimestamp(7000, 1);
-            var p2 = new PosTimestamp(8000, 3);
-            var p3 = PosTimestamp.betw(p1, p2,7500);
-            int period = 3;
+            vals_regr = new double[][]     //pos and x
+                  {
+                      new double[] {30 ,364},
+                      new double[] {32 ,356},
+                      new double[] {34, 349 },
+              };
+            koef_x = Regression.regression(vals_regr, 1);
 
-            var arr_a = new List<double>( new double[] {0,1,2,3,4,5,6,7,8,9});
-            var st_ind = arr_a.Count / 2;
-            var arr1 = arr_a.GetRange(st_ind, period);
-            var arr2 = arr_a.GetRange(st_ind-period, period);
-            Console.WriteLine("s");*/
+
+            vals_regr = new double[][]//laser and pos
+                  {
+                      new double[] {638.9 ,30 },
+                      new double[] {640.7, 31 },
+                      new double[] {642.2, 32},
+                      new double[] {644.6, 33},
+
+                       new double[] {646.6 ,34 },
+                      new double[] {648.5, 35 },
+                      new double[] {650.5, 36},
+                      new double[] {651.9, 37},
+
+                       new double[] {637.6 ,29 },
+                      new double[] {635.5, 28 },
+                      new double[] {633.3, 27},
+                      new double[] {631.6, 26},
+
+                       new double[] {629.6 ,25 },
+                      new double[] {627.6, 24 },
+                      new double[] {625.5, 23},
+                      new double[] {623.3, 22},
+
+              };
+            koef = Regression.regression(vals_regr, 1);
+            prin.t(vals_regr);
+            prin.t("x_____________-");
+            //var cur = Regression.calcPolynSolv(koef, 37);
+            // Console.WriteLine("test_regr "+cur);
+
+            vals_regr = new double[][]   //pos and x
+                {
+                      new double[] {26 ,586},
+                      new double[] {27 ,587},
+                      new double[] {28, 588 },
+                      new double[] {29, 589 },
+
+                      new double[] {30 ,592},
+                      new double[] {31 ,594},
+                      new double[] {32, 597 },
+                      new double[] {33, 600 },
+
+                      new double[] {34 ,603},
+                      new double[] {35 ,606},
+                      new double[] {36, 607 },
+                      
+            };
+            koef_x = Regression.regression(vals_regr, 1);
+            prin.t(vals_regr);
+            prin.t("y_____________-");
+            vals_regr = new double[][]     //pos and y
+                  {
+                      new double[] {26 ,377},
+                      new double[] {27 ,372},
+                      new double[] {28, 369 },
+                      new double[] {29, 365 },
+
+                      new double[] {30 ,360},
+                      new double[] {31 ,357},
+                      new double[] {32, 353 },
+                      new double[] {33, 350 },
+
+                      new double[] {34 ,346},
+                      new double[] {35 ,343},
+                      new double[] {36, 340 },
+              };
+            koef_y = Regression.regression(vals_regr, 2);
+            prin.t(vals_regr);
+            prin.t("_____________-");
+            /* var p1 = new PosTimestamp(7000, 1);
+             var p2 = new PosTimestamp(8000, 3);
+             var p3 = PosTimestamp.betw(p1, p2,7500);
+             int period = 3;
+
+             var arr_a = new List<double>( new double[] {0,1,2,3,4,5,6,7,8,9});
+             var st_ind = arr_a.Count / 2;
+             var arr1 = arr_a.GetRange(st_ind, period);
+             var arr2 = arr_a.GetRange(st_ind-period, period);
+             Console.WriteLine("s");*/
 
 
             //Console.WriteLine(p3);
@@ -3285,7 +3359,7 @@ namespace opengl3
                  */
                     var mat = fr.im.Clone();
                     var ps = Detection.detectLineDiff(mat,7);
-                   
+                    
                     /* var ps_t = new List<PointF>();
                      for(int i=0; i<500;i++)
                      {
@@ -5042,25 +5116,39 @@ namespace opengl3
                          imb_base[ind].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
                          //Console.Write(laserLine?.reseav());
                          */
-                        laser_roi.Y = (int)Regression.calcPolynSolv(koef_y, cur_pos_z);
-                        if( laser_roi.Y<0 || laser_roi.Y > mat.Height + laser_roi.Height)
+                        var laser_roi_X = 0; //(int)Regression.calcPolynSolv(koef_x, cur_pos_z);
+                        var laser_roi_Y = 0;// (int)Regression.calcPolynSolv(koef_y, cur_pos_z);
+
+                        if(window_auto)
+                        {
+                            laser_roi_X = (int)Regression.calcPolynSolv(koef_x, cur_pos_z);
+                            laser_roi_Y = (int)Regression.calcPolynSolv(koef_y, cur_pos_z);
+                        }
+                                           
+                        var laser_roi = new Rectangle(laser_roi_static.X+ laser_roi_X, laser_roi_static.Y+ laser_roi_Y, laser_roi_static.Width, laser_roi_static.Height);
+                        
+                        if( laser_roi.Y < 0 || laser_roi.Y > mat.Height - laser_roi.Height-2)
                         {
                             laser_roi.Y = mat.Height / 2;
+                        }
+                        if (laser_roi.X < 0 || laser_roi.X > mat.Width - laser_roi.Width - 2)
+                        {
+                            laser_roi.X = mat.Width / 2;
                         }
                         var mat_s = new Mat(mat, laser_roi);
                         var ps = Detection.detectLineSensor_v2(mat_s,5,2);
                         var x = (int)ps[0].X + laser_roi.X;
                         var y = (int)ps[0].Y + laser_roi.Y;
-                        // Console.Write(ps[0].X + " ");
+                        //Console.Write(ps[0].X + " ");
                         //laserLine?.setLaserCur((int)(10 * ps[0].X));
                         //Console.WriteLine( ps[0].X);
 
-                        var cur = Regression.calcPolynSolv(koef, ps[0].X);
+                        var cur = Regression.calcPolynSolv(koef, ps[0].X + laser_roi.X);
                         if (compens_period && movm != null)
                         {
                             cur = movm.compute_cur_pos(cur_time_to_int()).pos1;
                         }
-                        var comp_z_mm = 30 - cur - compens_gap;
+                        var comp_z_mm = cur - compens_gap;
 
                         
                         //cur_pos_z = pos_z_mm;
@@ -7676,7 +7764,7 @@ namespace opengl3
                     var y = Convert.ToInt32(vals[1]);
                     var w = Convert.ToInt32(vals[2]);
                     var h = Convert.ToInt32(vals[3]);
-                    laser_roi = new Rectangle(x, y, w, h);
+                    laser_roi_static = new Rectangle(x, y, w, h);
                 }
             }
         }
@@ -7783,6 +7871,11 @@ namespace opengl3
             {
                 videoCaptures[cam_ind]?.Set(CapProp.Exposure,exp_val);
             }
+        }
+
+        private void checkBox_window_auto_period_CheckedChanged(object sender, EventArgs e)
+        {
+            window_auto = ((CheckBox)sender).Checked;
         }
     }
 }

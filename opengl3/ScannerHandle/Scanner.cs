@@ -376,14 +376,20 @@ namespace opengl3
                 var pos_fr = new RobotFrame(poses[0]);
                 stereoCamera.Bbf = pos_fr.getMatrix();
                 stereoCamera.cur_pos = new RobotFrame(poses[1]);
-
             }
             else
+            {
+                
+                var pos_fr = new RobotFrame(pos, RobotFrame.RobotType.PULSE);
+                stereoCamera.Bbf = pos_fr.getMatrix();
+            }
+
+           /* if(pos.Contains("pulse"))
             {
                 var pos_fr = new RobotFrame(pos, RobotFrame.RobotType.KUKA);
                 stereoCamera.Bbf = pos_fr.getMatrix();
             }
-            
+            */
             return this;
         }
 

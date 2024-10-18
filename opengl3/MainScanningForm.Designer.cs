@@ -57,6 +57,7 @@ namespace opengl3
             this.imBox_input_1 = new Emgu.CV.UI.ImageBox();
             this.imBox_pattern = new Emgu.CV.UI.ImageBox();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.imBox_base_2 = new Emgu.CV.UI.ImageBox();
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.but_resize = new System.Windows.Forms.Button();
             this.comboImages = new System.Windows.Forms.ComboBox();
@@ -249,7 +250,6 @@ namespace opengl3
             this.comboVideo = new System.Windows.Forms.ComboBox();
             this.comboNumber = new System.Windows.Forms.ComboBox();
             this.imageBox2 = new Emgu.CV.UI.ImageBox();
-            this.imBox_base_2 = new Emgu.CV.UI.ImageBox();
             this.imBox_base = new Emgu.CV.UI.ImageBox();
             this.tabP_scanning_printing = new System.Windows.Forms.TabPage();
             this.tabC_scanning_printing_ins = new System.Windows.Forms.TabControl();
@@ -539,6 +539,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.checkBox_window_auto_period = new System.Windows.Forms.CheckBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -553,6 +554,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_input_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_pattern)).BeginInit();
             this.tabMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -574,7 +576,6 @@ namespace opengl3
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).BeginInit();
             this.tabP_scanning_printing.SuspendLayout();
             this.tabC_scanning_printing_ins.SuspendLayout();
@@ -989,6 +990,14 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // imBox_base_2
+            // 
+            this.imBox_base_2.Location = new System.Drawing.Point(840, 593);
+            this.imBox_base_2.Name = "imBox_base_2";
+            this.imBox_base_2.Size = new System.Drawing.Size(480, 360);
+            this.imBox_base_2.TabIndex = 118;
+            this.imBox_base_2.TabStop = false;
             // 
             // imageBox1
             // 
@@ -2015,6 +2024,7 @@ namespace opengl3
             // 
             // tabPage14
             // 
+            this.tabPage14.Controls.Add(this.checkBox_window_auto_period);
             this.tabPage14.Controls.Add(this.but_period_fi);
             this.tabPage14.Controls.Add(this.label88);
             this.tabPage14.Controls.Add(this.textBox_movm_fi);
@@ -2079,7 +2089,7 @@ namespace opengl3
             // checkBox_compens_period
             // 
             this.checkBox_compens_period.AutoSize = true;
-            this.checkBox_compens_period.Location = new System.Drawing.Point(378, 322);
+            this.checkBox_compens_period.Location = new System.Drawing.Point(275, 331);
             this.checkBox_compens_period.Name = "checkBox_compens_period";
             this.checkBox_compens_period.Size = new System.Drawing.Size(198, 24);
             this.checkBox_compens_period.TabIndex = 191;
@@ -2116,7 +2126,7 @@ namespace opengl3
             // 
             // but_comp_period
             // 
-            this.but_comp_period.Location = new System.Drawing.Point(248, 289);
+            this.but_comp_period.Location = new System.Drawing.Point(274, 247);
             this.but_comp_period.Name = "but_comp_period";
             this.but_comp_period.Size = new System.Drawing.Size(126, 65);
             this.but_comp_period.TabIndex = 186;
@@ -2230,7 +2240,7 @@ namespace opengl3
             // 
             // button_laser_roi
             // 
-            this.button_laser_roi.Location = new System.Drawing.Point(77, 313);
+            this.button_laser_roi.Location = new System.Drawing.Point(121, 276);
             this.button_laser_roi.Name = "button_laser_roi";
             this.button_laser_roi.Size = new System.Drawing.Size(104, 41);
             this.button_laser_roi.TabIndex = 177;
@@ -2932,14 +2942,6 @@ namespace opengl3
             this.imageBox2.Size = new System.Drawing.Size(863, 484);
             this.imageBox2.TabIndex = 18;
             this.imageBox2.TabStop = false;
-            // 
-            // imBox_base_2
-            // 
-            this.imBox_base_2.Location = new System.Drawing.Point(840, 593);
-            this.imBox_base_2.Name = "imBox_base_2";
-            this.imBox_base_2.Size = new System.Drawing.Size(480, 360);
-            this.imBox_base_2.TabIndex = 118;
-            this.imBox_base_2.TabStop = false;
             // 
             // imBox_base
             // 
@@ -5136,10 +5138,10 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Location = new System.Drawing.Point(4, 27);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(869, 965);
+            this.tabPage9.Size = new System.Drawing.Size(869, 960);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -6178,6 +6180,17 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
+            // checkBox_window_auto_period
+            // 
+            this.checkBox_window_auto_period.AutoSize = true;
+            this.checkBox_window_auto_period.Location = new System.Drawing.Point(76, 331);
+            this.checkBox_window_auto_period.Name = "checkBox_window_auto_period";
+            this.checkBox_window_auto_period.Size = new System.Drawing.Size(160, 24);
+            this.checkBox_window_auto_period.TabIndex = 195;
+            this.checkBox_window_auto_period.Text = "Подстройка окна";
+            this.checkBox_window_auto_period.UseVisualStyleBackColor = true;
+            this.checkBox_window_auto_period.CheckedChanged += new System.EventHandler(this.checkBox_window_auto_period_CheckedChanged);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -6203,6 +6216,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_pattern)).EndInit();
             this.tabMain.ResumeLayout(false);
             this.tabMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -6231,7 +6245,6 @@ namespace opengl3
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base)).EndInit();
             this.tabP_scanning_printing.ResumeLayout(false);
             this.tabC_scanning_printing_ins.ResumeLayout(false);
@@ -6832,6 +6845,7 @@ namespace opengl3
         private System.Windows.Forms.Label label89;
         private System.Windows.Forms.Button but_set_expos;
         private System.Windows.Forms.TextBox textBox_exp_val;
+        private System.Windows.Forms.CheckBox checkBox_window_auto_period;
     }
 }
 
