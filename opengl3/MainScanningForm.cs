@@ -192,6 +192,12 @@ namespace opengl3
                       new double[] {34, 349 },
               };
               koef_y = Regression.regression(vals_regr, 1);
+
+            var mat = new Mat(@"C:\Users\1\source\repos\Heis97\Scanner3dLaser_with_gl\opengl3\bin\x64\Debug\cam1\stereo_cal_2509\photo_13_0.png");
+            CvInvoke.Rotate(mat, mat, RotateFlags.Rotate90Clockwise);
+            var corn = new System.Drawing.PointF[1];
+            var findc = FindCircles.findCircles(mat, ref corn, chess_size_real);
+            CvInvoke.Imshow("findc", findc);
            /* var p1 = new PosTimestamp(7000, 1);
             var p2 = new PosTimestamp(8000, 3);
             var p3 = PosTimestamp.betw(p1, p2,7500);

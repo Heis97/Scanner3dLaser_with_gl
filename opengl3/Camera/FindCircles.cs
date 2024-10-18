@@ -160,6 +160,7 @@ namespace opengl3
                 orig = UtilOpenCV.drawTours(orig, PointF.toPoint(cents), 255, 0,2);
                 //CvInvoke.Imshow("fnd", orig);
                 //CvInvoke.WaitKey();
+               // UtilOpenCV.drawTours(im_tr, PointF.toPoint(cents), 255, 0, 0, 2);
                 var ps_ord = orderPoints(cents, pattern_size);
                 /*var ps_ord2 = orderPoints_assym(cents, pattern_size);
                 orig = UtilOpenCV.drawPoints_2d(orig,PointF.toSystemPoint_ss_2d( ps_ord2),0, 255,  0);
@@ -547,6 +548,7 @@ namespace opengl3
             var angle = calcAngleX(ps[mainDiag[0]], ps[mainDiag[1]]);//!!!add if dx small rot Y
             var additDiag = findAdditDiag(ps, angle);
             var starts = findStarts(ps, mainDiag, additDiag);
+            //Console.WriteLine("mainDiag[0,1] " + " " + mainDiag[0] + " " + mainDiag[1] + " addDiag[0,1] " + " " + additDiag[0] + " " + additDiag[1]);
 
             var inds_ord = findAllLines(ps, starts, step);
             var ind_size = ordBySize(inds_ord, size_patt);
