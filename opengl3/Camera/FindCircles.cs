@@ -557,8 +557,10 @@ namespace opengl3
                 Console.WriteLine("ind_size NULL");
                 return null;
             }
+            var arr_def = arrFromP_2(ps, ind_size,size_patt); 
+            var zu  = arr_zero_to_up(arr_def);
 
-            return arrFromP(ps, ind_size);
+            return unif_points(zu);
         }
         static System.Drawing.PointF[,] orderPoints_assym(System.Drawing.PointF[] ps, Size size_patt)
         {
@@ -978,8 +980,97 @@ namespace opengl3
                 }
                 
             }
+
+
             return ps_arr.ToArray();
         }
+
+        static System.Drawing.PointF[,] arrFromP_2(System.Drawing.PointF[] ps, int[][] ind, Size size)
+        {
+
+            var ps_arr = new System.Drawing.PointF[ind.Length, ind[0].Length];
+            for (int i = 0; i < ind.Length; i++)
+            {
+                if (ind[i] != null)
+                {
+                    for (int j = 0; j < ind[i].Length; j++)
+                    {
+                        ps_arr[i,j] = ps[ind[i][j]];
+                    }
+                }
+            }
+            return ps_arr;
+        }
+
+        static System.Drawing.PointF[,] arr_zero_to_up(System.Drawing.PointF[,] ps)
+        {
+            var ps_zu = new System.Drawing.PointF[ps.GetLength(0), ps.GetLength(1)];
+            var psc = new System.Drawing.PointF[] { ps[0, 0], ps[ps.GetLength(0) - 1, 0], ps[0, ps.GetLength(1) - 1], ps[ps.GetLength(0) - 1, ps.GetLength(1) - 1] };
+            var y_min = float.PositiveInfinity;
+            var i_min = 0;
+            for(int i = 0; i < psc.Length; i++)
+            {
+                if(psc[i].Y<y_min)
+                {
+                    y_min = psc[i].Y;
+                    i_min = i;
+                }
+            }
+            if (i_min == 0)
+            {
+                for (int i = 0; i < ps_zu.GetLength(0); i++)
+                {
+                    for (int j = 0; j < ps_zu.GetLength(1); j++)
+                    {
+                        ps_zu[i, j] = ps[i, j];
+                    }
+                }
+            }
+            else if (i_min==1)
+            {
+                for(int i = 0; i < ps_zu.GetLength(0); i++)
+                {
+                    for (int j = 0; j < ps_zu.GetLength(1); j++)
+                    {
+                        ps_zu[i, j] = ps[ps.GetLength(0) - 1 - i, j];
+                    }
+                }
+            }
+            else if (i_min == 2)
+            {
+                for (int i = 0; i < ps_zu.GetLength(0); i++)
+                {
+                    for (int j = 0; j < ps_zu.GetLength(1); j++)
+                    {
+                        ps_zu[i, j] = ps[ i, ps.GetLength(1) - 1 - j];
+                    }
+                }
+            }
+            else if (i_min == 3)
+            {
+                for (int i = 0; i < ps_zu.GetLength(0); i++)
+                {
+                    for (int j = 0; j < ps_zu.GetLength(1); j++)
+                    {
+                        ps_zu[i, j] = ps[ps.GetLength(0)-1 - i, ps.GetLength(1) - 1 - j];
+                    }
+                }
+            }
+            return ps_zu;
+        }
+        static System.Drawing.PointF[] unif_points(System.Drawing.PointF[,] ps)
+        {
+            var ps_un = new List<System.Drawing.PointF>();
+            for (int i = 0; i < ps.GetLength(0); i++)
+            {
+                for (int j = 0; j < ps.GetLength(1); j++)
+                {
+                    ps_un .Add(ps[ i, j]);
+                }
+            }
+            return ps_un.ToArray();
+        }
+
         static System.Drawing.PointF[,] arrFromP_2d(System.Drawing.PointF[] ps, int[][] ind, Size size)
         {
             var ps_arr = new System.Drawing.PointF[size.Width, size.Height];
