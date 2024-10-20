@@ -156,6 +156,14 @@ namespace opengl3
             this.but_marl_receav = new System.Windows.Forms.Button();
             this.but_laser_dest = new System.Windows.Forms.Button();
             this.tabPage14 = new System.Windows.Forms.TabPage();
+            this.label92 = new System.Windows.Forms.Label();
+            this.label91 = new System.Windows.Forms.Label();
+            this.label90 = new System.Windows.Forms.Label();
+            this.textBox_period_max = new System.Windows.Forms.TextBox();
+            this.textBox_period_min = new System.Windows.Forms.TextBox();
+            this.textBox_window_smooth = new System.Windows.Forms.TextBox();
+            this.label_period_ready = new System.Windows.Forms.Label();
+            this.checkBox_window_auto_period = new System.Windows.Forms.CheckBox();
             this.but_period_fi = new System.Windows.Forms.Button();
             this.label88 = new System.Windows.Forms.Label();
             this.textBox_movm_fi = new System.Windows.Forms.TextBox();
@@ -539,7 +547,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.checkBox_window_auto_period = new System.Windows.Forms.CheckBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2024,6 +2031,13 @@ namespace opengl3
             // 
             // tabPage14
             // 
+            this.tabPage14.Controls.Add(this.label92);
+            this.tabPage14.Controls.Add(this.label91);
+            this.tabPage14.Controls.Add(this.label90);
+            this.tabPage14.Controls.Add(this.textBox_period_max);
+            this.tabPage14.Controls.Add(this.textBox_period_min);
+            this.tabPage14.Controls.Add(this.textBox_window_smooth);
+            this.tabPage14.Controls.Add(this.label_period_ready);
             this.tabPage14.Controls.Add(this.checkBox_window_auto_period);
             this.tabPage14.Controls.Add(this.but_period_fi);
             this.tabPage14.Controls.Add(this.label88);
@@ -2058,6 +2072,77 @@ namespace opengl3
             this.tabPage14.TabIndex = 4;
             this.tabPage14.Text = "Имитация дыхания";
             this.tabPage14.UseVisualStyleBackColor = true;
+            // 
+            // label92
+            // 
+            this.label92.AutoSize = true;
+            this.label92.Location = new System.Drawing.Point(270, 139);
+            this.label92.Name = "label92";
+            this.label92.Size = new System.Drawing.Size(150, 20);
+            this.label92.TabIndex = 204;
+            this.label92.Text = "Окно сглаживания";
+            // 
+            // label91
+            // 
+            this.label91.AutoSize = true;
+            this.label91.Location = new System.Drawing.Point(265, 101);
+            this.label91.Name = "label91";
+            this.label91.Size = new System.Drawing.Size(149, 20);
+            this.label91.TabIndex = 203;
+            this.label91.Text = "Пределы периода";
+            // 
+            // label90
+            // 
+            this.label90.AutoSize = true;
+            this.label90.Location = new System.Drawing.Point(536, 139);
+            this.label90.Name = "label90";
+            this.label90.Size = new System.Drawing.Size(34, 20);
+            this.label90.TabIndex = 202;
+            this.label90.Text = "сек";
+            // 
+            // textBox_period_max
+            // 
+            this.textBox_period_max.Location = new System.Drawing.Point(491, 97);
+            this.textBox_period_max.Name = "textBox_period_max";
+            this.textBox_period_max.Size = new System.Drawing.Size(61, 26);
+            this.textBox_period_max.TabIndex = 201;
+            this.textBox_period_max.Text = "7";
+            // 
+            // textBox_period_min
+            // 
+            this.textBox_period_min.Location = new System.Drawing.Point(420, 98);
+            this.textBox_period_min.Name = "textBox_period_min";
+            this.textBox_period_min.Size = new System.Drawing.Size(65, 26);
+            this.textBox_period_min.TabIndex = 199;
+            this.textBox_period_min.Text = "1";
+            // 
+            // textBox_window_smooth
+            // 
+            this.textBox_window_smooth.Location = new System.Drawing.Point(446, 136);
+            this.textBox_window_smooth.Name = "textBox_window_smooth";
+            this.textBox_window_smooth.Size = new System.Drawing.Size(84, 26);
+            this.textBox_window_smooth.TabIndex = 197;
+            this.textBox_window_smooth.Text = "0.2";
+            // 
+            // label_period_ready
+            // 
+            this.label_period_ready.AutoSize = true;
+            this.label_period_ready.Location = new System.Drawing.Point(378, 250);
+            this.label_period_ready.Name = "label_period_ready";
+            this.label_period_ready.Size = new System.Drawing.Size(68, 20);
+            this.label_period_ready.TabIndex = 196;
+            this.label_period_ready.Text = "Период";
+            // 
+            // checkBox_window_auto_period
+            // 
+            this.checkBox_window_auto_period.AutoSize = true;
+            this.checkBox_window_auto_period.Location = new System.Drawing.Point(76, 331);
+            this.checkBox_window_auto_period.Name = "checkBox_window_auto_period";
+            this.checkBox_window_auto_period.Size = new System.Drawing.Size(160, 24);
+            this.checkBox_window_auto_period.TabIndex = 195;
+            this.checkBox_window_auto_period.Text = "Подстройка окна";
+            this.checkBox_window_auto_period.UseVisualStyleBackColor = true;
+            this.checkBox_window_auto_period.CheckedChanged += new System.EventHandler(this.checkBox_window_auto_period_CheckedChanged);
             // 
             // but_period_fi
             // 
@@ -2126,7 +2211,7 @@ namespace opengl3
             // 
             // but_comp_period
             // 
-            this.but_comp_period.Location = new System.Drawing.Point(274, 247);
+            this.but_comp_period.Location = new System.Drawing.Point(248, 247);
             this.but_comp_period.Name = "but_comp_period";
             this.but_comp_period.Size = new System.Drawing.Size(126, 65);
             this.but_comp_period.TabIndex = 186;
@@ -2136,7 +2221,7 @@ namespace opengl3
             // 
             // textBox_compens_gap
             // 
-            this.textBox_compens_gap.Location = new System.Drawing.Point(442, 24);
+            this.textBox_compens_gap.Location = new System.Drawing.Point(432, 17);
             this.textBox_compens_gap.Name = "textBox_compens_gap";
             this.textBox_compens_gap.Size = new System.Drawing.Size(84, 26);
             this.textBox_compens_gap.TabIndex = 184;
@@ -2146,7 +2231,7 @@ namespace opengl3
             // 
             this.but_compens_gap.Location = new System.Drawing.Point(252, 6);
             this.but_compens_gap.Name = "but_compens_gap";
-            this.but_compens_gap.Size = new System.Drawing.Size(174, 65);
+            this.but_compens_gap.Size = new System.Drawing.Size(174, 48);
             this.but_compens_gap.TabIndex = 183;
             this.but_compens_gap.Text = "Расстояние до поверхности";
             this.but_compens_gap.UseVisualStyleBackColor = true;
@@ -2154,9 +2239,9 @@ namespace opengl3
             // 
             // but_compens_end
             // 
-            this.but_compens_end.Location = new System.Drawing.Point(302, 124);
+            this.but_compens_end.Location = new System.Drawing.Point(382, 60);
             this.but_compens_end.Name = "but_compens_end";
-            this.but_compens_end.Size = new System.Drawing.Size(124, 41);
+            this.but_compens_end.Size = new System.Drawing.Size(124, 31);
             this.but_compens_end.TabIndex = 182;
             this.but_compens_end.Text = "Остановка";
             this.but_compens_end.UseVisualStyleBackColor = true;
@@ -2164,9 +2249,9 @@ namespace opengl3
             // 
             // but_compens_begin
             // 
-            this.but_compens_begin.Location = new System.Drawing.Point(302, 77);
+            this.but_compens_begin.Location = new System.Drawing.Point(252, 60);
             this.but_compens_begin.Name = "but_compens_begin";
-            this.but_compens_begin.Size = new System.Drawing.Size(124, 41);
+            this.but_compens_begin.Size = new System.Drawing.Size(124, 31);
             this.but_compens_begin.TabIndex = 181;
             this.but_compens_begin.Text = "Запуск";
             this.but_compens_begin.UseVisualStyleBackColor = true;
@@ -2175,7 +2260,7 @@ namespace opengl3
             // label_cur_las_dist
             // 
             this.label_cur_las_dist.AutoSize = true;
-            this.label_cur_las_dist.Location = new System.Drawing.Point(438, 74);
+            this.label_cur_las_dist.Location = new System.Drawing.Point(471, 282);
             this.label_cur_las_dist.Name = "label_cur_las_dist";
             this.label_cur_las_dist.Size = new System.Drawing.Size(35, 20);
             this.label_cur_las_dist.TabIndex = 180;
@@ -5138,10 +5223,10 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 27);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(869, 960);
+            this.tabPage9.Size = new System.Drawing.Size(869, 965);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -6180,17 +6265,6 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // checkBox_window_auto_period
-            // 
-            this.checkBox_window_auto_period.AutoSize = true;
-            this.checkBox_window_auto_period.Location = new System.Drawing.Point(76, 331);
-            this.checkBox_window_auto_period.Name = "checkBox_window_auto_period";
-            this.checkBox_window_auto_period.Size = new System.Drawing.Size(160, 24);
-            this.checkBox_window_auto_period.TabIndex = 195;
-            this.checkBox_window_auto_period.Text = "Подстройка окна";
-            this.checkBox_window_auto_period.UseVisualStyleBackColor = true;
-            this.checkBox_window_auto_period.CheckedChanged += new System.EventHandler(this.checkBox_window_auto_period_CheckedChanged);
-            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -6846,6 +6920,13 @@ namespace opengl3
         private System.Windows.Forms.Button but_set_expos;
         private System.Windows.Forms.TextBox textBox_exp_val;
         private System.Windows.Forms.CheckBox checkBox_window_auto_period;
+        private System.Windows.Forms.Label label_period_ready;
+        private System.Windows.Forms.TextBox textBox_period_min;
+        private System.Windows.Forms.TextBox textBox_window_smooth;
+        private System.Windows.Forms.Label label90;
+        private System.Windows.Forms.TextBox textBox_period_max;
+        private System.Windows.Forms.Label label92;
+        private System.Windows.Forms.Label label91;
     }
 }
 

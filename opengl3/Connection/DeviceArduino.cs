@@ -91,13 +91,13 @@ namespace opengl3
                 }
                 //try
                 {
-                    //Console.WriteLine("Out: " + Mes1);
+                    Console.WriteLine("Out: " + Mes1);
                 if(this.serialPort.IsOpen)
                 {
                     this.serialPort.WriteLine(Mes1);
                     //Thread.Sleep(1);
                     var resp = reseav();
-                    Console.WriteLine(resp);
+                    //Console.WriteLine(resp);
                 }
                             
 

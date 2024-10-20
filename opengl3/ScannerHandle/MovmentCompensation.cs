@@ -102,10 +102,10 @@ namespace opengl3
     }
     public class MovmentCompensation
     {
-        long fi;
-        long dt;
-        long start_time;
-        long period;
+        long fi { get; set; }
+        long dt { get; set; }
+        long start_time { get; set; }
+        public long period { get; set; }
         List<PosTimestamp> period_poses;
         public MovmentCompensation(long _start_time,
                                    long _period,
@@ -118,11 +118,12 @@ namespace opengl3
             dt = _dt;
             fi = 0;
         }
-        static public MovmentCompensation comp_period(List<PosTimestamp> poses, double min_period = 1, double max_period = 6)//sec
+        static public MovmentCompensation comp_period(List<PosTimestamp> poses, double min_period = 1, double max_period = 6,double window_smooth = 1)//sec
         {
             var dt = 10;//10ms
+            var window_pt =(int) ((window_smooth * 1000 )/ dt);
             var poses_unif = uniform_time(poses,dt);
-            var poses_smooth = PosTimestamp.line_aver(poses_unif, 100);//200 pt
+            var poses_smooth = PosTimestamp.line_aver(poses_unif, window_pt);
             var min_period_ms = (long)(min_period * 1000);
             var max_period_ms = (long)(max_period * 1000);
             var max_dt = Math.Abs(poses_smooth[poses_smooth.Count - 1].time - poses_smooth[0].time);
@@ -146,6 +147,7 @@ namespace opengl3
         {
             fi = _fi;
         }
+
         static long find_periodic(List<PosTimestamp> poses,long min_period, long max_period,long dt, int st_ind)
         {
             if(dt == 0) return -1;

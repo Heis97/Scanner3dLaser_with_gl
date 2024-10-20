@@ -485,7 +485,7 @@ namespace opengl3
                 
 
 
-            var points_cam2b = graphicGL.cross_flat_gpu_all(ps1, ps2);
+            var points_cam2b = graphicGL.cross_flat_gpu_all(ps2, ps1);
             
 
             //Console.WriteLine(graphicGL.toStringBuf(Point3d_GL.toMesh(points_cam2b), 3, 0, "orig ps"));

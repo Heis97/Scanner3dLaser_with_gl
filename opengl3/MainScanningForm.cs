@@ -34,7 +34,7 @@ namespace opengl3
         bool record_times = false;
         bool compens_period = false;
         bool window_auto = false;
-        Rectangle laser_roi_static = new Rectangle(600, 360, 80, 10);
+        Rectangle laser_roi_static = new Rectangle(0, 0, 80, 10);
         long start_record_time = 0;
         long record_time = 0;
         int save_vid_count = 0;
@@ -5106,6 +5106,7 @@ namespace opengl3
 
                 case FrameType.LasLin://laser sensor
                     //try
+                    if(ind==0)
                     {
                         /* var ps = Detection.detectLineSensor(mat);
                          Console.Write(ps[0].X + " ");
@@ -7797,8 +7798,11 @@ namespace opengl3
             var unif_t = MovmentCompensation.uniform_time(timestamps);
             foreach (PosTimestamp timestamp in unif_t) Console.WriteLine(timestamp.ToString());
             Console.WriteLine("__________________________");*/
-
-            movm = MovmentCompensation.comp_period(timestamps);
+            var period_min = to_double(textBox_period_min.Text);
+            var period_max = to_double(textBox_period_max.Text);
+            var window_smooth = to_double(textBox_window_smooth.Text);
+            movm = MovmentCompensation.comp_period(timestamps,period_min,period_max,window_smooth);
+            movm.set_fi(Convert.ToInt32(textBox_movm_fi.Text));
             //timestamps = FormSettings.load_obj<List<PosTimestamp>>("timestamps1_stay.json");
             //foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
         }
@@ -7814,6 +7818,7 @@ namespace opengl3
             timestamps = new List<PosTimestamp>();
             start_record_time = cur_time_to_int();
             record_times = true;
+            label_period_ready.BeginInvoke((MethodInvoker)(() => label_period_ready.Text = "Период вычисляется..."));
         }
         void handler_compens_record(double pos1,double pos2=0, double pos3 = 0)
         {
@@ -7835,8 +7840,14 @@ namespace opengl3
         {
             record_times = false;
             //foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
-            movm = MovmentCompensation.comp_period(timestamps);
+            
+            var period_min = to_double(textBox_period_min.Text);
+            var period_max = to_double(textBox_period_max.Text);
+            var window_smooth = to_double(textBox_window_smooth.Text);
+            movm = MovmentCompensation.comp_period(timestamps, period_min, period_max, window_smooth);
+            movm.set_fi(Convert.ToInt32(textBox_movm_fi.Text));
             FormSettings.save_obj("timestamps1.json",timestamps);
+           label_period_ready.BeginInvoke((MethodInvoker)(() => label_period_ready.Text = "Период вычислен "+movm.period));
         }
         int cur_time_to_int()
         {
