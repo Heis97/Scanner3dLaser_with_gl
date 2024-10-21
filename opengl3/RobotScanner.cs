@@ -21,6 +21,7 @@ namespace opengl3
         GraphicGL GL1 = new GraphicGL();
         RobotJaka robot = new RobotJaka();
         TCPclient scanner_client = new TCPclient();
+        Thread robot_thread = null;
         string scanner_ip = "localhost";
         string path_model_global = "C:\\Users\\User\\Documents\\RV 3D Studio Scans\\test_robot_0410_folder\\Processing\\Models";
         int scanner_port = 31000;
@@ -143,6 +144,7 @@ namespace opengl3
         #endregion
         private void but_scan_con_Click(object sender, EventArgs e)
         {
+
             scanner_client = new TCPclient();
             scanner_client.Connection(scanner_port, scanner_ip);
             Thread tcp_thread = new Thread(recieve_tcp);
@@ -315,7 +317,7 @@ namespace opengl3
         private void but_rob_con_Click(object sender, EventArgs e)
         {
             robot.on();
-           // robot.set_tool();
+            robot.set_tool();
             //robot.set_user_frame();
         }
 
@@ -338,23 +340,59 @@ namespace opengl3
 
         private void but_robscan_scan_Click(object sender, EventArgs e)
         {
-            Thread robot_thread = new Thread(scan_area);
+            robot_thread = new Thread(scan_area);
             robot_thread.Start();
         }
-        private void scan_area(){
-            var rx_amp = 0.2;
-            var ry_amp = 0.2;
+        private void scan_area()
+        {
+            
+            var len = robot.get_list_len();
+            if(len<=1)
+            {
+                scan_area_or();
+            }
+            else
+            {
+                robot.set_zero_frame();
+                for (int i = 0; i < len; i++)
+                {
+                    move_and_scan_abs(i);
+                }
+            }
+        }
+        private void scan_area_or()
+        {
+            
+            robot.set_zero_frame();
+            Console.WriteLine("begin: " + robot.get_cur_pos());
+            Console.WriteLine("_____________");
+            robot.set_user_frame();
+           
+            var rx_amp = 0.1;
+            var ry_amp = 0.1;
             var nx = 3;
-            var ny = 4;
+            var ny = 3;
             var rx_delt = rx_amp / nx;
             var ry_delt = ry_amp / ny;
+
             move(0, 0, 0, -rx_amp, 0, 0);
-            for (int i = -nx; i < 2 * nx; i++)
+            for (int i = -nx; i <  nx; i++)
             {
                 move_and_scan(0, 0, 0, rx_delt, 0, 0);
             }
             move(0, 0, 0, -rx_amp, 0, 0);
-
+            //----------------------------------
+            move(0, 0, 0, -ry_amp, 0, 0);
+            for (int i = -ny; i < ny; i++)
+            {
+                move_and_scan(0, 0, 0,0, ry_delt,  0);
+            }
+            move(0, 0, 0,0, -ry_amp, 0);
+            robot.set_zero_frame();
+            //move(1, 0, 0, 0, 0, 0);
+            Thread.Sleep(500);
+            Console.WriteLine("end: " + robot.get_cur_pos());
+            Console.WriteLine("_____________");
             /* move(0, 0, 0, 0, -ry_amp, 0);
              for (int i = -ny; i < 2 * ny; i++)
              {
@@ -366,16 +404,18 @@ namespace opengl3
         {
             move(x,y,z,rx,ry,rz);
             Thread.Sleep(400);
-            make_scan();
+            //make_scan();
             Thread.Sleep(100);
-            wait_scanner();
+            //wait_scanner();
 
            
         }
+
+
         private void move(double x = 0, double y = 0, double z = 0, double rx = 0, double ry = 0, double rz = 0)
         {
-            robot.set_zero_frame();
-            robot.set_user_frame();
+            //robot.set_zero_frame();
+            //robot.set_user_frame();
             
            // int id_set = 2;
             //robot.set_tool();
@@ -388,7 +428,21 @@ namespace opengl3
                 robot.move_lin_rel(x, y, z, rx, ry, rz);
             }
            // Thread.Sleep(1000);
-           Console.WriteLine(robot.get_cur_pos());
+           //Console.WriteLine(robot.get_cur_pos());
+        }
+        private void move_and_scan_abs(int i)
+        {
+            robot.move_lin_abs_from_list(i);
+            Thread.Sleep(400);
+            //make_scan();
+            Thread.Sleep(100);
+            //wait_scanner();
+
+
+        }
+        private void move_abs(int i)
+        {
+            robot.move_lin_abs_from_list(i);
         }
 
         private void but_rob_work_pos_Click(object sender, EventArgs e)
@@ -399,6 +453,13 @@ namespace opengl3
         private void but_rob_stop_Click(object sender, EventArgs e)
         {
             robot.stop();
+            robot.set_zero_frame();
+            if (robot_thread!=null)
+            {
+                robot_thread.Suspend();
+                robot_thread = null;
+            }
+            
         }
         private void radioButton_mm_CheckedChanged(object sender, EventArgs e)
         {
@@ -415,6 +476,18 @@ namespace opengl3
             //var scan_stl = Polygon3d_GL.toMesh(mesh);
             if (stl_name == null) return;
             STLmodel.saveMesh(GL1.buffersGl.objs[treeView_models.SelectedNode.Text].vertex_buffer_data, stl_name);
+        }
+
+        private void but_save_point_Click(object sender, EventArgs e)
+        {
+            robot.add_to_list();
+            label_points_cur.BeginInvoke((MethodInvoker)(() => label_points_cur.Text = "Точек: "+ robot.get_list_len()));
+        }
+
+        private void but_clear_points_Click(object sender, EventArgs e)
+        {
+            robot.clean_list();
+            label_points_cur.BeginInvoke((MethodInvoker)(() => label_points_cur.Text = "Точки не добавлены" + robot.get_list_len()));
         }
     }
 

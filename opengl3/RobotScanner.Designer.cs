@@ -65,6 +65,7 @@
             this.but_model_save_stl = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label_points_cur = new System.Windows.Forms.Label();
             this.but_clear_points = new System.Windows.Forms.Button();
             this.but_save_point = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -528,6 +529,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label_points_cur);
             this.groupBox2.Controls.Add(this.but_clear_points);
             this.groupBox2.Controls.Add(this.but_save_point);
             this.groupBox2.Controls.Add(this.but_scan_discon);
@@ -542,6 +544,15 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Сканирование";
             // 
+            // label_points_cur
+            // 
+            this.label_points_cur.AutoSize = true;
+            this.label_points_cur.Location = new System.Drawing.Point(308, 87);
+            this.label_points_cur.Name = "label_points_cur";
+            this.label_points_cur.Size = new System.Drawing.Size(50, 18);
+            this.label_points_cur.TabIndex = 38;
+            this.label_points_cur.Text = "Points";
+            // 
             // but_clear_points
             // 
             this.but_clear_points.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
@@ -552,6 +563,7 @@
             this.but_clear_points.TabIndex = 37;
             this.but_clear_points.Text = "Очистить точки";
             this.but_clear_points.UseVisualStyleBackColor = true;
+            this.but_clear_points.Click += new System.EventHandler(this.but_clear_points_Click);
             // 
             // but_save_point
             // 
@@ -563,6 +575,7 @@
             this.but_save_point.TabIndex = 8;
             this.but_save_point.Text = "Запомнить точку";
             this.but_save_point.UseVisualStyleBackColor = true;
+            this.but_save_point.Click += new System.EventHandler(this.but_save_point_Click);
             // 
             // groupBox3
             // 
@@ -589,6 +602,7 @@
             this.but_estop.TabIndex = 11;
             this.but_estop.Text = "Аварийная остановка";
             this.but_estop.UseVisualStyleBackColor = false;
+            this.but_estop.Click += new System.EventHandler(this.but_rob_stop_Click);
             // 
             // RobotScanner
             // 
@@ -611,6 +625,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -660,5 +675,6 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button but_estop;
         private System.Windows.Forms.Button but_clear_points;
+        private System.Windows.Forms.Label label_points_cur;
     }
 }
