@@ -63,6 +63,15 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label_cur_status = new System.Windows.Forms.Label();
             this.but_model_save_stl = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.but_clear_points = new System.Windows.Forms.Button();
+            this.but_save_point = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.but_estop = new System.Windows.Forms.Button();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // glControl_main
@@ -76,7 +85,7 @@
             this.glControl_main.Margin = new System.Windows.Forms.Padding(4);
             this.glControl_main.MultisampleBits = ((uint)(8u));
             this.glControl_main.Name = "glControl_main";
-            this.glControl_main.Size = new System.Drawing.Size(900, 812);
+            this.glControl_main.Size = new System.Drawing.Size(1440, 1019);
             this.glControl_main.StencilBits = ((uint)(0u));
             this.glControl_main.TabIndex = 0;
             this.glControl_main.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_ContextCreated);
@@ -88,11 +97,12 @@
             // 
             // treeView_models
             // 
-            this.treeView_models.Location = new System.Drawing.Point(933, 479);
+            this.treeView_models.Location = new System.Drawing.Point(969, 908);
             this.treeView_models.Margin = new System.Windows.Forms.Padding(2);
             this.treeView_models.Name = "treeView_models";
-            this.treeView_models.Size = new System.Drawing.Size(265, 345);
+            this.treeView_models.Size = new System.Drawing.Size(265, 39);
             this.treeView_models.TabIndex = 1;
+            this.treeView_models.Visible = false;
             // 
             // label_gl
             // 
@@ -103,11 +113,12 @@
             this.label_gl.Size = new System.Drawing.Size(43, 13);
             this.label_gl.TabIndex = 2;
             this.label_gl.Text = "label_gl";
+            this.label_gl.Visible = false;
             // 
             // but_scan_con
             // 
             this.but_scan_con.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_scan_con.Location = new System.Drawing.Point(933, 27);
+            this.but_scan_con.Location = new System.Drawing.Point(14, 29);
             this.but_scan_con.Margin = new System.Windows.Forms.Padding(2);
             this.but_scan_con.Name = "but_scan_con";
             this.but_scan_con.Size = new System.Drawing.Size(128, 54);
@@ -119,7 +130,7 @@
             // but_scan_discon
             // 
             this.but_scan_discon.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_scan_discon.Location = new System.Drawing.Point(933, 85);
+            this.but_scan_discon.Location = new System.Drawing.Point(14, 87);
             this.but_scan_discon.Margin = new System.Windows.Forms.Padding(2);
             this.but_scan_discon.Name = "but_scan_discon";
             this.but_scan_discon.Size = new System.Drawing.Size(128, 54);
@@ -131,43 +142,46 @@
             // but_scan_make_scan
             // 
             this.but_scan_make_scan.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_scan_make_scan.Location = new System.Drawing.Point(933, 166);
+            this.but_scan_make_scan.Location = new System.Drawing.Point(1395, 976);
             this.but_scan_make_scan.Margin = new System.Windows.Forms.Padding(2);
             this.but_scan_make_scan.Name = "but_scan_make_scan";
             this.but_scan_make_scan.Size = new System.Drawing.Size(128, 54);
             this.but_scan_make_scan.TabIndex = 5;
             this.but_scan_make_scan.Text = "Сделать скан";
             this.but_scan_make_scan.UseVisualStyleBackColor = true;
+            this.but_scan_make_scan.Visible = false;
             this.but_scan_make_scan.Click += new System.EventHandler(this.but_scan_make_scan_Click);
             // 
             // but_scan_clear_scan
             // 
             this.but_scan_clear_scan.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_scan_clear_scan.Location = new System.Drawing.Point(933, 224);
+            this.but_scan_clear_scan.Location = new System.Drawing.Point(1567, 962);
             this.but_scan_clear_scan.Margin = new System.Windows.Forms.Padding(2);
             this.but_scan_clear_scan.Name = "but_scan_clear_scan";
             this.but_scan_clear_scan.Size = new System.Drawing.Size(128, 54);
             this.but_scan_clear_scan.TabIndex = 6;
             this.but_scan_clear_scan.Text = "Очистить сканы";
             this.but_scan_clear_scan.UseVisualStyleBackColor = true;
+            this.but_scan_clear_scan.Visible = false;
             this.but_scan_clear_scan.Click += new System.EventHandler(this.but_scan_clear_scan_Click);
             // 
             // but_scan_make_model
             // 
             this.but_scan_make_model.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_scan_make_model.Location = new System.Drawing.Point(933, 282);
+            this.but_scan_make_model.Location = new System.Drawing.Point(1699, 976);
             this.but_scan_make_model.Margin = new System.Windows.Forms.Padding(2);
             this.but_scan_make_model.Name = "but_scan_make_model";
             this.but_scan_make_model.Size = new System.Drawing.Size(128, 54);
             this.but_scan_make_model.TabIndex = 7;
             this.but_scan_make_model.Text = "Сделать модель";
             this.but_scan_make_model.UseVisualStyleBackColor = true;
+            this.but_scan_make_model.Visible = false;
             this.but_scan_make_model.Click += new System.EventHandler(this.but_scan_make_model_Click);
             // 
             // but_rob_discon
             // 
             this.but_rob_discon.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_rob_discon.Location = new System.Drawing.Point(1109, 85);
+            this.but_rob_discon.Location = new System.Drawing.Point(18, 89);
             this.but_rob_discon.Margin = new System.Windows.Forms.Padding(2);
             this.but_rob_discon.Name = "but_rob_discon";
             this.but_rob_discon.Size = new System.Drawing.Size(128, 54);
@@ -179,7 +193,7 @@
             // but_rob_con
             // 
             this.but_rob_con.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_rob_con.Location = new System.Drawing.Point(1109, 27);
+            this.but_rob_con.Location = new System.Drawing.Point(18, 31);
             this.but_rob_con.Margin = new System.Windows.Forms.Padding(2);
             this.but_rob_con.Name = "but_rob_con";
             this.but_rob_con.Size = new System.Drawing.Size(128, 54);
@@ -191,7 +205,7 @@
             // but_x_p
             // 
             this.but_x_p.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_x_p.Location = new System.Drawing.Point(1109, 166);
+            this.but_x_p.Location = new System.Drawing.Point(18, 195);
             this.but_x_p.Margin = new System.Windows.Forms.Padding(2);
             this.but_x_p.Name = "but_x_p";
             this.but_x_p.Size = new System.Drawing.Size(48, 45);
@@ -203,7 +217,7 @@
             // but_y_p
             // 
             this.but_y_p.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_y_p.Location = new System.Drawing.Point(1161, 166);
+            this.but_y_p.Location = new System.Drawing.Point(70, 195);
             this.but_y_p.Margin = new System.Windows.Forms.Padding(2);
             this.but_y_p.Name = "but_y_p";
             this.but_y_p.Size = new System.Drawing.Size(48, 45);
@@ -215,7 +229,7 @@
             // but_z_p
             // 
             this.but_z_p.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_z_p.Location = new System.Drawing.Point(1213, 166);
+            this.but_z_p.Location = new System.Drawing.Point(122, 195);
             this.but_z_p.Margin = new System.Windows.Forms.Padding(2);
             this.but_z_p.Name = "but_z_p";
             this.but_z_p.Size = new System.Drawing.Size(48, 45);
@@ -227,7 +241,7 @@
             // but_x_m
             // 
             this.but_x_m.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_x_m.Location = new System.Drawing.Point(1109, 215);
+            this.but_x_m.Location = new System.Drawing.Point(18, 244);
             this.but_x_m.Margin = new System.Windows.Forms.Padding(2);
             this.but_x_m.Name = "but_x_m";
             this.but_x_m.Size = new System.Drawing.Size(48, 45);
@@ -239,7 +253,7 @@
             // but_y_m
             // 
             this.but_y_m.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_y_m.Location = new System.Drawing.Point(1161, 215);
+            this.but_y_m.Location = new System.Drawing.Point(70, 244);
             this.but_y_m.Margin = new System.Windows.Forms.Padding(2);
             this.but_y_m.Name = "but_y_m";
             this.but_y_m.Size = new System.Drawing.Size(48, 45);
@@ -251,7 +265,7 @@
             // but_z_m
             // 
             this.but_z_m.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_z_m.Location = new System.Drawing.Point(1213, 215);
+            this.but_z_m.Location = new System.Drawing.Point(122, 244);
             this.but_z_m.Margin = new System.Windows.Forms.Padding(2);
             this.but_z_m.Name = "but_z_m";
             this.but_z_m.Size = new System.Drawing.Size(48, 45);
@@ -263,7 +277,7 @@
             // but_rx_p
             // 
             this.but_rx_p.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_rx_p.Location = new System.Drawing.Point(1265, 166);
+            this.but_rx_p.Location = new System.Drawing.Point(174, 195);
             this.but_rx_p.Margin = new System.Windows.Forms.Padding(2);
             this.but_rx_p.Name = "but_rx_p";
             this.but_rx_p.Size = new System.Drawing.Size(48, 45);
@@ -275,7 +289,7 @@
             // but_ry_p
             // 
             this.but_ry_p.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_ry_p.Location = new System.Drawing.Point(1317, 166);
+            this.but_ry_p.Location = new System.Drawing.Point(226, 195);
             this.but_ry_p.Margin = new System.Windows.Forms.Padding(2);
             this.but_ry_p.Name = "but_ry_p";
             this.but_ry_p.Size = new System.Drawing.Size(48, 45);
@@ -287,7 +301,7 @@
             // but_rx_m
             // 
             this.but_rx_m.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_rx_m.Location = new System.Drawing.Point(1265, 215);
+            this.but_rx_m.Location = new System.Drawing.Point(174, 244);
             this.but_rx_m.Margin = new System.Windows.Forms.Padding(2);
             this.but_rx_m.Name = "but_rx_m";
             this.but_rx_m.Size = new System.Drawing.Size(48, 45);
@@ -299,7 +313,7 @@
             // but_ry_m
             // 
             this.but_ry_m.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_ry_m.Location = new System.Drawing.Point(1317, 215);
+            this.but_ry_m.Location = new System.Drawing.Point(226, 244);
             this.but_ry_m.Margin = new System.Windows.Forms.Padding(2);
             this.but_ry_m.Name = "but_ry_m";
             this.but_ry_m.Size = new System.Drawing.Size(48, 45);
@@ -311,7 +325,7 @@
             // but_rz_p
             // 
             this.but_rz_p.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_rz_p.Location = new System.Drawing.Point(1369, 166);
+            this.but_rz_p.Location = new System.Drawing.Point(278, 195);
             this.but_rz_p.Margin = new System.Windows.Forms.Padding(2);
             this.but_rz_p.Name = "but_rz_p";
             this.but_rz_p.Size = new System.Drawing.Size(48, 45);
@@ -323,7 +337,7 @@
             // but_rz_m
             // 
             this.but_rz_m.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_rz_m.Location = new System.Drawing.Point(1369, 215);
+            this.but_rz_m.Location = new System.Drawing.Point(278, 244);
             this.but_rz_m.Margin = new System.Windows.Forms.Padding(2);
             this.but_rz_m.Name = "but_rz_m";
             this.but_rz_m.Size = new System.Drawing.Size(48, 45);
@@ -335,7 +349,7 @@
             // but_rob_cur_pos
             // 
             this.but_rob_cur_pos.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_rob_cur_pos.Location = new System.Drawing.Point(1109, 282);
+            this.but_rob_cur_pos.Location = new System.Drawing.Point(14, 29);
             this.but_rob_cur_pos.Margin = new System.Windows.Forms.Padding(2);
             this.but_rob_cur_pos.Name = "but_rob_cur_pos";
             this.but_rob_cur_pos.Size = new System.Drawing.Size(128, 54);
@@ -347,7 +361,7 @@
             // but_rob_home
             // 
             this.but_rob_home.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_rob_home.Location = new System.Drawing.Point(1109, 340);
+            this.but_rob_home.Location = new System.Drawing.Point(14, 87);
             this.but_rob_home.Margin = new System.Windows.Forms.Padding(2);
             this.but_rob_home.Name = "but_rob_home";
             this.but_rob_home.Size = new System.Drawing.Size(128, 54);
@@ -359,7 +373,7 @@
             // but_robscan_scan
             // 
             this.but_robscan_scan.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_robscan_scan.Location = new System.Drawing.Point(933, 408);
+            this.but_robscan_scan.Location = new System.Drawing.Point(160, 87);
             this.but_robscan_scan.Margin = new System.Windows.Forms.Padding(2);
             this.but_robscan_scan.Name = "but_robscan_scan";
             this.but_robscan_scan.Size = new System.Drawing.Size(128, 67);
@@ -371,7 +385,7 @@
             // but_rob_work_pos
             // 
             this.but_rob_work_pos.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_rob_work_pos.Location = new System.Drawing.Point(1241, 340);
+            this.but_rob_work_pos.Location = new System.Drawing.Point(160, 87);
             this.but_rob_work_pos.Margin = new System.Windows.Forms.Padding(2);
             this.but_rob_work_pos.Name = "but_rob_work_pos";
             this.but_rob_work_pos.Size = new System.Drawing.Size(128, 54);
@@ -383,7 +397,7 @@
             // but_rob_stop
             // 
             this.but_rob_stop.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_rob_stop.Location = new System.Drawing.Point(1241, 282);
+            this.but_rob_stop.Location = new System.Drawing.Point(160, 29);
             this.but_rob_stop.Margin = new System.Windows.Forms.Padding(2);
             this.but_rob_stop.Name = "but_rob_stop";
             this.but_rob_stop.Size = new System.Drawing.Size(128, 54);
@@ -396,9 +410,9 @@
             // 
             this.radioButton_1.AutoSize = true;
             this.radioButton_1.Checked = true;
-            this.radioButton_1.Location = new System.Drawing.Point(1284, 73);
+            this.radioButton_1.Location = new System.Drawing.Point(341, 229);
             this.radioButton_1.Name = "radioButton_1";
-            this.radioButton_1.Size = new System.Drawing.Size(31, 17);
+            this.radioButton_1.Size = new System.Drawing.Size(34, 22);
             this.radioButton_1.TabIndex = 29;
             this.radioButton_1.TabStop = true;
             this.radioButton_1.Text = "1";
@@ -408,9 +422,9 @@
             // radioButton_10
             // 
             this.radioButton_10.AutoSize = true;
-            this.radioButton_10.Location = new System.Drawing.Point(1284, 50);
+            this.radioButton_10.Location = new System.Drawing.Point(341, 206);
             this.radioButton_10.Name = "radioButton_10";
-            this.radioButton_10.Size = new System.Drawing.Size(37, 17);
+            this.radioButton_10.Size = new System.Drawing.Size(42, 22);
             this.radioButton_10.TabIndex = 30;
             this.radioButton_10.TabStop = true;
             this.radioButton_10.Text = "10";
@@ -420,9 +434,9 @@
             // radioButton_01
             // 
             this.radioButton_01.AutoSize = true;
-            this.radioButton_01.Location = new System.Drawing.Point(1284, 96);
+            this.radioButton_01.Location = new System.Drawing.Point(341, 252);
             this.radioButton_01.Name = "radioButton_01";
-            this.radioButton_01.Size = new System.Drawing.Size(40, 17);
+            this.radioButton_01.Size = new System.Drawing.Size(46, 22);
             this.radioButton_01.TabIndex = 31;
             this.radioButton_01.TabStop = true;
             this.radioButton_01.Text = "0.1";
@@ -432,27 +446,27 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1321, 52);
+            this.label1.Location = new System.Drawing.Point(378, 208);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(23, 13);
+            this.label1.Size = new System.Drawing.Size(30, 18);
             this.label1.TabIndex = 32;
             this.label1.Text = "мм";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1321, 98);
+            this.label2.Location = new System.Drawing.Point(378, 254);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(23, 13);
+            this.label2.Size = new System.Drawing.Size(30, 18);
             this.label2.TabIndex = 33;
             this.label2.Text = "мм";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1314, 75);
+            this.label3.Location = new System.Drawing.Point(371, 231);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(23, 13);
+            this.label3.Size = new System.Drawing.Size(30, 18);
             this.label3.TabIndex = 34;
             this.label3.Text = "мм";
             // 
@@ -460,17 +474,18 @@
             // 
             this.label_cur_status.AutoSize = true;
             this.label_cur_status.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label_cur_status.Location = new System.Drawing.Point(1210, 488);
+            this.label_cur_status.Location = new System.Drawing.Point(1278, 805);
             this.label_cur_status.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label_cur_status.Name = "label_cur_status";
             this.label_cur_status.Size = new System.Drawing.Size(50, 18);
             this.label_cur_status.TabIndex = 35;
             this.label_cur_status.Text = "робот";
+            this.label_cur_status.Visible = false;
             // 
             // but_model_save_stl
             // 
             this.but_model_save_stl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_model_save_stl.Location = new System.Drawing.Point(1070, 408);
+            this.but_model_save_stl.Location = new System.Drawing.Point(160, 158);
             this.but_model_save_stl.Margin = new System.Windows.Forms.Padding(2);
             this.but_model_save_stl.Name = "but_model_save_stl";
             this.but_model_save_stl.Size = new System.Drawing.Size(128, 67);
@@ -479,49 +494,124 @@
             this.but_model_save_stl.UseVisualStyleBackColor = true;
             this.but_model_save_stl.Click += new System.EventHandler(this.but_model_save_stl_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.but_rz_p);
+            this.groupBox1.Controls.Add(this.but_x_p);
+            this.groupBox1.Controls.Add(this.but_y_p);
+            this.groupBox1.Controls.Add(this.but_rob_stop);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.but_rob_work_pos);
+            this.groupBox1.Controls.Add(this.but_z_p);
+            this.groupBox1.Controls.Add(this.but_rob_home);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.but_rob_cur_pos);
+            this.groupBox1.Controls.Add(this.but_x_m);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.but_y_m);
+            this.groupBox1.Controls.Add(this.radioButton_01);
+            this.groupBox1.Controls.Add(this.but_z_m);
+            this.groupBox1.Controls.Add(this.radioButton_10);
+            this.groupBox1.Controls.Add(this.but_rx_p);
+            this.groupBox1.Controls.Add(this.radioButton_1);
+            this.groupBox1.Controls.Add(this.but_ry_p);
+            this.groupBox1.Controls.Add(this.but_rx_m);
+            this.groupBox1.Controls.Add(this.but_ry_m);
+            this.groupBox1.Controls.Add(this.but_rz_m);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.groupBox1.Location = new System.Drawing.Point(1457, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(435, 314);
+            this.groupBox1.TabIndex = 37;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Перемещение";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.but_clear_points);
+            this.groupBox2.Controls.Add(this.but_save_point);
+            this.groupBox2.Controls.Add(this.but_scan_discon);
+            this.groupBox2.Controls.Add(this.but_model_save_stl);
+            this.groupBox2.Controls.Add(this.but_scan_con);
+            this.groupBox2.Controls.Add(this.but_robscan_scan);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.groupBox2.Location = new System.Drawing.Point(1457, 332);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(435, 241);
+            this.groupBox2.TabIndex = 38;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Сканирование";
+            // 
+            // but_clear_points
+            // 
+            this.but_clear_points.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.but_clear_points.Location = new System.Drawing.Point(302, 29);
+            this.but_clear_points.Margin = new System.Windows.Forms.Padding(2);
+            this.but_clear_points.Name = "but_clear_points";
+            this.but_clear_points.Size = new System.Drawing.Size(128, 54);
+            this.but_clear_points.TabIndex = 37;
+            this.but_clear_points.Text = "Очистить точки";
+            this.but_clear_points.UseVisualStyleBackColor = true;
+            // 
+            // but_save_point
+            // 
+            this.but_save_point.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.but_save_point.Location = new System.Drawing.Point(160, 29);
+            this.but_save_point.Margin = new System.Windows.Forms.Padding(2);
+            this.but_save_point.Name = "but_save_point";
+            this.but_save_point.Size = new System.Drawing.Size(128, 54);
+            this.but_save_point.TabIndex = 8;
+            this.but_save_point.Text = "Запомнить точку";
+            this.but_save_point.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.but_estop);
+            this.groupBox3.Controls.Add(this.but_rob_con);
+            this.groupBox3.Controls.Add(this.but_rob_discon);
+            this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.groupBox3.Location = new System.Drawing.Point(1457, 579);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(435, 157);
+            this.groupBox3.TabIndex = 39;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Подключение";
+            // 
+            // but_estop
+            // 
+            this.but_estop.BackColor = System.Drawing.Color.Red;
+            this.but_estop.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.but_estop.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.but_estop.Location = new System.Drawing.Point(160, 31);
+            this.but_estop.Margin = new System.Windows.Forms.Padding(2);
+            this.but_estop.Name = "but_estop";
+            this.but_estop.Size = new System.Drawing.Size(128, 54);
+            this.but_estop.TabIndex = 11;
+            this.but_estop.Text = "Аварийная остановка";
+            this.but_estop.UseVisualStyleBackColor = false;
+            // 
             // RobotScanner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1443, 862);
-            this.Controls.Add(this.but_model_save_stl);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label_cur_status);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.radioButton_01);
-            this.Controls.Add(this.radioButton_10);
-            this.Controls.Add(this.radioButton_1);
-            this.Controls.Add(this.but_rob_stop);
-            this.Controls.Add(this.but_rob_work_pos);
-            this.Controls.Add(this.but_robscan_scan);
-            this.Controls.Add(this.but_rob_home);
-            this.Controls.Add(this.but_rob_cur_pos);
-            this.Controls.Add(this.but_rz_m);
-            this.Controls.Add(this.but_rz_p);
-            this.Controls.Add(this.but_ry_m);
-            this.Controls.Add(this.but_rx_m);
-            this.Controls.Add(this.but_ry_p);
-            this.Controls.Add(this.but_rx_p);
-            this.Controls.Add(this.but_z_m);
-            this.Controls.Add(this.but_y_m);
-            this.Controls.Add(this.but_x_m);
-            this.Controls.Add(this.but_z_p);
-            this.Controls.Add(this.but_y_p);
-            this.Controls.Add(this.but_x_p);
-            this.Controls.Add(this.but_rob_discon);
-            this.Controls.Add(this.but_rob_con);
+            this.Controls.Add(this.label_gl);
+            this.Controls.Add(this.but_scan_make_scan);
             this.Controls.Add(this.but_scan_make_model);
             this.Controls.Add(this.but_scan_clear_scan);
-            this.Controls.Add(this.but_scan_make_scan);
-            this.Controls.Add(this.but_scan_discon);
-            this.Controls.Add(this.but_scan_con);
-            this.Controls.Add(this.label_gl);
             this.Controls.Add(this.treeView_models);
             this.Controls.Add(this.glControl_main);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "RobotScanner";
             this.Text = "RobotScanner";
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -564,5 +654,11 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label_cur_status;
         private System.Windows.Forms.Button but_model_save_stl;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button but_save_point;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button but_estop;
+        private System.Windows.Forms.Button but_clear_points;
     }
 }

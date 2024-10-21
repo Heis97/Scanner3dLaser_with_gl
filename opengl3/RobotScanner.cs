@@ -315,7 +315,8 @@ namespace opengl3
         private void but_rob_con_Click(object sender, EventArgs e)
         {
             robot.on();
-            robot.set_tool();
+           // robot.set_tool();
+            //robot.set_user_frame();
         }
 
         private void but_rob_discon_Click(object sender, EventArgs e)
@@ -373,6 +374,11 @@ namespace opengl3
         }
         private void move(double x = 0, double y = 0, double z = 0, double rx = 0, double ry = 0, double rz = 0)
         {
+            robot.set_zero_frame();
+            robot.set_user_frame();
+            
+           // int id_set = 2;
+            //robot.set_tool();
             if (x == 0 && y == 0 && z == 0)
             {
                 robot.move_lin_rel_or(x, y, z, rx, ry, rz);
@@ -381,9 +387,10 @@ namespace opengl3
             {
                 robot.move_lin_rel(x, y, z, rx, ry, rz);
             }
-            Thread.Sleep(1000);
-            Console.WriteLine(robot.get_cur_pos());
+           // Thread.Sleep(1000);
+           Console.WriteLine(robot.get_cur_pos());
         }
+
         private void but_rob_work_pos_Click(object sender, EventArgs e)
         {
             robot.move_work();
