@@ -39,6 +39,41 @@ namespace opengl3
                 return false;
             }
         }
+
+       public static string find_ports(ComboBox comboBox, bool last = false)//not work
+        {
+            //comboBox_portsArd.Items.Add("COM3");
+            // comboBox_portsArd.Items.Clear();
+            string port = "";
+            comboBox.BeginInvoke((MethodInvoker)(() => comboBox.Items.Clear()));
+            // Получаем список COM портов доступных в системе
+            string[] portnames = SerialPort.GetPortNames();
+            // Проверяем есть ли доступные
+            if (portnames.Length == 0)
+            {
+                MessageBox.Show("COM PORT not found");
+            }
+            foreach (string portName in portnames)
+            {
+                //добавляем доступные COM порты в список           
+                comboBox.BeginInvoke((MethodInvoker)(() => comboBox.Items.Add(portName)));
+                //Console.WriteLine(portnames.Length);
+                if (portnames[0] != null)
+                {
+                    comboBox.BeginInvoke((MethodInvoker)(() => comboBox.SelectedItem = portnames[0]));
+                    port = portnames[0];
+                    if (last)
+                    {
+                        comboBox.BeginInvoke((MethodInvoker)(() => comboBox.SelectedItem = portnames[portnames.Length - 1]));
+                        port = portnames[portnames.Length - 1];
+
+                    }
+                }
+               
+            }
+            return port;
+        }
+
         public void set_adr(int adr)
         {
             this.adr = adr;

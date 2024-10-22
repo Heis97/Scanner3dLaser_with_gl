@@ -125,7 +125,7 @@ namespace opengl3
         public void setBuffers()
         {
             
-            if (buff_array== uint.MaxValue) buff_array = Gl.GenVertexArray();
+            if (buff_array == uint.MaxValue) buff_array = Gl.GenVertexArray();
             Gl.BindVertexArray(buff_array);
             v_ubuf =  bindBuffer(vertex_buffer_data, 0, 3,v_ubuf);
             if (normal_buffer_data != null) n_ubuf = bindBuffer(normal_buffer_data, 1, 3, n_ubuf);

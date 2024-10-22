@@ -1117,8 +1117,6 @@ namespace opengl3
         Scanner load_scan_v2(Scanner scanner,string scan_path, ScannerConfig config)
         {
 
-
-
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //
             if(config.fast_load)
@@ -1607,7 +1605,7 @@ namespace opengl3
 
         void initLaserFast()
         {
-            find_ports(comboBox_portsArd);
+            DeviceArduino.find_ports(comboBox_portsArd);
             Thread.Sleep(100);
             laserLine = new LaserLine(portArd);
         }
@@ -4629,7 +4627,7 @@ namespace opengl3
         {
             videoStart(2);
             videoStart(1); Thread.Sleep(5000);
-            find_ports(comboBox_portsArd); Thread.Sleep(100);
+            DeviceArduino.find_ports(comboBox_portsArd); Thread.Sleep(100);
             laserLine = new LaserLine(portArd); Thread.Sleep(1000);
             laserLine?.setShvpVel(200); Thread.Sleep(100);
             laserLine?.laserOn(); Thread.Sleep(100);
@@ -5825,39 +5823,9 @@ namespace opengl3
 
         #region laser_but
         string portArd;
-
-        void find_ports(ComboBox comboBox, bool last = false)
-        {
-            //comboBox_portsArd.Items.Add("COM3");
-            // comboBox_portsArd.Items.Clear();
-            comboBox.BeginInvoke((MethodInvoker)(() => comboBox.Items.Clear()));
-            // Получаем список COM портов доступных в системе
-            string[] portnames = SerialPort.GetPortNames();
-            // Проверяем есть ли доступные
-            if (portnames.Length == 0)
-            {
-                MessageBox.Show("COM PORT not found");
-            }
-            foreach (string portName in portnames)
-            {
-                //добавляем доступные COM порты в список           
-                comboBox.BeginInvoke((MethodInvoker)(() => comboBox.Items.Add(portName)));
-                //Console.WriteLine(portnames.Length);
-                if (portnames[0] != null)
-                {
-                    comboBox.BeginInvoke((MethodInvoker)(() => comboBox.SelectedItem = portnames[0]));
-                    if (last)
-                    {
-                        comboBox.BeginInvoke((MethodInvoker)(() => comboBox.SelectedItem = portnames[portnames.Length-1]));
-
-                    }
-                }
-            }
-        }
-
         private void but_find_ports_Click(object sender, EventArgs e)
         {
-            find_ports(comboBox_portsArd);
+           DeviceArduino.find_ports(comboBox_portsArd);
         }
         private void but_close_Click(object sender, EventArgs e)
         {
@@ -7183,7 +7151,7 @@ namespace opengl3
         {
             label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Подключение контр РО..."));
             label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.ForeColor = Color.Firebrick));
-            find_ports(cb_ard_ext,true);
+            DeviceArduino.find_ports(cb_ard_ext,true);
             Thread.Sleep(300);
             laserLine = new LaserLine(portArd); Thread.Sleep(1500);
             laserLine?.setShvpVel(200); Thread.Sleep(100);
@@ -7687,7 +7655,7 @@ namespace opengl3
 
         private void but_find_ard_tube_Click(object sender, EventArgs e)
         {
-            find_ports(comboBox_ard_tube);
+            DeviceArduino.find_ports(comboBox_ard_tube);
         }
 
         private void but_con_ard_tube_Click(object sender, EventArgs e)

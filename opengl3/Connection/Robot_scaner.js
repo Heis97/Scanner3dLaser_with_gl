@@ -22,11 +22,12 @@ function ProcessEvent(module, event, value)
 	{
 		if ( event === "OnStarted" )
 		{
-			CheckFeasibility();
+			//CheckFeasibility();
 			//MakeScan();
-			
-			Application.LogMessage("CheckFeasibility");
 
+			//Application.LogMessage("CheckFeasibility");
+			Application.LogMessage("Script started");
+			TcpServer.Start(31000);
 
            // FinishScript();
 		}
@@ -36,7 +37,7 @@ function ProcessEvent(module, event, value)
 	{
 		if (event === "OnCheckPassed") {
 			//  Write here what a script should do when started
-			Application.LogMessage("Script started");
+			
 			/*let mes = "{\"module\":\"Scan\",\"command\":\"Create\",\"value\":[\"asd\"]}";
 			let back = "\\";
 			//mes = mes.replace(back, "");
@@ -52,7 +53,7 @@ function ProcessEvent(module, event, value)
 			*/
 			//StartScanCreation();
 			//FinishScript();
-			TcpServer.Start(31000);
+			//TcpServer.Start(31000);
 		}
 		else if ( event === "OnModelBuilt" )
 		{

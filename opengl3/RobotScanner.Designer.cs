@@ -70,6 +70,7 @@
             this.but_save_point = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.but_estop = new System.Windows.Forms.Button();
+            this.comboBox_laser_line = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -108,7 +109,7 @@
             // label_gl
             // 
             this.label_gl.AutoSize = true;
-            this.label_gl.Location = new System.Drawing.Point(1202, 801);
+            this.label_gl.Location = new System.Drawing.Point(1265, 793);
             this.label_gl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label_gl.Name = "label_gl";
             this.label_gl.Size = new System.Drawing.Size(43, 13);
@@ -169,7 +170,7 @@
             // but_scan_make_model
             // 
             this.but_scan_make_model.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.but_scan_make_model.Location = new System.Drawing.Point(1699, 976);
+            this.but_scan_make_model.Location = new System.Drawing.Point(1704, 859);
             this.but_scan_make_model.Margin = new System.Windows.Forms.Padding(2);
             this.but_scan_make_model.Name = "but_scan_make_model";
             this.but_scan_make_model.Size = new System.Drawing.Size(128, 54);
@@ -475,7 +476,7 @@
             // 
             this.label_cur_status.AutoSize = true;
             this.label_cur_status.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label_cur_status.Location = new System.Drawing.Point(1278, 805);
+            this.label_cur_status.Location = new System.Drawing.Point(1490, 755);
             this.label_cur_status.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label_cur_status.Name = "label_cur_status";
             this.label_cur_status.Size = new System.Drawing.Size(50, 18);
@@ -604,11 +605,22 @@
             this.but_estop.UseVisualStyleBackColor = false;
             this.but_estop.Click += new System.EventHandler(this.but_rob_stop_Click);
             // 
+            // comboBox_laser_line
+            // 
+            this.comboBox_laser_line.FormattingEnabled = true;
+            this.comboBox_laser_line.Location = new System.Drawing.Point(1645, 771);
+            this.comboBox_laser_line.Name = "comboBox_laser_line";
+            this.comboBox_laser_line.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_laser_line.TabIndex = 40;
+            this.comboBox_laser_line.Visible = false;
+            this.comboBox_laser_line.SelectedIndexChanged += new System.EventHandler(this.comboBox_laser_line_SelectedIndexChanged);
+            // 
             // RobotScanner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.Controls.Add(this.comboBox_laser_line);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -622,6 +634,8 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "RobotScanner";
             this.Text = "RobotScanner";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RobotScanner_FormClosing);
+            this.Load += new System.EventHandler(this.RobotScanner_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -676,5 +690,6 @@
         private System.Windows.Forms.Button but_estop;
         private System.Windows.Forms.Button but_clear_points;
         private System.Windows.Forms.Label label_points_cur;
+        private System.Windows.Forms.ComboBox comboBox_laser_line;
     }
 }

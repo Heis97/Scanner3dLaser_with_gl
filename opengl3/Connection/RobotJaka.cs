@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Accord.IO;
+using Emgu.CV.PpfMatch3d;
 using jakaApi;
 using jkType;
 
@@ -38,6 +39,12 @@ namespace opengl3
             jakaAPI.motion_abort(ref handle);
         }
 
+        public bool is_move()
+        {
+            bool is_move = false;
+            jakaAPI.is_in_pos(ref handle, ref is_move);
+            return !is_move;
+        }
         public string get_cur_pos()
         {
             JKTYPE.CartesianPose tcp_pos = new JKTYPE.CartesianPose();
@@ -71,6 +78,8 @@ namespace opengl3
             JKTYPE.OptionalCond cond = new JKTYPE.OptionalCond();
             var acs = vel * 2;
             jakaAPI.linear_move_extend_ori(ref handle, ref tcp_pos, JKTYPE.MoveMode.INCR, false, vel,acs,0,ref cond,1,1);
+             
+
         }
 
         public void move_lin_rel_or(double x = 0, double y = 0, double z = 0, double rx = 0, double ry = 0, double rz = 0,
@@ -79,7 +88,7 @@ namespace opengl3
             move_lin_rel(draif_dist, 0, 0,rx, ry, rz, vel);
             move_lin_rel(-draif_dist, 0, 0, 0, 0, 0, vel);
         }
-        public void move_lin_abs_from_list(int i = 0, double vel = 20)
+        public void move_lin_abs_from_list(int i = 0, double vel = 20,bool waiting = false)
         {
             if (i == 0) { move_lin_abs(tcp_positions[i], vel); return; }
 
@@ -193,7 +202,7 @@ namespace opengl3
             jakaAPI.get_tcp_position(ref handle, ref tcp_set);
             var str_pos = "tcp: " + tcp_set.tran.x + "; " + tcp_set.tran.y + "; " + tcp_set.tran.z + ";\n " +
                 " " + tcp_set.rpy.rx + "; " + tcp_set.rpy.ry + "; " + tcp_set.rpy.rz + "; "; 
-            Console.WriteLine("user_fr: \n "+ str_pos);
+            //Console.WriteLine("user_fr: \n "+ str_pos);
 
             int id_set = 2;
             //JKTYPE.CartesianPose tcp_set = new JKTYPE.CartesianPose();
@@ -204,7 +213,7 @@ namespace opengl3
             //tcp_set.rpy.rx = 0; tcp_set.rpy.ry = 0; tcp_set.rpy.rz = 0;
             jakaAPI.set_user_frame_data(ref handle, id_set, ref tcp_set, name);
             jakaAPI.set_user_frame_id(ref handle, id_set);
-            System.Threading.Thread.Sleep(500);
+            System.Threading.Thread.Sleep(1000);
 
         }
 
@@ -228,7 +237,7 @@ namespace opengl3
             tcp_set.rpy.rx = 0; tcp_set.rpy.ry = 0; tcp_set.rpy.rz = 0;
             jakaAPI.set_user_frame_data(ref handle, id_set, ref tcp_set, name);
             jakaAPI.set_user_frame_id(ref handle, id_set);
-            System.Threading.Thread.Sleep(500);
+            System.Threading.Thread.Sleep(1000);
 
         }
 
@@ -243,7 +252,7 @@ namespace opengl3
 
             var str_pos = "tcp: " + tcp_set.tran.x + "; " + tcp_set.tran.y + "; " + tcp_set.tran.z + ";\n " +
                 " " + tcp_set.rpy.rx + "; " + tcp_set.rpy.ry + "; " + tcp_set.rpy.rz + "; ";
-            Console.WriteLine("user_before: \n " + str_pos);
+            //Console.WriteLine("user_before: \n " + str_pos);
 
             char[] name = new char[50]; 
             name = "test".ToCharArray(); // Instantiate the bot and switch the ip to your own ip
@@ -260,9 +269,9 @@ namespace opengl3
 
             jakaAPI.get_tcp_position(ref handle, ref tcp_get);
 
-            str_pos = "tcp: " + tcp_get.tran.x + "; " + tcp_get.tran.y + "; " + tcp_get.tran.z + ";\n " +
-                " " + tcp_get.rpy.rx + "; " + tcp_get.rpy.ry + "; " + tcp_get.rpy.rz + "; ";
-            Console.WriteLine("user_after: \n " + str_pos);
+           /* str_pos = "tcp: " + tcp_get.tran.x + "; " + tcp_get.tran.y + "; " + tcp_get.tran.z + ";\n " +
+                " " + tcp_get.rpy.rx + "; " + tcp_get.rpy.ry + "; " + tcp_get.rpy.rz + "; ";*/
+           // Console.WriteLine("user_after: \n " + str_pos);
         }
 
         public void clean_list()
@@ -275,21 +284,39 @@ namespace opengl3
             tcp_positions.Add(get_cur_tcp_pos());
         }
 
-        public void divide_list(double div = 5,double rad=0.02)
+        public void divide_list(double div_lin = 0.5,double div_or = 0.02)
         {
             var list_ext = new List<JKTYPE.CartesianPose>();
             list_ext.Add(tcp_positions[0]);
-            for (int i=0; i< tcp_positions.Count;i++)
+            for (int i=1; i< tcp_positions.Count;i++)
             {
                 var dist_cur = dist(tcp_positions[i], tcp_positions[i - 1]);
-                if (dist_cur > div)
+                var dist_cur_or = dist_or(tcp_positions[i], tcp_positions[i - 1]);
+                if (dist_cur > div_lin)
                 {
-                   // var numb = 
-
+                    var numb = (int)(dist_cur / div_lin);
+                    list_ext.AddRange(div_betw_lin(tcp_positions[i-1], tcp_positions[i], numb));
+                }
+                
+                else if (dist_cur_or > div_or)
+                {
+                    var numb = (int)(dist_cur / div_or);
+                    list_ext.AddRange(div_betw_lin(tcp_positions[i-1], tcp_positions[i], numb));
+                }
+                else
+                {
+                    list_ext.Add(tcp_positions[i]);
                 }
             }
-
+            list_ext.Add(tcp_positions[tcp_positions.Count-1]);
+            Console.WriteLine("tcps:");
+           
             tcp_positions = list_ext;
+            for (int i = 0; i < tcp_positions.Count; i++)
+            {
+                Console.WriteLine(tcp_to_str(tcp_positions[i]));
+            }
+            Console.WriteLine("end");
         }
 
         double dist(JKTYPE.CartesianPose p1, JKTYPE.CartesianPose p2)
@@ -299,16 +326,98 @@ namespace opengl3
             var z = p1.tran.z - p2.tran.z;
             return Math.Sqrt(x*x + y*y + z*z);
         }
-        double div_betw(JKTYPE.CartesianPose p1, JKTYPE.CartesianPose p2,int count)
-        {
 
-            var x = p1.tran.x - p2.tran.x;
-            var y = p1.tran.y - p2.tran.y;
-            var z = p1.tran.z - p2.tran.z;
+        double dist_or(JKTYPE.CartesianPose p1, JKTYPE.CartesianPose p2)
+        {
+            var x = p1.rpy.rx - p2.rpy.rx;
+            var y = p1.rpy.ry - p2.rpy.ry;
+            var z = p1.rpy.rz - p2.rpy.rz;
             return Math.Sqrt(x * x + y * y + z * z);
         }
+        List<JKTYPE.CartesianPose> div_betw(JKTYPE.CartesianPose p1, JKTYPE.CartesianPose p2,int count)
+        {
+           
+            var list_div = new List<JKTYPE.CartesianPose>();
+            if (count < 2)
+            {
+                list_div.Add(p1);
+                return list_div;
+            } 
+            var x0 = p1.tran.x;
+            var y0 = p1.tran.y;
+            var z0 = p1.tran.z;
+
+            var rx0 = p1.rpy.rx;
+            var ry0 = p1.rpy.ry;
+            var rz0 = p1.rpy.rz;
+            //-------------------------
+            var dx = p2.tran.x - p1.tran.x;
+            var dy = p2.tran.y - p1.tran.y;
+            var dz = p2.tran.z - p1.tran.z;
+
+            var drx = p2.rpy.rx - p1.rpy.rx;
+            var dry = p2.rpy.ry - p1.rpy.ry;
+            var drz = p2.rpy.rz - p1.rpy.rz;
+            //-----------------------------
+
+            list_div.Add(p1);
+            for(int i = 1; i < count; i++)
+            {
+                JKTYPE.CartesianPose tcp = new JKTYPE.CartesianPose();
+                tcp.tran.x = x0 + dx*i/count; tcp.tran.y = y0 + dy * i / count; tcp.tran.z = z0 + dz * i / count;
+                tcp.rpy.rx = rx0 + drx * i / count; tcp.rpy.ry = ry0 + dry * i / count; tcp.rpy.rz = rz0 + drz * i / count;
+                list_div.Add(tcp);
+                Console.WriteLine(tcp_to_str(tcp));
+            }
 
 
+            return list_div;
+        }
+        List<JKTYPE.CartesianPose> div_betw_lin(JKTYPE.CartesianPose p1, JKTYPE.CartesianPose p2, int count)
+        {
+
+            var list_div = new List<JKTYPE.CartesianPose>();
+            if (count < 2)
+            {
+                list_div.Add(p1);
+                return list_div;
+            }
+            var x0 = p1.tran.x;
+            var y0 = p1.tran.y;
+            var z0 = p1.tran.z;
+
+            var rx0 = p1.rpy.rx;
+            var ry0 = p1.rpy.ry;
+            var rz0 = p1.rpy.rz;
+            //-------------------------
+            var dx = p2.tran.x - p1.tran.x;
+            var dy = p2.tran.y - p1.tran.y;
+            var dz = p2.tran.z - p1.tran.z;
+
+            var drx = p2.rpy.rx - p1.rpy.rx;
+            var dry = p2.rpy.ry - p1.rpy.ry;
+            var drz = p2.rpy.rz - p1.rpy.rz;
+            //-----------------------------
+
+            list_div.Add(p1);
+            for (int i = 1; i < count; i++)
+            {
+                JKTYPE.CartesianPose tcp = new JKTYPE.CartesianPose();
+                tcp.tran.x = x0 + dx * i / count; tcp.tran.y = y0 + dy * i / count; tcp.tran.z = z0 + dz * i / count;
+                tcp.rpy.rx = rx0; tcp.rpy.ry = ry0; tcp.rpy.rz = rz0;
+                list_div.Add(tcp);
+                Console.WriteLine(tcp_to_str(tcp));
+            }
+
+
+            return list_div;
+        }
+        string tcp_to_str(JKTYPE.CartesianPose tcp)
+        {
+            var pres = 2;
+            return Math.Round( tcp.tran.x, pres) + " " + Math.Round(tcp.tran.y, pres) + " " + Math.Round(tcp.tran.z, pres) + " " +
+                    Math.Round(tcp.rpy.rx, pres) + " " + Math.Round(tcp.rpy.ry, pres) + " " + Math.Round(tcp.rpy.rz, pres);
+        }
         public int get_list_len()
         {
             return tcp_positions.Count;
