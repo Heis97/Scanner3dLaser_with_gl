@@ -444,16 +444,16 @@ namespace opengl3
             var GeometryShaderPointsGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Points.glsl" });
             var GeometryShaderLinesGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Lines.glsl" });
             var GeometryShaderTrianglesGL = assembCode(new string[] { @"Graphic\Shaders_face\Geom\GeomSh_Triangles_v3.glsl" });
-            var GeometryShaderTrianglesSliceGL = assembCode(new string[] { @"Graphic\Shaders\Geom\slice_shader_one.glsl" });
+           // var GeometryShaderTrianglesSliceGL = assembCode(new string[] { @"Graphic\Shaders\Geom\slice_shader_one.glsl" });
 
             var CompShaderGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo_f.glsl" });
             programID_comp = createShaderCompute(CompShaderGL);
 
-            var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one.glsl" });
-            idsCsSlice.programID = createShaderCompute(CompShaderSliceGL);
+            //var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one.glsl" });
+            //idsCsSlice.programID = createShaderCompute(CompShaderSliceGL);
 
-            var CompShaderCsGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_test.glsl" });
-            idsCs.programID = createShaderCompute(CompShaderCsGL);
+            //var CompShaderCsGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_test.glsl" });
+            //idsCs.programID = createShaderCompute(CompShaderCsGL);
 
             
 
@@ -474,8 +474,8 @@ namespace opengl3
             init_vars_gl(idsTsOne);
             init_vars_gl(idsPsOne);
             init_vars_gl(idsLsOne);
-            init_vars_gl(idsCsSlice);
-            init_vars_gl(idsCs);
+            //init_vars_gl(idsCsSlice);
+           // init_vars_gl(idsCs);
             //Gl.Enable(EnableCap.CullFace);
             Gl.Enable(EnableCap.DepthTest);
             Gl.Enable(EnableCap.Blend);
