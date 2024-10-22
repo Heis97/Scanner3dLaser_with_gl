@@ -1134,9 +1134,7 @@ namespace opengl3
 
             if (config.load_3d)
             {
-
                 var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene(), -1);
-
                 var scan_stl = Polygon3d_GL.toMesh(mesh);
                 //mesh = GL1.addNormals(mesh, 1);
                 this.scanner = scanner;
@@ -1150,9 +1148,6 @@ namespace opengl3
                 }
                 smooth_mesh(scan_i, config.smooth);
                 // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
-
-                
-
             }
             Console.WriteLine("Loading end.");
             return scanner;

@@ -634,7 +634,6 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "RobotScanner";
             this.Text = "RobotScanner";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RobotScanner_FormClosing);
             this.Load += new System.EventHandler(this.RobotScanner_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

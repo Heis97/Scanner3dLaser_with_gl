@@ -579,6 +579,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_8DBD73D3B8054F40ABAF5E7A870572CC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8E1FE70031228FBC29E647AF8ECFA695"
         "OwnerKey" = "8:_3C0E3FBE29FD4C2899E477F35D7D9FCF"
         "MsmSig" = "8:_UNDEFINED"
@@ -4221,6 +4227,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8DBD73D3B8054F40ABAF5E7A870572CC"
+            {
+            "SourcePath" = "8:..\\opengl3\\bin\\x64\\Debug\\jakaAPI.dll"
+            "TargetName" = "8:jakaAPI.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_8B5CEA619F654788ADB618E2E7917F6E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_8E1FE70031228FBC29E647AF8ECFA695"
             {
             "AssemblyRegister" = "3:1"
@@ -6577,7 +6603,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:RobotScanner"
         "ProductCode" = "8:{3470A715-9449-426E-88AD-B3548C83AD17}"
-        "PackageCode" = "8:{D0664593-D0F4-4F80-A1A4-B37007CDA7A8}"
+        "PackageCode" = "8:{EC0A1FB1-274C-481E-8B80-22A9929D7F41}"
         "UpgradeCode" = "8:{35892BD0-4C36-4FDC-80B2-58D6F6A4FF5B}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
