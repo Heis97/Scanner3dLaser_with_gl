@@ -44,7 +44,13 @@ namespace opengl3
             cycle_ampl = 26,
             cycle_time = 27,
             cycle_time_rel = 28,
-            pos_disp = 29
+            pos_disp = 29,
+
+            temp_control = 30,
+            temp_value = 31,
+             led_r= 32,
+             led_g = 33,
+             led_b = 34
             ;
 
         int on = 1, off = 2;
@@ -140,7 +146,28 @@ namespace opengl3
         {
             send(_pos, laser_cur);
         }
+        public void set_temp_control(int _val)//0 or 1
+        {
+            send(temp_control, _val);
+        }
+        public void set_temp_value(double _val)//0...37
+        {
+            send(temp_value, (int)(_val*10));// [degree*10]
+        }
+        public void set_led_r(int _val)//0 ... 255 pwm
+        {
+            send(led_r, _val);
+        }
+        public void set_led_b(int _val)//0 ... 255 pwm
+        {
+            send(led_b, _val);
+        }
+        public void set_led_g(int _val)//0 ... 255 pwm
+        {
+            send(led_g, _val);
+        }
 
+        //-------------------------------------------
         public void set_comp_cycle_type(int _type)
         {
             send(_type, cycle_type);
