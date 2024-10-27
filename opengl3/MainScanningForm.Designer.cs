@@ -547,6 +547,16 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.button5 = new System.Windows.Forms.Button();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.button6 = new System.Windows.Forms.Button();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.button7 = new System.Windows.Forms.Button();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.button8 = new System.Windows.Forms.Button();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.button9 = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1780,6 +1790,16 @@ namespace opengl3
             // 
             // tabPage12
             // 
+            this.tabPage12.Controls.Add(this.textBox5);
+            this.tabPage12.Controls.Add(this.button9);
+            this.tabPage12.Controls.Add(this.textBox4);
+            this.tabPage12.Controls.Add(this.button8);
+            this.tabPage12.Controls.Add(this.textBox3);
+            this.tabPage12.Controls.Add(this.button7);
+            this.tabPage12.Controls.Add(this.textBox2);
+            this.tabPage12.Controls.Add(this.button6);
+            this.tabPage12.Controls.Add(this.textBox1);
+            this.tabPage12.Controls.Add(this.button5);
             this.tabPage12.Controls.Add(this.but_jaka_send);
             this.tabPage12.Controls.Add(this.textBox_send_con);
             this.tabPage12.Controls.Add(this.combo_robot_ch);
@@ -1801,7 +1821,7 @@ namespace opengl3
             // but_jaka_send
             // 
             this.but_jaka_send.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_jaka_send.Location = new System.Drawing.Point(213, 167);
+            this.but_jaka_send.Location = new System.Drawing.Point(138, 138);
             this.but_jaka_send.Name = "but_jaka_send";
             this.but_jaka_send.Size = new System.Drawing.Size(116, 33);
             this.but_jaka_send.TabIndex = 147;
@@ -6265,6 +6285,96 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(432, 42);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 26);
+            this.textBox1.TabIndex = 149;
+            this.textBox1.Text = "30007";
+            // 
+            // button5
+            // 
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button5.Location = new System.Drawing.Point(275, 39);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(140, 33);
+            this.button5.TabIndex = 148;
+            this.button5.Text = "Температура";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(432, 84);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(100, 26);
+            this.textBox2.TabIndex = 151;
+            this.textBox2.Text = "30007";
+            // 
+            // button6
+            // 
+            this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button6.Location = new System.Drawing.Point(275, 81);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(140, 33);
+            this.button6.TabIndex = 150;
+            this.button6.Text = "Температура";
+            this.button6.UseVisualStyleBackColor = true;
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(432, 123);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(100, 26);
+            this.textBox3.TabIndex = 153;
+            this.textBox3.Text = "30007";
+            // 
+            // button7
+            // 
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button7.Location = new System.Drawing.Point(275, 120);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(140, 33);
+            this.button7.TabIndex = 152;
+            this.button7.Text = "Температура";
+            this.button7.UseVisualStyleBackColor = true;
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(432, 162);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(100, 26);
+            this.textBox4.TabIndex = 155;
+            this.textBox4.Text = "30007";
+            // 
+            // button8
+            // 
+            this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button8.Location = new System.Drawing.Point(275, 159);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(140, 33);
+            this.button8.TabIndex = 154;
+            this.button8.Text = "Температура";
+            this.button8.UseVisualStyleBackColor = true;
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(432, 201);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(100, 26);
+            this.textBox5.TabIndex = 157;
+            this.textBox5.Text = "30007";
+            // 
+            // button9
+            // 
+            this.button9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button9.Location = new System.Drawing.Point(275, 198);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(140, 33);
+            this.button9.TabIndex = 156;
+            this.button9.Text = "Температура";
+            this.button9.UseVisualStyleBackColor = true;
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -6927,6 +7037,16 @@ namespace opengl3
         private System.Windows.Forms.TextBox textBox_period_max;
         private System.Windows.Forms.Label label92;
         private System.Windows.Forms.Label label91;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Button button7;
     }
 }
 
