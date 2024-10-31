@@ -18,7 +18,7 @@ namespace opengl3
     {
         static public Scanner loadVideo_stereo_not_sync(string filepath, Scanner scanner, ScannerConfig config, MainScanningForm form)
         {
-
+            Console.WriteLine("not sync");
             var videoframe_count = 0;
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
             var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);
@@ -150,7 +150,7 @@ namespace opengl3
         }
         static public Scanner loadVideo_stereo(string filepath, Scanner scanner, ScannerConfig config, MainScanningForm form)
         {
-
+            Console.WriteLine("sync");
             var videoframe_count = 0;//var
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
             var orig2 = new Mat(Directory.GetFiles("cam2\\" + filepath + "\\orig")[0]);

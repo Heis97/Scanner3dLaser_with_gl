@@ -27,8 +27,8 @@ namespace opengl3
             {
                 serialPort.PortName = port;
                 serialPort.BaudRate = baudrate;
-               // serialPort.RtsEnable = true;
-               // serialPort.DtrEnable = true;
+                serialPort.RtsEnable = true;
+                serialPort.DtrEnable = true;
                 serialPort.Open();
                 isConnected = true;
                 Console.WriteLine("open " + port + " " + baudrate);
@@ -126,11 +126,11 @@ namespace opengl3
                 }
                 //try
                 {
-                    Console.WriteLine("Out: " + Mes1);
+                   // Console.WriteLine("Out: " + Mes1);
                 if(this.serialPort.IsOpen)
                 {
                     this.serialPort.WriteLine(Mes1);
-                    //Thread.Sleep(1);
+                    Thread.Sleep(1);
                     var resp = reseav();
                     //Console.WriteLine(resp);
                 }
@@ -143,11 +143,11 @@ namespace opengl3
                     // Console.WriteLine("except sending");
                 }
 
-                }
-                else
-                {
-                    Console.WriteLine("message lengh too long");
-                }
+            }
+            else
+            {
+                Console.WriteLine("message lengh too long");
+            }
                
             
         }

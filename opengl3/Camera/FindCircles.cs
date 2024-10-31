@@ -96,7 +96,7 @@ namespace opengl3
             im_tr = sobel_mat(im_tr);
             //CvInvoke.Imshow("sobel_d", im_tr);
             //CvInvoke.WaitKey();
-            CvInvoke.Threshold(im_tr, im_tr, 95, 255, ThresholdType.Binary);
+            CvInvoke.Threshold(im_tr, im_tr,65 , 255, ThresholdType.Binary);
            // CvInvoke.Imshow("im_tr", im_tr);
            // CvInvoke.WaitKey();
 

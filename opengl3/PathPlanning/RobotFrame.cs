@@ -107,14 +107,14 @@ namespace opengl3
                 C = to_rad(C);
             }
             this.robotType = robotType;
-            if (coords_w.Contains("k"))
+           /* if (coords_w.Contains("k"))
             {
                 this.robotType = RobotType.KUKA;
             }
             if (coords_w.Contains("p"))
             {
                 this.robotType = RobotType.PULSE;
-            }
+            }*/
             V = 0;
             D = 0;
             

@@ -50,7 +50,13 @@ namespace opengl3
             temp_value = 31,
              led_r= 32,
              led_g = 33,
-             led_b = 34
+             led_b = 34,
+
+             hyst_temp = 35,
+             cool_pwm = 36,
+             heat_pwm = 37,
+
+            send_poses = 38
             ;
 
         int on = 1, off = 2;
@@ -146,27 +152,43 @@ namespace opengl3
         {
             send(_pos, laser_cur);
         }
+
+        public void set_send_poses(int status)
+        {
+            send(status, send_poses);
+        }
         public void set_temp_control(int _val)//0 or 1
         {
-            send(temp_control, _val);
+            send( _val,temp_control);
         }
         public void set_temp_value(double _val)//0...37
         {
-            send(temp_value, (int)(_val*10));// [degree*10]
+            send((int)(_val),temp_value );// [degree*10]
         }
         public void set_led_r(int _val)//0 ... 255 pwm
         {
-            send(led_r, _val);
+            send(_val,led_r);
         }
         public void set_led_b(int _val)//0 ... 255 pwm
         {
-            send(led_b, _val);
+            send(_val,led_b);
         }
         public void set_led_g(int _val)//0 ... 255 pwm
         {
-            send(led_g, _val);
+            send(_val,led_g);
         }
-
+        public void set_hyst_temp(int _val)//0 ... 5 degree
+        {
+            send(_val, hyst_temp);
+        }
+        public void set_cool_pwm(int _val)//0 ... 255 pwm
+        {
+            send(_val, cool_pwm);
+        }
+        public void set_heat_pwm(int _val)//0 ... 255 pwm
+        {
+            send(_val, heat_pwm);
+        }
         //-------------------------------------------
         public void set_comp_cycle_type(int _type)
         {
@@ -360,8 +382,8 @@ namespace opengl3
         public static int vel_pist_to_ard(double vel)
         {
             double nT = 5000;  //  #timer freq
-            double p = 0.8;//     #step mm
-            double rev = 100 * 16;// * (60d / 16d); //# - reduct steps per revol
+            double p = 1;//     #step mm
+            double rev = 200 * 16;// * (60d / 16d); //# - reduct steps per revol
             int st = (int)((nT * p) / (vel * rev));
             //vel = (nT * p) / (st * rev);
             return st;

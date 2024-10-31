@@ -29,6 +29,7 @@ namespace opengl3
         {
             try
             {
+                _client =  new TcpClient();
                 Console.WriteLine("connect");
                 _client.Connect(server, port);
                 Console.WriteLine("con");

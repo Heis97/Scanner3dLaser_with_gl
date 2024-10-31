@@ -145,7 +145,7 @@ namespace opengl3
 
             }
         }
-        static public void calibrate_stereo_rob_handeye(CameraCV cameraCV, Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize, string file_name = "bfs_cal.txt")
+        static public void calibrate_stereo_rob_handeye(CameraCV cameraCV, Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize, string file_name = "bfs_cal.txt", RobotFrame.RobotType robot = RobotFrame.RobotType.PULSE)
         {
 
             var p_rob = new List<Point3d_GL>();
@@ -154,8 +154,6 @@ namespace opengl3
             var ms_rob = new List<Matrix<double>>();
             var ms_cam = new List<Matrix<double>>();
             Console.WriteLine("calibrate_stereo_rob");
-            var robot = RobotFrame.RobotType.PULSE;
-
             for (int i = 0; i < frames.Length; i++)
             {
                 var pos1 = cameraCV.compPos(frames[i].im, patternType, pattern_size, markSize);

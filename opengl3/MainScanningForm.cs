@@ -28,13 +28,27 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
+        double z_syrenge_offset = 0;
+        double z_calibr_offset = 0;
+        double[][] koef_las_z_pos = null;
+        double[] koef_term_to_byte = null;
+        bool comp_current_compens = false;
+        bool laser_on = false;
+        int surface_type = 0;
+        double[] koef_byte_to_term = null;
+        string[] syringe_size_text = new string[] { "10 мл", "5 мл", "2 мл" };
+        double[] syringe_size_vals = new double[] { 0, 17.5, 27.2 };
+        bool temp_control = false;
+        bool visualise_compens = false;
+        bool scanning_status = false;
+        Thread tcp_thread = null;
         MovmentCompensation movm = null;
         List<PosTimestamp> timestamps = new List<PosTimestamp>();
         VideoCapture[] videoCaptures = new VideoCapture[4];
         bool record_times = false;
         bool compens_period = false;
         bool window_auto = false;
-        Rectangle laser_roi_static = new Rectangle(0, 0, 80, 10);
+        Rectangle laser_roi_static = new Rectangle(0, 0, 100, 10);
         long start_record_time = 0;
         long record_time = 0;
         int save_vid_count = 0;
@@ -156,7 +170,7 @@ namespace opengl3
         int k = 1;
         bool writ = false;
         int bin_pos = 40;
-        double cur_pos_z = 30;
+        double cur_pos_z = 0;
         Mat mat0 = new Mat();
         List<Mat> cap_mats = new List<Mat>();
         Features features = new Features();
@@ -203,51 +217,94 @@ namespace opengl3
               };
             koef_x = Regression.regression(vals_regr, 1);
 
+            vals_regr = new double[][]     //pos and x
+                 {
+                      new double[] {16 ,359},
+                      new double[] {41 ,378},
+                      new double[] {44 ,380},
+                      new double[] {24, 365},
+             };
+            koef_term_to_byte = Regression.regression(vals_regr, 1);
 
+            vals_regr = new double[][]     //pos and x
+                 {
+                      new double[] {359 ,16},
+                      new double[] {378 ,41},
+                      new double[] {380 ,44},
+                      new double[] {365, 24},
+             };
+            koef_byte_to_term = Regression.regression(vals_regr, 1);
+
+            var vals_regr_k1 = new double[][]     //pos and las
+                  {
+                      new double[] { 566.5,1, },
+                      new double[] { 609.1,9, },
+                      new double[] { 643.5 ,17, },
+              };
+            var pos1 = 1;
+
+            var vals_regr_k2 = new double[][]     //pos and las
+                  {
+                      new double[] { 588.5,9, },
+                      new double[] { 623.5,17, },
+                      new double[] { 655.6 ,25, },
+              };
+            var pos2 = 9;
+            var vals_regr_k3 = new double[][]     //pos and las
+                  {
+                      new double[] { 606.9,17, },
+                      new double[] { 638.4,25, },
+                      new double[] { 668.9,33,  },
+              };
+            var pos3 = 17;
+            koef_las_z_pos = comp_koef_las_z_pos(vals_regr_k1, pos1, vals_regr_k2, pos2, vals_regr_k3, pos3);
+            //var pos = comp_cur_koef_las_z_pos(koefs_3d, 9, 623);
+          //  Console.WriteLine("test cur3d: "+pos);
+
+
+            /*var dx_las = 400;
             vals_regr = new double[][]//laser and pos
                   {
-                      new double[] {638.9 ,30 },
-                      new double[] {640.7, 31 },
-                      new double[] {642.2, 32},
-                      new double[] {644.6, 33},
+                      new double[] {164.4+ dx_las, 1 },
+                      new double[] {168.8 + dx_las, 2},
+                      new double[] {173.8 + dx_las, 3},
+                       new double[] {179 + dx_las, 4 },
 
-                       new double[] {646.6 ,34 },
-                      new double[] {648.5, 35 },
-                      new double[] {650.5, 36},
-                      new double[] {651.9, 37},
+                      new double[] {184 + dx_las, 5 },
+                      new double[] {189.3 + dx_las, 6},
+                      new double[] {193.9 + dx_las, 7},
+                       new double[] {198.6 + dx_las, 8 },
 
-                       new double[] {637.6 ,29 },
-                      new double[] {635.5, 28 },
-                      new double[] {633.3, 27},
-                      new double[] {631.6, 26},
+                      new double[] {203.3 + dx_las, 9 },
+                      new double[] {208.5 + dx_las, 10},
+                      new double[] {213.3 + dx_las, 11},
+                       new double[] {218 + dx_las, 12 },
 
-                       new double[] {629.6 ,25 },
-                      new double[] {627.6, 24 },
-                      new double[] {625.5, 23},
-                      new double[] {623.3, 22},
+                      new double[] {222.8 + dx_las, 13 },
+                      new double[] {227.8 + dx_las, 14},
+                      new double[] {232.3 + dx_las, 15},
+                       new double[] {237.3 + dx_las, 16}
 
-              };
+              };*/
+
+            vals_regr = new double[][]//laser and pos
+            {
+                      new double[] {565, 1 },
+                      new double[] {604.3, 9},
+                      new double[] {635, 17},
+
+            };
             koef = Regression.regression(vals_regr, 1);
             prin.t(vals_regr);
             prin.t("x_____________-");
-            //var cur = Regression.calcPolynSolv(koef, 37);
-            // Console.WriteLine("test_regr "+cur);
+            var cur = Regression.calcPolynSolv(koef, 609);
+             Console.WriteLine("test_regr "+cur);
 
             vals_regr = new double[][]   //pos and x
                 {
-                      new double[] {26 ,586},
-                      new double[] {27 ,587},
-                      new double[] {28, 588 },
-                      new double[] {29, 589 },
-
-                      new double[] {30 ,592},
-                      new double[] {31 ,594},
-                      new double[] {32, 597 },
-                      new double[] {33, 600 },
-
-                      new double[] {34 ,603},
-                      new double[] {35 ,606},
-                      new double[] {36, 607 },
+                      new double[] {1 ,550},
+                      new double[] {8 ,570},
+                      new double[] {16,590 },
                       
             };
             koef_x = Regression.regression(vals_regr, 1);
@@ -255,19 +312,25 @@ namespace opengl3
             prin.t("y_____________-");
             vals_regr = new double[][]     //pos and y
                   {
-                      new double[] {26 ,377},
-                      new double[] {27 ,372},
-                      new double[] {28, 369 },
-                      new double[] {29, 365 },
+                      new double[] {1 ,149},
+                      new double[] {2 ,153},
+                      new double[] {3, 158 },
+                      new double[] {4, 163 },
 
-                      new double[] {30 ,360},
-                      new double[] {31 ,357},
-                      new double[] {32, 353 },
-                      new double[] {33, 350 },
+                      new double[] {5 ,169},
+                      new double[] {6 ,175},
+                      new double[] {7, 181 },
+                      new double[] {8, 187 },
 
-                      new double[] {34 ,346},
-                      new double[] {35 ,343},
-                      new double[] {36, 340 },
+                      new double[] {9 ,192},
+                      new double[] {10 ,198},
+                      new double[] {11, 202 },
+                      new double[] {12, 208 },
+
+                      new double[] {13, 212 },
+                      new double[] {14, 217 },
+                      new double[] {15 ,222},
+                      new double[] {16 ,227},
               };
             koef_y = Regression.regression(vals_regr, 2);
             prin.t(vals_regr);
@@ -304,7 +367,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-            //load_camers_v2();
+           // load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -399,6 +462,42 @@ namespace opengl3
             //Manipulator.calcRob();
         }
        
+        double[][] comp_koef_las_z_pos(double[][] vals1,double pos1, double[][] vals2, double pos2, double[][] vals3, double pos3)
+        {
+            var poses = new double[] { pos1, pos2, pos3 };
+            var degree = 1;
+            var degree_y = 1;
+            var koefs_1 = Regression.regression(vals1, degree);
+            var koefs_2 = Regression.regression(vals2, degree);
+            var koefs_3 = Regression.regression(vals3, degree);
+            var koefs = new double[][] { koefs_1, koefs_2, koefs_3 };
+            var list_ks_3d = new List<double[]>();
+            for(int i=0; i<koefs_1.Length; i++)
+            {
+                var vals_cur = new double[][]
+                {
+                    new double[]{ pos1, koefs_1[i] },
+                    new double[]{ pos2, koefs_2[i] },
+                    new double[]{ pos3, koefs_3[i] },
+                };
+                var koefs_cur = Regression.regression(vals_cur, degree_y);
+                list_ks_3d.Add(koefs_cur);
+            }
+            return list_ks_3d.ToArray();
+        }
+
+        double comp_cur_koef_las_z_pos(double[][] koefs,double koord_cur, double las)
+        {
+            var list_las = new List<double>();
+            for (int i = 0; i < koefs.Length; i++)
+            {
+                var cur_koef_las = Regression.calcPolynSolv(koefs[i], koord_cur);
+                list_las.Add(cur_koef_las);
+            }
+
+            var cur = Regression.calcPolynSolv(list_las.ToArray(),las);
+            return cur;
+        }
 
         void test_handeye()
         {
@@ -711,15 +810,7 @@ namespace opengl3
         }
         void init_vars()
         {
-           /* windowsTabs.Controls.Remove(tabMain);
-            windowsTabs.Controls.Remove(tabOpenGl);
-            windowsTabs.Controls.Remove(tabDistort);
-            windowsTabs.Controls.Remove(tabP_developer);
-            windowsTabs.Controls.Remove(tabCalibMonit);
-            windowsTabs.Controls.Remove(tabDebug);
-            windowsTabs.Controls.Remove(tabP_developer);
-            windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);*/
+            
 
             #region important
 
@@ -735,12 +826,17 @@ namespace opengl3
                 mat_global[i] = new Mat();
             }
 
-
+            radioButton_dynamic_surface.Checked = true;
             if (comboImages.Items.Count > 0)
             {
                 comboImages.SelectedIndex = 0;
             }
+            comboBox_syrenge_size.Items.AddRange(syringe_size_text);
 
+            if (comboBox_syrenge_size.Items.Count > 0)
+            {
+                comboBox_syrenge_size.SelectedIndex = 0;
+            }
             textBoxes_Persp = new TextBox[]
             {
                 textBoxK_0,textBoxK_1,textBoxK_2,
@@ -757,7 +853,8 @@ namespace opengl3
             maxArea = 15 * k * k * 250;
             red_c = 252;
 
-            
+            checkBox_window_auto.Checked = true;
+
             //var model_mesh = STLmodel.parsingStl_GL4(@"curve_test_asc.STL");
             //GL1.addMesh(model_mesh, PrimitiveType.Triangles);
 
@@ -816,6 +913,8 @@ namespace opengl3
             prop_gr_scan.SelectedObject = scanner_config;
             propGrid_pattern.SelectedObject = patt_config;
             propGrid_traj.SelectedObject = traj_config;
+
+            textBox_compens_las_pos.Text = scanner_config.pos_laser_compens.ToString();
 
             prop_gr_light.SelectedObject = GL1.lightSources_obj;
             debugBox.Text = "0.3 0.3 1";
@@ -1077,9 +1176,9 @@ namespace opengl3
         {
             markSize = 10f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam1_cal_1710a", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\sam_cam1_2810", FrameType.Pattern, PatternType.Mesh);
              var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("sam_cam1_cal_1710a_1.txt");            
+            cam1.save_camera("sam_cam1_2810a.txt");            
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
            /* markSize = 6.2273f;//6.2273f
@@ -1444,7 +1543,7 @@ namespace opengl3
                 DateTime.Now.Hour.ToString() + "_"
                 + DateTime.Now.Minute.ToString() + "_"
                 + DateTime.Now.Second.ToString();
-                
+                scanning_status = true;
                 Thread robot_thread = new Thread(scan_resLaser);
                 robot_thread.Start(typeScan);
             }
@@ -1496,19 +1595,56 @@ namespace opengl3
                 var t_video = (double)counts / fps;
                 var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
                 laserLine?.laserOn();
+                Thread.Sleep(2);
+                laserLine?.laserOn();
+                Thread.Sleep(2);
+                laserLine?.laserOn();
+                Thread.Sleep(2);
+                laserLine?.laserOn();
                 Thread.Sleep(100);
+                Thread.Sleep(2);
+                laserLine?.set_home_laser();
+                Thread.Sleep(2);
+                laserLine?.set_home_laser();
+                Thread.Sleep(2);
+                laserLine?.set_home_laser();
+                Thread.Sleep(2);
                 laserLine?.set_home_laser();
                 Thread.Sleep(5000);
+
                 laserLine?.setShvpVel(200);
                 Thread.Sleep(200);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p1_cur_scan.x);
 
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p1_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p1_cur_scan.x);
+                Thread.Sleep(2);
                 laserLine?.setShvpPos((int)p1_cur_scan.x);
                 Thread.Sleep(4000);
                 startWrite(1, counts);
                 startWrite(2, counts);
                 Console.WriteLine(v_laser + " v_las");
+                Thread.Sleep(2);
+                laserLine?.setShvpVel(v_laser);
+                Thread.Sleep(2);
+                laserLine?.setShvpVel(v_laser);
+                Thread.Sleep(2);
+                laserLine?.setShvpVel(v_laser);
+                Thread.Sleep(2);
                 laserLine?.setShvpVel(v_laser);
                 Thread.Sleep(400);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
                 sb_enc = new StringBuilder();
 
@@ -3792,8 +3928,9 @@ namespace opengl3
         bool printing = false;
         void recieve_tcp(object obj)
         {
+
             var con = (TCPclient)obj;
-            
+          //  if (con == null) return;
             while (con.is_connect())
             {
                 if (printing)
@@ -3803,12 +3940,41 @@ namespace opengl3
                     {
                         if(res.Length>3)
                         {
-                            Console.WriteLine("tcp res: " + res);
+                            //Console.WriteLine("tcp res: " + res);
+                           
+                            
+                            if (res.Contains("finish"))
+                            {
+                                if (surface_type == 1) compensation = false;
+                                laserLine?.set_home_z(); Thread.Sleep(2);
+                                laserLine?.set_home_z(); Thread.Sleep(20);
+                                laserLine?.set_home_z(); Thread.Sleep(20);
+                                laserLine?.set_home_z(); Thread.Sleep(20);
+                                laserLine?.set_home_z(); Thread.Sleep(20);
+                                laserLine?.set_home_z(); Thread.Sleep(20);
+                                laserLine?.set_home_z(); Thread.Sleep(20);
+                                laserLine?.set_home_z(); Thread.Sleep(20);
+                                laserLine?.set_home_z(); Thread.Sleep(20);
+                                laserLine?.set_home_z(); Thread.Sleep(20);
+                                Console.WriteLine("COMPENSATION STOP");
+
+                            }
+                            else if (res.Contains("start"))
+                            {
+                                if (surface_type == 1) compensation = true;
+                                Console.WriteLine("COMPENSATION START");
+                            }
+                            else
+                            {
+                                resend_rob_to_ard_extr(res, laserLine);
+                            }
+                            
+                           
                         }
                     }
                    
                     
-                    //resend_rob_to_ard_extr(res, laserLine);
+                   
                 }  
                 Thread.Sleep(10);
             }
@@ -3828,8 +3994,15 @@ namespace opengl3
             if(Math.Abs( var - 25)<0.1)
             {
                 var div = LaserLine.vel_pist_to_ard(val);
-                ard.set_dir_disp(-1);
-                ard.set_div_disp(div);
+                for (int i = 0; i < 5; i++)
+                {
+                    ard.set_dir_disp(-1); Thread.Sleep(2);
+                }
+                for (int i = 0; i < 5; i++)
+                {
+                    ard.set_div_disp(div); Thread.Sleep(2);
+                }
+                
             }
             else
             {
@@ -3843,6 +4016,7 @@ namespace opengl3
         private void but_res_pos1_Click(object sender, EventArgs e)
         {
             var posRob = positionFromRobot(con1);
+            Console.WriteLine(posRob);
             if (posRob != null)
             {
                 nameX.Text = posRob.X.ToString();
@@ -3907,21 +4081,27 @@ namespace opengl3
                     con1.send_mes("f\n");
                     Thread.Sleep(50);
                     var res = con1.reseav();
-                    Console.WriteLine(res);
-                    if (res == null || res.Length < 10)
+                    if (res == null) return null;
+                    var res_pos = res.Split('\n');
+                    foreach (var pos in res_pos)
                     {
-                        return null;
+                        if (pos.Length>20)
+                        {
+                            Console.WriteLine(pos);
+                            var pos2 = pos.Trim();
+                            var res_s = pos2.Split(' ');
+                            double x = Convert.ToDouble(res_s[0]);
+                            double y = Convert.ToDouble(res_s[1]);
+                            double z = Convert.ToDouble(res_s[2]);
+                            double a = Convert.ToDouble(res_s[3]);
+                            double b = Convert.ToDouble(res_s[4]);
+                            double c = Convert.ToDouble(res_s[5]);
+                            Console.WriteLine(res);
+                            return new RobotFrame(x, y, z, a, b, c, 0, 0, 0, current_robot);
+                        }
                     }
-                    res = res.Trim();
-                    var res_s = res.Split(' ');
-                    double x = Convert.ToDouble(res_s[0]);
-                    double y = Convert.ToDouble(res_s[1]);
-                    double z = Convert.ToDouble(res_s[2]);
-                    double a = Convert.ToDouble(res_s[3]);
-                    double b = Convert.ToDouble(res_s[4]);
-                    double c = Convert.ToDouble(res_s[5]);
-                    Console.WriteLine(res);
-                    return new RobotFrame(x, y, z, a, b, c,0,0,0,current_robot);
+                    return null;
+                    
                 }
                 catch
                 {
@@ -4175,8 +4355,10 @@ namespace opengl3
         {
             try
             {
+                if (con1 == null) { return; }
                 con1.send_mes("q\n");
                 con1.close_con();
+                con1 = null;
             }
             catch
             {
@@ -4703,7 +4885,7 @@ namespace opengl3
             //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
 
             //stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
-            StereoCamera.calibrate_stereo_rob_handeye(cam1, frms_stereo, PatternType.Mesh, chess_size, markSize);
+            StereoCamera.calibrate_stereo_rob_handeye(cam1, frms_stereo, PatternType.Mesh, chess_size, markSize, "bfs_cal.txt",RobotFrame.RobotType.KUKA);
             comboImages.Items.AddRange(frms_stereo);
         }
 
@@ -5040,8 +5222,15 @@ namespace opengl3
                 {
                     if (ind_cam == imb_ind_cam[i])
                     {
-                        imb_main[i].Image = mat_global[ind_cam];
-                        imProcess_sam(mat_global[ind_cam], i);
+                        try
+                        {
+                            imb_main[i].Image = mat_global[ind_cam];
+                            imProcess_sam(mat_global[ind_cam], i);
+                        }
+                        catch
+                        {
+
+                        }
                     }
                 }
             }
@@ -5099,7 +5288,7 @@ namespace opengl3
 
                 case FrameType.LasLin://laser sensor
                     //try
-                    if(ind==0)
+                    if(ind==0 && !scanning_status && comp_current_compens)
                     {
                         /* var ps = Detection.detectLineSensor(mat);
                          Console.Write(ps[0].X + " ");
@@ -5113,36 +5302,11 @@ namespace opengl3
                         var laser_roi_X = 0; //(int)Regression.calcPolynSolv(koef_x, cur_pos_z);
                         var laser_roi_Y = 0;// (int)Regression.calcPolynSolv(koef_y, cur_pos_z);
 
-                        if(window_auto)
-                        {
-                            laser_roi_X = (int)Regression.calcPolynSolv(koef_x, cur_pos_z);
-                            laser_roi_Y = (int)Regression.calcPolynSolv(koef_y, cur_pos_z);
-                        }
-                                           
-                        var laser_roi = new Rectangle(laser_roi_static.X+ laser_roi_X, laser_roi_static.Y+ laser_roi_Y, laser_roi_static.Width, laser_roi_static.Height);
-                        
-                        if( laser_roi.Y < 0 || laser_roi.Y > mat.Height - laser_roi.Height-2)
-                        {
-                            laser_roi.Y = mat.Height / 2;
-                        }
-                        if (laser_roi.X < 0 || laser_roi.X > mat.Width - laser_roi.Width - 2)
-                        {
-                            laser_roi.X = mat.Width / 2;
-                        }
-                        var mat_s = new Mat(mat, laser_roi);
-                        var ps = Detection.detectLineSensor_v2(mat_s,5,2);
-                        var x = (int)ps[0].X + laser_roi.X;
-                        var y = (int)ps[0].Y + laser_roi.Y;
                         //Console.Write(ps[0].X + " ");
                         //laserLine?.setLaserCur((int)(10 * ps[0].X));
                         //Console.WriteLine( ps[0].X);
 
-                        var cur = Regression.calcPolynSolv(koef, ps[0].X + laser_roi.X);
-                        if (compens_period && movm != null)
-                        {
-                            cur = movm.compute_cur_pos(cur_time_to_int()).pos1;
-                        }
-                        var comp_z_mm = cur - compens_gap;
+                        //var cur = Regression.calcPolynSolv(koef, ps[0].X + laser_roi.X);
 
                         
                         //cur_pos_z = pos_z_mm;
@@ -5152,11 +5316,43 @@ namespace opengl3
                         if (laserLine != null)
                         {
                             var cur_pos_z_c = laserLine.parse_pos_z();
-                            if (cur_pos_z_c[0] >0) cur_pos_z = cur_pos_z_c[0]/laserLine.steps_per_unit_z;
-                            if (cur_pos_z_c[1] > 0) cur_pos_movm = cur_pos_z_c[1];
+                            if (cur_pos_z_c[0] > 0) cur_pos_z = cur_pos_z_c[0]/laserLine.steps_per_unit_z;
+                            if (cur_pos_z_c[1] > 0) cur_pos_movm = Regression.calcPolynSolv(koef_byte_to_term, cur_pos_z_c[1]);
                         }
-                        
+                        var cur_pos_z_abs = cur_pos_z - z_calibr_offset - z_syrenge_offset;  //!!!!!!!!!
+
+
+                        if (window_auto)
+                        {
+                            laser_roi_X = (int)Regression.calcPolynSolv(koef_x, cur_pos_z_abs);
+                            laser_roi_Y = (int)Regression.calcPolynSolv(koef_y, cur_pos_z_abs);
+                        }
+
+                        var laser_roi = new Rectangle(laser_roi_static.X + laser_roi_X, laser_roi_static.Y + laser_roi_Y, laser_roi_static.Width, laser_roi_static.Height);
+
+                        if (laser_roi.Y < 0 || laser_roi.Y > mat.Height - laser_roi.Height - 2)
+                        {
+                            laser_roi.Y = mat.Height / 2;
+                        }
+                        if (laser_roi.X < 0 || laser_roi.X > mat.Width - laser_roi.Width - 2)
+                        {
+                            laser_roi.X = mat.Width / 2;
+                        }
+                        var mat_s = new Mat(mat, laser_roi);
+                        var ps = Detection.detectLineSensor_v2(mat_s, 5, 2);
+                        var x = (int)ps[0].X + laser_roi.X;
+                        var y = (int)ps[0].Y + laser_roi.Y;
+
+
+                        var cur = comp_cur_koef_las_z_pos(koef_las_z_pos, cur_pos_z_abs, ps[0].X + laser_roi.X);
+                        if (compens_period && movm != null)
+                        {
+                            cur = movm.compute_cur_pos(cur_time_to_int()).pos1;
+                        }
+                        var comp_z_mm = cur - compens_gap;
+                         comp_z_mm += (z_calibr_offset + z_syrenge_offset);    //!!!!!!!!!
                         //if (comp_z_mm < 37 || comp_z_mm > 25)
+                        if (laserLine != null)
                         {
                             var pos_z_steps = (int)(comp_z_mm / 10 * laserLine?.steps_per_unit_z);
                             if (compensation)
@@ -5174,12 +5370,26 @@ namespace opengl3
                         {
                            
                         }
-                        handler_compens_record(cur, cur_pos_movm, cur_pos_z);
-                        label_cur_las_dist.BeginInvoke((MethodInvoker)(() => label_cur_las_dist.Text = (ps[0].X.ToString()+"\n "+ comp_z_mm + "\n " + cur_pos_z + "\n " + cur_pos_movm)));
+                        handler_compens_record(cur, cur_pos_movm, cur_pos_z_abs);
+                        //label_cur_las_dist.BeginInvoke((MethodInvoker)(() => 
+                       // label_cur_las_dist.Text = ("las_pos: "+(ps[0].X + laser_roi.X) +"\n "+ "pos_z_comp: " + comp_z_mm + "\n " + "cur_pos_z: " + cur_pos_z +  "\n cur_pos_movm: " + + cur_pos_movm)));
+
+                        label_current_dist.BeginInvoke((MethodInvoker)(() =>
+                        label_current_dist.Text = (
+                        "Текущее расстояние: " +Math.Round( comp_z_mm,2) + "\n " + 
+                        "Текущая позиция: " + Math.Round(cur_pos_z_abs, 2) + "\n " +
+                        "Текущее расстояние ориг: " + Math.Round(cur_pos_z, 2) + "\n ")));
+
+
                         CvInvoke.Line(mat, new Point(0,y), new Point( mat.Width - 1,y), new MCvScalar(255, 0, 0));
                         CvInvoke.Line(mat, new Point(x, 0), new Point(x, mat.Height-1), new MCvScalar(0, 255, 0));
                         CvInvoke.Rectangle(mat, laser_roi, new MCvScalar(0, 255, 255));
                         imb_base[ind].Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
+
+                        if (visualise_compens)
+                        {
+                            imageBox_laser_compens.Image = UtilOpenCV.drawPointsF(mat, ps, 255, 0, 0, 1);
+                        }
 
                     }
                     //catch
@@ -5270,7 +5480,7 @@ namespace opengl3
                     label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.Text = "Сканирование завершено"));
                     label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.ForeColor = Color.ForestGreen));
                 }
-
+                scanning_status = false;
 
                 // video_writer[ind - 1]?.Dispose();
             }
@@ -6827,12 +7037,25 @@ namespace opengl3
 
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
-            /*this.tabP_connect.Controls.Add(this.imageBox1);
+
+            windowsTabs.Controls.Remove(tabMain);
+            windowsTabs.Controls.Remove(tabOpenGl);
+            windowsTabs.Controls.Remove(tabDistort);
+            windowsTabs.Controls.Remove(tabP_developer);
+            windowsTabs.Controls.Remove(tabCalibMonit);
+            windowsTabs.Controls.Remove(tabDebug);
+            windowsTabs.Controls.Remove(tabP_developer);
+            //windowsTabs.Controls.Remove(tabP_scanning_printing);
+            //windowsTabs.Controls.Remove(tabP_connect);
+            windowsTabs.Controls.Remove(tabPage_tube);
+
+
+            this.tabP_connect.Controls.Add(this.imageBox1);
             this.tabP_connect.Controls.Add(this.imageBox2);
             this.tabP_scanning_printing.Controls.Add(this.glControl1);
 
             
-            add_buttons_rob_contr();*/
+            add_buttons_rob_contr();
             formSettings.load_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
             for (int i = 0; i < imb_main.Length; i++)
             {
@@ -6843,6 +7066,8 @@ namespace opengl3
             {
                 imb_main[i].SendToBack();
             }
+
+
 
            
         }
@@ -6959,15 +7184,17 @@ namespace opengl3
 
         private void but_rob_con_sc_Click(object sender, EventArgs e)
         {
-            connect_robot(current_robot);
+            connect_robot(RobotFrame.RobotType.KUKA);
+
         }
 
         void connect_robot(RobotFrame.RobotType robot)
         {
-            if (con1 == null)
-            {
+            con1 = null;
+            GC.Collect();
+      
                 con1 = new TCPclient();
-            }
+            
             /*if(robot == RobotFrame.RobotType.KUKA)
             {
                 var res = MessageBox.Show("1. Переведите робот в автоматичекий режим управления\n2. Запустите программу 'In situ bioprinter' на пульте робота\n3. Убедитесь что на пульте выведено сообщение 'Готов к работе'", "Сообщение",MessageBoxButtons.OKCancel);
@@ -7000,7 +7227,7 @@ namespace opengl3
 
             //con1.Connection(10000, "10.5.5.100");
 
-            Thread tcp_thread = new Thread(recieve_tcp);
+            tcp_thread = new Thread(recieve_tcp);
             tcp_thread.Start(con1);
            
         }
@@ -7011,7 +7238,11 @@ namespace opengl3
             {
                 con1.send_mes("q\n");
                 con1.close_con();
-                
+                con1 = null;
+                tcp_thread.Abort();
+                tcp_thread = null;
+
+
             }
             catch
             {
@@ -7061,6 +7292,8 @@ namespace opengl3
         private void but_rob_start_sc_Click(object sender, EventArgs e)
         {
             try_send_rob("s\n");
+            //Thread.Sleep(100);
+           // try_send_rob("q\n");
         }
 
         private void but_rob_traj_pulse_Click(object sender, EventArgs e)
@@ -7204,7 +7437,21 @@ namespace opengl3
 
             var div = LaserLine.vel_pist_to_ard(Convert.ToDouble( textBox_con_ext_disp_vel.Text));
             laserLine?.set_dir_disp(1);
+            Thread.Sleep(2);
+            laserLine?.set_dir_disp(1);
+            Thread.Sleep(2);
+            laserLine?.set_dir_disp(1);
+            Thread.Sleep(2);
+            laserLine?.set_dir_disp(1);
+            Thread.Sleep(2);
             laserLine?.set_div_disp(div);
+            Thread.Sleep(2);
+            laserLine?.set_div_disp(div);
+            Thread.Sleep(2);
+            laserLine?.set_div_disp(div);
+            Thread.Sleep(2);
+            laserLine?.set_div_disp(div);
+            Thread.Sleep(2);
         }
         private void but_con_ext_disp_up_push_Click(object sender, EventArgs e)
         {
@@ -7282,7 +7529,7 @@ namespace opengl3
             var but = (Button)sender;
             var ax = but.AccessibleName;
             var delt = mask_from_ax(ax) * dist_contr_rob;
-            // Console.WriteLine(delt.ToStr(" ", false, false));
+            Console.WriteLine(delt.ToStr(" ", false, false));
             try_send_rob("m\n");
             Thread.Sleep(50);
             try_send_rob("c\n");
@@ -7297,7 +7544,7 @@ namespace opengl3
             else
             {
                 var dest_pos = cur_pos + delt;
-                //Console.WriteLine(dest_pos.ToStr(" ", false, false));
+                Console.WriteLine(dest_pos.ToStr(" ", false, false));
                 try_send_rob(dest_pos.ToStr(" ", true, false) + "\n");
             }
             
@@ -7344,7 +7591,12 @@ namespace opengl3
         {
             label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.Text = "Сканирование запущено..."));
             label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.ForeColor = Color.Firebrick));
+
+            label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_scan_ready_load.Text = "3D модель не загружена"));
+            label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_scan_ready_load.ForeColor = Color.Firebrick));
             var pos_rob = positionFromRobot_str(con1);
+            Console.WriteLine(pos_rob);
+
             if (pos_rob != null)
             {
                 video_scan_name = pos_rob;
@@ -7353,7 +7605,8 @@ namespace opengl3
             {
                 video_scan_name = "1";
             }
-            startScanLaser(3);           
+            startScanLaser(3);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
             //start_load_scan();
         }
         private void but_scan_simp_scan_load_Click(object sender, EventArgs e)
@@ -7391,15 +7644,27 @@ namespace opengl3
 
         private void but_scan_simp_gen_traj_Click(object sender, EventArgs e)
         {
+            if(surface_type == 1)
+            {
+                if(comboBox_syrenge_size.SelectedIndex == 0)
+                {
+                    traj_config.off_z = 10;
+                }
+               
+            }
+            else
+            {
+                traj_config.off_z = 0;
+            }
             debugBox.Text = gen_traj_rob(RobotFrame.RobotType.KUKA,null,scan_i);
         }
 
         private void but_scan_simp_start_print_Click(object sender, EventArgs e)
         {
-            var res = MessageBox.Show("1. Убедитесь, что шприц установлен\n2. Убедитесь, что материал готов к подаче", "Сообщение", MessageBoxButtons.OKCancel);
-            if (res == DialogResult.Cancel)
+           // var res = MessageBox.Show("1. Убедитесь, что шприц установлен\n2. Убедитесь, что материал готов к подаче", "Сообщение", MessageBoxButtons.OKCancel);
+            //if (res == DialogResult.Cancel)
             {
-                return;
+              //  return;
             }
             printing = true;
             try_send_rob("a\n");
@@ -7544,7 +7809,7 @@ namespace opengl3
 
         private void rb_mm_CheckedChanged(object sender, EventArgs e)
         {
-            RadioButton checkBox = (RadioButton)sender; // приводим отправителя к элементу типа CheckBox
+            RadioButton checkBox = (RadioButton)sender;
             if (checkBox.Checked == true)
             {
                 dist_contr_rob = Convert.ToDouble(checkBox.AccessibleName);
@@ -7671,7 +7936,7 @@ namespace opengl3
         #endregion
 
         #region movm_mash
-        int i2c_adr_movm_mash = 60;
+        int i2c_adr_movm_mash = 70;
         private void but_cycle_type_Click(object sender, EventArgs e)//
         {
             laserLine?.set_adr(i2c_adr_movm_mash);
@@ -7781,7 +8046,7 @@ namespace opengl3
             timestamps = new List<PosTimestamp>();
             start_record_time = cur_time_to_int();
             record_times = true;
-            label_period_ready.BeginInvoke((MethodInvoker)(() => label_period_ready.Text = "Период вычисляется..."));
+           label_comp_period.BeginInvoke((MethodInvoker)(() => label_period_ready.Text = "Период вычисляется..."));
         }
         void handler_compens_record(double pos1,double pos2=0, double pos3 = 0)
         {
@@ -7804,13 +8069,15 @@ namespace opengl3
             record_times = false;
             //foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
             
-            var period_min = to_double(textBox_period_min.Text);
-            var period_max = to_double(textBox_period_max.Text);
-            var window_smooth = to_double(textBox_window_smooth.Text);
+            var period_min = to_double(textBox_per_cal_period_min.Text);
+            var period_max = to_double(textBox_per_cal_period_max.Text);
+            var window_smooth = to_double(textBox_per_cal_window_smooth.Text);
             movm = MovmentCompensation.comp_period(timestamps, period_min, period_max, window_smooth);
-            movm.set_fi(Convert.ToInt32(textBox_movm_fi.Text));
+            movm.set_fi(Convert.ToInt32(textBox_compens_period_delt.Text ));
             FormSettings.save_obj("timestamps1.json",timestamps);
-           label_period_ready.BeginInvoke((MethodInvoker)(() => label_period_ready.Text = "Период вычислен "+movm.period));
+           // label_period_ready.BeginInvoke((MethodInvoker)(() => label_period_ready.Text = "Период вычислен "+movm.period));
+
+            label_comp_period.BeginInvoke((MethodInvoker)(() => label_comp_period.Text = "Период вычислен \n" + movm.period));
         }
         int cur_time_to_int()
         {
@@ -7850,6 +8117,323 @@ namespace opengl3
         private void checkBox_window_auto_period_CheckedChanged(object sender, EventArgs e)
         {
             window_auto = ((CheckBox)sender).Checked;
+        }
+
+        int i2c_adr_sup_plate = 70;
+        private void but_sup_temp_control_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_sup_plate);
+            laserLine?.set_temp_control(Convert.ToInt32(textBox_sup_temp_control.Text));
+        }
+
+        private void but_sup_set_temp_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_sup_plate);
+            var val = Regression.calcPolynSolv(koef_term_to_byte, to_double(textBox_sup_set_temp.Text));
+            laserLine?.set_temp_value(val);
+        }
+
+        private void but_sup_set_led_r_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_sup_plate);
+            laserLine?.set_led_r(Convert.ToInt32(textBox_sup_set_led_r.Text));
+        }
+
+        private void but_sup_set_led_g_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_sup_plate);
+            laserLine?.set_led_g(Convert.ToInt32(textBox_sup_set_led_g.Text));
+        }
+
+        private void but_sup_set_led_b_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_sup_plate);
+            laserLine?.set_led_b(Convert.ToInt32(textBox_sup_set_led_b.Text));
+        }
+
+        private void but_sup_temp_hyst_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_sup_plate);
+            laserLine?.set_hyst_temp(Convert.ToInt32(textBox_sup_temp_hyst.Text));
+        }
+
+        private void but_sup_cool_pwm_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_sup_plate);
+            laserLine?.set_cool_pwm(Convert.ToInt32(textBox_sup_cool_pwm.Text));
+        }
+
+        private void but_sup_heat_pwm_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_sup_plate);
+            laserLine?.set_heat_pwm(Convert.ToInt32(textBox_sup_heat_pwm.Text));
+        }
+
+        private void windowsTabs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void but_con_set_temp_Click(object sender, EventArgs e)
+        {
+
+            if (temp_control)
+            {
+                laserLine?.set_adr(i2c_adr_sup_plate);
+                laserLine?.set_temp_control(0);
+                but_con_set_temp.Text = "Установить температуру";
+                but_con_ext_set_temp.Text = "Установить температуру";
+                temp_control = false;
+            }
+            else
+            {
+                laserLine?.set_adr(i2c_adr_sup_plate);
+                laserLine?.set_temp_control(1);
+                Thread.Sleep(2);
+                var val = Regression.calcPolynSolv(koef_term_to_byte, to_double(textBox_con_set_temp.Text));
+                laserLine?.set_temp_value(val);
+                Thread.Sleep(2);
+                but_con_set_temp.Text = "Выключить контроль температуры";
+                but_con_ext_set_temp.Text = "Выключить контроль температуры"; 
+                temp_control = true;
+            }
+            
+        }
+
+        private void textBox7_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox_con_ext_disp_vel_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label76_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label94_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox_syrenge_size_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var ind_syr = ((ComboBox)sender).SelectedIndex;
+            z_syrenge_offset = syringe_size_vals[ind_syr];
+           // Console.WriteLine(syringe_size_vals[ind_syr]);
+        }
+
+        private void but_con_ext_set_temp_Click(object sender, EventArgs e)
+        {
+
+            if (temp_control)
+            {
+                laserLine?.set_adr(i2c_adr_sup_plate);
+                laserLine?.set_temp_control(0);
+                but_con_ext_set_temp.Text = "Установить температуру";
+                but_con_set_temp.Text = "Установить температуру";
+                temp_control = false;
+            }
+            else
+            {
+                laserLine?.set_adr(i2c_adr_sup_plate);
+                laserLine?.set_temp_control(1);
+                Thread.Sleep(2);
+                var val = Regression.calcPolynSolv(koef_term_to_byte, to_double(textBox_con_ext_set_temp.Text));
+                laserLine?.set_temp_value(val);
+                Thread.Sleep(2);
+                but_con_ext_set_temp.Text = "Выключить контроль температуры";
+                but_con_set_temp.Text = "Выключить контроль температуры";
+                temp_control = true;
+            }
+        }
+
+        private void but_con_ext_set_z_pos_Click(object sender, EventArgs e)
+        {
+            var text = textBox_con_ext_set_z_pos.Text;
+            text = text.Replace(',', '.');
+            var pos_z_mm = Convert.ToDouble(text)+z_syrenge_offset;
+            var pos_z_steps = (int)(pos_z_mm / 10 * laserLine.steps_per_unit_z);
+            //Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
+            laserLine?.set_z_pos(pos_z_steps);
+        }
+
+        private void but_con_ext_set_z_zero_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_home_z();
+        }
+
+        private void but_con_ext_find_ports_Click(object sender, EventArgs e)
+        {
+            DeviceArduino.find_ports(cb_ard_ext);
+        }
+
+        private void but_compens_dist_Click(object sender, EventArgs e)
+        {
+            compens_gap = to_double(textBox_compens_dist.Text);
+        }
+
+        private void but_compens_comp_period_Click(object sender, EventArgs e)
+        {
+            record_time = (long)(to_double(textBox_compens_comp_period.Text) * 1000d);
+            timestamps = new List<PosTimestamp>();
+            start_record_time = cur_time_to_int();
+            record_times = true;
+            label_comp_period.BeginInvoke((MethodInvoker)(() => label_comp_period.Text = "Период вычисляется..."));
+        }
+
+        private void checkBox_window_auto_CheckedChanged(object sender, EventArgs e)
+        {
+            window_auto = ((CheckBox)sender).Checked;
+        }
+
+        private void checkBox_compens_period_on_CheckedChanged(object sender, EventArgs e)
+        {
+            compens_period = ((CheckBox)sender).Checked;
+
+        }
+
+        private void checkBox_compens_visualize_CheckedChanged(object sender, EventArgs e)
+        {
+            visualise_compens = ((CheckBox)sender).Checked;
+
+            imageBox_laser_compens.Visible = visualise_compens;
+        }
+
+        private void checkBox_comp_las_compens_CheckedChanged(object sender, EventArgs e)
+        {
+            comp_current_compens = ((CheckBox)sender).Checked;
+            checkBox_compens_visualize.Checked = true;
+
+            imProcType = FrameType.LasLin;
+            if (comp_current_compens)
+            {
+                laserLine?.set_send_poses(1); Thread.Sleep(2);
+                laserLine?.set_send_poses(1);Thread.Sleep(2);
+                laserLine?.set_send_poses(1);Thread.Sleep(2);
+                laserLine?.set_send_poses(1);Thread.Sleep(2);
+
+                laserLine?.setShvpVel(200); Thread.Sleep(2);
+                laserLine?.setShvpVel(200); Thread.Sleep(2);
+                laserLine?.setShvpVel(200); Thread.Sleep(2);
+                laserLine?.setShvpVel(200); Thread.Sleep(2);
+
+
+                laserLine?.set_home_z(); Thread.Sleep(2);
+                laserLine?.set_home_z(); Thread.Sleep(2);
+                laserLine?.set_home_z(); Thread.Sleep(2);
+                laserLine?.set_home_z(); Thread.Sleep(2);
+                Thread.Sleep(6000);
+
+                laserLine?.set_home_laser(); Thread.Sleep(2);
+                laserLine?.set_home_laser(); Thread.Sleep(2);
+                laserLine?.set_home_laser(); Thread.Sleep(2);
+                laserLine?.set_home_laser(); Thread.Sleep(2);
+                Thread.Sleep(4000);
+                laserLine?.laserOn(); Thread.Sleep(2);
+                laserLine?.laserOn(); Thread.Sleep(2);
+                laserLine?.laserOn(); Thread.Sleep(2);
+                laserLine?.laserOn(); Thread.Sleep(2);
+
+               
+
+                var las_pos = Convert.ToInt32(textBox_compens_las_pos.Text);
+                laserLine?.setShvpPos(las_pos); Thread.Sleep(2);
+                laserLine?.setShvpPos(las_pos); Thread.Sleep(2);
+                laserLine?.setShvpPos(las_pos); Thread.Sleep(2);
+                laserLine?.setShvpPos(las_pos); Thread.Sleep(2);
+            }
+            else
+            {
+                laserLine?.set_send_poses(0); Thread.Sleep(2);
+                laserLine?.set_send_poses(0); Thread.Sleep(2);
+                laserLine?.set_send_poses(0); Thread.Sleep(2);
+                laserLine?.set_send_poses(0); Thread.Sleep(2);
+            }
+        }
+
+        private void but_compens_period_delt_Click(object sender, EventArgs e)
+        {
+            movm?.set_fi(Convert.ToInt32(textBox_compens_period_delt.Text));
+        }
+
+        private void but_compens_las_pos_Click(object sender, EventArgs e)
+        {
+            var pos_las = Convert.ToInt32(textBox_compens_las_pos.Text);
+            scanner_config.pos_laser_compens = pos_las;
+            laserLine?.setShvpPos(pos_las);
+        }
+
+        private void but_compens_las_zero_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_home_laser();
+        }
+
+        private void but_compens_las_power_Click(object sender, EventArgs e)
+        {
+            laserLine?.setPower(Convert.ToInt32(textBox_compens_las_power.Text));
+        }
+
+        private void but_laser_onoff_Click(object sender, EventArgs e)
+        {
+            if(laser_on)
+            {
+
+                laserLine?.laserOff();
+                but_laser_onoff.Text = "Включить лазер";
+                laser_on = false;
+            }
+            else
+            {
+                laserLine?.laserOn();
+                but_laser_onoff.Text = "Выключить лазер";
+                laser_on = true;
+            }
+        }
+
+        private void but_apply_cur_roi_Click(object sender, EventArgs e)
+        {
+            var vals = textBox_apply_cur_roi.Text.Split(' ');
+            if (vals != null)
+            {
+                if (vals.Length == 4)
+                {
+                    var x = Convert.ToInt32(vals[0]);
+                    var y = Convert.ToInt32(vals[1]);
+                    var w = Convert.ToInt32(vals[2]);
+                    var h = Convert.ToInt32(vals[3]);
+                    laser_roi_static = new Rectangle(x, y, w, h);
+                }
+            }
+        }
+
+        private void but_compens_load_period_Click(object sender, EventArgs e)
+        {
+            timestamps = FormSettings.load_obj<List<PosTimestamp>>("timestamps1.json");
+            var period_min = to_double(textBox_per_cal_period_min.Text);
+            var period_max = to_double(textBox_per_cal_period_max.Text);
+            var window_smooth = to_double(textBox_per_cal_window_smooth.Text);
+            movm = MovmentCompensation.comp_period(timestamps, period_min, period_max, window_smooth);
+            movm.set_fi(Convert.ToInt32(textBox_compens_period_delt.Text));
+            //timestamps = FormSettings.load_obj<List<PosTimestamp>>("timestamps1_stay.json");
+            //foreach (PosTimestamp timestamp in timestamps) Console.WriteLine(timestamp.ToString());
+        }
+
+        private void radioButton_static_surface_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton checkBox = (RadioButton)sender; 
+            if (checkBox.Checked == true)
+            {
+                surface_type = Convert.ToInt32(checkBox.AccessibleName);
+            }
+        }
+
+        private void but_compens_stop_Click(object sender, EventArgs e)
+        {
+            compensation = false;
         }
     }
 }

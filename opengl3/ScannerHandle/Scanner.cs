@@ -14,6 +14,16 @@ namespace opengl3
 {
     public class ScannerConfig
     {
+        public int pos_laser_compens;
+        [Description("Положения лазера при компенсации")]
+        [Category("Настройки сканирования")]
+        [DisplayName("laser_pos")]
+        public int Pos_laser_compens
+        {
+            get { return pos_laser_compens; }
+            set { pos_laser_compens = value; }
+        }
+
         public int start_pos_scan;
         [Description("Начальная точка скана")]
         [Category("Настройки сканирования")]
@@ -373,14 +383,15 @@ namespace opengl3
             if(pos.Contains(";"))
             {
                 var poses = pos.Split(';');
-                var pos_fr = new RobotFrame(poses[0]);
+                var pos_fr = new RobotFrame(poses[0],RobotFrame.RobotType.KUKA);
                 stereoCamera.Bbf = pos_fr.getMatrix();
-                stereoCamera.cur_pos = new RobotFrame(poses[1]);
+                stereoCamera.cur_pos = new RobotFrame(poses[1], RobotFrame.RobotType.KUKA);
+                Console.WriteLine("cur pos: "+stereoCamera.cur_pos.ToStr());
             }
             else
             {
-                
-                var pos_fr = new RobotFrame(pos, RobotFrame.RobotType.PULSE);
+                Console.WriteLine("not contains ;");
+                var pos_fr = new RobotFrame(pos, RobotFrame.RobotType.KUKA);
                 stereoCamera.Bbf = pos_fr.getMatrix();
             }
 
