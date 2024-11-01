@@ -751,10 +751,10 @@ namespace opengl3
             this.tabCalibMonit.Controls.Add(this.imBox_input_2);
             this.tabCalibMonit.Controls.Add(this.imBox_input_1);
             this.tabCalibMonit.Controls.Add(this.imBox_pattern);
-            this.tabCalibMonit.Location = new System.Drawing.Point(4, 27);
+            this.tabCalibMonit.Location = new System.Drawing.Point(4, 25);
             this.tabCalibMonit.Name = "tabCalibMonit";
             this.tabCalibMonit.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCalibMonit.Size = new System.Drawing.Size(1891, 998);
+            this.tabCalibMonit.Size = new System.Drawing.Size(1891, 1000);
             this.tabCalibMonit.TabIndex = 5;
             this.tabCalibMonit.Text = "Калибровка";
             this.tabCalibMonit.UseVisualStyleBackColor = true;
@@ -768,7 +768,7 @@ namespace opengl3
             this.lab_pos_mouse.AutoSize = true;
             this.lab_pos_mouse.Location = new System.Drawing.Point(1519, 494);
             this.lab_pos_mouse.Name = "lab_pos_mouse";
-            this.lab_pos_mouse.Size = new System.Drawing.Size(99, 18);
+            this.lab_pos_mouse.Size = new System.Drawing.Size(104, 16);
             this.lab_pos_mouse.TabIndex = 120;
             this.lab_pos_mouse.Text = "lab_pos_mouse";
             // 
@@ -808,7 +808,7 @@ namespace opengl3
             // 
             this.textBoxK_8.Location = new System.Drawing.Point(1749, 439);
             this.textBoxK_8.Name = "textBoxK_8";
-            this.textBoxK_8.Size = new System.Drawing.Size(100, 25);
+            this.textBoxK_8.Size = new System.Drawing.Size(100, 22);
             this.textBoxK_8.TabIndex = 22;
             this.textBoxK_8.Text = "1";
             // 
@@ -816,7 +816,7 @@ namespace opengl3
             // 
             this.textBoxK_7.Location = new System.Drawing.Point(1749, 388);
             this.textBoxK_7.Name = "textBoxK_7";
-            this.textBoxK_7.Size = new System.Drawing.Size(100, 25);
+            this.textBoxK_7.Size = new System.Drawing.Size(100, 22);
             this.textBoxK_7.TabIndex = 20;
             this.textBoxK_7.Text = "1";
             // 
@@ -824,7 +824,7 @@ namespace opengl3
             // 
             this.textBoxK_6.Location = new System.Drawing.Point(1749, 337);
             this.textBoxK_6.Name = "textBoxK_6";
-            this.textBoxK_6.Size = new System.Drawing.Size(100, 25);
+            this.textBoxK_6.Size = new System.Drawing.Size(100, 22);
             this.textBoxK_6.TabIndex = 18;
             this.textBoxK_6.Text = "1";
             // 
@@ -832,7 +832,7 @@ namespace opengl3
             // 
             this.textBoxK_5.Location = new System.Drawing.Point(1749, 286);
             this.textBoxK_5.Name = "textBoxK_5";
-            this.textBoxK_5.Size = new System.Drawing.Size(100, 25);
+            this.textBoxK_5.Size = new System.Drawing.Size(100, 22);
             this.textBoxK_5.TabIndex = 16;
             this.textBoxK_5.Text = "0.01";
             // 
@@ -840,7 +840,7 @@ namespace opengl3
             // 
             this.textBoxK_4.Location = new System.Drawing.Point(1749, 235);
             this.textBoxK_4.Name = "textBoxK_4";
-            this.textBoxK_4.Size = new System.Drawing.Size(100, 25);
+            this.textBoxK_4.Size = new System.Drawing.Size(100, 22);
             this.textBoxK_4.TabIndex = 14;
             this.textBoxK_4.Text = "1";
             // 
@@ -848,7 +848,7 @@ namespace opengl3
             // 
             this.textBoxK_3.Location = new System.Drawing.Point(1749, 184);
             this.textBoxK_3.Name = "textBoxK_3";
-            this.textBoxK_3.Size = new System.Drawing.Size(100, 25);
+            this.textBoxK_3.Size = new System.Drawing.Size(100, 22);
             this.textBoxK_3.TabIndex = 12;
             this.textBoxK_3.Text = "1";
             // 
@@ -856,7 +856,7 @@ namespace opengl3
             // 
             this.textBoxK_2.Location = new System.Drawing.Point(1749, 133);
             this.textBoxK_2.Name = "textBoxK_2";
-            this.textBoxK_2.Size = new System.Drawing.Size(100, 25);
+            this.textBoxK_2.Size = new System.Drawing.Size(100, 22);
             this.textBoxK_2.TabIndex = 10;
             this.textBoxK_2.Text = "0.01";
             // 
@@ -864,7 +864,7 @@ namespace opengl3
             // 
             this.textBoxK_1.Location = new System.Drawing.Point(1749, 82);
             this.textBoxK_1.Name = "textBoxK_1";
-            this.textBoxK_1.Size = new System.Drawing.Size(100, 25);
+            this.textBoxK_1.Size = new System.Drawing.Size(100, 22);
             this.textBoxK_1.TabIndex = 8;
             this.textBoxK_1.Text = "1";
             // 
@@ -872,7 +872,7 @@ namespace opengl3
             // 
             this.textBoxK_0.Location = new System.Drawing.Point(1749, 31);
             this.textBoxK_0.Name = "textBoxK_0";
-            this.textBoxK_0.Size = new System.Drawing.Size(100, 25);
+            this.textBoxK_0.Size = new System.Drawing.Size(100, 22);
             this.textBoxK_0.TabIndex = 6;
             this.textBoxK_0.Text = "1";
             // 
@@ -1059,10 +1059,10 @@ namespace opengl3
             this.tabMain.Controls.Add(this.imageBox2);
             this.tabMain.Controls.Add(this.imBox_base);
             this.tabMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tabMain.Location = new System.Drawing.Point(4, 27);
+            this.tabMain.Location = new System.Drawing.Point(4, 25);
             this.tabMain.Name = "tabMain";
             this.tabMain.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMain.Size = new System.Drawing.Size(1891, 998);
+            this.tabMain.Size = new System.Drawing.Size(1891, 1000);
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
@@ -3288,10 +3288,10 @@ namespace opengl3
             // 
             this.tabP_scanning_printing.Controls.Add(this.imageBox_laser_compens);
             this.tabP_scanning_printing.Controls.Add(this.tabC_scanning_printing_ins);
-            this.tabP_scanning_printing.Location = new System.Drawing.Point(4, 27);
+            this.tabP_scanning_printing.Location = new System.Drawing.Point(4, 25);
             this.tabP_scanning_printing.Name = "tabP_scanning_printing";
             this.tabP_scanning_printing.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_scanning_printing.Size = new System.Drawing.Size(1891, 998);
+            this.tabP_scanning_printing.Size = new System.Drawing.Size(1891, 1000);
             this.tabP_scanning_printing.TabIndex = 7;
             this.tabP_scanning_printing.Text = "Сканирование и печать";
             this.tabP_scanning_printing.UseVisualStyleBackColor = true;
@@ -3321,10 +3321,10 @@ namespace opengl3
             this.tabP_scanning_printing_scan.Controls.Add(this.groupBox5);
             this.tabP_scanning_printing_scan.Controls.Add(this.groupBox4);
             this.tabP_scanning_printing_scan.Controls.Add(this.groupBox3);
-            this.tabP_scanning_printing_scan.Location = new System.Drawing.Point(4, 27);
+            this.tabP_scanning_printing_scan.Location = new System.Drawing.Point(4, 25);
             this.tabP_scanning_printing_scan.Name = "tabP_scanning_printing_scan";
             this.tabP_scanning_printing_scan.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_scanning_printing_scan.Size = new System.Drawing.Size(669, 963);
+            this.tabP_scanning_printing_scan.Size = new System.Drawing.Size(669, 965);
             this.tabP_scanning_printing_scan.TabIndex = 0;
             this.tabP_scanning_printing_scan.Text = "Настройки";
             this.tabP_scanning_printing_scan.UseVisualStyleBackColor = true;
@@ -3347,7 +3347,7 @@ namespace opengl3
             this.but_scan_simp_stop_print.BackColor = System.Drawing.Color.PaleVioletRed;
             this.but_scan_simp_stop_print.FlatAppearance.BorderColor = System.Drawing.Color.PaleVioletRed;
             this.but_scan_simp_stop_print.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_simp_stop_print.Font = new System.Drawing.Font("Arial Unicode MS", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_simp_stop_print.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_simp_stop_print.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_simp_stop_print.Location = new System.Drawing.Point(337, 158);
             this.but_scan_simp_stop_print.Name = "but_scan_simp_stop_print";
@@ -3361,7 +3361,7 @@ namespace opengl3
             // 
             this.but_scan_simp_start_print.BackColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_start_print.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_simp_start_print.Font = new System.Drawing.Font("Arial Unicode MS", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_simp_start_print.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_simp_start_print.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_simp_start_print.Location = new System.Drawing.Point(115, 158);
             this.but_scan_simp_start_print.Name = "but_scan_simp_start_print";
@@ -3376,7 +3376,7 @@ namespace opengl3
             this.but_scan_simp_gen_traj.BackColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_gen_traj.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_gen_traj.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_simp_gen_traj.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_simp_gen_traj.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_simp_gen_traj.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_simp_gen_traj.Location = new System.Drawing.Point(115, 61);
             this.but_scan_simp_gen_traj.Name = "but_scan_simp_gen_traj";
@@ -3405,7 +3405,7 @@ namespace opengl3
             this.but_scan_centr.BackColor = System.Drawing.Color.SteelBlue;
             this.but_scan_centr.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_scan_centr.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_centr.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_centr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_centr.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_centr.Location = new System.Drawing.Point(115, 34);
             this.but_scan_centr.Name = "but_scan_centr";
@@ -3419,7 +3419,7 @@ namespace opengl3
             this.but_scan_simp_xy.BackColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_xy.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_xy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_simp_xy.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_simp_xy.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_simp_xy.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_simp_xy.Location = new System.Drawing.Point(360, 34);
             this.but_scan_simp_xy.Name = "but_scan_simp_xy";
@@ -3433,7 +3433,7 @@ namespace opengl3
             // 
             this.but_scan_simp_cont_save.BackColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_cont_save.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_simp_cont_save.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_simp_cont_save.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_simp_cont_save.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_simp_cont_save.Location = new System.Drawing.Point(115, 188);
             this.but_scan_simp_cont_save.Name = "but_scan_simp_cont_save";
@@ -3447,7 +3447,7 @@ namespace opengl3
             // 
             this.but_scan_simp_cont_beg.BackColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_cont_beg.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_simp_cont_beg.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_simp_cont_beg.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_simp_cont_beg.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_simp_cont_beg.Location = new System.Drawing.Point(115, 96);
             this.but_scan_simp_cont_beg.Name = "but_scan_simp_cont_beg";
@@ -3475,33 +3475,33 @@ namespace opengl3
             // label59
             // 
             this.label59.AutoSize = true;
-            this.label59.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label59.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label59.ForeColor = System.Drawing.SystemColors.WindowText;
             this.label59.Location = new System.Drawing.Point(10, 271);
             this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(61, 21);
+            this.label59.Size = new System.Drawing.Size(62, 20);
             this.label59.TabIndex = 6;
             this.label59.Text = "Статус";
             // 
             // label_scan_ready_load
             // 
             this.label_scan_ready_load.AutoSize = true;
-            this.label_scan_ready_load.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label_scan_ready_load.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label_scan_ready_load.ForeColor = System.Drawing.Color.Firebrick;
             this.label_scan_ready_load.Location = new System.Drawing.Point(10, 334);
             this.label_scan_ready_load.Name = "label_scan_ready_load";
-            this.label_scan_ready_load.Size = new System.Drawing.Size(193, 21);
+            this.label_scan_ready_load.Size = new System.Drawing.Size(197, 20);
             this.label_scan_ready_load.TabIndex = 5;
             this.label_scan_ready_load.Text = "3D модель не загружена";
             // 
             // label_scan_ready
             // 
             this.label_scan_ready.AutoSize = true;
-            this.label_scan_ready.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label_scan_ready.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label_scan_ready.ForeColor = System.Drawing.Color.Firebrick;
             this.label_scan_ready.Location = new System.Drawing.Point(10, 302);
             this.label_scan_ready.Name = "label_scan_ready";
-            this.label_scan_ready.Size = new System.Drawing.Size(218, 21);
+            this.label_scan_ready.Size = new System.Drawing.Size(217, 20);
             this.label_scan_ready.TabIndex = 4;
             this.label_scan_ready.Text = "Сканирование не запущено";
             // 
@@ -3510,7 +3510,7 @@ namespace opengl3
             this.but_scan_simp_scan_load.BackColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_scan_load.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_scan_load.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_simp_scan_load.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_simp_scan_load.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_simp_scan_load.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_simp_scan_load.Location = new System.Drawing.Point(115, 158);
             this.but_scan_simp_scan_load.Name = "but_scan_simp_scan_load";
@@ -3525,7 +3525,7 @@ namespace opengl3
             this.but_scan_simp_scan.BackColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_scan.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_scan_simp_scan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_simp_scan.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_simp_scan.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_simp_scan.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_simp_scan.Location = new System.Drawing.Point(115, 52);
             this.but_scan_simp_scan.Name = "but_scan_simp_scan";
@@ -3540,10 +3540,10 @@ namespace opengl3
             this.tabP_scanning_printing_ext.Controls.Add(this.groupBox6);
             this.tabP_scanning_printing_ext.Controls.Add(this.groupBox7);
             this.tabP_scanning_printing_ext.Controls.Add(this.groupBox8);
-            this.tabP_scanning_printing_ext.Location = new System.Drawing.Point(4, 27);
+            this.tabP_scanning_printing_ext.Location = new System.Drawing.Point(4, 22);
             this.tabP_scanning_printing_ext.Name = "tabP_scanning_printing_ext";
             this.tabP_scanning_printing_ext.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_scanning_printing_ext.Size = new System.Drawing.Size(669, 963);
+            this.tabP_scanning_printing_ext.Size = new System.Drawing.Size(669, 968);
             this.tabP_scanning_printing_ext.TabIndex = 1;
             this.tabP_scanning_printing_ext.Text = "Расширенные настройки";
             this.tabP_scanning_printing_ext.UseVisualStyleBackColor = true;
@@ -3571,7 +3571,7 @@ namespace opengl3
             this.radioButton_dynamic_surface.AutoSize = true;
             this.radioButton_dynamic_surface.Location = new System.Drawing.Point(437, 59);
             this.radioButton_dynamic_surface.Name = "radioButton_dynamic_surface";
-            this.radioButton_dynamic_surface.Size = new System.Drawing.Size(193, 22);
+            this.radioButton_dynamic_surface.Size = new System.Drawing.Size(206, 20);
             this.radioButton_dynamic_surface.TabIndex = 19;
             this.radioButton_dynamic_surface.TabStop = true;
             this.radioButton_dynamic_surface.Text = "Динамическая поверхность";
@@ -3584,7 +3584,7 @@ namespace opengl3
             this.radioButton_static_surface.AutoSize = true;
             this.radioButton_static_surface.Location = new System.Drawing.Point(437, 31);
             this.radioButton_static_surface.Name = "radioButton_static_surface";
-            this.radioButton_static_surface.Size = new System.Drawing.Size(182, 22);
+            this.radioButton_static_surface.Size = new System.Drawing.Size(195, 20);
             this.radioButton_static_surface.TabIndex = 18;
             this.radioButton_static_surface.TabStop = true;
             this.radioButton_static_surface.Text = "Статическая поверхность";
@@ -3594,29 +3594,29 @@ namespace opengl3
             // label70
             // 
             this.label70.AutoSize = true;
-            this.label70.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label70.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label70.Location = new System.Drawing.Point(6, 77);
             this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(172, 21);
+            this.label70.Size = new System.Drawing.Size(178, 20);
             this.label70.TabIndex = 17;
             this.label70.Text = "Частота кадров (FPS)";
             // 
             // tb_scan_ext_scan_freq
             // 
-            this.tb_scan_ext_scan_freq.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_scan_ext_scan_freq.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tb_scan_ext_scan_freq.Location = new System.Drawing.Point(203, 74);
             this.tb_scan_ext_scan_freq.Name = "tb_scan_ext_scan_freq";
-            this.tb_scan_ext_scan_freq.Size = new System.Drawing.Size(100, 29);
+            this.tb_scan_ext_scan_freq.Size = new System.Drawing.Size(100, 26);
             this.tb_scan_ext_scan_freq.TabIndex = 16;
             this.tb_scan_ext_scan_freq.Text = "30";
             // 
             // label66
             // 
             this.label66.AutoSize = true;
-            this.label66.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label66.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label66.Location = new System.Drawing.Point(6, 34);
             this.label66.Name = "label66";
-            this.label66.Size = new System.Drawing.Size(188, 21);
+            this.label66.Size = new System.Drawing.Size(190, 20);
             this.label66.TabIndex = 15;
             this.label66.Text = "Точность сканирования";
             // 
@@ -3625,7 +3625,7 @@ namespace opengl3
             this.but_scan_ext_scan.BackColor = System.Drawing.Color.SteelBlue;
             this.but_scan_ext_scan.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_scan_ext_scan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_ext_scan.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_ext_scan.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_ext_scan.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_ext_scan.Location = new System.Drawing.Point(116, 164);
             this.but_scan_ext_scan.Name = "but_scan_ext_scan";
@@ -3637,10 +3637,10 @@ namespace opengl3
             // 
             // tb_scan_ext_scan_pres
             // 
-            this.tb_scan_ext_scan_pres.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_scan_ext_scan_pres.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tb_scan_ext_scan_pres.Location = new System.Drawing.Point(203, 31);
             this.tb_scan_ext_scan_pres.Name = "tb_scan_ext_scan_pres";
-            this.tb_scan_ext_scan_pres.Size = new System.Drawing.Size(100, 29);
+            this.tb_scan_ext_scan_pres.Size = new System.Drawing.Size(100, 26);
             this.tb_scan_ext_scan_pres.TabIndex = 14;
             this.tb_scan_ext_scan_pres.Text = "200";
             // 
@@ -3669,7 +3669,7 @@ namespace opengl3
             this.button3.BackColor = System.Drawing.Color.SteelBlue;
             this.button3.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button3.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.button3.Location = new System.Drawing.Point(230, 133);
             this.button3.Name = "button3";
@@ -3683,7 +3683,7 @@ namespace opengl3
             this.button4.BackColor = System.Drawing.Color.SteelBlue;
             this.button4.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button4.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.button4.Location = new System.Drawing.Point(451, 133);
             this.button4.Name = "button4";
@@ -3696,10 +3696,10 @@ namespace opengl3
             // label68
             // 
             this.label68.AutoSize = true;
-            this.label68.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label68.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label68.Location = new System.Drawing.Point(336, 83);
             this.label68.Name = "label68";
-            this.label68.Size = new System.Drawing.Size(32, 21);
+            this.label68.Size = new System.Drawing.Size(31, 20);
             this.label68.TabIndex = 13;
             this.label68.Text = "мм";
             // 
@@ -3708,7 +3708,7 @@ namespace opengl3
             this.button12.BackColor = System.Drawing.Color.SteelBlue;
             this.button12.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button12.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button12.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button12.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.button12.Location = new System.Drawing.Point(135, 217);
             this.button12.Name = "button12";
@@ -3721,38 +3721,38 @@ namespace opengl3
             // label69
             // 
             this.label69.AutoSize = true;
-            this.label69.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label69.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label69.Location = new System.Drawing.Point(14, 83);
             this.label69.Name = "label69";
-            this.label69.Size = new System.Drawing.Size(111, 21);
+            this.label69.Size = new System.Drawing.Size(111, 20);
             this.label69.TabIndex = 12;
             this.label69.Text = "Сглаживание";
             // 
             // tb_scan_ext_scan_smooth
             // 
-            this.tb_scan_ext_scan_smooth.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_scan_ext_scan_smooth.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tb_scan_ext_scan_smooth.Location = new System.Drawing.Point(230, 80);
             this.tb_scan_ext_scan_smooth.Name = "tb_scan_ext_scan_smooth";
-            this.tb_scan_ext_scan_smooth.Size = new System.Drawing.Size(100, 29);
+            this.tb_scan_ext_scan_smooth.Size = new System.Drawing.Size(100, 26);
             this.tb_scan_ext_scan_smooth.TabIndex = 11;
             this.tb_scan_ext_scan_smooth.Text = "0.5";
             // 
             // label67
             // 
             this.label67.AutoSize = true;
-            this.label67.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label67.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label67.Location = new System.Drawing.Point(14, 42);
             this.label67.Name = "label67";
-            this.label67.Size = new System.Drawing.Size(210, 21);
+            this.label67.Size = new System.Drawing.Size(215, 20);
             this.label67.TabIndex = 9;
             this.label67.Text = "Разреженность 3D модели";
             // 
             // tb_scan_ext_scan_strip
             // 
-            this.tb_scan_ext_scan_strip.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_scan_ext_scan_strip.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tb_scan_ext_scan_strip.Location = new System.Drawing.Point(230, 39);
             this.tb_scan_ext_scan_strip.Name = "tb_scan_ext_scan_strip";
-            this.tb_scan_ext_scan_strip.Size = new System.Drawing.Size(100, 29);
+            this.tb_scan_ext_scan_strip.Size = new System.Drawing.Size(100, 26);
             this.tb_scan_ext_scan_strip.TabIndex = 8;
             this.tb_scan_ext_scan_strip.Text = "3";
             // 
@@ -3761,7 +3761,7 @@ namespace opengl3
             this.button15.BackColor = System.Drawing.Color.SteelBlue;
             this.button15.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button15.Font = new System.Drawing.Font("Arial Unicode MS", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button15.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button15.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.button15.Location = new System.Drawing.Point(17, 133);
             this.button15.Name = "button15";
@@ -3776,7 +3776,7 @@ namespace opengl3
             this.button11.BackColor = System.Drawing.Color.SteelBlue;
             this.button11.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button11.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button11.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.button11.Location = new System.Drawing.Point(343, 217);
             this.button11.Name = "button11";
@@ -3816,19 +3816,19 @@ namespace opengl3
             // label77
             // 
             this.label77.AutoSize = true;
-            this.label77.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label77.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label77.Location = new System.Drawing.Point(13, 176);
             this.label77.Name = "label77";
-            this.label77.Size = new System.Drawing.Size(145, 21);
+            this.label77.Size = new System.Drawing.Size(149, 20);
             this.label77.TabIndex = 22;
             this.label77.Text = "Количество слоёв";
             // 
             // tb_scan_ext_layer_n
             // 
-            this.tb_scan_ext_layer_n.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_scan_ext_layer_n.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tb_scan_ext_layer_n.Location = new System.Drawing.Point(171, 173);
             this.tb_scan_ext_layer_n.Name = "tb_scan_ext_layer_n";
-            this.tb_scan_ext_layer_n.Size = new System.Drawing.Size(100, 29);
+            this.tb_scan_ext_layer_n.Size = new System.Drawing.Size(100, 26);
             this.tb_scan_ext_layer_n.TabIndex = 21;
             this.tb_scan_ext_layer_n.Text = "2";
             // 
@@ -3837,7 +3837,7 @@ namespace opengl3
             this.but_scan_ext_stop_print.BackColor = System.Drawing.Color.PaleVioletRed;
             this.but_scan_ext_stop_print.FlatAppearance.BorderColor = System.Drawing.Color.PaleVioletRed;
             this.but_scan_ext_stop_print.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_scan_ext_stop_print.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_scan_ext_stop_print.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_scan_ext_stop_print.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_scan_ext_stop_print.Location = new System.Drawing.Point(451, 215);
             this.but_scan_ext_stop_print.Name = "but_scan_ext_stop_print";
@@ -3850,78 +3850,78 @@ namespace opengl3
             // label73
             // 
             this.label73.AutoSize = true;
-            this.label73.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label73.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label73.Location = new System.Drawing.Point(277, 145);
             this.label73.Name = "label73";
-            this.label73.Size = new System.Drawing.Size(32, 21);
+            this.label73.Size = new System.Drawing.Size(31, 20);
             this.label73.TabIndex = 19;
             this.label73.Text = "мм";
             // 
             // label74
             // 
             this.label74.AutoSize = true;
-            this.label74.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label74.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label74.Location = new System.Drawing.Point(14, 141);
             this.label74.Name = "label74";
-            this.label74.Size = new System.Drawing.Size(135, 21);
+            this.label74.Size = new System.Drawing.Size(139, 20);
             this.label74.TabIndex = 18;
             this.label74.Text = "Скорость печати";
             // 
             // tb_scan_extprinting_vel
             // 
-            this.tb_scan_extprinting_vel.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_scan_extprinting_vel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tb_scan_extprinting_vel.Location = new System.Drawing.Point(171, 138);
             this.tb_scan_extprinting_vel.Name = "tb_scan_extprinting_vel";
-            this.tb_scan_extprinting_vel.Size = new System.Drawing.Size(100, 29);
+            this.tb_scan_extprinting_vel.Size = new System.Drawing.Size(100, 26);
             this.tb_scan_extprinting_vel.TabIndex = 17;
             this.tb_scan_extprinting_vel.Text = "10";
             // 
             // label71
             // 
             this.label71.AutoSize = true;
-            this.label71.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label71.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label71.Location = new System.Drawing.Point(277, 109);
             this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(32, 21);
+            this.label71.Size = new System.Drawing.Size(31, 20);
             this.label71.TabIndex = 16;
             this.label71.Text = "мм";
             // 
             // label72
             // 
             this.label72.AutoSize = true;
-            this.label72.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label72.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label72.Location = new System.Drawing.Point(13, 109);
             this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(104, 21);
+            this.label72.Size = new System.Drawing.Size(106, 20);
             this.label72.TabIndex = 15;
             this.label72.Text = "Высота слоя";
             // 
             // tb_scan_ext_line_h
             // 
-            this.tb_scan_ext_line_h.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_scan_ext_line_h.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tb_scan_ext_line_h.Location = new System.Drawing.Point(171, 106);
             this.tb_scan_ext_line_h.Name = "tb_scan_ext_line_h";
-            this.tb_scan_ext_line_h.Size = new System.Drawing.Size(100, 29);
+            this.tb_scan_ext_line_h.Size = new System.Drawing.Size(100, 26);
             this.tb_scan_ext_line_h.TabIndex = 14;
             this.tb_scan_ext_line_h.Text = "0.6";
             // 
             // label64
             // 
             this.label64.AutoSize = true;
-            this.label64.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label64.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label64.Location = new System.Drawing.Point(277, 74);
             this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(32, 21);
+            this.label64.Size = new System.Drawing.Size(31, 20);
             this.label64.TabIndex = 13;
             this.label64.Text = "мм";
             // 
             // label65
             // 
             this.label65.AutoSize = true;
-            this.label65.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label65.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label65.Location = new System.Drawing.Point(14, 74);
             this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(137, 21);
+            this.label65.Size = new System.Drawing.Size(137, 20);
             this.label65.TabIndex = 12;
             this.label65.Text = "Ширина решётки";
             // 
@@ -3930,7 +3930,7 @@ namespace opengl3
             this.button14.BackColor = System.Drawing.Color.SteelBlue;
             this.button14.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.button14.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button14.Font = new System.Drawing.Font("Arial Unicode MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button14.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.button14.Location = new System.Drawing.Point(17, 215);
             this.button14.Name = "button14";
@@ -3942,39 +3942,39 @@ namespace opengl3
             // 
             // tb_scan_ext_grid_d
             // 
-            this.tb_scan_ext_grid_d.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_scan_ext_grid_d.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tb_scan_ext_grid_d.Location = new System.Drawing.Point(171, 71);
             this.tb_scan_ext_grid_d.Name = "tb_scan_ext_grid_d";
-            this.tb_scan_ext_grid_d.Size = new System.Drawing.Size(100, 29);
+            this.tb_scan_ext_grid_d.Size = new System.Drawing.Size(100, 26);
             this.tb_scan_ext_grid_d.TabIndex = 11;
             this.tb_scan_ext_grid_d.Text = "5";
             // 
             // label60
             // 
             this.label60.AutoSize = true;
-            this.label60.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label60.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label60.Location = new System.Drawing.Point(277, 39);
             this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(32, 21);
+            this.label60.Size = new System.Drawing.Size(31, 20);
             this.label60.TabIndex = 7;
             this.label60.Text = "мм";
             // 
             // label61
             // 
             this.label61.AutoSize = true;
-            this.label61.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label61.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label61.Location = new System.Drawing.Point(14, 39);
             this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(127, 21);
+            this.label61.Size = new System.Drawing.Size(127, 20);
             this.label61.TabIndex = 6;
             this.label61.Text = "Толщина линии";
             // 
             // tb_scan_line_width_d
             // 
-            this.tb_scan_line_width_d.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_scan_line_width_d.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tb_scan_line_width_d.Location = new System.Drawing.Point(171, 36);
             this.tb_scan_line_width_d.Name = "tb_scan_line_width_d";
-            this.tb_scan_line_width_d.Size = new System.Drawing.Size(100, 29);
+            this.tb_scan_line_width_d.Size = new System.Drawing.Size(100, 26);
             this.tb_scan_line_width_d.TabIndex = 5;
             this.tb_scan_line_width_d.Text = "1.4";
             // 
@@ -3983,7 +3983,7 @@ namespace opengl3
             this.button13.BackColor = System.Drawing.Color.SteelBlue;
             this.button13.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button13.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button13.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button13.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.button13.Location = new System.Drawing.Point(230, 215);
             this.button13.Name = "button13";
@@ -4041,10 +4041,10 @@ namespace opengl3
             // checkBox_comp_las_compens
             // 
             this.checkBox_comp_las_compens.AutoSize = true;
-            this.checkBox_comp_las_compens.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F, System.Drawing.FontStyle.Bold);
+            this.checkBox_comp_las_compens.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F, System.Drawing.FontStyle.Bold);
             this.checkBox_comp_las_compens.Location = new System.Drawing.Point(26, 585);
             this.checkBox_comp_las_compens.Name = "checkBox_comp_las_compens";
-            this.checkBox_comp_las_compens.Size = new System.Drawing.Size(400, 42);
+            this.checkBox_comp_las_compens.Size = new System.Drawing.Size(402, 36);
             this.checkBox_comp_las_compens.TabIndex = 246;
             this.checkBox_comp_las_compens.Text = "Вычисление компенсации";
             this.checkBox_comp_las_compens.UseVisualStyleBackColor = true;
@@ -4053,19 +4053,19 @@ namespace opengl3
             // label_comp_period
             // 
             this.label_comp_period.AutoSize = true;
-            this.label_comp_period.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label_comp_period.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label_comp_period.Location = new System.Drawing.Point(354, 485);
             this.label_comp_period.Name = "label_comp_period";
-            this.label_comp_period.Size = new System.Drawing.Size(117, 38);
+            this.label_comp_period.Size = new System.Drawing.Size(114, 32);
             this.label_comp_period.TabIndex = 245;
             this.label_comp_period.Text = "Период";
             // 
             // textBox_compens_las_power
             // 
-            this.textBox_compens_las_power.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F);
+            this.textBox_compens_las_power.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F);
             this.textBox_compens_las_power.Location = new System.Drawing.Point(26, 871);
             this.textBox_compens_las_power.Name = "textBox_compens_las_power";
-            this.textBox_compens_las_power.Size = new System.Drawing.Size(84, 44);
+            this.textBox_compens_las_power.Size = new System.Drawing.Size(84, 38);
             this.textBox_compens_las_power.TabIndex = 244;
             this.textBox_compens_las_power.Text = "9";
             // 
@@ -4074,7 +4074,7 @@ namespace opengl3
             this.but_compens_las_power.BackColor = System.Drawing.Color.SteelBlue;
             this.but_compens_las_power.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_compens_las_power.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_compens_las_power.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_compens_las_power.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_compens_las_power.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_compens_las_power.Location = new System.Drawing.Point(162, 862);
             this.but_compens_las_power.Name = "but_compens_las_power";
@@ -4089,7 +4089,7 @@ namespace opengl3
             this.but_laser_onoff.BackColor = System.Drawing.Color.SteelBlue;
             this.but_laser_onoff.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_laser_onoff.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_laser_onoff.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_laser_onoff.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_laser_onoff.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_laser_onoff.Location = new System.Drawing.Point(361, 862);
             this.but_laser_onoff.Name = "but_laser_onoff";
@@ -4102,70 +4102,70 @@ namespace opengl3
             // label109
             // 
             this.label109.AutoSize = true;
-            this.label109.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label109.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label109.Location = new System.Drawing.Point(129, 204);
             this.label109.Name = "label109";
-            this.label109.Size = new System.Drawing.Size(259, 38);
+            this.label109.Size = new System.Drawing.Size(260, 32);
             this.label109.TabIndex = 241;
             this.label109.Text = "Окно сглаживания";
             // 
             // label108
             // 
             this.label108.AutoSize = true;
-            this.label108.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label108.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label108.Location = new System.Drawing.Point(116, 765);
             this.label108.Name = "label108";
-            this.label108.Size = new System.Drawing.Size(39, 38);
+            this.label108.Size = new System.Drawing.Size(36, 32);
             this.label108.TabIndex = 240;
             this.label108.Text = "ш";
             // 
             // label107
             // 
             this.label107.AutoSize = true;
-            this.label107.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label107.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label107.Location = new System.Drawing.Point(608, 333);
             this.label107.Name = "label107";
-            this.label107.Size = new System.Drawing.Size(50, 38);
+            this.label107.Size = new System.Drawing.Size(48, 32);
             this.label107.TabIndex = 239;
             this.label107.Text = "мс";
             // 
             // label106
             // 
             this.label106.AutoSize = true;
-            this.label106.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label106.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label106.Location = new System.Drawing.Point(608, 269);
             this.label106.Name = "label106";
-            this.label106.Size = new System.Drawing.Size(31, 38);
+            this.label106.Size = new System.Drawing.Size(28, 32);
             this.label106.TabIndex = 238;
             this.label106.Text = "с";
             // 
             // label105
             // 
             this.label105.AutoSize = true;
-            this.label105.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label105.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label105.Location = new System.Drawing.Point(608, 207);
             this.label105.Name = "label105";
-            this.label105.Size = new System.Drawing.Size(31, 38);
+            this.label105.Size = new System.Drawing.Size(28, 32);
             this.label105.TabIndex = 237;
             this.label105.Text = "с";
             // 
             // label104
             // 
             this.label104.AutoSize = true;
-            this.label104.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label104.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label104.Location = new System.Drawing.Point(608, 143);
             this.label104.Name = "label104";
-            this.label104.Size = new System.Drawing.Size(31, 38);
+            this.label104.Size = new System.Drawing.Size(28, 32);
             this.label104.TabIndex = 236;
             this.label104.Text = "с";
             // 
             // label103
             // 
             this.label103.AutoSize = true;
-            this.label103.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label103.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label103.Location = new System.Drawing.Point(608, 25);
             this.label103.Name = "label103";
-            this.label103.Size = new System.Drawing.Size(55, 38);
+            this.label103.Size = new System.Drawing.Size(54, 32);
             this.label103.TabIndex = 235;
             this.label103.Text = "мм";
             // 
@@ -4174,7 +4174,7 @@ namespace opengl3
             this.but_compens_las_zero.BackColor = System.Drawing.Color.SteelBlue;
             this.but_compens_las_zero.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_compens_las_zero.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_compens_las_zero.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_compens_las_zero.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_compens_las_zero.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_compens_las_zero.Location = new System.Drawing.Point(361, 753);
             this.but_compens_las_zero.Name = "but_compens_las_zero";
@@ -4186,10 +4186,10 @@ namespace opengl3
             // 
             // textBox_compens_las_pos
             // 
-            this.textBox_compens_las_pos.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F);
+            this.textBox_compens_las_pos.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F);
             this.textBox_compens_las_pos.Location = new System.Drawing.Point(26, 762);
             this.textBox_compens_las_pos.Name = "textBox_compens_las_pos";
-            this.textBox_compens_las_pos.Size = new System.Drawing.Size(84, 44);
+            this.textBox_compens_las_pos.Size = new System.Drawing.Size(84, 38);
             this.textBox_compens_las_pos.TabIndex = 233;
             this.textBox_compens_las_pos.Text = "800";
             // 
@@ -4198,7 +4198,7 @@ namespace opengl3
             this.but_compens_las_pos.BackColor = System.Drawing.Color.SteelBlue;
             this.but_compens_las_pos.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_compens_las_pos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_compens_las_pos.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_compens_las_pos.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_compens_las_pos.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_compens_las_pos.Location = new System.Drawing.Point(162, 753);
             this.but_compens_las_pos.Name = "but_compens_las_pos";
@@ -4211,10 +4211,10 @@ namespace opengl3
             // checkBox_compens_visualize
             // 
             this.checkBox_compens_visualize.AutoSize = true;
-            this.checkBox_compens_visualize.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.checkBox_compens_visualize.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.checkBox_compens_visualize.Location = new System.Drawing.Point(26, 547);
             this.checkBox_compens_visualize.Name = "checkBox_compens_visualize";
-            this.checkBox_compens_visualize.Size = new System.Drawing.Size(436, 42);
+            this.checkBox_compens_visualize.Size = new System.Drawing.Size(437, 36);
             this.checkBox_compens_visualize.TabIndex = 231;
             this.checkBox_compens_visualize.Text = "Отображение детектирования";
             this.checkBox_compens_visualize.UseVisualStyleBackColor = true;
@@ -4223,10 +4223,10 @@ namespace opengl3
             // label_current_dist
             // 
             this.label_current_dist.AutoSize = true;
-            this.label_current_dist.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label_current_dist.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label_current_dist.Location = new System.Drawing.Point(19, 630);
             this.label_current_dist.Name = "label_current_dist";
-            this.label_current_dist.Size = new System.Drawing.Size(352, 38);
+            this.label_current_dist.Size = new System.Drawing.Size(351, 32);
             this.label_current_dist.TabIndex = 230;
             this.label_current_dist.Text = "Текущее растояние: х мм";
             // 
@@ -4235,7 +4235,7 @@ namespace opengl3
             this.but_compens_load_period.BackColor = System.Drawing.Color.SteelBlue;
             this.but_compens_load_period.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_compens_load_period.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_compens_load_period.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_compens_load_period.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_compens_load_period.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_compens_load_period.Location = new System.Drawing.Point(446, 389);
             this.but_compens_load_period.Name = "but_compens_load_period";
@@ -4250,7 +4250,7 @@ namespace opengl3
             this.but_apply_cur_roi.BackColor = System.Drawing.Color.SteelBlue;
             this.but_apply_cur_roi.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_apply_cur_roi.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_apply_cur_roi.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_apply_cur_roi.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_apply_cur_roi.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_apply_cur_roi.Location = new System.Drawing.Point(244, 389);
             this.but_apply_cur_roi.Name = "but_apply_cur_roi";
@@ -4265,7 +4265,7 @@ namespace opengl3
             this.but_compens_period_delt.BackColor = System.Drawing.Color.SteelBlue;
             this.but_compens_period_delt.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_compens_period_delt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_compens_period_delt.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_compens_period_delt.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_compens_period_delt.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_compens_period_delt.Location = new System.Drawing.Point(20, 325);
             this.but_compens_period_delt.Name = "but_compens_period_delt";
@@ -4280,7 +4280,7 @@ namespace opengl3
             this.but_compens_comp_period.BackColor = System.Drawing.Color.SteelBlue;
             this.but_compens_comp_period.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_compens_comp_period.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_compens_comp_period.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_compens_comp_period.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_compens_comp_period.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_compens_comp_period.Location = new System.Drawing.Point(20, 261);
             this.but_compens_comp_period.Name = "but_compens_comp_period";
@@ -4293,10 +4293,10 @@ namespace opengl3
             // label96
             // 
             this.label96.AutoSize = true;
-            this.label96.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label96.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label96.Location = new System.Drawing.Point(105, 146);
             this.label96.Name = "label96";
-            this.label96.Size = new System.Drawing.Size(283, 38);
+            this.label96.Size = new System.Drawing.Size(280, 32);
             this.label96.TabIndex = 224;
             this.label96.Text = "Период вычисления";
             // 
@@ -4305,7 +4305,7 @@ namespace opengl3
             this.but_compens_stop.BackColor = System.Drawing.Color.SteelBlue;
             this.but_compens_stop.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_compens_stop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_compens_stop.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_compens_stop.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_compens_stop.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_compens_stop.Location = new System.Drawing.Point(271, 76);
             this.but_compens_stop.Name = "but_compens_stop";
@@ -4320,7 +4320,7 @@ namespace opengl3
             this.but_compens_on.BackColor = System.Drawing.Color.SteelBlue;
             this.but_compens_on.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_compens_on.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_compens_on.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_compens_on.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_compens_on.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_compens_on.Location = new System.Drawing.Point(20, 76);
             this.but_compens_on.Name = "but_compens_on";
@@ -4335,7 +4335,7 @@ namespace opengl3
             this.but_compens_dist.BackColor = System.Drawing.Color.SteelBlue;
             this.but_compens_dist.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_compens_dist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_compens_dist.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_compens_dist.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_compens_dist.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_compens_dist.Location = new System.Drawing.Point(20, 17);
             this.but_compens_dist.Name = "but_compens_dist";
@@ -4347,38 +4347,38 @@ namespace opengl3
             // 
             // textBox_per_cal_period_max
             // 
-            this.textBox_per_cal_period_max.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.textBox_per_cal_period_max.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.textBox_per_cal_period_max.Location = new System.Drawing.Point(541, 143);
             this.textBox_per_cal_period_max.Name = "textBox_per_cal_period_max";
-            this.textBox_per_cal_period_max.Size = new System.Drawing.Size(61, 44);
+            this.textBox_per_cal_period_max.Size = new System.Drawing.Size(61, 38);
             this.textBox_per_cal_period_max.TabIndex = 220;
             this.textBox_per_cal_period_max.Text = "7";
             // 
             // textBox_per_cal_period_min
             // 
-            this.textBox_per_cal_period_min.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.textBox_per_cal_period_min.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.textBox_per_cal_period_min.Location = new System.Drawing.Point(470, 143);
             this.textBox_per_cal_period_min.Name = "textBox_per_cal_period_min";
-            this.textBox_per_cal_period_min.Size = new System.Drawing.Size(65, 44);
+            this.textBox_per_cal_period_min.Size = new System.Drawing.Size(65, 38);
             this.textBox_per_cal_period_min.TabIndex = 219;
             this.textBox_per_cal_period_min.Text = "1";
             // 
             // textBox_per_cal_window_smooth
             // 
-            this.textBox_per_cal_window_smooth.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.textBox_per_cal_window_smooth.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.textBox_per_cal_window_smooth.Location = new System.Drawing.Point(520, 204);
             this.textBox_per_cal_window_smooth.Name = "textBox_per_cal_window_smooth";
-            this.textBox_per_cal_window_smooth.Size = new System.Drawing.Size(84, 44);
+            this.textBox_per_cal_window_smooth.Size = new System.Drawing.Size(84, 38);
             this.textBox_per_cal_window_smooth.TabIndex = 218;
             this.textBox_per_cal_window_smooth.Text = "0.2";
             // 
             // checkBox_window_auto
             // 
             this.checkBox_window_auto.AutoSize = true;
-            this.checkBox_window_auto.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.checkBox_window_auto.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.checkBox_window_auto.Location = new System.Drawing.Point(26, 470);
             this.checkBox_window_auto.Name = "checkBox_window_auto";
-            this.checkBox_window_auto.Size = new System.Drawing.Size(258, 42);
+            this.checkBox_window_auto.Size = new System.Drawing.Size(259, 36);
             this.checkBox_window_auto.TabIndex = 216;
             this.checkBox_window_auto.Text = "Подстройка окна";
             this.checkBox_window_auto.UseVisualStyleBackColor = true;
@@ -4386,20 +4386,20 @@ namespace opengl3
             // 
             // textBox_compens_period_delt
             // 
-            this.textBox_compens_period_delt.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.textBox_compens_period_delt.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.textBox_compens_period_delt.Location = new System.Drawing.Point(520, 330);
             this.textBox_compens_period_delt.Name = "textBox_compens_period_delt";
-            this.textBox_compens_period_delt.Size = new System.Drawing.Size(84, 44);
+            this.textBox_compens_period_delt.Size = new System.Drawing.Size(84, 38);
             this.textBox_compens_period_delt.TabIndex = 214;
             this.textBox_compens_period_delt.Text = "100";
             // 
             // checkBox_compens_period_on
             // 
             this.checkBox_compens_period_on.AutoSize = true;
-            this.checkBox_compens_period_on.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.checkBox_compens_period_on.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.checkBox_compens_period_on.Location = new System.Drawing.Point(26, 508);
             this.checkBox_compens_period_on.Name = "checkBox_compens_period_on";
-            this.checkBox_compens_period_on.Size = new System.Drawing.Size(329, 42);
+            this.checkBox_compens_period_on.Size = new System.Drawing.Size(332, 36);
             this.checkBox_compens_period_on.TabIndex = 213;
             this.checkBox_compens_period_on.Text = "Компенсация периода";
             this.checkBox_compens_period_on.UseVisualStyleBackColor = true;
@@ -4407,38 +4407,38 @@ namespace opengl3
             // 
             // textBox_compens_comp_period
             // 
-            this.textBox_compens_comp_period.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.textBox_compens_comp_period.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.textBox_compens_comp_period.Location = new System.Drawing.Point(520, 266);
             this.textBox_compens_comp_period.Name = "textBox_compens_comp_period";
-            this.textBox_compens_comp_period.Size = new System.Drawing.Size(84, 44);
+            this.textBox_compens_comp_period.Size = new System.Drawing.Size(84, 38);
             this.textBox_compens_comp_period.TabIndex = 211;
             this.textBox_compens_comp_period.Text = "15";
             // 
             // textBox_compens_dist
             // 
-            this.textBox_compens_dist.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F);
+            this.textBox_compens_dist.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F);
             this.textBox_compens_dist.Location = new System.Drawing.Point(520, 22);
             this.textBox_compens_dist.Name = "textBox_compens_dist";
-            this.textBox_compens_dist.Size = new System.Drawing.Size(84, 44);
+            this.textBox_compens_dist.Size = new System.Drawing.Size(84, 38);
             this.textBox_compens_dist.TabIndex = 209;
             this.textBox_compens_dist.Text = "0.8";
             // 
             // label95
             // 
             this.label95.AutoSize = true;
-            this.label95.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.label95.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.label95.Location = new System.Drawing.Point(64, 441);
             this.label95.Name = "label95";
-            this.label95.Size = new System.Drawing.Size(125, 38);
+            this.label95.Size = new System.Drawing.Size(119, 32);
             this.label95.TabIndex = 204;
             this.label95.Text = "X Y W H";
             // 
             // textBox_apply_cur_roi
             // 
-            this.textBox_apply_cur_roi.Font = new System.Drawing.Font("Arial Unicode MS", 20.5F);
+            this.textBox_apply_cur_roi.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.5F);
             this.textBox_apply_cur_roi.Location = new System.Drawing.Point(26, 394);
             this.textBox_apply_cur_roi.Name = "textBox_apply_cur_roi";
-            this.textBox_apply_cur_roi.Size = new System.Drawing.Size(195, 44);
+            this.textBox_apply_cur_roi.Size = new System.Drawing.Size(195, 38);
             this.textBox_apply_cur_roi.TabIndex = 203;
             this.textBox_apply_cur_roi.Text = "0 0 80 10";
             // 
@@ -4465,10 +4465,10 @@ namespace opengl3
             this.tabDistort.Controls.Add(this.label29);
             this.tabDistort.Controls.Add(this.label28);
             this.tabDistort.Controls.Add(this.imageBox_cameraDist);
-            this.tabDistort.Location = new System.Drawing.Point(4, 27);
+            this.tabDistort.Location = new System.Drawing.Point(4, 25);
             this.tabDistort.Name = "tabDistort";
             this.tabDistort.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDistort.Size = new System.Drawing.Size(1891, 998);
+            this.tabDistort.Size = new System.Drawing.Size(1891, 1000);
             this.tabDistort.TabIndex = 4;
             this.tabDistort.Text = "Камера";
             this.tabDistort.UseVisualStyleBackColor = true;
@@ -4494,7 +4494,7 @@ namespace opengl3
             this.label_corPic.AutoSize = true;
             this.label_corPic.Location = new System.Drawing.Point(1294, 162);
             this.label_corPic.Name = "label_corPic";
-            this.label_corPic.Size = new System.Drawing.Size(26, 18);
+            this.label_corPic.Size = new System.Drawing.Size(26, 16);
             this.label_corPic.TabIndex = 19;
             this.label_corPic.Text = "cor";
             // 
@@ -4512,7 +4512,7 @@ namespace opengl3
             // 
             this.textBox_P2deg.Location = new System.Drawing.Point(1447, 122);
             this.textBox_P2deg.Name = "textBox_P2deg";
-            this.textBox_P2deg.Size = new System.Drawing.Size(100, 25);
+            this.textBox_P2deg.Size = new System.Drawing.Size(100, 22);
             this.textBox_P2deg.TabIndex = 18;
             this.textBox_P2deg.Text = "0";
             // 
@@ -4520,7 +4520,7 @@ namespace opengl3
             // 
             this.textBox_P1deg.Location = new System.Drawing.Point(1447, 96);
             this.textBox_P1deg.Name = "textBox_P1deg";
-            this.textBox_P1deg.Size = new System.Drawing.Size(100, 25);
+            this.textBox_P1deg.Size = new System.Drawing.Size(100, 22);
             this.textBox_P1deg.TabIndex = 17;
             this.textBox_P1deg.Text = "0";
             // 
@@ -4528,7 +4528,7 @@ namespace opengl3
             // 
             this.textBox_K3deg.Location = new System.Drawing.Point(1447, 70);
             this.textBox_K3deg.Name = "textBox_K3deg";
-            this.textBox_K3deg.Size = new System.Drawing.Size(100, 25);
+            this.textBox_K3deg.Size = new System.Drawing.Size(100, 22);
             this.textBox_K3deg.TabIndex = 16;
             this.textBox_K3deg.Text = "0";
             // 
@@ -4536,7 +4536,7 @@ namespace opengl3
             // 
             this.textBox_K2deg.Location = new System.Drawing.Point(1447, 44);
             this.textBox_K2deg.Name = "textBox_K2deg";
-            this.textBox_K2deg.Size = new System.Drawing.Size(100, 25);
+            this.textBox_K2deg.Size = new System.Drawing.Size(100, 22);
             this.textBox_K2deg.TabIndex = 15;
             this.textBox_K2deg.Text = "0";
             // 
@@ -4544,7 +4544,7 @@ namespace opengl3
             // 
             this.textBox_K1deg.Location = new System.Drawing.Point(1447, 18);
             this.textBox_K1deg.Name = "textBox_K1deg";
-            this.textBox_K1deg.Size = new System.Drawing.Size(100, 25);
+            this.textBox_K1deg.Size = new System.Drawing.Size(100, 22);
             this.textBox_K1deg.TabIndex = 14;
             this.textBox_K1deg.Text = "0";
             // 
@@ -4552,7 +4552,7 @@ namespace opengl3
             // 
             this.textBox_P2.Location = new System.Drawing.Point(1320, 122);
             this.textBox_P2.Name = "textBox_P2";
-            this.textBox_P2.Size = new System.Drawing.Size(100, 25);
+            this.textBox_P2.Size = new System.Drawing.Size(100, 22);
             this.textBox_P2.TabIndex = 12;
             this.textBox_P2.Text = "0";
             // 
@@ -4560,7 +4560,7 @@ namespace opengl3
             // 
             this.textBox_P1.Location = new System.Drawing.Point(1320, 96);
             this.textBox_P1.Name = "textBox_P1";
-            this.textBox_P1.Size = new System.Drawing.Size(100, 25);
+            this.textBox_P1.Size = new System.Drawing.Size(100, 22);
             this.textBox_P1.TabIndex = 10;
             this.textBox_P1.Text = "0";
             // 
@@ -4568,7 +4568,7 @@ namespace opengl3
             // 
             this.textBox_K3.Location = new System.Drawing.Point(1320, 70);
             this.textBox_K3.Name = "textBox_K3";
-            this.textBox_K3.Size = new System.Drawing.Size(100, 25);
+            this.textBox_K3.Size = new System.Drawing.Size(100, 22);
             this.textBox_K3.TabIndex = 8;
             this.textBox_K3.Text = "0";
             // 
@@ -4576,7 +4576,7 @@ namespace opengl3
             // 
             this.textBox_K2.Location = new System.Drawing.Point(1320, 44);
             this.textBox_K2.Name = "textBox_K2";
-            this.textBox_K2.Size = new System.Drawing.Size(100, 25);
+            this.textBox_K2.Size = new System.Drawing.Size(100, 22);
             this.textBox_K2.TabIndex = 6;
             this.textBox_K2.Text = "0";
             // 
@@ -4584,7 +4584,7 @@ namespace opengl3
             // 
             this.textBox_K1.Location = new System.Drawing.Point(1320, 18);
             this.textBox_K1.Name = "textBox_K1";
-            this.textBox_K1.Size = new System.Drawing.Size(100, 25);
+            this.textBox_K1.Size = new System.Drawing.Size(100, 22);
             this.textBox_K1.TabIndex = 4;
             this.textBox_K1.Text = "-1";
             // 
@@ -4603,7 +4603,7 @@ namespace opengl3
             this.label32.AutoSize = true;
             this.label32.Location = new System.Drawing.Point(1294, 125);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(24, 18);
+            this.label32.Size = new System.Drawing.Size(23, 16);
             this.label32.TabIndex = 11;
             this.label32.Text = "P2";
             // 
@@ -4612,7 +4612,7 @@ namespace opengl3
             this.label31.AutoSize = true;
             this.label31.Location = new System.Drawing.Point(1294, 99);
             this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(24, 18);
+            this.label31.Size = new System.Drawing.Size(23, 16);
             this.label31.TabIndex = 9;
             this.label31.Text = "P1";
             // 
@@ -4621,7 +4621,7 @@ namespace opengl3
             this.label30.AutoSize = true;
             this.label30.Location = new System.Drawing.Point(1294, 73);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(24, 18);
+            this.label30.Size = new System.Drawing.Size(22, 16);
             this.label30.TabIndex = 7;
             this.label30.Text = "K3";
             // 
@@ -4630,7 +4630,7 @@ namespace opengl3
             this.label29.AutoSize = true;
             this.label29.Location = new System.Drawing.Point(1294, 47);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(24, 18);
+            this.label29.Size = new System.Drawing.Size(22, 16);
             this.label29.TabIndex = 5;
             this.label29.Text = "K2";
             // 
@@ -4639,7 +4639,7 @@ namespace opengl3
             this.label28.AutoSize = true;
             this.label28.Location = new System.Drawing.Point(1294, 21);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(24, 18);
+            this.label28.Size = new System.Drawing.Size(22, 16);
             this.label28.TabIndex = 3;
             this.label28.Text = "K1";
             // 
@@ -4662,10 +4662,10 @@ namespace opengl3
             this.tabDebug.Controls.Add(this.imageBox8);
             this.tabDebug.Controls.Add(this.pictureBox1);
             this.tabDebug.Controls.Add(this.histogramBox1);
-            this.tabDebug.Location = new System.Drawing.Point(4, 27);
+            this.tabDebug.Location = new System.Drawing.Point(4, 25);
             this.tabDebug.Name = "tabDebug";
             this.tabDebug.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDebug.Size = new System.Drawing.Size(1891, 998);
+            this.tabDebug.Size = new System.Drawing.Size(1891, 1000);
             this.tabDebug.TabIndex = 3;
             this.tabDebug.Text = "Отладка";
             this.tabDebug.UseVisualStyleBackColor = true;
@@ -4741,10 +4741,10 @@ namespace opengl3
             this.tabOpenGl.Controls.Add(this.glControl1);
             this.tabOpenGl.Controls.Add(this.tB_tool_inf);
             this.tabOpenGl.Controls.Add(this.win_tab_diff);
-            this.tabOpenGl.Location = new System.Drawing.Point(4, 27);
+            this.tabOpenGl.Location = new System.Drawing.Point(4, 25);
             this.tabOpenGl.Name = "tabOpenGl";
             this.tabOpenGl.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOpenGl.Size = new System.Drawing.Size(1891, 998);
+            this.tabOpenGl.Size = new System.Drawing.Size(1891, 1000);
             this.tabOpenGl.TabIndex = 2;
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
@@ -4776,7 +4776,7 @@ namespace opengl3
             this.tB_tool_inf.Cursor = System.Windows.Forms.Cursors.Default;
             this.tB_tool_inf.Location = new System.Drawing.Point(676, 7);
             this.tB_tool_inf.Name = "tB_tool_inf";
-            this.tB_tool_inf.Size = new System.Drawing.Size(328, 25);
+            this.tB_tool_inf.Size = new System.Drawing.Size(328, 22);
             this.tB_tool_inf.TabIndex = 166;
             // 
             // win_tab_diff
@@ -4808,10 +4808,10 @@ namespace opengl3
             this.tabPage1.Controls.Add(this.but_gl_clear);
             this.tabPage1.Controls.Add(this.but_traj_clear);
             this.tabPage1.Controls.Add(this.debugBox);
-            this.tabPage1.Location = new System.Drawing.Point(4, 27);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(869, 960);
+            this.tabPage1.Size = new System.Drawing.Size(869, 962);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Траектория";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -4995,7 +4995,7 @@ namespace opengl3
             // 
             this.tp_smooth_scan.Location = new System.Drawing.Point(451, 310);
             this.tp_smooth_scan.Name = "tp_smooth_scan";
-            this.tp_smooth_scan.Size = new System.Drawing.Size(68, 25);
+            this.tp_smooth_scan.Size = new System.Drawing.Size(68, 22);
             this.tp_smooth_scan.TabIndex = 127;
             this.tp_smooth_scan.Text = "-1";
             // 
@@ -5003,7 +5003,7 @@ namespace opengl3
             // 
             this.textBox_monitor_id.Location = new System.Drawing.Point(225, 406);
             this.textBox_monitor_id.Name = "textBox_monitor_id";
-            this.textBox_monitor_id.Size = new System.Drawing.Size(100, 25);
+            this.textBox_monitor_id.Size = new System.Drawing.Size(100, 22);
             this.textBox_monitor_id.TabIndex = 68;
             this.textBox_monitor_id.Text = "0 1";
             // 
@@ -5012,7 +5012,7 @@ namespace opengl3
             this.label19.AutoSize = true;
             this.label19.Location = new System.Drawing.Point(382, 313);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(81, 18);
+            this.label19.Size = new System.Drawing.Size(79, 16);
             this.label19.TabIndex = 126;
             this.label19.Text = "smooth, mm";
             // 
@@ -5122,7 +5122,7 @@ namespace opengl3
             this.lab_kor.AutoSize = true;
             this.lab_kor.Location = new System.Drawing.Point(151, 444);
             this.lab_kor.Name = "lab_kor";
-            this.lab_kor.Size = new System.Drawing.Size(26, 18);
+            this.lab_kor.Size = new System.Drawing.Size(26, 16);
             this.lab_kor.TabIndex = 64;
             this.lab_kor.Text = "cor";
             // 
@@ -5131,7 +5131,7 @@ namespace opengl3
             this.lab_curCor.AutoSize = true;
             this.lab_curCor.Location = new System.Drawing.Point(258, 444);
             this.lab_curCor.Name = "lab_curCor";
-            this.lab_curCor.Size = new System.Drawing.Size(46, 18);
+            this.lab_curCor.Size = new System.Drawing.Size(46, 16);
             this.lab_curCor.TabIndex = 66;
             this.lab_curCor.Text = "curCor";
             // 
@@ -5140,7 +5140,7 @@ namespace opengl3
             this.label33.AutoSize = true;
             this.label33.Location = new System.Drawing.Point(147, 409);
             this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(70, 18);
+            this.label33.Size = new System.Drawing.Size(71, 16);
             this.label33.TabIndex = 69;
             this.label33.Text = "ID_monitor";
             // 
@@ -5159,7 +5159,7 @@ namespace opengl3
             this.lab_check.AutoSize = true;
             this.lab_check.Location = new System.Drawing.Point(331, 409);
             this.lab_check.Name = "lab_check";
-            this.lab_check.Size = new System.Drawing.Size(46, 18);
+            this.lab_check.Size = new System.Drawing.Size(46, 16);
             this.lab_check.TabIndex = 70;
             this.lab_check.Text = "curCor";
             // 
@@ -5168,7 +5168,7 @@ namespace opengl3
             this.lab_TRZ.AutoSize = true;
             this.lab_TRZ.Location = new System.Drawing.Point(292, 484);
             this.lab_TRZ.Name = "lab_TRZ";
-            this.lab_TRZ.Size = new System.Drawing.Size(26, 18);
+            this.lab_TRZ.Size = new System.Drawing.Size(26, 16);
             this.lab_TRZ.TabIndex = 99;
             this.lab_TRZ.Text = "cor";
             // 
@@ -5422,7 +5422,7 @@ namespace opengl3
             this.label34.AutoSize = true;
             this.label34.Location = new System.Drawing.Point(130, 13);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(114, 18);
+            this.label34.Size = new System.Drawing.Size(120, 16);
             this.label34.TabIndex = 75;
             this.label34.Text = "Настройки SGBM";
             // 
@@ -5431,7 +5431,7 @@ namespace opengl3
             this.label35.AutoSize = true;
             this.label35.Location = new System.Drawing.Point(51, 118);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(59, 18);
+            this.label35.Size = new System.Drawing.Size(61, 16);
             this.label35.TabIndex = 77;
             this.label35.Text = "manDisp";
             // 
@@ -5451,7 +5451,7 @@ namespace opengl3
             this.label36.AutoSize = true;
             this.label36.Location = new System.Drawing.Point(42, 180);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(65, 18);
+            this.label36.Size = new System.Drawing.Size(66, 16);
             this.label36.TabIndex = 79;
             this.label36.Text = "blockSize";
             // 
@@ -5471,7 +5471,7 @@ namespace opengl3
             this.label37.AutoSize = true;
             this.label37.Location = new System.Drawing.Point(69, 225);
             this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(22, 18);
+            this.label37.Size = new System.Drawing.Size(22, 16);
             this.label37.TabIndex = 81;
             this.label37.Text = "p1";
             // 
@@ -5491,7 +5491,7 @@ namespace opengl3
             this.label38.AutoSize = true;
             this.label38.Location = new System.Drawing.Point(69, 279);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(22, 18);
+            this.label38.Size = new System.Drawing.Size(22, 16);
             this.label38.TabIndex = 83;
             this.label38.Text = "p2";
             // 
@@ -5511,7 +5511,7 @@ namespace opengl3
             this.label39.AutoSize = true;
             this.label39.Location = new System.Drawing.Point(26, 334);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(91, 18);
+            this.label39.Size = new System.Drawing.Size(91, 16);
             this.label39.TabIndex = 85;
             this.label39.Text = "Disp12maxdiff";
             // 
@@ -5531,7 +5531,7 @@ namespace opengl3
             this.label40.AutoSize = true;
             this.label40.Location = new System.Drawing.Point(58, 384);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(51, 18);
+            this.label40.Size = new System.Drawing.Size(51, 16);
             this.label40.TabIndex = 87;
             this.label40.Text = "prefilter";
             // 
@@ -5551,7 +5551,7 @@ namespace opengl3
             this.label41.AutoSize = true;
             this.label41.Location = new System.Drawing.Point(51, 443);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(43, 18);
+            this.label41.Size = new System.Drawing.Size(44, 16);
             this.label41.TabIndex = 89;
             this.label41.Text = "unuqe";
             // 
@@ -5571,7 +5571,7 @@ namespace opengl3
             this.label42.AutoSize = true;
             this.label42.Location = new System.Drawing.Point(39, 482);
             this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(67, 18);
+            this.label42.Size = new System.Drawing.Size(70, 16);
             this.label42.TabIndex = 91;
             this.label42.Text = "specleWS";
             // 
@@ -5591,7 +5591,7 @@ namespace opengl3
             this.label43.AutoSize = true;
             this.label43.Location = new System.Drawing.Point(222, 572);
             this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(83, 18);
+            this.label43.Size = new System.Drawing.Size(89, 16);
             this.label43.TabIndex = 93;
             this.label43.Text = "specleRange";
             // 
@@ -5611,7 +5611,7 @@ namespace opengl3
             this.label44.AutoSize = true;
             this.label44.Location = new System.Drawing.Point(51, 67);
             this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(55, 18);
+            this.label44.Size = new System.Drawing.Size(56, 16);
             this.label44.TabIndex = 95;
             this.label44.Text = "minDisp";
             // 
@@ -5828,7 +5828,7 @@ namespace opengl3
             this.label27.AutoSize = true;
             this.label27.Location = new System.Drawing.Point(67, 595);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(178, 18);
+            this.label27.Size = new System.Drawing.Size(195, 16);
             this.label27.TabIndex = 57;
             this.label27.Text = "Положение источника света";
             // 
@@ -5901,7 +5901,7 @@ namespace opengl3
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(171, 871);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(129, 18);
+            this.label4.Size = new System.Drawing.Size(139, 16);
             this.label4.TabIndex = 169;
             this.label4.Text = "Ориентация камеры";
             // 
@@ -6013,7 +6013,7 @@ namespace opengl3
             this.lab_scan_pres.AutoSize = true;
             this.lab_scan_pres.Location = new System.Drawing.Point(443, 171);
             this.lab_scan_pres.Name = "lab_scan_pres";
-            this.lab_scan_pres.Size = new System.Drawing.Size(64, 18);
+            this.lab_scan_pres.Size = new System.Drawing.Size(69, 16);
             this.lab_scan_pres.TabIndex = 158;
             this.lab_scan_pres.Text = "Точность";
             // 
@@ -6051,7 +6051,7 @@ namespace opengl3
             // 
             this.textB_cam1_conf.Location = new System.Drawing.Point(127, 31);
             this.textB_cam1_conf.Name = "textB_cam1_conf";
-            this.textB_cam1_conf.Size = new System.Drawing.Size(509, 25);
+            this.textB_cam1_conf.Size = new System.Drawing.Size(509, 22);
             this.textB_cam1_conf.TabIndex = 106;
             this.textB_cam1_conf.Text = "\"\"";
             // 
@@ -6059,7 +6059,7 @@ namespace opengl3
             // 
             this.textB_cam2_conf.Location = new System.Drawing.Point(127, 57);
             this.textB_cam2_conf.Name = "textB_cam2_conf";
-            this.textB_cam2_conf.Size = new System.Drawing.Size(509, 25);
+            this.textB_cam2_conf.Size = new System.Drawing.Size(509, 22);
             this.textB_cam2_conf.TabIndex = 107;
             this.textB_cam2_conf.Text = "\"\"";
             // 
@@ -6067,7 +6067,7 @@ namespace opengl3
             // 
             this.textB_stereo_cal_path.Location = new System.Drawing.Point(127, 5);
             this.textB_stereo_cal_path.Name = "textB_stereo_cal_path";
-            this.textB_stereo_cal_path.Size = new System.Drawing.Size(509, 25);
+            this.textB_stereo_cal_path.Size = new System.Drawing.Size(509, 22);
             this.textB_stereo_cal_path.TabIndex = 110;
             this.textB_stereo_cal_path.Text = "\"\"";
             // 
@@ -6075,7 +6075,7 @@ namespace opengl3
             // 
             this.textB_scan_path.Location = new System.Drawing.Point(127, 83);
             this.textB_scan_path.Name = "textB_scan_path";
-            this.textB_scan_path.Size = new System.Drawing.Size(509, 25);
+            this.textB_scan_path.Size = new System.Drawing.Size(509, 22);
             this.textB_scan_path.TabIndex = 115;
             this.textB_scan_path.Text = "\"\"";
             // 
@@ -6144,7 +6144,7 @@ namespace opengl3
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(11, 9);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(68, 18);
+            this.label3.Size = new System.Drawing.Size(70, 16);
             this.label3.TabIndex = 112;
             this.label3.Text = "stereo_cal";
             // 
@@ -6153,7 +6153,7 @@ namespace opengl3
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(11, 35);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(72, 18);
+            this.label11.Size = new System.Drawing.Size(72, 16);
             this.label11.TabIndex = 113;
             this.label11.Text = "cam1_conf";
             // 
@@ -6162,7 +6162,7 @@ namespace opengl3
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(11, 60);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(72, 18);
+            this.label12.Size = new System.Drawing.Size(72, 16);
             this.label12.TabIndex = 114;
             this.label12.Text = "cam2_conf";
             // 
@@ -6191,7 +6191,7 @@ namespace opengl3
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(22, 86);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(36, 18);
+            this.label13.Size = new System.Drawing.Size(36, 16);
             this.label13.TabIndex = 117;
             this.label13.Text = "scan";
             // 
@@ -6206,7 +6206,7 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabP_scanning_printing);
             this.windowsTabs.Controls.Add(this.tabP_developer);
             this.windowsTabs.Controls.Add(this.tabPage_tube);
-            this.windowsTabs.Font = new System.Drawing.Font("Arial Unicode MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.windowsTabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.windowsTabs.Location = new System.Drawing.Point(3, 0);
             this.windowsTabs.Name = "windowsTabs";
             this.windowsTabs.SelectedIndex = 0;
@@ -6218,10 +6218,10 @@ namespace opengl3
             // 
             this.tabP_connect.Controls.Add(this.but_con_ext_discon_com);
             this.tabP_connect.Controls.Add(this.tabC_connect_ins);
-            this.tabP_connect.Location = new System.Drawing.Point(4, 27);
+            this.tabP_connect.Location = new System.Drawing.Point(4, 25);
             this.tabP_connect.Name = "tabP_connect";
             this.tabP_connect.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_connect.Size = new System.Drawing.Size(1891, 998);
+            this.tabP_connect.Size = new System.Drawing.Size(1891, 1000);
             this.tabP_connect.TabIndex = 6;
             this.tabP_connect.Text = "Подключение";
             this.tabP_connect.UseVisualStyleBackColor = true;
@@ -6245,7 +6245,7 @@ namespace opengl3
             // 
             this.tabC_connect_ins.Controls.Add(this.tabP_connect_set);
             this.tabC_connect_ins.Controls.Add(this.tabP_connect_set_ext);
-            this.tabC_connect_ins.Font = new System.Drawing.Font("Arial Unicode MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tabC_connect_ins.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabC_connect_ins.Location = new System.Drawing.Point(912, 6);
             this.tabC_connect_ins.Name = "tabC_connect_ins";
             this.tabC_connect_ins.SelectedIndex = 0;
@@ -6262,10 +6262,10 @@ namespace opengl3
             this.tabP_connect_set.Controls.Add(this.but_con_set_rob_con);
             this.tabP_connect_set.Controls.Add(this.but_con_set_ard_con);
             this.tabP_connect_set.Font = new System.Drawing.Font("Arial", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tabP_connect_set.Location = new System.Drawing.Point(4, 27);
+            this.tabP_connect_set.Location = new System.Drawing.Point(4, 25);
             this.tabP_connect_set.Name = "tabP_connect_set";
             this.tabP_connect_set.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_connect_set.Size = new System.Drawing.Size(965, 960);
+            this.tabP_connect_set.Size = new System.Drawing.Size(965, 962);
             this.tabP_connect_set.TabIndex = 0;
             this.tabP_connect_set.Text = "Настройки";
             // 
@@ -6283,7 +6283,7 @@ namespace opengl3
             this.but_con_set_temp.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_set_temp.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_set_temp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_set_temp.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.but_con_set_temp.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.but_con_set_temp.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_set_temp.Location = new System.Drawing.Point(158, 640);
             this.but_con_set_temp.Name = "but_con_set_temp";
@@ -6296,22 +6296,22 @@ namespace opengl3
             // label_ard_connect
             // 
             this.label_ard_connect.AutoSize = true;
-            this.label_ard_connect.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label_ard_connect.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label_ard_connect.ForeColor = System.Drawing.Color.Firebrick;
             this.label_ard_connect.Location = new System.Drawing.Point(154, 229);
             this.label_ard_connect.Name = "label_ard_connect";
-            this.label_ard_connect.Size = new System.Drawing.Size(199, 42);
+            this.label_ard_connect.Size = new System.Drawing.Size(203, 40);
             this.label_ard_connect.TabIndex = 3;
             this.label_ard_connect.Text = "Печатающее устройство \r\nне подключёно";
             // 
             // label_cam_connect
             // 
             this.label_cam_connect.AutoSize = true;
-            this.label_cam_connect.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label_cam_connect.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label_cam_connect.ForeColor = System.Drawing.Color.Firebrick;
             this.label_cam_connect.Location = new System.Drawing.Point(154, 490);
             this.label_cam_connect.Name = "label_cam_connect";
-            this.label_cam_connect.Size = new System.Drawing.Size(187, 21);
+            this.label_cam_connect.Size = new System.Drawing.Size(191, 20);
             this.label_cam_connect.TabIndex = 2;
             this.label_cam_connect.Text = "Камеры не подключены";
             // 
@@ -6320,7 +6320,7 @@ namespace opengl3
             this.but_con_set_rob_con.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_set_rob_con.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_set_rob_con.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_set_rob_con.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.but_con_set_rob_con.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.but_con_set_rob_con.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_set_rob_con.Location = new System.Drawing.Point(158, 373);
             this.but_con_set_rob_con.Name = "but_con_set_rob_con";
@@ -6335,7 +6335,7 @@ namespace opengl3
             this.but_con_set_ard_con.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_set_ard_con.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_set_ard_con.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_set_ard_con.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.but_con_set_ard_con.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.but_con_set_ard_con.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_set_ard_con.Location = new System.Drawing.Point(158, 111);
             this.but_con_set_ard_con.Name = "but_con_set_ard_con";
@@ -6350,10 +6350,10 @@ namespace opengl3
             this.tabP_connect_set_ext.Controls.Add(this.groupBox_rob_con_ext);
             this.tabP_connect_set_ext.Controls.Add(this.groupBox_disp_contr_ext);
             this.tabP_connect_set_ext.Controls.Add(this.groupBox_con_ard_ext);
-            this.tabP_connect_set_ext.Location = new System.Drawing.Point(4, 27);
+            this.tabP_connect_set_ext.Location = new System.Drawing.Point(4, 25);
             this.tabP_connect_set_ext.Name = "tabP_connect_set_ext";
             this.tabP_connect_set_ext.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_connect_set_ext.Size = new System.Drawing.Size(965, 960);
+            this.tabP_connect_set_ext.Size = new System.Drawing.Size(965, 962);
             this.tabP_connect_set_ext.TabIndex = 1;
             this.tabP_connect_set_ext.Text = "Расширенные настройки";
             this.tabP_connect_set_ext.UseVisualStyleBackColor = true;
@@ -6368,7 +6368,7 @@ namespace opengl3
             this.groupBox_rob_con_ext.Controls.Add(this.rb_01mm);
             this.groupBox_rob_con_ext.Controls.Add(this.but_con_ext_rob_discon);
             this.groupBox_rob_con_ext.Controls.Add(this.but_con_ext_rob_con);
-            this.groupBox_rob_con_ext.Font = new System.Drawing.Font("Arial Unicode MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox_rob_con_ext.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox_rob_con_ext.Location = new System.Drawing.Point(6, 771);
             this.groupBox_rob_con_ext.Name = "groupBox_rob_con_ext";
             this.groupBox_rob_con_ext.Size = new System.Drawing.Size(953, 186);
@@ -6379,11 +6379,11 @@ namespace opengl3
             // label62
             // 
             this.label62.AutoSize = true;
-            this.label62.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label62.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label62.ForeColor = System.Drawing.SystemColors.WindowText;
             this.label62.Location = new System.Drawing.Point(836, 39);
             this.label62.Name = "label62";
-            this.label62.Size = new System.Drawing.Size(90, 21);
+            this.label62.Size = new System.Drawing.Size(92, 20);
             this.label62.TabIndex = 20;
             this.label62.Text = "Дистанция";
             // 
@@ -6391,10 +6391,10 @@ namespace opengl3
             // 
             this.rb_1mm.AccessibleName = "1";
             this.rb_1mm.AutoSize = true;
-            this.rb_1mm.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rb_1mm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rb_1mm.Location = new System.Drawing.Point(853, 97);
             this.rb_1mm.Name = "rb_1mm";
-            this.rb_1mm.Size = new System.Drawing.Size(79, 25);
+            this.rb_1mm.Size = new System.Drawing.Size(78, 24);
             this.rb_1mm.TabIndex = 7;
             this.rb_1mm.Text = "1     мм";
             this.rb_1mm.UseVisualStyleBackColor = true;
@@ -6404,10 +6404,10 @@ namespace opengl3
             // 
             this.rb_100mm.AccessibleName = "100";
             this.rb_100mm.AutoSize = true;
-            this.rb_100mm.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rb_100mm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rb_100mm.Location = new System.Drawing.Point(853, 159);
             this.rb_100mm.Name = "rb_100mm";
-            this.rb_100mm.Size = new System.Drawing.Size(81, 25);
+            this.rb_100mm.Size = new System.Drawing.Size(80, 24);
             this.rb_100mm.TabIndex = 6;
             this.rb_100mm.Text = "100 мм";
             this.rb_100mm.UseVisualStyleBackColor = true;
@@ -6418,10 +6418,10 @@ namespace opengl3
             this.rb_10mm.AccessibleName = "10";
             this.rb_10mm.AutoSize = true;
             this.rb_10mm.Checked = true;
-            this.rb_10mm.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rb_10mm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rb_10mm.Location = new System.Drawing.Point(853, 128);
             this.rb_10mm.Name = "rb_10mm";
-            this.rb_10mm.Size = new System.Drawing.Size(80, 25);
+            this.rb_10mm.Size = new System.Drawing.Size(79, 24);
             this.rb_10mm.TabIndex = 5;
             this.rb_10mm.TabStop = true;
             this.rb_10mm.Text = "10   мм";
@@ -6432,11 +6432,11 @@ namespace opengl3
             // 
             this.rb_01mm.AccessibleName = "0.1";
             this.rb_01mm.AutoSize = true;
-            this.rb_01mm.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rb_01mm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rb_01mm.Location = new System.Drawing.Point(853, 66);
             this.rb_01mm.Name = "rb_01mm";
             this.rb_01mm.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.rb_01mm.Size = new System.Drawing.Size(80, 25);
+            this.rb_01mm.Size = new System.Drawing.Size(79, 24);
             this.rb_01mm.TabIndex = 4;
             this.rb_01mm.Text = "0.1  мм";
             this.rb_01mm.UseVisualStyleBackColor = true;
@@ -6447,7 +6447,7 @@ namespace opengl3
             this.but_con_ext_rob_discon.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_rob_discon.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_rob_discon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_rob_discon.Font = new System.Drawing.Font("Arial Unicode MS", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_rob_discon.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_rob_discon.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_rob_discon.Location = new System.Drawing.Point(22, 104);
             this.but_con_ext_rob_discon.Name = "but_con_ext_rob_discon";
@@ -6462,7 +6462,7 @@ namespace opengl3
             this.but_con_ext_rob_con.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_rob_con.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_rob_con.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_rob_con.Font = new System.Drawing.Font("Arial Unicode MS", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_rob_con.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_rob_con.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_rob_con.Location = new System.Drawing.Point(22, 24);
             this.but_con_ext_rob_con.Name = "but_con_ext_rob_con";
@@ -6493,7 +6493,7 @@ namespace opengl3
             this.groupBox_disp_contr_ext.Controls.Add(this.but_con_ext_disp_up);
             this.groupBox_disp_contr_ext.Controls.Add(this.but_con_ext_disp_down);
             this.groupBox_disp_contr_ext.Controls.Add(this.but_con_ext_disp_stop);
-            this.groupBox_disp_contr_ext.Font = new System.Drawing.Font("Arial Unicode MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox_disp_contr_ext.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox_disp_contr_ext.Location = new System.Drawing.Point(6, 166);
             this.groupBox_disp_contr_ext.Name = "groupBox_disp_contr_ext";
             this.groupBox_disp_contr_ext.Size = new System.Drawing.Size(953, 599);
@@ -6504,29 +6504,29 @@ namespace opengl3
             // label99
             // 
             this.label99.AutoSize = true;
-            this.label99.Font = new System.Drawing.Font("Arial Unicode MS", 6F);
+            this.label99.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F);
             this.label99.Location = new System.Drawing.Point(917, 162);
             this.label99.Name = "label99";
-            this.label99.Size = new System.Drawing.Size(9, 11);
+            this.label99.Size = new System.Drawing.Size(9, 9);
             this.label99.TabIndex = 30;
             this.label99.Text = "o";
             // 
             // label98
             // 
             this.label98.AutoSize = true;
-            this.label98.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label98.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label98.Location = new System.Drawing.Point(925, 162);
             this.label98.Name = "label98";
-            this.label98.Size = new System.Drawing.Size(22, 21);
+            this.label98.Size = new System.Drawing.Size(20, 20);
             this.label98.TabIndex = 29;
             this.label98.Text = "C";
             // 
             // textBox_con_ext_set_temp
             // 
-            this.textBox_con_ext_set_temp.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F);
+            this.textBox_con_ext_set_temp.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F);
             this.textBox_con_ext_set_temp.Location = new System.Drawing.Point(830, 147);
             this.textBox_con_ext_set_temp.Name = "textBox_con_ext_set_temp";
-            this.textBox_con_ext_set_temp.Size = new System.Drawing.Size(81, 44);
+            this.textBox_con_ext_set_temp.Size = new System.Drawing.Size(81, 38);
             this.textBox_con_ext_set_temp.TabIndex = 24;
             this.textBox_con_ext_set_temp.Text = "22";
             this.textBox_con_ext_set_temp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -6536,7 +6536,7 @@ namespace opengl3
             this.but_con_ext_set_temp.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_set_temp.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_set_temp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_set_temp.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.but_con_ext_set_temp.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.but_con_ext_set_temp.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_set_temp.Location = new System.Drawing.Point(475, 131);
             this.but_con_ext_set_temp.Name = "but_con_ext_set_temp";
@@ -6549,21 +6549,21 @@ namespace opengl3
             // label102
             // 
             this.label102.AutoSize = true;
-            this.label102.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label102.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label102.ForeColor = System.Drawing.SystemColors.WindowText;
             this.label102.Location = new System.Drawing.Point(490, 46);
             this.label102.Name = "label102";
-            this.label102.Size = new System.Drawing.Size(128, 21);
+            this.label102.Size = new System.Drawing.Size(127, 20);
             this.label102.TabIndex = 22;
             this.label102.Text = "Размер шприца";
             // 
             // comboBox_syrenge_size
             // 
-            this.comboBox_syrenge_size.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F);
+            this.comboBox_syrenge_size.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F);
             this.comboBox_syrenge_size.FormattingEnabled = true;
             this.comboBox_syrenge_size.Location = new System.Drawing.Point(686, 31);
             this.comboBox_syrenge_size.Name = "comboBox_syrenge_size";
-            this.comboBox_syrenge_size.Size = new System.Drawing.Size(225, 44);
+            this.comboBox_syrenge_size.Size = new System.Drawing.Size(225, 39);
             this.comboBox_syrenge_size.TabIndex = 21;
             this.comboBox_syrenge_size.SelectedIndexChanged += new System.EventHandler(this.comboBox_syrenge_size_SelectedIndexChanged);
             // 
@@ -6572,7 +6572,7 @@ namespace opengl3
             this.but_con_ext_set_z_zero.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_set_z_zero.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_set_z_zero.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_set_z_zero.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_set_z_zero.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_set_z_zero.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_set_z_zero.Location = new System.Drawing.Point(475, 313);
             this.but_con_ext_set_z_zero.Name = "but_con_ext_set_z_zero";
@@ -6585,10 +6585,10 @@ namespace opengl3
             // label100
             // 
             this.label100.AutoSize = true;
-            this.label100.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label100.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label100.Location = new System.Drawing.Point(909, 251);
             this.label100.Name = "label100";
-            this.label100.Size = new System.Drawing.Size(32, 21);
+            this.label100.Size = new System.Drawing.Size(31, 20);
             this.label100.TabIndex = 19;
             this.label100.Text = "мм";
             // 
@@ -6597,7 +6597,7 @@ namespace opengl3
             this.but_con_ext_set_z_pos.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_set_z_pos.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_set_z_pos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_set_z_pos.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_set_z_pos.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_set_z_pos.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_set_z_pos.Location = new System.Drawing.Point(475, 224);
             this.but_con_ext_set_z_pos.Name = "but_con_ext_set_z_pos";
@@ -6609,10 +6609,10 @@ namespace opengl3
             // 
             // textBox_con_ext_set_z_pos
             // 
-            this.textBox_con_ext_set_z_pos.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F);
+            this.textBox_con_ext_set_z_pos.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F);
             this.textBox_con_ext_set_z_pos.Location = new System.Drawing.Point(830, 236);
             this.textBox_con_ext_set_z_pos.Name = "textBox_con_ext_set_z_pos";
-            this.textBox_con_ext_set_z_pos.Size = new System.Drawing.Size(79, 44);
+            this.textBox_con_ext_set_z_pos.Size = new System.Drawing.Size(79, 38);
             this.textBox_con_ext_set_z_pos.TabIndex = 14;
             this.textBox_con_ext_set_z_pos.Text = "1";
             this.textBox_con_ext_set_z_pos.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -6622,7 +6622,7 @@ namespace opengl3
             this.but_con_ext_disp_down_push.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_disp_down_push.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_disp_down_push.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_disp_down_push.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_disp_down_push.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_disp_down_push.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_disp_down_push.Location = new System.Drawing.Point(35, 313);
             this.but_con_ext_disp_down_push.Name = "but_con_ext_disp_down_push";
@@ -6637,7 +6637,7 @@ namespace opengl3
             this.but_con_ext_disp_up_push.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_disp_up_push.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_disp_up_push.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_disp_up_push.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_disp_up_push.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_disp_up_push.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_disp_up_push.Location = new System.Drawing.Point(35, 403);
             this.but_con_ext_disp_up_push.Name = "but_con_ext_disp_up_push";
@@ -6650,10 +6650,10 @@ namespace opengl3
             // label76
             // 
             this.label76.AutoSize = true;
-            this.label76.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label76.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label76.Location = new System.Drawing.Point(422, 46);
             this.label76.Name = "label76";
-            this.label76.Size = new System.Drawing.Size(44, 21);
+            this.label76.Size = new System.Drawing.Size(43, 20);
             this.label76.TabIndex = 6;
             this.label76.Text = "мм/с";
             this.label76.Click += new System.EventHandler(this.label76_Click);
@@ -6662,7 +6662,7 @@ namespace opengl3
             // 
             this.textBox_con_ext_disp_vel.Location = new System.Drawing.Point(363, 42);
             this.textBox_con_ext_disp_vel.Name = "textBox_con_ext_disp_vel";
-            this.textBox_con_ext_disp_vel.Size = new System.Drawing.Size(53, 25);
+            this.textBox_con_ext_disp_vel.Size = new System.Drawing.Size(53, 22);
             this.textBox_con_ext_disp_vel.TabIndex = 5;
             this.textBox_con_ext_disp_vel.Text = "0.5";
             this.textBox_con_ext_disp_vel.TextChanged += new System.EventHandler(this.textBox_con_ext_disp_vel_TextChanged);
@@ -6670,11 +6670,11 @@ namespace opengl3
             // label75
             // 
             this.label75.AutoSize = true;
-            this.label75.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label75.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label75.ForeColor = System.Drawing.SystemColors.WindowText;
             this.label75.Location = new System.Drawing.Point(31, 42);
             this.label75.Name = "label75";
-            this.label75.Size = new System.Drawing.Size(284, 21);
+            this.label75.Size = new System.Drawing.Size(288, 20);
             this.label75.TabIndex = 2;
             this.label75.Text = "Скорость перемещения  диспенсера";
             // 
@@ -6683,7 +6683,7 @@ namespace opengl3
             this.but_con_ext_disp_up.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_disp_up.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_disp_up.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_disp_up.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_disp_up.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_disp_up.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_disp_up.Location = new System.Drawing.Point(35, 131);
             this.but_con_ext_disp_up.Name = "but_con_ext_disp_up";
@@ -6698,7 +6698,7 @@ namespace opengl3
             this.but_con_ext_disp_down.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_disp_down.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_disp_down.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_disp_down.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_disp_down.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_disp_down.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_disp_down.Location = new System.Drawing.Point(35, 220);
             this.but_con_ext_disp_down.Name = "but_con_ext_disp_down";
@@ -6713,7 +6713,7 @@ namespace opengl3
             this.but_con_ext_disp_stop.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_disp_stop.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_disp_stop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_disp_stop.Font = new System.Drawing.Font("Arial Unicode MS", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_disp_stop.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_disp_stop.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_disp_stop.Location = new System.Drawing.Point(35, 487);
             this.but_con_ext_disp_stop.Name = "but_con_ext_disp_stop";
@@ -6729,7 +6729,7 @@ namespace opengl3
             this.groupBox_con_ard_ext.Controls.Add(this.cb_ard_ext);
             this.groupBox_con_ard_ext.Controls.Add(this.but_con_ext_find_ports);
             this.groupBox_con_ard_ext.Controls.Add(this.but_con_ext_con_com);
-            this.groupBox_con_ard_ext.Font = new System.Drawing.Font("Arial Unicode MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox_con_ard_ext.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox_con_ard_ext.ForeColor = System.Drawing.Color.Black;
             this.groupBox_con_ard_ext.Location = new System.Drawing.Point(6, 6);
             this.groupBox_con_ard_ext.Name = "groupBox_con_ard_ext";
@@ -6743,7 +6743,7 @@ namespace opengl3
             this.cb_ard_ext.FormattingEnabled = true;
             this.cb_ard_ext.Location = new System.Drawing.Point(35, 36);
             this.cb_ard_ext.Name = "cb_ard_ext";
-            this.cb_ard_ext.Size = new System.Drawing.Size(174, 26);
+            this.cb_ard_ext.Size = new System.Drawing.Size(174, 24);
             this.cb_ard_ext.TabIndex = 7;
             this.cb_ard_ext.SelectedIndexChanged += new System.EventHandler(this.comboBox_portsArd_SelectedIndexChanged);
             // 
@@ -6752,7 +6752,7 @@ namespace opengl3
             this.but_con_ext_find_ports.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_find_ports.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_find_ports.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_find_ports.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_find_ports.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_find_ports.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_find_ports.Location = new System.Drawing.Point(35, 86);
             this.but_con_ext_find_ports.Name = "but_con_ext_find_ports";
@@ -6767,7 +6767,7 @@ namespace opengl3
             this.but_con_ext_con_com.BackColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_con_com.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
             this.but_con_ext_con_com.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_con_ext_con_com.Font = new System.Drawing.Font("Arial Unicode MS", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_ext_con_com.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.but_con_ext_con_com.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.but_con_ext_con_com.Location = new System.Drawing.Point(269, 36);
             this.but_con_ext_con_com.Name = "but_con_ext_con_com";
@@ -6779,10 +6779,10 @@ namespace opengl3
             // 
             // tabP_developer
             // 
-            this.tabP_developer.Location = new System.Drawing.Point(4, 27);
+            this.tabP_developer.Location = new System.Drawing.Point(4, 25);
             this.tabP_developer.Name = "tabP_developer";
             this.tabP_developer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_developer.Size = new System.Drawing.Size(1891, 998);
+            this.tabP_developer.Size = new System.Drawing.Size(1891, 1000);
             this.tabP_developer.TabIndex = 8;
             this.tabP_developer.Text = "Режим разработчика";
             this.tabP_developer.UseVisualStyleBackColor = true;
@@ -6794,10 +6794,10 @@ namespace opengl3
             this.tabPage_tube.Controls.Add(this.groupBox12);
             this.tabPage_tube.Controls.Add(this.groupBox10);
             this.tabPage_tube.Controls.Add(this.groupBox9);
-            this.tabPage_tube.Location = new System.Drawing.Point(4, 27);
+            this.tabPage_tube.Location = new System.Drawing.Point(4, 25);
             this.tabPage_tube.Name = "tabPage_tube";
             this.tabPage_tube.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_tube.Size = new System.Drawing.Size(1891, 998);
+            this.tabPage_tube.Size = new System.Drawing.Size(1891, 1000);
             this.tabPage_tube.TabIndex = 9;
             this.tabPage_tube.Text = "Трубочка";
             this.tabPage_tube.UseVisualStyleBackColor = true;
@@ -6842,7 +6842,7 @@ namespace opengl3
             this.comboBox_ard_tube.FormattingEnabled = true;
             this.comboBox_ard_tube.Location = new System.Drawing.Point(6, 69);
             this.comboBox_ard_tube.Name = "comboBox_ard_tube";
-            this.comboBox_ard_tube.Size = new System.Drawing.Size(143, 26);
+            this.comboBox_ard_tube.Size = new System.Drawing.Size(143, 24);
             this.comboBox_ard_tube.TabIndex = 10;
             this.comboBox_ard_tube.SelectedIndexChanged += new System.EventHandler(this.comboBox_ard_tube_SelectedIndexChanged);
             // 
@@ -6874,7 +6874,7 @@ namespace opengl3
             this.label79.AutoSize = true;
             this.label79.Location = new System.Drawing.Point(57, 93);
             this.label79.Name = "label79";
-            this.label79.Size = new System.Drawing.Size(64, 18);
+            this.label79.Size = new System.Drawing.Size(68, 16);
             this.label79.TabIndex = 3;
             this.label79.Text = "Скорость";
             // 
@@ -6882,7 +6882,7 @@ namespace opengl3
             // 
             this.textBox_pump2_vel.Location = new System.Drawing.Point(127, 90);
             this.textBox_pump2_vel.Name = "textBox_pump2_vel";
-            this.textBox_pump2_vel.Size = new System.Drawing.Size(100, 25);
+            this.textBox_pump2_vel.Size = new System.Drawing.Size(100, 22);
             this.textBox_pump2_vel.TabIndex = 2;
             this.textBox_pump2_vel.Text = "0";
             // 
@@ -6894,6 +6894,7 @@ namespace opengl3
             this.button_pump2_stop.TabIndex = 1;
             this.button_pump2_stop.Text = "Остановить";
             this.button_pump2_stop.UseVisualStyleBackColor = true;
+            this.button_pump2_stop.Click += new System.EventHandler(this.button_pump2_stop_Click);
             // 
             // button_pump2_start
             // 
@@ -6903,6 +6904,7 @@ namespace opengl3
             this.button_pump2_start.TabIndex = 0;
             this.button_pump2_start.Text = "Запустить";
             this.button_pump2_start.UseVisualStyleBackColor = true;
+            this.button_pump2_start.Click += new System.EventHandler(this.button_pump2_start_Click);
             // 
             // groupBox12
             // 
@@ -6931,7 +6933,7 @@ namespace opengl3
             this.label78.AutoSize = true;
             this.label78.Location = new System.Drawing.Point(57, 93);
             this.label78.Name = "label78";
-            this.label78.Size = new System.Drawing.Size(64, 18);
+            this.label78.Size = new System.Drawing.Size(68, 16);
             this.label78.TabIndex = 3;
             this.label78.Text = "Скорость";
             // 
@@ -6939,7 +6941,7 @@ namespace opengl3
             // 
             this.textBox_pump1_vel.Location = new System.Drawing.Point(127, 90);
             this.textBox_pump1_vel.Name = "textBox_pump1_vel";
-            this.textBox_pump1_vel.Size = new System.Drawing.Size(100, 25);
+            this.textBox_pump1_vel.Size = new System.Drawing.Size(100, 22);
             this.textBox_pump1_vel.TabIndex = 2;
             this.textBox_pump1_vel.Text = "0";
             this.textBox_pump1_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_pump1_vel_KeyDown);
@@ -6990,11 +6992,11 @@ namespace opengl3
             // label84
             // 
             this.label84.AutoSize = true;
-            this.label84.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label84.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label84.ForeColor = System.Drawing.SystemColors.WindowText;
             this.label84.Location = new System.Drawing.Point(292, 21);
             this.label84.Name = "label84";
-            this.label84.Size = new System.Drawing.Size(90, 21);
+            this.label84.Size = new System.Drawing.Size(92, 20);
             this.label84.TabIndex = 24;
             this.label84.Text = "Дистанция";
             // 
@@ -7002,10 +7004,10 @@ namespace opengl3
             // 
             this.rb_mm_acust_1mm.AccessibleName = "1";
             this.rb_mm_acust_1mm.AutoSize = true;
-            this.rb_mm_acust_1mm.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rb_mm_acust_1mm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rb_mm_acust_1mm.Location = new System.Drawing.Point(309, 79);
             this.rb_mm_acust_1mm.Name = "rb_mm_acust_1mm";
-            this.rb_mm_acust_1mm.Size = new System.Drawing.Size(79, 25);
+            this.rb_mm_acust_1mm.Size = new System.Drawing.Size(78, 24);
             this.rb_mm_acust_1mm.TabIndex = 23;
             this.rb_mm_acust_1mm.Text = "1     мм";
             this.rb_mm_acust_1mm.UseVisualStyleBackColor = true;
@@ -7016,10 +7018,10 @@ namespace opengl3
             this.rb_mm_acust_10mm.AccessibleName = "10";
             this.rb_mm_acust_10mm.AutoSize = true;
             this.rb_mm_acust_10mm.Checked = true;
-            this.rb_mm_acust_10mm.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rb_mm_acust_10mm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rb_mm_acust_10mm.Location = new System.Drawing.Point(309, 110);
             this.rb_mm_acust_10mm.Name = "rb_mm_acust_10mm";
-            this.rb_mm_acust_10mm.Size = new System.Drawing.Size(80, 25);
+            this.rb_mm_acust_10mm.Size = new System.Drawing.Size(79, 24);
             this.rb_mm_acust_10mm.TabIndex = 22;
             this.rb_mm_acust_10mm.TabStop = true;
             this.rb_mm_acust_10mm.Text = "10   мм";
@@ -7030,11 +7032,11 @@ namespace opengl3
             // 
             this.rb_mm_acust_01mm.AccessibleName = "0.1";
             this.rb_mm_acust_01mm.AutoSize = true;
-            this.rb_mm_acust_01mm.Font = new System.Drawing.Font("Arial Unicode MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rb_mm_acust_01mm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rb_mm_acust_01mm.Location = new System.Drawing.Point(309, 48);
             this.rb_mm_acust_01mm.Name = "rb_mm_acust_01mm";
             this.rb_mm_acust_01mm.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.rb_mm_acust_01mm.Size = new System.Drawing.Size(80, 25);
+            this.rb_mm_acust_01mm.Size = new System.Drawing.Size(79, 24);
             this.rb_mm_acust_01mm.TabIndex = 21;
             this.rb_mm_acust_01mm.Text = "0.1  мм";
             this.rb_mm_acust_01mm.UseVisualStyleBackColor = true;
@@ -7045,7 +7047,7 @@ namespace opengl3
             this.label83.AutoSize = true;
             this.label83.Location = new System.Drawing.Point(3, 94);
             this.label83.Name = "label83";
-            this.label83.Size = new System.Drawing.Size(19, 18);
+            this.label83.Size = new System.Drawing.Size(17, 16);
             this.label83.TabIndex = 12;
             this.label83.Text = "2:";
             // 
@@ -7054,7 +7056,7 @@ namespace opengl3
             this.label82.AutoSize = true;
             this.label82.Location = new System.Drawing.Point(3, 35);
             this.label82.Name = "label82";
-            this.label82.Size = new System.Drawing.Size(19, 18);
+            this.label82.Size = new System.Drawing.Size(17, 16);
             this.label82.TabIndex = 11;
             this.label82.Text = "1:";
             // 
@@ -7083,7 +7085,7 @@ namespace opengl3
             this.label81.AutoSize = true;
             this.label81.Location = new System.Drawing.Point(15, 112);
             this.label81.Name = "label81";
-            this.label81.Size = new System.Drawing.Size(64, 18);
+            this.label81.Size = new System.Drawing.Size(68, 16);
             this.label81.TabIndex = 9;
             this.label81.Text = "Скорость";
             // 
@@ -7091,7 +7093,7 @@ namespace opengl3
             // 
             this.textBox_z2_vel.Location = new System.Drawing.Point(85, 109);
             this.textBox_z2_vel.Name = "textBox_z2_vel";
-            this.textBox_z2_vel.Size = new System.Drawing.Size(100, 25);
+            this.textBox_z2_vel.Size = new System.Drawing.Size(100, 22);
             this.textBox_z2_vel.TabIndex = 8;
             this.textBox_z2_vel.Text = "0";
             this.textBox_z2_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_z2_vel_KeyDown);
@@ -7121,7 +7123,7 @@ namespace opengl3
             this.label80.AutoSize = true;
             this.label80.Location = new System.Drawing.Point(15, 53);
             this.label80.Name = "label80";
-            this.label80.Size = new System.Drawing.Size(64, 18);
+            this.label80.Size = new System.Drawing.Size(68, 16);
             this.label80.TabIndex = 5;
             this.label80.Text = "Скорость";
             // 
@@ -7129,7 +7131,7 @@ namespace opengl3
             // 
             this.textBox_z1_vel.Location = new System.Drawing.Point(85, 50);
             this.textBox_z1_vel.Name = "textBox_z1_vel";
-            this.textBox_z1_vel.Size = new System.Drawing.Size(100, 25);
+            this.textBox_z1_vel.Size = new System.Drawing.Size(100, 22);
             this.textBox_z1_vel.TabIndex = 4;
             this.textBox_z1_vel.Text = "0";
             this.textBox_z1_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_z1_vel_KeyDown);

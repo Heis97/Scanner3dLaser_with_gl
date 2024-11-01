@@ -913,8 +913,8 @@ namespace opengl3
             prop_gr_scan.SelectedObject = scanner_config;
             propGrid_pattern.SelectedObject = patt_config;
             propGrid_traj.SelectedObject = traj_config;
-
-            textBox_compens_las_pos.Text = scanner_config.pos_laser_compens.ToString();
+           // if(scanner_config.pos_laser_compens == null)
+           // textBox_compens_las_pos.Text = scanner_config.pos_laser_compens.ToString();
 
             prop_gr_light.SelectedObject = GL1.lightSources_obj;
             debugBox.Text = "0.3 0.3 1";
@@ -4172,6 +4172,7 @@ namespace opengl3
 
             im = (Mat)imageBox1.Image;
             im.Save("im2.png");
+            //здесь будет отправка im1.png на сервер
         }
 
         private void but_hydro_model_grav_Click(object sender, EventArgs e)//modelir_hydro!!!!!
@@ -7045,9 +7046,9 @@ namespace opengl3
             windowsTabs.Controls.Remove(tabCalibMonit);
             windowsTabs.Controls.Remove(tabDebug);
             windowsTabs.Controls.Remove(tabP_developer);
-            //windowsTabs.Controls.Remove(tabP_scanning_printing);
-            //windowsTabs.Controls.Remove(tabP_connect);
-            windowsTabs.Controls.Remove(tabPage_tube);
+            windowsTabs.Controls.Remove(tabP_scanning_printing);
+            windowsTabs.Controls.Remove(tabP_connect);
+            // windowsTabs.Controls.Remove(tabPage_tube);
 
 
             this.tabP_connect.Controls.Add(this.imageBox1);
@@ -7881,7 +7882,8 @@ namespace opengl3
             laserLine?.set_adr(0);
             laserLine?.set_rel_pos_z(-Convert.ToInt32(dist_contr_rob));
         }
-
+        int i2c_adr_nasos1 = 50;
+        int i2c_adr_nasos2 = 51;
         private void button_pump1_start_Click(object sender, EventArgs e)
         {
             laserLine?.set_adr(50);
@@ -8434,6 +8436,18 @@ namespace opengl3
         private void but_compens_stop_Click(object sender, EventArgs e)
         {
             compensation = false;
+        }
+
+        private void button_pump2_stop_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(50);
+            laserLine?.set_dir_disp(0);
+        }
+
+        private void button_pump2_start_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(50);
+            laserLine?.set_dir_disp(1);
         }
     }
 }
