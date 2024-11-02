@@ -614,6 +614,8 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.textBox_valve_val = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -6789,6 +6791,8 @@ namespace opengl3
             // 
             // tabPage_tube
             // 
+            this.tabPage_tube.Controls.Add(this.label18);
+            this.tabPage_tube.Controls.Add(this.textBox_valve_val);
             this.tabPage_tube.Controls.Add(this.groupBox13);
             this.tabPage_tube.Controls.Add(this.groupBox11);
             this.tabPage_tube.Controls.Add(this.groupBox12);
@@ -6908,9 +6912,9 @@ namespace opengl3
             // 
             // groupBox12
             // 
-            this.groupBox12.Location = new System.Drawing.Point(12, 176);
+            this.groupBox12.Location = new System.Drawing.Point(6, 176);
             this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(401, 164);
+            this.groupBox12.Size = new System.Drawing.Size(407, 164);
             this.groupBox12.TabIndex = 2;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Циклич нагрузка";
@@ -7146,6 +7150,24 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
+            // textBox_valve_val
+            // 
+            this.textBox_valve_val.Location = new System.Drawing.Point(192, 356);
+            this.textBox_valve_val.Name = "textBox_valve_val";
+            this.textBox_valve_val.Size = new System.Drawing.Size(100, 22);
+            this.textBox_valve_val.TabIndex = 13;
+            this.textBox_valve_val.Text = "0";
+            this.textBox_valve_val.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_valve_val_KeyDown);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(48, 359);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(140, 16);
+            this.label18.TabIndex = 25;
+            this.label18.Text = "Положение клапана";
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -7281,6 +7303,7 @@ namespace opengl3
             this.groupBox_disp_contr_ext.PerformLayout();
             this.groupBox_con_ard_ext.ResumeLayout(false);
             this.tabPage_tube.ResumeLayout(false);
+            this.tabPage_tube.PerformLayout();
             this.groupBox13.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
             this.groupBox11.PerformLayout();
@@ -7878,6 +7901,8 @@ namespace opengl3
         private System.Windows.Forms.Label label_comp_period;
         private System.Windows.Forms.CheckBox checkBox_comp_las_compens;
         private Emgu.CV.UI.ImageBox imageBox_laser_compens;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TextBox textBox_valve_val;
     }
 }
 

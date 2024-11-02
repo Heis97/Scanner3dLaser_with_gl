@@ -56,7 +56,9 @@ namespace opengl3
              cool_pwm = 36,
              heat_pwm = 37,
 
-            send_poses = 38
+            send_poses = 38,
+
+             valve_val = 39
             ;
 
         int on = 1, off = 2;
@@ -214,6 +216,12 @@ namespace opengl3
             //int val = (int)(_pos * 10);
             send((int)_pos+5000, pos_disp);
         }
+
+        public void set_valve_pos(int _val)
+        {
+            send(_val, valve_val);
+        }
+
         public void setLaserDest(int _pos)
         {
             send(_pos, laser_dest);

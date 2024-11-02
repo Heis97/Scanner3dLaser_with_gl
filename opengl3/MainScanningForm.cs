@@ -8449,6 +8449,16 @@ namespace opengl3
             laserLine?.set_adr(50);
             laserLine?.set_dir_disp(1);
         }
+
+        private void textBox_valve_val_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                var pos = Convert.ToInt32(textBox_valve_val.Text);
+                laserLine.set_valve_pos(pos);
+            }
+                
+        }
     }
 }
 
