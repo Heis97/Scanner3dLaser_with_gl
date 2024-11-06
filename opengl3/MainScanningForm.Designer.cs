@@ -580,6 +580,9 @@ namespace opengl3
             this.but_con_ext_con_com = new System.Windows.Forms.Button();
             this.tabP_developer = new System.Windows.Forms.TabPage();
             this.tabPage_tube = new System.Windows.Forms.TabPage();
+            this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.textBox_valve_val = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.but_find_ard_tube = new System.Windows.Forms.Button();
             this.but_con_ard_tube = new System.Windows.Forms.Button();
@@ -614,8 +617,13 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.textBox_valve_val = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
+            this.label94 = new System.Windows.Forms.Label();
+            this.textBox_cycle_speed = new System.Windows.Forms.TextBox();
+            this.label97 = new System.Windows.Forms.Label();
+            this.textBox_cycle_amplitud = new System.Windows.Forms.TextBox();
+            this.but_cycle_stop = new System.Windows.Forms.Button();
+            this.but_cycle_start = new System.Windows.Forms.Button();
+            this.label101 = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -718,8 +726,10 @@ namespace opengl3
             this.groupBox_disp_contr_ext.SuspendLayout();
             this.groupBox_con_ard_ext.SuspendLayout();
             this.tabPage_tube.SuspendLayout();
+            this.groupBox14.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox11.SuspendLayout();
+            this.groupBox12.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
@@ -6791,8 +6801,7 @@ namespace opengl3
             // 
             // tabPage_tube
             // 
-            this.tabPage_tube.Controls.Add(this.label18);
-            this.tabPage_tube.Controls.Add(this.textBox_valve_val);
+            this.tabPage_tube.Controls.Add(this.groupBox14);
             this.tabPage_tube.Controls.Add(this.groupBox13);
             this.tabPage_tube.Controls.Add(this.groupBox11);
             this.tabPage_tube.Controls.Add(this.groupBox12);
@@ -6805,6 +6814,35 @@ namespace opengl3
             this.tabPage_tube.TabIndex = 9;
             this.tabPage_tube.Text = "Трубочка";
             this.tabPage_tube.UseVisualStyleBackColor = true;
+            // 
+            // groupBox14
+            // 
+            this.groupBox14.Controls.Add(this.label18);
+            this.groupBox14.Controls.Add(this.textBox_valve_val);
+            this.groupBox14.Location = new System.Drawing.Point(6, 346);
+            this.groupBox14.Name = "groupBox14";
+            this.groupBox14.Size = new System.Drawing.Size(407, 164);
+            this.groupBox14.TabIndex = 3;
+            this.groupBox14.TabStop = false;
+            this.groupBox14.Text = "Клапан";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(15, 57);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(140, 16);
+            this.label18.TabIndex = 25;
+            this.label18.Text = "Положение клапана";
+            // 
+            // textBox_valve_val
+            // 
+            this.textBox_valve_val.Location = new System.Drawing.Point(172, 54);
+            this.textBox_valve_val.Name = "textBox_valve_val";
+            this.textBox_valve_val.Size = new System.Drawing.Size(100, 22);
+            this.textBox_valve_val.TabIndex = 13;
+            this.textBox_valve_val.Text = "0";
+            this.textBox_valve_val.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_valve_val_KeyDown);
             // 
             // groupBox13
             // 
@@ -6912,6 +6950,13 @@ namespace opengl3
             // 
             // groupBox12
             // 
+            this.groupBox12.Controls.Add(this.label101);
+            this.groupBox12.Controls.Add(this.but_cycle_stop);
+            this.groupBox12.Controls.Add(this.but_cycle_start);
+            this.groupBox12.Controls.Add(this.label97);
+            this.groupBox12.Controls.Add(this.textBox_cycle_amplitud);
+            this.groupBox12.Controls.Add(this.label94);
+            this.groupBox12.Controls.Add(this.textBox_cycle_speed);
             this.groupBox12.Location = new System.Drawing.Point(6, 176);
             this.groupBox12.Name = "groupBox12";
             this.groupBox12.Size = new System.Drawing.Size(407, 164);
@@ -7150,23 +7195,70 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // textBox_valve_val
+            // label94
             // 
-            this.textBox_valve_val.Location = new System.Drawing.Point(192, 356);
-            this.textBox_valve_val.Name = "textBox_valve_val";
-            this.textBox_valve_val.Size = new System.Drawing.Size(100, 22);
-            this.textBox_valve_val.TabIndex = 13;
-            this.textBox_valve_val.Text = "0";
-            this.textBox_valve_val.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_valve_val_KeyDown);
+            this.label94.AutoSize = true;
+            this.label94.Location = new System.Drawing.Point(15, 34);
+            this.label94.Name = "label94";
+            this.label94.Size = new System.Drawing.Size(68, 16);
+            this.label94.TabIndex = 26;
+            this.label94.Text = "Скорость";
             // 
-            // label18
+            // textBox_cycle_speed
             // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(48, 359);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(140, 16);
-            this.label18.TabIndex = 25;
-            this.label18.Text = "Положение клапана";
+            this.textBox_cycle_speed.Location = new System.Drawing.Point(85, 31);
+            this.textBox_cycle_speed.Name = "textBox_cycle_speed";
+            this.textBox_cycle_speed.Size = new System.Drawing.Size(100, 22);
+            this.textBox_cycle_speed.TabIndex = 25;
+            this.textBox_cycle_speed.Text = "0";
+            this.textBox_cycle_speed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_cycle_speed_KeyDown);
+            // 
+            // label97
+            // 
+            this.label97.AutoSize = true;
+            this.label97.Location = new System.Drawing.Point(6, 73);
+            this.label97.Name = "label97";
+            this.label97.Size = new System.Drawing.Size(80, 16);
+            this.label97.TabIndex = 28;
+            this.label97.Text = "Амплитуда";
+            // 
+            // textBox_cycle_amplitud
+            // 
+            this.textBox_cycle_amplitud.Location = new System.Drawing.Point(85, 70);
+            this.textBox_cycle_amplitud.Name = "textBox_cycle_amplitud";
+            this.textBox_cycle_amplitud.Size = new System.Drawing.Size(100, 22);
+            this.textBox_cycle_amplitud.TabIndex = 27;
+            this.textBox_cycle_amplitud.Text = "0";
+            this.textBox_cycle_amplitud.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_cycle_amplitud_KeyDown);
+            // 
+            // but_cycle_stop
+            // 
+            this.but_cycle_stop.Location = new System.Drawing.Point(188, 107);
+            this.but_cycle_stop.Name = "but_cycle_stop";
+            this.but_cycle_stop.Size = new System.Drawing.Size(115, 39);
+            this.but_cycle_stop.TabIndex = 5;
+            this.but_cycle_stop.Text = "Остановить";
+            this.but_cycle_stop.UseVisualStyleBackColor = true;
+            this.but_cycle_stop.Click += new System.EventHandler(this.but_cycle_stop_Click);
+            // 
+            // but_cycle_start
+            // 
+            this.but_cycle_start.Location = new System.Drawing.Point(67, 107);
+            this.but_cycle_start.Name = "but_cycle_start";
+            this.but_cycle_start.Size = new System.Drawing.Size(115, 39);
+            this.but_cycle_start.TabIndex = 4;
+            this.but_cycle_start.Text = "Запустить";
+            this.but_cycle_start.UseVisualStyleBackColor = true;
+            this.but_cycle_start.Click += new System.EventHandler(this.but_cycle_start_Click);
+            // 
+            // label101
+            // 
+            this.label101.AutoSize = true;
+            this.label101.Location = new System.Drawing.Point(185, 73);
+            this.label101.Name = "label101";
+            this.label101.Size = new System.Drawing.Size(61, 16);
+            this.label101.TabIndex = 29;
+            this.label101.Text = "градусы";
             // 
             // MainScanningForm
             // 
@@ -7303,10 +7395,13 @@ namespace opengl3
             this.groupBox_disp_contr_ext.PerformLayout();
             this.groupBox_con_ard_ext.ResumeLayout(false);
             this.tabPage_tube.ResumeLayout(false);
-            this.tabPage_tube.PerformLayout();
+            this.groupBox14.ResumeLayout(false);
+            this.groupBox14.PerformLayout();
             this.groupBox13.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
             this.groupBox11.PerformLayout();
+            this.groupBox12.ResumeLayout(false);
+            this.groupBox12.PerformLayout();
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
             this.groupBox9.ResumeLayout(false);
@@ -7903,6 +7998,14 @@ namespace opengl3
         private Emgu.CV.UI.ImageBox imageBox_laser_compens;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox textBox_valve_val;
+        private System.Windows.Forms.GroupBox groupBox14;
+        private System.Windows.Forms.Button but_cycle_stop;
+        private System.Windows.Forms.Button but_cycle_start;
+        private System.Windows.Forms.Label label97;
+        private System.Windows.Forms.TextBox textBox_cycle_amplitud;
+        private System.Windows.Forms.Label label94;
+        private System.Windows.Forms.TextBox textBox_cycle_speed;
+        private System.Windows.Forms.Label label101;
     }
 }
 

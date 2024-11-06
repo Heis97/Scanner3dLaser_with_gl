@@ -7838,10 +7838,15 @@ namespace opengl3
         }
 
         #region tube
+        int i2c_adr_main = 0;
+        int i2c_adr_nasos1 = 50;
+        int i2c_adr_nasos2 = 51;
+
         private void textBox_z1_vel_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
+                laserLine?.set_adr(i2c_adr_main);
                 laserLine?.set_div_disp(Convert.ToInt32(textBox_z1_vel.Text));
             }
         }
@@ -7850,6 +7855,7 @@ namespace opengl3
         {
             if (e.KeyCode == Keys.Enter)
             {
+                laserLine?.set_adr(i2c_adr_main);
                 laserLine?.set_z_div(Convert.ToInt32(textBox_z2_vel.Text));
             }
         }
@@ -7861,38 +7867,37 @@ namespace opengl3
 
         private void but_z1_pl_Click(object sender, EventArgs e)
         {
-            laserLine?.set_adr(0);
+            laserLine?.set_adr(i2c_adr_main);
             laserLine?.set_rel_pos_disp(Convert.ToInt32(dist_contr_rob));
         }
 
         private void but_z1_min_Click(object sender, EventArgs e)
         {
-            laserLine.set_adr(0);
+            laserLine?.set_adr(i2c_adr_main);
             laserLine?.set_rel_pos_disp(-Convert.ToInt32(dist_contr_rob));
         }
 
         private void but_z2_pl_Click(object sender, EventArgs e)
         {
-            laserLine?.set_adr(0);
+            laserLine?.set_adr(i2c_adr_main);
             laserLine?.set_rel_pos_z(Convert.ToInt32(dist_contr_rob));
         }
 
         private void but_z2_min_Click(object sender, EventArgs e)
         {
-            laserLine?.set_adr(0);
+            laserLine?.set_adr(i2c_adr_main);
             laserLine?.set_rel_pos_z(-Convert.ToInt32(dist_contr_rob));
         }
-        int i2c_adr_nasos1 = 50;
-        int i2c_adr_nasos2 = 51;
+        
         private void button_pump1_start_Click(object sender, EventArgs e)
         {
-            laserLine?.set_adr(50);
+            laserLine?.set_adr(i2c_adr_nasos1);
             laserLine?.set_dir_disp(1);
         }
 
         private void button_pump1_stop_Click(object sender, EventArgs e)
         {
-            laserLine?.set_adr(50);
+            laserLine?.set_adr(i2c_adr_nasos1);
             laserLine?.set_dir_disp(0);
         }
 
@@ -7901,7 +7906,7 @@ namespace opengl3
             RadioButton checkBox = (RadioButton)sender;
             if (checkBox.Checked == true)
             {
-                laserLine?.set_adr(0);
+                //laserLine?.set_adr(0);
                 dist_contr_rob = 100* Convert.ToDouble(checkBox.AccessibleName);
             }
         }
@@ -7910,9 +7915,63 @@ namespace opengl3
         {
             if (e.KeyCode == Keys.Enter)
             {
-                laserLine?.set_adr(50);
+                laserLine?.set_adr(i2c_adr_nasos1);
                 laserLine?.set_div_disp(Convert.ToInt32(textBox_pump1_vel.Text));
             }
+        }
+
+
+        private void but_cycle_start_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_comp_cycle_type(1);
+        }
+
+        private void but_cycle_stop_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_comp_cycle_type(0);
+        }
+
+        private void textBox_cycle_speed_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                laserLine?.set_adr(i2c_adr_main);
+                laserLine?.setShvpVel(Convert.ToInt32(textBox_cycle_speed.Text));
+            }
+        }
+
+        private void textBox_cycle_amplitud_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                laserLine?.set_adr(i2c_adr_main);
+                laserLine?.set_comp_cycle_ampl(Convert.ToInt32(textBox_cycle_amplitud.Text));
+            }
+        }
+
+
+        private void button_pump2_stop_Click(object sender, EventArgs e)
+        {
+
+            laserLine?.set_adr(i2c_adr_nasos2);
+            laserLine?.set_dir_disp(0);
+        }
+
+        private void button_pump2_start_Click(object sender, EventArgs e)
+        {
+
+            laserLine?.set_adr(i2c_adr_nasos2);
+            laserLine?.set_dir_disp(1);
+        }
+
+        private void textBox_valve_val_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                var pos = Convert.ToInt32(textBox_valve_val.Text);
+                laserLine.set_valve_pos(pos);
+            }
+
         }
 
         private void but_find_ard_tube_Click(object sender, EventArgs e)
@@ -8171,6 +8230,7 @@ namespace opengl3
             laserLine?.set_heat_pwm(Convert.ToInt32(textBox_sup_heat_pwm.Text));
         }
 
+        //---------------------------------------------------------------------
         private void windowsTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -8304,7 +8364,10 @@ namespace opengl3
 
             imageBox_laser_compens.Visible = visualise_compens;
         }
-
+        private void but_compens_stop_Click(object sender, EventArgs e)
+        {
+            compensation = false;
+        }
         private void checkBox_comp_las_compens_CheckedChanged(object sender, EventArgs e)
         {
             comp_current_compens = ((CheckBox)sender).Checked;
@@ -8433,32 +8496,6 @@ namespace opengl3
             }
         }
 
-        private void but_compens_stop_Click(object sender, EventArgs e)
-        {
-            compensation = false;
-        }
-
-        private void button_pump2_stop_Click(object sender, EventArgs e)
-        {
-            laserLine?.set_adr(50);
-            laserLine?.set_dir_disp(0);
-        }
-
-        private void button_pump2_start_Click(object sender, EventArgs e)
-        {
-            laserLine?.set_adr(50);
-            laserLine?.set_dir_disp(1);
-        }
-
-        private void textBox_valve_val_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                var pos = Convert.ToInt32(textBox_valve_val.Text);
-                laserLine.set_valve_pos(pos);
-            }
-                
-        }
     }
 }
 
