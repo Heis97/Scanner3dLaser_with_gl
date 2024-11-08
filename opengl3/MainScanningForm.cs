@@ -4840,7 +4840,7 @@ namespace opengl3
             text = text.Replace(',', '.');
             var pos_z_mm = Convert.ToDouble(text);
             var pos_z_steps = (int)(pos_z_mm / 10 * laserLine.steps_per_unit_z);
-            //Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
+            Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
             laserLine?.set_z_pos(pos_z_steps);
         }
 
@@ -7039,7 +7039,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
 
-            windowsTabs.Controls.Remove(tabMain);
+           /* windowsTabs.Controls.Remove(tabMain);
             windowsTabs.Controls.Remove(tabOpenGl);
             windowsTabs.Controls.Remove(tabDistort);
             windowsTabs.Controls.Remove(tabP_developer);
@@ -7047,7 +7047,7 @@ namespace opengl3
             windowsTabs.Controls.Remove(tabDebug);
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);
+            windowsTabs.Controls.Remove(tabP_connect);*/
             // windowsTabs.Controls.Remove(tabPage_tube);
 
 
@@ -8586,6 +8586,60 @@ namespace opengl3
         {
 
         }
+
+        private void tabPage_drill_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        #region drill
+
+        private void but_dr_set_z_pos_Click(object sender, EventArgs e)
+        {
+            var text = textBox_dr_set_z_pos.Text;
+            text = text.Replace(',', '.');
+            var pos_z_mm = Convert.ToDouble(text);
+            var pos_z_steps = (int)((pos_z_mm * laserLine.steps_per_unit_z + 5000) / 10  );
+            Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
+            laserLine?.set_z_pos(pos_z_steps);
+        }
+
+        private void but_dr_set_z_div_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void but_dr_set_z_home_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void but_dr_set_z_stop_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void but_dr_set_drill_pos_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void but_dr_set_drill_div_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void but_dr_set_drill_home_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void but_dr_set_drill_stop_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        #endregion
     }
 }
 

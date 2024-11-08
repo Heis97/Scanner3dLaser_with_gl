@@ -207,17 +207,32 @@ namespace opengl3
             this.but_cycle_time = new System.Windows.Forms.Button();
             this.but_cycle_ampl = new System.Windows.Forms.Button();
             this.but_cycle_type = new System.Windows.Forms.Button();
+            this.tabPage_drill = new System.Windows.Forms.TabPage();
+            this.but_dr_set_drill_stop = new System.Windows.Forms.Button();
+            this.but_dr_set_z_stop = new System.Windows.Forms.Button();
+            this.but_dr_set_drill_div = new System.Windows.Forms.Button();
+            this.textBox_dr_set_drill_div = new System.Windows.Forms.TextBox();
+            this.but_dr_set_drill_pos = new System.Windows.Forms.Button();
+            this.textBox_dr_set_drill_pos = new System.Windows.Forms.TextBox();
+            this.label112 = new System.Windows.Forms.Label();
+            this.but_dr_set_drill_home = new System.Windows.Forms.Button();
+            this.but_dr_set_z_div = new System.Windows.Forms.Button();
+            this.textBox_dr_set_z_div = new System.Windows.Forms.TextBox();
+            this.but_dr_set_z_pos = new System.Windows.Forms.Button();
+            this.textBox_dr_set_z_pos = new System.Windows.Forms.TextBox();
+            this.label111 = new System.Windows.Forms.Label();
+            this.but_dr_set_z_home = new System.Windows.Forms.Button();
+            this.but_water_vel = new System.Windows.Forms.Button();
+            this.but_drill_ch_dir = new System.Windows.Forms.Button();
+            this.textBox_water_vel = new System.Windows.Forms.TextBox();
+            this.textBox_drill_vel = new System.Windows.Forms.TextBox();
+            this.label85 = new System.Windows.Forms.Label();
+            this.but_drill_vel = new System.Windows.Forms.Button();
+            this.but_drill_dir_2 = new System.Windows.Forms.Button();
+            this.label63 = new System.Windows.Forms.Label();
             this.lab_fps_cam1 = new System.Windows.Forms.Label();
             this.but_load_scan = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.but_water_vel = new System.Windows.Forms.Button();
-            this.textBox_water_vel = new System.Windows.Forms.TextBox();
-            this.label85 = new System.Windows.Forms.Label();
-            this.but_drill_dir_2 = new System.Windows.Forms.Button();
-            this.label63 = new System.Windows.Forms.Label();
-            this.but_drill_vel = new System.Windows.Forms.Button();
-            this.but_drill_ch_dir = new System.Windows.Forms.Button();
-            this.textBox_drill_vel = new System.Windows.Forms.TextBox();
             this.but_setShvpVel = new System.Windows.Forms.Button();
             this.but_home_las = new System.Windows.Forms.Button();
             this.textBox_shvpVel = new System.Windows.Forms.TextBox();
@@ -663,6 +678,7 @@ namespace opengl3
             this.tabPage12.SuspendLayout();
             this.tabPage13.SuspendLayout();
             this.tabPage14.SuspendLayout();
+            this.tabPage_drill.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
@@ -1332,6 +1348,7 @@ namespace opengl3
             this.tabControl1.Controls.Add(this.tabPage12);
             this.tabControl1.Controls.Add(this.tabPage13);
             this.tabControl1.Controls.Add(this.tabPage14);
+            this.tabControl1.Controls.Add(this.tabPage_drill);
             this.tabControl1.Location = new System.Drawing.Point(1304, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -2650,6 +2667,245 @@ namespace opengl3
             this.but_cycle_type.UseVisualStyleBackColor = true;
             this.but_cycle_type.Click += new System.EventHandler(this.but_cycle_type_Click);
             // 
+            // tabPage_drill
+            // 
+            this.tabPage_drill.Controls.Add(this.but_dr_set_drill_stop);
+            this.tabPage_drill.Controls.Add(this.but_dr_set_z_stop);
+            this.tabPage_drill.Controls.Add(this.but_dr_set_drill_div);
+            this.tabPage_drill.Controls.Add(this.textBox_dr_set_drill_div);
+            this.tabPage_drill.Controls.Add(this.but_dr_set_drill_pos);
+            this.tabPage_drill.Controls.Add(this.textBox_dr_set_drill_pos);
+            this.tabPage_drill.Controls.Add(this.label112);
+            this.tabPage_drill.Controls.Add(this.but_dr_set_drill_home);
+            this.tabPage_drill.Controls.Add(this.but_dr_set_z_div);
+            this.tabPage_drill.Controls.Add(this.textBox_dr_set_z_div);
+            this.tabPage_drill.Controls.Add(this.but_dr_set_z_pos);
+            this.tabPage_drill.Controls.Add(this.textBox_dr_set_z_pos);
+            this.tabPage_drill.Controls.Add(this.label111);
+            this.tabPage_drill.Controls.Add(this.but_dr_set_z_home);
+            this.tabPage_drill.Controls.Add(this.but_water_vel);
+            this.tabPage_drill.Controls.Add(this.but_drill_ch_dir);
+            this.tabPage_drill.Controls.Add(this.textBox_water_vel);
+            this.tabPage_drill.Controls.Add(this.textBox_drill_vel);
+            this.tabPage_drill.Controls.Add(this.label85);
+            this.tabPage_drill.Controls.Add(this.but_drill_vel);
+            this.tabPage_drill.Controls.Add(this.but_drill_dir_2);
+            this.tabPage_drill.Controls.Add(this.label63);
+            this.tabPage_drill.Location = new System.Drawing.Point(4, 29);
+            this.tabPage_drill.Name = "tabPage_drill";
+            this.tabPage_drill.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_drill.Size = new System.Drawing.Size(576, 366);
+            this.tabPage_drill.TabIndex = 5;
+            this.tabPage_drill.Text = "Сверление";
+            this.tabPage_drill.UseVisualStyleBackColor = true;
+            this.tabPage_drill.Click += new System.EventHandler(this.tabPage_drill_Click);
+            // 
+            // but_dr_set_drill_stop
+            // 
+            this.but_dr_set_drill_stop.Location = new System.Drawing.Point(461, 329);
+            this.but_dr_set_drill_stop.Name = "but_dr_set_drill_stop";
+            this.but_dr_set_drill_stop.Size = new System.Drawing.Size(109, 36);
+            this.but_dr_set_drill_stop.TabIndex = 170;
+            this.but_dr_set_drill_stop.Text = "Стоп";
+            this.but_dr_set_drill_stop.UseVisualStyleBackColor = true;
+            this.but_dr_set_drill_stop.Click += new System.EventHandler(this.but_dr_set_drill_stop_Click);
+            // 
+            // but_dr_set_z_stop
+            // 
+            this.but_dr_set_z_stop.Location = new System.Drawing.Point(461, 152);
+            this.but_dr_set_z_stop.Name = "but_dr_set_z_stop";
+            this.but_dr_set_z_stop.Size = new System.Drawing.Size(109, 36);
+            this.but_dr_set_z_stop.TabIndex = 169;
+            this.but_dr_set_z_stop.Text = "Стоп";
+            this.but_dr_set_z_stop.UseVisualStyleBackColor = true;
+            this.but_dr_set_z_stop.Click += new System.EventHandler(this.but_dr_set_z_stop_Click);
+            // 
+            // but_dr_set_drill_div
+            // 
+            this.but_dr_set_drill_div.Location = new System.Drawing.Point(308, 272);
+            this.but_dr_set_drill_div.Name = "but_dr_set_drill_div";
+            this.but_dr_set_drill_div.Size = new System.Drawing.Size(148, 51);
+            this.but_dr_set_drill_div.TabIndex = 168;
+            this.but_dr_set_drill_div.Text = "Установить скорость";
+            this.but_dr_set_drill_div.UseVisualStyleBackColor = true;
+            this.but_dr_set_drill_div.Click += new System.EventHandler(this.but_dr_set_drill_div_Click);
+            // 
+            // textBox_dr_set_drill_div
+            // 
+            this.textBox_dr_set_drill_div.Location = new System.Drawing.Point(462, 284);
+            this.textBox_dr_set_drill_div.Name = "textBox_dr_set_drill_div";
+            this.textBox_dr_set_drill_div.Size = new System.Drawing.Size(110, 26);
+            this.textBox_dr_set_drill_div.TabIndex = 167;
+            this.textBox_dr_set_drill_div.Text = "0";
+            // 
+            // but_dr_set_drill_pos
+            // 
+            this.but_dr_set_drill_pos.Location = new System.Drawing.Point(308, 217);
+            this.but_dr_set_drill_pos.Name = "but_dr_set_drill_pos";
+            this.but_dr_set_drill_pos.Size = new System.Drawing.Size(148, 51);
+            this.but_dr_set_drill_pos.TabIndex = 164;
+            this.but_dr_set_drill_pos.Text = "Установить положение, мм";
+            this.but_dr_set_drill_pos.UseVisualStyleBackColor = true;
+            this.but_dr_set_drill_pos.Click += new System.EventHandler(this.but_dr_set_drill_pos_Click);
+            // 
+            // textBox_dr_set_drill_pos
+            // 
+            this.textBox_dr_set_drill_pos.Location = new System.Drawing.Point(462, 229);
+            this.textBox_dr_set_drill_pos.Name = "textBox_dr_set_drill_pos";
+            this.textBox_dr_set_drill_pos.Size = new System.Drawing.Size(110, 26);
+            this.textBox_dr_set_drill_pos.TabIndex = 163;
+            this.textBox_dr_set_drill_pos.Text = "0";
+            // 
+            // label112
+            // 
+            this.label112.AutoSize = true;
+            this.label112.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label112.Location = new System.Drawing.Point(304, 188);
+            this.label112.Name = "label112";
+            this.label112.Size = new System.Drawing.Size(123, 20);
+            this.label112.TabIndex = 166;
+            this.label112.Text = "Ось сверления";
+            // 
+            // but_dr_set_drill_home
+            // 
+            this.but_dr_set_drill_home.Location = new System.Drawing.Point(308, 329);
+            this.but_dr_set_drill_home.Name = "but_dr_set_drill_home";
+            this.but_dr_set_drill_home.Size = new System.Drawing.Size(148, 36);
+            this.but_dr_set_drill_home.TabIndex = 165;
+            this.but_dr_set_drill_home.Text = "Ноль";
+            this.but_dr_set_drill_home.UseVisualStyleBackColor = true;
+            this.but_dr_set_drill_home.Click += new System.EventHandler(this.but_dr_set_drill_home_Click);
+            // 
+            // but_dr_set_z_div
+            // 
+            this.but_dr_set_z_div.Location = new System.Drawing.Point(308, 92);
+            this.but_dr_set_z_div.Name = "but_dr_set_z_div";
+            this.but_dr_set_z_div.Size = new System.Drawing.Size(148, 51);
+            this.but_dr_set_z_div.TabIndex = 162;
+            this.but_dr_set_z_div.Text = "Установить скорость";
+            this.but_dr_set_z_div.UseVisualStyleBackColor = true;
+            this.but_dr_set_z_div.Click += new System.EventHandler(this.but_dr_set_z_div_Click);
+            // 
+            // textBox_dr_set_z_div
+            // 
+            this.textBox_dr_set_z_div.Location = new System.Drawing.Point(462, 104);
+            this.textBox_dr_set_z_div.Name = "textBox_dr_set_z_div";
+            this.textBox_dr_set_z_div.Size = new System.Drawing.Size(110, 26);
+            this.textBox_dr_set_z_div.TabIndex = 161;
+            this.textBox_dr_set_z_div.Text = "0";
+            // 
+            // but_dr_set_z_pos
+            // 
+            this.but_dr_set_z_pos.Location = new System.Drawing.Point(308, 37);
+            this.but_dr_set_z_pos.Name = "but_dr_set_z_pos";
+            this.but_dr_set_z_pos.Size = new System.Drawing.Size(148, 51);
+            this.but_dr_set_z_pos.TabIndex = 158;
+            this.but_dr_set_z_pos.Text = "Установить положение, мм";
+            this.but_dr_set_z_pos.UseVisualStyleBackColor = true;
+            this.but_dr_set_z_pos.Click += new System.EventHandler(this.but_dr_set_z_pos_Click);
+            // 
+            // textBox_dr_set_z_pos
+            // 
+            this.textBox_dr_set_z_pos.Location = new System.Drawing.Point(462, 49);
+            this.textBox_dr_set_z_pos.Name = "textBox_dr_set_z_pos";
+            this.textBox_dr_set_z_pos.Size = new System.Drawing.Size(110, 26);
+            this.textBox_dr_set_z_pos.TabIndex = 157;
+            this.textBox_dr_set_z_pos.Text = "0";
+            // 
+            // label111
+            // 
+            this.label111.AutoSize = true;
+            this.label111.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label111.Location = new System.Drawing.Point(304, 8);
+            this.label111.Name = "label111";
+            this.label111.Size = new System.Drawing.Size(52, 20);
+            this.label111.TabIndex = 160;
+            this.label111.Text = "Ось Z";
+            // 
+            // but_dr_set_z_home
+            // 
+            this.but_dr_set_z_home.Location = new System.Drawing.Point(308, 152);
+            this.but_dr_set_z_home.Name = "but_dr_set_z_home";
+            this.but_dr_set_z_home.Size = new System.Drawing.Size(148, 36);
+            this.but_dr_set_z_home.TabIndex = 159;
+            this.but_dr_set_z_home.Text = "Ноль";
+            this.but_dr_set_z_home.UseVisualStyleBackColor = true;
+            this.but_dr_set_z_home.Click += new System.EventHandler(this.but_dr_set_z_home_Click);
+            // 
+            // but_water_vel
+            // 
+            this.but_water_vel.Location = new System.Drawing.Point(39, 174);
+            this.but_water_vel.Name = "but_water_vel";
+            this.but_water_vel.Size = new System.Drawing.Size(110, 55);
+            this.but_water_vel.TabIndex = 156;
+            this.but_water_vel.Text = "Установить скорость";
+            this.but_water_vel.UseVisualStyleBackColor = true;
+            this.but_water_vel.Click += new System.EventHandler(this.but_water_vel_Click);
+            // 
+            // but_drill_ch_dir
+            // 
+            this.but_drill_ch_dir.Location = new System.Drawing.Point(151, 35);
+            this.but_drill_ch_dir.Name = "but_drill_ch_dir";
+            this.but_drill_ch_dir.Size = new System.Drawing.Size(140, 54);
+            this.but_drill_ch_dir.TabIndex = 150;
+            this.but_drill_ch_dir.Text = "Направление 2";
+            this.but_drill_ch_dir.UseVisualStyleBackColor = true;
+            this.but_drill_ch_dir.Click += new System.EventHandler(this.but_drill_ch_dir_Click);
+            // 
+            // textBox_water_vel
+            // 
+            this.textBox_water_vel.Location = new System.Drawing.Point(155, 188);
+            this.textBox_water_vel.Name = "textBox_water_vel";
+            this.textBox_water_vel.Size = new System.Drawing.Size(110, 26);
+            this.textBox_water_vel.TabIndex = 155;
+            this.textBox_water_vel.Text = "0";
+            // 
+            // textBox_drill_vel
+            // 
+            this.textBox_drill_vel.Location = new System.Drawing.Point(154, 107);
+            this.textBox_drill_vel.Name = "textBox_drill_vel";
+            this.textBox_drill_vel.Size = new System.Drawing.Size(110, 26);
+            this.textBox_drill_vel.TabIndex = 149;
+            this.textBox_drill_vel.Text = "0";
+            // 
+            // label85
+            // 
+            this.label85.AutoSize = true;
+            this.label85.Location = new System.Drawing.Point(66, 152);
+            this.label85.Name = "label85";
+            this.label85.Size = new System.Drawing.Size(49, 20);
+            this.label85.TabIndex = 154;
+            this.label85.Text = "Вода";
+            // 
+            // but_drill_vel
+            // 
+            this.but_drill_vel.Location = new System.Drawing.Point(38, 93);
+            this.but_drill_vel.Name = "but_drill_vel";
+            this.but_drill_vel.Size = new System.Drawing.Size(110, 55);
+            this.but_drill_vel.TabIndex = 151;
+            this.but_drill_vel.Text = "Установить скорость";
+            this.but_drill_vel.UseVisualStyleBackColor = true;
+            this.but_drill_vel.Click += new System.EventHandler(this.but_drill_vel_Click);
+            // 
+            // but_drill_dir_2
+            // 
+            this.but_drill_dir_2.Location = new System.Drawing.Point(6, 35);
+            this.but_drill_dir_2.Name = "but_drill_dir_2";
+            this.but_drill_dir_2.Size = new System.Drawing.Size(139, 54);
+            this.but_drill_dir_2.TabIndex = 153;
+            this.but_drill_dir_2.Text = "Направление 1";
+            this.but_drill_dir_2.UseVisualStyleBackColor = true;
+            this.but_drill_dir_2.Click += new System.EventHandler(this.but_drill_dir_2_Click);
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(72, 12);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(57, 20);
+            this.label63.TabIndex = 152;
+            this.label63.Text = "Сверл";
+            // 
             // lab_fps_cam1
             // 
             this.lab_fps_cam1.Location = new System.Drawing.Point(543, 3);
@@ -2669,14 +2925,6 @@ namespace opengl3
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.but_water_vel);
-            this.groupBox1.Controls.Add(this.textBox_water_vel);
-            this.groupBox1.Controls.Add(this.label85);
-            this.groupBox1.Controls.Add(this.but_drill_dir_2);
-            this.groupBox1.Controls.Add(this.label63);
-            this.groupBox1.Controls.Add(this.but_drill_vel);
-            this.groupBox1.Controls.Add(this.but_drill_ch_dir);
-            this.groupBox1.Controls.Add(this.textBox_drill_vel);
             this.groupBox1.Controls.Add(this.but_setShvpVel);
             this.groupBox1.Controls.Add(this.but_home_las);
             this.groupBox1.Controls.Add(this.textBox_shvpVel);
@@ -2698,80 +2946,6 @@ namespace opengl3
             this.groupBox1.TabIndex = 121;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Ручное управление лазером";
-            // 
-            // but_water_vel
-            // 
-            this.but_water_vel.Location = new System.Drawing.Point(23, 529);
-            this.but_water_vel.Name = "but_water_vel";
-            this.but_water_vel.Size = new System.Drawing.Size(110, 55);
-            this.but_water_vel.TabIndex = 156;
-            this.but_water_vel.Text = "Установить скорость";
-            this.but_water_vel.UseVisualStyleBackColor = true;
-            this.but_water_vel.Click += new System.EventHandler(this.but_water_vel_Click);
-            // 
-            // textBox_water_vel
-            // 
-            this.textBox_water_vel.Location = new System.Drawing.Point(139, 543);
-            this.textBox_water_vel.Name = "textBox_water_vel";
-            this.textBox_water_vel.Size = new System.Drawing.Size(110, 26);
-            this.textBox_water_vel.TabIndex = 155;
-            this.textBox_water_vel.Text = "0";
-            // 
-            // label85
-            // 
-            this.label85.AutoSize = true;
-            this.label85.Location = new System.Drawing.Point(50, 507);
-            this.label85.Name = "label85";
-            this.label85.Size = new System.Drawing.Size(49, 20);
-            this.label85.TabIndex = 154;
-            this.label85.Text = "Вода";
-            // 
-            // but_drill_dir_2
-            // 
-            this.but_drill_dir_2.Location = new System.Drawing.Point(6, 390);
-            this.but_drill_dir_2.Name = "but_drill_dir_2";
-            this.but_drill_dir_2.Size = new System.Drawing.Size(139, 54);
-            this.but_drill_dir_2.TabIndex = 153;
-            this.but_drill_dir_2.Text = "Направление 1";
-            this.but_drill_dir_2.UseVisualStyleBackColor = true;
-            this.but_drill_dir_2.Click += new System.EventHandler(this.but_drill_dir_2_Click);
-            // 
-            // label63
-            // 
-            this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(56, 367);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(57, 20);
-            this.label63.TabIndex = 152;
-            this.label63.Text = "Сверл";
-            // 
-            // but_drill_vel
-            // 
-            this.but_drill_vel.Location = new System.Drawing.Point(22, 448);
-            this.but_drill_vel.Name = "but_drill_vel";
-            this.but_drill_vel.Size = new System.Drawing.Size(110, 55);
-            this.but_drill_vel.TabIndex = 151;
-            this.but_drill_vel.Text = "Установить скорость";
-            this.but_drill_vel.UseVisualStyleBackColor = true;
-            this.but_drill_vel.Click += new System.EventHandler(this.but_drill_vel_Click);
-            // 
-            // but_drill_ch_dir
-            // 
-            this.but_drill_ch_dir.Location = new System.Drawing.Point(151, 390);
-            this.but_drill_ch_dir.Name = "but_drill_ch_dir";
-            this.but_drill_ch_dir.Size = new System.Drawing.Size(140, 54);
-            this.but_drill_ch_dir.TabIndex = 150;
-            this.but_drill_ch_dir.Text = "Направление 2";
-            this.but_drill_ch_dir.UseVisualStyleBackColor = true;
-            this.but_drill_ch_dir.Click += new System.EventHandler(this.but_drill_ch_dir_Click);
-            // 
-            // textBox_drill_vel
-            // 
-            this.textBox_drill_vel.Location = new System.Drawing.Point(138, 462);
-            this.textBox_drill_vel.Name = "textBox_drill_vel";
-            this.textBox_drill_vel.Size = new System.Drawing.Size(110, 26);
-            this.textBox_drill_vel.TabIndex = 149;
-            this.textBox_drill_vel.Text = "0";
             // 
             // but_setShvpVel
             // 
@@ -7385,6 +7559,8 @@ namespace opengl3
             this.tabPage13.PerformLayout();
             this.tabPage14.ResumeLayout(false);
             this.tabPage14.PerformLayout();
+            this.tabPage_drill.ResumeLayout(false);
+            this.tabPage_drill.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_1)).EndInit();
@@ -8089,6 +8265,21 @@ namespace opengl3
         private System.Windows.Forms.Button but_cycle_zero;
         private System.Windows.Forms.Button but_led_off;
         private System.Windows.Forms.Button but_led_on;
+        private System.Windows.Forms.TabPage tabPage_drill;
+        private System.Windows.Forms.Button but_dr_set_z_div;
+        private System.Windows.Forms.TextBox textBox_dr_set_z_div;
+        private System.Windows.Forms.Button but_dr_set_z_pos;
+        private System.Windows.Forms.TextBox textBox_dr_set_z_pos;
+        private System.Windows.Forms.Label label111;
+        private System.Windows.Forms.Button but_dr_set_z_home;
+        private System.Windows.Forms.Button but_dr_set_drill_div;
+        private System.Windows.Forms.TextBox textBox_dr_set_drill_div;
+        private System.Windows.Forms.Button but_dr_set_drill_pos;
+        private System.Windows.Forms.TextBox textBox_dr_set_drill_pos;
+        private System.Windows.Forms.Label label112;
+        private System.Windows.Forms.Button but_dr_set_drill_home;
+        private System.Windows.Forms.Button but_dr_set_z_stop;
+        private System.Windows.Forms.Button but_dr_set_drill_stop;
     }
 }
 
