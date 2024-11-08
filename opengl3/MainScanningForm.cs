@@ -7980,11 +7980,11 @@ namespace opengl3
         {
             if (e.KeyCode == Keys.Enter)
             {
-                var ampl_degree = to_double_textbox(textBox_cycle_speed, 0, 360);
-                var aml_steps = 3200 * ampl_degree / 360;
+                var ampl_degree = to_double_textbox(textBox_cycle_amplitud, 0, 360);
+                var aml_steps = 32 * ampl_degree / 360;
                 //var div = LaserLine.vel_pist_to_ard(vel, nT, 1, 3200);
                 laserLine?.set_adr(i2c_adr_main);
-                laserLine?.set_comp_cycle_ampl(Convert.ToInt32(textBox_cycle_amplitud.Text));
+                laserLine?.set_comp_cycle_ampl(aml_steps);
             }
         }
 
