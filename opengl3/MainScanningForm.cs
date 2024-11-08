@@ -7841,13 +7841,36 @@ namespace opengl3
         int i2c_adr_main = 0;
         int i2c_adr_nasos1 = 50;
         int i2c_adr_nasos2 = 51;
+        double nT = 5000;
+        double to_double_textbox(TextBox textBox, double min,double max)
+        {
+            var val = to_double(textBox.Text);
+            if(val==double.NaN)
+            {
+                val = min;
+            }
+            if(val<min)
+            {
+                val = min;
+            }
+            if(val>max)
+            {
+                val = max;
+            }
+            return val;
+        }
 
         private void textBox_z1_vel_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
+                var vel = to_double_textbox(textBox_z1_vel, 0.01, 2);
+                var div = LaserLine.vel_pist_to_ard(vel, nT, 1, 3200);
+                Console.WriteLine(div);
                 laserLine?.set_adr(i2c_adr_main);
-                laserLine?.set_div_disp(Convert.ToInt32(textBox_z1_vel.Text));
+                
+                laserLine?.set_div_disp(div);
+                
             }
         }
 
@@ -7855,8 +7878,12 @@ namespace opengl3
         {
             if (e.KeyCode == Keys.Enter)
             {
+                var vel = to_double_textbox(textBox_z2_vel, 0.01, 2);
+                var div = LaserLine.vel_pist_to_ard(vel, nT, 1, 3200);
+                Console.WriteLine(div);
                 laserLine?.set_adr(i2c_adr_main);
-                laserLine?.set_z_div(Convert.ToInt32(textBox_z2_vel.Text));
+               
+                laserLine?.set_z_div(div);
             }
         }
 
@@ -7915,19 +7942,26 @@ namespace opengl3
         {
             if (e.KeyCode == Keys.Enter)
             {
+                var vel = to_double_textbox(textBox_pump1_vel, 0.01, 2);
+                var div = LaserLine.vel_pist_to_ard(vel, nT, 1, 6400);
+               // Console.WriteLine(div);
+
                 laserLine?.set_adr(i2c_adr_nasos1);
-                laserLine?.set_div_disp(Convert.ToInt32(textBox_pump1_vel.Text));
+
+                laserLine?.set_div_disp(div);
             }
         }
 
 
         private void but_cycle_start_Click(object sender, EventArgs e)
         {
+            laserLine?.set_adr(i2c_adr_main);
             laserLine?.set_comp_cycle_type(1);
         }
 
         private void but_cycle_stop_Click(object sender, EventArgs e)
         {
+            laserLine?.set_adr(i2c_adr_main);
             laserLine?.set_comp_cycle_type(0);
         }
 
@@ -7935,8 +7969,10 @@ namespace opengl3
         {
             if (e.KeyCode == Keys.Enter)
             {
-                laserLine?.set_adr(i2c_adr_main);
-                laserLine?.setShvpVel(Convert.ToInt32(textBox_cycle_speed.Text));
+                var vel = to_double_textbox(textBox_cycle_speed, 0.01, 2);
+                var div = LaserLine.vel_pist_to_ard(vel, nT, 1, 3200);
+                laserLine?.set_adr(i2c_adr_main);               
+                laserLine?.set_las_div(div);
             }
         }
 
@@ -7944,12 +7980,19 @@ namespace opengl3
         {
             if (e.KeyCode == Keys.Enter)
             {
+                var ampl_degree = to_double_textbox(textBox_cycle_speed, 0, 360);
+                var aml_steps = 3200 * ampl_degree / 360;
+                //var div = LaserLine.vel_pist_to_ard(vel, nT, 1, 3200);
                 laserLine?.set_adr(i2c_adr_main);
                 laserLine?.set_comp_cycle_ampl(Convert.ToInt32(textBox_cycle_amplitud.Text));
             }
         }
 
-
+        private void but_cycle_zero_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_main);
+            laserLine?.set_home_laser();
+        }
         private void button_pump2_stop_Click(object sender, EventArgs e)
         {
 
@@ -7969,10 +8012,45 @@ namespace opengl3
             if (e.KeyCode == Keys.Enter)
             {
                 var pos = Convert.ToInt32(textBox_valve_val.Text);
-                laserLine.set_valve_pos(pos);
+                laserLine?.set_valve_pos(pos);
             }
 
         }
+
+
+        private void textBox_pump2_vel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                var vel = to_double_textbox(textBox_pump2_vel, 0.01, 2);
+                var div = LaserLine.vel_pist_to_ard(vel, nT, 1, 3200);
+
+                laserLine?.set_adr(i2c_adr_nasos2);
+                laserLine?.set_div_disp(div);
+            }
+        }
+        private void textBox_led_pwm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                laserLine?.set_adr(i2c_adr_main);
+                var pwm = Convert.ToInt32(textBox_led_pwm.Text);
+                laserLine?.setPower(pwm);
+            }
+        }
+
+        private void but_led_on_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_main);
+            laserLine?.laserOn();
+        }
+
+        private void but_led_off_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_adr(i2c_adr_main);
+            laserLine?.laserOff();
+        }
+
 
         private void but_find_ard_tube_Click(object sender, EventArgs e)
         {
@@ -8038,7 +8116,15 @@ namespace opengl3
             if (val == null) return 0;
             if (val.Length == 0) return 0;
             val = val.Replace(',', '.');
-            return Convert.ToDouble(val);
+            try
+            {
+                return Convert.ToDouble(val);
+            }
+            catch
+            {
+                return double.NaN;
+            }
+            //return 
         }
 
         #endregion
@@ -8496,6 +8582,10 @@ namespace opengl3
             }
         }
 
+        private void groupBox11_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 

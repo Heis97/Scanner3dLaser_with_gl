@@ -580,6 +580,11 @@ namespace opengl3
             this.but_con_ext_con_com = new System.Windows.Forms.Button();
             this.tabP_developer = new System.Windows.Forms.TabPage();
             this.tabPage_tube = new System.Windows.Forms.TabPage();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.but_led_off = new System.Windows.Forms.Button();
+            this.but_led_on = new System.Windows.Forms.Button();
+            this.label110 = new System.Windows.Forms.Label();
+            this.textBox_led_pwm = new System.Windows.Forms.TextBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.label18 = new System.Windows.Forms.Label();
             this.textBox_valve_val = new System.Windows.Forms.TextBox();
@@ -594,6 +599,14 @@ namespace opengl3
             this.button_pump2_stop = new System.Windows.Forms.Button();
             this.button_pump2_start = new System.Windows.Forms.Button();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.but_cycle_zero = new System.Windows.Forms.Button();
+            this.label101 = new System.Windows.Forms.Label();
+            this.but_cycle_stop = new System.Windows.Forms.Button();
+            this.but_cycle_start = new System.Windows.Forms.Button();
+            this.label97 = new System.Windows.Forms.Label();
+            this.textBox_cycle_amplitud = new System.Windows.Forms.TextBox();
+            this.label94 = new System.Windows.Forms.Label();
+            this.textBox_cycle_speed = new System.Windows.Forms.TextBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.label78 = new System.Windows.Forms.Label();
             this.textBox_pump1_vel = new System.Windows.Forms.TextBox();
@@ -617,13 +630,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.label94 = new System.Windows.Forms.Label();
-            this.textBox_cycle_speed = new System.Windows.Forms.TextBox();
-            this.label97 = new System.Windows.Forms.Label();
-            this.textBox_cycle_amplitud = new System.Windows.Forms.TextBox();
-            this.but_cycle_stop = new System.Windows.Forms.Button();
-            this.but_cycle_start = new System.Windows.Forms.Button();
-            this.label101 = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -726,6 +732,7 @@ namespace opengl3
             this.groupBox_disp_contr_ext.SuspendLayout();
             this.groupBox_con_ard_ext.SuspendLayout();
             this.tabPage_tube.SuspendLayout();
+            this.groupBox15.SuspendLayout();
             this.groupBox14.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox11.SuspendLayout();
@@ -6801,6 +6808,7 @@ namespace opengl3
             // 
             // tabPage_tube
             // 
+            this.tabPage_tube.Controls.Add(this.groupBox15);
             this.tabPage_tube.Controls.Add(this.groupBox14);
             this.tabPage_tube.Controls.Add(this.groupBox13);
             this.tabPage_tube.Controls.Add(this.groupBox11);
@@ -6812,8 +6820,61 @@ namespace opengl3
             this.tabPage_tube.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage_tube.Size = new System.Drawing.Size(1891, 1000);
             this.tabPage_tube.TabIndex = 9;
-            this.tabPage_tube.Text = "Трубочка";
+            this.tabPage_tube.Text = "Акустический макет";
             this.tabPage_tube.UseVisualStyleBackColor = true;
+            // 
+            // groupBox15
+            // 
+            this.groupBox15.Controls.Add(this.but_led_off);
+            this.groupBox15.Controls.Add(this.but_led_on);
+            this.groupBox15.Controls.Add(this.label110);
+            this.groupBox15.Controls.Add(this.textBox_led_pwm);
+            this.groupBox15.Location = new System.Drawing.Point(419, 346);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size(250, 97);
+            this.groupBox15.TabIndex = 5;
+            this.groupBox15.TabStop = false;
+            this.groupBox15.Text = "Освещение";
+            // 
+            // but_led_off
+            // 
+            this.but_led_off.Location = new System.Drawing.Point(127, 34);
+            this.but_led_off.Name = "but_led_off";
+            this.but_led_off.Size = new System.Drawing.Size(115, 39);
+            this.but_led_off.TabIndex = 5;
+            this.but_led_off.Text = "Выключить";
+            this.but_led_off.UseVisualStyleBackColor = true;
+            this.but_led_off.Click += new System.EventHandler(this.but_led_off_Click);
+            // 
+            // but_led_on
+            // 
+            this.but_led_on.Location = new System.Drawing.Point(10, 34);
+            this.but_led_on.Name = "but_led_on";
+            this.but_led_on.Size = new System.Drawing.Size(115, 39);
+            this.but_led_on.TabIndex = 4;
+            this.but_led_on.Text = "Включить";
+            this.but_led_on.UseVisualStyleBackColor = true;
+            this.but_led_on.Click += new System.EventHandler(this.but_led_on_Click);
+            // 
+            // label110
+            // 
+            this.label110.AutoSize = true;
+            this.label110.Location = new System.Drawing.Point(39, 57);
+            this.label110.Name = "label110";
+            this.label110.Size = new System.Drawing.Size(61, 16);
+            this.label110.TabIndex = 3;
+            this.label110.Text = "Яркость";
+            this.label110.Visible = false;
+            // 
+            // textBox_led_pwm
+            // 
+            this.textBox_led_pwm.Location = new System.Drawing.Point(127, 54);
+            this.textBox_led_pwm.Name = "textBox_led_pwm";
+            this.textBox_led_pwm.Size = new System.Drawing.Size(100, 22);
+            this.textBox_led_pwm.TabIndex = 2;
+            this.textBox_led_pwm.Text = "0";
+            this.textBox_led_pwm.Visible = false;
+            this.textBox_led_pwm.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_led_pwm_KeyDown);
             // 
             // groupBox14
             // 
@@ -6825,6 +6886,7 @@ namespace opengl3
             this.groupBox14.TabIndex = 3;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "Клапан";
+            this.groupBox14.Visible = false;
             // 
             // label18
             // 
@@ -6910,6 +6972,7 @@ namespace opengl3
             this.groupBox11.TabIndex = 4;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "Насос 2";
+            this.groupBox11.Enter += new System.EventHandler(this.groupBox11_Enter);
             // 
             // label79
             // 
@@ -6926,7 +6989,8 @@ namespace opengl3
             this.textBox_pump2_vel.Name = "textBox_pump2_vel";
             this.textBox_pump2_vel.Size = new System.Drawing.Size(100, 22);
             this.textBox_pump2_vel.TabIndex = 2;
-            this.textBox_pump2_vel.Text = "0";
+            this.textBox_pump2_vel.Text = "1";
+            this.textBox_pump2_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_pump2_vel_KeyDown);
             // 
             // button_pump2_stop
             // 
@@ -6950,6 +7014,7 @@ namespace opengl3
             // 
             // groupBox12
             // 
+            this.groupBox12.Controls.Add(this.but_cycle_zero);
             this.groupBox12.Controls.Add(this.label101);
             this.groupBox12.Controls.Add(this.but_cycle_stop);
             this.groupBox12.Controls.Add(this.but_cycle_start);
@@ -6963,6 +7028,81 @@ namespace opengl3
             this.groupBox12.TabIndex = 2;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Циклич нагрузка";
+            // 
+            // but_cycle_zero
+            // 
+            this.but_cycle_zero.Location = new System.Drawing.Point(260, 107);
+            this.but_cycle_zero.Name = "but_cycle_zero";
+            this.but_cycle_zero.Size = new System.Drawing.Size(115, 39);
+            this.but_cycle_zero.TabIndex = 30;
+            this.but_cycle_zero.Text = "Ноль";
+            this.but_cycle_zero.UseVisualStyleBackColor = true;
+            this.but_cycle_zero.Click += new System.EventHandler(this.but_cycle_zero_Click);
+            // 
+            // label101
+            // 
+            this.label101.AutoSize = true;
+            this.label101.Location = new System.Drawing.Point(185, 73);
+            this.label101.Name = "label101";
+            this.label101.Size = new System.Drawing.Size(61, 16);
+            this.label101.TabIndex = 29;
+            this.label101.Text = "градусы";
+            // 
+            // but_cycle_stop
+            // 
+            this.but_cycle_stop.Location = new System.Drawing.Point(139, 107);
+            this.but_cycle_stop.Name = "but_cycle_stop";
+            this.but_cycle_stop.Size = new System.Drawing.Size(115, 39);
+            this.but_cycle_stop.TabIndex = 5;
+            this.but_cycle_stop.Text = "Остановить";
+            this.but_cycle_stop.UseVisualStyleBackColor = true;
+            this.but_cycle_stop.Click += new System.EventHandler(this.but_cycle_stop_Click);
+            // 
+            // but_cycle_start
+            // 
+            this.but_cycle_start.Location = new System.Drawing.Point(18, 107);
+            this.but_cycle_start.Name = "but_cycle_start";
+            this.but_cycle_start.Size = new System.Drawing.Size(115, 39);
+            this.but_cycle_start.TabIndex = 4;
+            this.but_cycle_start.Text = "Запустить";
+            this.but_cycle_start.UseVisualStyleBackColor = true;
+            this.but_cycle_start.Click += new System.EventHandler(this.but_cycle_start_Click);
+            // 
+            // label97
+            // 
+            this.label97.AutoSize = true;
+            this.label97.Location = new System.Drawing.Point(6, 73);
+            this.label97.Name = "label97";
+            this.label97.Size = new System.Drawing.Size(80, 16);
+            this.label97.TabIndex = 28;
+            this.label97.Text = "Амплитуда";
+            // 
+            // textBox_cycle_amplitud
+            // 
+            this.textBox_cycle_amplitud.Location = new System.Drawing.Point(85, 70);
+            this.textBox_cycle_amplitud.Name = "textBox_cycle_amplitud";
+            this.textBox_cycle_amplitud.Size = new System.Drawing.Size(100, 22);
+            this.textBox_cycle_amplitud.TabIndex = 27;
+            this.textBox_cycle_amplitud.Text = "240";
+            this.textBox_cycle_amplitud.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_cycle_amplitud_KeyDown);
+            // 
+            // label94
+            // 
+            this.label94.AutoSize = true;
+            this.label94.Location = new System.Drawing.Point(15, 34);
+            this.label94.Name = "label94";
+            this.label94.Size = new System.Drawing.Size(68, 16);
+            this.label94.TabIndex = 26;
+            this.label94.Text = "Скорость";
+            // 
+            // textBox_cycle_speed
+            // 
+            this.textBox_cycle_speed.Location = new System.Drawing.Point(85, 31);
+            this.textBox_cycle_speed.Name = "textBox_cycle_speed";
+            this.textBox_cycle_speed.Size = new System.Drawing.Size(100, 22);
+            this.textBox_cycle_speed.TabIndex = 25;
+            this.textBox_cycle_speed.Text = "1";
+            this.textBox_cycle_speed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_cycle_speed_KeyDown);
             // 
             // groupBox10
             // 
@@ -6992,7 +7132,7 @@ namespace opengl3
             this.textBox_pump1_vel.Name = "textBox_pump1_vel";
             this.textBox_pump1_vel.Size = new System.Drawing.Size(100, 22);
             this.textBox_pump1_vel.TabIndex = 2;
-            this.textBox_pump1_vel.Text = "0";
+            this.textBox_pump1_vel.Text = "1";
             this.textBox_pump1_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_pump1_vel_KeyDown);
             // 
             // button_pump1_stop
@@ -7144,7 +7284,7 @@ namespace opengl3
             this.textBox_z2_vel.Name = "textBox_z2_vel";
             this.textBox_z2_vel.Size = new System.Drawing.Size(100, 22);
             this.textBox_z2_vel.TabIndex = 8;
-            this.textBox_z2_vel.Text = "0";
+            this.textBox_z2_vel.Text = "1";
             this.textBox_z2_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_z2_vel_KeyDown);
             // 
             // but_z1_min
@@ -7182,7 +7322,7 @@ namespace opengl3
             this.textBox_z1_vel.Name = "textBox_z1_vel";
             this.textBox_z1_vel.Size = new System.Drawing.Size(100, 22);
             this.textBox_z1_vel.TabIndex = 4;
-            this.textBox_z1_vel.Text = "0";
+            this.textBox_z1_vel.Text = "1";
             this.textBox_z1_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_z1_vel_KeyDown);
             // 
             // timer1
@@ -7194,71 +7334,6 @@ namespace opengl3
             // timer2
             // 
             this.timer2.Enabled = true;
-            // 
-            // label94
-            // 
-            this.label94.AutoSize = true;
-            this.label94.Location = new System.Drawing.Point(15, 34);
-            this.label94.Name = "label94";
-            this.label94.Size = new System.Drawing.Size(68, 16);
-            this.label94.TabIndex = 26;
-            this.label94.Text = "Скорость";
-            // 
-            // textBox_cycle_speed
-            // 
-            this.textBox_cycle_speed.Location = new System.Drawing.Point(85, 31);
-            this.textBox_cycle_speed.Name = "textBox_cycle_speed";
-            this.textBox_cycle_speed.Size = new System.Drawing.Size(100, 22);
-            this.textBox_cycle_speed.TabIndex = 25;
-            this.textBox_cycle_speed.Text = "0";
-            this.textBox_cycle_speed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_cycle_speed_KeyDown);
-            // 
-            // label97
-            // 
-            this.label97.AutoSize = true;
-            this.label97.Location = new System.Drawing.Point(6, 73);
-            this.label97.Name = "label97";
-            this.label97.Size = new System.Drawing.Size(80, 16);
-            this.label97.TabIndex = 28;
-            this.label97.Text = "Амплитуда";
-            // 
-            // textBox_cycle_amplitud
-            // 
-            this.textBox_cycle_amplitud.Location = new System.Drawing.Point(85, 70);
-            this.textBox_cycle_amplitud.Name = "textBox_cycle_amplitud";
-            this.textBox_cycle_amplitud.Size = new System.Drawing.Size(100, 22);
-            this.textBox_cycle_amplitud.TabIndex = 27;
-            this.textBox_cycle_amplitud.Text = "0";
-            this.textBox_cycle_amplitud.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_cycle_amplitud_KeyDown);
-            // 
-            // but_cycle_stop
-            // 
-            this.but_cycle_stop.Location = new System.Drawing.Point(188, 107);
-            this.but_cycle_stop.Name = "but_cycle_stop";
-            this.but_cycle_stop.Size = new System.Drawing.Size(115, 39);
-            this.but_cycle_stop.TabIndex = 5;
-            this.but_cycle_stop.Text = "Остановить";
-            this.but_cycle_stop.UseVisualStyleBackColor = true;
-            this.but_cycle_stop.Click += new System.EventHandler(this.but_cycle_stop_Click);
-            // 
-            // but_cycle_start
-            // 
-            this.but_cycle_start.Location = new System.Drawing.Point(67, 107);
-            this.but_cycle_start.Name = "but_cycle_start";
-            this.but_cycle_start.Size = new System.Drawing.Size(115, 39);
-            this.but_cycle_start.TabIndex = 4;
-            this.but_cycle_start.Text = "Запустить";
-            this.but_cycle_start.UseVisualStyleBackColor = true;
-            this.but_cycle_start.Click += new System.EventHandler(this.but_cycle_start_Click);
-            // 
-            // label101
-            // 
-            this.label101.AutoSize = true;
-            this.label101.Location = new System.Drawing.Point(185, 73);
-            this.label101.Name = "label101";
-            this.label101.Size = new System.Drawing.Size(61, 16);
-            this.label101.TabIndex = 29;
-            this.label101.Text = "градусы";
             // 
             // MainScanningForm
             // 
@@ -7395,6 +7470,8 @@ namespace opengl3
             this.groupBox_disp_contr_ext.PerformLayout();
             this.groupBox_con_ard_ext.ResumeLayout(false);
             this.tabPage_tube.ResumeLayout(false);
+            this.groupBox15.ResumeLayout(false);
+            this.groupBox15.PerformLayout();
             this.groupBox14.ResumeLayout(false);
             this.groupBox14.PerformLayout();
             this.groupBox13.ResumeLayout(false);
@@ -8006,6 +8083,12 @@ namespace opengl3
         private System.Windows.Forms.Label label94;
         private System.Windows.Forms.TextBox textBox_cycle_speed;
         private System.Windows.Forms.Label label101;
+        private System.Windows.Forms.GroupBox groupBox15;
+        private System.Windows.Forms.Label label110;
+        private System.Windows.Forms.TextBox textBox_led_pwm;
+        private System.Windows.Forms.Button but_cycle_zero;
+        private System.Windows.Forms.Button but_led_off;
+        private System.Windows.Forms.Button but_led_on;
     }
 }
 

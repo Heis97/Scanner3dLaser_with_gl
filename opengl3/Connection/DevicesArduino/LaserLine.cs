@@ -58,10 +58,12 @@ namespace opengl3
 
             send_poses = 38,
 
-             valve_val = 39
+             valve_val = 39,
+
+             div_las = 40
             ;
 
-        int on = 1, off = 2;
+        int on = 1, off = 0;
         public LaserLine(string _port, int adr=-1)
         {
             port = _port;
@@ -369,6 +371,11 @@ namespace opengl3
         {
             if (_vel >= 0) send(_vel, div_z);
         }
+
+        public void set_las_div(int _vel)
+        {
+            if (_vel >= 0) send(_vel, div_las);
+        }
         public void set_home_z()
         {
             send(0, home_z);
@@ -392,6 +399,13 @@ namespace opengl3
             double nT = 5000;  //  #timer freq
             double p = 1;//     #step mm
             double rev = 200 * 16;// * (60d / 16d); //# - reduct steps per revol
+            int st = (int)((nT * p) / (vel * rev));
+            //vel = (nT * p) / (st * rev);
+            return st;
+        }
+
+        public static int vel_pist_to_ard(double vel, double nT = 5000,double p = 1,double rev = 200 * 16)//mm/s to div
+        {
             int st = (int)((nT * p) / (vel * rev));
             //vel = (nT * p) / (st * rev);
             return st;
