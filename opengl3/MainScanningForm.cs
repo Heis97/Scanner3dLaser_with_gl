@@ -8514,7 +8514,7 @@ namespace opengl3
         private void but_compens_las_pos_Click(object sender, EventArgs e)
         {
             var pos_las = Convert.ToInt32(textBox_compens_las_pos.Text);
-            scanner_config.pos_laser_compens = pos_las;
+            //scanner_config.pos_laser_compens = pos_las;
             laserLine?.setShvpPos(pos_las);
         }
 

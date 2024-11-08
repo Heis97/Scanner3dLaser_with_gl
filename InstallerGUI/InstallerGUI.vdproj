@@ -513,12 +513,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_84D3C2B266694211A71BA8DDC38E0F49"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_86DA72E1DB671B30D0041820C3E75628"
         "OwnerKey" = "8:_3C0E3FBE29FD4C2899E477F35D7D9FCF"
         "MsmSig" = "8:_UNDEFINED"
@@ -575,12 +569,6 @@
         {
         "MsmKey" = "8:_8CE030A28DDEF2718B6C62B7CF9EEADA"
         "OwnerKey" = "8:_3C0E3FBE29FD4C2899E477F35D7D9FCF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8DBD73D3B8054F40ABAF5E7A870572CC"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -3990,26 +3978,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_84D3C2B266694211A71BA8DDC38E0F49"
-            {
-            "SourcePath" = "8:..\\opengl3\\bin\\x64\\Debug\\settings_pulse.json"
-            "TargetName" = "8:settings_pulse.json"
-            "Tag" = "8:"
-            "Folder" = "8:_8B5CEA619F654788ADB618E2E7917F6E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_86DA72E1DB671B30D0041820C3E75628"
             {
             "AssemblyRegister" = "3:1"
@@ -4225,26 +4193,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8DBD73D3B8054F40ABAF5E7A870572CC"
-            {
-            "SourcePath" = "8:..\\opengl3\\bin\\x64\\Debug\\jakaAPI.dll"
-            "TargetName" = "8:jakaAPI.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_8B5CEA619F654788ADB618E2E7917F6E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_8E1FE70031228FBC29E647AF8ECFA695"
