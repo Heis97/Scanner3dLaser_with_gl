@@ -208,6 +208,10 @@ namespace opengl3
             this.but_cycle_ampl = new System.Windows.Forms.Button();
             this.but_cycle_type = new System.Windows.Forms.Button();
             this.tabPage_drill = new System.Windows.Forms.TabPage();
+            this.but_dr_move_drill_zero = new System.Windows.Forms.Button();
+            this.but_dr_set_drill_zero = new System.Windows.Forms.Button();
+            this.but_dr_move_z_zero = new System.Windows.Forms.Button();
+            this.but_dr_set_z_zero = new System.Windows.Forms.Button();
             this.but_dr_set_drill_stop = new System.Windows.Forms.Button();
             this.but_dr_set_z_stop = new System.Windows.Forms.Button();
             this.but_dr_set_drill_div = new System.Windows.Forms.Button();
@@ -1104,9 +1108,9 @@ namespace opengl3
             // 
             // imBox_base_2
             // 
-            this.imBox_base_2.Location = new System.Drawing.Point(840, 593);
+            this.imBox_base_2.Location = new System.Drawing.Point(869, 598);
             this.imBox_base_2.Name = "imBox_base_2";
-            this.imBox_base_2.Size = new System.Drawing.Size(480, 360);
+            this.imBox_base_2.Size = new System.Drawing.Size(429, 360);
             this.imBox_base_2.TabIndex = 118;
             this.imBox_base_2.TabStop = false;
             // 
@@ -1121,7 +1125,7 @@ namespace opengl3
             // but_resize
             // 
             this.but_resize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_resize.Location = new System.Drawing.Point(1229, 369);
+            this.but_resize.Location = new System.Drawing.Point(1205, 964);
             this.but_resize.Name = "but_resize";
             this.but_resize.Size = new System.Drawing.Size(106, 33);
             this.but_resize.TabIndex = 136;
@@ -1349,10 +1353,10 @@ namespace opengl3
             this.tabControl1.Controls.Add(this.tabPage13);
             this.tabControl1.Controls.Add(this.tabPage14);
             this.tabControl1.Controls.Add(this.tabPage_drill);
-            this.tabControl1.Location = new System.Drawing.Point(1304, 3);
+            this.tabControl1.Location = new System.Drawing.Point(1183, 7);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(584, 399);
+            this.tabControl1.Size = new System.Drawing.Size(705, 399);
             this.tabControl1.TabIndex = 139;
             // 
             // tabPage10
@@ -1380,7 +1384,7 @@ namespace opengl3
             this.tabPage10.Location = new System.Drawing.Point(4, 29);
             this.tabPage10.Name = "tabPage10";
             this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage10.Size = new System.Drawing.Size(576, 366);
+            this.tabPage10.Size = new System.Drawing.Size(697, 366);
             this.tabPage10.TabIndex = 0;
             this.tabPage10.Text = "Отладка";
             this.tabPage10.UseVisualStyleBackColor = true;
@@ -1607,7 +1611,7 @@ namespace opengl3
             this.tabPage11.Location = new System.Drawing.Point(4, 29);
             this.tabPage11.Name = "tabPage11";
             this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage11.Size = new System.Drawing.Size(576, 366);
+            this.tabPage11.Size = new System.Drawing.Size(697, 366);
             this.tabPage11.TabIndex = 1;
             this.tabPage11.Text = "3Д сканер";
             this.tabPage11.UseVisualStyleBackColor = true;
@@ -1915,7 +1919,7 @@ namespace opengl3
             this.tabPage12.Location = new System.Drawing.Point(4, 29);
             this.tabPage12.Name = "tabPage12";
             this.tabPage12.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage12.Size = new System.Drawing.Size(576, 366);
+            this.tabPage12.Size = new System.Drawing.Size(697, 366);
             this.tabPage12.TabIndex = 2;
             this.tabPage12.Text = "Подключение к роботу";
             this.tabPage12.UseVisualStyleBackColor = true;
@@ -2197,7 +2201,7 @@ namespace opengl3
             this.tabPage13.Location = new System.Drawing.Point(4, 29);
             this.tabPage13.Name = "tabPage13";
             this.tabPage13.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage13.Size = new System.Drawing.Size(576, 366);
+            this.tabPage13.Size = new System.Drawing.Size(697, 366);
             this.tabPage13.TabIndex = 3;
             this.tabPage13.Text = "Отладка 2";
             this.tabPage13.UseVisualStyleBackColor = true;
@@ -2352,7 +2356,7 @@ namespace opengl3
             this.tabPage14.Location = new System.Drawing.Point(4, 29);
             this.tabPage14.Name = "tabPage14";
             this.tabPage14.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage14.Size = new System.Drawing.Size(576, 366);
+            this.tabPage14.Size = new System.Drawing.Size(697, 366);
             this.tabPage14.TabIndex = 4;
             this.tabPage14.Text = "Имитация дыхания";
             this.tabPage14.UseVisualStyleBackColor = true;
@@ -2669,6 +2673,10 @@ namespace opengl3
             // 
             // tabPage_drill
             // 
+            this.tabPage_drill.Controls.Add(this.but_dr_move_drill_zero);
+            this.tabPage_drill.Controls.Add(this.but_dr_set_drill_zero);
+            this.tabPage_drill.Controls.Add(this.but_dr_move_z_zero);
+            this.tabPage_drill.Controls.Add(this.but_dr_set_z_zero);
             this.tabPage_drill.Controls.Add(this.but_dr_set_drill_stop);
             this.tabPage_drill.Controls.Add(this.but_dr_set_z_stop);
             this.tabPage_drill.Controls.Add(this.but_dr_set_drill_div);
@@ -2694,11 +2702,50 @@ namespace opengl3
             this.tabPage_drill.Location = new System.Drawing.Point(4, 29);
             this.tabPage_drill.Name = "tabPage_drill";
             this.tabPage_drill.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_drill.Size = new System.Drawing.Size(576, 366);
+            this.tabPage_drill.Size = new System.Drawing.Size(697, 366);
             this.tabPage_drill.TabIndex = 5;
             this.tabPage_drill.Text = "Сверление";
             this.tabPage_drill.UseVisualStyleBackColor = true;
-            this.tabPage_drill.Click += new System.EventHandler(this.tabPage_drill_Click);
+            // 
+            // but_dr_move_drill_zero
+            // 
+            this.but_dr_move_drill_zero.Location = new System.Drawing.Point(585, 285);
+            this.but_dr_move_drill_zero.Name = "but_dr_move_drill_zero";
+            this.but_dr_move_drill_zero.Size = new System.Drawing.Size(109, 60);
+            this.but_dr_move_drill_zero.TabIndex = 174;
+            this.but_dr_move_drill_zero.Text = "Движ в ноль";
+            this.but_dr_move_drill_zero.UseVisualStyleBackColor = true;
+            this.but_dr_move_drill_zero.Click += new System.EventHandler(this.but_dr_move_drill_zero_Click);
+            // 
+            // but_dr_set_drill_zero
+            // 
+            this.but_dr_set_drill_zero.Location = new System.Drawing.Point(585, 217);
+            this.but_dr_set_drill_zero.Name = "but_dr_set_drill_zero";
+            this.but_dr_set_drill_zero.Size = new System.Drawing.Size(109, 62);
+            this.but_dr_set_drill_zero.TabIndex = 173;
+            this.but_dr_set_drill_zero.Text = "Установ ноль";
+            this.but_dr_set_drill_zero.UseVisualStyleBackColor = true;
+            this.but_dr_set_drill_zero.Click += new System.EventHandler(this.but_dr_set_drill_zero_Click);
+            // 
+            // but_dr_move_z_zero
+            // 
+            this.but_dr_move_z_zero.Location = new System.Drawing.Point(582, 105);
+            this.but_dr_move_z_zero.Name = "but_dr_move_z_zero";
+            this.but_dr_move_z_zero.Size = new System.Drawing.Size(109, 60);
+            this.but_dr_move_z_zero.TabIndex = 172;
+            this.but_dr_move_z_zero.Text = "Движ в ноль";
+            this.but_dr_move_z_zero.UseVisualStyleBackColor = true;
+            this.but_dr_move_z_zero.Click += new System.EventHandler(this.but_dr_move_z_zero_Click);
+            // 
+            // but_dr_set_z_zero
+            // 
+            this.but_dr_set_z_zero.Location = new System.Drawing.Point(582, 37);
+            this.but_dr_set_z_zero.Name = "but_dr_set_z_zero";
+            this.but_dr_set_z_zero.Size = new System.Drawing.Size(109, 62);
+            this.but_dr_set_z_zero.TabIndex = 171;
+            this.but_dr_set_z_zero.Text = "Установ ноль";
+            this.but_dr_set_z_zero.UseVisualStyleBackColor = true;
+            this.but_dr_set_z_zero.Click += new System.EventHandler(this.but_dr_set_z_zero_Click);
             // 
             // but_dr_set_drill_stop
             // 
@@ -2760,7 +2807,7 @@ namespace opengl3
             // 
             this.label112.AutoSize = true;
             this.label112.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label112.Location = new System.Drawing.Point(304, 188);
+            this.label112.Location = new System.Drawing.Point(304, 194);
             this.label112.Name = "label112";
             this.label112.Size = new System.Drawing.Size(123, 20);
             this.label112.TabIndex = 166;
@@ -2772,7 +2819,7 @@ namespace opengl3
             this.but_dr_set_drill_home.Name = "but_dr_set_drill_home";
             this.but_dr_set_drill_home.Size = new System.Drawing.Size(148, 36);
             this.but_dr_set_drill_home.TabIndex = 165;
-            this.but_dr_set_drill_home.Text = "Ноль";
+            this.but_dr_set_drill_home.Text = "Калибр";
             this.but_dr_set_drill_home.UseVisualStyleBackColor = true;
             this.but_dr_set_drill_home.Click += new System.EventHandler(this.but_dr_set_drill_home_Click);
             // 
@@ -2816,7 +2863,7 @@ namespace opengl3
             // 
             this.label111.AutoSize = true;
             this.label111.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label111.Location = new System.Drawing.Point(304, 8);
+            this.label111.Location = new System.Drawing.Point(304, 14);
             this.label111.Name = "label111";
             this.label111.Size = new System.Drawing.Size(52, 20);
             this.label111.TabIndex = 160;
@@ -2828,7 +2875,7 @@ namespace opengl3
             this.but_dr_set_z_home.Name = "but_dr_set_z_home";
             this.but_dr_set_z_home.Size = new System.Drawing.Size(148, 36);
             this.but_dr_set_z_home.TabIndex = 159;
-            this.but_dr_set_z_home.Text = "Ноль";
+            this.but_dr_set_z_home.Text = "Калибр";
             this.but_dr_set_z_home.UseVisualStyleBackColor = true;
             this.but_dr_set_z_home.Click += new System.EventHandler(this.but_dr_set_z_home_Click);
             // 
@@ -5011,9 +5058,9 @@ namespace opengl3
             // 
             // but_show_traj_fr_tb
             // 
-            this.but_show_traj_fr_tb.Location = new System.Drawing.Point(127, 754);
+            this.but_show_traj_fr_tb.Location = new System.Drawing.Point(118, 806);
             this.but_show_traj_fr_tb.Name = "but_show_traj_fr_tb";
-            this.but_show_traj_fr_tb.Size = new System.Drawing.Size(75, 34);
+            this.but_show_traj_fr_tb.Size = new System.Drawing.Size(94, 64);
             this.but_show_traj_fr_tb.TabIndex = 165;
             this.but_show_traj_fr_tb.Text = "Показать траекторию";
             this.but_show_traj_fr_tb.UseVisualStyleBackColor = true;
@@ -5021,9 +5068,9 @@ namespace opengl3
             // 
             // but_hydro_model_grav
             // 
-            this.but_hydro_model_grav.Location = new System.Drawing.Point(127, 714);
+            this.but_hydro_model_grav.Location = new System.Drawing.Point(115, 749);
             this.but_hydro_model_grav.Name = "but_hydro_model_grav";
-            this.but_hydro_model_grav.Size = new System.Drawing.Size(75, 34);
+            this.but_hydro_model_grav.Size = new System.Drawing.Size(97, 51);
             this.but_hydro_model_grav.TabIndex = 164;
             this.but_hydro_model_grav.Text = "Моделир гидрогель";
             this.but_hydro_model_grav.UseVisualStyleBackColor = true;
@@ -5045,9 +5092,9 @@ namespace opengl3
             // 
             // but_printer_traj_fab
             // 
-            this.but_printer_traj_fab.Location = new System.Drawing.Point(15, 794);
+            this.but_printer_traj_fab.Location = new System.Drawing.Point(6, 847);
             this.but_printer_traj_fab.Name = "but_printer_traj_fab";
-            this.but_printer_traj_fab.Size = new System.Drawing.Size(106, 34);
+            this.but_printer_traj_fab.Size = new System.Drawing.Size(106, 46);
             this.but_printer_traj_fab.TabIndex = 163;
             this.but_printer_traj_fab.Text = "Заполнение Фабион";
             this.but_printer_traj_fab.UseVisualStyleBackColor = true;
@@ -5055,9 +5102,9 @@ namespace opengl3
             // 
             // but_rob_traj_pulse
             // 
-            this.but_rob_traj_pulse.Location = new System.Drawing.Point(15, 714);
+            this.but_rob_traj_pulse.Location = new System.Drawing.Point(3, 739);
             this.but_rob_traj_pulse.Name = "but_rob_traj_pulse";
-            this.but_rob_traj_pulse.Size = new System.Drawing.Size(106, 34);
+            this.but_rob_traj_pulse.Size = new System.Drawing.Size(106, 45);
             this.but_rob_traj_pulse.TabIndex = 147;
             this.but_rob_traj_pulse.Text = "Траектория Pulse";
             this.but_rob_traj_pulse.UseVisualStyleBackColor = true;
@@ -5065,9 +5112,9 @@ namespace opengl3
             // 
             // but_rob_traj_kuka
             // 
-            this.but_rob_traj_kuka.Location = new System.Drawing.Point(15, 754);
+            this.but_rob_traj_kuka.Location = new System.Drawing.Point(6, 790);
             this.but_rob_traj_kuka.Name = "but_rob_traj_kuka";
-            this.but_rob_traj_kuka.Size = new System.Drawing.Size(106, 34);
+            this.but_rob_traj_kuka.Size = new System.Drawing.Size(106, 51);
             this.but_rob_traj_kuka.TabIndex = 146;
             this.but_rob_traj_kuka.Text = "Траектория Kuka";
             this.but_rob_traj_kuka.UseVisualStyleBackColor = true;
@@ -5075,9 +5122,9 @@ namespace opengl3
             // 
             // but_gl_clear
             // 
-            this.but_gl_clear.Location = new System.Drawing.Point(25, 843);
+            this.but_gl_clear.Location = new System.Drawing.Point(25, 899);
             this.but_gl_clear.Name = "but_gl_clear";
-            this.but_gl_clear.Size = new System.Drawing.Size(96, 23);
+            this.but_gl_clear.Size = new System.Drawing.Size(96, 43);
             this.but_gl_clear.TabIndex = 118;
             this.but_gl_clear.Text = "Очистить";
             this.but_gl_clear.UseVisualStyleBackColor = true;
@@ -5085,9 +5132,9 @@ namespace opengl3
             // 
             // but_traj_clear
             // 
-            this.but_traj_clear.Location = new System.Drawing.Point(25, 868);
+            this.but_traj_clear.Location = new System.Drawing.Point(127, 899);
             this.but_traj_clear.Name = "but_traj_clear";
-            this.but_traj_clear.Size = new System.Drawing.Size(96, 19);
+            this.but_traj_clear.Size = new System.Drawing.Size(96, 45);
             this.but_traj_clear.TabIndex = 128;
             this.but_traj_clear.Text = "Очистить траек";
             this.but_traj_clear.UseVisualStyleBackColor = true;
@@ -6174,19 +6221,19 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Location = new System.Drawing.Point(4, 25);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(869, 965);
+            this.tabPage9.Size = new System.Drawing.Size(869, 962);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
             // 
             // but_flange_calib_basis
             // 
-            this.but_flange_calib_basis.Location = new System.Drawing.Point(487, 663);
+            this.but_flange_calib_basis.Location = new System.Drawing.Point(487, 627);
             this.but_flange_calib_basis.Name = "but_flange_calib_basis";
-            this.but_flange_calib_basis.Size = new System.Drawing.Size(149, 35);
+            this.but_flange_calib_basis.Size = new System.Drawing.Size(149, 62);
             this.but_flange_calib_basis.TabIndex = 172;
             this.but_flange_calib_basis.Text = "Калибровка относит фланца через базисы";
             this.but_flange_calib_basis.UseVisualStyleBackColor = true;
@@ -6214,7 +6261,7 @@ namespace opengl3
             // 
             this.but_scan_pres.Location = new System.Drawing.Point(540, 109);
             this.but_scan_pres.Name = "but_scan_pres";
-            this.but_scan_pres.Size = new System.Drawing.Size(96, 37);
+            this.but_scan_pres.Size = new System.Drawing.Size(96, 59);
             this.but_scan_pres.TabIndex = 157;
             this.but_scan_pres.Text = "Проверка точности скана";
             this.but_scan_pres.UseVisualStyleBackColor = true;
@@ -6222,9 +6269,9 @@ namespace opengl3
             // 
             // but_load_fr_cal
             // 
-            this.but_load_fr_cal.Location = new System.Drawing.Point(487, 704);
+            this.but_load_fr_cal.Location = new System.Drawing.Point(487, 695);
             this.but_load_fr_cal.Name = "but_load_fr_cal";
-            this.but_load_fr_cal.Size = new System.Drawing.Size(149, 34);
+            this.but_load_fr_cal.Size = new System.Drawing.Size(149, 59);
             this.but_load_fr_cal.TabIndex = 124;
             this.but_load_fr_cal.Text = "Загрузить калиборовку";
             this.but_load_fr_cal.UseVisualStyleBackColor = true;
@@ -6276,7 +6323,7 @@ namespace opengl3
             // 
             this.but_scan_stereo_rob.Location = new System.Drawing.Point(423, 109);
             this.but_scan_stereo_rob.Name = "but_scan_stereo_rob";
-            this.but_scan_stereo_rob.Size = new System.Drawing.Size(111, 37);
+            this.but_scan_stereo_rob.Size = new System.Drawing.Size(111, 59);
             this.but_scan_stereo_rob.TabIndex = 148;
             this.but_scan_stereo_rob.Text = "Загрузить скан стерео робот";
             this.but_scan_stereo_rob.UseVisualStyleBackColor = true;
@@ -6371,9 +6418,9 @@ namespace opengl3
             // 
             // but_calibr_Bfs
             // 
-            this.but_calibr_Bfs.Location = new System.Drawing.Point(540, 744);
+            this.but_calibr_Bfs.Location = new System.Drawing.Point(540, 760);
             this.but_calibr_Bfs.Name = "but_calibr_Bfs";
-            this.but_calibr_Bfs.Size = new System.Drawing.Size(96, 34);
+            this.but_calibr_Bfs.Size = new System.Drawing.Size(96, 61);
             this.but_calibr_Bfs.TabIndex = 120;
             this.but_calibr_Bfs.Text = "Калибровка относит фланца";
             this.but_calibr_Bfs.UseVisualStyleBackColor = true;
@@ -6405,7 +6452,6 @@ namespace opengl3
             this.windowsTabs.SelectedIndex = 0;
             this.windowsTabs.Size = new System.Drawing.Size(1899, 1029);
             this.windowsTabs.TabIndex = 92;
-            this.windowsTabs.SelectedIndexChanged += new System.EventHandler(this.windowsTabs_SelectedIndexChanged);
             // 
             // tabP_connect
             // 
@@ -6849,7 +6895,6 @@ namespace opengl3
             this.label76.Size = new System.Drawing.Size(43, 20);
             this.label76.TabIndex = 6;
             this.label76.Text = "мм/с";
-            this.label76.Click += new System.EventHandler(this.label76_Click);
             // 
             // textBox_con_ext_disp_vel
             // 
@@ -6858,7 +6903,6 @@ namespace opengl3
             this.textBox_con_ext_disp_vel.Size = new System.Drawing.Size(53, 22);
             this.textBox_con_ext_disp_vel.TabIndex = 5;
             this.textBox_con_ext_disp_vel.Text = "0.5";
-            this.textBox_con_ext_disp_vel.TextChanged += new System.EventHandler(this.textBox_con_ext_disp_vel_TextChanged);
             // 
             // label75
             // 
@@ -7146,7 +7190,6 @@ namespace opengl3
             this.groupBox11.TabIndex = 4;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "Насос 2";
-            this.groupBox11.Enter += new System.EventHandler(this.groupBox11_Enter);
             // 
             // label79
             // 
@@ -8280,6 +8323,10 @@ namespace opengl3
         private System.Windows.Forms.Button but_dr_set_drill_home;
         private System.Windows.Forms.Button but_dr_set_z_stop;
         private System.Windows.Forms.Button but_dr_set_drill_stop;
+        private System.Windows.Forms.Button but_dr_set_z_zero;
+        private System.Windows.Forms.Button but_dr_move_drill_zero;
+        private System.Windows.Forms.Button but_dr_set_drill_zero;
+        private System.Windows.Forms.Button but_dr_move_z_zero;
     }
 }
 

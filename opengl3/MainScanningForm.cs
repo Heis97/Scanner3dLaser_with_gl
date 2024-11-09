@@ -461,7 +461,8 @@ namespace opengl3
              */
             //Manipulator.calcRob();
         }
-       
+
+        #region something
         double[][] comp_koef_las_z_pos(double[][] vals1,double pos1, double[][] vals2, double pos2, double[][] vals3, double pos3)
         {
             var poses = new double[] { pos1, pos2, pos3 };
@@ -992,7 +993,7 @@ namespace opengl3
             GL1.buffersGl.setTranspobj(triag, 0.3f);
         }
 
-
+        #endregion
 
         #region laserScanner
         void loadScanner()
@@ -1206,7 +1207,7 @@ namespace opengl3
             chess_size = new Size(6, 7);
             var marksize = 10f;// 9.6f;// 10f;
             var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
-            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern);// scanner_config.rotate_cam);
+            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, scanner_config.rotate_cam);
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,marksize);
 
             //comboImages.Items.AddRange(frms_stereo);
@@ -4836,12 +4837,11 @@ namespace opengl3
        
         private void but_set_z_pos_Click(object sender, EventArgs e)
         {
-            var text = textB_set_z_pos.Text;
-            text = text.Replace(',', '.');
-            var pos_z_mm = Convert.ToDouble(text);
-            var pos_z_steps = (int)(pos_z_mm / 10 * laserLine.steps_per_unit_z);
-            Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
-            laserLine?.set_z_pos(pos_z_steps);
+            var pos_z_mm = to_double_textbox(textB_set_z_pos, -100, 100);
+            if(pos_z_mm!=double.NaN)
+            {
+                laserLine?.set_move_z(pos_z_mm);
+            }            
         }
 
         private void but_z_home_Click(object sender, EventArgs e)
@@ -4886,7 +4886,7 @@ namespace opengl3
             //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
 
             //stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
-            StereoCamera.calibrate_stereo_rob_handeye(cam1, frms_stereo, PatternType.Mesh, chess_size, markSize, "bfs_cal.txt",RobotFrame.RobotType.KUKA);
+            StereoCamera.calibrate_stereo_rob_handeye(cam1, frms_stereo, PatternType.Mesh, chess_size, markSize, "bfs_cal.txt",RobotFrame.RobotType.PULSE);
             comboImages.Items.AddRange(frms_stereo);
         }
 
@@ -5359,7 +5359,7 @@ namespace opengl3
                             if (compensation)
                             {
                                 //Console.WriteLine("pos_z_steps: " + pos_z_steps);
-                                laserLine?.set_z_pos(pos_z_steps);
+                                laserLine?.set_move_z(pos_z_steps);
                             }
                             else
                             {
@@ -7051,10 +7051,10 @@ namespace opengl3
             // windowsTabs.Controls.Remove(tabPage_tube);
 
 
-            this.tabP_connect.Controls.Add(this.imageBox1);
+          /*  this.tabP_connect.Controls.Add(this.imageBox1);
             this.tabP_connect.Controls.Add(this.imageBox2);
             this.tabP_scanning_printing.Controls.Add(this.glControl1);
-
+          */
             
             add_buttons_rob_contr();
             formSettings.load_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
@@ -7185,7 +7185,8 @@ namespace opengl3
 
         private void but_rob_con_sc_Click(object sender, EventArgs e)
         {
-            connect_robot(RobotFrame.RobotType.KUKA);
+
+            connect_robot(RobotFrame.RobotType.PULSE);
 
         }
 
@@ -8129,6 +8130,7 @@ namespace opengl3
 
         #endregion
 
+        #region samara
         private void button_laser_roi_Click(object sender, EventArgs e)
         {
             var vals = textBox_laser_roi.Text.Split(' ');
@@ -8316,11 +8318,9 @@ namespace opengl3
             laserLine?.set_heat_pwm(Convert.ToInt32(textBox_sup_heat_pwm.Text));
         }
 
-        //---------------------------------------------------------------------
-        private void windowsTabs_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        #endregion
 
-        }
+        #region samara_new
         private void but_con_set_temp_Click(object sender, EventArgs e)
         {
 
@@ -8345,26 +8345,6 @@ namespace opengl3
                 temp_control = true;
             }
             
-        }
-
-        private void textBox7_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox_con_ext_disp_vel_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label76_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label94_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void comboBox_syrenge_size_SelectedIndexChanged(object sender, EventArgs e)
@@ -8406,7 +8386,7 @@ namespace opengl3
             var pos_z_mm = Convert.ToDouble(text)+z_syrenge_offset;
             var pos_z_steps = (int)(pos_z_mm / 10 * laserLine.steps_per_unit_z);
             //Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
-            laserLine?.set_z_pos(pos_z_steps);
+            laserLine?.set_move_z(pos_z_steps);
         }
 
         private void but_con_ext_set_z_zero_Click(object sender, EventArgs e)
@@ -8581,65 +8561,87 @@ namespace opengl3
                 surface_type = Convert.ToInt32(checkBox.AccessibleName);
             }
         }
-
-        private void groupBox11_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tabPage_drill_Click(object sender, EventArgs e)
-        {
-
-        }
+        #endregion
 
         #region drill
 
         private void but_dr_set_z_pos_Click(object sender, EventArgs e)
         {
-            var text = textBox_dr_set_z_pos.Text;
-            text = text.Replace(',', '.');
-            var pos_z_mm = Convert.ToDouble(text);
-            var pos_z_steps = (int)((pos_z_mm * laserLine.steps_per_unit_z + 5000) / 10  );
-            Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
-            laserLine?.set_z_pos(pos_z_steps);
+            var pos_z_mm = to_double_textbox(textBox_dr_set_z_pos, -100, 100);
+            if (pos_z_mm != double.NaN)
+            {
+                laserLine?.set_move_z(pos_z_mm);
+            }
         }
 
         private void but_dr_set_z_div_Click(object sender, EventArgs e)
         {
-
+            var div = to_double_textbox(textBox_dr_set_z_div, 0, 400);
+            if(div!=double.NaN)
+            {
+                laserLine?.set_z_div((int)div);
+            }
         }
 
         private void but_dr_set_z_home_Click(object sender, EventArgs e)
         {
-
+            laserLine?.set_home_z();
         }
 
         private void but_dr_set_z_stop_Click(object sender, EventArgs e)
         {
+            laserLine?.set_stop_z();
+        }
+        private void but_dr_set_z_zero_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_pos_z(0);
+        }
 
+        private void but_dr_move_z_zero_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_move_z(0);
         }
 
         private void but_dr_set_drill_pos_Click(object sender, EventArgs e)
         {
-
+            var pos = to_double_textbox(textBox_dr_set_drill_pos , -100, 100);
+            if (pos != double.NaN)
+            {
+                laserLine?.set_move_las(pos);
+            }
         }
 
         private void but_dr_set_drill_div_Click(object sender, EventArgs e)
         {
-
+            var div = to_double_textbox(textBox_dr_set_drill_div, 0, 400);
+            if (div != double.NaN)
+            {
+                laserLine?.set_las_div((int)div);
+            }
         }
 
         private void but_dr_set_drill_home_Click(object sender, EventArgs e)
         {
-
+            laserLine?.set_home_laser();
         }
 
         private void but_dr_set_drill_stop_Click(object sender, EventArgs e)
         {
+            laserLine?.set_stop_las();
+        }   
+        private void but_dr_set_drill_zero_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_pos_las(0);
+        }
 
+        private void but_dr_move_drill_zero_Click(object sender, EventArgs e)
+        {
+            laserLine?.set_move_las(0);
         }
 
         #endregion
+
+        //void send_to_ard(TextBox textBox,)
     }
 }
 

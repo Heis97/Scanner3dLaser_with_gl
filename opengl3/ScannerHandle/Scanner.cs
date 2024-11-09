@@ -383,15 +383,15 @@ namespace opengl3
             if(pos.Contains(";"))
             {
                 var poses = pos.Split(';');
-                var pos_fr = new RobotFrame(poses[0],RobotFrame.RobotType.KUKA);
+                var pos_fr = new RobotFrame(poses[0],RobotFrame.RobotType.PULSE);
                 stereoCamera.Bbf = pos_fr.getMatrix();
-                stereoCamera.cur_pos = new RobotFrame(poses[1], RobotFrame.RobotType.KUKA);
+                stereoCamera.cur_pos = new RobotFrame(poses[1], RobotFrame.RobotType.PULSE);
                 Console.WriteLine("cur pos: "+stereoCamera.cur_pos.ToStr());
             }
             else
             {
                 Console.WriteLine("not contains ;");
-                var pos_fr = new RobotFrame(pos, RobotFrame.RobotType.KUKA);
+                var pos_fr = new RobotFrame(pos, RobotFrame.RobotType.PULSE);
                 stereoCamera.Bbf = pos_fr.getMatrix();
             }
 

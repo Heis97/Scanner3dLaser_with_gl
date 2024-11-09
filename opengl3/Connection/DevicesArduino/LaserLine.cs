@@ -10,6 +10,7 @@ namespace opengl3
     public class LaserLine : DeviceArduino
     {
         public double steps_per_unit_z = 800;// 1600 16 micr; 800 8 micr;
+        public double steps_per_unit_las = 800;// 1600 16 micr; 800 8 micr;
         public double steps_per_unit_disp = 3200;
         public double steps_per_unit_movm_mash = 1012;//3200:1.58 ||1600:1.58 
         string port;
@@ -29,7 +30,7 @@ namespace opengl3
             dir_disp = 13,
             home_laser = 14,
             div_z = 15,
-            posit_z = 16,
+            move_z = 16,
             home_z = 17,
             push_forw = 18,
             push_back = 19,
@@ -48,19 +49,27 @@ namespace opengl3
 
             temp_control = 30,
             temp_value = 31,
-             led_r= 32,
-             led_g = 33,
-             led_b = 34,
+            led_r= 32,
+            led_g = 33,
+            led_b = 34,
 
-             hyst_temp = 35,
-             cool_pwm = 36,
-             heat_pwm = 37,
+            hyst_temp = 35,
+            cool_pwm = 36,
+            heat_pwm = 37,
 
             send_poses = 38,
 
-             valve_val = 39,
+            valve_val = 39,
 
-             div_las = 40
+            div_las = 40,
+
+            stop_las = 41,
+            stop_z = 42,
+
+            pos_las  = 43,
+            pos_z = 44,
+
+            move_las = 45
             ;
 
         int on = 1, off = 0;
@@ -146,6 +155,27 @@ namespace opengl3
         public void set_rel_pos_disp(int rel_pos)
         {
             send(rel_pos + 5000, rel_pos_disp);
+        }
+
+        public void set_stop_z()
+        {
+            send(0, stop_z);
+        }
+        public void set_stop_las()
+        {
+            send(0, stop_las);
+        }
+        public void set_pos_las(double pos)
+        {
+            send((int)pos, pos_las);
+        }
+        public void set_pos_z(double pos)
+        {
+            send((int)pos, pos_z);
+        }
+        public void set_stop_las(int pos)
+        {
+            send(0, stop_las);
         }
         public void setShvpVel(double _vel)
         {
@@ -350,9 +380,13 @@ namespace opengl3
         {
             send(0, home_laser);
         }
-        public void set_z_pos(int _pos)
+        public void set_move_z(double _pos)
         {
-            send(_pos, posit_z);
+            send((int)((_pos * steps_per_unit_z+5000) / 10), move_z);
+        }
+        public void set_move_las(double _pos)
+        {
+            send((int)((_pos * steps_per_unit_las + 5000) / 10), move_las);
         }
 
         public void set_drill_dir(int dir)//0 or 1
