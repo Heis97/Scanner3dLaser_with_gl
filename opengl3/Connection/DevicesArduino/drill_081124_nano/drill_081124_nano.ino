@@ -27,9 +27,9 @@
 
 #include <TMC2130Stepper.h>
 #include <StepDirDriverPoz.h>
-#include "timer-api.h"
-#include <Wire.h> 
-
+//#include "timer-api.h"
+//#include <Wire.h> 
+#include "GyverTimers.h"
 StepDirDriverPoz mot_disp(STEP_PIN_disp, DIR_PIN_disp, EN_PIN_disp);
 StepDirDriverPoz mot_las(STEP_PIN_las, DIR_PIN_las , EN_PIN_las);
 StepDirDriverPoz mot_z(STEP_PIN_z, DIR_PIN_z, EN_PIN_z);
@@ -48,7 +48,7 @@ const int drill_vel = 9;
 const int drill_dir = 8;
 
 const int water_vel = 10;
-
+//int timer_main = _TIMER5;
 int laser = 2; 
 int power = 7;
 
@@ -87,7 +87,7 @@ void setup() {
   driver_z.stealthChop(1); 
   driver_z.microsteps(16);
 
-  timer_init_ISR_5KHz(_TIMER1);//shvp 1khz
+ 
   
   mot_z.setMode(true);
   mot_z.setDivider(2);
@@ -108,10 +108,19 @@ Serial.println("test1");
 //mot_disp.step(1000);
 //delay(3000);
 //mot_disp.step(-1000);
-  // analogWrite(10,5);
-   //digitalWrite(9,1);
+   //analogWrite(10,50);
+  // analogWrite(9,50);
+  // delay(5000);
+  // digitalWrite(10,1);
   // mot_las.step(1000);
 //delay(3000);  
+
+//home_z();
+ Timer2.setFrequency(5000);               // Высокоточный таймер 1 для первого прерывания, частота - 3 Герца
+  //Timer1.setPeriod(333333);           // то же самое! Частота 3 Гц это период 333 333 микросекунд
+  //Timer1.setFrequencyFloat(4.22);     // Если нужна дробная частота в Гц  
+  Timer2.enableISR();    
+ //timer_init_ISR_5KHz(timer_main);//shvp 1khz
 }
 
 
@@ -125,6 +134,10 @@ void loop() {
   cold_fix(driver_z,mot_z,250);
   disp_control();
   //delay(10);
+
+  /*Serial.print(analogRead(end_las));
+   Serial.print(" ");
+    Serial.println(analogRead(end_z));*/
 }
 
 void cold_fix(TMC2130Stepper motor,StepDirDriverPoz stp,int cur)
@@ -147,6 +160,7 @@ void home_laser()
   driver_las.rms_current(550); 
   homing_las = true;
   int end_val = analogRead(end_las);
+  
   while(end_val>500 && homing_las)
   {
     mot_las.step(-100);
@@ -157,7 +171,7 @@ void home_laser()
   {
     mot_las.setPoz(0);
     posit_las = 1000;
-    homed_z = true;
+    homed_las = true;
   }
   homing_las = false;
   
@@ -168,6 +182,7 @@ void home_z()
   mot_z.setDivider(2);
   driver_z.rms_current(550); 
   int end_val = analogRead(end_z);
+  homing_z = true;
   while(end_val>500 && homing_z)
   {
     mot_z.step(-100); 
@@ -219,15 +234,14 @@ void disp_control()
   //mot_disp.step(32000);
 }
 
-void timer_handle_interrupts(int timer)
+//void timer_handle_interrupts(int timer)
+ISR(TIMER2_A) 
 {
-  if (timer == _TIMER1)
-  {
-    mot_las.control();
-    mot_disp.control();
-    mot_z.control();
-   // controlLaser(laser,power);
-  }
+
+   mot_las.control();
+  mot_disp.control();
+  mot_z.control();
+
 
 }
 

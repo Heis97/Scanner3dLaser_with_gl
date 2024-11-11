@@ -265,6 +265,8 @@
     <Content Include="Graphic\Shaders\Comp\slice_shader_one.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Connection\DevicesArduino\Plunger_nasos_0111_nano\Plunger_nasos_0111_nano.ino" />
+    <None Include="Connection\DevicesArduino\Tube_main_0111\Tube_main_0111.ino" />
     <None Include="Graphic\Shaders\Geom\slice_shader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
