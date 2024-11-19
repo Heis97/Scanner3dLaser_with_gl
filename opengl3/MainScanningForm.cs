@@ -22,6 +22,7 @@ using Emgu.CV.Features2D;
 using System.Linq.Expressions;
 using jakaApi;
 using System.Text.RegularExpressions;
+using System.Net.Http;
 
 namespace opengl3
 {
@@ -4166,15 +4167,61 @@ namespace opengl3
             try_send_rob(debugBox.Text + "\n");
             try_send_rob("s\n");
         }
-        private void but_save_im_base1_Click(object sender, EventArgs e)
+        /*private void but_save_im_base1_Click(object sender, EventArgs e)
         {
-            var im = (Mat)imBox_base_1.Image;
-            im.Save("im1.png");
+            //var im = (Mat)imBox_base_1.Image;
+            //im.Save("im1.png");
 
-            im = (Mat)imageBox1.Image;
+            var im = (Mat)imageBox1.Image;
             im.Save("im2.png");
             //здесь будет отправка im1.png на сервер
+        }*/
+        
+        private async void but_save_im_base1_Click(object sender, EventArgs e)
+        {
+            // Сохраняем изображения
+            //var im = (Mat)imBox_base_1.Image;
+            //im.Save("im1.png");
+
+            var im = (Mat)imageBox1.Image;
+            im.Save("im2.png");
+
+            // Отправка изображения на сервер
+            string serverUrl = "http://localhost:8000/segment";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (var content = new MultipartFormDataContent())
+                    {
+                        // Загружаем файл в HTTP-запрос
+                        var fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes("im2.png"));
+                        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                        content.Add(fileContent, "file", "im2.png");
+
+                        // Отправляем POST-запрос
+                        HttpResponseMessage response = await client.PostAsync(serverUrl, content);
+
+                        // Проверяем ответ
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string responseString = await response.Content.ReadAsStringAsync();
+                            MessageBox.Show($"Сегментация выполнена успешно: {responseString}");
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Ошибка при сегментации: {response.StatusCode}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}");
+            }
         }
+        
 
         private void but_hydro_model_grav_Click(object sender, EventArgs e)//modelir_hydro!!!!!
         {
@@ -8637,6 +8684,10 @@ namespace opengl3
         private void but_dr_move_drill_zero_Click(object sender, EventArgs e)
         {
             laserLine?.set_move_las(0);
+        }
+        private void imageBox1_Click(object sender, EventArgs e)
+        {
+
         }
 
         #endregion
