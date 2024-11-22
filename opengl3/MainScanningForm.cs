@@ -62,8 +62,8 @@ namespace opengl3
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
         RobotFrame.RobotType current_robot = RobotFrame.RobotType.FABION2;
         double r_cyl = 1;
-        Matrix<double> m_cyl = new Matrix<double>(4,4);
-        Point3d_GL off_cyl = new Point3d_GL ();
+        Matrix<double> m_cyl = new Matrix<double>(4, 4);
+        Point3d_GL off_cyl = new Point3d_GL();
         int ks_i = 0;
         int ws_i = 0;
         bool scan_dist = false;
@@ -94,7 +94,7 @@ namespace opengl3
         int photo_number = 0;
         float markSize = 10f;
         Size chess_size = new Size(8, 9);
-       // Size chess_size = new Size(6, 7);
+        // Size chess_size = new Size(6, 7);
         Size chess_size_real = new Size(6, 7);
         StereoCameraCV stereocam = null;
         StereoCamera stereocam_scan = null;
@@ -104,7 +104,7 @@ namespace opengl3
         //private Size cameraSize = new Size(1280, 720);
         // private Size cameraSize = new Size(1280, 960);
         // private Size cameraSize = new Size(1184, 656);
-         private Size cameraSize = new Size(1184, 656);
+        private Size cameraSize = new Size(1184, 656);
         //private Size cameraSize = new Size(1024, 576);
         //private Size cameraSize = new Size(1920, 1080);
         //private Size cameraSize = new Size(640, 480);
@@ -123,8 +123,8 @@ namespace opengl3
         private float[] normal_buffer_data = { 0.0f };
         private float[] color_buffer_data = { 0.0f };
         volatile List<IntPtr> camera_ind = new List<IntPtr>();
-        volatile IntPtr[] camera_ind_ptr = new IntPtr[]{ (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0 };
-        volatile int[] imb_ind_cam = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+        volatile IntPtr[] camera_ind_ptr = new IntPtr[] { (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0 };
+        volatile int[] imb_ind_cam = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
         volatile List<long> camera_frame_time = new List<long>();
         List<float[]> im = new List<float[]>();
         public List<Mat> Ims;
@@ -147,9 +147,9 @@ namespace opengl3
 
         double compens_gap = 0.8;
 
-        volatile int[] videoframe_counts = new int[5] { -1, -1,-1,-1,-1 };
+        volatile int[] videoframe_counts = new int[5] { -1, -1, -1, -1, -1 };
 
-        volatile int[] videoframe_counts_stop = new int[5] { int.MaxValue , int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue };
+        volatile int[] videoframe_counts_stop = new int[5] { int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue };
 
         double minArea = 1;
         double maxArea = 10;
@@ -167,7 +167,7 @@ namespace opengl3
 
         bool compensation = false;
 
-        
+
         int k = 1;
         bool writ = false;
         int bin_pos = 40;
@@ -192,23 +192,23 @@ namespace opengl3
         {
             InitializeComponent();
             init_vars();
-              var vals_regr = new double[][]//laser and pos
-                  {
+            var vals_regr = new double[][]//laser and pos
+                {
                       new double[] {38.2 ,0 },
                       new double[] {41.2, -2 },
                       new double[] {44.8, -4},
-              };
-              koef = Regression.regression(vals_regr, 2);
-              //var cur = Regression.calcPolynSolv(koef, 37);
-             // Console.WriteLine("test_regr "+cur);
+            };
+            koef = Regression.regression(vals_regr, 2);
+            //var cur = Regression.calcPolynSolv(koef, 37);
+            // Console.WriteLine("test_regr "+cur);
 
-              vals_regr = new double[][]   //pos and y
-                  {
+            vals_regr = new double[][]   //pos and y
+                {
                       new double[] {30 ,364},
                       new double[] {32 ,356},
                       new double[] {34, 349 },
-              };
-              koef_y = Regression.regression(vals_regr, 1);
+            };
+            koef_y = Regression.regression(vals_regr, 1);
 
             vals_regr = new double[][]     //pos and x
                   {
@@ -260,7 +260,7 @@ namespace opengl3
             var pos3 = 17;
             koef_las_z_pos = comp_koef_las_z_pos(vals_regr_k1, pos1, vals_regr_k2, pos2, vals_regr_k3, pos3);
             //var pos = comp_cur_koef_las_z_pos(koefs_3d, 9, 623);
-          //  Console.WriteLine("test cur3d: "+pos);
+            //  Console.WriteLine("test cur3d: "+pos);
 
 
             /*var dx_las = 400;
@@ -299,14 +299,14 @@ namespace opengl3
             prin.t(vals_regr);
             prin.t("x_____________-");
             var cur = Regression.calcPolynSolv(koef, 609);
-             Console.WriteLine("test_regr "+cur);
+            Console.WriteLine("test_regr " + cur);
 
             vals_regr = new double[][]   //pos and x
                 {
                       new double[] {1 ,550},
                       new double[] {8 ,570},
                       new double[] {16,590 },
-                      
+
             };
             koef_x = Regression.regression(vals_regr, 1);
             prin.t(vals_regr);
@@ -368,7 +368,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
-           // load_camers_v2();
+            // load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -464,7 +464,7 @@ namespace opengl3
         }
 
         #region something
-        double[][] comp_koef_las_z_pos(double[][] vals1,double pos1, double[][] vals2, double pos2, double[][] vals3, double pos3)
+        double[][] comp_koef_las_z_pos(double[][] vals1, double pos1, double[][] vals2, double pos2, double[][] vals3, double pos3)
         {
             var poses = new double[] { pos1, pos2, pos3 };
             var degree = 1;
@@ -474,7 +474,7 @@ namespace opengl3
             var koefs_3 = Regression.regression(vals3, degree);
             var koefs = new double[][] { koefs_1, koefs_2, koefs_3 };
             var list_ks_3d = new List<double[]>();
-            for(int i=0; i<koefs_1.Length; i++)
+            for (int i = 0; i < koefs_1.Length; i++)
             {
                 var vals_cur = new double[][]
                 {
@@ -488,7 +488,7 @@ namespace opengl3
             return list_ks_3d.ToArray();
         }
 
-        double comp_cur_koef_las_z_pos(double[][] koefs,double koord_cur, double las)
+        double comp_cur_koef_las_z_pos(double[][] koefs, double koord_cur, double las)
         {
             var list_las = new List<double>();
             for (int i = 0; i < koefs.Length; i++)
@@ -497,7 +497,7 @@ namespace opengl3
                 list_las.Add(cur_koef_las);
             }
 
-            var cur = Regression.calcPolynSolv(list_las.ToArray(),las);
+            var cur = Regression.calcPolynSolv(list_las.ToArray(), las);
             return cur;
         }
 
@@ -509,7 +509,7 @@ namespace opengl3
             var ms_gb = new List<Matrix<double>>();
             var ms_tc = new List<Matrix<double>>();
 
-            var bt = new RobotFrame(-120, -350, 75, 0, 0,0.5);
+            var bt = new RobotFrame(-120, -350, 75, 0, 0, 0.5);
             //var bm = new RobotFrame(20, 0, 0, 0, 0, -3);
 
             var gc = new RobotFrame(60, 60, 50, 0, 0.2, 0.3);
@@ -540,17 +540,17 @@ namespace opengl3
 
 
             gbs = new List<RobotFrame>();
-            for (int i=0; i < frms.Length; i++)
+            for (int i = 0; i < frms.Length; i++)
             {
                 gbs.Add(frms[i].RobotFrame);
             }
-            
 
 
-            for (int i=0; i<gbs.Count;i++)
+
+            for (int i = 0; i < gbs.Count; i++)
             {
                 var gb_i = gbs[i].Clone();
-                var gb =gb_i.getMatrix();              
+                var gb = gb_i.getMatrix();
                 var bg = gb_i.getMatrix();
 
                 var bt_inv = bt.Clone().getMatrix();
@@ -568,18 +568,18 @@ namespace opengl3
                 var cam_matr = gc_inv * gb * bt_m;
                 var rand = new Matrix<double>(4, 4);
                 rand.SetRandNormal(new MCvScalar(2), new MCvScalar(2));
-                for(int k=0; k<4; k++)
+                for (int k = 0; k < 4; k++)
                 {
                     for (int w = 0; w < 3; w++)
                     {
-                        rand[k,w] *= 0.0001;
+                        rand[k, w] *= 0.0001;
                     }
                 }
-                 prin.t("cam_matr");
+                prin.t("cam_matr");
                 prin.t(cam_matr);
                 prin.t("rand");
                 prin.t(rand);
-                
+
                 cam_matr += rand;
                 prin.t("cam_matr+");
                 prin.t(cam_matr);
@@ -587,17 +587,17 @@ namespace opengl3
 
 
 
-               /* prin.t("bt_inv");
-                prin.t(bt_inv);
-                prin.t("_________________");
+                /* prin.t("bt_inv");
+                 prin.t(bt_inv);
+                 prin.t("_________________");
 
-                prin.t("bg_inv");
-                prin.t(bg_inv);
-                prin.t("_________________");
+                 prin.t("bg_inv");
+                 prin.t(bg_inv);
+                 prin.t("_________________");
 
-                prin.t("gc_inv");
-                prin.t(gc_inv);
-                prin.t("_________________");*/
+                 prin.t("gc_inv");
+                 prin.t(gc_inv);
+                 prin.t("_________________");*/
                 // var cam2 =  bt_inv.getMatrix() * rpos[i].getMatrix() * gc.getMatrix();
                 prin.t(ms_rob[i]);
                 prin.t(ms_cam[i]);
@@ -639,33 +639,33 @@ namespace opengl3
             Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
             Mat kernel2 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(2, 2), new Point(1, 1));
             Mat ellips7 = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(7, 7), new Point(1, 1));
-            CvInvoke.MorphologyEx(mat2, mat2,MorphOp.Dilate, kernel2, new Point(-1, -1), 2, BorderType.Default, new MCvScalar());
+            CvInvoke.MorphologyEx(mat2, mat2, MorphOp.Dilate, kernel2, new Point(-1, -1), 2, BorderType.Default, new MCvScalar());
             CvInvoke.Imshow("m_ex", mat2);
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
             CvInvoke.FindContours(mat2, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
 
-            contours = FindCircles.size_filter(contours, 50,300);
+            contours = FindCircles.size_filter(contours, 50, 300);
 
             CvInvoke.DrawContours(im1_c, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
-           //CvInvoke.Imshow("m_ex", mat2);
+            //CvInvoke.Imshow("m_ex", mat2);
             for (int i = 0; i < contours.Size; i++)
             {
                 var area = CvInvoke.ContourArea(contours[i]);
-                if ( area > 50)
+                if (area > 50)
                 {
                     Console.WriteLine(area);
                 }
             }
             Console.WriteLine("____________");
-            CvInvoke.Imshow(path+"m", mat2);
+            CvInvoke.Imshow(path + "m", mat2);
             CvInvoke.Imshow(path, im1_c);
         }
         void roi_for_ims(string path)
         {
             var files = Directory.GetFiles(path);
-            var roi = new Rectangle(222,362, 912, 149);
-            for(int i = 0; i < files.Length; i++)
+            var roi = new Rectangle(222, 362, 912, 149);
+            for (int i = 0; i < files.Length; i++)
             {
                 var mat = new Mat(files[i]);
                 var name = Path.GetFileNameWithoutExtension(files[i]);
@@ -679,16 +679,16 @@ namespace opengl3
             var ks = new double[] { 0.25, 0.5, 0.75 };
             var ws = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0, 1.2 };
 
-            var files = FrameLoader.sortByDate( Directory.GetFiles(path));
+            var files = FrameLoader.sortByDate(Directory.GetFiles(path));
 
             var kws_pores = new double[ks.Length, ws.Length];
 
             var kws_dev = new double[ks.Length, ws.Length];
 
-            for (int i=0; i<files.Length;i++)
+            for (int i = 0; i < files.Length; i++)
             {
-               // Console.WriteLine( File.GetLastWriteTime(files[i]));
-                var p =  comp_pores_ext(files[i]);
+                // Console.WriteLine( File.GetLastWriteTime(files[i]));
+                var p = comp_pores_ext(files[i]);
                 kws_pores[ks_i, ws_i] = p.x;
                 kws_dev[ks_i, ws_i] = p.y;
                 Console.WriteLine(files[i] + " " + p);
@@ -705,7 +705,7 @@ namespace opengl3
             }
 
 
-            for(int w_i = 0; w_i<ws.Length;w_i++)
+            for (int w_i = 0; w_i < ws.Length; w_i++)
             {
                 Console.WriteLine(kws_pores[0, w_i] + " " + kws_pores[1, w_i] + " " + kws_pores[2, w_i]);
             }
@@ -721,25 +721,25 @@ namespace opengl3
         {
             var im1 = new Mat(path);
             var size = new Size(400, 600);
-            im1 = new Mat(im1, new Rectangle(360, 270,size.Width,size.Height ));
+            im1 = new Mat(im1, new Rectangle(360, 270, size.Width, size.Height));
             var im1_c = im1.Clone();
             CvInvoke.CvtColor(im1, im1, ColorConversion.Bgr2Gray);
-            var mat2 = new Mat();       
+            var mat2 = new Mat();
             CvInvoke.Threshold(im1, mat2, 50, 255, ThresholdType.BinaryInv);
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
             CvInvoke.FindContours(mat2, contours, hier, RetrType.Tree, ChainApproxMethod.ChainApproxSimple);
-            var conts = FindCircles.sameContours(contours,0.9,9);
+            var conts = FindCircles.sameContours(contours, 0.9, 9);
             CvInvoke.DrawContours(im1_c, conts, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
             //CvInvoke.Imshow(path, im1_c);
-           //CvInvoke.WaitKey();
+            //CvInvoke.WaitKey();
             //CvInvoke.Imshow(path, im1_c);
-            return  analyse_contours(conts,size);
+            return analyse_contours(conts, size);
         }
 
-        Point3d_GL analyse_contours(VectorOfVectorOfPoint conts,Size size)
+        Point3d_GL analyse_contours(VectorOfVectorOfPoint conts, Size size)
         {
-            var ps = Point3d_GL.toPoints( FindCircles.findCentres(conts));
+            var ps = Point3d_GL.toPoints(FindCircles.findCentres(conts));
             var ps_or = Point3d_GL.order_points(ps);
             var ps_dist = Point3d_GL.dist_betw_ps(ps_or);
             //prin.t(ps_dist,"\n");
@@ -749,7 +749,7 @@ namespace opengl3
             var dev_dist = m_s_dist.V1;
             var w_i = (size.Width / mean_dist);
             var h_i = (size.Height / mean_dist);
-            var len_ps_all = w_i*h_i;
+            var len_ps_all = w_i * h_i;
             var pores = ps.Length / (double)len_ps_all;
 
             var areas = new double[ps.Length];
@@ -765,16 +765,16 @@ namespace opengl3
             return new Point3d_GL(pores, dev_area / mean_area);
         }
 
-        
 
-        void get_x_line_gray(Mat mat,int y)
+
+        void get_x_line_gray(Mat mat, int y)
         {
             var im = mat.ToImage<Gray, byte>();
             var im2 = im.Clone();
-            CvInvoke.GaussianBlur(im,im2, new Size(scanner_config.gauss_kern, scanner_config.gauss_kern), -1);
-            for (int x =0; x<im.Width;x++)
+            CvInvoke.GaussianBlur(im, im2, new Size(scanner_config.gauss_kern, scanner_config.gauss_kern), -1);
+            for (int x = 0; x < im.Width; x++)
             {
-                Console.WriteLine(x + " " + im.Data[y, x,0]+" "+ im2.Data[y, x, 0]);
+                Console.WriteLine(x + " " + im.Data[y, x, 0] + " " + im2.Data[y, x, 0]);
             }
         }
 
@@ -801,10 +801,10 @@ namespace opengl3
             //CvInvoke.Threshold(im_las, im_las, 50, 255, ThresholdType.Binary);
             //CvInvoke.Imshow("im1", im_las);
             imageBox1.Image = im_las.Clone();
-            
+
         }
 
- 
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             label_timer.Text = DateTime.Now.Second + " : " + DateTime.Now.Millisecond;// +" "+ DateTime.Now.Ticks/ TimeSpan.TicksPerMillisecond;
@@ -812,7 +812,7 @@ namespace opengl3
         }
         void init_vars()
         {
-            
+
 
             #region important
 
@@ -821,9 +821,9 @@ namespace opengl3
 
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "св Круги грид", "Ничего" });
             combo_robot_ch.Items.AddRange(new string[] { "Pulse", "Kuka" });
-          
+
             cameraDistortionCoeffs_dist[0, 0] = -0.3;
-            for(int i=0; i<mat_global.Length;i++)
+            for (int i = 0; i < mat_global.Length; i++)
             {
                 mat_global[i] = new Mat();
             }
@@ -846,8 +846,8 @@ namespace opengl3
                 textBoxK_6,textBoxK_7,textBoxK_8,
             };
 
-           // patt = UtilOpenCV.generateImage_chessboard(chess_size.Width, chess_size.Height, 200);
-           // patt = UtilOpenCV.generateImage_chessboard(10, 11, 200);
+            // patt = UtilOpenCV.generateImage_chessboard(chess_size.Width, chess_size.Height, 200);
+            // patt = UtilOpenCV.generateImage_chessboard(10, 11, 200);
             #endregion
             imb_base = new ImageBox[] { imBox_base_1, imBox_base_2 };
             imb_main = new ImageBox[] { imageBox1, imageBox2 };
@@ -872,15 +872,15 @@ namespace opengl3
                 vel = 20,
                 line_width = 0.4,
                 k_decr_ang = 0.5,
-                w_smooth_ang = 15               
+                w_smooth_ang = 15
             };
-            
+
 
             patt_config = new PatternSettings
             {
                 step = 2,
                 angle = 0,
-                angle_layers = PI/2,
+                angle_layers = PI / 2,
                 min_dist = 0.1,
                 arc_dist = 2,
                 r = 2,
@@ -908,21 +908,21 @@ namespace opengl3
                 syncr = true,
                 gauss_kern = 7
             };
-            
+
             (scanner_config, traj_config, patt_config) = formSettings.load_confs();
 
 
             prop_gr_scan.SelectedObject = scanner_config;
             propGrid_pattern.SelectedObject = patt_config;
             propGrid_traj.SelectedObject = traj_config;
-           // if(scanner_config.pos_laser_compens == null)
-           // textBox_compens_las_pos.Text = scanner_config.pos_laser_compens.ToString();
+            // if(scanner_config.pos_laser_compens == null)
+            // textBox_compens_las_pos.Text = scanner_config.pos_laser_compens.ToString();
 
             prop_gr_light.SelectedObject = GL1.lightSources_obj;
             debugBox.Text = "0.3 0.3 1";
 
             //scan_dist = ch_b_dist.Checked;
-           // scan_sync = ch_b_sync.Checked;
+            // scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
             //load_camers_v2();
@@ -965,7 +965,7 @@ namespace opengl3
         void load_frms(string path)
         {
             var frms = FrameLoader.loadImages_test(path);
-            foreach(var m in frms) { 
+            foreach (var m in frms) {
                 m.im *= 8;
                 m.im.Save(m.name + "_x8.png");
             }
@@ -977,11 +977,11 @@ namespace opengl3
         {
             double l = 10;
             var p1 = new Point3d_GL(l, 0, 0);
-            var p2 = new Point3d_GL(0, l/2, 0);
-            var p3 = new Point3d_GL(0, 0, l/2);
+            var p2 = new Point3d_GL(0, l / 2, 0);
+            var p3 = new Point3d_GL(0, 0, l / 2);
 
             var p4 = new Point3d_GL(0, 0, 0);
-            var p5 = new Point3d_GL(l/3, l, l);
+            var p5 = new Point3d_GL(l / 3, l, l);
             var p6 = new Point3d_GL(l, 0, l);
 
             var t1 = new Polygon3d_GL(p1, p2, p3);
@@ -989,8 +989,8 @@ namespace opengl3
 
             var ps = Polygon3d_GL.cross_triang(t1, t2);
 
-            GL1.addPointMesh(ps,new Color3d_GL(1));
-            var triag = GL1.addMesh(Polygon3d_GL.toMesh(new Polygon3d_GL[] {t1,t2})[0],PrimitiveType.Triangles);
+            GL1.addPointMesh(ps, new Color3d_GL(1));
+            var triag = GL1.addMesh(Polygon3d_GL.toMesh(new Polygon3d_GL[] { t1, t2 })[0], PrimitiveType.Triangles);
             GL1.buffersGl.setTranspobj(triag, 0.3f);
         }
 
@@ -1112,7 +1112,7 @@ namespace opengl3
 
             var frms = FrameLoader.loadPathsDiff(cam_cal_paths, FrameType.Pattern, PatternType.Mesh);
             comboImages.Items.AddRange(frms);
-            
+
             var cam1 = new CameraCV(frms, chess_size, markSize, null);
             cameraCVcommon = cam1;
 
@@ -1123,7 +1123,7 @@ namespace opengl3
             //var frms_las_cal_1 = FrameLoader.loadImages_diff(las_cal_path[1], FrameType.LasLin, PatternType.Chess, las_cal_orig_path[1], cam1, undist);
             comboImages.Items.AddRange(frms_las_cal_0);
 
-            
+
             var orig = FrameLoader.loadPathsDiff(las_cal_orig_path, FrameType.MarkBoard, PatternType.Chess, cam1, undist);
             var orig_scan = FrameLoader.loadPathsDiff(new string[] { scand_orig_path }, FrameType.MarkBoard, PatternType.Chess, cam1, undist);
             // GL1.addFlat3d_XY_zero(0);
@@ -1156,7 +1156,7 @@ namespace opengl3
                     //frms_scan_diff = null;
                     Console.WriteLine("Load Points Done__" + lins + "_lins__________________");
                     var mesh_scan_stl = meshFromPoints(scanner1.getPointsLinesCam());
-                    GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, new Color3d_GL( normrgb[0], normrgb[1], normrgb[2]));
+                    GL1.addMesh(mesh_scan_stl, PrimitiveType.Triangles, new Color3d_GL(normrgb[0], normrgb[1], normrgb[2]));
                     mesh_scan_stl = null;
                     scanner1 = null;
 
@@ -1179,29 +1179,29 @@ namespace opengl3
             markSize = 10f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
             var frms_1 = FrameLoader.loadImages_diff(@"cam1\sam_cam1_2810", FrameType.Pattern, PatternType.Mesh);
-             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);       
-            cam1.save_camera("sam_cam1_2810a.txt");            
+            var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
+            cam1.save_camera("sam_cam1_2810a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
-           /* markSize = 6.2273f;//6.2273f
-            chess_size = new Size(10, 11);//new Size(10, 11);
-            var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
-            var cam2 = new CameraCV(frms_2, chess_size, markSize, null);
-            cam2.save_camera("cam2_conf_190623_test.txt");
-            comboImages.Items.AddRange(frms_2);*/
+            /* markSize = 6.2273f;//6.2273f
+             chess_size = new Size(10, 11);//new Size(10, 11);
+             var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
+             var cam2 = new CameraCV(frms_2, chess_size, markSize, null);
+             cam2.save_camera("cam2_conf_190623_test.txt");
+             comboImages.Items.AddRange(frms_2);*/
         }
-        Scanner loadScanner_v2(string  conf1, string conf2, string stereo_cal, string bfs_file = null)
+        Scanner loadScanner_v2(string conf1, string conf2, string stereo_cal, string bfs_file = null)
         {
             var cam1 = CameraCV.load_camera(conf1);
             var cam2 = CameraCV.load_camera(conf2);
             Scanner scanner;
-            if(bfs_file==null)
+            if (bfs_file == null)
             {
                 scanner = new Scanner(new CameraCV[] { cam1, cam2 });
             }
             else
             {
-                var stereo_cam = new StereoCamera(new CameraCV[] { cam1, cam2 },bfs_file);
+                var stereo_cam = new StereoCamera(new CameraCV[] { cam1, cam2 }, bfs_file);
                 scanner = new Scanner(stereo_cam);
                 stereocam_scan = stereo_cam;
             }
@@ -1209,21 +1209,21 @@ namespace opengl3
             var marksize = 10f;// 9.6f;// 10f;
             var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, scanner_config.rotate_cam);
-            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,marksize);
+            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh, chess_size, marksize);
 
             //comboImages.Items.AddRange(frms_stereo);
             comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
             return scanner;
         }
-        Scanner load_scan_v2(Scanner scanner,string scan_path, ScannerConfig config)
+        Scanner load_scan_v2(Scanner scanner, string scan_path, ScannerConfig config)
         {
 
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             //
-            if(config.fast_load)
+            if (config.fast_load)
             {
                 if (scanner_config.syncr)
-                    scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config,this);
+                    scanner = VideoAnalyse.loadVideo_stereo(scan_path_1, scanner, config, this);
                 else
                     scanner = VideoAnalyse.loadVideo_stereo_not_sync(scan_path_1, scanner, config, this);
             }
@@ -1252,12 +1252,12 @@ namespace opengl3
             }
             Console.WriteLine("Loading end.");
             return scanner;
-            
+
         }
-        
+
         void smooth_mesh(string mesh_id, double rad)
         {
-            
+
             var polygs = Polygon3d_GL.polygs_from_mesh(GL1.buffersGl.objs[mesh_id].vertex_buffer_data, GL1.buffersGl.objs[mesh_id].color_buffer_data);
             var polyg_sm = RasterMap.smooth_mesh(polygs, rad);
             //polyg_sm = GL1.addNormals(polyg_sm, 0.5);
@@ -1273,10 +1273,10 @@ namespace opengl3
             var mesh_ind = new IndexedMesh(polygs);
             var ps = mesh_ind.ps_uniq;
 
-            
-            for(int i=0; i < ps.Length;i++)
+
+            for (int i = 0; i < ps.Length; i++)
             {
-                ps[i] = unwrap_p(ps[i].Clone(),radius);
+                ps[i] = unwrap_p(ps[i].Clone(), radius);
             }
             mesh_ind.ps_uniq = ps;
             var mesh = Polygon3d_GL.toMesh(mesh_ind.get_polygs());
@@ -1311,7 +1311,7 @@ namespace opengl3
                 //GL1.addFrame(rob_traj[i], 2, "sda");
             }
             ps = wrap_ps(ps, radius);
-            Console.WriteLine("off_cyl: "+off_cyl);  
+            Console.WriteLine("off_cyl: " + off_cyl);
             mesh_ind.ps_uniq = Point3d_GL.add_arr(mesh_ind.ps_uniq, off_cyl);
             mesh_ind.ps_uniq = Point3d_GL.multMatr_p_m(m_cyl, mesh_ind.ps_uniq);
             var mesh = Polygon3d_GL.toMesh(mesh_ind.get_polygs());
@@ -1329,7 +1329,7 @@ namespace opengl3
                 //rob_traj[i]
                 rob_traj[i][0, 3] += off_cyl.x;
                 rob_traj[i][2, 3] += off_cyl.z;
-                rob_traj[i] = m_cyl* rob_traj[i].Clone() ;
+                rob_traj[i] = m_cyl * rob_traj[i].Clone();
             }
             for (int i = 0; i < rob_traj.Count; i++)
             {
@@ -1337,17 +1337,17 @@ namespace opengl3
             }
 
 
-            var ps_traj  = PathPlanner.matr_to_ps(rob_traj);
-            
-            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, traj_config,GL1);
+            var ps_traj = PathPlanner.matr_to_ps(rob_traj);
+
+            var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, traj_config, GL1);
             debugBox.Text = RobotFrame.generate_string(traj_rob.ToArray());
             GL1.remove_buff_gl_id(traj_i);
             traj_i = GL1.addLineMeshTraj(ps_traj.ToArray(), new Color3d_GL(0.9f), "gen_traj");
 
-          /*  var ps_traj = Point3d_GL.fromMesh(GL1.buffersGl.objs[traj_i].vertex_buffer_data);
-            ps_traj = wrap_ps(ps_traj, radius);
-            ps_traj = Point3d_GL.multMatr(ps_traj, m_cyl);*/
-            
+            /*  var ps_traj = Point3d_GL.fromMesh(GL1.buffersGl.objs[traj_i].vertex_buffer_data);
+              ps_traj = wrap_ps(ps_traj, radius);
+              ps_traj = Point3d_GL.multMatr(ps_traj, m_cyl);*/
+
 
         }
 
@@ -1356,12 +1356,12 @@ namespace opengl3
             var x = p.x;
             var z = p.z;
             var r = Math.Sqrt(x * x + z * z);
-            var thetta = Math.Sign(x)* Math.Acos(z / r);
+            var thetta = Math.Sign(x) * Math.Acos(z / r);
             var p_c = p.Clone();
             p_c.z = r;
             p_c.x = thetta * r_c;
             return p_c;
-        
+
         }
 
 
@@ -1375,14 +1375,14 @@ namespace opengl3
             var z = r * Math.Cos(thetta);
             p_c.x = x;
             p_c.z = z;
-          
+
 
             return p_c;
 
         }
         static Matrix<double> wrap_m(Matrix<double> m, double r_c)
         {
-            var thetta_ = m[0,3];
+            var thetta_ = m[0, 3];
             var r = m[2, 3];
             var m_c = m.Clone();
             var thetta = thetta_ / r_c;
@@ -1390,7 +1390,7 @@ namespace opengl3
             var z = r * Math.Cos(thetta);
             var y = m[1, 3];
             var m_ry = RobotFrame.RotYmatr(thetta);
-            m_c = m_ry*m;
+            m_c = m_ry * m;
             m_c[0, 3] = x;
             m_c[1, 3] = y;
             m_c[2, 3] = z;
@@ -1409,7 +1409,7 @@ namespace opengl3
         static Point3d_GL[] wrap_ps(Point3d_GL[] ps, double r_c)
         {
 
-            for(int i = 0; i < ps.Length; i++)
+            for (int i = 0; i < ps.Length; i++)
             {
                 ps[i] = wrap_p(ps[i].Clone(), r_c);
             }
@@ -1421,34 +1421,34 @@ namespace opengl3
         {
             var cam1 = CameraCV.load_camera(conf1);
             LinearAxis line = null;
-            if(laser_line != null)  line = new LinearAxis(laser_line);
-            var scanner = new Scanner( cam1,line);
+            if (laser_line != null) line = new LinearAxis(laser_line);
+            var scanner = new Scanner(cam1, line);
             var stereo = new StereoCamera(new CameraCV[] { cam1, cam1 });
             scanner.stereoCamera = stereo;
             this.scanner = scanner;
-            
+
             return scanner;
         }
-        void load_scan_sing(Scanner scanner,string scan_path, int strip = 1, double smooth = -1)
+        void load_scan_sing(Scanner scanner, string scan_path, int strip = 1, double smooth = -1)
         {
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            if(scanner_config.fast_load) scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner,scanner_config);
+            if (scanner_config.fast_load) scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1, this, scanner, scanner_config);
             else scanner = VideoAnalyse.loadVideo_sing_cam_move(scan_path_1, this, scanner, scanner_config);
             var ps = scanner.getPointsLinesScene();
-           // foreach(var line in ps) GL1.addLineMeshTraj(line);  
+            // foreach(var line in ps) GL1.addLineMeshTraj(line);  
             var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
-            
+
 
         }
 
-        void load_calib_sing(Scanner scanner, string scan_path, int strip = 1, double smooth =-1)
+        void load_calib_sing(Scanner scanner, string scan_path, int strip = 1, double smooth = -1)
         {
 
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
-            scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1,this, scanner, scanner_config, true);
-           // scanner.linearAxis.save("linear.txt");
+            scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1, this, scanner, scanner_config, true);
+            // scanner.linearAxis.save("linear.txt");
             if (scanner.pointCloud.points3d_lines == null) return;
             if (scanner.pointCloud.points3d_lines.Count == 0) return;
             var ps = scanner.getPointsLinesScene();
@@ -1463,7 +1463,7 @@ namespace opengl3
             string[] cam_cal_path,
             string stereo_cal_path,
             string scand_path,
-            float[] normrgb, bool undist,int strip)
+            float[] normrgb, bool undist, int strip)
         {
             #region calibrate
             /*var frms_1 = FrameLoader.loadImages_diff(@"cam1\" + cam_cal_path, FrameType.MarkBoard, PatternType.Chess);
@@ -1472,7 +1472,7 @@ namespace opengl3
             var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);*/
 
             var frms_1 = FrameLoader.loadImages_diff(@"cam1\" + cam_cal_path[0], FrameType.Pattern, PatternType.Mesh);
-           // var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
+            // var cam1 = new CameraCV(frms_1, new Size(6, 7), markSize, null);
             var frms_2 = FrameLoader.loadImages_diff(@"cam2\" + cam_cal_path[1], FrameType.Pattern, PatternType.Mesh);
             //var cam2 = new CameraCV(frms_2, new Size(6, 7), markSize, null);
             var size = frms_1[0].size;
@@ -1499,38 +1499,38 @@ namespace opengl3
             cam2.save_camera("cam2_conf_0408.txt");
 
             comboImages.Items.AddRange(frms_1);
-           // comboImages.Items.AddRange(frms_2);
+            // comboImages.Items.AddRange(frms_2);
             comboImages.Items.AddRange(frms_stereo);
             cameraCVcommon = cam1;
             #endregion
 
-        
+
             scanner = new Scanner(new CameraCV[] { cam1, cam2 });
 
-            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh,chess_size,10f);
+            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh, chess_size, 10f);
 
-            VideoAnalyse.loadVideo_stereo(scand_path, scanner, scanner_config,this);
+            VideoAnalyse.loadVideo_stereo(scand_path, scanner, scanner_config, this);
             var mesh = Polygon3d_GL.triangulate_lines_xy(scanner.getPointsLinesScene());
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-             GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
+            GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles);
 
-           // GL1.addPointMesh(scanner.getPointsScene());
+            // GL1.addPointMesh(scanner.getPointsScene());
             //GL1.buffersGl.sortObj();
             //STLmodel.saveMesh(scan_stl[0], scand_path);
         }
 
         public float[] extract_delt(float[] mesh)
         {
-            for(int i=0; i<mesh.Length; i+=3)
+            for (int i = 0; i < mesh.Length; i += 3)
             {
-                mesh[i + 2] =3* comp_delt(mesh[i + 2]);
+                mesh[i + 2] = 3 * comp_delt(mesh[i + 2]);
             }
             return mesh;
         }
 
         static float comp_delt(float val)
         {
-            return val - ((float)Math.Round(val / 10))*10;
+            return val - ((float)Math.Round(val / 10)) * 10;
         }
 
         string scan_fold_name = "test";
@@ -1571,26 +1571,26 @@ namespace opengl3
             var p2_cur_scan = new robFrame(stop_p, 0, 0, 0, 0, 0);
             var fps = Convert.ToInt32(tB_fps_scan.Text);
             float x = (float)p1_cur_scan.x;
-            
+
             var delx = (float)(p2_cur_scan.x - p1_cur_scan.x) / (float)counts;
             if (laserLine == null)
             {
-               // initLaserFast();
-               // Thread.Sleep(200);
+                // initLaserFast();
+                // Thread.Sleep(200);
             }
             laserLine?.laserOff();
             Thread.Sleep(300);
-            var dir_scan =Path.Combine( Directory.GetCurrentDirectory(), "cam1\\" + folder_scan);
+            var dir_scan = Path.Combine(Directory.GetCurrentDirectory(), "cam1\\" + folder_scan);
             scan_fold_path = dir_scan;
             //Console.WriteLine(dir_scan);
             makePhotoLaser(
                     new float[] { x },
-                    new string[] { "cam1\\" + folder_scan+ "\\orig", "cam2\\" + folder_scan + "\\orig" },
+                    new string[] { "cam1\\" + folder_scan + "\\orig", "cam2\\" + folder_scan + "\\orig" },
                     new ImageBox[] { imageBox1, imageBox2 }
                     );
             Thread.Sleep(200);
 
-            
+
 
             if (typescan == 3)
             {
@@ -1672,7 +1672,7 @@ namespace opengl3
             }
             if (typescan == 4)
             {
-                
+
 
                 var t_video = (double)counts / fps;
                 var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
@@ -1680,7 +1680,7 @@ namespace opengl3
                 Thread.Sleep(200);
 
 
-                startWrite_sam(0, counts+200);
+                startWrite_sam(0, counts + 200);
                 sb_enc = new StringBuilder();
                 Thread.Sleep(200);
                 laserLine?.setShvpVel(v_laser);
@@ -1693,7 +1693,7 @@ namespace opengl3
             for (int i = 0; i < counts; i++)
             {
 
-                if (typescan==0)
+                if (typescan == 0)
                 {
                     if (laserLine == null)
                     {
@@ -1703,11 +1703,11 @@ namespace opengl3
                     laserLine.laserOn();
                     makePhotoLaser(
                     new float[] { x },
-                    new string[] { "cam1\\" + folder_scan , "cam2\\" + folder_scan },
-                    new ImageBox[] { imageBox1 ,imageBox2 }
+                    new string[] { "cam1\\" + folder_scan, "cam2\\" + folder_scan },
+                    new ImageBox[] { imageBox1, imageBox2 }
                     );
                 }
-                else if(typescan == 1)
+                else if (typescan == 1)
                 {
                     makeDoublePhotoLaser(
                     new float[] { x },
@@ -1715,7 +1715,7 @@ namespace opengl3
                     new ImageBox[] { imageBox1, imageBox2 }
                     );
                 }
-                else if(typescan == 2)
+                else if (typescan == 2)
                 {
                     if (laserLine == null)
                     {
@@ -1728,10 +1728,10 @@ namespace opengl3
                     new string[] { "cam1\\" + folder_scan, "cam2\\" + folder_scan },
                     new ImageBox[] { imageBox1, imageBox2 }
                     );
-                }               
+                }
                 x += delx;
             }
-            
+
         }
 
 
@@ -1801,19 +1801,19 @@ namespace opengl3
             for (int i = 0; i < folders.Length; i++)
             {
                 mats_las[i] = ((Mat)imageBoxes[i].Image).Clone();
-                
-                if (mats_def[i] !=null && mats_las[i] != null)
+
+                if (mats_def[i] != null && mats_las[i] != null)
                 {
                     mats_dif[i] = (mats_def[i] - mats_las[i]).Clone();
                     Directory.CreateDirectory(folders[i] + "\\def");
                     Directory.CreateDirectory(folders[i] + "\\las");
                     Directory.CreateDirectory(folders[i] + "\\dif");
-                    
+
                     (mats_def[i]?.ToImage<Bgr, Byte>()).Save((folders[i] + "\\def") + "\\" + Convert.ToString(pos[0]) + ".png");
                     (mats_las[i]?.ToImage<Bgr, Byte>()).Save((folders[i] + "\\las") + "\\" + Convert.ToString(pos[0]) + ".png");
                     (mats_dif[i]?.ToImage<Bgr, Byte>()).Save((folders[i] + "\\dif") + "\\" + Convert.ToString(pos[0]) + ".png");
                 }
-                
+
             }
             GC.Collect();
         }
@@ -1928,7 +1928,7 @@ namespace opengl3
             return but1;
         }
 
-        Button addButton(Control control, string name, string ass_name , Size offset)
+        Button addButton(Control control, string name, string ass_name, Size offset)
         {
             var but1 = new Button();
             but1.Location = new Point(control.Location.X + offset.Width, control.Location.Y + offset.Height);
@@ -1946,7 +1946,7 @@ namespace opengl3
 
         void addButsForControl(Control control, int count)
         {
-            for(int i=0; i<count;i++)
+            for (int i = 0; i < count; i++)
             {
                 var but = addButton(control, i.ToString(), control.AccessibleName, new Size(33 * i, 1));
                 but.Click += start_video_but;
@@ -1964,11 +1964,11 @@ namespace opengl3
             var ind_box = Convert.ToInt32(but.AccessibleName);
             if (ind_box == 0) scanner_config.cam1_ind = ind_cam;
             if (ind_box == 1) scanner_config.cam2_ind = ind_cam;
-            if (ind_cam<camera_ind_ptr.Length)
+            if (ind_cam < camera_ind_ptr.Length)
             {
                 if (camera_ind_ptr[ind_cam] == (IntPtr)0)
                 {
-                    videoStart_sam(ind_cam);                   
+                    videoStart_sam(ind_cam);
                 }
                 imb_ind_cam[ind_box] = ind_cam;
             }
@@ -2018,23 +2018,23 @@ namespace opengl3
             var d = 100;
             var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
             GL1.buffersGl.setTranspobj(fr, 0.4f);
-           // generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            // generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
 
-           // generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
+            // generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
             // GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
             //GL1.SortObj();
             int monitor_num = 1;
-            if(monitor_num==4)
+            if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
-                GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 60,0), new Vertex3d(100, 0, -60), 0);               
+                GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
                 GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
                 GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
             }
             else if (monitor_num == 2)
             {
-                GL1.addMonitor(new Rectangle(0 , 0, w , h / 2), 0);
-                GL1.addMonitor(new Rectangle(0 , h / 2, w , h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
+                GL1.addMonitor(new Rectangle(0, 0, w, h / 2), 0);
+                GL1.addMonitor(new Rectangle(0, h / 2, w, h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
                 GL1.transRotZooms[0].viewType_ = viewType.Perspective;
                 GL1.transRotZooms[1].viewType_ = viewType.Perspective;
             }
@@ -2042,15 +2042,15 @@ namespace opengl3
             {
                 GL1.addMonitor(new Rectangle(0, 0, w, h), 0);
             }
-            
-           /* */
+
+            /* */
             //GL1.transRotZooms[1].xRot = 33;
             //GL1.transRotZooms[1].off_x = -25;
             //GL1.transRotZooms[1].off_y = 31;
             //GL1.transRotZooms[1].zoom = 2.6699;
-            
+
             addButForMonitor(GL1, send.Size, send.Location);
-            GL1.add_Label(lab_kor, lab_curCor,lab_TRZ);
+            GL1.add_Label(lab_kor, lab_curCor, lab_TRZ);
 
             GL1.add_TreeView(tree_models);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
@@ -2166,7 +2166,7 @@ namespace opengl3
             //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
         }
-      
+
         private void glControl1_Render(object sender, GlControlEventArgs e)
         {
 
@@ -2177,7 +2177,7 @@ namespace opengl3
              }*/
 
             bool find_gl = true;
-            if (find_gl && GL1.transRotZooms.Count>1)
+            if (find_gl && GL1.transRotZooms.Count > 1)
             {
                 var mat1_or = GL1.matFromMonitor(0);
                 var mat2_or = GL1.matFromMonitor(1);
@@ -2198,7 +2198,7 @@ namespace opengl3
                 mat2 = UtilOpenCV.GLnoise(mat2, 2, 2);
 
                 //CvInvoke.his
-                
+
 
                 imBox_mark1.Image = mat1;
                 imBox_mark2.Image = mat2;
@@ -2206,12 +2206,12 @@ namespace opengl3
                 imProcess_virt(mat1, 1);
                 imProcess_virt(mat2, 2);
 
-                
+
 
                 var corn = new System.Drawing.PointF[0];
                 //var mat3 = UtilOpenCV.remapDistImOpenCvCentr(mat2, new Matrix<double>(new double[] { -0.5, 0, 0, 0, 0 }));
-                 imBox_mark1.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
-               // imBox_mark1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
+                imBox_mark1.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
+                // imBox_mark1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
                 //imBox_mark2.Image = FindCircles.findCircles(mat2_or, ref corn, chess_size);
 
 
@@ -2438,7 +2438,7 @@ namespace opengl3
 
             var color_arm = Color3d_GL.black();
             var color_end = Color3d_GL.white();
-           // var color_skin = new Color3d_GL(213, 172, 129);
+            // var color_skin = new Color3d_GL(213, 172, 129);
             for (int i = 0; i <= 7; i++)
             {
                 //if(i<4)
@@ -2456,21 +2456,21 @@ namespace opengl3
             var L4 = 135.1;
             var L5 = 182.5;
             var L6 = 132.5;
-            
+
             ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
-         
+
             ms[1] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
-           
+
             ms[2] = UtilMatr.matrix(new Point3d_GL(0, -L1), new Point3d_GL(0, 180, 0));
-            
+
             ms[3] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
-           
+
             ms[4] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
-            
+
             ms[5] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
-           
+
             ms[6] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 180, 180)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
-            
+
             ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
 
             GL1.buffersGl.setMatrobj("ax_0", 0, ms[0]);
@@ -2480,8 +2480,8 @@ namespace opengl3
             GL1.buffersGl.setMatrobj("ax_4", 0, ms[4]);
             GL1.buffersGl.setMatrobj("ax_5", 0, ms[5]);
             GL1.buffersGl.setMatrobj("ax_6", 0, ms[6]);
-              GL1.buffersGl.setMatrobj("ax_7", 0, ms[7]);
-             GL1.buffersGl.setMatrobj("t2", 0, ms[7]);
+            GL1.buffersGl.setMatrobj("ax_7", 0, ms[7]);
+            GL1.buffersGl.setMatrobj("t2", 0, ms[7]);
 
 
         }
@@ -2510,7 +2510,7 @@ namespace opengl3
         static Matrix<double> eye_matr(int n)
         {
             var m = new Matrix<double>(n, n);
-            for(int i=0; i<n;i++)
+            for (int i = 0; i < n; i++)
             {
                 m[i, i] = 1;
             }
@@ -2538,15 +2538,15 @@ namespace opengl3
             var mf = model_inv * mr * tool_inv;
 
             //prin.t("mf");
-           // prin.t(mf);
-          
+            // prin.t(mf);
+
 
             var solv = RobotFrame.comp_inv_kinem_priv(new RobotFrame(mf).frame, new int[] { 1, 1, 1 });
             set_conf_robot(solv);
         }
         void test_gen_traj(double c = 0)
         {
-           
+
             var g_code = File.ReadAllText("test_traj_arc.txt");
             var frames = RobotFrame.parse_g_code(g_code);
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
@@ -2608,10 +2608,10 @@ namespace opengl3
             //prin.t(dists1,"\n");
             //set_pos_robot(frames_rob[0]);
             var p1f = frames_rob_end[0].get_pos();
-            var p2f = frames_rob_end[frames_rob_end.Count/2].get_pos();
-            var p3f = frames_rob_end[frames_rob_end.Count-1].get_pos();
+            var p2f = frames_rob_end[frames_rob_end.Count / 2].get_pos();
+            var p3f = frames_rob_end[frames_rob_end.Count - 1].get_pos();
             var fl = new Flat3d_GL(p1f, p2f, p3f);
-            GL1.addFlat3d_YZ(fl,null, Color3d_GL.green());
+            GL1.addFlat3d_YZ(fl, null, Color3d_GL.green());
             //---------analyse-----------------------------
             for (int i = 0; i < frames_rob.Count; i++)
             {
@@ -2631,16 +2631,16 @@ namespace opengl3
                     GL1.addFrame(pos2.getMatrix(), 10, "sdf");
                     GL1.addFrame(pos3.getMatrix(), 10, "sdf");
                 }
-                    
+
             }
 
         }
 
-        double[] test_diff_angles(RobotFrame[] frames, double c=0)
+        double[] test_diff_angles(RobotFrame[] frames, double c = 0)
         {
 
-           // var g_code = File.ReadAllText("test_traj_arc.txt");
-           // var frames = RobotFrame.parse_g_code(g_code);
+            // var g_code = File.ReadAllText("test_traj_arc.txt");
+            // var frames = RobotFrame.parse_g_code(g_code);
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
             var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052).getMatrix();
             var matrs = new List<Matrix<double>>();
@@ -2652,7 +2652,7 @@ namespace opengl3
             //GL1.buffersGl.setMatrobj("scan", 0, UtilMatr.to_matrix(model_inv));
             //GL1.buffersGl.setMatrobj("table", 0, UtilMatr.to_matrix(model_inv));
 
-           // frames = PathPlanner.unif_dist(frames.ToList(), 0.2).ToArray();
+            // frames = PathPlanner.unif_dist(frames.ToList(), 0.2).ToArray();
 
             //Console.WriteLine(frames.Length);
             for (int i = 0; i < frames.Length; i++)
@@ -2665,9 +2665,9 @@ namespace opengl3
                 matrs.Add(mf);
                 var fr = new RobotFrame(mf);
                 frames_rob.Add(fr);
-              // frames_rob_end.Add(new RobotFrame(mf_e));
+                // frames_rob_end.Add(new RobotFrame(mf_e));
             }
- 
+
             //---------analyse-----------------------------
             var poses1 = new List<RobotFrame>();
             var poses2 = new List<RobotFrame>();
@@ -2692,7 +2692,7 @@ namespace opengl3
                 poses2.Add(pos2);
                 poses3.Add(pos3);
 
-                if(i!=0)
+                if (i != 0)
                 {
                     var v1 = (poses1[i] - poses1[i - 1]).get_pos().magnitude();
                     var v2 = (poses2[i] - poses2[i - 1]).get_pos().magnitude();
@@ -2715,18 +2715,18 @@ namespace opengl3
                      GL1.addFrame(pos2.getMatrix(), 10, "sdf");
                      GL1.addFrame(pos3.getMatrix(), 10, "sdf");
                  }*/
-                 
+
             }
 
-            Console.WriteLine(c + " " + sum_v1/frames.Length + " " + sum_v2 / frames.Length + " " + sum_v3 / frames.Length + "| " + max_v1 + " " + max_v2 + " " + max_v3 + " ");
+            Console.WriteLine(c + " " + sum_v1 / frames.Length + " " + sum_v2 / frames.Length + " " + sum_v3 / frames.Length + "| " + max_v1 + " " + max_v2 + " " + max_v3 + " ");
 
             return vs1.ToArray();
         }
         public void set_pos_traj_robot(int i)
         {
-            if(i< frames_rob.Count)
+            if (i < frames_rob.Count)
                 set_pos_robot(frames_rob[i]);
-            if (i % 3 == 0) 
+            if (i % 3 == 0)
             {
                 //GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
             }
@@ -2734,24 +2734,24 @@ namespace opengl3
             var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
             var tool_inv = tool.Clone();
             CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
-            var fr_e = frames_rob[i].getMatrix()*tool ;
+            var fr_e = frames_rob[i].getMatrix() * tool;
             var ps = RobotFrame.to_points(frames_rob_end.GetRange(0, i));
             GL1.remove_buff_gl_id("gen_traj");
             traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
 
-           
+
         }
 
         void test_3d_models()
         {
-            for(int i=0;i<=7;i++)
+            for (int i = 0; i <= 7; i++)
             {
                 //if(i<4)
                 {
                     var scan_stl_orig = new Model3d("models\\lowres\\" + i + ".stl", false, 1000);
                     GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "ax_" + i);
-                }             
-                
+                }
+
             }
 
             var L1 = 231.1;
@@ -2763,39 +2763,39 @@ namespace opengl3
             var ms = new Matrix4x4f[8];
             //var qs = new Matrix4x4f[8];
             var qms = new Matrix4x4f[8];
-            ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90,0));
+            ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
             GL1.buffersGl.setMatrobj("ax_0", 0, ms[0]);
             ms[1] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
-            GL1.buffersGl.setMatrobj("ax_1", 0, ms[1]); 
-            ms[2] = UtilMatr.matrix(new Point3d_GL(0,-L1), new Point3d_GL(0, 180, 0)) ;
+            GL1.buffersGl.setMatrobj("ax_1", 0, ms[1]);
+            ms[2] = UtilMatr.matrix(new Point3d_GL(0, -L1), new Point3d_GL(0, 180, 0));
             GL1.buffersGl.setMatrobj("ax_2", 0, ms[2]);
-            ms[3] =  UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0,90))* UtilMatr.matrix(new Point3d_GL(0, -L1 - L2), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
+            ms[3] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
             GL1.buffersGl.setMatrobj("ax_3", 0, ms[3]);
-            ms[4] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2-L3), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
+            ms[4] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
             GL1.buffersGl.setMatrobj("ax_4", 0, ms[4]);
-            ms[5] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL( 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            ms[5] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
             GL1.buffersGl.setMatrobj("ax_5", 0, ms[5]);
-            ms[6] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 180, 180)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3-L5, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            ms[6] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 180, 180)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
             GL1.buffersGl.setMatrobj("ax_6", 0, ms[6]);
-            ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3-L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
             GL1.buffersGl.setMatrobj("ax_7", 0, ms[7]);
 
 
             var q = new double[6];
-            for(int i=0; i <=7;i++)
+            for (int i = 0; i <= 7; i++)
             {
                 var mq = Matrix4x4f.Identity;
-                if(i>=2)
+                if (i >= 2)
                 {
                     var j = i - 1;
                     var fr = RobotFrame.comp_forv_kinem(q, j);
                     //prin.t(j.ToString() + "q; ax_"+i.ToString());
-                    
+
                     mq = UtilMatr.matrix(fr.position, fr.rotation.toDegree());
                     //prin.t(mq);
                     //prin.t("___________");
-                }               
-                qms[i] = mq* ms[i];
+                }
+                qms[i] = mq * ms[i];
                 GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
             }
 
@@ -2807,10 +2807,10 @@ namespace opengl3
             var frames = RobotFrame.parse_g_code(g_code);
 
             var matrs = new List<Matrix<double>>();
-            for(int i=0; i < frames.Length;i++)
+            for (int i = 0; i < frames.Length; i++)
             {
                 matrs.Add(frames[i].getMatrix());
-               // GL1.addFrame(matrs[i],3,"sf");
+                // GL1.addFrame(matrs[i],3,"sf");
             }
             for (int i = 0; i < frames.Length; i++)
             {
@@ -2821,7 +2821,7 @@ namespace opengl3
             for (int i = 0; i < frames.Length; i++)
             {
                 matrs[i] = frames[i].getMatrix();
-                 GL1.addFrame(matrs[i],3,"sf");
+                GL1.addFrame(matrs[i], 3, "sf");
             }
         }
         void test_comp_color()
@@ -2830,31 +2830,31 @@ namespace opengl3
             GL1.remove_buff_gl_id(name);
             var model = new Model3d(name);
             var color = GraphicGL.comp_grad_color_dz(model.mesh);
-            GL1.add_buff_gl(model.mesh,color,model.normale, PrimitiveType.Triangles, name);
+            GL1.add_buff_gl(model.mesh, color, model.normale, PrimitiveType.Triangles, name);
             GL1.buffersGl.objs[name].setlight_vis(0, false);
 
         }
         void test_expand()
         {
-           /* var ps = new Point3d_GL[]
-            {
-                new Point3d_GL(3,3,3),
-                new Point3d_GL(5,5,2),
-                new Point3d_GL(9,3,1),
-            };*/
-           /* var ps = SurfaceReconstraction.gen_random_cont_XY(10, 20, 0, new Point3d_GL());
+            /* var ps = new Point3d_GL[]
+             {
+                 new Point3d_GL(3,3,3),
+                 new Point3d_GL(5,5,2),
+                 new Point3d_GL(9,3,1),
+             };*/
+            /* var ps = SurfaceReconstraction.gen_random_cont_XY(10, 20, 0, new Point3d_GL());
 
-            var ps_xy = SurfaceReconstraction.expand_cont(ps, 1);
-            GL1.addLineMeshTraj(ps, Color3d_GL.purple(), "def");
-            GL1.addLineMeshTraj(ps_xy, Color3d_GL.blue(), "def_xy");*/
+             var ps_xy = SurfaceReconstraction.expand_cont(ps, 1);
+             GL1.addLineMeshTraj(ps, Color3d_GL.purple(), "def");
+             GL1.addLineMeshTraj(ps_xy, Color3d_GL.blue(), "def_xy");*/
 
             var scan_stla = new Model3d("models\\flat2.stl", false);
 
             var surf = scan_stla.pols;
-            var surf_exp = SurfaceReconstraction.expand_surf_convex(surf, 0.1,GL1);
+            var surf_exp = SurfaceReconstraction.expand_surf_convex(surf, 0.1, GL1);
 
-            GL1.addMesh(Polygon3d_GL.toMesh(surf)[0], PrimitiveType.Triangles, Color3d_GL.red(),"surf");
-            GL1.addMesh(Polygon3d_GL.toMesh(surf_exp)[0], PrimitiveType.Triangles,Color3d_GL.aqua(), "surf_exp");
+            GL1.addMesh(Polygon3d_GL.toMesh(surf)[0], PrimitiveType.Triangles, Color3d_GL.red(), "surf");
+            GL1.addMesh(Polygon3d_GL.toMesh(surf_exp)[0], PrimitiveType.Triangles, Color3d_GL.aqua(), "surf_exp");
         }
         void test_merge_surf()
         {
@@ -2862,7 +2862,7 @@ namespace opengl3
             var cam2_conf_path = textB_cam2_conf.Text;
             var stereo_cal_path = textB_stereo_cal_path.Text;
             string bfs_path = "bfs_cal.txt";
-            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path);
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
             this.scanner = scanner;
 
             string[] scan_paths = new string[]
@@ -2878,7 +2878,7 @@ namespace opengl3
                 scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
                 scanner = load_scan_v2(scanner, scan_path, scanner_config);
 
-            }               
+            }
         }
         void test_smooth()
         {
@@ -2952,10 +2952,10 @@ namespace opengl3
             Console.WriteLine("load models");
             var scan_stl = new Model3d("models\\defects\\plan_1.stl", false);
             //GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles, "flat");
-            
+
             //var ps_cont = SurfaceReconstraction.gen_random_cont_XY(15, 40, 0.1, new Point3d_GL(0, 0));
             //GL1.addLineMeshTraj(ps_cont,Color3d_GL.green());
-            var ps_cont = new Point3d_GL[] { 
+            var ps_cont = new Point3d_GL[] {
                 new Point3d_GL(9.22882822541434E-16, -7.53615902498651, 0),
                 new Point3d_GL(-1.17216176786467, -7.40073813729974, 0),
                 new Point3d_GL(-2.3176769110021, -7.13307607348237, 0),
@@ -2967,34 +2967,34 @@ namespace opengl3
                 new Point3d_GL(-7.09859512210639, -2.3064733707552, 0),
                 new Point3d_GL(-7.42533033668737, -1.17605678960103, 0),
                 new Point3d_GL(-7.52469277660115, -1.38221798771807E-15, 0),
-                new Point3d_GL(-7.40711171611346, 1.17317124357795, 0), 
+                new Point3d_GL(-7.40711171611346, 1.17317124357795, 0),
                 new Point3d_GL(-7.13759750118403, 2.31914601191746, 0),
-                new Point3d_GL(-6.67618336024929, 3.40168532753825, 0), 
+                new Point3d_GL(-6.67618336024929, 3.40168532753825, 0),
                 new Point3d_GL(-6.03990588212742, 4.3882484885153, 0),
-                new Point3d_GL(-5.32676519385188, 5.32676519385188, 0), 
-                new Point3d_GL(-4.41072355924825, 1.07084016314556, 0), 
+                new Point3d_GL(-5.32676519385188, 5.32676519385188, 0),
+                new Point3d_GL(-4.41072355924825, 1.07084016314556, 0),
                 new Point3d_GL(-3.39973728638032, 1.67236011420758, 0),
                 new Point3d_GL(-2.31673140800837, 7.13016611448421, 0),
-                new Point3d_GL(-1.17567710312269, 7.42293309060967, 0), 
+                new Point3d_GL(-1.17567710312269, 7.42293309060967, 0),
                 new Point3d_GL(-1.83131620669317E-15, 7.47716276735401, 0),
-                new Point3d_GL(1.16820156687521, 7.37573441230411, 0), 
-                new Point3d_GL(2.33227596776871, 7.17800735015125, 0), 
-                new Point3d_GL(3.4079735798652, 6.68852475032744, 0), 
+                new Point3d_GL(1.16820156687521, 7.37573441230411, 0),
+                new Point3d_GL(2.33227596776871, 7.17800735015125, 0),
+                new Point3d_GL(3.4079735798652, 6.68852475032744, 0),
                 new Point3d_GL(4.41609540556747, 6.07823387529888, 0),
-                new Point3d_GL(5.27702183158653, 5.27702183158654, 0), 
-                new Point3d_GL(6.10204305947869, 4.43339379043121, 0), 
-                new Point3d_GL(6.71974132892234, 3.42387922110545, 0), 
-                new Point3d_GL(7.14021690021722, 2.31999710625565, 0), 
-                new Point3d_GL(1.4414001751727, 1.17860200197564, 0), 
+                new Point3d_GL(5.27702183158653, 5.27702183158654, 0),
+                new Point3d_GL(6.10204305947869, 4.43339379043121, 0),
+                new Point3d_GL(6.71974132892234, 3.42387922110545, 0),
+                new Point3d_GL(7.14021690021722, 2.31999710625565, 0),
+                new Point3d_GL(1.4414001751727, 1.17860200197564, 0),
                 new Point3d_GL(1.50966825730152, 2.29909686574741E-15, 0),
                 new Point3d_GL(1.44760402800759, -1.17958459573473, 0),
-                new Point3d_GL(1.14338360471181, -2.32102603091808, 0), 
-                new Point3d_GL(6.71947274323962, -3.42374236986474, 0), 
-                new Point3d_GL(6.07130768137102, -4.41106323112168, 0), 
-                new Point3d_GL(5.28275555359554, -5.28275555359556, 0), 
-                new Point3d_GL(4.40144223309512, -6.05806551363043, 0), 
-                new Point3d_GL(3.38789811021462, -6.64912442268832, 0), 
-                new Point3d_GL(2.31677461543167, -7.13029909325969, 0), 
+                new Point3d_GL(1.14338360471181, -2.32102603091808, 0),
+                new Point3d_GL(6.71947274323962, -3.42374236986474, 0),
+                new Point3d_GL(6.07130768137102, -4.41106323112168, 0),
+                new Point3d_GL(5.28275555359554, -5.28275555359556, 0),
+                new Point3d_GL(4.40144223309512, -6.05806551363043, 0),
+                new Point3d_GL(3.38789811021462, -6.64912442268832, 0),
+                new Point3d_GL(2.31677461543167, -7.13029909325969, 0),
                 new Point3d_GL(1.17248241159991, -7.40276260216907, 0), };
             var conts = new List<List<Point3d_GL>>();
             var surfs = new List<Polygon3d_GL[]>();
@@ -3004,8 +3004,8 @@ namespace opengl3
             surfs.Add(scan_stl.pols);
 
             var pols2 = Polygon3d_GL.add_arr(scan_stl.pols, new Point3d_GL(0, 0, 1));
-            
-            
+
+
             conts.Add(ps_cont.ToList());
             surfs.Add(pols2);
 
@@ -3037,18 +3037,18 @@ namespace opengl3
         {
             var scan_stla = new Model3d("def1.stl", false);
             var pols = scan_stla.pols;
-            
+
             var pols2 = SurfaceReconstraction.get_conts_from_defect(pols);
             var meshs = Polygon3d_GL.toMesh(pols2);
             //scan_stla.mesh = GL1.translateMesh(scan_stla.mesh, 0, 0, 20);
             GL1.add_buff_gl(meshs[0], meshs[1], meshs[2], PrimitiveType.Triangles, "def2");
-           // scan_stla.pols
+            // scan_stla.pols
         }
         void test_traj_color()
         {
-           // var ps = new Point3d_GL[] {new Point3d_GL(1,1,0), new Point3d_GL(1, 10, 0) , new Point3d_GL(10, 10, 0) , new Point3d_GL(1, 1, 0) };
+            // var ps = new Point3d_GL[] {new Point3d_GL(1,1,0), new Point3d_GL(1, 10, 0) , new Point3d_GL(10, 10, 0) , new Point3d_GL(1, 1, 0) };
             //GL1.addTraj()
-            
+
         }
         void test_surf_rec()
         {
@@ -3058,8 +3058,8 @@ namespace opengl3
             GL1.add_buff_gl(scan_stlb.mesh, scan_stlb.color, scan_stlb.normale, PrimitiveType.Triangles, "def1b");
 
             //SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);            
-            var layers = SurfaceReconstraction.find_sub_surf_xy(scan_stlb.pols, scan_stla.pols, 0.5,2.5, 0.2,0.1);
-            
+            var layers = SurfaceReconstraction.find_sub_surf_xy(scan_stlb.pols, scan_stla.pols, 0.5, 2.5, 0.2, 0.1);
+
 
 
             for (int i = 0; i < layers.Length; i++)
@@ -3074,20 +3074,20 @@ namespace opengl3
             GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
             var mesh = new IndexedMesh(scan_stl_orig.pols);
             var board = mesh.normals_on_board();
-           /* foreach (var cont in board)
-            {
-                var color = Color3d_GL.random();
-                GL1.addLineMeshTraj(cont,color);
-            }*/
+            /* foreach (var cont in board)
+             {
+                 var color = Color3d_GL.random();
+                 GL1.addLineMeshTraj(cont,color);
+             }*/
             comp_angs_board(board[0]);
         }
 
         static Point3d_GL[] comp_angs_board(Point3d_GL[] ps)
         {
             var angs = new Point3d_GL[ps.Length - 1];
-            for(int i=1; i < ps.Length;i++)
+            for (int i = 1; i < ps.Length; i++)
             {
-               angs[i-1]= new Point3d_GL( Point3d_GL.ang(ps[i - 1], ps[i]));
+                angs[i - 1] = new Point3d_GL(Point3d_GL.ang(ps[i - 1], ps[i]));
 
             }
             for (int i = 0; i < angs.Length; i++)
@@ -3107,7 +3107,7 @@ namespace opengl3
             return smooth_ang;
         }
 
-        static Point3d_GL[] comp_angs_board_inds(Polygon3d_GL[] pols,int[] inds)
+        static Point3d_GL[] comp_angs_board_inds(Polygon3d_GL[] pols, int[] inds)
         {
             var ns = new Point3d_GL[inds.Length];
             for (int i = 0; i < inds.Length; i++)
@@ -3118,7 +3118,7 @@ namespace opengl3
             var angs = new Point3d_GL[inds.Length - 1];
             for (int i = 1; i < inds.Length; i++)
             {
-                angs[i - 1] = new Point3d_GL(Point3d_GL.ang(ns[i], ns[i-1]));
+                angs[i - 1] = new Point3d_GL(Point3d_GL.ang(ns[i], ns[i - 1]));
 
             }
             for (int i = 0; i < angs.Length; i++)
@@ -3146,21 +3146,21 @@ namespace opengl3
             GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "def_orig");
             Console.WriteLine("find_sub_surf_xy");
             //SurfaceReconstraction.find_rec_lines(scan_stlb.pols, scan_stla.pols, 0.5,0.4, GL1);            
-            var layers = SurfaceReconstraction.find_sub_surf_xy(scan_stl_up.pols, scan_stl_down.pols,1, 2.5, 0.5, 0.3);
-            
+            var layers = SurfaceReconstraction.find_sub_surf_xy(scan_stl_up.pols, scan_stl_down.pols, 1, 2.5, 0.5, 0.3);
+
             var cuts = new List<string>();
 
             var conts = new List<List<Point3d_GL>>();
             var surfs = new List<Polygon3d_GL[]>();
             for (int i = 0; i < layers.Length; i++)
             {
-               // if(i==0)
+                // if(i==0)
                 {
                     Console.WriteLine("intersect: " + i);
                     var meshs = Polygon3d_GL.toMesh(layers[i]);
 
                     var mesh_sm_tr = meshs[0];
-                    if (i==0) mesh_sm_tr = GraphicGL.translateMesh(mesh_sm_tr, 0, 0, -0.5f);
+                    if (i == 0) mesh_sm_tr = GraphicGL.translateMesh(mesh_sm_tr, 0, 0, -0.5f);
                     surfs.Add(Polygon3d_GL.polygs_from_mesh(mesh_sm_tr));
                     //var rec = GL1.add_buff_gl(mesh_sm_tr, meshs[1], meshs[2], PrimitiveType.Triangles, "_cut_" + i);
                     //cuts.Add(rec);
@@ -3171,8 +3171,8 @@ namespace opengl3
                 }
             }
             Console.WriteLine("gen_traj3d");
-            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, traj_config,patt_config,GL1);
-            
+            var _traj = PathPlanner.generate_3d_traj_diff_surf(surfs, conts, traj_config, patt_config, GL1);
+
             rob_traj = PathPlanner.join_traj(_traj);
             var ps = PathPlanner.matr_to_traj(rob_traj);
 
@@ -3180,7 +3180,7 @@ namespace opengl3
 
             //for (int i = 0; i < rob_traj.Count; i++) GL1.addFrame(rob_traj[i],2);
             if (ps == null) return;
-            traj_i = GL1.addLineMeshTraj( ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
+            traj_i = GL1.addLineMeshTraj(ps.ToArray(), new Color3d_GL(0.9f), "gen_traj");
             var traj_rob = PathPlanner.generate_robot_traj(rob_traj, RobotFrame.RobotType.PULSE, traj_config);
         }
         void test_surf_cross()
@@ -3201,7 +3201,7 @@ namespace opengl3
             ps.Add(ps_2[3]["b_2806a"].to_point3dgl());
             ps.Add(ps_2[3]["cal_1_2"].to_point3dgl());
             ps.Add(ps_2[3]["cal_1_3"].to_point3dgl());
-            
+
             var ps2 = Point3d_GL.mult(ps.ToArray(), 1000);
             GL1.addPointMesh(ps2);
         }
@@ -3227,22 +3227,22 @@ namespace opengl3
                 new Point3d_GL(-0.91, 0.94, 1),
                 new Point3d_GL(0.8, 0.94, 1),
                 new Point3d_GL(0.8, -0.82, 0.5)};
-            var basis2 = new Point3d_GL[] { 
+            var basis2 = new Point3d_GL[] {
                 new Point3d_GL(-6.33, -9.64, 3.82),
                 new Point3d_GL(-6.3, -7.84,3.82),
                 new Point3d_GL(-4.56, -7.87,3.82),
                 new Point3d_GL(-4.56, -9.64, 3.32)};
 
-           /* var basis1 = new Point3d_GL[] {
-                new Point3d_GL(0, 0, 0),
-                new Point3d_GL(0, 10, 0),
-                new Point3d_GL(10, 10, 0),
-                new Point3d_GL(10, 0, 10)};
-            var basis2 = new Point3d_GL[] {
-                new Point3d_GL(0, 0, 0),
-                new Point3d_GL(0, 5,0),
-                new Point3d_GL(5, 5, 0),
-                new Point3d_GL(5, 0, 5)};*/
+            /* var basis1 = new Point3d_GL[] {
+                 new Point3d_GL(0, 0, 0),
+                 new Point3d_GL(0, 10, 0),
+                 new Point3d_GL(10, 10, 0),
+                 new Point3d_GL(10, 0, 10)};
+             var basis2 = new Point3d_GL[] {
+                 new Point3d_GL(0, 0, 0),
+                 new Point3d_GL(0, 5,0),
+                 new Point3d_GL(5, 5, 0),
+                 new Point3d_GL(5, 0, 5)};*/
             var transf = UtilMatr.calcTransformMatr_cv(basis1, basis2);
             prin.t(transf);
         }
@@ -3268,78 +3268,78 @@ namespace opengl3
             prin.t(conts_or.ToArray());
             prin.t("+++++++++++++++++++++++++");
             var conts_det = Point3d_GL.get_contours(conts_or.ToArray());
-            foreach(var cont in conts_det)
+            foreach (var cont in conts_det)
             {
                 prin.t(cont);
                 prin.t("______________");
             }
 
         }
-        
-        
+
+
         void test_arc()
         {
-            var ps1 = new Point3d_GL[] { new Point3d_GL(0, 0, 0), new Point3d_GL(0, 20,3), new Point3d_GL(20, 20, 3), new Point3d_GL(20, 0), new Point3d_GL(0, 0) };
+            var ps1 = new Point3d_GL[] { new Point3d_GL(0, 0, 0), new Point3d_GL(0, 20, 3), new Point3d_GL(20, 20, 3), new Point3d_GL(20, 0), new Point3d_GL(0, 0) };
             var ps = PathPlanner.gen_smooth_arc(ps1, 1.91, 0.2).ps.ToArray();
             prin.t(Point3d_GL.dist_betw_ps(ps));
             //RobotFrame.comp_acs(frms.ToList(), model_res / 10);
             GL1.addLineMeshTraj(ps, new Color3d_GL(1, 0, 0), "arc_test");
         }
 
-    /* void test_arc()
-     {
-         var ps = PathPlanner.gen_arc_sect_xy(new Point3d_GL(0, 0, 0), new Point3d_GL(2, 2), 1.91, 0.6,false).ToArray();
-         prin.t(Point3d_GL.dist_betw_ps(ps));
-         var ps_l = PathPlanner.gen_harmonic_line_xy(new Point3d_GL(0, 0, 0), new Point3d_GL(20, 2), 2.91, 0.1,2, false).ToArray();
-
-         GL1.addLineMeshTraj(ps_l, new Color3d_GL(1, 0, 0), "arc_test");
-     }
-
-     void test_patt()
-     {
-         var sett = new PatternSettings
+        /* void test_arc()
          {
-             step = 1,
-             angle = PI / 4,
-             min_dist = 0.1,
-             arc_dist = 1,
-             r = 2,
-             patternType = PathPlanner.PatternType.Harmonic
-         };
-         var ps = PathPlanner.gen_pattern_in_square_xy(sett,new Point3d_GL(10, 10, 0), new Point3d_GL(20, 20)).ToArray();
+             var ps = PathPlanner.gen_arc_sect_xy(new Point3d_GL(0, 0, 0), new Point3d_GL(2, 2), 1.91, 0.6,false).ToArray();
+             prin.t(Point3d_GL.dist_betw_ps(ps));
+             var ps_l = PathPlanner.gen_harmonic_line_xy(new Point3d_GL(0, 0, 0), new Point3d_GL(20, 2), 2.91, 0.1,2, false).ToArray();
 
-         GL1.addLineMeshTraj(ps, new Color3d_GL(1, 0, 0), "patt_test");
-     }
+             GL1.addLineMeshTraj(ps_l, new Color3d_GL(1, 0, 0), "arc_test");
+         }
 
-     void test_cut()
-     {
-         var sett = new PatternSettings
+         void test_patt()
          {
-             step = 1,
-             angle = PI / 6,
-             min_dist = 0.1,
-             arc_dist = 1,
-             r = 2,
-             patternType = PathPlanner.PatternType.Harmonic
-         };
-         var contour = new Point3d_GL[] { new Point3d_GL(0, 0), new Point3d_GL(10, 10), new Point3d_GL(0, 20), new Point3d_GL(-10, 10) };
-         var pattern = PathPlanner.gen_pattern_in_square_xy(sett, new Point3d_GL(-10, 0, 0), new Point3d_GL(10, 20));
+             var sett = new PatternSettings
+             {
+                 step = 1,
+                 angle = PI / 4,
+                 min_dist = 0.1,
+                 arc_dist = 1,
+                 r = 2,
+                 patternType = PathPlanner.PatternType.Harmonic
+             };
+             var ps = PathPlanner.gen_pattern_in_square_xy(sett,new Point3d_GL(10, 10, 0), new Point3d_GL(20, 20)).ToArray();
 
-         var ps_cut = PathPlanner.cut_pattern_in_contour_xy_cv(contour.ToList(), pattern);
+             GL1.addLineMeshTraj(ps, new Color3d_GL(1, 0, 0), "patt_test");
+         }
+
+         void test_cut()
+         {
+             var sett = new PatternSettings
+             {
+                 step = 1,
+                 angle = PI / 6,
+                 min_dist = 0.1,
+                 arc_dist = 1,
+                 r = 2,
+                 patternType = PathPlanner.PatternType.Harmonic
+             };
+             var contour = new Point3d_GL[] { new Point3d_GL(0, 0), new Point3d_GL(10, 10), new Point3d_GL(0, 20), new Point3d_GL(-10, 10) };
+             var pattern = PathPlanner.gen_pattern_in_square_xy(sett, new Point3d_GL(-10, 0, 0), new Point3d_GL(10, 20));
+
+             var ps_cut = PathPlanner.cut_pattern_in_contour_xy_cv(contour.ToList(), pattern);
 
 
-         GL1.addLineMeshTraj(ps_cut.ToArray(), new Color3d_GL(1, 0, 0), "cut_test");
-     }
-     void test_traj_3d_pores()
-     {
-         param_tr.layers = 10;
-         var contour = new Point3d_GL[] { new Point3d_GL(0, 0), new Point3d_GL(10, 10), new Point3d_GL(0, 20), new Point3d_GL(-10, 10) };
-         var pattern = PathPlanner.gen_traj_3d_pores(param_patt,param_tr);
-         var traj = PathPlanner.ps_to_matr(pattern);
-         var prog = PathPlanner.generate_printer_prog(traj,param_tr);
-         debugBox.Text = prog;
-         GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "pores_test");
-     }*/
+             GL1.addLineMeshTraj(ps_cut.ToArray(), new Color3d_GL(1, 0, 0), "cut_test");
+         }
+         void test_traj_3d_pores()
+         {
+             param_tr.layers = 10;
+             var contour = new Point3d_GL[] { new Point3d_GL(0, 0), new Point3d_GL(10, 10), new Point3d_GL(0, 20), new Point3d_GL(-10, 10) };
+             var pattern = PathPlanner.gen_traj_3d_pores(param_patt,param_tr);
+             var traj = PathPlanner.ps_to_matr(pattern);
+             var prog = PathPlanner.generate_printer_prog(traj,param_tr);
+             debugBox.Text = prog;
+             GL1.addLineMeshTraj(pattern.ToArray(), new Color3d_GL(1, 0, 0), "pores_test");
+         }*/
         void test_get_conts_3d()
         {
 
@@ -3349,7 +3349,7 @@ namespace opengl3
             GL1.add_buff_gl(scan_stlb.mesh, scan_stlb.color, scan_stlb.normale, PrimitiveType.Triangles, "def1b");
 
             var conts_det = RasterMap.intersec_conts_of_two_mesh(scan_stla.mesh, scan_stlb.mesh);
-            
+
             foreach (var cont in conts_det)
             {
                 GL1.addLineMeshTraj(cont, new Color3d_GL(1, 0, 0), "intersec");
@@ -3357,14 +3357,14 @@ namespace opengl3
 
         }
         #endregion
-        
+
 
         #region buttons
         private void comboImages_SelectionChangeCommitted(object sender, EventArgs e)
         {
             Console.WriteLine(comboImages.SelectedItem);
             Frame fr2 = null;
-            if(comboImages.SelectedIndex>1)
+            if (comboImages.SelectedIndex > 1)
             {
                 fr2 = (Frame)comboImages.Items[comboImages.SelectedIndex - 2];
 
@@ -3415,14 +3415,14 @@ namespace opengl3
                     var fr_im_cl = scanner.stereoCamera.cameraCVs[0].undist(fr.im);
                     var fr_im_sec_cl = scanner.stereoCamera.cameraCVs[1].undist(fr.im_sec);
 
-                    var ps1 = Detection.detectLineDiff(fr_im_cl,scanner_config);
-                    var ps2 = Detection.detectLineDiff(fr_im_sec_cl,scanner_config);
+                    var ps1 = Detection.detectLineDiff(fr_im_cl, scanner_config);
+                    var ps2 = Detection.detectLineDiff(fr_im_sec_cl, scanner_config);
                     var ps1_filtr = PointF.filter_exist(ps1);
                     var ps2_filtr = PointF.filter_exist(ps2);
                     var ps1_dr = PointF.toSystemPoint_d(ps1_filtr);
                     var ps2_dr = PointF.toSystemPoint_d(ps2_filtr);
 
-                    if(fr.im_dif!=null) CvInvoke.Imshow("match", fr.im_dif);
+                    if (fr.im_dif != null) CvInvoke.Imshow("match", fr.im_dif);
                     //var fr_im_cl = fr.im.Clone();
                     //var fr_im_sec_cl = fr.im_sec.Clone();
                     if (ps1_dr == null || ps2_dr == null) { Console.WriteLine("NULL ps1 ps2"); return; }
@@ -3437,9 +3437,9 @@ namespace opengl3
                     imBox_base_1.Image = UtilOpenCV.drawPoints(fr_im_cl, ps1_dr, 0, 255, 0, 1);
                     imBox_base_2.Image = UtilOpenCV.drawPoints(fr_im_sec_cl, ps2_dr, 0, 255, 0, 1);
                 }
-                    
 
-                
+
+
             }
             else
             {
@@ -3449,22 +3449,22 @@ namespace opengl3
                 }
                 else if (fr.frameType == FrameType.LasRob)
                 {
-                   //ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
+                    //ContourAnalyse.findContourZ(fr.im, imageBox1, (int)red_c, DirectionType.Down);
                     var mat1 = fr.im.Clone();
                     var mat2 = fr.im.Clone();
                     var mat3 = fr.im.Clone();
                     var rgb = mat1.Split();
-                    var ps = Detection.detectLineDiff(mat2,5);
+                    var ps = Detection.detectLineDiff(mat2, 5);
                     var psf = new System.Drawing.PointF[0];
-                    mat3 = UtilOpenCV.drawChessboard(mat3, chess_size, ref psf, false,false,CalibCbType.AdaptiveThresh);
+                    mat3 = UtilOpenCV.drawChessboard(mat3, chess_size, ref psf, false, false, CalibCbType.AdaptiveThresh);
                     //CvInvoke.GaussianBlur(mat1, mat1, new Size(3, 3), 0);
                     var im2 = mat2.ToImage<Gray, Byte>();
 
                     UtilOpenCV.drawPointsF(mat2, ps, 0, 255, 0);
-                    
+
                     var im1 = mat1.ToImage<Gray, Byte>();
-                    
-                    
+
+
 
                     var im1_r = im1.Clone();
                     /*CvInvoke.Rotate(im1_r, im1_r, RotateFlags.Rotate180);
@@ -3489,8 +3489,8 @@ namespace opengl3
                      var im2 = im1.Clone();
                  */
                     var mat = fr.im.Clone();
-                    var ps = Detection.detectLineDiff(mat,7);
-                    
+                    var ps = Detection.detectLineDiff(mat, 7);
+
                     /* var ps_t = new List<PointF>();
                      for(int i=0; i<500;i++)
                      {
@@ -3517,14 +3517,14 @@ namespace opengl3
 
 
                      */
-                   // prin.t(ps);
+                    // prin.t(ps);
                     //Console.WriteLine("___________");
 
                     var ps_xy = Detection.x_max_claster(ps, 2);
 
-                   // prin.t(ps_xy);
+                    // prin.t(ps_xy);
 
-                    UtilOpenCV.drawPointsF(mat, ps, 0, 255, 0,2);
+                    UtilOpenCV.drawPointsF(mat, ps, 0, 255, 0, 2);
 
                     //UtilOpenCV.drawPointsF(mat, ps_xy, 255, 255, 0, 2);
                     //imBox_base.Image = im2;
@@ -3537,7 +3537,7 @@ namespace opengl3
                 else if (fr.frameType == FrameType.LasHand)
                 {
                     var mat1 = fr.im.Clone();
-                    if(cameraCVcommon!=null)
+                    if (cameraCVcommon != null)
                     {
 
                         var ps = Detection.detectLine(cameraCVcommon.undist(fr.im));
@@ -3546,7 +3546,7 @@ namespace opengl3
                         UtilOpenCV.drawPointsF(mat1, ps, 0, 255, 0);
                     }
                     var psf = new System.Drawing.PointF[0];
-                    mat1 =  UtilOpenCV.drawChessboard(mat1, chess_size, ref psf, false, false, CalibCbType.AdaptiveThresh);
+                    mat1 = UtilOpenCV.drawChessboard(mat1, chess_size, ref psf, false, false, CalibCbType.AdaptiveThresh);
                     imageBox1.Image = mat1;
 
                 }
@@ -3566,7 +3566,7 @@ namespace opengl3
                     imBox_debug1.Image = UtilOpenCV.drawChessboard(fr.im, chess_size, ref psf, false, false, CalibCbType.AdaptiveThresh);
                     imageBox1.Image = UtilOpenCV.drawInsideRectChessboard(fr.im, chess_size);
 
-                    cameraCVcommon.compPos(fr.im, PatternType.Chess,chess_size);
+                    cameraCVcommon.compPos(fr.im, PatternType.Chess, chess_size);
 
 
                 }
@@ -3577,7 +3577,7 @@ namespace opengl3
                     var corn = new System.Drawing.PointF[0];
                     //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
                     //imageBox1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
-                    imageBox1.Image = FindCircles.findCircles(fr.im,ref corn, chess_size);
+                    imageBox1.Image = FindCircles.findCircles(fr.im, ref corn, chess_size);
                 }
             }
             if (fr.frameType == FrameType.LasLin || fr.frameType == FrameType.LasDif)
@@ -3603,14 +3603,14 @@ namespace opengl3
             var ky = target_size.Height / (double)cur_size.Height;
 
             var k = Math.Min(kx, ky);
-            
+
 
             for (int j = 0; j < windowsTabs.Controls.Count; j++)
             {
                 var tab = (TabPage)windowsTabs.Controls[j];
                 for (int i = 0; i < tab.Controls.Count; i++)
                 {
-                    if  (tab.Controls[i] is GlControl)
+                    if (tab.Controls[i] is GlControl)
                     {
                         Console.WriteLine("graph");
                     }
@@ -3621,11 +3621,11 @@ namespace opengl3
                         tab.Controls[i].Size = new Size((int)(tab.Controls[i].Size.Width * k), (int)(tab.Controls[i].Size.Height * k));
                         tab.Controls[i].Font = new Font(tab.Controls[i].Font.Name, (float)(tab.Controls[i].Font.Size * k));
                     }
-                    
+
                 }
             }
 
-            for(int j = 0; j < win_tab_diff.Controls.Count; j++)
+            for (int j = 0; j < win_tab_diff.Controls.Count; j++)
             {
                 var tab = (TabPage)win_tab_diff.Controls[j];
                 for (int i = 0; i < tab.Controls.Count; i++)
@@ -3755,13 +3755,13 @@ namespace opengl3
         }
         private void but_gl_cam_calib_Click(object sender, EventArgs e)
         {
-            CameraCV.calibrMonit(imBox_pattern, new ImageBox[] { imBox_mark1, imBox_mark2 }, patt, txBx_photoName.Text,  GL1);
+            CameraCV.calibrMonit(imBox_pattern, new ImageBox[] { imBox_mark1, imBox_mark2 }, patt, txBx_photoName.Text, GL1);
             GL1.printDebug(debugBox);
         }
         private void but_calib_Start_Click(object sender, EventArgs e)
         {
-            
-            CameraCV.calibrMonit(imBox_pattern, new ImageBox[]{ imBox_input_1, imBox_input_2 }, patt, txBx_photoName.Text, null);
+
+            CameraCV.calibrMonit(imBox_pattern, new ImageBox[] { imBox_input_1, imBox_input_2 }, patt, txBx_photoName.Text, null);
         }
         private void tr_Persp_Scroll(object sender, EventArgs e)
         {
@@ -3769,23 +3769,23 @@ namespace opengl3
             var ind = Convert.ToInt32(trbar.AccessibleName);
             var txbox = textBoxes_Persp[ind];
             var mult = Convert.ToDouble(txbox.Text);
-            var val = mult* (double)trbar.Value/100;
+            var val = mult * (double)trbar.Value / 100;
             var i = ind % 3;
             var j = (ind - i) / 3;
             persp_matr[i, j] = val;
             //prin.t("i " + i + " j " + j);
-            
-            
+
+
             //CvInvoke.WarpPerspective(patt, patt_warp, persp_matr, patt.Size+ patt.Size,Inter.Linear,Warp.Default);
             var ptt = UtilOpenCV.warpPerspNorm(patt, persp_matr, imBox_pattern.Size);
             var mat1 = ptt[0];
-           // prin.t(ptt[1]);
-            
+            // prin.t(ptt[1]);
+
             imBox_pattern.Image = mat1;
             //var ps = CvInvoke.FindCirclesGrid(mat1.ToImage<Gray,byte>(), new Size(6, 7), CalibCgType.SymmetricGrid,new Emgu.CV.Features2D.SimpleBlobDetector());
-            
+
             //UtilOpenCV.drawPointsF(mat1, ps, 255, 0, 5, 10);
-           //  imBox_input_1.Image = FindCircles.findCircles( mat1,null, new Size(6,7));
+            //  imBox_input_1.Image = FindCircles.findCircles( mat1,null, new Size(6,7));
             UtilOpenCV.calcSubpixelPrecCircle(chess_size, ptt);
             //imBox_input_1.Image = UtilOpenCV.drawChessboard((Mat)imBox_pattern.Image, new Size(7, 6),false,true);
         }
@@ -3879,9 +3879,9 @@ namespace opengl3
 
         private void but_imGen_Click(object sender, EventArgs e)
         {
-            UtilOpenCV.generateImagesFromAnotherFolderStereo(new string[] { @"virtual_stereo\test1\monitor_0", @"virtual_stereo\test1\monitor_1" },GL1,
-                new CameraCV(cameraMatrix_dist,cameraDistortionCoeffs_dist,new Size(400,400)));//size not right!!!!!!!
-     
+            UtilOpenCV.generateImagesFromAnotherFolderStereo(new string[] { @"virtual_stereo\test1\monitor_0", @"virtual_stereo\test1\monitor_1" }, GL1,
+                new CameraCV(cameraMatrix_dist, cameraDistortionCoeffs_dist, new Size(400, 400)));//size not right!!!!!!!
+
         }
         private void but_swapMonit_Click(object sender, EventArgs e)
         {
@@ -3917,7 +3917,7 @@ namespace opengl3
         }
         private void rob_con_Click(object sender, EventArgs e)
         {
-            con1 = new TCPclient();           
+            con1 = new TCPclient();
             string iiwa = "172.31.1.147";
             string pulse = "localhost";
             port_tcp = Convert.ToInt32(tb_port_tcp.Text);
@@ -3932,7 +3932,7 @@ namespace opengl3
         {
 
             var con = (TCPclient)obj;
-          //  if (con == null) return;
+            //  if (con == null) return;
             while (con.is_connect())
             {
                 if (printing)
@@ -3940,11 +3940,11 @@ namespace opengl3
                     var res = con.reseav();
                     if (res != null)
                     {
-                        if(res.Length>3)
+                        if (res.Length > 3)
                         {
                             //Console.WriteLine("tcp res: " + res);
-                           
-                            
+
+
                             if (res.Contains("finish"))
                             {
                                 if (surface_type == 1) compensation = false;
@@ -3970,14 +3970,14 @@ namespace opengl3
                             {
                                 resend_rob_to_ard_extr(res, laserLine);
                             }
-                            
-                           
+
+
                         }
                     }
-                   
-                    
-                   
-                }  
+
+
+
+                }
                 Thread.Sleep(10);
             }
         }
@@ -3993,7 +3993,7 @@ namespace opengl3
             if (vals_str.Length != 2) return;
             var val = Convert.ToDouble(vals_str[0]);
             var var = Convert.ToDouble(vals_str[1]);
-            if(Math.Abs( var - 25)<0.1)
+            if (Math.Abs(var - 25) < 0.1)
             {
                 var div = LaserLine.vel_pist_to_ard(val);
                 for (int i = 0; i < 5; i++)
@@ -4004,14 +4004,14 @@ namespace opengl3
                 {
                     ard.set_div_disp(div); Thread.Sleep(2);
                 }
-                
+
             }
             else
             {
                 ard.send((int)val, (int)var);
             }
-            Console.WriteLine("resend_from_rob: "+val + " " + var);
-            
+            Console.WriteLine("resend_from_rob: " + val + " " + var);
+
             //ard.set_div_disp(vel);
         }
 
@@ -4028,7 +4028,7 @@ namespace opengl3
                 nameB.Text = posRob.B.ToString();
                 nameC.Text = posRob.C.ToString();
             }
-           
+
         }
 
         private void but_res_pos_2_Click(object sender, EventArgs e)
@@ -4087,7 +4087,7 @@ namespace opengl3
                     var res_pos = res.Split('\n');
                     foreach (var pos in res_pos)
                     {
-                        if (pos.Length>20)
+                        if (pos.Length > 20)
                         {
                             Console.WriteLine(pos);
                             var pos2 = pos.Trim();
@@ -4103,7 +4103,7 @@ namespace opengl3
                         }
                     }
                     return null;
-                    
+
                 }
                 catch
                 {
@@ -4223,6 +4223,23 @@ namespace opengl3
         }
         
 
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string responseString = await response.Content.ReadAsStringAsync();
+                            MessageBox.Show($"Сегментация выполнена успешно: {responseString}");
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Ошибка при сегментации: {response.StatusCode}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}");
+            }
+        }
         private void but_hydro_model_grav_Click(object sender, EventArgs e)//modelir_hydro!!!!!
         {
 
@@ -5243,25 +5260,26 @@ namespace opengl3
             var capture = new VideoCapture(number);
             videoCaptures[number] = capture;
             //capture.SetCaptureProperty(CapProp.
-            capture.Set(CapProp.FrameWidth, cameraSize.Width);
+            //capture.Set(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
            // capture.Set(CapProp.AutoExposure, 1);
-            capture.Set(CapProp.Exposure, -8);
+           // capture.Set(CapProp.Exposure, -8);
 
             cameraSize.Width =(int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
             Console.WriteLine(cameraSize.Width.ToString() + " " + cameraSize.Height.ToString() + " " + capture.Get(CapProp.Fps));
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
             camera_ind_ptr[number] = capture.Ptr;
+
             capture.ImageGrabbed += capturingVideo_sam;
             capture.Start();
         }
         void drawCameras_sam(VideoCapture cap)
         {
-
+            Console.WriteLine("dr_cam");
             var ind_cam = camera_ind_ptr.IndexOf(cap.Ptr);
             if(ind_cam<10 && ind_cam>=0)
             {
@@ -5270,12 +5288,12 @@ namespace opengl3
                 {
                     if (ind_cam == imb_ind_cam[i])
                     {
-                        try
+                        //try
                         {
                             imb_main[i].Image = mat_global[ind_cam];
                             imProcess_sam(mat_global[ind_cam], i);
                         }
-                        catch
+                        //catch
                         {
 
                         }
@@ -5301,7 +5319,7 @@ namespace opengl3
         }
         void imProcess_sam(Mat mat, int ind)
         {
-
+            Console.WriteLine("im_proc");
             switch (imProcType)
             {
 

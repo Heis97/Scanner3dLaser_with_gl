@@ -237,12 +237,9 @@ void disp_control()
 //void timer_handle_interrupts(int timer)
 ISR(TIMER2_A) 
 {
-
    mot_las.control();
   mot_disp.control();
   mot_z.control();
-
-
 }
 
 void decod_main()
