@@ -2165,6 +2165,7 @@ namespace opengl3
 
             //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
+            test_go_to_point_robot();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -2407,7 +2408,7 @@ namespace opengl3
         {
             load_3d_model_robot();
             set_conf_robot(new double[6] { 0, 0, 0, 0, 0, 0 });
-            var fr_test = new RobotFrame(-600, 0, 0, 0, 0, 2);
+            var fr_test = new RobotFrame(-400, 0, 0, 0, 0, 2);
             var tool = new RobotFrame(-170.93 + 5, 68.74 + 6.52, 48.09 - 3.35, 1.5511, 1.194616, 0.0);
             var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052);
 
@@ -2430,11 +2431,11 @@ namespace opengl3
         void load_3d_model_robot()
         {
             var color_skin = new Color3d_GL(213 / 255f, 172 / 255f, 129 / 255f);
-            var scan_stl_orig1 = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            /*var scan_stl_orig1 = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
             GL1.add_buff_gl(scan_stl_orig1.mesh, color_skin, scan_stl_orig1.normale, PrimitiveType.Triangles, "scan");
             var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
             GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
-
+            */
 
             var color_arm = Color3d_GL.black();
             var color_end = Color3d_GL.white();
@@ -4188,7 +4189,7 @@ namespace opengl3
 
             // Отправка изображения на сервер
             string serverUrl = "http://localhost:8000/segment";
-
+            
             try
             {
                 using (HttpClient client = new HttpClient())
@@ -4198,10 +4199,13 @@ namespace opengl3
                         // Загружаем файл в HTTP-запрос
                         var fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes("im2.png"));
                         fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                        //var im2 = new Mat("im2.png");
+                        CvInvoke.Imshow("aff", im);
+                        //CvInvoke.WaitKey();
                         content.Add(fileContent, "file", "im2.png");
 
                         // Отправляем POST-запрос
-                        HttpResponseMessage response = await client.PostAsync(serverUrl, content);
+                        var response = await client.PostAsync(serverUrl, content);
 
                         // Проверяем ответ
                         if (response.IsSuccessStatusCode)
@@ -4222,7 +4226,7 @@ namespace opengl3
             }
         }
         
-
+        /*
                         if (response.IsSuccessStatusCode)
                         {
                             string responseString = await response.Content.ReadAsStringAsync();
@@ -4238,8 +4242,8 @@ namespace opengl3
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка: {ex.Message}");
-            }
-        }
+            }*/
+       // }
         private void but_hydro_model_grav_Click(object sender, EventArgs e)//modelir_hydro!!!!!
         {
 
