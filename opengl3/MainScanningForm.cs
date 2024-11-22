@@ -7108,7 +7108,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
 
-           /* windowsTabs.Controls.Remove(tabMain);
+            windowsTabs.Controls.Remove(tabMain);
             windowsTabs.Controls.Remove(tabOpenGl);
             windowsTabs.Controls.Remove(tabDistort);
             windowsTabs.Controls.Remove(tabP_developer);
@@ -7116,7 +7116,7 @@ namespace opengl3
             windowsTabs.Controls.Remove(tabDebug);
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);*/
+            windowsTabs.Controls.Remove(tabP_connect);
             // windowsTabs.Controls.Remove(tabPage_tube);
 
 
@@ -7911,6 +7911,7 @@ namespace opengl3
         int i2c_adr_main = 0;
         int i2c_adr_nasos1 = 50;
         int i2c_adr_nasos2 = 51;
+        int i2c_adr_valve = 52;
         double nT = 5000;
         double to_double_textbox(TextBox textBox, double min,double max)
         {
@@ -8082,6 +8083,7 @@ namespace opengl3
             if (e.KeyCode == Keys.Enter)
             {
                 var pos = Convert.ToInt32(textBox_valve_val.Text);
+                laserLine?.set_adr(i2c_adr_valve);
                 laserLine?.set_valve_pos(pos);
             }
 

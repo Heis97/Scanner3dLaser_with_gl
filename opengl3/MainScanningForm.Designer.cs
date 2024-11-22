@@ -7050,14 +7050,14 @@ namespace opengl3
             this.groupBox15.Controls.Add(this.textBox_led_pwm);
             this.groupBox15.Location = new System.Drawing.Point(419, 346);
             this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Size = new System.Drawing.Size(250, 97);
+            this.groupBox15.Size = new System.Drawing.Size(250, 164);
             this.groupBox15.TabIndex = 5;
             this.groupBox15.TabStop = false;
             this.groupBox15.Text = "Освещение";
             // 
             // but_led_off
             // 
-            this.but_led_off.Location = new System.Drawing.Point(127, 34);
+            this.but_led_off.Location = new System.Drawing.Point(129, 70);
             this.but_led_off.Name = "but_led_off";
             this.but_led_off.Size = new System.Drawing.Size(115, 39);
             this.but_led_off.TabIndex = 5;
@@ -7067,7 +7067,7 @@ namespace opengl3
             // 
             // but_led_on
             // 
-            this.but_led_on.Location = new System.Drawing.Point(10, 34);
+            this.but_led_on.Location = new System.Drawing.Point(10, 70);
             this.but_led_on.Name = "but_led_on";
             this.but_led_on.Size = new System.Drawing.Size(115, 39);
             this.but_led_on.TabIndex = 4;
@@ -7078,7 +7078,7 @@ namespace opengl3
             // label110
             // 
             this.label110.AutoSize = true;
-            this.label110.Location = new System.Drawing.Point(39, 57);
+            this.label110.Location = new System.Drawing.Point(37, 78);
             this.label110.Name = "label110";
             this.label110.Size = new System.Drawing.Size(61, 16);
             this.label110.TabIndex = 3;
@@ -7087,7 +7087,7 @@ namespace opengl3
             // 
             // textBox_led_pwm
             // 
-            this.textBox_led_pwm.Location = new System.Drawing.Point(127, 54);
+            this.textBox_led_pwm.Location = new System.Drawing.Point(142, 72);
             this.textBox_led_pwm.Name = "textBox_led_pwm";
             this.textBox_led_pwm.Size = new System.Drawing.Size(100, 22);
             this.textBox_led_pwm.TabIndex = 2;
@@ -7105,12 +7105,11 @@ namespace opengl3
             this.groupBox14.TabIndex = 3;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "Клапан";
-            this.groupBox14.Visible = false;
             // 
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(15, 57);
+            this.label18.Location = new System.Drawing.Point(15, 81);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(140, 16);
             this.label18.TabIndex = 25;
@@ -7118,7 +7117,7 @@ namespace opengl3
             // 
             // textBox_valve_val
             // 
-            this.textBox_valve_val.Location = new System.Drawing.Point(172, 54);
+            this.textBox_valve_val.Location = new System.Drawing.Point(173, 78);
             this.textBox_valve_val.Name = "textBox_valve_val";
             this.textBox_valve_val.Size = new System.Drawing.Size(100, 22);
             this.textBox_valve_val.TabIndex = 13;

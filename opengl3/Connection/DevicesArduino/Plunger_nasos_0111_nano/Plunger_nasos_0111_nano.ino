@@ -1,34 +1,9 @@
 
-
-/*
-#define EN_PIN_1       4  // Nano v3:   16 Mega:    38  //enable (CFG6)
-#define DIR_PIN_1      3  //            19          55  //direction
-#define STEP_PIN_1     2  //            18          54  //step
-#define CS_PIN_1        A0  //            17          64  //chip select
-
-#define EN_PIN_2        7  // Nano v3:   16 Mega:    38  //enable (CFG6)
-#define DIR_PIN_2     6  //            19          55  //direction
-#define STEP_PIN_2     5  //            18          54  //step
-#define CS_PIN_2       A1  //            17          64  //chip select
-
-
-*/
-
-
 #define EN_PIN_disp    4   //enable 
 #define DIR_PIN_disp   3   //direction//3 for 50  // 2 for 51(old)
 #define STEP_PIN_disp  2    //step//2 for 50 // 3 for 51(old)
 #define CS_PIN_disp    A0   //chip select//A1-kuka_sam//A2-rozum_misis
-#define I2C_ADDR    51//new
-
-
-/*
-#define EN_PIN_disp    4   //enable 
-#define DIR_PIN_disp   2   //direction//3 for 50  // 2 for 51(old)
-#define STEP_PIN_disp  3    //step//2 for 50 // 3 for 51(old)
-#define CS_PIN_disp    A0   //chip select//A1-kuka_sam//A2-rozum_misis
-#define I2C_ADDR    51//old
-*/
+#define I2C_ADDR    51// 50 - nasos1, 51 - nasos2
 
 #define MOSI_PIN  11
 #define MISO_PIN 12   
