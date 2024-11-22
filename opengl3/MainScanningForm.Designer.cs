@@ -649,6 +649,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -760,6 +761,7 @@ namespace opengl3
             this.groupBox10.SuspendLayout();
             this.groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // tabCalibMonit
@@ -1043,6 +1045,7 @@ namespace opengl3
             // 
             // tabMain
             // 
+            this.tabMain.Controls.Add(this.pictureBox2);
             this.tabMain.Controls.Add(this.imBox_base_2);
             this.tabMain.Controls.Add(this.imageBox1);
             this.tabMain.Controls.Add(this.but_resize);
@@ -7552,6 +7555,14 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Location = new System.Drawing.Point(5, 488);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(843, 413);
+            this.pictureBox2.TabIndex = 148;
+            this.pictureBox2.TabStop = false;
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -7703,6 +7714,7 @@ namespace opengl3
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -8327,6 +8339,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_dr_move_drill_zero;
         private System.Windows.Forms.Button but_dr_set_drill_zero;
         private System.Windows.Forms.Button but_dr_move_z_zero;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }
 

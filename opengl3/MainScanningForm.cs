@@ -4177,31 +4177,27 @@ namespace opengl3
             im.Save("im2.png");
             //здесь будет отправка im1.png на сервер
         }*/
-        
+
+        /*
         private async void but_save_im_base1_Click(object sender, EventArgs e)
         {
-            // Сохраняем изображения
-            //var im = (Mat)imBox_base_1.Image;
-            //im.Save("im1.png");
-
+            // Сохраняем изображение
             var im = (Mat)imageBox1.Image;
-            im.Save("im2.png");
+            string imagePath = "im2.png";
+            im.Save(imagePath);
 
-            // Отправка изображения на сервер
-            string serverUrl = "http://localhost:8000/segment";
-            
+            // URL сервера
+            string serverUrl = "http://127.0.0.1:8000/segment";
+
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
                     using (var content = new MultipartFormDataContent())
                     {
-                        // Загружаем файл в HTTP-запрос
-                        var fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes("im2.png"));
+                        // Добавляем файл в запрос
+                        var fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes(imagePath));
                         fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
-                        //var im2 = new Mat("im2.png");
-                        CvInvoke.Imshow("aff", im);
-                        //CvInvoke.WaitKey();
                         content.Add(fileContent, "file", "im2.png");
 
                         // Отправляем POST-запрос
@@ -4210,12 +4206,32 @@ namespace opengl3
                         // Проверяем ответ
                         if (response.IsSuccessStatusCode)
                         {
-                            string responseString = await response.Content.ReadAsStringAsync();
-                            MessageBox.Show($"Сегментация выполнена успешно: {responseString}");
+                            string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                            // Парсим JSON-ответ
+                            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<SegmentationResult>(jsonResponse);
+
+                            if (result.Message == "на фото не обнаружено раны")
+                            {
+                                MessageBox.Show("Раны не обнаружены.");
+                                return;
+                            }
+
+                            // Отрисовываем полигоны
+                            Mat segmentedImage = im.Clone();
+                            foreach (var polygon in result.Polygons)
+                            {
+                                var points = polygon.Select(p => new Point((int)p[0], (int)p[1])).ToArray();
+                                CvInvoke.Polylines(segmentedImage, new VectorOfPoint(points), true, new MCvScalar(0, 0, 255), 2);
+                            }
+
+                            // Показываем изображение с полигоном
+                            CvInvoke.Imshow("Сегментация", segmentedImage);
                         }
                         else
                         {
-                            MessageBox.Show($"Ошибка при сегментации: {response.StatusCode}");
+                            string responseString = await response.Content.ReadAsStringAsync();
+                            MessageBox.Show($"Ошибка: {responseString}");
                         }
                     }
                 }
@@ -4225,7 +4241,14 @@ namespace opengl3
                 MessageBox.Show($"Ошибка: {ex.Message}");
             }
         }
-        
+
+        // Класс для парсинга ответа сервера
+        public class SegmentationResult
+        {
+            public string Message { get; set; }
+            public List<List<float[]>> Polygons { get; set; }
+        }
+
         /*
                         if (response.IsSuccessStatusCode)
                         {
@@ -4243,7 +4266,201 @@ namespace opengl3
             {
                 MessageBox.Show($"Ошибка: {ex.Message}");
             }*/
-       // }
+
+        // Хранилище для точек полигонов
+        private List<List<Point>> polygons = new List<List<Point>>();
+
+        // Для отслеживания перемещения точек
+        private bool isDragging = false;
+        private Point dragStart;
+        private int selectedPolygonIndex = -1;
+        private int selectedPointIndex = -1;
+
+        // Исходное изображение
+        private Bitmap originalImage;
+        private Bitmap editedImage;
+
+
+        // Загрузка изображения и полигонов
+        private void LoadImageAndPolygons(Bitmap image, List<List<Point>> receivedPolygons)
+        {
+            originalImage = image;
+            editedImage = new Bitmap(originalImage);
+            polygons = receivedPolygons;
+
+            // Отобразить изображение в PictureBox
+            pictureBox2.Image = editedImage;
+        }
+
+        private void DrawPolygons()
+        {
+            if (originalImage == null)
+                return;
+
+            // Копируем изображение
+            editedImage = new Bitmap(originalImage);
+            using (Graphics g = Graphics.FromImage(editedImage))
+            {
+                // Настройка пера для линий и кисти для точек
+                Pen pen = new Pen(Color.Red, 2);
+                Brush brush = Brushes.Blue;
+
+                foreach (var polygon in polygons)
+                {
+                    // Рисуем линии полигона
+                    if (polygon.Count > 1)
+                    {
+                        g.DrawPolygon(pen, polygon.ToArray());
+                    }
+
+                    // Рисуем точки полигона
+                    foreach (var point in polygon)
+                    {
+                        g.FillEllipse(brush, point.X - 5, point.Y - 5, 10, 10);
+                    }
+                }
+            }
+
+            // Обновляем PictureBox
+            pictureBox2.Image = editedImage;
+        }
+
+        // Начало перетаскивания
+        private void pictureBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            for (int i = 0; i < polygons.Count; i++)
+            {
+                for (int j = 0; j < polygons[i].Count; j++)
+                {
+                    var point = polygons[i][j];
+                    if (Math.Abs(point.X - e.X) < 10 && Math.Abs(point.Y - e.Y) < 10)
+                    {
+                        // Точка выбрана
+                        isDragging = true;
+                        selectedPolygonIndex = i;
+                        selectedPointIndex = j;
+                        dragStart = e.Location;
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Перемещение точки
+        private void pictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging && selectedPolygonIndex >= 0 && selectedPointIndex >= 0)
+            {
+                // Обновляем координаты точки
+                polygons[selectedPolygonIndex][selectedPointIndex] = e.Location;
+
+                // Перерисовываем полигоны
+                DrawPolygons();
+            }
+        }
+
+        // Завершение перетаскивания
+        private void pictureBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            isDragging = false;
+            selectedPolygonIndex = -1;
+            selectedPointIndex = -1;
+        }
+
+        // Добавление точки (двойной клик)
+        private void pictureBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (polygons.Count > 0)
+            {
+                // Добавляем точку в последний полигон
+                polygons[polygons.Count - 1].Add(e.Location);
+
+                // Перерисовываем полигоны
+                DrawPolygons();
+            }
+        }
+
+        // Удаление точки
+        private void DeletePoint(Point pointToDelete)
+        {
+            foreach (var polygon in polygons)
+            {
+                for (int i = 0; i < polygon.Count; i++)
+                {
+                    if (Math.Abs(polygon[i].X - pointToDelete.X) < 10 &&
+                        Math.Abs(polygon[i].Y - pointToDelete.Y) < 10)
+                    {
+                        polygon.RemoveAt(i);
+                        DrawPolygons();
+                        return;
+                    }
+                }
+            }
+        }
+
+        private async void but_save_im_base1_Click(object sender, EventArgs e)
+        {
+            // Отправка изображения на сервер
+            string serverUrl = "http://localhost:8000/segment";
+            string imagePath = "im2.png";
+            var im = (Mat)imageBox1.Image;
+            im.Save(imagePath);
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (var content = new MultipartFormDataContent())
+                    {
+                        var fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes(imagePath));
+                        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                        content.Add(fileContent, "file", "im2.png");
+
+                        var response = await client.PostAsync(serverUrl, content);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var jsonResponse = await response.Content.ReadAsStringAsync();
+                            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<SegmentationResult>(jsonResponse);
+
+                            if (result.Message == "на фото не обнаружено раны")
+                            {
+                                MessageBox.Show("Раны не обнаружены.");
+                                return;
+                            }
+
+                            // Загружаем изображение
+                            Bitmap image = new Bitmap(imagePath);
+
+                            // Преобразуем координаты полигонов
+                            var polygonsData = result.Polygons
+                                .Select(p => p.Select(point => new Point((int)point[0], (int)point[1])).ToList())
+                                .ToList();
+
+                            LoadImageAndPolygons(image, polygonsData);
+                            DrawPolygons();
+                        }
+                        else
+                        {
+                            string responseString = await response.Content.ReadAsStringAsync();
+                            MessageBox.Show($"Ошибка: {responseString}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}");
+            }
+        }
+
+        public class SegmentationResult
+        {
+            public string Message { get; set; }
+            public List<List<float[]>> Polygons { get; set; }
+        }
+
+
         private void but_hydro_model_grav_Click(object sender, EventArgs e)//modelir_hydro!!!!!
         {
 
