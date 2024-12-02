@@ -7334,7 +7334,7 @@ namespace opengl3
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabP_scanning_printing);
             windowsTabs.Controls.Remove(tabP_connect);
-            // windowsTabs.Controls.Remove(tabPage_tube);
+            //windowsTabs.Controls.Remove(tabPage_tube);
 
 
           /*  this.tabP_connect.Controls.Add(this.imageBox1);
@@ -8126,9 +8126,10 @@ namespace opengl3
 
         #region tube
         int i2c_adr_main = 0;
-        int i2c_adr_nasos1 = 50;
-        int i2c_adr_nasos2 = 51;
-        int i2c_adr_valve = 52;
+        int i2c_adr_nasos1 = 50;//50
+        int i2c_adr_nasos2 = 51;//51
+        int i2c_adr_valve = 52;//52
+        int i2c_sensors = 53;//53
         double nT = 5000;
         double to_double_textbox(TextBox textBox, double min,double max)
         {
