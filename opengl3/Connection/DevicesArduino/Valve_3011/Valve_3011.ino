@@ -1,4 +1,5 @@
 #include <Servo.h>
+#include <Wire.h> 
 #define I2C_ADDR    53//new
 Servo myservo;
 int pos = 0;
@@ -6,10 +7,21 @@ int pos = 0;
 void setup() {
   Serial.begin(250000);
   myservo.attach(3);  // подключаем на пин 3
+  Wire.begin(I2C_ADDR);
+  Wire.onReceive(decod_main_i2c);
   //myservo.write(180);   // поворот на 0 градусов
 }
 void loop() {
   decod_main();
+}
+void send_i2c(char mes[],byte adr)
+{
+  Wire.beginTransmission(adr); // начало передачи на устройство номер 8
+  Wire.write(mes);       // отправляем цепочку текстовых байт          // отправляем байт из переменной
+  Serial.println(mes);
+  Wire.endTransmission(); 
+  Serial.println("sendi2c_end");
+  
 }
 
 void decod_main()
