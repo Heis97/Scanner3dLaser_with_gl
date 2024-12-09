@@ -14,7 +14,7 @@ namespace opengl3
         public double steps_per_unit_disp = 3200;
         public double steps_per_unit_movm_mash = 1012;//3200:1.58 ||1600:1.58 
         string port;
-        int baudrate = 250000;
+        int baudrate = 2000000;
         int laser = 1, 
             power = 2,
             posit = 3,

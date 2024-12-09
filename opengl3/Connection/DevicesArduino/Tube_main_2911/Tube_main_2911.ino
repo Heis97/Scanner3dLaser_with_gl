@@ -70,7 +70,7 @@ int cycle_type = 0;
 int cycle_ampl = 1000;
 
 void setup() {
-  Serial.begin(250000);
+  Serial.begin(2000000);
   Wire.begin();
   driver_disp.begin(); 
   Serial.println( driver_disp.test_connection()); 
@@ -122,7 +122,7 @@ void setup() {
 
 //timer_init_ISR_5KHz(_TIMER1);//shvp 1khz//DDRB |= 1<<1;
 
- Timer2.setFrequency(5000);               // Высокоточный таймер 1 для первого прерывания, частота - 3 Герца
+ Timer2.setFrequency(5000);          
   Timer2.enableISR(); 
 
   //mot_disp.step(10000);
@@ -274,13 +274,13 @@ void disp_control()
 }
 
 
-  ISR(TIMER2_A) 
-  {
-    mot_las.control();
-    mot_disp.control();
-    mot_z.control();
-    //controlLaser(laser,power);
-  }
+ISR(TIMER2_A) 
+{
+  mot_las.control();
+  mot_disp.control();
+  mot_z.control();
+  //controlLaser(laser,power);
+}
 
 
 
@@ -331,10 +331,10 @@ void decod_main()
         String decod =String(mes)+ " "+String(_val)+ " "+String(_var)+" "+String(_adr);
          Serial.println (decod);
         while (Serial.available())
-        {
-          Serial.println("clear");
+        {          
           Serial.read();
         }
+        Serial.println("clear");
       }
     }
   }

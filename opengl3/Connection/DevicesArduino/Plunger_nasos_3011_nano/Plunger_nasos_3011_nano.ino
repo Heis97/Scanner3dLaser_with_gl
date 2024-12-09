@@ -107,8 +107,8 @@ void cold_fix(TMC2130Stepper motor,StepDirDriverPoz stp,int cur)
 } 
 void send_i2c(char mes[],byte adr)
 {
-  Wire.beginTransmission(adr); // начало передачи на устройство номер 8
-  Wire.write(mes);       // отправляем цепочку текстовых байт          // отправляем байт из переменной
+  Wire.beginTransmission(adr); // 
+  Wire.write(mes);       //
   Wire.endTransmission(); 
 }
 
