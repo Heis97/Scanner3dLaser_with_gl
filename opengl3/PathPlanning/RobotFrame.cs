@@ -721,12 +721,12 @@ namespace opengl3
 
                 var dh_params = new double[][] {
                     new double[]{ q[0], -Math.PI / 2, 0, dbs},
-                    new double[]{  q[1], Math.PI / 2, 0, 0},
+                    new double[]{ q[1], Math.PI / 2, 0, 0},
                     new double[]{ q[2], Math.PI / 2, 0, dse},
                     new double[]{ q[3], -Math.PI / 2, 0, 0},
-                    new double[]{q[4], -Math.PI / 2, 0, dew},
+                    new double[]{ q[4], -Math.PI / 2, 0, dew},
                     new double[]{ q[5], Math.PI / 2, 0, 0 },
-                     new double[]{ q[6], 0, 0, dwf }
+                    new double[]{ q[6], 0, 0, dwf }
                 };
                 //var dh_params_c = new double[6][];
                 var dh_params_c = new List<double[]>();
@@ -735,6 +735,7 @@ namespace opengl3
                     dh_params_c.Add(dh_params[i]);
                 }
                 var m = calc_pos(dh_params_c.ToArray());
+                prin.t("comp_forv_kinem");
                 prin.t(m);
                 var fr = new RobotFrame(m, robotType);
                
