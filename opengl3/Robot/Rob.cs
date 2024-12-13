@@ -185,51 +185,66 @@ namespace opengl3
 		}
 		static public void calcRob()
 		{
-			float[] q = new float[8]{ UtilMatr.toRad(-7.85f),
-					UtilMatr.toRad(44.46f),
-					UtilMatr.toRad(6.73f),
-				   UtilMatr.toRad(-109.17f),
-					UtilMatr.toRad(13.97f),
-				   UtilMatr.toRad(-23.34f),
+			double[] q = new double[8]{ UtilMatr.toRad(20.01f),
+					UtilMatr.toRad(55.04f),
+					UtilMatr.toRad(0f),
+				   UtilMatr.toRad(-94.86f),
+					UtilMatr.toRad(96.42f),
+				   UtilMatr.toRad(93.46f),
 					UtilMatr.toRad(59.64f),
-					UtilMatr.toRad(0)};
-			//pos: 566.31 -30.62 220.70
-			//or : 94.43  12.03  132.04
-			float dbs = 360.0f;
+                    UtilMatr.toRad(0f)
+                    };
+            /*float[] q = new float[8]{ UtilMatr.toRad(-7.85f),
+                    UtilMatr.toRad(44.46f),
+                    UtilMatr.toRad(6.73f),
+                   UtilMatr.toRad(-109.17f),
+                    UtilMatr.toRad(13.97f),
+                   UtilMatr.toRad(-23.34f),
+                    UtilMatr.toRad(59.64f),
+                    UtilMatr.toRad(0)};*/
+            //pos: 566.31 -30.62 220.70
+            //or : 94.43  12.03  132.04
+            float dbs = 360.0f;
 			float dse = 420.0f;
 			float dew = 400.0f;
 			float dwf = 126.0f;
 			float[] pos = { 0, 0, 0 };
 			Manipulator Kuka = new Manipulator();
 
-			float[] par = {  q[0], -PI / 2, 0, dbs,
-							 q[1],  PI / 2, 0, 0,
-							 q[2],  PI / 2, 0, dse,
-							 q[3], -PI / 2, 0, 0,
-							 q[4], -PI / 2, 0, dew,
-							 q[5], PI / 2, 0, 0,
-							 q[6], 0, 0, dwf,
+			float[] par = { (float) q[0], -PI / 2, 0, dbs,
+                             (float) q[1],  PI / 2, 0, 0,
+                              (float)q[2],  PI / 2, 0, dse,
+                             (float) q[3], -PI / 2, 0, 0,
+                             (float) q[4], -PI / 2, 0, dew,
+                              (float)q[5], PI / 2, 0, 0,
+                              (float)q[6], 0, 0, dwf,
 							 0   ,       0, 0, 0 };
 
-			float[] par_1 = {q[0], -PI/2, 0, dbs,
-							 q[1], PI / 2, 0, 0,
-							 q[2], PI / 2, 0, dse,
-							 q[3], -PI / 2, 0, 0,
-							 q[4], -PI / 2, 0, dew,
-							 q[5], PI / 2, 0, 0,
-							 q[6], 0, 0, dwf,
+			float[] par_1 = { (float)q[0], -PI/2, 0, dbs,
+                              (float)q[1], PI / 2, 0, 0,
+                              (float)q[2], PI / 2, 0, dse,
+                              (float)q[3], -PI / 2, 0, 0,
+                              (float)q[4], -PI / 2, 0, dew,
+                              (float)q[5], PI / 2, 0, 0,
+                              (float)q[6], 0, 0, dwf,
 							 0   , 0, 0, 0 };
 			Vector3d_GL pos1 = Kuka.calcPoz(par);
-			Kuka.printMatrix(Kuka.flange_matr);
-			Console.WriteLine("--------------");
-			prin.t(UtilMatr.AbcToMatrix(94.43f, 12.03f, 132.04f));
-			//print(AbcToMatrix(90f, 90f, 90f));
-			Console.WriteLine(pos1);
-			Console.WriteLine("--------------");
-			RobotFrame frame = new RobotFrame("566.31 -30.62 220.70 94.43 12.03 132.04 k",RobotFrame.RobotType.KUKA,false);
-			Console.WriteLine("--------------");
-			prin.t(frame.getMatrix());
-		}
+            Console.WriteLine("kuka.flange_matr--------------");
+            Kuka.printMatrix(Kuka.flange_matr);
+			Console.WriteLine("-UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f)-------------");
+			prin.t(UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f));
+
+			RobotFrame frame = new RobotFrame("476.98 306.74 268.21 -158.11 -42.41 81.57 k", RobotFrame.RobotType.KUKA,false);
+			var m = frame.getMatrix();
+            Console.WriteLine("frame.getMatrix()--------------");
+
+            prin.t(frame.getMatrix());
+            RobotFrame frame_2 = new RobotFrame(m, RobotFrame.RobotType.KUKA);
+			RobotFrame.comp_forv_kinem(q, 6, true, RobotFrame.RobotType.KUKA);
+            Console.WriteLine("frame_2.ToString()--------------");
+
+            prin.t(frame_2.ToStr(" ",false,true,false));
+        }
 
 
 		/*

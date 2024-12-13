@@ -23,6 +23,7 @@ using System.Linq.Expressions;
 using jakaApi;
 using System.Text.RegularExpressions;
 using System.Net.Http;
+using System.Globalization;
 
 namespace opengl3
 {
@@ -190,8 +191,14 @@ namespace opengl3
 
         public MainScanningForm()
         {
+            //NumberFormatInfo nfi = new CultureInfo("ru-RU", false).NumberFormat;
+            //nfi.NumberDecimalSeparator = ".";
+            //nfi.
             InitializeComponent();
             init_vars();
+
+            Manipulator.calcRob();
+
             var vals_regr = new double[][]//laser and pos
                 {
                       new double[] {38.2 ,0 },
@@ -2018,10 +2025,10 @@ namespace opengl3
             var d = 100;
             var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
             GL1.buffersGl.setTranspobj(fr, 0.4f);
-            // generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
 
-            // generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
-            // GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
+            //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
+            GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
             //GL1.SortObj();
             int monitor_num = 1;
             if (monitor_num == 4)
@@ -2165,7 +2172,9 @@ namespace opengl3
 
             //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
-            test_go_to_point_robot();
+
+
+           // test_go_to_point_robot();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -7325,7 +7334,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
 
-            windowsTabs.Controls.Remove(tabMain);
+           /* windowsTabs.Controls.Remove(tabMain);
             windowsTabs.Controls.Remove(tabOpenGl);
             windowsTabs.Controls.Remove(tabDistort);
             windowsTabs.Controls.Remove(tabP_developer);
@@ -7333,7 +7342,7 @@ namespace opengl3
             windowsTabs.Controls.Remove(tabDebug);
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);
+            windowsTabs.Controls.Remove(tabP_connect);*/
             //windowsTabs.Controls.Remove(tabPage_tube);
 
 

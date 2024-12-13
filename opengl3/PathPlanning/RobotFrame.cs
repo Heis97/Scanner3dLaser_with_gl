@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Emgu.CV;
@@ -107,17 +109,17 @@ namespace opengl3
                 C = to_rad(C);
             }
             this.robotType = robotType;
-           /* if (coords_w.Contains("k"))
+            if (coords_w.Contains("k"))
             {
                 this.robotType = RobotType.KUKA;
             }
-            if (coords_w.Contains("p"))
+            /*if (coords_w.Contains("p"))
             {
                 this.robotType = RobotType.PULSE;
             }*/
             V = 0;
             D = 0;
-            
+            Console.WriteLine(this.robotType);
         }
 
         public static RobotFrame[] parse_g_code(string g_code, RobotType robotType = RobotType.PULSE)
@@ -166,6 +168,7 @@ namespace opengl3
         public RobotFrame(Matrix<double> m, RobotType type = RobotType.PULSE)
         {
             robotType = type;
+            Console.WriteLine(robotType.ToString());
             switch (type)
             {
                 case RobotType.KUKA:
@@ -340,15 +343,22 @@ namespace opengl3
                     ", V" + round(V) + ", D" + D + " \n";
         }
 
-        public string ToStr(string del = " ",bool nums = false,bool full = true)
+        public string ToStr(string del = " ",bool nums = false,bool full = true, bool rad = true)
         {
+            var a = A; var b = B; var c = C;
+            if(!rad)
+            {
+                a = to_degree(A);
+                b = to_degree(B);
+                c = to_degree(C);
+            }
             var str = del + "X" + round(X) + del + "Y" + round(Y) + del + "Z" + round(Z) +
-                    del + "A" + round(A) + del + "B" + round(B) + del + "C" + round(C);
+                    del + "A" + round(a) + del + "B" + round(b) + del + "C" + round(c);
             if (full) { str += del + "F" + round(F) + del + "V" + round(V) + del + "D" + D;}
             if (nums)
             {
                 str = del + round(X) + del + round(Y) + del + round(Z) +
-                    del + round(A) + del + round(B) + del + round(C);
+                    del + round(a) + del + round(b) + del + round(c);
                 if (full) { str += del + round(F) + del + round(V) + del + D; }
                 
             }
@@ -662,6 +672,11 @@ namespace opengl3
         {
             return q * Math.PI / 180;
         }
+
+        static double to_degree(double q)
+        {
+            return q *180/ Math.PI;
+        }
         static public PositionRob comp_forv_kinem(double[] q,int count, bool rad = true, RobotType robotType = RobotType.PULSE)
         {
             if(robotType==RobotType.PULSE)
@@ -691,6 +706,38 @@ namespace opengl3
                     dh_params_c.Add( dh_params[i]);
                 }
                 var fr = new RobotFrame(calc_pos(dh_params_c.ToArray()), robotType);
+                var pos = fr.frame;
+                return pos;
+            }
+            else if(robotType == RobotType.KUKA)
+            {
+                var dbs = 360.0f;
+                var dse = 420.0f;
+                var dew = 400.0f;
+                var dwf = 126.0f;
+                if (!rad)
+                    q = to_rad(q);
+
+
+                var dh_params = new double[][] {
+                    new double[]{ q[0], -Math.PI / 2, 0, dbs},
+                    new double[]{  q[1], Math.PI / 2, 0, 0},
+                    new double[]{ q[2], Math.PI / 2, 0, dse},
+                    new double[]{ q[3], -Math.PI / 2, 0, 0},
+                    new double[]{q[4], -Math.PI / 2, 0, dew},
+                    new double[]{ q[5], Math.PI / 2, 0, 0 },
+                     new double[]{ q[6], 0, 0, dwf }
+                };
+                //var dh_params_c = new double[6][];
+                var dh_params_c = new List<double[]>();
+                for (int i = 0; i < count; i++)
+                {
+                    dh_params_c.Add(dh_params[i]);
+                }
+                var m = calc_pos(dh_params_c.ToArray());
+                prin.t(m);
+                var fr = new RobotFrame(m, robotType);
+               
                 var pos = fr.frame;
                 return pos;
             }
@@ -838,6 +885,104 @@ namespace opengl3
             return q;
         }
 
+        //---------------------------------------------------------------------
+        static public double[] comp_inv_kinem_priv_kuka(PositionRob pos, int[] turn)
+        {
+            var q = new double[] { 0, 0, 0, 0, 0, 0 };
+
+            var pm = getMatrixPos(pos);
+            var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
+            var L0 = 360;
+            var L1 = 420;
+            var L2 = 400;
+            var L3 = 126;
+
+            var dz = eye_matr(4);
+            dz[2, 3] = -L3;
+            var p3 = pm * dz;
+            var p3p = new Point3d_GL(p3[0, 3], p3[1, 3], p3[2, 3]);
+            var vz = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
+            
+            var scara = p3p - new Point3d_GL(0, 0, L0);
+            var sq1 = -scara.y / scara.magnitude_xy();
+            var cq1 = -scara.x / scara.magnitude_xy();
+
+            var q1 = Math.Sign(sq1) * arccos(cq1);
+
+
+            var Ls = scara.magnitude_xy();
+            var Lt = scara.magnitude();
+
+            if (Ls == 0) return null;
+            if (Lt == 0) return null;
+            var omega = Math.Atan(scara.z / Ls);
+            var theta = arccos((L1 * L1 + L2 * L2 - Lt * Lt) / (2 * L1 * L2));
+            var omega_ext = arccos((L1 * L1 + Lt * Lt - L2 * L2) / (2 * L1 * Lt));
+            omega += omega_ext * turn[2];
+
+            var q2 = -omega;
+            var q3 = Math.PI - theta;
+
+            if (turn[0] > 0)
+            {
+                q1 += Math.PI;
+
+
+                q2 *= -1;
+                q2 -= Math.PI;
+                q3 *= -1;
+            }
+
+            if (turn[2] < 0)
+            {
+                q3 *= turn[2];
+            }
+
+
+
+
+           /* var ax4z = -ax5y;
+            var ax4y = -vf;
+            var ax4x = ax4y | ax4z;
+
+            var dh_params = new double[][]
+                {
+                    new double[]{ q1, Math.PI / 2, 0, L1 },
+                    new double[]{ q2,  0, -L2, 0 },
+                    new double[]{ q3,  0, -L3, 0 } };
+
+            var pm3 = calc_pos(dh_params);
+            var ax3x = new Point3d_GL(pm3[0, 0], pm3[1, 0], pm3[2, 0]);
+            var s4 = Point3d_GL.sign_r_v(ax3x, ax4x, ax4y);
+            var q4 = s4 * Point3d_GL.ang(ax3x, ax4x);
+
+
+            var ax6y = new Point3d_GL(pm[0, 1], pm[1, 1], pm[2, 1]);
+            var ax6z = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
+
+            var s6 = Point3d_GL.sign_r_v(ax5y, ax6y, ax6z);
+            var q6 = s6 * Point3d_GL.ang(ax5y, ax6y);
+
+
+
+            var s5 = Point3d_GL.sign_r_v(ax4y, ax6z, ax4z);
+            var q5 = s5 * Point3d_GL.ang(ax4y, ax6z);
+
+            q6 += Math.PI;
+
+            q = new double[] { q1, q2, q3, q4, q5, q6 };
+            //Console.WriteLine("q");
+            for (int i = 0; i < q.Length; i++)
+            {
+                var qi = q[i];
+                if (qi > Math.PI) qi -= 2 * Math.PI;
+                if (qi < -Math.PI) qi += 2 * Math.PI;
+                q[i] = qi;
+                //Console.WriteLine(q[i]);
+            }
+            */
+            return q;
+        }
 
         //---------------------------------------------------------------------
         static public Matrix<double> mult_frame(Matrix<double> rob_base, Matrix<double> frame)
