@@ -24,6 +24,8 @@ using jakaApi;
 using System.Text.RegularExpressions;
 using System.Net.Http;
 using System.Globalization;
+using Accord.Math.Geometry;
+using System.Net;
 
 namespace opengl3
 {
@@ -2028,7 +2030,7 @@ namespace opengl3
             generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
 
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
-            GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135,117,103,1,255)*1.4);
+            GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
             //GL1.SortObj();
             int monitor_num = 1;
             if (monitor_num == 4)
@@ -2174,7 +2176,7 @@ namespace opengl3
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
 
-           // test_go_to_point_robot();
+            // test_go_to_point_robot();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -4303,26 +4305,20 @@ namespace opengl3
 
         private void DrawPolygons()
         {
-            if (originalImage == null)
-                return;
+            if (originalImage == null) return;
 
-            // Копируем изображение
+            // Копируем исходное изображение
             editedImage = new Bitmap(originalImage);
             using (Graphics g = Graphics.FromImage(editedImage))
             {
-                // Настройка пера для линий и кисти для точек
                 Pen pen = new Pen(Color.Red, 2);
                 Brush brush = Brushes.Blue;
 
                 foreach (var polygon in polygons)
                 {
-                    // Рисуем линии полигона
                     if (polygon.Count > 1)
-                    {
                         g.DrawPolygon(pen, polygon.ToArray());
-                    }
 
-                    // Рисуем точки полигона
                     foreach (var point in polygon)
                     {
                         g.FillEllipse(brush, point.X - 5, point.Y - 5, 10, 10);
@@ -4330,82 +4326,271 @@ namespace opengl3
                 }
             }
 
-            // Обновляем PictureBox
             pictureBox2.Image = editedImage;
-        }
-
-        // Начало перетаскивания
-        private void pictureBox_MouseDown(object sender, MouseEventArgs e)
+            pictureBox2.Refresh(); // Принудительно обновляем отображение
+        } 
+    
+        /*
+        namespace PolygonEditor.Definitions
         {
-            for (int i = 0; i < polygons.Count; i++)
+            public enum ClickMode
             {
-                for (int j = 0; j < polygons[i].Count; j++)
+                None,
+                ChoosingRectanglePoints,
+                MovingElement,
+            }
+        
+            public struct MovingVerticeState
+            {
+                public VerticePoint selectedVertice;
+                public PointF hitPoint;
+
+                public MovingVerticeState(VerticePoint currentlyMovingVertice, PointF hitPoint)
                 {
-                    var point = polygons[i][j];
-                    if (Math.Abs(point.X - e.X) < 10 && Math.Abs(point.Y - e.Y) < 10)
+                    this.selectedVertice = currentlyMovingVertice;
+                    this.hitPoint = hitPoint;
+                }
+
+                public bool IsDuringMovement
+                {
+                    get
                     {
-                        // Точка выбрана
-                        isDragging = true;
-                        selectedPolygonIndex = i;
-                        selectedPointIndex = j;
-                        dragStart = e.Location;
-                        return;
+                        return selectedVertice != null;
                     }
+                }
+
+                public void Clear()
+                {
+                    selectedVertice = null;
+                }
+
+                public (double x, double y) GetMoveVectorAndUpdateHitPoint(double x, double y)
+                {
+                    double ret_x = x - hitPoint.X;
+                    double ret_y = y - hitPoint.Y;
+
+                    hitPoint.X = (float)x;
+                    hitPoint.Y = (float)y;
+                    return (ret_x, ret_y);
+                }
+            }
+
+            public struct MovingEdgeState
+            {
+                public Line selectedEdge;
+                public PointF hitPoint;
+
+                public MovingEdgeState(Line currentlyMovingEdge, PointF hitPoint)
+                {
+                    this.selectedEdge = currentlyMovingEdge;
+                    this.hitPoint = hitPoint;
+                }
+
+                public bool IsDuringMovement
+                {
+                    get
+                    {
+                        return selectedEdge != null;
+                    }
+                }
+
+                public void Clear()
+                {
+                    selectedEdge = null;
+                }
+
+                public (double x, double y) GetMoveVectorAndUpdateHitPoint(double x, double y)
+                {
+                    double ret_x = x - hitPoint.X;
+                    double ret_y = y - hitPoint.Y;
+
+                    hitPoint.X = (float)x;
+                    hitPoint.Y = (float)y;
+                    return (ret_x, ret_y);
+                }
+            }
+
+            public struct MovingPolygonState
+            {
+                public Polygon selectedPolygon;
+                public PointF hitPoint;
+
+                public MovingPolygonState(Polygon currentlyMovingPolygon, PointF hitPoint)
+                {
+                    this.selectedPolygon = currentlyMovingPolygon;
+                    this.hitPoint = hitPoint;
+                }
+
+                public bool IsDuringMovement
+                {
+                    get
+                    {
+                        return selectedPolygon != null;
+                    }
+                }
+
+                public void Clear()
+                {
+                    selectedPolygon = null;
+                }
+
+                public (double x, double y) GetMoveVectorAndUpdateHitPoint(double x, double y)
+                {
+                    double ret_x = x - hitPoint.X;
+                    double ret_y = y - hitPoint.Y;
+
+                    hitPoint.X = (float)x;
+                    hitPoint.Y = (float)y;
+                    return (ret_x, ret_y);
+                }
+
+            }
+
+            public struct AddingEdgeConstraintOrVerticeState
+            {
+                public Line selectedEdge;
+                public IEdgeConstraint constraint;
+                public PointF hitPoint;
+
+                public AddingEdgeConstraintOrVerticeState(Line currentlyMovingEdge, PointF hitPoint)
+                {
+                    this.selectedEdge = currentlyMovingEdge;
+                    constraint = null;
+                    this.hitPoint = hitPoint;
+                }
+
+                public bool IsDuringMovement
+                {
+                    get
+                    {
+                        return selectedEdge != null;
+                    }
+                }
+
+                public void Clear()
+                {
+                    selectedEdge = null;
+                }
+            }
+
+            public struct DeletingVerticeState
+            {
+                public VerticePoint selectedVertice;
+
+                public DeletingVerticeState(VerticePoint currentlyDeletingVertice)
+                {
+                    this.selectedVertice = currentlyDeletingVertice;
+                }
+
+                public bool IsDuringMovement
+                {
+                    get
+                    {
+                        return selectedVertice != null;
+                    }
+                }
+
+                public void Clear()
+                {
+                    selectedVertice = null;
+                }
+            }
+
+            public struct DeletingPolygonState
+            {
+                public Polygon selectedPolygon;
+
+                public DeletingPolygonState(Polygon selectedPolygon)
+                {
+                    this.selectedPolygon = selectedPolygon;
+                }
+
+                public bool IsDuringMovement
+                {
+                    get
+                    {
+                        return selectedPolygon != null;
+                    }
+                }
+
+                public void Clear()
+                {
+                    selectedPolygon = null;
                 }
             }
         }
 
-        // Перемещение точки
-        private void pictureBox_MouseMove(object sender, MouseEventArgs e)
+        ClickMode clickMode = ClickMode.MovingElement;
+        private readonly PolygonsContainer polygonsContainer;
+        private void drawAreaBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if (isDragging && selectedPolygonIndex >= 0 && selectedPointIndex >= 0)
-            {
-                // Обновляем координаты точки
-                polygons[selectedPolygonIndex][selectedPointIndex] = e.Location;
-
-                // Перерисовываем полигоны
-                DrawPolygons();
-            }
-        }
-
-        // Завершение перетаскивания
-        private void pictureBox_MouseUp(object sender, MouseEventArgs e)
-        {
-            isDragging = false;
-            selectedPolygonIndex = -1;
-            selectedPointIndex = -1;
-        }
-
-        // Добавление точки (двойной клик)
-        private void pictureBox_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (polygons.Count > 0)
-            {
-                // Добавляем точку в последний полигон
-                polygons[polygons.Count - 1].Add(e.Location);
-
-                // Перерисовываем полигоны
-                DrawPolygons();
-            }
-        }
-
-        // Удаление точки
-        private void DeletePoint(Point pointToDelete)
-        {
-            foreach (var polygon in polygons)
-            {
-                for (int i = 0; i < polygon.Count; i++)
+            if (e.Button == MouseButtons.Left)
+                switch (clickMode)
                 {
-                    if (Math.Abs(polygon[i].X - pointToDelete.X) < 10 &&
-                        Math.Abs(polygon[i].Y - pointToDelete.Y) < 10)
-                    {
-                        polygon.RemoveAt(i);
-                        DrawPolygons();
-                        return;
-                    }
+                    case ClickMode.ChoosingRectanglePoints:
+                        polygonsContainer.BuildNextPolygonPart(e.X, e.Y);
+                        break;
+                    case ClickMode.MovingElement:
+                        polygonsContainer.StartMovingElementFrom(e.X, e.Y);
+                        break;
                 }
+            else if (e.Button == MouseButtons.Right)
+            {
+
+                var resVertice = polygonsContainer.StartVerticeDeleting(e.X, e.Y);
+                if (resVertice)
+                {
+                    ShowVerticeContextMenu(e.X, e.Y);
+                    return;
+                }
+
+                var resEdge = polygonsContainer.StartAddingEdgeConstraintOrVertice(e.X, e.Y);
+                if (resEdge.isEdgeUnderHit)
+                {
+                    ShowEdgeContextMenu(resEdge.constraint, e.X, e.Y);
+                    return;
+                }
+
+                var resPolygon = polygonsContainer.StartPolygonDeleting(e.X, e.Y);
+                if (resPolygon)
+                    ShowPolygonContextMenu(e.X, e.Y);
+
             }
         }
+        private void drawAreaBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                if (clickMode == ClickMode.ChoosingRectanglePoints)
+                {
+                    clickMode = ClickMode.MovingElement;
+                    polygonsContainer.FinishPolygonBuilding(e.X, e.Y);
+                }
+        }
+
+        private void drawAreaBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            switch (clickMode)
+            {
+                case ClickMode.ChoosingRectanglePoints:
+                    polygonsContainer.UpdateNewEdgeEnd(e.X, e.Y);
+                    break;
+                case ClickMode.MovingElement:
+                    polygonsContainer.MoveElement(e.X, e.Y);
+                    break;
+            }
+        }
+        private void drawAreaBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                switch (clickMode)
+                {
+                    case ClickMode.MovingElement:
+                        polygonsContainer.FinishElementMoving();
+                        break;
+                }
+        }
+        */
+
 
         private async void but_save_im_base1_Click(object sender, EventArgs e)
         {
