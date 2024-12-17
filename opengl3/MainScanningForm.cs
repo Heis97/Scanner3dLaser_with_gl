@@ -2460,6 +2460,7 @@ namespace opengl3
                 }
 
             }
+
             var scan_stl = new Model3d("models\\lowres\\t2.stl", false, 1);
             GL1.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "t2");
             var L1 = 231.1;
