@@ -2176,7 +2176,7 @@ namespace opengl3
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
 
-            // test_go_to_point_robot();
+             test_go_to_point_robot();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)

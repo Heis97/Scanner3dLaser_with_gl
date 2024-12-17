@@ -21,7 +21,10 @@ namespace opengl3
             this.rotation = rot;
         }
 
-
+        public override string ToString()
+        {
+            return position.ToString()+" "+rotation.ToString();
+        }
     }
 
     public class RobotFrame
@@ -137,7 +140,7 @@ namespace opengl3
         }
         public Point3d_GL get_pos() { return new Point3d_GL(X, Y, Z); }
         public Point3d_GL get_rot() { return new Point3d_GL(A, B, C); }
-
+        public PositionRob get_position_rob() { return new PositionRob(new Point3d_GL(X, Y, Z),new Point3d_GL(A, B, C)); }
         public RobotFrame set_pos(Point3d_GL p) 
         {
             frame.position = p;
@@ -652,7 +655,8 @@ namespace opengl3
             var matrs = new List<Matrix<double>>();
             foreach(var val in vals)            
                 matrs.Add(create_dhmatr(val));
-            
+            Console.WriteLine("prin.t(matrs[0]);");
+            prin.t(matrs[0]);
             var matr_res = eye_matr(4);
             foreach(var matr in matrs)
                 matr_res *= matr;
@@ -735,6 +739,7 @@ namespace opengl3
                     dh_params_c.Add(dh_params[i]);
                 }
                 var m = calc_pos(dh_params_c.ToArray());
+                prin.t(q);
                 prin.t("comp_forv_kinem");
                 prin.t(m);
                 var fr = new RobotFrame(m, robotType);
@@ -746,7 +751,7 @@ namespace opengl3
             return new PositionRob();
         }
 
-        public double[][] comp_inv_kinem(PositionRob pos)
+        static public double[][] comp_inv_kinem(PositionRob pos, RobotType robotType = RobotType.PULSE)
         {
             var solvs = new List<double[]>();
             var turns = new int[][]
@@ -761,10 +766,12 @@ namespace opengl3
                 new int[]{1, 1, 1}
             };
             foreach (var turn in turns)
-                solvs.Add(comp_inv_kinem_priv(pos, turn));
+                solvs.Add(comp_inv_kinem_priv(pos, turn,robotType));
 
             return solvs.ToArray();
         }
+
+
         public static Point3d_GL calc_inters_2circ(double x1, double y1, double x2, double y2, double R1, double R2, double sign)
         {
             var p1 = new Point3d_GL(x1, y1);
@@ -779,11 +786,20 @@ namespace opengl3
             y += y1;
             return new Point3d_GL(x, y);
         }
-        static public double[] comp_inv_kinem_priv(PositionRob pos, int[] turn)
+        static public double[] comp_inv_kinem_priv(PositionRob pos, int[] turn,RobotType robotType = RobotType.PULSE)
+        {
+            switch(robotType) 
+            {
+                case RobotType.KUKA: return comp_inv_kinem_priv_kuka(pos, turn); 
+                case RobotType.PULSE: return comp_inv_kinem_priv_pulse(pos, turn); 
+                default: return new double[] { pos.position.x, pos.position.y, pos.position.x, pos.rotation.x, pos.rotation.y, pos.rotation.z };
+            }
+        }
+        static public double[] comp_inv_kinem_priv_pulse(PositionRob pos, int[] turn)
         {
 
 
-            var pm = getMatrixPos(pos);
+            var pm = getMatrixPos(pos, RobotType.PULSE );
             var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
             var L1 = 231.1;
             var L2 = 450;
@@ -891,7 +907,7 @@ namespace opengl3
         {
             var q = new double[] { 0, 0, 0, 0, 0, 0 };
 
-            var pm = getMatrixPos(pos);
+            var pm = getMatrixPos(pos,RobotType.KUKA);
             var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
             var L0 = 360;
             var L1 = 420;
@@ -901,9 +917,10 @@ namespace opengl3
             var dz = eye_matr(4);
             dz[2, 3] = -L3;
             var p3 = pm * dz;
+           
             var p3p = new Point3d_GL(p3[0, 3], p3[1, 3], p3[2, 3]);
             var vz = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
-            
+            Console.WriteLine("p3p: " + p3p);
             var scara = p3p - new Point3d_GL(0, 0, L0);
             var sq1 = -scara.y / scara.magnitude_xy();
             var cq1 = -scara.x / scara.magnitude_xy();
@@ -939,49 +956,52 @@ namespace opengl3
                 q3 *= turn[2];
             }
 
+            q[0] = q1;
+            q[1] = q2;
+            q[2] = q3;
+
+
+            /* var ax4z = -ax5y;
+             var ax4y = -vf;
+             var ax4x = ax4y | ax4z;
+
+             var dh_params = new double[][]
+                 {
+                     new double[]{ q1, Math.PI / 2, 0, L1 },
+                     new double[]{ q2,  0, -L2, 0 },
+                     new double[]{ q3,  0, -L3, 0 } };
+
+             var pm3 = calc_pos(dh_params);
+             var ax3x = new Point3d_GL(pm3[0, 0], pm3[1, 0], pm3[2, 0]);
+             var s4 = Point3d_GL.sign_r_v(ax3x, ax4x, ax4y);
+             var q4 = s4 * Point3d_GL.ang(ax3x, ax4x);
+
+
+             var ax6y = new Point3d_GL(pm[0, 1], pm[1, 1], pm[2, 1]);
+             var ax6z = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
+
+             var s6 = Point3d_GL.sign_r_v(ax5y, ax6y, ax6z);
+             var q6 = s6 * Point3d_GL.ang(ax5y, ax6y);
 
 
 
-           /* var ax4z = -ax5y;
-            var ax4y = -vf;
-            var ax4x = ax4y | ax4z;
+             var s5 = Point3d_GL.sign_r_v(ax4y, ax6z, ax4z);
+             var q5 = s5 * Point3d_GL.ang(ax4y, ax6z);
 
-            var dh_params = new double[][]
-                {
-                    new double[]{ q1, Math.PI / 2, 0, L1 },
-                    new double[]{ q2,  0, -L2, 0 },
-                    new double[]{ q3,  0, -L3, 0 } };
+             q6 += Math.PI;
 
-            var pm3 = calc_pos(dh_params);
-            var ax3x = new Point3d_GL(pm3[0, 0], pm3[1, 0], pm3[2, 0]);
-            var s4 = Point3d_GL.sign_r_v(ax3x, ax4x, ax4y);
-            var q4 = s4 * Point3d_GL.ang(ax3x, ax4x);
+             q = new double[] { q1, q2, q3, q4, q5, q6 };
+             //Console.WriteLine("q");
+             for (int i = 0; i < q.Length; i++)
+             {
+                 var qi = q[i];
+                 if (qi > Math.PI) qi -= 2 * Math.PI;
+                 if (qi < -Math.PI) qi += 2 * Math.PI;
+                 q[i] = qi;
+                 //Console.WriteLine(q[i]);
+             }
+             */
 
-
-            var ax6y = new Point3d_GL(pm[0, 1], pm[1, 1], pm[2, 1]);
-            var ax6z = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
-
-            var s6 = Point3d_GL.sign_r_v(ax5y, ax6y, ax6z);
-            var q6 = s6 * Point3d_GL.ang(ax5y, ax6y);
-
-
-
-            var s5 = Point3d_GL.sign_r_v(ax4y, ax6z, ax4z);
-            var q5 = s5 * Point3d_GL.ang(ax4y, ax6z);
-
-            q6 += Math.PI;
-
-            q = new double[] { q1, q2, q3, q4, q5, q6 };
-            //Console.WriteLine("q");
-            for (int i = 0; i < q.Length; i++)
-            {
-                var qi = q[i];
-                if (qi > Math.PI) qi -= 2 * Math.PI;
-                if (qi < -Math.PI) qi += 2 * Math.PI;
-                q[i] = qi;
-                //Console.WriteLine(q[i]);
-            }
-            */
             return q;
         }
 

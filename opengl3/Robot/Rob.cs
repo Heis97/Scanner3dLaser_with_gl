@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Emgu.CV;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,14 +26,20 @@ namespace opengl3
 				param[i] = inp[i];
 			}
 			float[] A01 = createDHmatrix(param[0], param[1], param[2], param[3]);
-			float[] A12 = createDHmatrix(param[4], param[5], param[6], param[7]);
+        
+
+            float[] A12 = createDHmatrix(param[4], param[5], param[6], param[7]);
 			float[] A23 = createDHmatrix(param[8], param[9], param[10], param[11]);
 			float[] A34 = createDHmatrix(param[12], param[13], param[14], param[15]);
 			float[] A45 = createDHmatrix(param[16], param[17], param[18], param[19]);
 			float[] A56 = createDHmatrix(param[20], param[21], param[22], param[23]);
 			float[] A67 = createDHmatrix(param[24], param[25], param[26], param[27]);
 			float[] A78 = createDHmatrix(param[28], param[29], param[30], param[31]);
-			float[] resMatrix = matrixMultiply(matrixMultiply(matrixMultiply(matrixMultiply(matrixMultiply(matrixMultiply(matrixMultiply(A01, A12), A23), A34), A45), A56), A67), A78);
+
+             //Console.WriteLine("printMatrix(A05);");
+            // printMatrix(matrixMultiply(matrixMultiply(matrixMultiply(matrixMultiply(A01, A12), A23), A34), A45));
+
+            float[] resMatrix = matrixMultiply(matrixMultiply(matrixMultiply(matrixMultiply(matrixMultiply(matrixMultiply(matrixMultiply(A01, A12), A23), A34), A45), A56), A67), A78);
 			flange_matr = resMatrix;
 			return new Vector3d_GL(resMatrix[3], resMatrix[7], resMatrix[11]);
 		}
@@ -191,7 +198,7 @@ namespace opengl3
 				   UtilMatr.toRad(-94.86f),
 					UtilMatr.toRad(96.42f),
 				   UtilMatr.toRad(93.46f),
-					UtilMatr.toRad(59.64f),
+					UtilMatr.toRad(-17.2f),
                     UtilMatr.toRad(0f)
                     };
             /*float[] q = new float[8]{ UtilMatr.toRad(-7.85f),
@@ -220,19 +227,19 @@ namespace opengl3
                               (float)q[6], 0, 0, dwf,
 							 0   ,       0, 0, 0 };
 
-			float[] par_1 = { (float)q[0], -PI/2, 0, dbs,
+			/*float[] par_1 = { (float)q[0], -PI/2, 0, dbs,
                               (float)q[1], PI / 2, 0, 0,
                               (float)q[2], PI / 2, 0, dse,
                               (float)q[3], -PI / 2, 0, 0,
                               (float)q[4], -PI / 2, 0, dew,
                               (float)q[5], PI / 2, 0, 0,
                               (float)q[6], 0, 0, dwf,
-							 0   , 0, 0, 0 };
+							 0   , 0, 0, 0 };*/
 			Vector3d_GL pos1 = Kuka.calcPoz(par);
-            Console.WriteLine("kuka.flange_matr--------------");
-            Kuka.printMatrix(Kuka.flange_matr);
-			Console.WriteLine("-UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f)-------------");
-			prin.t(UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f));
+           // Console.WriteLine("kuka.flange_matr--------------");
+            //Kuka.printMatrix(Kuka.flange_matr);
+			//Console.WriteLine("-UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f)-------------");
+			//prin.t(UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f));
 
 			RobotFrame frame = new RobotFrame("476.98 306.74 268.21 -158.11 -42.41 81.57 k", RobotFrame.RobotType.KUKA,false);
 			var m = frame.getMatrix();
@@ -240,7 +247,12 @@ namespace opengl3
 
             prin.t(frame.getMatrix());
             RobotFrame frame_2 = new RobotFrame(m, RobotFrame.RobotType.KUKA);
-			RobotFrame.comp_forv_kinem(q, 6, true, RobotFrame.RobotType.KUKA);
+			var forv4  = RobotFrame.comp_forv_kinem(q, 6, true, RobotFrame.RobotType.KUKA);
+            prin.t(" forv6");
+            prin.t(forv4.ToString());
+            var qs_ret = RobotFrame.comp_inv_kinem(frame_2.get_position_rob(),RobotFrame.RobotType.KUKA);
+            prin.t("qs_ret");
+            prin.t(qs_ret);
             Console.WriteLine("frame_2.ToString()--------------");
 
             prin.t(frame_2.ToStr(" ",false,true,false));

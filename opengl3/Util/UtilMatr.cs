@@ -458,10 +458,11 @@ namespace opengl3
             return points1;
         }
 
-        static public Matrix4x4f AbcToMatrix(float a, float b, float c)
+        static public Matrix4x4f AbcToMatrix(float a, float b, float c)//grad
         {
-            //Console.WriteLine("Z");
-            //print(Matrix4x4f.RotatedZ(a));
+            //Console.WriteLine("Z90");
+            //prin.t(Matrix4x4f.RotatedZ(90));
+
             var rotZ = Matrix4x4f.RotatedZ(a);
             rotZ[0, 1] = -rotZ[0, 1];
             rotZ[1, 0] = -rotZ[1, 0];
