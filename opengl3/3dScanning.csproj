@@ -266,7 +266,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Connection\DevicesArduino\Plunger_nasos_0111_nano\Plunger_nasos_0111_nano.ino" />
+    <None Include="Connection\DevicesArduino\test_max31\test_max31.ino" />
+    <None Include="Connection\DevicesArduino\test_mhz19b\test_mhz19b.ino" />
     <None Include="Connection\DevicesArduino\Tube_main_0111\Tube_main_0111.ino" />
+    <None Include="Connection\DevicesArduino\Valve_3011\Valve_3011.ino" />
     <None Include="Graphic\Shaders\Geom\slice_shader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
