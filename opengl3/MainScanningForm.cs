@@ -46,6 +46,7 @@ namespace opengl3
         bool visualise_compens = false;
         bool scanning_status = false;
         Thread tcp_thread = null;
+        Thread ard_acust_thread = null;
         MovmentCompensation movm = null;
         List<PosTimestamp> timestamps = new List<PosTimestamp>();
         VideoCapture[] videoCaptures = new VideoCapture[4];
@@ -7520,7 +7521,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
 
-           /* windowsTabs.Controls.Remove(tabMain);
+            windowsTabs.Controls.Remove(tabMain);
             windowsTabs.Controls.Remove(tabOpenGl);
             windowsTabs.Controls.Remove(tabDistort);
             windowsTabs.Controls.Remove(tabP_developer);
@@ -7528,7 +7529,7 @@ namespace opengl3
             windowsTabs.Controls.Remove(tabDebug);
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);*/
+            windowsTabs.Controls.Remove(tabP_connect);
             //windowsTabs.Controls.Remove(tabPage_tube);
 
 
@@ -8457,6 +8458,7 @@ namespace opengl3
                 var vel = to_double_textbox(textBox_cycle_speed, 0.01, 2);
                 var div = LaserLine.vel_pist_to_ard(vel, nT, 1, 3200);
                 laserLine?.set_adr(i2c_adr_main);               
+                Console.WriteLine(div);
                 laserLine?.set_las_div(div);
             }
         }
@@ -8465,10 +8467,11 @@ namespace opengl3
         {
             if (e.KeyCode == Keys.Enter)
             {
-                var ampl_degree = to_double_textbox(textBox_cycle_amplitud, 0, 360);
+                var ampl_degree = to_double_textbox(textBox_cycle_amplitud, 0, 1360);
                 var aml_steps = 32 * ampl_degree / 360;
                 //var div = LaserLine.vel_pist_to_ard(vel, nT, 1, 3200);
                 laserLine?.set_adr(i2c_adr_main);
+                Console.WriteLine(aml_steps);
                 laserLine?.set_comp_cycle_ampl(aml_steps);
             }
         }
@@ -8546,7 +8549,43 @@ namespace opengl3
         private void but_con_ard_tube_Click(object sender, EventArgs e)
         {
             laserLine = new LaserLine(portArd);
+
+            ard_acust_thread = new Thread(recieve_ard_acust);
+            ard_acust_thread.Start(laserLine);
         }
+        void recieve_ard_acust(object obj)
+        {
+            var con = (LaserLine)obj;
+            while (true)
+            {
+                if (con == null) { return; }
+                var res = con.reseav();
+                //Console.WriteLine(res);
+                if (res != null)
+                {
+                    if (res.Length > 3)
+                    {
+                        var data = con.parse_temp_co2();
+                        if (data[0] != -1)
+                        {
+                            //Console.WriteLine(" t: " + data[0] + " CO2: " + recalc_co2(data[1]));
+                            label_acust_sensors.BeginInvoke((MethodInvoker)(() => label_acust_sensors.Text = " t: " + Math.Round(data[0],1) + " C\n CO2: " + Math.Round( recalc_co2(data[1]),1)+"%"));
+                        }
+                        
+                    }
+                }
+                Thread.Sleep(100);
+            }
+        }
+
+        double recalc_co2(double co2)
+        {
+            var k = co2 / 500;
+            var co2_m = co2 * k;
+            co2_m /= 10000;
+            return co2_m;
+        }
+
 
         private void but_disc_ard_tube_Click(object sender, EventArgs e)
         {

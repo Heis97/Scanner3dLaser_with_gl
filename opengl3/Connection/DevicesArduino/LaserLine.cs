@@ -14,7 +14,7 @@ namespace opengl3
         public double steps_per_unit_disp = 3200;
         public double steps_per_unit_movm_mash = 1012;//3200:1.58 ||1600:1.58 
         string port;
-        int baudrate = 2000000;
+        int baudrate = 250000;
         int laser = 1, 
             power = 2,
             posit = 3,
@@ -69,7 +69,10 @@ namespace opengl3
             pos_las  = 43,
             pos_z = 44,
 
-            move_las = 45
+            move_las = 45,
+            get_temp = 46,
+            get_co2 = 47,
+            get_data = 48
             ;
 
         int on = 1, off = 0;
@@ -116,6 +119,44 @@ namespace opengl3
                
             
             return ret;
+        }
+
+        public double[] parse_temp_co2()
+        {
+            var ret = new double[] { -1, -1 };
+            if (response == null) return ret;
+            try
+            {
+                var resp = response.ToString();
+                var lines = resp.Split('\n');
+                for (int i = lines.Length - 1; i >= 0; i--)
+                {
+                    var l = lines[i];
+                    l = l.Trim();
+                    if (l.Length == 0) continue;
+                    if (l[0] == 'a')
+                    {
+
+                        for (int k = 0; k < 10; k++)
+                        {
+                            l = l.Replace("  ", " ");
+                        }
+                        var resp_vals = l.Split();
+
+                        ret[0] = Convert.ToDouble(resp_vals[1].Trim());
+                        ret[1] = Convert.ToDouble(resp_vals[2].Trim());
+                        response.Clear();
+                        return ret;
+                    }
+                }
+                return ret;
+            }
+            catch
+            {
+                return ret;
+            }
+           
+            
         }
         public bool connectStart()
         {

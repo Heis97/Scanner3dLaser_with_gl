@@ -3,7 +3,7 @@
 #define DIR_PIN_disp   7   //direction//3 for 50  // 2 for 51(old)
 #define STEP_PIN_disp  6    //step//2 for 50 // 3 for 51(old)
 #define CS_PIN_disp    A0   //chip select//A1-kuka_sam//A2-rozum_misis
-#define I2C_ADDR    51// 50 - nasos1, 51 - nasos2
+#define I2C_ADDR    50// 50 - nasos1, 51 - nasos2
 
 #define MOSI_PIN  11
 #define MISO_PIN 12   
@@ -41,7 +41,7 @@ void setup() {
 
   driver_disp.begin(); 
   Serial.println( driver_disp.test_connection()); 
-  driver_disp.rms_current(600);
+  driver_disp.rms_current(500);
   driver_disp.stealthChop(1); 
   driver_disp.microsteps(16);
 
@@ -50,7 +50,7 @@ void setup() {
   Wire.begin(I2C_ADDR);
   Wire.onReceive(decod_main_i2c);
   
-  mot_disp.setMode(true);
+//gy  mot_disp.setMode(true);
   mot_disp.setDivider(2);
   pinMode(end_1,INPUT);
   pinMode(end_2,INPUT);
@@ -82,7 +82,7 @@ void loop() {
      disp_control(); 
      delay(1000);
    // Serial.println("ch");
-   cold_fix(driver_disp,mot_disp,750);//
+   cold_fix(driver_disp,mot_disp,650);//
   }
 
   /*send_i2c("b000112");

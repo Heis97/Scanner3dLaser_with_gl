@@ -57,6 +57,7 @@ namespace opengl3
             this.imBox_input_1 = new Emgu.CV.UI.ImageBox();
             this.imBox_pattern = new Emgu.CV.UI.ImageBox();
             this.tabMain = new System.Windows.Forms.TabPage();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.imBox_base_2 = new Emgu.CV.UI.ImageBox();
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.but_resize = new System.Windows.Forms.Button();
@@ -649,7 +650,9 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.label113 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label_acust_sensors = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -664,6 +667,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_input_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_pattern)).BeginInit();
             this.tabMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -761,7 +765,6 @@ namespace opengl3
             this.groupBox10.SuspendLayout();
             this.groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // tabCalibMonit
@@ -1108,6 +1111,14 @@ namespace opengl3
             this.tabMain.TabIndex = 1;
             this.tabMain.Text = "Основное";
             this.tabMain.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Location = new System.Drawing.Point(5, 488);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(843, 413);
+            this.pictureBox2.TabIndex = 148;
+            this.pictureBox2.TabStop = false;
             // 
             // imBox_base_2
             // 
@@ -7030,6 +7041,7 @@ namespace opengl3
             // 
             // tabPage_tube
             // 
+            this.tabPage_tube.Controls.Add(this.label_acust_sensors);
             this.tabPage_tube.Controls.Add(this.groupBox15);
             this.tabPage_tube.Controls.Add(this.groupBox14);
             this.tabPage_tube.Controls.Add(this.groupBox13);
@@ -7047,7 +7059,9 @@ namespace opengl3
             // 
             // groupBox15
             // 
+            this.groupBox15.Controls.Add(this.label113);
             this.groupBox15.Controls.Add(this.but_led_off);
+            this.groupBox15.Controls.Add(this.textBox1);
             this.groupBox15.Controls.Add(this.but_led_on);
             this.groupBox15.Controls.Add(this.label110);
             this.groupBox15.Controls.Add(this.textBox_led_pwm);
@@ -7060,7 +7074,7 @@ namespace opengl3
             // 
             // but_led_off
             // 
-            this.but_led_off.Location = new System.Drawing.Point(129, 70);
+            this.but_led_off.Location = new System.Drawing.Point(129, 58);
             this.but_led_off.Name = "but_led_off";
             this.but_led_off.Size = new System.Drawing.Size(115, 39);
             this.but_led_off.TabIndex = 5;
@@ -7070,7 +7084,7 @@ namespace opengl3
             // 
             // but_led_on
             // 
-            this.but_led_on.Location = new System.Drawing.Point(10, 70);
+            this.but_led_on.Location = new System.Drawing.Point(10, 58);
             this.but_led_on.Name = "but_led_on";
             this.but_led_on.Size = new System.Drawing.Size(115, 39);
             this.but_led_on.TabIndex = 4;
@@ -7555,13 +7569,31 @@ namespace opengl3
             // 
             this.timer2.Enabled = true;
             // 
-            // pictureBox2
+            // label113
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(5, 488);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(843, 413);
-            this.pictureBox2.TabIndex = 148;
-            this.pictureBox2.TabStop = false;
+            this.label113.AutoSize = true;
+            this.label113.Location = new System.Drawing.Point(53, 127);
+            this.label113.Name = "label113";
+            this.label113.Size = new System.Drawing.Size(61, 16);
+            this.label113.TabIndex = 5;
+            this.label113.Text = "Яркость";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(127, 124);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 22);
+            this.textBox1.TabIndex = 4;
+            this.textBox1.Text = "1";
+            // 
+            // label_acust_sensors
+            // 
+            this.label_acust_sensors.AutoSize = true;
+            this.label_acust_sensors.Location = new System.Drawing.Point(675, 221);
+            this.label_acust_sensors.Name = "label_acust_sensors";
+            this.label_acust_sensors.Size = new System.Drawing.Size(136, 16);
+            this.label_acust_sensors.TabIndex = 6;
+            this.label_acust_sensors.Text = "Значения датчиков";
             // 
             // MainScanningForm
             // 
@@ -7588,6 +7620,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imBox_pattern)).EndInit();
             this.tabMain.ResumeLayout(false);
             this.tabMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBox_base_2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
@@ -7700,6 +7733,7 @@ namespace opengl3
             this.groupBox_disp_contr_ext.PerformLayout();
             this.groupBox_con_ard_ext.ResumeLayout(false);
             this.tabPage_tube.ResumeLayout(false);
+            this.tabPage_tube.PerformLayout();
             this.groupBox15.ResumeLayout(false);
             this.groupBox15.PerformLayout();
             this.groupBox14.ResumeLayout(false);
@@ -7714,7 +7748,6 @@ namespace opengl3
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -8340,6 +8373,9 @@ namespace opengl3
         private System.Windows.Forms.Button but_dr_set_drill_zero;
         private System.Windows.Forms.Button but_dr_move_z_zero;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Label label113;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label_acust_sensors;
     }
 }
 

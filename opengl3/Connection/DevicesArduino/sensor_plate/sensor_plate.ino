@@ -1,7 +1,8 @@
 #include <Adafruit_MAX31865.h>
-#include <Servo.h>
+#include "GyverTimers.h"
+//#include <Servo.h>
 #include <Wire.h> 
-#define I2C_ADDR    52//new
+#define I2C_ADDR 52//new
 
 #define pwmPin 5
 #define LedPin 13
@@ -11,32 +12,53 @@ Adafruit_MAX31865 thermo = Adafruit_MAX31865(10, 11, 12, 13); // Use software SP
 
 #define RREF 430.0 // The value of the Rref resistor. Use 430.0 for PT100 and 4300.0 for PT1000
 #define RNOMINAL  100.0 // The 'nominal' 0-degrees-C resistance of the sensor (100.0 for PT100, 1000.0 for PT1000)
-
+volatile float cur_temp = 10;
 int digitalValue = 0;  
 float analogVoltage = 0.00;
-
 int prevVal = LOW;
 long th, tl, h, l, ppm;
-
+char charVal1[10]= "0000000000";  
+  char charVal2[1] = " ";          
+  char charVal3[8]= "00000000"; 
+ 
 void setup() {
   Serial.begin(250000);
   thermo.begin(MAX31865_2WIRE);  // set to 2WIRE or 4WIRE as necessary
   Wire.begin(I2C_ADDR);
   Wire.onReceive(decod_main_i2c);
+  Wire.onRequest(request_i2c);
+
+  Timer1.setFrequency(1);          
+  Timer1.enableISR(); 
+
+  /*float val1 = 450.03;
+  float val2 = 350.07;
+  char charVal1[10];  
+  char charVal2[10];          
+
+  
+  dtostrf(val1, 10, 3, ch222dfasdarVal1);
+  dtostrf(val2, 10, 3, charVal2);
+
+  char charVal3[20]; 
+  strcpy(charVal3,charVal1);
+  strcat(charVal3,charVal2);
+  Serial.println(charVal3);*/
 }
 
 
 void loop() {
-  decod_main();
-  //uint16_t rtd = thermo.readRTD();
-  //Serial.print("Temperature = "); Serial.print(thermo.temperature(RNOMINAL, RREF)); Serial.println(" C");
-  
-  //delay(1000);
+ // decod_main();
+ temp_measure();
+ co2_measure();
+}
 
+
+void co2_measure()
+{
   long tt = millis();
   int myVal = digitalRead(pwmPin);
-
-  //Если обнаружили изменение
+  
   if (myVal == HIGH) {
     digitalWrite(LedPin, HIGH);
     if (myVal != prevVal) {
@@ -51,13 +73,59 @@ void loop() {
       th = l - h;
       prevVal = myVal;
       ppm = 5000 * (th - 2) / (th + tl - 4);
-      Serial.println("PPM = " + String(ppm));
     }
   }
-  
+   dtostrf(ppm, 8, 3, charVal3);
+}
+
+void temp_measure()
+{
+  float cur_value = thermo.temperature(RNOMINAL, RREF);
+  cur_temp = cur_value;
+  dtostrf(cur_temp, 8, 3, charVal1);
 }
 
 
+ISR(TIMER1_A)
+{
+   //print_vals();
+ //
+}
+
+void print_vals()
+{
+  char charVal4[23];
+  strcpy(charVal4,"a ");
+  strcat(charVal4,charVal1);
+  strcat(charVal4," ");
+  strcat(charVal4,charVal3);
+  strcat(charVal4," \n");
+  Serial.print(charVal4);
+  Wire.write(charVal4); 
+}
+
+void request_i2c(float val)
+{
+   print_vals();
+}
+
+void request_i2c_all(float val1,float val2)
+{
+  char charVal1[10];  
+  char charVal2[10];          
+
+  
+  dtostrf(val1, 10, 3, charVal1);
+  dtostrf(val2, 10, 3, charVal2);
+
+  char charVal3[20]; 
+  strcpy(charVal3,charVal1);
+  strcat(charVal3,charVal2);
+  Serial.println(charVal3);
+  Wire.write(charVal3);       
+  //Serial.println(charVal3);
+ // Serial.println("sendi2c_end");
+}
 
 void send_i2c(char mes[],byte adr)
 {
@@ -126,6 +194,8 @@ void decod_main()
   //Serial.println("dec_end");
 }
 
+
+
 void decod_main_i2c()
 {
   
@@ -173,7 +243,8 @@ void decod_main_i2c()
 void decoding_vals(int _var, long _val)
 {
   switch (_var) {
-          case 39: pos = _val; myservo.write(pos); break;
-
+          case 46: request_i2c(cur_temp); break; //get_temp
+          case 47: request_i2c(ppm); break; //get_co2
+          case 48: request_i2c(ppm); break; //get_data
   }
   }

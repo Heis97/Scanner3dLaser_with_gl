@@ -25,6 +25,8 @@
 
 #define LED_PIN 9
 
+#define i2c_sensor 52
+#define len_data 23
 
 #include <TMC2130Stepper.h>
 #include <StepDirDriverPoz.h>
@@ -64,65 +66,45 @@ long int pos = 5000;
 int div_z = 1;
 bool cycle_dir = false;
 bool led_dir = false;
-
+char rec_i2c[10]; 
 int led_div = 1;
 int cycle_type = 0;
 int cycle_ampl = 1000;
 
+int counter_inp = 0;
+bool get_req = false;
+
+
 void setup() {
-  Serial.begin(2000000);
+  Serial.begin(250000);
   Wire.begin();
   driver_disp.begin(); 
   Serial.println( driver_disp.test_connection()); 
-  driver_disp.rms_current(700);
+  driver_disp.rms_current(1100);
   driver_disp.stealthChop(1); 
   driver_disp.microsteps(16);
 
   driver_z.begin(); 
   Serial.println( driver_z.test_connection()); 
-  driver_z.rms_current(700);
+  driver_z.rms_current(1100);
   driver_z.stealthChop(1); 
   driver_z.microsteps(16);
 
   driver_las.begin(); 
   Serial.println( driver_las.test_connection()); 
-  driver_las.rms_current(700);
+  driver_las.rms_current(900);
   driver_las.stealthChop(1); 
   driver_las.microsteps(16);
 
-  
-  
-  mot_z.setMode(false);
+ Serial.println("start1");
   mot_z.setDivider(5);
 
-  //Wire.onReceive(decod_main_i2c);
-  mot_disp.setMode(false);
   mot_disp.setDivider(5);
 
-  mot_las.setMode(false);
   mot_las.setDivider(5);
 
- /* digitalWrite(6,1);
-  delay(1000);
 
-   digitalWrite(6,0);
-  delay(1000);
-  digitalWrite(6,1);
-  delay(1000);
-
-   digitalWrite(6,0);
-  delay(1000);
-  digitalWrite(6,1);
-  delay(1000);
-
-   digitalWrite(6,0);
-  delay(500);*/
-
-
-
-//timer_init_ISR_5KHz(_TIMER1);//shvp 1khz//DDRB |= 1<<1;
-
- Timer2.setFrequency(5000);          
+  Timer2.setFrequency(5000);          
   Timer2.enableISR(); 
 
   //mot_disp.step(10000);
@@ -131,9 +113,9 @@ void setup() {
   //delay(10000);
   pinMode(LED_PIN, OUTPUT);
 
-analogWrite(LED_PIN,0);
-//PORTB |= 1<<1;
-Serial.println("start2");
+  analogWrite(LED_PIN,0);
+  //PORTB |= 1<<1;
+  Serial.println("start2");
 }
 
 
@@ -144,18 +126,26 @@ void loop() {
   mot_las.gotopoz(posit_laser);
   control_cycle();
  //
-  cold_fix(driver_las,mot_las,550);//
-  cold_fix(driver_disp,mot_disp,750);//
-  cold_fix(driver_z,mot_z,750);//
+ // cold_fix(driver_las,mot_las,550);//
+ // cold_fix(driver_disp,mot_disp,850);//
+ // cold_fix(driver_z,mot_z,850);//
 
   /*send_i2c("b000113",51);
   delay(1000);
   send_i2c("b000213",51);
   delay(1000);*/
+  //delay(1000);
+  if(get_req)
+  {
+    get_request_i2c(i2c_sensor, len_data);
+    get_req = false;
+  }
+  
 }
 
 void control_cycle()
 {
+  
   if(cycle_type == 1)
   {
     if(mot_las.readSteps()==0)
@@ -163,16 +153,14 @@ void control_cycle()
      if(cycle_dir) 
     {
       posit_laser = cycle_ampl;
-      // mot_las.gotopoz();
       cycle_dir = false;
       Serial.println("false");
     }
     else
     {
       posit_laser = 0;
-     // mot_las.gotopoz(0);
       cycle_dir = true;
-       Serial.println("true");
+      Serial.println("true");
     }
    }
   }
@@ -194,99 +182,71 @@ void cold_fix(TMC2130Stepper motor,StepDirDriverPoz stp,int cur)
      motor.rms_current(cur); 
   }
 } 
+
+ 
+
 void send_i2c(char mes[],byte adr)
 {
   Wire.beginTransmission(adr); // начало передачи на устройство номер 8
   Wire.write(mes);       // отправляем цепочку текстовых байт          // отправляем байт из переменной
   Serial.println(mes);
   Wire.endTransmission(); 
-  Serial.println("sendi2c_end");
-  
-}
-void home_laser()
-{
-  mot_las.setDivider(5);
-  driver_las.rms_current(650); 
-  
- /* while(analogRead(end_las)>1000)
-  {
-    mot_las.step(-10);
-  }*/
-  mot_las.step(-2000);
-  delay(3000);
-  mot_las.setPoz(0);
-  posit_laser = 800;
-  driver_las.rms_current(150); 
-}
-void push_forward(int delay_time)
-{
-  mot_disp.setDivider(2);   
-  mot_disp.step(2000);
-  delay(delay_time);
-  mot_disp.step(0);  
-  mot_disp.setDivider(div_disp);   
-}
-void push_back(int delay_time)
-{
-  mot_disp.setDivider(2);   
-  mot_disp.step(-2000);
-  delay(delay_time);
-  mot_disp.step(0);  
-  mot_disp.setDivider(div_disp); 
-}
-void home_z()
-{
-  mot_z.setDivider(0); 
-  
-  mot_z.step(-100);
-  delay(1);
-  //while(analogRead(end_z)<200)
-  while(driver_z.sg_result()>100)
-  {
-     /*Serial.print(driver_z.sg_result());
-     Serial.print(" "); 
-    Serial.println(analogRead(end_z)); */
-     //delay(10);
-    mot_z.step(-10);
-  }
-  //Serial.println(analogRead(end_z)); 
-  mot_z.setPoz(0);
-  posit_z = 0;
+  Serial.println("sendi2c_end"); 
 }
 
 
-void disp_control()
+void get_request_i2c(int adr, int len)
 {
-  if(dir_disp==0)
-  {
-    mot_disp.step(0);
+  //Serial.println("get_req");
+  char rec_i2c_int[23] = "00000000000000000000000";
+//  rec_i2c[10];
+  int i_m =0; 
+  int i_st =0; 
+  int i_int =0; 
+  bool st_done = false;
+  Wire.requestFrom( adr,len);
+  while(Wire.available() && i_m<len) {  // Read Received Datat From Slave Device
+    int b = Wire.read();
+    i_m++;
+    if(b<254)
+    {
+      if(!st_done )
+      {
+        i_st = i_m;
+        st_done = true;
+      }
+      rec_i2c_int[i_m] = (char)b;
+      i_int++;
+     /* Serial.print(b);
+      Serial.print(" ");
+      Serial.println(rec_i2c_int[i_m] );*/
+    }
   }
-  else if(dir_disp == -1)
+  int ki = 0;
+  for(int i = i_st; i<i_int ;i++)
   {
-    mot_disp.step(-50);
-  }
-  else if(dir_disp == 1)
-  {
-    mot_disp.step(50);
-  }
-  
-  //mot_disp.step(32000);
+    rec_i2c[ki] = rec_i2c_int[i]; ki++;
+  }  
+  Serial.println(rec_i2c);
 }
 
 
-ISR(TIMER2_A) 
+ISR(TIMER2_A)
 {
+  counter_inp++;
+  if(counter_inp>5000)
+  {
+    counter_inp=0;
+    get_req = true;
+  }
   mot_las.control();
   mot_disp.control();
   mot_z.control();
-  //controlLaser(laser,power);
 }
-
 
 
 void decod_main()
 {
-  //Serial.println("dec_st");
   int resp = 0;
  
   if (Serial.available())
@@ -321,15 +281,14 @@ void decod_main()
         long int _val = inserial[0] * 1000 + inserial[1] * 100 + inserial[2] * 10 + inserial[3];
         if(_adr<=0)
         {
-          decoding_vals(_var, _val);
-          
+          decoding_vals(_var, _val);          
         }
         else
         {
           send_i2c(mes,_adr);
         }
         String decod =String(mes)+ " "+String(_val)+ " "+String(_var)+" "+String(_adr);
-         Serial.println (decod);
+        Serial.println (decod);
         while (Serial.available())
         {          
           Serial.read();
@@ -338,7 +297,6 @@ void decod_main()
       }
     }
   }
-  //Serial.println("dec_end");
 }
 
 void decod_main_i2c()
@@ -395,24 +353,24 @@ void decoding_vals(int _var, long _val)
 
           case 15: div_z = _val;mot_z.setDivider(div_z);   break;
           case 16: posit_z = (_val-5000); break;
-          case 17: home_z(); break;
-          case 18: push_forward(500); break;
-          case 19: push_back(500); break;
+//          case 17: home_z(); break;
+//          case 18: push_forward(500); break;
+        //  case 19: push_back(500); break;
 
           case 20: analogWrite(drill_vel,_val); break;
           case 21: digitalWrite(drill_dir,_val); break;
 
-          case 22: mot_z.setPoz(0);pos =66*(_val-5000);  mot_z.setPoz(pos); break;
-          case 23: mot_disp.setPoz(0);pos=66*(_val-5000);  mot_disp.setPoz(pos); break;
+          case 22: mot_z.setPoz(0);pos =10*(_val-5000);  mot_z.setPoz(pos); break;
+          case 23: mot_disp.setPoz(0);pos=10*(_val-5000);  mot_disp.setPoz(pos); break;
 
           case 25: cycle_type = _val; break;
           case 26: cycle_ampl = _val; break;
 
           case 32: 
-          digitalWrite(LED_PIN,_val);
-         // analogWrite(LED_PIN,_val);
+         // digitalWrite(LED_PIN,_val);
+          analogWrite(LED_PIN,_val);
           break;
           case 40: div_las = _val; mot_las.setDivider(div_las);  break;
-
+          case 49: get_request_i2c(i2c_sensor, len_data);  break;
   }
   }
