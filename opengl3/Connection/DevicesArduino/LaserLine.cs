@@ -170,7 +170,10 @@ namespace opengl3
         {
             send(on, laser);
         }
-
+        public void send_pos_laser(int val)
+        {
+            send(val, send_pos_las);
+        }
         public void test()
         {
             send(99, 0);

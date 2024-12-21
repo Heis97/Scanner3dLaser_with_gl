@@ -81,7 +81,7 @@ namespace opengl3
             }
             return Convert.ToDouble(s1);
         }
-        public RobotFrame(string coords, RobotType robotType = RobotType.PULSE, bool rad = true)
+        public RobotFrame(string coords, RobotType robotType = RobotType.KUKA, bool rad = true)
         {
             var coords_w = coords.ToLower();
             var coords_s = coords_w.Trim().Split(' ');

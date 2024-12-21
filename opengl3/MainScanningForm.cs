@@ -200,7 +200,7 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
-            Manipulator.calcRob();
+           // Manipulator.calcRob();
 
             var vals_regr = new double[][]//laser and pos
                 {
@@ -306,10 +306,10 @@ namespace opengl3
 
             };
             koef = Regression.regression(vals_regr, 1);
-            prin.t(vals_regr);
-            prin.t("x_____________-");
+            //prin.t(vals_regr);
+            //prin.t("x_____________-");
             var cur = Regression.calcPolynSolv(koef, 609);
-            Console.WriteLine("test_regr " + cur);
+           // Console.WriteLine("test_regr " + cur);
 
             vals_regr = new double[][]   //pos and x
                 {
@@ -319,8 +319,8 @@ namespace opengl3
 
             };
             koef_x = Regression.regression(vals_regr, 1);
-            prin.t(vals_regr);
-            prin.t("y_____________-");
+           // prin.t(vals_regr);
+            //prin.t("y_____________-");
             vals_regr = new double[][]     //pos and y
                   {
                       new double[] {1 ,149},
@@ -344,8 +344,8 @@ namespace opengl3
                       new double[] {16 ,227},
               };
             koef_y = Regression.regression(vals_regr, 2);
-            prin.t(vals_regr);
-            prin.t("_____________-");
+           // prin.t(vals_regr);
+            //prin.t("_____________-");
             /* var p1 = new PosTimestamp(7000, 1);
              var p2 = new PosTimestamp(8000, 3);
              var p3 = PosTimestamp.betw(p1, p2,7500);
@@ -377,7 +377,7 @@ namespace opengl3
             //UtilOpenCV.takeLineFromMat(im_las, 1);
 
             // test_basis();
-            //UtilOpenCV.generateImage_chessboard_circle(10, 11, 100);
+            UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
             // load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
@@ -1188,9 +1188,9 @@ namespace opengl3
         {
             markSize = 10f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\sam_cam1_2810", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\camera_cal_2012", FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("sam_cam1_2810a.txt");
+            cam1.save_camera("sing_cam1_2012a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -1446,9 +1446,9 @@ namespace opengl3
             else scanner = VideoAnalyse.loadVideo_sing_cam_move(scan_path_1, this, scanner, scanner_config);
             var ps = scanner.getPointsLinesScene();
             // foreach(var line in ps) GL1.addLineMeshTraj(line);  
-            var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
-            var scan_stl = Polygon3d_GL.toMesh(mesh);
-            scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
+           // var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
+           //var scan_stl = Polygon3d_GL.toMesh(mesh);
+            //scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
 
 
         }
@@ -1685,15 +1685,49 @@ namespace opengl3
 
 
                 var t_video = (double)counts / fps;
-                var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
+                var v_laser = Math.Abs((p2_cur_scan.x - p1_cur_scan.x) / t_video);
+                
+
                 laserLine?.laserOn();
                 Thread.Sleep(200);
+                //laserLine?.setShvpVel(200);
+                Thread.Sleep(200);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p1_cur_scan.x);
 
-
-                startWrite_sam(0, counts + 200);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p1_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p1_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p1_cur_scan.x);
+                Thread.Sleep(4000);
+                Thread.Sleep(2);
+                laserLine?.setShvpVel(v_laser);
+                Thread.Sleep(2);
+                laserLine?.setShvpVel(v_laser);
+                Thread.Sleep(2);
+                laserLine?.setShvpVel(v_laser);
+                Thread.Sleep(2);
+                laserLine?.setShvpVel(v_laser);
+                Thread.Sleep(400);
+                laserLine?.send_pos_laser(1);
+                Thread.Sleep(2);
+                laserLine?.send_pos_laser(1);
+                Thread.Sleep(2);
+                startWrite_sam(0, counts+50);
                 sb_enc = new StringBuilder();
                 Thread.Sleep(200);
-                laserLine?.setShvpVel(v_laser);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
                 Thread.Sleep(200);
 
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
@@ -2028,10 +2062,10 @@ namespace opengl3
             var d = 100;
             var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
             GL1.buffersGl.setTranspobj(fr, 0.4f);
-            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            
 
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
-            GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
+           
             //GL1.SortObj();
             int monitor_num = 1;
             if (monitor_num == 4)
@@ -2052,7 +2086,7 @@ namespace opengl3
             {
                 GL1.addMonitor(new Rectangle(0, 0, w, h), 0);
             }
-
+           
             /* */
             //GL1.transRotZooms[1].xRot = 33;
             //GL1.transRotZooms[1].off_x = -25;
@@ -2063,6 +2097,8 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor, lab_TRZ);
 
             GL1.add_TreeView(tree_models);
+            //GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
+            //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
             /*var p1 = new Point3d_GL(0, 0, 20);
@@ -2177,7 +2213,7 @@ namespace opengl3
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
 
-             test_go_to_point_robot();
+            //test_go_to_point_robot();
         }
 
         private void glControl1_Render(object sender, GlControlEventArgs e)
@@ -3587,11 +3623,12 @@ namespace opengl3
                 else if (fr.frameType == FrameType.Pattern)
                 {
 
-                    //imageBox2.Image = cameraCVcommon.undist(fr.im.Clone());
+                    
                     var corn = new System.Drawing.PointF[0];
                     //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
                     //imageBox1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
                     imageBox1.Image = FindCircles.findCircles(fr.im, ref corn, chess_size);
+                    imageBox2.Image = cameraCVcommon.undist(fr.im.Clone());
                 }
             }
             if (fr.frameType == FrameType.LasLin || fr.frameType == FrameType.LasDif)
@@ -5367,7 +5404,7 @@ namespace opengl3
             //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
 
             //stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
-            StereoCamera.calibrate_stereo_rob_handeye(cam1, frms_stereo, PatternType.Mesh, chess_size, markSize, "bfs_cal.txt",RobotFrame.RobotType.PULSE);
+            StereoCamera.calibrate_stereo_rob_handeye(cam1, frms_stereo, PatternType.Mesh, chess_size, markSize, "bfs_cal.txt",RobotFrame.RobotType.KUKA);
             comboImages.Items.AddRange(frms_stereo);
         }
 
@@ -5559,6 +5596,10 @@ namespace opengl3
 
         void save_video_sam(int ind, int w, int h)
         {
+            laserLine?.send_pos_laser(0);
+            Thread.Sleep(2);
+            laserLine?.send_pos_laser(0);
+            Thread.Sleep(2);
             int fcc = VideoWriter.Fourcc('h', '2', '6', '4'); //'M', 'J', 'P', 'G';'m', 'p', '4', 'v';'M', 'P', '4', 'V';'H', '2', '6', '4';'h', '2', '6', '4'
             int fps = 30;
             var dir = "cam" + (ind+1).ToString() + "\\" + box_scanFolder.Text;
@@ -5577,6 +5618,8 @@ namespace opengl3
             }
             video_mats[ind ] = null;
             video_writer[ind ].Dispose();
+
+            
 
         }
         void startWrite(int ind,int count)
@@ -5696,7 +5739,7 @@ namespace opengl3
         }
         void drawCameras_sam(VideoCapture cap)
         {
-            Console.WriteLine("dr_cam");
+            //Console.WriteLine("dr_cam");
             var ind_cam = camera_ind_ptr.IndexOf(cap.Ptr);
             if(ind_cam<10 && ind_cam>=0)
             {
@@ -5736,7 +5779,7 @@ namespace opengl3
         }
         void imProcess_sam(Mat mat, int ind)
         {
-            Console.WriteLine("im_proc");
+            //Console.WriteLine("im_proc");
             switch (imProcType)
             {
 
@@ -7521,7 +7564,7 @@ namespace opengl3
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
 
-            windowsTabs.Controls.Remove(tabMain);
+           /* windowsTabs.Controls.Remove(tabMain);
             windowsTabs.Controls.Remove(tabOpenGl);
             windowsTabs.Controls.Remove(tabDistort);
             windowsTabs.Controls.Remove(tabP_developer);
@@ -7529,7 +7572,7 @@ namespace opengl3
             windowsTabs.Controls.Remove(tabDebug);
             windowsTabs.Controls.Remove(tabP_developer);
             windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);
+            windowsTabs.Controls.Remove(tabP_connect);*/
             //windowsTabs.Controls.Remove(tabPage_tube);
 
 
@@ -7668,7 +7711,7 @@ namespace opengl3
         private void but_rob_con_sc_Click(object sender, EventArgs e)
         {
 
-            connect_robot(RobotFrame.RobotType.PULSE);
+            connect_robot(RobotFrame.RobotType.KUKA);
 
         }
 
@@ -7691,7 +7734,7 @@ namespace opengl3
             //if((string)combo_robot_ch.SelectedItem=="Kuka")
             if (robot == RobotFrame.RobotType.KUKA)
             {
-                ip = "172.31.1.147";
+                ip = "172.31.1.147";// misis
             }
             else if (robot == RobotFrame.RobotType.PULSE)
             //else if((string)combo_robot_ch.SelectedItem == "Pulse")

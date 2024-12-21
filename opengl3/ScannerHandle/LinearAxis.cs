@@ -206,7 +206,7 @@ namespace opengl3
                 if (ps_o.Length<3) continue;
                 var del = ps_o[0].X - ps_o[ps_par.Length-1].X;
                 delts[i] = Math.Abs(del);
-                if(delts[i]>dest_max)
+                if(delts[i]>dest_max && delts[i]<100)
                 {
                     dest_max = delts[i];
                 }
@@ -216,12 +216,14 @@ namespace opengl3
                 CvInvoke.Imshow("test"+i, test_1);
               CvInvoke.WaitKey();*/
             }
+            Console.WriteLine(dest_max);
             for (int i = 0; i < delts.Length; i++)
             {
                 if (delts[i] > dest_max*0.7)
                 {
                     delts_b[i] = true;
                 }
+                Console.WriteLine(delts_b[i]);
             }
             for (int i = 1; i < delts_b.Length; i++)
             {
@@ -236,18 +238,18 @@ namespace opengl3
 
 
                     Console.WriteLine(i);
-                    //if (Math.Abs(delts[i]) > 55)
+                  //  if (Math.Abs(delts[i]) > 50)
                     {
                         var bin = new Mat();
                         var r = mats[i].Split()[2];
-                         CvInvoke.Rotate(r, r, RotateFlags.Rotate180);
+                         //CvInvoke.Rotate(r, r, RotateFlags.Rotate180);
                        
                       //  CvInvoke.WaitKey();
                         CvInvoke.GaussianBlur(r, r, new System.Drawing.Size(7, 7), -1);
                         
-                        CvInvoke.Threshold(r, bin, 29, 255, ThresholdType.Binary);
-                        //CvInvoke.Imshow("bin", bin);
-                        //CvInvoke.WaitKey();
+                        CvInvoke.Threshold(r, bin, 50, 255, ThresholdType.Binary);
+                       /* CvInvoke.Imshow("bin", bin);
+                        CvInvoke.WaitKey();*/
                         var x_min = right_white_pixel(bin);
                         var dx = 25;
                         var ps_rec = new System.Drawing.Point[]
@@ -260,9 +262,9 @@ namespace opengl3
                        
                         CvInvoke.FillPoly(bin, new VectorOfPoint(ps_rec), new MCvScalar(0));
 
-                        CvInvoke.Rotate(bin, bin, RotateFlags.Rotate180);
-                        //CvInvoke.Imshow("bin", bin);
-                       // CvInvoke.WaitKey();
+                        //CvInvoke.Rotate(bin, bin, RotateFlags.Rotate180);
+                      //  CvInvoke.Imshow("bin", bin);
+                      //  CvInvoke.WaitKey();
                         if (up_surf == null)
                         {
                             up_surf = bin.Clone();
@@ -276,7 +278,7 @@ namespace opengl3
                 }
             }
            // CvInvoke.Imshow("bin2", up_surf);
-            //CvInvoke.WaitKey();
+           // CvInvoke.WaitKey();
             return up_surf.ToImage<Bgr,byte>().Mat;
         }
         static public Mat bin_to_green(Mat bin)
@@ -302,16 +304,16 @@ namespace opengl3
             //CvInvoke.Imshow("sobel", sob);
             var inds_part = Detection.max_claster_im(cameraCV.scan_points.ToArray(), 4);
 
-            // CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4]]);
-            // CvInvoke.Imshow("im2", mats[inds_part[inds_part.Length* 2/ 4]]);
-            // CvInvoke.Imshow("im3", mats[inds_part[inds_part.Length*3 / 4]]);
+            /*CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4]]);
+             CvInvoke.Imshow("im2", mats[inds_part[inds_part.Length* 2/ 4]]);
+             CvInvoke.Imshow("im3", mats[inds_part[inds_part.Length*3 / 4]]);
 
-            //CvInvoke.WaitKey();
+             CvInvoke.WaitKey();*/
 
-           var up_surf = bin_to_green( get_corners_calibrate_model(mats, cameraCV));
+            var up_surf = bin_to_green( get_corners_calibrate_model(mats, cameraCV));
 
-            //CvInvoke.Imshow(" up_surf", up_surf+orig);
-            //CvInvoke.WaitKey();
+           // CvInvoke.Imshow(" up_surf", up_surf+orig);
+           // CvInvoke.WaitKey();
             var aff_matr = CameraCV.affinematr(Math.PI / 4,1,500);
 
             var aff_matr_inv = aff_matr.Clone();
@@ -335,8 +337,8 @@ namespace opengl3
           //  up_s_r = UtilOpenCV.drawPointsF(up_s_r, ps_g, 255, 255, 0, 3);
              orig = UtilOpenCV.drawPointsF(orig, ps_g, 255, 0, 0,3);
            // CvInvoke.Imshow(" up_s_r", up_s_r);
-           CvInvoke.Imshow(" orig_ps", orig );
-            CvInvoke.WaitKey();
+          // CvInvoke.Imshow(" orig_ps", orig );
+           // CvInvoke.WaitKey();
            // var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
             //positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
 
@@ -436,10 +438,13 @@ namespace opengl3
             var LasFlats_all2 = new List<Flat3d_GL>();
             PositionsAxis = new List<double>();
             var mats_work = new List<Mat>();
-            for (int i = 0; i < mats.Length; i+=1)
+            for (int i = 1; i < mats.Length-30; i+=1)
             {
 
                 var points_im = Detection.detectLineDiff(cameraCV.undist ( mats[i].Clone()), 10, 0.05f, false, true);
+                var mat_p1 = UtilOpenCV.drawPointsF(mats[i].Clone(), points_im,0,255,0);
+                //CvInvoke.Imshow("ma", mat_p1);
+                //CvInvoke.WaitKey();
                 if (points_im == null) continue;
                 var ps_l = new List<PointF>();
                 var len_from_board = 10;
