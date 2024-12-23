@@ -1430,6 +1430,7 @@ namespace opengl3
         Scanner loadScanner_sing(string conf1, string laser_line = null)
         {
             var cam1 = CameraCV.load_camera(conf1);
+            cam1.scanner_config = scanner_config;
             LinearAxis line = null;
             if (laser_line != null) line = new LinearAxis(laser_line);
             var scanner = new Scanner(cam1, line);

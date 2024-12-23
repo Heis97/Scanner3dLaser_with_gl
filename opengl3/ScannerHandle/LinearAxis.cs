@@ -199,31 +199,36 @@ namespace opengl3
             double dest_max = 0;
             for (int i = 0; i< mats.Length;i++)
             {         
-                var ps = Detection.detectLineDiff(cameraCV.undist( mats[i].Clone()));
+                var ps = Detection.detectLineDiff(cameraCV.undist( mats[i].Clone()),cameraCV.scanner_config);
                 var ps_par = Detection.parall_Points(Detection.filtr_y0_Points(ps));
                 var ps_o = LaserSurface.order_x(ps_par);
                 if (ps_o == null) continue;
                 if (ps_o.Length<3) continue;
                 var del = ps_o[0].X - ps_o[ps_par.Length-1].X;
                 delts[i] = Math.Abs(del);
+
                 if(delts[i]>dest_max && delts[i]<100)
                 {
                     dest_max = delts[i];
                 }
                 Console.WriteLine(i + " " + delts[i]);
-             /*  Mat test_1 = mats[i].Clone();
-                test_1 = UtilOpenCV.drawPointsF(test_1, ps_o, 0, 255, 0);
-                CvInvoke.Imshow("test"+i, test_1);
-              CvInvoke.WaitKey();*/
+                 /*Mat test_1 = mats[i].Clone();
+                 test_1 = UtilOpenCV.drawPointsF(test_1, ps_o, 0, 255, 0);
+                 CvInvoke.Imshow("test"+i, test_1);
+                 CvInvoke.WaitKey();*/
             }
-            Console.WriteLine(dest_max);
+            Console.WriteLine("dest_max = "+  dest_max);
             for (int i = 0; i < delts.Length; i++)
             {
                 if (delts[i] > dest_max*0.7)
                 {
                     delts_b[i] = true;
                 }
-                Console.WriteLine(delts_b[i]);
+                if (delts[i]>120 && i>0)
+                {
+                    delts_b[i] = delts_b[i-1];
+                }
+                Console.WriteLine(i+" "+delts_b[i]);
             }
             for (int i = 1; i < delts_b.Length; i++)
             {
@@ -231,32 +236,33 @@ namespace opengl3
                 if (delts_b[i - 1] == true && delts_b[i] == false) i_max = i;
             }
             Console.WriteLine(i_min + " " + i_max);
+            int len_for_corn = 14;
             for (int i = 0;  i < mats.Length; i++)
             {
-                if ((i < i_min + 8 && i > i_min) || ((i < i_max && i > i_max - 8)))
+                if ((i < i_min + len_for_corn && i > i_min) || ((i < i_max && i > i_max - len_for_corn)))
                 {
 
 
                     Console.WriteLine(i);
-                  //  if (Math.Abs(delts[i]) > 50)
+                    //if (Math.Abs(delts[i]) > 50)
                     {
                         var bin = new Mat();
                         var r = mats[i].Split()[2];
-                         //CvInvoke.Rotate(r, r, RotateFlags.Rotate180);
-                       
-                      //  CvInvoke.WaitKey();
+                        //CvInvoke.Rotate(r, r, RotateFlags.Rotate180);                       
+                        //CvInvoke.WaitKey();
                         CvInvoke.GaussianBlur(r, r, new System.Drawing.Size(7, 7), -1);
                         
-                        CvInvoke.Threshold(r, bin, 50, 255, ThresholdType.Binary);
-                       /* CvInvoke.Imshow("bin", bin);
-                        CvInvoke.WaitKey();*/
+                        CvInvoke.Threshold(r, bin, 60, 255, ThresholdType.Binary);
+                        //CvInvoke.Imshow("r", r);
+                        //CvInvoke.Imshow("bin", bin);
+                        //CvInvoke.WaitKey();
                         var x_min = right_white_pixel(bin);
-                        var dx = 25;
+                        var dx = 35;
                         var ps_rec = new System.Drawing.Point[]
                         {
                             new System.Drawing.Point(x_min+dx, 0),
                             new System.Drawing.Point(x_min+dx, bin.Height-1),
-                             new System.Drawing.Point(bin.Width-1, bin.Height-1),
+                            new System.Drawing.Point(bin.Width-1, bin.Height-1),
                             new System.Drawing.Point(bin.Width-1, 0),
                         };
                        
@@ -277,8 +283,8 @@ namespace opengl3
                     }
                 }
             }
-           // CvInvoke.Imshow("bin2", up_surf);
-           // CvInvoke.WaitKey();
+            CvInvoke.Imshow("bin2", up_surf);
+            CvInvoke.WaitKey();
             return up_surf.ToImage<Bgr,byte>().Mat;
         }
         static public Mat bin_to_green(Mat bin)

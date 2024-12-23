@@ -50,6 +50,7 @@ namespace opengl3
         public float mark_size = 10f;
 
         public List<PointF[]> scan_points = new List<PointF[]>();
+       public  ScannerConfig scanner_config = new ScannerConfig();
 
         #region monitCalib
         public static MCvPoint3D32f[][] generateObjps(ImageBox pattern_box, Mat[] pattern, bool gen_board = false, bool affine = true)

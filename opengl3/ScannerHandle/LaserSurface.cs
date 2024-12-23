@@ -90,7 +90,7 @@ namespace opengl3
 
             var ps = points3dInCam_step(mat.Clone(), cameraCV, patternType,5, graphicGL);
 
-            graphicGL?.addMesh(Point3d_GL.toMesh(ps.ToArray()),OpenGL.PrimitiveType.Points, Color3d_GL.red());
+            //graphicGL?.addMesh(Point3d_GL.toMesh(ps.ToArray()),OpenGL.PrimitiveType.Points, Color3d_GL.red());
 
             flat3D = computeSurface(ps.ToArray());
             
