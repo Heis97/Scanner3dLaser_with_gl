@@ -734,7 +734,7 @@ namespace opengl3
                 if(f_c != null)
                 {
                    // CvInvoke.Imshow("asda", f_c);
-                    //CvInvoke.WaitKey();
+                   // CvInvoke.WaitKey();
                 }
                 
                 //mat = null;

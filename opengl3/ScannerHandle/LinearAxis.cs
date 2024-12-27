@@ -265,12 +265,12 @@ namespace opengl3
                             new System.Drawing.Point(bin.Width-1, bin.Height-1),
                             new System.Drawing.Point(bin.Width-1, 0),
                         };
-                       
+                        
                         CvInvoke.FillPoly(bin, new VectorOfPoint(ps_rec), new MCvScalar(0));
 
                         //CvInvoke.Rotate(bin, bin, RotateFlags.Rotate180);
-                      //  CvInvoke.Imshow("bin", bin);
-                      //  CvInvoke.WaitKey();
+                        //CvInvoke.Imshow("bin", bin);
+                        //CvInvoke.WaitKey();
                         if (up_surf == null)
                         {
                             up_surf = bin.Clone();
@@ -283,8 +283,8 @@ namespace opengl3
                     }
                 }
             }
-            CvInvoke.Imshow("bin2", up_surf);
-            CvInvoke.WaitKey();
+            //CvInvoke.Imshow("bin2", up_surf);
+            //CvInvoke.WaitKey();
             return up_surf.ToImage<Bgr,byte>().Mat;
         }
         static public Mat bin_to_green(Mat bin)
@@ -306,22 +306,20 @@ namespace opengl3
         {
 
             var pos_all = (double[])positions.Clone();
-            //ar sob = FindCircles.sobel_mat(orig);
+            //var sob = FindCircles.sobel_mat(orig);
             //CvInvoke.Imshow("sobel", sob);
             var inds_part = Detection.max_claster_im(cameraCV.scan_points.ToArray(), 4);
 
-            /*CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4]]);
-             CvInvoke.Imshow("im2", mats[inds_part[inds_part.Length* 2/ 4]]);
-             CvInvoke.Imshow("im3", mats[inds_part[inds_part.Length*3 / 4]]);
-
-             CvInvoke.WaitKey();*/
-
+           /* CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4+10]]);
+            CvInvoke.Imshow("im2", mats[inds_part[inds_part.Length* 2/ 4]]);
+            CvInvoke.Imshow("im3", mats[inds_part[inds_part.Length*3 / 4-10]]);
+            CvInvoke.WaitKey();
+            */
             var up_surf = bin_to_green( get_corners_calibrate_model(mats, cameraCV));
 
-           // CvInvoke.Imshow(" up_surf", up_surf+orig);
-           // CvInvoke.WaitKey();
+            //CvInvoke.Imshow(" up_surf", up_surf+orig);
+            //CvInvoke.WaitKey();
             var aff_matr = CameraCV.affinematr(Math.PI / 4,1,500);
-
             var aff_matr_inv = aff_matr.Clone();
             var up_s_r = new Mat();
             CvInvoke.WarpAffine(up_surf, up_s_r, aff_matr,new System.Drawing.Size(2000,2000));
@@ -329,8 +327,8 @@ namespace opengl3
 
             var ps_g = PointF.toSystemPoint(PointF.toPointF(find_gab_pix(up_s_r)));
 
-           // CvInvoke.Imshow(" up_surf", UtilOpenCV.drawPointsF(up_s_r.Clone(), ps_g, 255, 255, 0, 3));
-           // CvInvoke.WaitKey();
+            //CvInvoke.Imshow(" up_surf", UtilOpenCV.drawPointsF(up_s_r.Clone(), ps_g, 255, 255, 0, 3));
+            //CvInvoke.WaitKey();
 
             var aff_matr_3d = aff_matr.ConcateVertical(new Matrix<double>(new double[1, 3] { { 0, 0, 1 } }));
            
@@ -340,47 +338,48 @@ namespace opengl3
 
             ps_g = UtilOpenCV.transfAffine(ps_g, aff_matr_inv);
             CvInvoke.WarpAffine(up_s_r, up_s_r, aff_matr_inv, new System.Drawing.Size(2000, 2000));
-          //  up_s_r = UtilOpenCV.drawPointsF(up_s_r, ps_g, 255, 255, 0, 3);
-             orig = UtilOpenCV.drawPointsF(orig, ps_g, 255, 0, 0,3);
-           // CvInvoke.Imshow(" up_s_r", up_s_r);
-          // CvInvoke.Imshow(" orig_ps", orig );
-           // CvInvoke.WaitKey();
-           // var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
+            //up_s_r = UtilOpenCV.drawPointsF(up_s_r, ps_g, 255, 255, 0, 3);
+            //orig = UtilOpenCV.drawPointsF(orig, ps_g, 255, 0, 0,3);
+            //CvInvoke.Imshow(" up_s_r", up_s_r);
+            //CvInvoke.Imshow(" orig_ps", orig );
+            //CvInvoke.WaitKey();
+            //var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
             //positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
 
             var mats_calib = new Mat[] { mats[inds_part[inds_part.Length / 4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3 * inds_part.Length / 4]] };
-           // positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
+            //positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
             var mats_calib_l = new List<Mat>();
             var positions_l = new List<double>();
-            for(int i= inds_part.Length/6; i<5* inds_part.Length/6;i++ )
+            for(int i = inds_part.Length/4+5; i < 3* inds_part.Length/4-13;i++)//(int i = inds_part.Length/6; i < 5* inds_part.Length/6;i++ )
             {
                 mats_calib_l.Add(mats[inds_part[i]]);
-               //CvInvoke.Imshow(" mats[inds_part[i]]", mats[inds_part[i]]);
+                //CvInvoke.Imshow(" mats[inds_part[i]]", mats[inds_part[i]]);
                 //CvInvoke.WaitKey();
                 positions_l.Add(positions[inds_part[i]]);
             }
             mats_calib = mats_calib_l.ToArray();
             positions = positions_l.ToArray();
-            var x_dim = 70;
-            var y_dim = 50;
+            var x_dim = 70;//70
+            var y_dim = 50;//50
 
             // var corners = corner_step(orig);
-           /* ps_g = new System.Drawing.PointF[]
+            ps_g = new System.Drawing.PointF[]
              {
-                new System.Drawing.PointF(376,542),
-                new System.Drawing.PointF(384,144),
-                new System.Drawing.PointF(919,160),
-                new System.Drawing.PointF(917,547)
+                new System.Drawing.PointF(79,370),
+                new System.Drawing.PointF(79,90),
+                new System.Drawing.PointF(468,90),
+                new System.Drawing.PointF(475,367)
 
-             };*/
+             };
             var corners = ps_g;
 
             
 
             var orig_c = orig.Clone();
             //orig_c = cameraCV.undist(orig_c);
+
             UtilOpenCV.drawPointsF(orig_c, corners,255,0,0,2,true);
-            CvInvoke.Imshow("orig_corn", orig_c);
+            //CvInvoke.Imshow("orig_corn", orig_c);
             //CvInvoke.WaitKey();
             cameraCV.compPos(new MCvPoint3D32f[] {
                 new MCvPoint3D32f(0,0,0),
@@ -410,9 +409,11 @@ namespace opengl3
             var flat_e = LasFlats[LasFlats.Count - 2];
             var f_0 = LaserSurface.zeroFlatInCam_XZ(null, 0);
 
-           /* graphicGL.addFlat3d_YZ(flat_b);
-            graphicGL.addFlat3d_YZ(flat_e);
-            graphicGL.addFlat3d_XZ(f_0);*/
+            //graphicGL.addFlat3d_YZ(flat_b);
+            //graphicGL.addFlat3d_YZ(flat_e);
+            //graphicGL.addFlat3d_XZ(f_0);
+
+
             var p_las = Flat3d_GL.cross(flat_e, flat_b, f_0);
 
             //PositionsAxis = new List<double>();
@@ -444,10 +445,10 @@ namespace opengl3
             var LasFlats_all2 = new List<Flat3d_GL>();
             PositionsAxis = new List<double>();
             var mats_work = new List<Mat>();
-            for (int i = 1; i < mats.Length-30; i+=1)
+            for (int i = 1; i < mats.Length; i+=1)
             {
 
-                var points_im = Detection.detectLineDiff(cameraCV.undist ( mats[i].Clone()), 10, 0.05f, false, true);
+                var points_im = Detection.detectLineDiff(cameraCV.undist ( mats[i].Clone()), cameraCV.scanner_config);
                 var mat_p1 = UtilOpenCV.drawPointsF(mats[i].Clone(), points_im,0,255,0);
                 //CvInvoke.Imshow("ma", mat_p1);
                 //CvInvoke.WaitKey();

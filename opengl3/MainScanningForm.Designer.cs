@@ -6236,10 +6236,10 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Location = new System.Drawing.Point(4, 25);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(869, 965);
+            this.tabPage9.Size = new System.Drawing.Size(869, 962);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -7587,13 +7587,8 @@ namespace opengl3
             // 
             // timer1
             // 
-            this.timer1.Enabled = true;
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // timer2
-            // 
-            this.timer2.Enabled = true;
             // 
             // MainScanningForm
             // 

@@ -705,7 +705,7 @@ namespace opengl3
                 if (!p_add)
                 {
 
-                    ps_list.Add(PointF.notExistP());
+                    //ps_list.Add(PointF.notExistP());
                 }
 
 
@@ -714,6 +714,7 @@ namespace opengl3
             
             if (add_count < 5) return null;
             ps = ps_list.ToArray();
+            //ps = medianFilter_real(ps, 6);
             //ps = PointF.filter_exist(ps);
             //ps = filtr_y0_Points(ps);
             if (!config.orig)
@@ -1166,12 +1167,14 @@ namespace opengl3
             /* var ps = (from p in inp
                             orderby p.Y
                             select p).ToArray();*/
+            int board = 10;
             if (inp == null) return null; 
             var ps = (PointF[])inp.Clone();
 
-            var dx = ps[0].X - ps[ps.Length - 1].X;
-            var dy = ps[0].Y - ps[ps.Length - 1].Y;
+            var dx = ps[board].X - ps[ps.Length - board].X;
+            var dy = ps[board].Y - ps[ps.Length - board].Y;
             var k = dx / dy;
+
 
             for(int i=0; i<ps.Length;i++)
             {
@@ -1183,7 +1186,7 @@ namespace opengl3
             var ps2 = (from p in ps
                   orderby p.X
                   select p).ToArray();
-            var x_min = ps2[0].X;
+            var x_min = ps2[board].X;
             for (int i = 0; i < ps.Length; i++)
             {
                 ps[i].X -= x_min;
@@ -1199,13 +1202,13 @@ namespace opengl3
             }
             return 0;
         }
-        static public PointF[] claster_Points(PointF[] inp,int clast,bool max = true)
+        static public PointF[] claster_Points(PointF[] inp,int clast,bool max = true,int board = 10)
         {
             var ps = (from p in inp
                       orderby p.X
                   select p).ToArray();
-            var x_min = ps[0].X;
-            var x_max = ps[ps.Length-1].X;
+            var x_min = ps[board].X;
+            var x_max = ps[ps.Length- board].X;
 
             var clasters = new List<List<PointF>>();
 
@@ -1263,7 +1266,7 @@ namespace opengl3
             var clasters_x_max = (from c in clasters_a
                                   orderby averageXps(c.ToArray()) descending
                                   select c).ToArray();
-            if (max) return clasters_x_max[0];
+            if (max) return clasters_x_max[board];
             else return clasters_x_max[clasters_x_max.Length-1];
         }
         static public PointF[] same_y_Points(PointF[] orig, PointF[] ps2)
@@ -1294,11 +1297,23 @@ namespace opengl3
             var ps_max = claster_Points(paral, clast_count);
             return same_y_Points(ps, ps_max);
         }
-        static public PointF[] x_min_claster(PointF[] ps, int clast_count)
+        static public PointF[] x_min_claster(PointF[] ps, int clast_count,Mat mat = null)
         {
             if (ps == null) return null;
             var paral = parall_Points(filtr_y0_Points(ps));
+            if (mat != null)
+            {
+                var mat_p = UtilOpenCV.drawPointsF(mat, paral, 0, 255, 0);
+               // CvInvoke.Imshow("mat_p", mat_p);
+               // CvInvoke.WaitKey();
+            }
             var ps_max = claster_Points(paral, clast_count,false);
+            if (mat != null)
+            {
+                var mat_p = UtilOpenCV.drawPointsF(mat, ps_max, 255, 0, 0,2);
+                //CvInvoke.Imshow("mat_p", mat_p);
+                //CvInvoke.WaitKey();
+            }
             return same_y_Points(ps, ps_max);
         }
 

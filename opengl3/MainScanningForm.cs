@@ -1447,9 +1447,9 @@ namespace opengl3
             else scanner = VideoAnalyse.loadVideo_sing_cam_move(scan_path_1, this, scanner, scanner_config);
             var ps = scanner.getPointsLinesScene();
             // foreach(var line in ps) GL1.addLineMeshTraj(line);  
-           // var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
-           //var scan_stl = Polygon3d_GL.toMesh(mesh);
-            //scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
+            var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
+           var scan_stl = Polygon3d_GL.toMesh(mesh);
+            scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
 
 
         }
@@ -1463,10 +1463,10 @@ namespace opengl3
             if (scanner.pointCloud.points3d_lines == null) return;
             if (scanner.pointCloud.points3d_lines.Count == 0) return;
             var ps = scanner.getPointsLinesScene();
-            // foreach(var line in ps) GL1.addLineMeshTraj(line);  
-            var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
+             foreach(var line in ps) GL1.addLineMeshTraj(line);  
+            /*var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
             var scan_stl = Polygon3d_GL.toMesh(mesh);
-            scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, "scan_sing");
+            scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, "scan_sing");*/
         }
 
         //-------------------------------------------------------------------------------------------

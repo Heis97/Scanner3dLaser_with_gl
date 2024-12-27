@@ -189,41 +189,43 @@ namespace opengl3
 
         Point3d_GL[] points3dInCam_step(Mat mat, CameraCV cameraCV, PatternType patternType, int div = -1, GraphicGL graphicGL = null)
         {
-
             mat = cameraCV.undist(mat);
-            var points = order_y(Detection.detectLineDiff(mat, 10,0,false,true,true));
-            var ps_m = order_y(Detection.x_min_claster(points,3));//x_min
-                                                                  // CvInvoke.Imshow("orig_las_step", UtilOpenCV.drawPointsF(mat, ps_m, 255, 0, 0));
-                                                                  //CvInvoke.WaitKey();
-           /* var y1 = 325;
+            var points = order_y(Detection.detectLineDiff(mat, cameraCV.scanner_config));
+            points = PointF.filter_global_x(points, 100);
+            var x_min_cl = Detection.x_min_claster(points, 3, mat);
+            var ps_m = order_y(x_min_cl);//x_min
+            //CvInvoke.Imshow("orig_las_step", UtilOpenCV.drawPointsF(mat, ps_m, 255, 0, 0));
+            //CvInvoke.WaitKey();
+            /*var y1 = 325;
             var y2 = 270;
             var y3 = 240;
             var p_i_1 = Detection.p_in_ps_by_y(points, y1);
             var p_i_2 = Detection.p_in_ps_by_y(points, y2);
             var p_i_3 = Detection.p_in_ps_by_y(points, y3);
             Console.Write(" " + points[p_i_1].X + " " + points[p_i_2].X + " " + points[p_i_3].X);*/
-
-
-            var p_mm = new PointF(ps_m[0].Y, ps_m[ps_m.Length-1].Y);
+            int board = 1;
+            
+            var p_mm = new PointF(ps_m[board].Y, ps_m[ps_m.Length- board].Y);
             var start = ind_y(points, p_mm.X);
             var len  = ind_y(points, p_mm.Y) - start;
+            //Console.WriteLine(start + " " + len);
             var ps_m_2 = points.ToList().GetRange(start, len).ToArray();
 
             var mat_p = UtilOpenCV.drawPointsF(mat, points, 255, 0, 0);
             
-           // CvInvoke.Imshow("asf", mat_p);
-           // CvInvoke.WaitKey();
-
+            //CvInvoke.Imshow("asf", mat_p);
+            //CvInvoke.WaitKey();
+            
             var ps = takePointsForFlat(ps_m_2, false, div);
 
             var ps_l = ps.ToList();
-            var len_from_board = 30;
+            var len_from_board = 2;
             ps_l.Add(new PointF(points[len_from_board]));
             ps_l.Add(new PointF(points[points.Length-1- len_from_board]));
             ps = ps_l.ToArray();
-            
-            var orig_c = mat.Clone();
-          /*  UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
+
+            /*var orig_c = mat.Clone();
+            UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
             UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
             CvInvoke.Imshow("corn", orig_c);
             CvInvoke.WaitKey();*/

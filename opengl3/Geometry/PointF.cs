@@ -354,6 +354,59 @@ namespace opengl3
 
         }
 
+        public static float aver_y_value(PointF[] ps)
+        {
+            if (ps == null) return 0;
+            if (ps.Length < 2) return 0;
+            float val = 0;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                val += ps[i].Y;
+            }
+            return val;
+        }
 
+        public static float aver_x_value(PointF[] ps)
+        {
+            if (ps == null) return 0;
+            if (ps.Length < 2) return 0;
+            float val = 0;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                val += ps[i].X;
+            }
+            return val/ ps.Length;
+        }
+        public static PointF[] filter_global_y(PointF[] ps, float delta)
+        {
+            if (ps == null) return null;
+            if (ps.Length <2) return null;
+            var ps_filter = new PointF[ps.Length];
+            var aver_y = aver_y_value(ps);
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if(ps[i].Y < aver_y+delta && ps[i].Y < aver_y - delta)
+                {
+                    ps_filter[i] = new PointF(ps[i].X, ps[i].Y);
+                }                
+            }
+            return ps_filter;
+        }
+        public static PointF[] filter_global_x(PointF[] ps, float delta)
+        {
+            if (ps == null) return null;
+            if (ps.Length < 2) return null;
+            var ps_filter = new List< PointF>();
+            var aver_x = aver_x_value(ps);
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if (ps[i].X < aver_x + delta && ps[i].X > aver_x - delta)
+                {
+                    ps_filter.Add( new PointF(ps[i].X, ps[i].Y));
+                }
+            }
+            Console.WriteLine(ps.Length + " " + ps_filter.Count + " " + aver_x);
+            return ps_filter.ToArray();
+        }
     }
 }
