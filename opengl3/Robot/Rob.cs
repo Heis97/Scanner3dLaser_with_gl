@@ -190,7 +190,7 @@ namespace opengl3
 
 			return Answer;
 		}
-		static public void calcRob()
+		static public void calcRob(GraphicGL graphic = null)
 		{
 			double[] q = new double[8]{ UtilMatr.toRad(20.01f),
 					UtilMatr.toRad(55.04f),
@@ -236,21 +236,22 @@ namespace opengl3
                               (float)q[6], 0, 0, dwf,
 							 0   , 0, 0, 0 };*/
 			Vector3d_GL pos1 = Kuka.calcPoz(par);
-           // Console.WriteLine("kuka.flange_matr--------------");
+            //Console.WriteLine("kuka.flange_matr--------------");
             //Kuka.printMatrix(Kuka.flange_matr);
 			//Console.WriteLine("-UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f)-------------");
 			//prin.t(UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f));
 
 			RobotFrame frame = new RobotFrame("476.98 306.74 268.21 -158.11 -42.41 81.57 k", RobotFrame.RobotType.KUKA,false);
 			var m = frame.getMatrix();
-            Console.WriteLine("frame.getMatrix()--------------");
+            Console.WriteLine("frame.getMatrix()--------------" + frame.ToStr());
 
             prin.t(frame.getMatrix());
             RobotFrame frame_2 = new RobotFrame(m, RobotFrame.RobotType.KUKA);
-			var forv4  = RobotFrame.comp_forv_kinem(q, 6, true, RobotFrame.RobotType.KUKA);
+			var forv4  = RobotFrame.comp_forv_kinem(q, 7, true, RobotFrame.RobotType.KUKA);
             prin.t(" forv6");
             prin.t(forv4.ToString());
             var qs_ret = RobotFrame.comp_inv_kinem(frame_2.get_position_rob(),RobotFrame.RobotType.KUKA);
+            //var qs_ret = RobotFrame.comp_inv_kinem_priv_kuka(frame_2.get_position_rob(), new int[] {-1, 1, 1});
             prin.t("qs_ret");
             prin.t(qs_ret);
             Console.WriteLine("frame_2.ToString()--------------");

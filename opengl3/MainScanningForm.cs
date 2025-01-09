@@ -470,7 +470,7 @@ namespace opengl3
              CvInvoke.Imshow("find",find );
              CvInvoke.WaitKey();
              */
-            //Manipulator.calcRob();
+            Manipulator.calcRob();
         }
 
         #region something

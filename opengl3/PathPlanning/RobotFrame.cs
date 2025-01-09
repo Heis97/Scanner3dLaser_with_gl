@@ -180,7 +180,7 @@ namespace opengl3
                         var y = m[1, 3];
                         var z = m[2, 3];
 
-                        var sRy = -m[0, 2];
+                        var sRy = -m[2, 0];
                         var cRy = Math.Pow((1-sRy*sRy), 0.5);
 
                         var sRz = m[1,0] / cRy;
@@ -905,7 +905,7 @@ namespace opengl3
         //---------------------------------------------------------------------
         static public double[] comp_inv_kinem_priv_kuka(PositionRob pos, int[] turn)
         {
-            var q = new double[] { 0, 0, 0, 0, 0, 0 };
+            var q = new double[] { 0, 0, 0, 0, 0, 0 ,0,0};
 
             var pm = getMatrixPos(pos,RobotType.KUKA);
             var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
@@ -920,7 +920,7 @@ namespace opengl3
            
             var p3p = new Point3d_GL(p3[0, 3], p3[1, 3], p3[2, 3]);
             var vz = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
-            Console.WriteLine("p3p: " + p3p);
+           // Console.WriteLine("p3p: " + p3p);
             var scara = p3p - new Point3d_GL(0, 0, L0);
             var sq1 = -scara.y / scara.magnitude_xy();
             var cq1 = -scara.x / scara.magnitude_xy();
@@ -944,10 +944,8 @@ namespace opengl3
             if (turn[0] > 0)
             {
                 q1 += Math.PI;
-
-
                 q2 *= -1;
-                q2 -= Math.PI;
+                //q2 -= Math.PI;
                 q3 *= -1;
             }
 
@@ -959,8 +957,19 @@ namespace opengl3
             q[0] = q1;
             q[1] = q2;
             q[2] = q3;
+            var forv4 = comp_forv_kinem(q, 4, true, RobotType.KUKA);
+           // prin.t("matrix4");
+            var m4 = (new RobotFrame(forv4)).getMatrix();
+           // prin.t((new RobotFrame(forv4)).getMatrix());
 
 
+            var ax5y = new Point3d_GL(m4[0, 1], m4[1, 1], m4[2, 1]);
+            var ax5z = new Point3d_GL(m4[0, 2], m4[1, 2], m4[2, 2]);
+            var q5 = Point3d_GL.ang(vz, ax5z);//Math.PI - 
+            Console.WriteLine("q5: " + q5);
+            Console.WriteLine(turn[0]+" "+ turn[1] + " " + turn[2] + " ");
+
+            q[4] = q5;
             /* var ax4z = -ax5y;
              var ax4y = -vf;
              var ax4x = ax4y | ax4z;
@@ -1001,7 +1010,10 @@ namespace opengl3
                  //Console.WriteLine(q[i]);
              }
              */
-
+            for (int i = 0; i < q.Length; i++)
+            {
+                q[i] = cut_off_2pi(q[i]);
+            }
             return q;
         }
 
