@@ -1639,6 +1639,17 @@ namespace opengl3
 
         #region mesh
 
+        public string add_robot(double[] q,int count, RobotFrame.RobotType robotType,Color3d_GL color,string name)
+        {
+            var ps = new List<Point3d_GL>();
+            for(int i = 0; i < count; i++)
+            {
+                var pos = RobotFrame.comp_forv_kinem(q,i,true,robotType);
+                ps.Add(pos.position);
+                addFrame_v2(pos.m,20);
+            }
+            return addLineMeshTraj(ps.ToArray(),color,name);
+        }
         static public float[] add_random_to_mesh(float[] mesh)//not work
         {
             for(int i = 0; i < mesh.Length;i++)
@@ -2048,7 +2059,21 @@ namespace opengl3
             oz += posit;
             return addFrame(posit, ox, oy, oz);
         }
+        public string addFrame_v2(Matrix<double> m, double frame_len = 3)
+        {
+            var posit = m * new Point3d_GL(0, 0, 0);
+            /*var ox = matrix * new Point3d_GL(frame_len, 0, 0);
+             var oy = matrix * new Point3d_GL(0, frame_len, 0);
+             var oz = matrix * new Point3d_GL(0, 0, frame_len);*/
 
+            var ox = new Point3d_GL(m[0, 0] * frame_len, m[1, 0] * frame_len, m[2, 0] * frame_len);
+            var oy = new Point3d_GL(m[0, 1] * frame_len, m[1, 1] * frame_len, m[2, 1] * frame_len);
+            var oz = new Point3d_GL(m[0, 2] * frame_len, m[1, 2] * frame_len, m[2, 2] * frame_len);
+            ox += posit;
+            oy += posit;
+            oz += posit;
+            return addFrame(posit, ox, oy, oz);
+        }
         static public float[] comp_grad_color_dz(float[] mesh)
         {
             var mesh_color = new float[mesh.Length];

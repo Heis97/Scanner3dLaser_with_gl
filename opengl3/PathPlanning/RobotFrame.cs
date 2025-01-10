@@ -15,10 +15,13 @@ namespace opengl3
     {
         public Point3d_GL position;
         public Point3d_GL rotation;
-        public PositionRob(Point3d_GL pos, Point3d_GL rot)
+        public Matrix<double> m;
+        //public RobotFrame.RobotType robot_type;
+        public PositionRob(Point3d_GL pos, Point3d_GL rot, Matrix<double> m = null)
         {
             this.position = pos;
             this.rotation = rot;
+            this.m = m;
         }
 
         public override string ToString()
@@ -655,8 +658,8 @@ namespace opengl3
             var matrs = new List<Matrix<double>>();
             foreach(var val in vals)            
                 matrs.Add(create_dhmatr(val));
-            Console.WriteLine("prin.t(matrs[0]);");
-            prin.t(matrs[0]);
+            //Console.WriteLine("prin.t(matrs[0]);");
+            //prin.t(matrs[0]);
             var matr_res = eye_matr(4);
             foreach(var matr in matrs)
                 matr_res *= matr;
@@ -745,6 +748,7 @@ namespace opengl3
                 var fr = new RobotFrame(m, robotType);
                
                 var pos = fr.frame;
+                pos.m = m;
                 return pos;
             }
 
@@ -920,7 +924,7 @@ namespace opengl3
            
             var p3p = new Point3d_GL(p3[0, 3], p3[1, 3], p3[2, 3]);
             var vz = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
-           // Console.WriteLine("p3p: " + p3p);
+            Console.WriteLine("p3p: " + p3p);
             var scara = p3p - new Point3d_GL(0, 0, L0);
             var sq1 = -scara.y / scara.magnitude_xy();
             var cq1 = -scara.x / scara.magnitude_xy();
@@ -933,83 +937,70 @@ namespace opengl3
 
             if (Ls == 0) return null;
             if (Lt == 0) return null;
-            var omega = Math.Atan(scara.z / Ls);
-            var theta = arccos((L1 * L1 + L2 * L2 - Lt * Lt) / (2 * L1 * L2));
-            var omega_ext = arccos((L1 * L1 + Lt * Lt - L2 * L2) / (2 * L1 * Lt));
-            omega += omega_ext * turn[2];
+            var theta3 = arccos((L1 * L1 + L2 * L2 - Lt * Lt) / (2 * L1 * L2));
+            var q4 = Math.PI - theta3;
 
-            var q2 = -omega;
-            var q3 = Math.PI - theta;
+            var theta_e = Math.Atan(Ls/scara.z );
+           //var theta2_sh = arcsin(L2*sin(q3)/Ls);
 
-            if (turn[0] > 0)
+           var theta2_sh = arccos((L1 * L1 + Lt * Lt - L2 * L2) / (2 * L1 * Lt));
+
+           // theta2 = theta_e - theta2_sh;
+            //var omega += omega_ext * turn[2];
+
+            var q2 =-( theta_e- theta2_sh - Math.PI);
+
+
+            if (turn[0] < 0)
             {
                 q1 += Math.PI;
                 q2 *= -1;
                 //q2 -= Math.PI;
-                q3 *= -1;
+                q4 *= -1;
             }
 
             if (turn[2] < 0)
             {
-                q3 *= turn[2];
+                q4 *= turn[2];
             }
 
             q[0] = q1;
             q[1] = q2;
-            q[2] = q3;
+            q[2] = 0;
+            q[3] = q4;
+            //var forv1 = comp_forv_kinem(q, 1, true, RobotType.KUKA);
+            //prin.t("matrix1");
+            //prin.t((new RobotFrame(forv1)).getMatrix());
+            var forv3 = comp_forv_kinem(q, 3, true, RobotType.KUKA);
             var forv4 = comp_forv_kinem(q, 4, true, RobotType.KUKA);
-           // prin.t("matrix4");
-            var m4 = (new RobotFrame(forv4)).getMatrix();
-           // prin.t((new RobotFrame(forv4)).getMatrix());
-
-
-            var ax5y = new Point3d_GL(m4[0, 1], m4[1, 1], m4[2, 1]);
-            var ax5z = new Point3d_GL(m4[0, 2], m4[1, 2], m4[2, 2]);
-            var q5 = Point3d_GL.ang(vz, ax5z);//Math.PI - 
-            Console.WriteLine("q5: " + q5);
+            //prin.t("matrix4");
+            var m4 = forv4.m;
+            var m3 = forv3.m;
+            prin.t((new RobotFrame(forv4)).getMatrix());
+            
+            var ax4x = new Point3d_GL(m4[0, 0], m4[1, 0], m4[2, 0]);
+            var ax4y = new Point3d_GL(m4[0, 1], m4[1, 1], m4[2, 1]);
+            var ax4z = new Point3d_GL(m4[0, 2], m4[1, 2], m4[2, 2]);
+           
+            var ax5z = ax4y;
+            var q6 = Point3d_GL.ang(vz, ax4z);//Math.PI - 
+            q[5] = q6;
+            Console.WriteLine("q6: " + q6);
             Console.WriteLine(turn[0]+" "+ turn[1] + " " + turn[2] + " ");
+            var ax3z = new Point3d_GL(m3[0, 2], m3[1, 2], m3[2, 2]);
+            var ax_wr = ax4z | vz;
+            
+            var q5 = Point3d_GL.ang(ax4y, ax_wr);//Math.PI - 
 
-            q[4] = q5;
-            /* var ax4z = -ax5y;
-             var ax4y = -vf;
-             var ax4x = ax4y | ax4z;
+            q[4] = Math.PI - q5;
 
-             var dh_params = new double[][]
-                 {
-                     new double[]{ q1, Math.PI / 2, 0, L1 },
-                     new double[]{ q2,  0, -L2, 0 },
-                     new double[]{ q3,  0, -L3, 0 } };
-
-             var pm3 = calc_pos(dh_params);
-             var ax3x = new Point3d_GL(pm3[0, 0], pm3[1, 0], pm3[2, 0]);
-             var s4 = Point3d_GL.sign_r_v(ax3x, ax4x, ax4y);
-             var q4 = s4 * Point3d_GL.ang(ax3x, ax4x);
-
-
-             var ax6y = new Point3d_GL(pm[0, 1], pm[1, 1], pm[2, 1]);
-             var ax6z = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
-
-             var s6 = Point3d_GL.sign_r_v(ax5y, ax6y, ax6z);
-             var q6 = s6 * Point3d_GL.ang(ax5y, ax6y);
-
-
-
-             var s5 = Point3d_GL.sign_r_v(ax4y, ax6z, ax4z);
-             var q5 = s5 * Point3d_GL.ang(ax4y, ax6z);
-
-             q6 += Math.PI;
-
-             q = new double[] { q1, q2, q3, q4, q5, q6 };
-             //Console.WriteLine("q");
-             for (int i = 0; i < q.Length; i++)
-             {
-                 var qi = q[i];
-                 if (qi > Math.PI) qi -= 2 * Math.PI;
-                 if (qi < -Math.PI) qi += 2 * Math.PI;
-                 q[i] = qi;
-                 //Console.WriteLine(q[i]);
-             }
-             */
+            var forv6 = comp_forv_kinem(q, 6, true, RobotType.KUKA);
+            var m6 = forv6.m;
+            var ax6z = new Point3d_GL(m6[0, 2], m6[1, 2], m6[2, 2]);
+            var ax6x = new Point3d_GL(m6[0, 0], m6[1, 0], m6[2, 0]);
+            var ax7x = new Point3d_GL(pm[0, 0], pm[1, 0], pm[2, 0]);
+            var q7 = Point3d_GL.ang(ax6x, ax7x);//Math.PI - 
+            q[6] = q7;
             for (int i = 0; i < q.Length; i++)
             {
                 q[i] = cut_off_2pi(q[i]);

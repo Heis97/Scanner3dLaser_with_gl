@@ -470,7 +470,7 @@ namespace opengl3
              CvInvoke.Imshow("find",find );
              CvInvoke.WaitKey();
              */
-            Manipulator.calcRob();
+          
         }
 
         #region something
@@ -2098,6 +2098,8 @@ namespace opengl3
             GL1.add_Label(lab_kor, lab_curCor, lab_TRZ);
 
             GL1.add_TreeView(tree_models);
+
+            Manipulator.calcRob(GL1);
             //GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);

@@ -192,13 +192,13 @@ namespace opengl3
 		}
 		static public void calcRob(GraphicGL graphic = null)
 		{
-			double[] q = new double[8]{ UtilMatr.toRad(20.01f),
-					UtilMatr.toRad(55.04f),
+			double[] q = new double[8]{ UtilMatr.toRad(30.02f),
+					UtilMatr.toRad(60.0f),
 					UtilMatr.toRad(0f),
-				   UtilMatr.toRad(-94.86f),
-					UtilMatr.toRad(96.42f),
-				   UtilMatr.toRad(93.46f),
-					UtilMatr.toRad(-17.2f),
+				    UtilMatr.toRad(-80.04f),
+					UtilMatr.toRad(110.0f),
+				    UtilMatr.toRad(100.02f),
+					UtilMatr.toRad(-30.05f),
                     UtilMatr.toRad(0f)
                     };
             /*float[] q = new float[8]{ UtilMatr.toRad(-7.85f),
@@ -227,7 +227,7 @@ namespace opengl3
                               (float)q[6], 0, 0, dwf,
 							 0   ,       0, 0, 0 };
 
-			/*float[] par_1 = { (float)q[0], -PI/2, 0, dbs,
+            /*float[] par_1 = { (float)q[0], -PI/2, 0, dbs,
                               (float)q[1], PI / 2, 0, 0,
                               (float)q[2], PI / 2, 0, dse,
                               (float)q[3], -PI / 2, 0, 0,
@@ -235,30 +235,41 @@ namespace opengl3
                               (float)q[5], PI / 2, 0, 0,
                               (float)q[6], 0, 0, dwf,
 							 0   , 0, 0, 0 };*/
-			Vector3d_GL pos1 = Kuka.calcPoz(par);
+            //Vector3d_GL pos1 = Kuka.calcPoz(par);
             //Console.WriteLine("kuka.flange_matr--------------");
             //Kuka.printMatrix(Kuka.flange_matr);
-			//Console.WriteLine("-UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f)-------------");
-			//prin.t(UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f));
+            //Console.WriteLine("-UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f)-------------");
+            //prin.t(UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f));
 
-			RobotFrame frame = new RobotFrame("476.98 306.74 268.21 -158.11 -42.41 81.57 k", RobotFrame.RobotType.KUKA,false);
-			var m = frame.getMatrix();
-            Console.WriteLine("frame.getMatrix()--------------" + frame.ToStr());
-
-            prin.t(frame.getMatrix());
+            graphic.add_robot(q, 8, RobotFrame.RobotType.KUKA, Color3d_GL.red(), "test");
+            RobotFrame frame = new RobotFrame("494.99 420.67 307.44 -151.78 -18.56 68.35 k", RobotFrame.RobotType.KUKA, false);
+            var m = frame.getMatrix();
             RobotFrame frame_2 = new RobotFrame(m, RobotFrame.RobotType.KUKA);
 			var forv4  = RobotFrame.comp_forv_kinem(q, 7, true, RobotFrame.RobotType.KUKA);
             prin.t(" forv6");
             prin.t(forv4.ToString());
             var qs_ret = RobotFrame.comp_inv_kinem(frame_2.get_position_rob(),RobotFrame.RobotType.KUKA);
             //var qs_ret = RobotFrame.comp_inv_kinem_priv_kuka(frame_2.get_position_rob(), new int[] {-1, 1, 1});
+            
+            Console.WriteLine("frame.getMatrix()--------------" + frame.ToStr());
+
+            prin.t(frame.getMatrix());
             prin.t("qs_ret");
             prin.t(qs_ret);
+            prin.t("q_orig:");
+            prin.t(q);
             Console.WriteLine("frame_2.ToString()--------------");
-
             prin.t(frame_2.ToStr(" ",false,true,false));
+
+			//for(int i = 0; i < 7; i++)
+			//{
+			//graphic.add_robot(q, 7, RobotFrame.RobotType.KUKA, Color3d_GL.black(), "test");
+
+            //}
+			
         }
 
+		
 
 		/*
 		//-71.0969009399414,
