@@ -241,7 +241,7 @@ namespace opengl3
             //Console.WriteLine("-UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f)-------------");
             //prin.t(UtilMatr.AbcToMatrix(-158.11f, -42.41f, 81.57f));
 
-            graphic.add_robot(q, 8, RobotFrame.RobotType.KUKA, Color3d_GL.red(), "test");
+            //graphic.add_robot(q, 8, RobotFrame.RobotType.KUKA, Color3d_GL.red(), "test");
             RobotFrame frame = new RobotFrame("494.99 420.67 307.44 -151.78 -18.56 68.35 k", RobotFrame.RobotType.KUKA, false);
             var m = frame.getMatrix();
             RobotFrame frame_2 = new RobotFrame(m, RobotFrame.RobotType.KUKA);
@@ -261,16 +261,22 @@ namespace opengl3
             Console.WriteLine("frame_2.ToString()--------------");
             prin.t(frame_2.ToStr(" ",false,true,false));
 
-			//for(int i = 0; i < 7; i++)
-			//{
-			//graphic.add_robot(q, 7, RobotFrame.RobotType.KUKA, Color3d_GL.black(), "test");
-
-            //}
-			
+			for(int i = 0; i < qs_ret.Length; i++)
+			{			
+				//graphic.add_robot(qs_ret[i], 8, RobotFrame.RobotType.KUKA,false, Color3d_GL.black(), "test");
+            }
+            var ret_l = new List<string>();
+            for (int i=0;i< qs_ret.Length;i++)
+			{
+               var forv = RobotFrame.comp_forv_kinem(qs_ret[i], 7, true, RobotFrame.RobotType.KUKA);
+				ret_l.Add(forv.ToString());
+            }
+            graphic.add_robot(q, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
+            for (int i = 0; i < ret_l.Count; i++)
+            {
+				Console.WriteLine(ret_l[i]);
+            }
         }
-
-		
-
 		/*
 		//-71.0969009399414,
         -88.66098022460938,

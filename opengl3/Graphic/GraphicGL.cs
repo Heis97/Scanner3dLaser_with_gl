@@ -1639,14 +1639,14 @@ namespace opengl3
 
         #region mesh
 
-        public string add_robot(double[] q,int count, RobotFrame.RobotType robotType,Color3d_GL color,string name)
+        public string add_robot(double[] q,int count, RobotFrame.RobotType robotType,bool matrs,Color3d_GL color,string name)
         {
             var ps = new List<Point3d_GL>();
             for(int i = 0; i < count; i++)
             {
                 var pos = RobotFrame.comp_forv_kinem(q,i,true,robotType);
                 ps.Add(pos.position);
-                addFrame_v2(pos.m,20);
+                if (matrs) addFrame_v2(pos.m,20);
             }
             return addLineMeshTraj(ps.ToArray(),color,name);
         }

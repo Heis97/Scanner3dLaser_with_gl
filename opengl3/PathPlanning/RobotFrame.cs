@@ -174,7 +174,7 @@ namespace opengl3
         public RobotFrame(Matrix<double> m, RobotType type = RobotType.PULSE)
         {
             robotType = type;
-            Console.WriteLine(robotType.ToString());
+            //Console.WriteLine(robotType.ToString());
             switch (type)
             {
                 case RobotType.KUKA:
@@ -742,9 +742,9 @@ namespace opengl3
                     dh_params_c.Add(dh_params[i]);
                 }
                 var m = calc_pos(dh_params_c.ToArray());
-                prin.t(q);
-                prin.t("comp_forv_kinem");
-                prin.t(m);
+               // prin.t(q);
+               // prin.t("comp_forv_kinem");
+               // prin.t(m);
                 var fr = new RobotFrame(m, robotType);
                
                 var pos = fr.frame;
@@ -907,11 +907,146 @@ namespace opengl3
         }
 
         //---------------------------------------------------------------------
-        static public double[] comp_inv_kinem_priv_kuka(PositionRob pos, int[] turn)
+        static public double[] comp_inv_kinem_priv_kuka_2(PositionRob pos, int[] turn)
         {
             var q = new double[] { 0, 0, 0, 0, 0, 0 ,0,0};
 
             var pm = getMatrixPos(pos,RobotType.KUKA);
+            var m7 = pm;
+            var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
+            var L0 = 360;
+            var L1 = 420;
+            var L2 = 400;
+            var L3 = 126;
+
+            var dz = eye_matr(4);
+            dz[2, 3] = -L3;
+            var pm3 = pm * dz;
+           
+            var p6p = new Point3d_GL(pm3[0, 3], pm3[1, 3], pm3[2, 3]);
+            var vz = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
+            Console.WriteLine("p3p: " + p6p);
+            var scara = p6p - new Point3d_GL(0, 0, L0);
+            var sq1 = -scara.y / scara.magnitude_xy();
+            var cq1 = -scara.x / scara.magnitude_xy();
+
+            var q1 = Math.Sign(sq1) * arccos(cq1);
+
+
+            var Ls = scara.magnitude_xy();
+            var Lt = scara.magnitude();
+
+            if (Ls == 0) return null;
+            if (Lt == 0) return null;
+            var theta3 = arccos((L1 * L1 + L2 * L2 - Lt * Lt) / (2 * L1 * L2));
+            var q4 = Math.PI - theta3;//Math.PI -
+
+            if (turn[2] < 0)
+            {
+                q4 *= turn[2];
+            }
+
+            var theta_e = Math.Atan(Ls/scara.z );
+           //var theta2_sh = arcsin(L2*sin(q3)/Ls);
+
+           var theta2_sh = arccos((L1 * L1 + Lt * Lt - L2 * L2) / (2 * L1 * Lt));
+
+           // theta2 = theta_e - theta2_sh;
+            //var omega += omega_ext * turn[2];
+
+            var q2 =-( theta_e- turn[2]*theta2_sh);
+
+
+            if (turn[0] < 0)
+            {
+                q1 += Math.PI;
+                q2 *= -1;
+                //q2 -= Math.PI;
+                q4 *= -1;
+            }
+
+           
+            q[0] = q1;
+            q[1] = Math.PI + q2;
+            q[2] = 0;
+            q[3] = q4;
+            //var forv1 = comp_forv_kinem(q, 1, true, RobotType.KUKA);
+            //prin.t("matrix1");
+            //prin.t((new RobotFrame(forv1)).getMatrix());
+            var forv1 = comp_forv_kinem(q, 1, true, RobotType.KUKA);
+            var forv3 = comp_forv_kinem(q, 3, true, RobotType.KUKA);
+            var m1 = forv1.m;
+            var m3 = forv3.m;
+
+            var p7 = new Point3d_GL(m7[0, 3], m7[1, 3], m7[2, 3]);
+            var p6 = p6p;
+            var p5 = p6p;
+            var p4 = new Point3d_GL(m3[0, 3], m3[1, 3], m3[2, 3]);
+            var p3 = new Point3d_GL(m3[0, 3], m3[1, 3], m3[2, 3]);
+            var p2 = new Point3d_GL(m1[0, 3], m1[1, 3], m1[2, 3]);
+            var p1 = new Point3d_GL(m1[0, 3], m1[1, 3], m1[2, 3]);
+            var p0 = new Point3d_GL(0,0,0);
+
+            var v0x = new Point3d_GL(1, 0, 0);
+            var v0y = new Point3d_GL(0, 1, 0);
+            var v0z = new Point3d_GL(0, 0, 1);
+
+            var v7x = new Point3d_GL(m7[0, 0], m7[1, 0], m7[2, 0]);
+            var v7y = new Point3d_GL(m7[0, 1], m7[1, 1], m7[2, 1]);
+            var v7z = new Point3d_GL(m7[0, 2], m7[1, 2], m7[2, 2]);
+
+            var v6z = v7z;
+            var v4z = p6 - p4;
+            var v6y = v4z | v7z;
+            var v5z = v6y;
+            var v6x = v6y | v6z;
+            var v5y = p4 - p5;
+            var v5x = v5y | v5z;
+            var v3y = p4 - p2;
+            var v4y = v3y | v4z;
+            var v4x = v4y | v4z;
+            var v3z = -v4y;
+            var v3x = v3y | v3z;
+            var v2z = p3 - p2;
+            var v2y = v0z | v2z;
+            var v2x = v2y | v2z;
+            var v1z = v2y;
+            var v1y = -v0z;
+            var v1x = v1y | v1z;
+
+            var ms = new List<Matrix<double>>();
+            ms.Add(matrix_assemble(v0x, v0y, v0z, p0));
+            ms.Add(matrix_assemble(v1x, v1y, v1z, p1));
+            ms.Add(matrix_assemble(v2x, v2y, v2z, p2));
+            ms.Add(matrix_assemble(v3x, v3y, v3z, p3));
+            ms.Add(matrix_assemble(v4x, v4y, v4z, p4));
+            ms.Add(matrix_assemble(v5x, v5y, v5z, p5));
+            ms.Add(matrix_assemble(v6x, v6y, v6z, p6));
+            ms.Add(matrix_assemble(v7x, v7y, v7z, p7));
+
+
+            for (int i = 0; i < q.Length; i++)
+            {
+                q[i] = cut_off_2pi(q[i]);
+            }
+            return q;
+        }
+
+        static Matrix<double> matrix_assemble(Point3d_GL vx, Point3d_GL vy, Point3d_GL vz, Point3d_GL p)
+        {
+            return new Matrix<double>(new double[,] {
+            {vx.x,vx.y,vx.z,p.x },
+            {vy.x,vy.y,vy.z,p.y },
+            {vz.x,vz.y,vz.z,p.z },
+            {   0,   0,   0,  1 },
+            });
+        }
+        //--------------------------------------------------------------------------
+        static public double[] comp_inv_kinem_priv_kuka(PositionRob pos, int[] turn)
+        {
+            var q = new double[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            var pm = getMatrixPos(pos, RobotType.KUKA);
             var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
             var L0 = 360;
             var L1 = 420;
@@ -921,7 +1056,7 @@ namespace opengl3
             var dz = eye_matr(4);
             dz[2, 3] = -L3;
             var p3 = pm * dz;
-           
+
             var p3p = new Point3d_GL(p3[0, 3], p3[1, 3], p3[2, 3]);
             var vz = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
             Console.WriteLine("p3p: " + p3p);
@@ -938,17 +1073,22 @@ namespace opengl3
             if (Ls == 0) return null;
             if (Lt == 0) return null;
             var theta3 = arccos((L1 * L1 + L2 * L2 - Lt * Lt) / (2 * L1 * L2));
-            var q4 = Math.PI - theta3;
+            var q4 = Math.PI - theta3;//Math.PI -
 
-            var theta_e = Math.Atan(Ls/scara.z );
-           //var theta2_sh = arcsin(L2*sin(q3)/Ls);
+            if (turn[2] < 0)
+            {
+                q4 *= turn[2];
+            }
 
-           var theta2_sh = arccos((L1 * L1 + Lt * Lt - L2 * L2) / (2 * L1 * Lt));
+            var theta_e = Math.Atan(Ls / scara.z);
+            //var theta2_sh = arcsin(L2*sin(q3)/Ls);
 
-           // theta2 = theta_e - theta2_sh;
+            var theta2_sh = arccos((L1 * L1 + Lt * Lt - L2 * L2) / (2 * L1 * Lt));
+
+            // theta2 = theta_e - theta2_sh;
             //var omega += omega_ext * turn[2];
 
-            var q2 =-( theta_e- theta2_sh - Math.PI);
+            var q2 = -(theta_e - turn[2] * theta2_sh);
 
 
             if (turn[0] < 0)
@@ -959,13 +1099,9 @@ namespace opengl3
                 q4 *= -1;
             }
 
-            if (turn[2] < 0)
-            {
-                q4 *= turn[2];
-            }
 
             q[0] = q1;
-            q[1] = q2;
+            q[1] = Math.PI + q2;
             q[2] = 0;
             q[3] = q4;
             //var forv1 = comp_forv_kinem(q, 1, true, RobotType.KUKA);
@@ -973,41 +1109,50 @@ namespace opengl3
             //prin.t((new RobotFrame(forv1)).getMatrix());
             var forv3 = comp_forv_kinem(q, 3, true, RobotType.KUKA);
             var forv4 = comp_forv_kinem(q, 4, true, RobotType.KUKA);
+            
             //prin.t("matrix4");
             var m4 = forv4.m;
             var m3 = forv3.m;
             prin.t((new RobotFrame(forv4)).getMatrix());
-            
+
             var ax4x = new Point3d_GL(m4[0, 0], m4[1, 0], m4[2, 0]);
             var ax4y = new Point3d_GL(m4[0, 1], m4[1, 1], m4[2, 1]);
             var ax4z = new Point3d_GL(m4[0, 2], m4[1, 2], m4[2, 2]);
-           
+
             var ax5z = ax4y;
             var q6 = Point3d_GL.ang(vz, ax4z);//Math.PI - 
             q[5] = q6;
+            if (turn[0] > 0)
+            {
+                q[5] = -q[5];
+            }
             Console.WriteLine("q6: " + q6);
-            Console.WriteLine(turn[0]+" "+ turn[1] + " " + turn[2] + " ");
+            Console.WriteLine(turn[0] + " " + turn[1] + " " + turn[2] + " ");
             var ax3z = new Point3d_GL(m3[0, 2], m3[1, 2], m3[2, 2]);
             var ax_wr = ax4z | vz;
-            
+
             var q5 = Point3d_GL.ang(ax4y, ax_wr);//Math.PI - 
 
-            q[4] = Math.PI - q5;
-
+            q[4] = q5;
+            if (turn[1] < 0)
+            {
+                q[4] -= Math.PI;
+                q[5] *= -1;
+            }
             var forv6 = comp_forv_kinem(q, 6, true, RobotType.KUKA);
             var m6 = forv6.m;
             var ax6z = new Point3d_GL(m6[0, 2], m6[1, 2], m6[2, 2]);
             var ax6x = new Point3d_GL(m6[0, 0], m6[1, 0], m6[2, 0]);
             var ax7x = new Point3d_GL(pm[0, 0], pm[1, 0], pm[2, 0]);
             var q7 = Point3d_GL.ang(ax6x, ax7x);//Math.PI - 
-            q[6] = q7;
+            q[6] = -q7;
+
             for (int i = 0; i < q.Length; i++)
             {
                 q[i] = cut_off_2pi(q[i]);
             }
             return q;
         }
-
         //---------------------------------------------------------------------
         static public Matrix<double> mult_frame(Matrix<double> rob_base, Matrix<double> frame)
         {

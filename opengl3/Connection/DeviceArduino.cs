@@ -25,17 +25,20 @@ namespace opengl3
             serialPort = new SerialPort();
             try
             {
+
                 serialPort.PortName = port;
                 serialPort.BaudRate = baudrate;
-               // serialPort.RtsEnable = true;
-                //serialPort.DtrEnable = true;
+                serialPort.RtsEnable = true;
+                serialPort.DtrEnable = true;
+                Console.WriteLine("try " + port + " " + baudrate);
                 serialPort.Open();
                 isConnected = true;
                 Console.WriteLine("open " + port + " " + baudrate);
                 return true;
             }
-            catch
+            catch (Exception ex) 
             {
+                MessageBox.Show(ex.Message);
                 return false;
             }
         }
