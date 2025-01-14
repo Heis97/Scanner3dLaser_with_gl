@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static opengl3.RobotFrame;
 
 namespace opengl3
 {
@@ -248,34 +249,39 @@ namespace opengl3
 			var forv4  = RobotFrame.comp_forv_kinem(q, 7, true, RobotFrame.RobotType.KUKA);
             prin.t(" forv6");
             prin.t(forv4.ToString());
-            var qs_ret = RobotFrame.comp_inv_kinem(frame_2.get_position_rob(),RobotFrame.RobotType.KUKA);
+           // var qs_ret = RobotFrame.comp_inv_kinem(frame_2.get_position_rob(),RobotFrame.RobotType.KUKA,graphic);
             //var qs_ret = RobotFrame.comp_inv_kinem_priv_kuka(frame_2.get_position_rob(), new int[] {-1, 1, 1});
             
             Console.WriteLine("frame.getMatrix()--------------" + frame.ToStr());
 
             prin.t(frame.getMatrix());
             prin.t("qs_ret");
-            prin.t(qs_ret);
+            //prin.t(qs_ret);
             prin.t("q_orig:");
             prin.t(q);
             Console.WriteLine("frame_2.ToString()--------------");
             prin.t(frame_2.ToStr(" ",false,true,false));
 
-			for(int i = 0; i < qs_ret.Length; i++)
-			{			
-				//graphic.add_robot(qs_ret[i], 8, RobotFrame.RobotType.KUKA,false, Color3d_GL.black(), "test");
+			//for(int i = 0; i < qs_ret.Length; i++)
+			{
+                //graphic.add_robot(qs_ret[i], 8, RobotFrame.RobotType.KUKA,false, Color3d_GL.black(), "test");
             }
-            var ret_l = new List<string>();
+			var qs_r = comp_inv_kinem_priv(frame_2.get_position_rob(), new int[] { 1, 1, 1 }, RobotFrame.RobotType.KUKA, graphic);
+            //graphic.add_robot(qs_r, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "test");
+            //var forv = RobotFrame.comp_forv_kinem(qs_ret[2], 7, true, RobotFrame.RobotType.KUKA);
+            /*var ret_l = new List<string>();
             for (int i=0;i< qs_ret.Length;i++)
 			{
                var forv = RobotFrame.comp_forv_kinem(qs_ret[i], 7, true, RobotFrame.RobotType.KUKA);
 				ret_l.Add(forv.ToString());
             }
-            graphic.add_robot(q, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
+            
             for (int i = 0; i < ret_l.Count; i++)
             {
 				Console.WriteLine(ret_l[i]);
-            }
+            }*/
+
+          //  graphic.add_robot(q, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
         }
 		/*
 		//-71.0969009399414,

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Emgu.CV;
+using Emgu.CV.Stitching;
 using PathPlanning;
 
 namespace opengl3
@@ -755,7 +757,7 @@ namespace opengl3
             return new PositionRob();
         }
 
-        static public double[][] comp_inv_kinem(PositionRob pos, RobotType robotType = RobotType.PULSE)
+        static public double[][] comp_inv_kinem(PositionRob pos, RobotType robotType = RobotType.PULSE,GraphicGL graphic = null)
         {
             var solvs = new List<double[]>();
             var turns = new int[][]
@@ -770,7 +772,7 @@ namespace opengl3
                 new int[]{1, 1, 1}
             };
             foreach (var turn in turns)
-                solvs.Add(comp_inv_kinem_priv(pos, turn,robotType));
+                solvs.Add(comp_inv_kinem_priv(pos, turn,robotType,graphic));
 
             return solvs.ToArray();
         }
@@ -790,11 +792,11 @@ namespace opengl3
             y += y1;
             return new Point3d_GL(x, y);
         }
-        static public double[] comp_inv_kinem_priv(PositionRob pos, int[] turn,RobotType robotType = RobotType.PULSE)
+        static public double[] comp_inv_kinem_priv(PositionRob pos, int[] turn,RobotType robotType = RobotType.PULSE,GraphicGL graphic = null)
         {
             switch(robotType) 
             {
-                case RobotType.KUKA: return comp_inv_kinem_priv_kuka(pos, turn); 
+                case RobotType.KUKA: return comp_inv_kinem_priv_kuka(pos, turn, graphic); 
                 case RobotType.PULSE: return comp_inv_kinem_priv_pulse(pos, turn); 
                 default: return new double[] { pos.position.x, pos.position.y, pos.position.x, pos.rotation.x, pos.rotation.y, pos.rotation.z };
             }
@@ -907,7 +909,7 @@ namespace opengl3
         }
 
         //---------------------------------------------------------------------
-        static public double[] comp_inv_kinem_priv_kuka_2(PositionRob pos, int[] turn)
+        static public double[] comp_inv_kinem_priv_kuka(PositionRob pos, int[] turn,GraphicGL graphic = null)
         {
             var q = new double[] { 0, 0, 0, 0, 0, 0 ,0,0};
 
@@ -995,24 +997,24 @@ namespace opengl3
             var v7y = new Point3d_GL(m7[0, 1], m7[1, 1], m7[2, 1]);
             var v7z = new Point3d_GL(m7[0, 2], m7[1, 2], m7[2, 2]);
 
-            var v6z = v7z;
-            var v4z = p6 - p4;
-            var v6y = v4z | v7z;
-            var v5z = v6y;
-            var v6x = v6y | v6z;
-            var v5y = p4 - p5;
-            var v5x = v5y | v5z;
-            var v3y = p4 - p2;
-            var v4y = v3y | v4z;
-            var v4x = v4y | v4z;
-            var v3z = -v4y;
-            var v3x = v3y | v3z;
-            var v2z = p3 - p2;
-            var v2y = v0z | v2z;
-            var v2x = v2y | v2z;
-            var v1z = v2y;
-            var v1y = -v0z;
-            var v1x = v1y | v1z;
+            var v6z = v7z.Clone().normalize();
+            var v4z = (p6 - p4).Clone().normalize();
+            var v6y = (v4z | v7z).Clone().normalize();
+            var v5z = v6y.Clone().normalize();
+            var v6x = (v6y | v6z).Clone().normalize();
+            var v5y = (p4 - p5).Clone().normalize();
+            var v5x = (v5y | v5z).Clone().normalize();
+            var v3y = (p4 - p2).Clone().normalize();
+            var v4y = (v3y | v4z).Clone().normalize();
+            var v4x = (v4y | v4z).Clone().normalize();
+            var v3z = (-v4y).Clone().normalize(); ;
+            var v3x = (v3y | v3z).Clone().normalize();
+            var v2z = (p3 - p2).Clone().normalize();
+            var v2y = (v0z | v2z).Clone().normalize();
+            var v2x = (v2y | v2z).Clone().normalize();
+            var v1z = v2y.Clone().normalize(); ;
+            var v1y = (-v0z).Clone().normalize();
+            var v1x = (v1y | v1z).Clone().normalize();
 
             var ms = new List<Matrix<double>>();
             ms.Add(matrix_assemble(v0x, v0y, v0z, p0));
@@ -1024,6 +1026,21 @@ namespace opengl3
             ms.Add(matrix_assemble(v6x, v6y, v6z, p6));
             ms.Add(matrix_assemble(v7x, v7y, v7z, p7));
 
+            var ps = new List<Point3d_GL[]>();
+            ps.Add(new Point3d_GL[] { p0 });
+            ps.Add(new Point3d_GL[] { p1 });
+            ps.Add(new Point3d_GL[] { p2 });
+            ps.Add(new Point3d_GL[] { p3 });
+            ps.Add(new Point3d_GL[] { p4 });
+            ps.Add(new Point3d_GL[] { p5 });
+            ps.Add(new Point3d_GL[] { p6 });
+            ps.Add(new Point3d_GL[] { p7 });
+
+            for (int i=0; i<ms.Count; i++)
+            {
+                graphic?.addFrame(ms[i], 20,"inv+"+i);
+               // graphic?.addPointMesh(ps[i], Color3d_GL.red(), "ps+" + i);
+            }
 
             for (int i = 0; i < q.Length; i++)
             {
@@ -1042,7 +1059,7 @@ namespace opengl3
             });
         }
         //--------------------------------------------------------------------------
-        static public double[] comp_inv_kinem_priv_kuka(PositionRob pos, int[] turn)
+        static public double[] comp_inv_kinem_priv_kuka_2(PositionRob pos, int[] turn)
         {
             var q = new double[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 
