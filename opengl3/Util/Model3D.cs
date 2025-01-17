@@ -350,6 +350,7 @@ namespace opengl3
 
         private static object[] parsingStl_GL4_binary(string fileName, out Point3d_GL _center, float scale = 1)
         {
+            Console.WriteLine("is binary");
             int i2 = 0;
             int i3 = 0;
             float[] min_v = new float[] { float.MaxValue, float.MaxValue, float.MaxValue };
@@ -568,7 +569,7 @@ namespace opengl3
             {
                 file1 = sr.ReadToEnd();
             }
-            if (file1.Contains("solid")) return parsingStl_GL4_ascii(path, out _center, scale);
+            if (file1.Contains("outer loop") && file1.Contains("facet normal")) return parsingStl_GL4_ascii(path, out _center, scale);
             else return parsingStl_GL4_binary(path, out _center, scale);            
         }
 

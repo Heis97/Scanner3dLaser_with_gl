@@ -1036,12 +1036,48 @@ namespace opengl3
             ps.Add(new Point3d_GL[] { p6 });
             ps.Add(new Point3d_GL[] { p7 });
 
+           
             for (int i=0; i<ms.Count; i++)
             {
-                graphic?.addFrame(ms[i], 20,"inv+"+i);
+               // graphic?.addFrame(ms[i], 20,"inv+"+i);
                // graphic?.addPointMesh(ps[i], Color3d_GL.red(), "ps+" + i);
             }
+            //var s6 = Point3d_GL.sign_r_v(ax5y, ax6y, ax6z);
+            //var q6 = s6 * Point3d_GL.ang(ax5y, ax6y);
+            var s5 = Point3d_GL.sign_r_v(v4y, v5z, v4z);
+            var q5 = s5 * Point3d_GL.ang(v4y, v5z);//Math.PI - 
 
+            q[4] = q5;
+            
+            var s6 = Point3d_GL.sign_r_v(v7z, v4z, -v5z);
+            var q6 = s6*Point3d_GL.ang(v7z, v4z);//Math.PI - 
+            q[5] = q6;
+            if (turn[0] < 0)
+            {
+               // q[5] = -q[5];
+            }
+            if (turn[1] < 0)
+            {
+                q[4] -= Math.PI;
+                q[5] *= -1;
+            }
+            if (turn[2] < 0 && turn[0]<0)
+            {
+                q[5] *= -1;
+            }
+
+            if (turn[2] > 0 && turn[0] > 0)
+            {
+                q[5] *= -1;
+            }
+            var fm6 = comp_forv_kinem(q, 6, true, RobotType.KUKA).m;
+
+            v6x = new Point3d_GL(fm6[0, 0], fm6[1, 0], fm6[2, 0]);
+
+
+            var s7 = Point3d_GL.sign_r_v(v6x, v7x, -v7z);
+            var q7 = s7*Point3d_GL.ang(v6x, v7x);//Math.PI - 
+            q[6] = -q7;
             for (int i = 0; i < q.Length; i++)
             {
                 q[i] = cut_off_2pi(q[i]);
@@ -1051,10 +1087,17 @@ namespace opengl3
 
         static Matrix<double> matrix_assemble(Point3d_GL vx, Point3d_GL vy, Point3d_GL vz, Point3d_GL p)
         {
-            return new Matrix<double>(new double[,] {
+          /*  return new Matrix<double>(new double[,] {
             {vx.x,vx.y,vx.z,p.x },
             {vy.x,vy.y,vy.z,p.y },
             {vz.x,vz.y,vz.z,p.z },
+            {   0,   0,   0,  1 },
+            });*/
+
+            return new Matrix<double>(new double[,] {
+            {vx.x,vy.x,vz.x,p.x },
+            {vx.y,vy.y,vz.y,p.y },
+            {vx.z,vy.z,vz.z,p.z },
             {   0,   0,   0,  1 },
             });
         }

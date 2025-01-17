@@ -2060,7 +2060,7 @@ namespace opengl3
             GL1.glControl_ContextCreated(sender, e);
             var w = send.Width;
             var h = send.Height;
-            var d = 100;
+            var d = 1000;
             var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
             GL1.buffersGl.setTranspobj(fr, 0.4f);
             
@@ -2099,7 +2099,7 @@ namespace opengl3
 
             GL1.add_TreeView(tree_models);
 
-            Manipulator.calcRob(GL1);
+            //Manipulator.calcRob(GL1);
             //GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
@@ -2204,7 +2204,10 @@ namespace opengl3
               GL1.addFrame(model, 200, "mod");*/
 
 
-            //load_3d_model_robot();
+            load_3d_model_robot_kuka();
+            var q_cur = new double[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            //set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);
+            GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             // test_gen_traj();
 
 
@@ -2214,7 +2217,6 @@ namespace opengl3
 
             //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
-
 
             //test_go_to_point_robot();
         }
@@ -2474,7 +2476,7 @@ namespace opengl3
 
             //set_pos_robot(fr_test.Clone(), tool.Clone());
 
-
+            set_conf_robot(new double[6] { 0, 0, 0, 0, 0, 0 });
 
             //GL1.addFrame(fr_test.getMatrix() * tool_inv, 50, "asd");
             // GL1.addFrame(fr_test.getMatrix(), 50, "asd");
@@ -2538,28 +2540,82 @@ namespace opengl3
 
 
         }
+        void load_3d_model_robot_kuka()
+        {
+            var color_skin = new Color3d_GL(213 / 255f, 172 / 255f, 129 / 255f);
+            /*var scan_stl_orig1 = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            GL1.add_buff_gl(scan_stl_orig1.mesh, color_skin, scan_stl_orig1.normale, PrimitiveType.Triangles, "scan");
+            var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
+            */
 
-        void set_conf_robot(double[] q)
+            var color_arm = Color3d_GL.black();
+            var color_end = Color3d_GL.white();
+            // var color_skin = new Color3d_GL(213, 172, 129);
+            for (int i = 0; i <= 7; i++)
+            {
+                //if(i<4)
+                {
+                    var scan_stl_orig = new Model3d("models\\kuka\\" + i + ".stl", false, 1);
+                    GL1.add_buff_gl(scan_stl_orig.mesh, color_arm, scan_stl_orig.normale, PrimitiveType.Triangles, "ax_" + i);
+                }
+
+            }
+
+            //var scan_stl = new Model3d("models\\lowres\\t2.stl", false, 1);
+            //GL1.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "t2");
+            var L0 = 360;
+            var L1 = 420;
+            var L2 = 400;
+            var L3 = 126;
+
+            ms[0] = UtilMatr.matrix(0, 0, 0, 0, 0, 0);
+
+            ms[1] = UtilMatr.matrix(0, 0, -L0, 0, 0, 90);// * UtilMatr.matrix(0, 0, 0, 0, 0, 90);
+
+            ms[2] = UtilMatr.matrix(0, 0, -L0, 0, 0, 0);
+
+            ms[3] = UtilMatr.matrix(0, 0, -L0 - L1, 0, 0, -90);
+
+            ms[4] = UtilMatr.matrix(0, 0, -L0 - L1, 0, 0, 0);
+
+            ms[5] = UtilMatr.matrix(0, 0, -L0 - L1 - L2, 0, 0, 90);
+
+            ms[6] = UtilMatr.matrix(0, 0, -L0 - L1 - L2, 0, 0, 0);
+
+            ms[7] = UtilMatr.matrix(0, 0, -L0 - L1 - L2 - L3, 0, 0, 0);
+
+            GL1.buffersGl.setMatrobj("ax_0", 0, ms[0]);
+            GL1.buffersGl.setMatrobj("ax_1", 0, ms[1]);
+            GL1.buffersGl.setMatrobj("ax_2", 0, ms[2]);
+            GL1.buffersGl.setMatrobj("ax_3", 0, ms[3]);
+            GL1.buffersGl.setMatrobj("ax_4", 0, ms[4]);
+            GL1.buffersGl.setMatrobj("ax_5", 0, ms[5]);
+            GL1.buffersGl.setMatrobj("ax_6", 0, ms[6]);
+            GL1.buffersGl.setMatrobj("ax_7", 0, ms[7]);
+            GL1.buffersGl.setVisibleobj("ax_7", false);
+            GL1.buffersGl.setVisibleobj("ax_6", false);
+            GL1.buffersGl.setVisibleobj("ax_5", false);
+
+            GL1.buffersGl.setVisibleobj("ax_4", false);
+            GL1.buffersGl.setVisibleobj("ax_3", false);
+            GL1.buffersGl.setVisibleobj("ax_2", false);
+            GL1.buffersGl.setVisibleobj("ax_0", false);
+            //GL1.buffersGl.setMatrobj("t2", 0, ms[7]);
+        }
+        void set_conf_robot(double[] q,RobotFrame.RobotType  robotType = RobotFrame.RobotType.PULSE)
         {
             //var q = new double[6];
             for (int i = 0; i <= 7; i++)
             {
                 var mq = Matrix4x4f.Identity;
-                if (i >= 2)
-                {
-                    var j = i - 1;
-                    var fr = RobotFrame.comp_forv_kinem(q, j);
-                    //prin.t(j.ToString() + "q; ax_"+i.ToString());
-
-                    mq = UtilMatr.matrix(fr.position, fr.rotation.toDegree());
-                    //prin.t(mq);
-                    //prin.t("___________");
-                }
-                qms[i] = mq * ms[i];
+                var fr = RobotFrame.comp_forv_kinem(q, i,true, robotType);
+                qms[i] = UtilMatr.matrix_kuka(fr.position, fr.rotation.toDegree()) * ms[i];
                 GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
             }
             GL1.buffersGl.setMatrobj("t2", 0, qms[7]);
         }
+
         static Matrix<double> eye_matr(int n)
         {
             var m = new Matrix<double>(n, n);
@@ -9213,8 +9269,22 @@ namespace opengl3
 
         }
 
-        #endregion
 
+
+        #endregion
+        private void textBox_robot_qs_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                var text = textBox_robot_qs.Text;
+               // text
+                var vel = textBox_robot_qs.Text.Split(' ');
+
+
+                var q_cur = new double[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+                //set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);
+            }
+        }
         //void send_to_ard(TextBox textBox,)
     }
 }

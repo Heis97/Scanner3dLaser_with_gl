@@ -177,11 +177,22 @@ namespace opengl3
         }
         public static Matrix4x4f matrix(Point3d_GL transl, Point3d_GL rotate)
         {
-
             return Matrix4x4f.Translated((float)transl.x, (float)transl.y, (float)transl.z) *
                 Matrix4x4f.RotatedX((float)rotate.x) *
                 Matrix4x4f.RotatedY((float)rotate.y) *
                 Matrix4x4f.RotatedZ((float)rotate.z);
+        }
+        public static Matrix4x4f matrix_kuka(Point3d_GL transl, Point3d_GL rotate)
+        {
+            return Matrix4x4f.Translated((float)transl.x, (float)transl.y, (float)transl.z) *
+                Matrix4x4f.RotatedZ((float)rotate.x) *
+                Matrix4x4f.RotatedY((float)rotate.y) *
+                Matrix4x4f.RotatedX((float)rotate.z);
+        }
+        public static Matrix4x4f matrix(double x, double y, double z, double a, double b, double c)
+        {
+
+            return matrix(new Point3d_GL(x,y,z), new Point3d_GL(a,b,c));
         }
         static public Matrix<double> toMatrix(Mat mat)
         {

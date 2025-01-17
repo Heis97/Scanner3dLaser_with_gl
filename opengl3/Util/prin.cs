@@ -180,13 +180,13 @@ namespace opengl3
             }
         }
 
-        public static void t(double[][] matr)
+        public static void t(double[][] matr,int prec = 3)
         {
             for (int i = 0; i < matr.Length; i++)
             {
                 for (int j = 0; j < matr[i].Length; j++)
                 {
-                    Console.Write(matr[i][j] + " ");
+                    Console.Write(Math.Round( matr[i][j],3)+ " ");
                 }
                 Console.WriteLine("");
             }
