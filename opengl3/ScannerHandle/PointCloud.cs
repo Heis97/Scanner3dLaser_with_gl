@@ -474,14 +474,24 @@ namespace opengl3
             }
             Console.WriteLine(stereocamera.scan_coord_sys);
             var m2 = m1 * stereocamera.R;
+
+            //graphicGL.addFrame(m1, 20, "m1");
+            //graphicGL.addFrame(m2, 20, "m2");
             var ps1 = comp_points_for_gpu_2d(points3d_1, m1);
             var ps2 = comp_points_for_gpu_2d(points3d_2, m2);
+
+            var ps1_c = ps1[0][0];
+            var ps2_c = ps2[0][0];
+
+            //graphicGL.addLineFanMesh_extend(ps1_c, ps1[0], 500, Color3d_GL.red(), "ps1");
+            //graphicGL.addLineFanMesh_extend(ps2_c, ps2[0], 500, Color3d_GL.blue(), "ps2");
             Console.WriteLine("points prepared.");
-           /* for (int i = 0; i < ps1.Length; i++)
+
+            for (int i = 0; i < ps1.Length; i++)
             {
-                graphicGL.addPointMesh(ps1[i],Color3d_GL.green(),"ps1");
-                graphicGL.addPointMesh(ps2[i], Color3d_GL.red(), "ps2");
-            }*/
+                //graphicGL.addPointMesh(ps1[i],Color3d_GL.green(),"ps1");
+               // graphicGL.addPointMesh(ps2[i], Color3d_GL.red(), "ps2");
+            }
                 
 
 

@@ -705,7 +705,7 @@ namespace opengl3
                 if (!p_add)
                 {
 
-                    //ps_list.Add(PointF.notExistP());
+                    ps_list.Add(PointF.notExistP());
                 }
 
 

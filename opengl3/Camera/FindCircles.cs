@@ -557,10 +557,10 @@ namespace opengl3
                 Console.WriteLine("ind_size NULL");
                 return null;
             }
-            var arr_def = arrFromP_2(ps, ind_size,size_patt); 
-            var zu  = arr_zero_to_up(arr_def);
-            if(zu == null) { return null; }
-            return unif_points(zu);
+            var arr_def = arrFromP_2(ps, ind_size,size_patt);
+            arr_def = arr_zero_to_up(arr_def);
+            if(arr_def == null) { return null; }
+            return unif_points(arr_def);
         }
         static System.Drawing.PointF[,] orderPoints_assym(System.Drawing.PointF[] ps, Size size_patt)
         {
@@ -1011,9 +1011,9 @@ namespace opengl3
             var i_min = 0;
             for(int i = 0; i < psc.Length; i++)
             {
-                if(psc[i].Y<y_min)
+                if(psc[i].Y + psc[i].X < y_min)
                 {
-                    y_min = psc[i].Y;
+                    y_min = psc[i].Y+ psc[i].X;
                     i_min = i;
                 }
             }

@@ -501,6 +501,7 @@ namespace opengl3
             this.trackBar10 = new System.Windows.Forms.TrackBar();
             this.label44 = new System.Windows.Forms.Label();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.textBox_robot_qs = new System.Windows.Forms.TextBox();
             this.but_comp_basis = new System.Windows.Forms.Button();
             this.but_set_model_matr = new System.Windows.Forms.Button();
             this.but_dist_same_ps = new System.Windows.Forms.Button();
@@ -653,7 +654,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.textBox_robot_qs = new System.Windows.Forms.TextBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1049,7 +1049,6 @@ namespace opengl3
             // 
             // tabMain
             // 
-            this.tabMain.Controls.Add(this.pictureBox2);
             this.tabMain.Controls.Add(this.imBox_base_2);
             this.tabMain.Controls.Add(this.imageBox1);
             this.tabMain.Controls.Add(this.but_resize);
@@ -1115,9 +1114,9 @@ namespace opengl3
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(10, 611);
+            this.pictureBox2.Location = new System.Drawing.Point(41, 432);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(843, 281);
+            this.pictureBox2.Size = new System.Drawing.Size(154, 100);
             this.pictureBox2.TabIndex = 148;
             this.pictureBox2.TabStop = false;
             // 
@@ -2988,6 +2987,7 @@ namespace opengl3
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.pictureBox2);
             this.groupBox1.Controls.Add(this.but_setShvpVel);
             this.groupBox1.Controls.Add(this.but_home_las);
             this.groupBox1.Controls.Add(this.textBox_shvpVel);
@@ -5886,13 +5886,22 @@ namespace opengl3
             this.tabPage6.Controls.Add(this.but_keep_area);
             this.tabPage6.Controls.Add(this.but_reconstruc_area);
             this.tabPage6.Controls.Add(this.but_SubpixPrec);
-            this.tabPage6.Location = new System.Drawing.Point(4, 25);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(869, 962);
+            this.tabPage6.Size = new System.Drawing.Size(869, 965);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Тест";
             this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // textBox_robot_qs
+            // 
+            this.textBox_robot_qs.Location = new System.Drawing.Point(346, 20);
+            this.textBox_robot_qs.Name = "textBox_robot_qs";
+            this.textBox_robot_qs.Size = new System.Drawing.Size(411, 22);
+            this.textBox_robot_qs.TabIndex = 162;
+            this.textBox_robot_qs.Text = "0 0 0 0 0 0 0 0 0 0 ";
+            this.textBox_robot_qs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_robot_qs_KeyDown);
             // 
             // but_comp_basis
             // 
@@ -6238,10 +6247,10 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Location = new System.Drawing.Point(4, 25);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(869, 965);
+            this.tabPage9.Size = new System.Drawing.Size(869, 962);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -7591,15 +7600,6 @@ namespace opengl3
             // 
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // textBox_robot_qs
-            // 
-            this.textBox_robot_qs.Location = new System.Drawing.Point(346, 20);
-            this.textBox_robot_qs.Name = "textBox_robot_qs";
-            this.textBox_robot_qs.Size = new System.Drawing.Size(411, 22);
-            this.textBox_robot_qs.TabIndex = 162;
-            this.textBox_robot_qs.Text = "0 0 0 0 0 0 0 0 0 0 ";
-            this.textBox_robot_qs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_robot_qs_KeyDown);
             // 
             // MainScanningForm
             // 

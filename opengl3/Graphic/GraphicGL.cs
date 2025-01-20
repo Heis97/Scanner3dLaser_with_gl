@@ -2045,7 +2045,7 @@ namespace opengl3
             return addFrame(posit, ox, oy, oz);
         }
 
-        public string addFrame(Matrix<double> m, double frame_len = 3)
+        public string addFrame_old(Matrix<double> m, double frame_len = 3,string name = "new Frame")
         {
             var posit = m * new Point3d_GL(0, 0, 0);
             /*var ox = matrix * new Point3d_GL(frame_len, 0, 0);
@@ -2058,7 +2058,7 @@ namespace opengl3
             ox += posit;
             oy += posit;
             oz += posit;
-            return addFrame(posit, ox, oy, oz);
+            return addFrame(posit, ox, oy, oz,name);
         }
         public string addFrame_v2(Matrix<double> m, double frame_len = 3)
         {
@@ -2263,6 +2263,21 @@ namespace opengl3
                 mesh[j] = (float)points[i].x; j++;
                 mesh[j] = (float)points[i].y; j++;
                 mesh[j] = (float)points[i].z; j++;
+            }
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color, name);
+        }
+        public string addLineFanMesh_extend(Point3d_GL startpoint, Point3d_GL[] points,double k, Color3d_GL color = null, string name = "new LineFanMesh")
+        {
+            var mesh = new float[points.Length * 6];
+            var j = 0;
+            for (int i = 0; i < points.Length; i++)
+            {
+                mesh[j] = (float)startpoint.x; j++;
+                mesh[j] = (float)startpoint.y; j++;
+                mesh[j] = (float)startpoint.z; j++;
+                mesh[j] = (float)(startpoint.x - k * (startpoint.x - points[i].x)); j++;
+                mesh[j] = (float)(startpoint.y - k * (startpoint.y - points[i].y)); j++;
+                mesh[j] = (float)(startpoint.z - k * (startpoint.z - points[i].z)); j++;
             }
             return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color, name);
         }

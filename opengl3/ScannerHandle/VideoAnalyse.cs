@@ -120,8 +120,9 @@ namespace opengl3
                         imageBox1.Image = UtilOpenCV.drawPointsF(im1, ps1, 255, 0, 0);
                         imageBox2.Image = UtilOpenCV.drawPointsF(im2, ps2, 255, 0, 0);*/
                         //CvInvoke.Imshow("im2", im2);                       
-
+                        Console.WriteLine("add points");
                         scanner.addPointsStereoLas_2d(new Mat[] { im1, im2 }, config);
+
                     }
 
                     im1_buff = buffer_mat1.Clone();

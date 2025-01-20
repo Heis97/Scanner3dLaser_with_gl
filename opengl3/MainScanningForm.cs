@@ -2204,10 +2204,10 @@ namespace opengl3
               GL1.addFrame(model, 200, "mod");*/
 
 
-            load_3d_model_robot_kuka();
-            var q_cur = new double[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            //load_3d_model_robot_kuka();
+            //var q_cur = new double[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
             //set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);
-            GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
+            //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             // test_gen_traj();
 
 
@@ -9277,12 +9277,22 @@ namespace opengl3
             if (e.KeyCode == Keys.Enter)
             {
                 var text = textBox_robot_qs.Text;
-               // text
-                var vel = textBox_robot_qs.Text.Split(' ');
+                text.Replace("  ", " ");
+                text.Replace("  ", " ");
+                text.Replace("  ", " ");
+                text.Replace("  ", " ");
+                text.Replace(",", ".");
+                // text
+                var qs = text.Split(' ');
 
 
                 var q_cur = new double[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
-                //set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);
+                for (var i = 0; i < qs.Length && i<q_cur.Length; i++)
+                {
+                    q_cur[i] = Convert.ToDouble(qs[i]);
+                }
+                prin.t(q_cur);
+                set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);
             }
         }
         //void send_to_ard(TextBox textBox,)
