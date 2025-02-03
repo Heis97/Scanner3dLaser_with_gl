@@ -8995,8 +8995,8 @@ namespace opengl3
             {
                 laserLine?.set_adr(i2c_adr_sup_plate);
                 laserLine?.set_temp_control(1);
-                Thread.Sleep(2);
-                var val = Regression.calcPolynSolv(koef_term_to_byte, to_double(textBox_con_ext_set_temp.Text));
+                Thread.Sleep(20);
+                var val = to_double(textBox_con_ext_set_temp.Text);// Regression.calcPolynSolv(koef_term_to_byte, to_double(textBox_con_ext_set_temp.Text));
                 laserLine?.set_temp_value(val);
                 Thread.Sleep(2);
                 but_con_ext_set_temp.Text = "Выключить контроль температуры";
@@ -9007,16 +9007,16 @@ namespace opengl3
 
         private void but_con_ext_set_z_pos_Click(object sender, EventArgs e)
         {
-            var text = textBox_con_ext_set_z_pos.Text;
-            text = text.Replace(',', '.');
-            var pos_z_mm = Convert.ToDouble(text)+z_syrenge_offset;
-            var pos_z_steps = (int)(pos_z_mm / 10 * laserLine.steps_per_unit_z);
-            //Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
-            laserLine?.set_move_z(pos_z_steps);
+            var pos_z_mm = to_double(textBox_con_ext_set_z_pos.Text) +z_syrenge_offset;
+           // var pos_z_steps = (int)(pos_z_mm / 10 * laserLine.steps_per_unit_z);
+           // Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
+            laserLine?.set_adr(-1);
+            laserLine?.set_move_z(pos_z_mm);
         }
 
         private void but_con_ext_set_z_zero_Click(object sender, EventArgs e)
         {
+            laserLine?.set_adr(-1);
             laserLine?.set_home_z();
         }
 
@@ -9064,7 +9064,7 @@ namespace opengl3
         {
             comp_current_compens = ((CheckBox)sender).Checked;
             checkBox_compens_visualize.Checked = true;
-
+            laserLine?.set_adr(-1);
             imProcType = FrameType.LasLin;
             if (comp_current_compens)
             {

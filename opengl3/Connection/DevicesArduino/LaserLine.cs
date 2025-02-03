@@ -9,7 +9,7 @@ namespace opengl3
 {
     public class LaserLine : DeviceArduino
     {
-        public double steps_per_unit_z = 800;// 1600 16 micr; 800 8 micr;
+        public double steps_per_unit_z = 800;// 1600 16 micr; 800 8 micr;//800 samara
         public double steps_per_unit_las = 800;// 1600 16 micr; 800 8 micr;
         public double steps_per_unit_disp = 3200;
         public double steps_per_unit_movm_mash = 1012;//3200:1.58 ||1600:1.58 
@@ -241,7 +241,7 @@ namespace opengl3
         }
         public void set_temp_value(double _val)//0...37
         {
-            send((int)(_val),temp_value );// [degree*10]
+            send((int)(_val*10),temp_value );// [degree*10]
         }
         public void set_led_r(int _val)//0 ... 255 pwm
         {
@@ -426,7 +426,7 @@ namespace opengl3
         }
         public void set_move_z(double _pos)
         {
-            send((int)((_pos * steps_per_unit_z+5000) / 10), move_z);
+            send((int)((_pos * steps_per_unit_z) / 10), move_z);//+5000;
         }
         public void set_move_las(double _pos)
         {

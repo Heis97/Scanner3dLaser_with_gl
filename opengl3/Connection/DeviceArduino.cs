@@ -98,6 +98,7 @@ namespace opengl3
             string Mes2 = "0";
             string Mes3 = "0";
             // try
+            if (adr < 0) adr = 0;
             {
                 Mes1 = Convert.ToString(val);
                 Mes2 = Convert.ToString(var);
@@ -107,7 +108,9 @@ namespace opengl3
             {
                 // Console.WriteLine("except convert");
             }
+            
             //Console.WriteLine("Mes12.Length: " + Mes1.Length + " " + Mes2.Length);
+            Console.WriteLine(Mes1 + " " + Mes2 + " " + Mes3 + " ");
             if (Mes1.Length <= 4 && Mes2.Length <= 2)
             {
                 while (Mes1.Length < 4)
