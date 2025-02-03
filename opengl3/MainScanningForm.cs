@@ -2204,9 +2204,9 @@ namespace opengl3
               GL1.addFrame(model, 200, "mod");*/
 
 
-            //load_3d_model_robot_kuka();
-            //var q_cur = new double[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
-            //set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);
+            load_3d_model_robot_kuka();
+            var q_cur = new double[8] { 0.7, 0.7, 0, -0.2, 0.5, 0.8, 0.9, 0 };
+            set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             // test_gen_traj();
 
@@ -2571,17 +2571,17 @@ namespace opengl3
 
             ms[0] = UtilMatr.matrix(0, 0, 0, 0, 0, 0);
 
-            ms[1] = UtilMatr.matrix(0, 0, -L0, 0, 0, 90);// * UtilMatr.matrix(0, 0, 0, 0, 0, 90);
+            ms[1] = UtilMatr.matrix(0, 0, 0, 90, 0, 0) * UtilMatr.matrix(0, 0, -L0, 0, 0, 0);
 
-            ms[2] = UtilMatr.matrix(0, 0, -L0, 0, 0, 0);
+            ms[2] = UtilMatr.matrix(0, 0, 0, 0, 0, 0) *UtilMatr.matrix(0, 0, -L0, 0, 0, 0);// UtilMatr.matrix(0, 0, 0, 0, 180, 0) * 
 
-            ms[3] = UtilMatr.matrix(0, 0, -L0 - L1, 0, 0, -90);
+            ms[3] = UtilMatr.matrix(0, 0, 0, -90, 0, 0) * UtilMatr.matrix(0, 0, -L0 - L1, 0, 0,0);
 
-            ms[4] = UtilMatr.matrix(0, 0, -L0 - L1, 0, 0, 0);
+            ms[4] = UtilMatr.matrix(0, 0, 0, 0, 0, 0) * UtilMatr.matrix(0, 0, -L0 - L1, 0, 0, 0);
 
-            ms[5] = UtilMatr.matrix(0, 0, -L0 - L1 - L2, 0, 0, 90);
+            ms[5] = UtilMatr.matrix(0, 0, 0, 90, 0, 0) * UtilMatr.matrix(0, 0, -L0 - L1 - L2, 0, 0, 0);
 
-            ms[6] = UtilMatr.matrix(0, 0, -L0 - L1 - L2, 0, 0, 0);
+            ms[6] = UtilMatr.matrix(0, 0, 0, 0, 0, 0) * UtilMatr.matrix(0, 0, -L0 - L1 - L2, 0, 0, 0);
 
             ms[7] = UtilMatr.matrix(0, 0, -L0 - L1 - L2 - L3, 0, 0, 0);
 
@@ -2593,14 +2593,15 @@ namespace opengl3
             GL1.buffersGl.setMatrobj("ax_5", 0, ms[5]);
             GL1.buffersGl.setMatrobj("ax_6", 0, ms[6]);
             GL1.buffersGl.setMatrobj("ax_7", 0, ms[7]);
-            GL1.buffersGl.setVisibleobj("ax_7", false);
+         /*  GL1.buffersGl.setVisibleobj("ax_7", false);
             GL1.buffersGl.setVisibleobj("ax_6", false);
             GL1.buffersGl.setVisibleobj("ax_5", false);
 
             GL1.buffersGl.setVisibleobj("ax_4", false);
             GL1.buffersGl.setVisibleobj("ax_3", false);
             GL1.buffersGl.setVisibleobj("ax_2", false);
-            GL1.buffersGl.setVisibleobj("ax_0", false);
+            GL1.buffersGl.setVisibleobj("ax_1", false);
+             GL1.buffersGl.setVisibleobj("ax_0", false);*/
             //GL1.buffersGl.setMatrobj("t2", 0, ms[7]);
         }
         void set_conf_robot(double[] q,RobotFrame.RobotType  robotType = RobotFrame.RobotType.PULSE)
@@ -2610,7 +2611,9 @@ namespace opengl3
             {
                 var mq = Matrix4x4f.Identity;
                 var fr = RobotFrame.comp_forv_kinem(q, i,true, robotType);
-                qms[i] = UtilMatr.matrix_kuka(fr.position, fr.rotation.toDegree()) * ms[i];
+                qms[i] = UtilMatr.matrix_kuka(fr.position, fr.rotation.toDegree()) * ms[i];//UtilMatr.matrix_kuka(fr.position, fr.rotation.toDegree())
+                prin.t(" ________________qms[] " + i);
+                prin.t(qms[i]);
                 GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
             }
             GL1.buffersGl.setMatrobj("t2", 0, qms[7]);
