@@ -2208,7 +2208,7 @@ namespace opengl3
             var q_cur = new double[8] { 0.7, 0.7, 0, -0.2, 0.5, 0.8, 0.9, 0 };
             set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
-            // test_gen_traj();
+            //test_gen_traj();
 
 
             //vel_rob_map();
