@@ -334,7 +334,7 @@ namespace opengl3
                 form = (MainScanningForm)form1;
 
             }
-            //lightSources[0].direction_z = laser_st;
+            lightSources[0].direction_z = laser_st;
         }
 
         void comp_cur_animation()
@@ -342,16 +342,16 @@ namespace opengl3
             var df = 0.01f;
             if(anim_is_go)
             {
-                /*if(lightSources[0].direction_z >=1)
+               /* if(lightSources[0].direction_z >=1)
                 {
                     lightSources[0].direction_z = 0.99999f;
                 }
                 var fi = Math.Acos(lightSources[0].direction_z);
                 fi -= df;
-                lightSources[0].direction_z = Math.Cos(fi);*/
-
-                //lightSources[0].direction_z -= df;
-                form?.set_pos_traj_robot(cur_time_an);
+                lightSources[0].direction_z = Math.Cos(fi);
+                */
+                lightSources[0].direction_z -= df;
+               // form?.set_pos_traj_robot(cur_time_an);
                 cur_time_an++;
                 if (cur_time_an > end_time_an) anim_is_go = false;
             }
@@ -487,7 +487,7 @@ namespace opengl3
             // addLight();
 
             //scan_light
-           /* lightSources.Add(new LightSourceGL
+            lightSources.Add(new LightSourceGL
             {
                 position_z = 100,
                 direction_x = 1,
@@ -500,11 +500,11 @@ namespace opengl3
                 type_light = LightSourceGL.type.Disc
             
             });
-           */
+           
             lightSources.Add(new LightSourceGL
             {
                 position_x = 500,
-                position_z = 1000,
+                position_z = 3000,
                 direction_z = -1,
                 color_r = 0.6f,
                 color_g = 0.6f,

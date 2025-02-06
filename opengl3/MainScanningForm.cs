@@ -2100,8 +2100,8 @@ namespace opengl3
             GL1.add_TreeView(tree_models);
 
             //Manipulator.calcRob(GL1);
-            //GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
-            //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
+            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
             /*var p1 = new Point3d_GL(0, 0, 20);
@@ -2204,9 +2204,10 @@ namespace opengl3
               GL1.addFrame(model, 200, "mod");*/
 
 
-            load_3d_model_robot_kuka();
+            /*load_3d_model_robot_kuka();
             var q_cur = new double[8] { 0.7, 0.7, 0, -0.2, 0.5, 0.8, 0.9, 0 };
-            set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);
+            set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);*/
+
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             //test_gen_traj();
 
@@ -2549,7 +2550,7 @@ namespace opengl3
             GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
             */
 
-            var color_arm = Color3d_GL.black();
+            var color_arm = Color3d_GL.white();
             var color_end = Color3d_GL.white();
             // var color_skin = new Color3d_GL(213, 172, 129);
             for (int i = 0; i <= 7; i++)
@@ -5371,8 +5372,11 @@ namespace opengl3
 
         private void but_start_anim_Click(object sender, EventArgs e)
         {
-            test_gen_traj(0);
-            GL1.start_animation(frames_rob.Count-2, this);
+            //test_gen_traj(0);
+            //GL1.start_animation(frames_rob.Count-2, this);
+
+            //test_gen_traj(0);
+            GL1.start_animation(100, this);
         }
 
         private void but_photo_gl_Click(object sender, EventArgs e)

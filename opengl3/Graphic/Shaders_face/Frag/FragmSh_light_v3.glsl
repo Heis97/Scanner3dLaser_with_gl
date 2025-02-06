@@ -62,8 +62,8 @@ vec3 comp_color_direct_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_
 
 }
 
-vec3 comp_color_disk_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_c,
-	vec3 LightDirection_c, vec3 EyeDirection_c, vec3 LightVec_c,
+vec3 comp_color_disk_light(vec3 LightPosition_w, vec3 Position_w, vec3 Normal_c,//
+	vec3 LightDirection_c, vec3 EyeDirection_c, vec3 LightVec_c,//
 	vec3 MaterialAmbientColor, vec3 MaterialDiffuseColor, vec3 MaterialSpecularColor,vec3 settings,vec3 color_light)
 {
 	float power_cut = settings.y;
@@ -196,7 +196,7 @@ void main() {
 		//MaterialDiffuseColor = fs_in.Color;
 		//MaterialSpecularColor = 0.2 * MaterialDiffuseColor;
 		//============================================
-		vec3 MaterialSpecularColor = vec3(0.3);
+		vec3 MaterialSpecularColor = vec3(0.03);
 		for(int i=0; i< light_count; i++)
 		{
 			color.xyz += comp_light(LightSource[i],

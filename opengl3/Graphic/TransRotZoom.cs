@@ -298,7 +298,7 @@ namespace opengl3
             {
                 float window = (float)trz.zoom;
                 float aspec = (float)trz.rect.Width / trz.rect.Height;
-                _Pm = Matrix4x4f.Ortho(-window * aspec, window * aspec, -window, window, -1000f, 1000f);
+                _Pm = Matrix4x4f.Ortho(-window * aspec, window * aspec, -window, window, -10000f, 10000f);
                 /* _Vm = Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z) *
                      Matrix4x4f.RotatedX((float)trz.xRot) *
                      Matrix4x4f.RotatedY((float)trz.yRot) *
