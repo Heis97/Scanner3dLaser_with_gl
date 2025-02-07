@@ -264,7 +264,7 @@ namespace opengl3
 
 			for(int i = 0; i < qs_ret.Length; i++)
 			{
-                graphic.add_robot(qs_ret[i], 8, RobotFrame.RobotType.KUKA,false, Color3d_GL.black(), "test");
+                graphic?.add_robot(qs_ret[i], 8, RobotFrame.RobotType.KUKA,false, Color3d_GL.black(), "test");
             }
 			
             //graphic.add_robot(qs_r, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "test");
@@ -281,7 +281,7 @@ namespace opengl3
 				Console.WriteLine(ret_l[i]);
             }
 
-           graphic.add_robot(q, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
+           graphic?.add_robot(q, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
         }
 		/*
 		//-71.0969009399414,

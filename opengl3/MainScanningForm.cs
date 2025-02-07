@@ -59,7 +59,7 @@ namespace opengl3
         int save_vid_count = 0;
         double dist_contr_rob = 10;
         double cur_pos_movm = 0;
-        Matrix4x4f[] ms = new Matrix4x4f[8];
+        Matrix4x4f[] ms = new Matrix4x4f[10];
         //var qs = new Matrix4x4f[8];
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
@@ -200,7 +200,7 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
-           // Manipulator.calcRob();
+            //Manipulator.calcRob();
 
             var vals_regr = new double[][]//laser and pos
                 {
@@ -2204,9 +2204,12 @@ namespace opengl3
               GL1.addFrame(model, 200, "mod");*/
 
 
-            /*load_3d_model_robot_kuka();
+            load_3d_model_robot_kuka();
+            var fr_kuka = new RobotFrame("-577.4208 -50.8899 101.8039 3.11022 -0.00162 -1.60832");
+
+            var q_res = RobotFrame.comp_inv_kinem(fr_kuka.get_position_rob(), RobotFrame.RobotType.KUKA);
             var q_cur = new double[8] { 0.7, 0.7, 0, -0.2, 0.5, 0.8, 0.9, 0 };
-            set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);*/
+            set_conf_robot(q_res[1], RobotFrame.RobotType.KUKA);
 
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             //test_gen_traj();
@@ -2565,6 +2568,9 @@ namespace opengl3
 
             //var scan_stl = new Model3d("models\\lowres\\t2.stl", false, 1);
             //GL1.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "t2");
+
+            var scan_stl = new Model3d("models\\kuka\\scaner2.stl", false, 1);
+            GL1.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "scaner2");
             var L0 = 360;
             var L1 = 420;
             var L2 = 400;
@@ -2586,6 +2592,8 @@ namespace opengl3
 
             ms[7] = UtilMatr.matrix(0, 0, -L0 - L1 - L2 - L3, 0, 0, 0);
 
+            ms[8] = UtilMatr.matrix(0, 0, 0, 0, 0, 0);
+
             GL1.buffersGl.setMatrobj("ax_0", 0, ms[0]);
             GL1.buffersGl.setMatrobj("ax_1", 0, ms[1]);
             GL1.buffersGl.setMatrobj("ax_2", 0, ms[2]);
@@ -2603,7 +2611,7 @@ namespace opengl3
             GL1.buffersGl.setVisibleobj("ax_2", false);
             GL1.buffersGl.setVisibleobj("ax_1", false);
              GL1.buffersGl.setVisibleobj("ax_0", false);*/
-            //GL1.buffersGl.setMatrobj("t2", 0, ms[7]);
+            GL1.buffersGl.setMatrobj("scaner2", 0, ms[7]);
         }
         void set_conf_robot(double[] q,RobotFrame.RobotType  robotType = RobotFrame.RobotType.PULSE)
         {
@@ -2617,7 +2625,8 @@ namespace opengl3
                 prin.t(qms[i]);
                 GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
             }
-            GL1.buffersGl.setMatrobj("t2", 0, qms[7]);
+          //  GL1.buffersGl.setMatrobj("t2", 0, qms[7]);//pulse
+            GL1.buffersGl.setMatrobj("scaner2", 0, qms[7]);
         }
 
         static Matrix<double> eye_matr(int n)
@@ -6352,7 +6361,7 @@ namespace opengl3
             }
 
         }
-        void generateImage3D_BOARD_solid(int n, int k, float sidef, PatternType patternType = PatternType.Chess)
+        string generateImage3D_BOARD_solid(int n, int k, float sidef, PatternType patternType = PatternType.Chess)
         {
             float side = sidef * 2;
             if (patternType == PatternType.Chess)
@@ -6403,7 +6412,7 @@ namespace opengl3
                     mesh.AddRange(patt_cur);
                 }
             }
-            GL1.addGLMesh(mesh.ToArray(), PrimitiveType.Triangles,0,0,0,1,null,"calibrate_board");
+           return GL1.addGLMesh(mesh.ToArray(), PrimitiveType.Triangles,-600,-100,0,1,null,"calibrate_board");
 
 
         }

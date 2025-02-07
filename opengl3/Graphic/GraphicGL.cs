@@ -486,7 +486,7 @@ namespace opengl3
             init_texture();
             // addLight();
 
-            //scan_light
+          /*  //scan_light
             lightSources.Add(new LightSourceGL
             {
                 position_z = 100,
@@ -499,7 +499,7 @@ namespace opengl3
                 cut_off = 0.99999f,
                 type_light = LightSourceGL.type.Disc
             
-            });
+            });*/
            
             lightSources.Add(new LightSourceGL
             {
@@ -2145,16 +2145,16 @@ namespace opengl3
             addMeshWithoutNorm(Point3d_GL.toMesh(verts), PrimitiveType.Lines);
 
         }
-        public void addGLMesh(float[] _mesh, PrimitiveType primitiveType, float x = 0, float y = 0, float z = 0,float scale = 1f, Color3d_GL color = null, string name = "new PointMesh")
+        public string addGLMesh(float[] _mesh, PrimitiveType primitiveType, float x = 0, float y = 0, float z = 0,float scale = 1f, Color3d_GL color = null, string name = "new PointMesh")
         {
             // addMesh(cube_buf, PrimitiveType.Points);
             if (x == 0 && y == 0 && z == 0)
             {
-                addMesh(_mesh, primitiveType, color,name);
+               return addMesh(_mesh, primitiveType, color,name);
             }
             else
             {
-                addMesh(translateMesh(scaleMesh(_mesh, scale), x, y, z), primitiveType, color, name);
+                return addMesh(translateMesh(scaleMesh(_mesh, scale), x, y, z), primitiveType, color, name);
             }
 
         }
