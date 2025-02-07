@@ -175,6 +175,7 @@ namespace opengl3
             return res;
             
         }
+
         private async void func(int val,int var)
         {
             while (isConnected == true)

@@ -1570,6 +1570,7 @@ namespace opengl3
         {
             Thread.Sleep(100);
             int typescan = (int)obj;
+            int power_laser = 50;
             //int counts = Convert.ToInt32(boxN.Text);
             int counts = scanner_config.frames_n;
             string folder_scan = box_scanFolder.Text;
@@ -1590,6 +1591,7 @@ namespace opengl3
                 // Thread.Sleep(200);
             }
             laserLine?.laserOff();
+            laserLine?.setPower(0);
             Thread.Sleep(300);
             var dir_scan = Path.Combine(Directory.GetCurrentDirectory(), "cam1\\" + folder_scan);
             scan_fold_path = dir_scan;
@@ -1607,23 +1609,15 @@ namespace opengl3
             {
                 var t_video = (double)counts / fps;
                 var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
-                laserLine?.laserOn();
+                laserLine?.setPower(power_laser);
                 Thread.Sleep(2);
-                laserLine?.laserOn();
+                laserLine?.setPower(power_laser);
                 Thread.Sleep(2);
-                laserLine?.laserOn();
+                laserLine?.setPower(power_laser);
                 Thread.Sleep(2);
-                laserLine?.laserOn();
+                laserLine?.setPower(power_laser);
                 Thread.Sleep(100);
                 Thread.Sleep(2);
-                laserLine?.set_home_laser();
-                Thread.Sleep(2);
-                laserLine?.set_home_laser();
-                Thread.Sleep(2);
-                laserLine?.set_home_laser();
-                Thread.Sleep(2);
-                laserLine?.set_home_laser();
-                Thread.Sleep(5000);
 
                 laserLine?.setShvpVel(200);
                 Thread.Sleep(200);
@@ -2094,14 +2088,14 @@ namespace opengl3
             //GL1.transRotZooms[1].off_y = 31;
             //GL1.transRotZooms[1].zoom = 2.6699;
 
-            addButForMonitor(GL1, send.Size, send.Location);
+           /* addButForMonitor(GL1, send.Size, send.Location);
             GL1.add_Label(lab_kor, lab_curCor, lab_TRZ);
 
             GL1.add_TreeView(tree_models);
 
             //Manipulator.calcRob(GL1);
             GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
-            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);*/
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
             /*var p1 = new Point3d_GL(0, 0, 20);
@@ -2204,12 +2198,12 @@ namespace opengl3
               GL1.addFrame(model, 200, "mod");*/
 
 
-            load_3d_model_robot_kuka();
+            /*load_3d_model_robot_kuka();
             var fr_kuka = new RobotFrame("-577.4208 -50.8899 101.8039 3.11022 -0.00162 -1.60832");
 
             var q_res = RobotFrame.comp_inv_kinem(fr_kuka.get_position_rob(), RobotFrame.RobotType.KUKA);
             var q_cur = new double[8] { 0.7, 0.7, 0, -0.2, 0.5, 0.8, 0.9, 0 };
-            set_conf_robot(q_res[1], RobotFrame.RobotType.KUKA);
+            set_conf_robot(q_res[1], RobotFrame.RobotType.KUKA);*/
 
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             //test_gen_traj();
@@ -6055,7 +6049,13 @@ namespace opengl3
                 if (sb_enc != null)
                 {
                     laserLine?.laserOff();
-
+                    laserLine?.setPower(0);
+                    Thread.Sleep(2);
+                    laserLine?.setPower(0);
+                    Thread.Sleep(2);
+                    laserLine?.setPower(0);
+                    Thread.Sleep(2);
+                    laserLine?.setPower(0);
                     string path = "cam1" + "\\" + box_scanFolder.Text + "\\enc.txt";
                     box_scanFolder.BeginInvoke((MethodInvoker)(() => box_scanFolder.Text = scan_fold_name));
                     textB_scan_path.BeginInvoke((MethodInvoker)(() => textB_scan_path.Text = scan_fold_path));
@@ -7786,7 +7786,7 @@ namespace opengl3
         private void but_rob_con_sc_Click(object sender, EventArgs e)
         {
 
-            connect_robot(RobotFrame.RobotType.KUKA);
+            connect_robot(RobotFrame.RobotType.PULSE);
 
         }
 

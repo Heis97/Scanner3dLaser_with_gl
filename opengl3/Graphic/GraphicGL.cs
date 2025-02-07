@@ -298,7 +298,10 @@ namespace opengl3
                 txt += "TRZ " + i + ": "+ trz.ToString()+"\n";
             }
             //Console.WriteLine("_________");
-            Label_trz_cur.Text = txt;
+            if (Label_trz_cur != null){
+                Label_trz_cur.Text = txt;
+            }
+            
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             addCams();
 
@@ -1374,7 +1377,11 @@ namespace opengl3
                 return;
             }
             var trz = transRotZooms[sel_trz];
-            Label_cor_cur.Text = e.X + " " + e.Y;
+            if(Label_cor_cur!=null)
+            {
+                Label_cor_cur.Text = e.X + " " + e.Y;
+            }
+            
             int w = trz.rect.Width;
             int h = trz.rect.Height;
             var proj_xy = new Vertex4f(0, 0, 0, 0);
