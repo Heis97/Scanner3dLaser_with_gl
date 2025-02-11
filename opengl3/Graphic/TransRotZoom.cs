@@ -83,6 +83,7 @@ namespace opengl3
         public int id;
         public int id_m;
         public bool visible;
+        public bool robot_camera;
         public Rectangle rect;
         public DateTime dateTime;
         public TransRotZoom consttransf;
@@ -105,6 +106,7 @@ namespace opengl3
             viewType_ = viewType.Ortho;
             visible = false;
             cameraCV =  new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), fovx), new Matrix<double>(5, 1), new Size(rect.Width, rect.Height));
+            robot_camera = false;
         }
 
         public TransRotZoom(Rectangle _rect, int _id, Vertex3d rotVer, Vertex3d transVer, int _idMast)
@@ -125,6 +127,7 @@ namespace opengl3
             visible = false;
             const_trz = new trsc(transVer.x, transVer.y, transVer.z, rotVer.x, rotVer.y, rotVer.z, 1).getModelMatrix();
             cameraCV = new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), fovx), new Matrix<double>(5, 1), new Size(rect.Width, rect.Height));
+            robot_camera = false;
         }
         public TransRotZoom(Vertex3d rotVer, Vertex3d transVer)
         {
@@ -137,6 +140,7 @@ namespace opengl3
             type = TRZtype.Const;
             viewType_ = viewType.Perspective;
             visible = false;
+            robot_camera = false;
         }
 
         public TransRotZoom getInfo(TransRotZoom[] transRotZooms)
@@ -163,6 +167,7 @@ namespace opengl3
                     trz_info.id = id;
                     trz_info.const_trz = const_trz;
                     trz_info.type = type;
+                    trz_info.robot_camera = robot_camera;
                     return trz_info;
                 default:
                     return null;
@@ -246,8 +251,9 @@ namespace opengl3
         }
         public override string ToString()
         {
-            return xRot + " " + yRot + " " + zRot + " "
-                + off_x + " " + off_y + " " + off_z + " "
+            var pres = 4;
+            return Math.Round( xRot,pres) + " " + Math.Round(yRot, pres) + " " + Math.Round(zRot, pres) + " "
+                + Math.Round(off_x, pres) + " " + Math.Round(off_y, pres) + " " + Math.Round(off_z, pres) + " "
                 + zoom + " " + viewType_ + " "+view_3d+" "+visible;
         }
 
@@ -308,6 +314,14 @@ namespace opengl3
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
                     Matrix4x4f.RotatedZ((float)trz.zRot) * Matrix4x4f.Translated((float)trz.off_x, -(float)trz.off_y, (float)trz.off_z);
+            }
+            if(trz.robot_camera)
+            {
+                _Pm = Matrix4x4f.Perspective((float)trz.fovx, (float)trz.rect.Width / trz.rect.Height, 1f, 10000f);
+                _Vm = 
+                    Matrix4x4f.RotatedZ((float)trz.xRot) *
+                    Matrix4x4f.RotatedY((float)trz.yRot) *
+                    Matrix4x4f.RotatedX((float)trz.zRot)*Matrix4x4f.Translated((float)trz.off_x, (float)trz.off_y, (float)trz.off_z) ;
             }
 
             if (trz.type == TRZtype.Slave) _Vm = trz.const_trz * _Vm;

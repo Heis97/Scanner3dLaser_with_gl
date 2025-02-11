@@ -2062,13 +2062,17 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
            
             //GL1.SortObj();
-            int monitor_num = 1;
+            int monitor_num = 4;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
-                GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
+               // GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
+                GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1);
                 GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
                 GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
+
+                GL1.transRotZooms[0].viewType_ = viewType.Perspective;
+                GL1.transRotZooms[1].viewType_ = viewType.Perspective;
             }
             else if (monitor_num == 2)
             {
@@ -2081,21 +2085,21 @@ namespace opengl3
             {
                 GL1.addMonitor(new Rectangle(0, 0, w, h), 0);
             }
-           
+
             /* */
             //GL1.transRotZooms[1].xRot = 33;
             //GL1.transRotZooms[1].off_x = -25;
             //GL1.transRotZooms[1].off_y = 31;
             //GL1.transRotZooms[1].zoom = 2.6699;
-
-           /* addButForMonitor(GL1, send.Size, send.Location);
+          
+            addButForMonitor(GL1, send.Size, send.Location);
             GL1.add_Label(lab_kor, lab_curCor, lab_TRZ);
 
             GL1.add_TreeView(tree_models);
 
             //Manipulator.calcRob(GL1);
             GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
-            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);*/
+            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
             /*var p1 = new Point3d_GL(0, 0, 20);
@@ -2197,13 +2201,21 @@ namespace opengl3
             GL1.addPointMesh(ps, Color3d_GL.red());
               GL1.addFrame(model, 200, "mod");*/
 
+            var matr1 = (Matrix<double>)Settings_loader.load_data("bfs_cal_sing.txt")[0];
 
-            /*load_3d_model_robot_kuka();
+            load_3d_model_robot_kuka();
             var fr_kuka = new RobotFrame("-577.4208 -50.8899 101.8039 3.11022 -0.00162 -1.60832");
+            var m = fr_kuka.getMatrix();
+            var inv_m = UtilOpenCV.inv(m);
+            var eye1 = inv_m * m;
 
+            var fr_kuka_inv = new RobotFrame(m,RobotFrame.RobotType.KUKA);
             var q_res = RobotFrame.comp_inv_kinem(fr_kuka.get_position_rob(), RobotFrame.RobotType.KUKA);
-            var q_cur = new double[8] { 0.7, 0.7, 0, -0.2, 0.5, 0.8, 0.9, 0 };
-            set_conf_robot(q_res[1], RobotFrame.RobotType.KUKA);*/
+            //var q_cur = new double[8] { 0.7, 0.7, 0, -0.2, 0.5, 0.8, 0.9, 0 };
+            set_conf_robot(q_res[1], RobotFrame.RobotType.KUKA);
+            GL1.set_trz(0, fr_kuka_inv);
+            GL1.transRotZooms[0].visible = true;
+
 
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             //test_gen_traj();
@@ -5895,7 +5907,7 @@ namespace opengl3
                          //Console.Write(laserLine?.reseav());
                          */
                         var laser_roi_X = 0; //(int)Regression.calcPolynSolv(koef_x, cur_pos_z);
-                        var laser_roi_Y = 0;// (int)Regression.calcPolynSolv(koef_y, cur_pos_z);
+                        var laser_roi_Y = 0; //(int)Regression.calcPolynSolv(koef_y, cur_pos_z);
 
                         //Console.Write(ps[0].X + " ");
                         //laserLine?.setLaserCur((int)(10 * ps[0].X));

@@ -51,6 +51,12 @@ namespace opengl3
             return (new VectorOfMat(ms_r.ToArray()), new VectorOfMat(ms_t.ToArray()));
         }
 
+        public static Matrix<double> inv(Matrix<double> m)
+        {
+            var m_inv = m.Clone();
+            CvInvoke.Invert(m_inv, m_inv, DecompMethod.LU);
+            return m_inv;
+        }
 
         public static Mat draw_map_xy(RasterMap map, Polygon3d_GL[] surface,Point3d_GL[] traj)
         {

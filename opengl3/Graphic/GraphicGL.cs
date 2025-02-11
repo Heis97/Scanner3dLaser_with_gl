@@ -706,6 +706,17 @@ namespace opengl3
             debug_data = new TextureGL(3, 100 / 4, 4, PixelFormat.Rgba);
         }
 
+        public void set_trz(int trz, RobotFrame robotFrame)
+        {
+            transRotZooms[trz].off_x = robotFrame.X;
+            transRotZooms[trz].off_y = robotFrame.Y;
+            transRotZooms[trz].off_z = robotFrame.Z;
+            transRotZooms[trz].xRot = robotFrame.A;
+            transRotZooms[trz].yRot = robotFrame.B;
+            transRotZooms[trz].zRot = robotFrame.C;
+            transRotZooms[trz].robot_camera = true;
+        }
+
         #endregion
 
         #region comp_gpu
@@ -1697,7 +1708,7 @@ namespace opengl3
             var verts = new Vertex4f[0];
             if (trz.viewType_ == viewType.Perspective)
             {
-                var p1 = new Vertex4f(0, 0, 0.01f, 1f);
+                var p1 = new Vertex4f(0, 0, 0.0f, 1f);
                 double _z = 1000;
                 double _x = _z * Math.Tan(toRad((float)(trz.fovx / 2))), _y = _z * Math.Tan(toRad((float)(trz.fovx / 2)));
                 float x = (float)_x; float y = (float)_y; float z = -(float)_z;
