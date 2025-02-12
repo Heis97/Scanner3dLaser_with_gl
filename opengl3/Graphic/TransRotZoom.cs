@@ -90,7 +90,7 @@ namespace opengl3
         public CameraCV cameraCV;
         public string view_3d = "-1";
         public Matrix4x4f const_trz;
-
+        public Matrix4x4f robot_matr = new Matrix4x4f();
         public TransRotZoom(Rectangle _rect, int _id)
         {
             zoom = 30;
@@ -107,6 +107,7 @@ namespace opengl3
             visible = false;
             cameraCV =  new CameraCV(UtilOpenCV.matrixForCamera(new Size(rect.Width, rect.Height), fovx), new Matrix<double>(5, 1), new Size(rect.Width, rect.Height));
             robot_camera = false;
+            robot_matr = new Matrix4x4f();
         }
 
         public TransRotZoom(Rectangle _rect, int _id, Vertex3d rotVer, Vertex3d transVer, int _idMast)
@@ -318,10 +319,12 @@ namespace opengl3
             if(trz.robot_camera)
             {
                 _Pm = Matrix4x4f.Perspective((float)trz.fovx, (float)trz.rect.Width / trz.rect.Height, 1f, 10000f);
-                _Vm = 
+               /* _Vm = 
                     Matrix4x4f.RotatedZ((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
-                    Matrix4x4f.RotatedX((float)trz.zRot)*Matrix4x4f.Translated((float)trz.off_x, (float)trz.off_y, (float)trz.off_z) ;
+                    Matrix4x4f.RotatedX((float)trz.zRot)*Matrix4x4f.Translated((float)trz.off_x, (float)trz.off_y, (float)trz.off_z) ;*/
+
+                _Vm = trz.robot_matr;
             }
 
             if (trz.type == TRZtype.Slave) _Vm = trz.const_trz * _Vm;

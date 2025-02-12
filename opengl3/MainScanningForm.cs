@@ -2205,17 +2205,29 @@ namespace opengl3
 
             load_3d_model_robot_kuka();
             var fr_kuka = new RobotFrame("-577.4208 -50.8899 101.8039 3.11022 -0.00162 -1.60832");
+            
+            var q_res = RobotFrame.comp_inv_kinem(fr_kuka.get_position_rob(), RobotFrame.RobotType.KUKA);
+
+            fr_kuka.X += 300;
+            fr_kuka.A += 1.54;
             var m = fr_kuka.getMatrix();
             var inv_m = UtilOpenCV.inv(m);
             var eye1 = inv_m * m;
-
-            var fr_kuka_inv = new RobotFrame(m,RobotFrame.RobotType.KUKA);
-            var q_res = RobotFrame.comp_inv_kinem(fr_kuka.get_position_rob(), RobotFrame.RobotType.KUKA);
+            prin.t("m");
+            prin.t(m);
+            prin.t("inv_m");
+            prin.t(inv_m);
+            var fr_kuka_inv = new RobotFrame(m, RobotFrame.RobotType.KUKA);
             //var q_cur = new double[8] { 0.7, 0.7, 0, -0.2, 0.5, 0.8, 0.9, 0 };
+            GL1.addFrame(eye1, 100, "frame1");
+            GL1.addFrame(m,100,"frame2");
+            var m_t_d = UtilOpenCV.to_matrix_opengl(m);
+            GL1.buffersGl.setMatrobj("frame1", 0,  m_t_d);
             set_conf_robot(q_res[1], RobotFrame.RobotType.KUKA);
-            GL1.set_trz(0, fr_kuka_inv);
+            //GL1.set_trz(0, fr_kuka);
+            GL1.transRotZooms[0].robot_matr =  m_t_d.Inverse;
             GL1.transRotZooms[0].visible = true;
-
+            GL1.transRotZooms[0].robot_camera = true;
 
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             //test_gen_traj();
@@ -2240,7 +2252,7 @@ namespace opengl3
                  UtilOpenCV.SaveMonitor(GL1);
              }*/
 
-            bool find_gl = true;
+            bool find_gl =false;
             if (find_gl && GL1.transRotZooms.Count > 1)
             {
                 var mat1_or = GL1.matFromMonitor(0);

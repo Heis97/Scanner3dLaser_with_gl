@@ -160,7 +160,19 @@ namespace opengl3
             return mat;
         }
 
-
+        public static Matrix4x4f to_matrix_opengl(Matrix<double> matrix)
+        {
+            var m_t = matrix.Transpose();
+            var m_r = new Matrix4x4f();
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    m_r[(uint)i, (uint)j] = (float)m_t[i,j];
+                }
+            }
+            return m_r;
+        }
         public static MCvPoint3D32f[] takeGabObp(MCvPoint3D32f[] obp, Size patt_size)
         {
             var ps3d = new MCvPoint3D32f[4];

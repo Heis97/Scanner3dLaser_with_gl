@@ -98,11 +98,13 @@ namespace opengl3
             string Mes2 = "0";
             string Mes3 = "0";
             // try
-            if (adr < 0) adr = 0;
             {
+                if (adr < 0) adr = 0;
+                
                 Mes1 = Convert.ToString(val);
                 Mes2 = Convert.ToString(var);
                 Mes3 = Convert.ToString(adr);
+                
             }
             //catch
             {
