@@ -105,10 +105,10 @@ namespace opengl3
         CameraCV cameraCVcommon;
         TCPclient con1;
         private const float PI = 3.14159265358979f;
-        //private Size cameraSize = new Size(1280, 720);
+        private Size cameraSize = new Size(1280, 720);
         // private Size cameraSize = new Size(1280, 960);
         // private Size cameraSize = new Size(1184, 656);
-        private Size cameraSize = new Size(1184, 656);
+        //private Size cameraSize = new Size(1184, 656);
         //private Size cameraSize = new Size(1024, 576);
         //private Size cameraSize = new Size(1920, 1080);
         //private Size cameraSize = new Size(640, 480);
@@ -1631,8 +1631,7 @@ namespace opengl3
                 Thread.Sleep(2);
                 laserLine?.setShvpPos((int)p1_cur_scan.x);
                 Thread.Sleep(4000);
-                startWrite(1, counts);
-                startWrite(2, counts);
+                
                 Console.WriteLine(v_laser + " v_las");
                 Thread.Sleep(2);
                 laserLine?.setShvpVel(v_laser);
@@ -1644,6 +1643,8 @@ namespace opengl3
                 laserLine?.setShvpVel(v_laser);
                 Thread.Sleep(400);
                 Thread.Sleep(2);
+                startWrite(1, counts);
+                startWrite(2, counts);
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
                 Thread.Sleep(2);
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
@@ -2062,7 +2063,7 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
            
             //GL1.SortObj();
-            int monitor_num = 4;
+            int monitor_num = 1;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -2098,8 +2099,7 @@ namespace opengl3
             GL1.add_TreeView(tree_models);
 
             //Manipulator.calcRob(GL1);
-            GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
-            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_1", GL1.cameraCV);
             /*var p1 = new Point3d_GL(0, 0, 20);
@@ -2201,6 +2201,9 @@ namespace opengl3
             GL1.addPointMesh(ps, Color3d_GL.red());
               GL1.addFrame(model, 200, "mod");*/
 
+            /*
+            GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
+            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
             var matr1 = (Matrix<double>)Settings_loader.load_data("bfs_cal_sing.txt")[0];
 
             load_3d_model_robot_kuka();
@@ -2228,7 +2231,7 @@ namespace opengl3
             GL1.transRotZooms[0].robot_matr =  m_t_d.Inverse;
             GL1.transRotZooms[0].visible = true;
             GL1.transRotZooms[0].robot_camera = true;
-
+            */
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             //test_gen_traj();
 
@@ -5813,7 +5816,7 @@ namespace opengl3
             var capture = new VideoCapture(number);
             videoCaptures[number] = capture;
             //capture.SetCaptureProperty(CapProp.
-            //capture.Set(CapProp.FrameWidth, cameraSize.Width);
+            capture.Set(CapProp.FrameWidth, cameraSize.Width);
 
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
