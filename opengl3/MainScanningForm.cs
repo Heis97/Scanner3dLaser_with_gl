@@ -170,7 +170,7 @@ namespace opengl3
         Matrix<double> cameraMatrix_dist = new Matrix<double>(3, 3);
 
         bool compensation = false;
-
+        RobotFrame.RobotType robotType_global = RobotFrame.RobotType.PULSE;
 
         int k = 1;
         bool writ = false;
@@ -1570,7 +1570,7 @@ namespace opengl3
         {
             Thread.Sleep(100);
             int typescan = (int)obj;
-            int power_laser = 50;
+            int power_laser = 250;
             //int counts = Convert.ToInt32(boxN.Text);
             int counts = scanner_config.frames_n;
             string folder_scan = box_scanFolder.Text;
@@ -2063,7 +2063,7 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
            
             //GL1.SortObj();
-            int monitor_num = 4;
+            int monitor_num = 1;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -2201,14 +2201,31 @@ namespace opengl3
             GL1.addPointMesh(ps, Color3d_GL.red());
               GL1.addFrame(model, 200, "mod");*/
 
-            
+
+
+
+            //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
+            //test_gen_traj();
+
+            //load_kuka_scene();
+            //vel_rob_map();
+            //test_diff_angles(0.6);
+            //test_diff_angles(1.6);
+
+            //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
+            //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
+
+            //test_go_to_point_robot();
+        }
+        void load_kuka_scene()
+        {
             GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
             generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
             var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal.txt")[0];
 
             load_3d_model_robot_kuka();
             var fr_kuka = new RobotFrame("-577.4208 -50.8899 101.8039 3.11022 -0.00162 -1.60832");
-            
+
             var q_res = RobotFrame.comp_inv_kinem(fr_kuka.get_position_rob(), RobotFrame.RobotType.KUKA);
 
             //fr_kuka.X += 300;
@@ -2223,31 +2240,17 @@ namespace opengl3
             var fr_kuka_inv = new RobotFrame(m, RobotFrame.RobotType.KUKA);
             //var q_cur = new double[8] { 0.7, 0.7, 0, -0.2, 0.5, 0.8, 0.9, 0 };
             GL1.addFrame(eye1, 100, "frame1");
-            GL1.addFrame(m,100,"frame2");
+            GL1.addFrame(m, 100, "frame2");
             var m_t_d = UtilOpenCV.to_matrix_opengl(m);
 
-            var m_bfs = m_t_d* UtilOpenCV.to_matrix_opengl(matr_bfs) * Matrix4x4f.RotatedX(180);
+            var m_bfs = m_t_d * UtilOpenCV.to_matrix_opengl(matr_bfs) * Matrix4x4f.RotatedX(180);
             GL1.buffersGl.setMatrobj("frame1", 0, m_bfs);
             set_conf_robot(q_res[1], RobotFrame.RobotType.KUKA);
             //GL1.set_trz(0, fr_kuka);
             GL1.transRotZooms[0].robot_matr = m_bfs.Inverse;
             GL1.transRotZooms[0].visible = true;
             GL1.transRotZooms[0].robot_camera = true;
-            
-            //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
-            //test_gen_traj();
-
-
-            //vel_rob_map();
-            //test_diff_angles(0.6);
-            //test_diff_angles(1.6);
-
-            //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
-            //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
-
-            //test_go_to_point_robot();
         }
-
         private void glControl1_Render(object sender, GlControlEventArgs e)
         {
 
@@ -7557,6 +7560,7 @@ namespace opengl3
             string bfs_path = "bfs_cal.txt";
 
             var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path);
+            scanner.robotType = robotType_global;
             this.scanner = scanner;
             load_scan_v2(scanner, scan_path, scanner_config);
         }

@@ -248,7 +248,7 @@ namespace opengl3
         public PointCloud pointCloud;
         public CameraCV cameraCV;
         public StereoCamera stereoCamera;
-
+        public RobotFrame.RobotType robotType;
 
         public LinearAxis linearAxis;
 
@@ -378,20 +378,20 @@ namespace opengl3
             stereoCamera.scan_coord_sys = mode;
             return this;
         }
-        public Scanner set_rob_pos(string pos)
+        public Scanner set_rob_pos(string pos, RobotFrame.RobotType robot = RobotFrame.RobotType.PULSE)
         {
             if(pos.Contains(";"))
             {
                 var poses = pos.Split(';');
-                var pos_fr = new RobotFrame(poses[0],RobotFrame.RobotType.PULSE);
+                var pos_fr = new RobotFrame(poses[0], robot);
                 stereoCamera.Bbf = pos_fr.getMatrix();
-                stereoCamera.cur_pos = new RobotFrame(poses[1], RobotFrame.RobotType.PULSE);
+                stereoCamera.cur_pos = new RobotFrame(poses[1], robot);
                 Console.WriteLine("cur pos: "+stereoCamera.cur_pos.ToStr());
             }
             else
             {
                 Console.WriteLine("not contains ;");
-                var pos_fr = new RobotFrame(pos, RobotFrame.RobotType.PULSE);
+                var pos_fr = new RobotFrame(pos, robot);
                 stereoCamera.Bbf = pos_fr.getMatrix();
             }
 
