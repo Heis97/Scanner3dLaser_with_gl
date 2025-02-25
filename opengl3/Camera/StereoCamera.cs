@@ -145,7 +145,7 @@ namespace opengl3
 
             }
         }
-        static public void calibrate_stereo_rob_handeye(CameraCV cameraCV, Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize, string file_name = "bfs_cal.txt", RobotFrame.RobotType robot = RobotFrame.RobotType.PULSE)
+        static public List< Matrix<double>> calibrate_stereo_rob_handeye(CameraCV cameraCV, Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize, string file_name = "bfs_cal.txt", RobotFrame.RobotType robot = RobotFrame.RobotType.PULSE)
         {
 
             var p_rob = new List<Point3d_GL>();
@@ -213,13 +213,19 @@ namespace opengl3
             Bfs_med[1, 3] = mt_m[1, 0];
             Bfs_med[2, 3] = mt_m[2, 0];
             Bfs_med[3, 3] = 1;
-
-            for (int i = 1; i < p_cam.Count; i++)
+            var ms_check = new List<Matrix<double>>();
+            for (int i = 0; i < p_cam.Count; i++)
             {
                 //Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
+                var m_check = ms_rob[i] * Bfs_med * ms_cam[i];
+                ms_check.Add(m_check);
+                //prin.t(m_check);
+               // Console.WriteLine(ms_rob[i][0, 3] + " " + ms_rob[i][1, 3] + " " + ms_rob[i][2, 3] + " " + i);
+                Console.WriteLine(m_check[0, 3] + " " + m_check[1, 3] + " " + m_check[2, 3] + " " + i);
             }
 
             Settings_loader.save_file(file_name, new object[] { Bfs_med });
+            return ms_check;
         }
 
 

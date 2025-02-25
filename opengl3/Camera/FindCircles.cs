@@ -1004,6 +1004,7 @@ namespace opengl3
 
         static System.Drawing.PointF[,] arr_zero_to_up(System.Drawing.PointF[,] ps)
         {
+            float k = 0.01f;
             if(ps == null) return null ;
             var ps_zu = new System.Drawing.PointF[ps.GetLength(0), ps.GetLength(1)];
             var psc = new System.Drawing.PointF[] { ps[0, 0], ps[ps.GetLength(0) - 1, 0], ps[0, ps.GetLength(1) - 1], ps[ps.GetLength(0) - 1, ps.GetLength(1) - 1] };
@@ -1011,9 +1012,9 @@ namespace opengl3
             var i_min = 0;
             for(int i = 0; i < psc.Length; i++)
             {
-                if(psc[i].Y + psc[i].X < y_min)
+                if(psc[i].Y + k*psc[i].X < y_min)
                 {
-                    y_min = psc[i].Y+ psc[i].X;
+                    y_min = psc[i].Y + k * psc[i].X;
                     i_min = i;
                 }
             }
