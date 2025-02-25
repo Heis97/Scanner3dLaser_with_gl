@@ -72,6 +72,8 @@ namespace opengl3
                     inv_cs1 = new Matrix<double>(4, 4);
                     CvInvoke.Invert(cameraCVs[1].matrixSC, inv_cs1, DecompMethod.LU);
                     R = cameraCVs[0].matrixSC* inv_cs1  ;
+
+                    Settings_loader.save_file("stereo_cal.txt", new object[] { R });
                     prin.t("stereo calib R_sc:");
                     prin.t(R);
                 }
@@ -145,7 +147,7 @@ namespace opengl3
 
             }
         }
-        static public List< Matrix<double>> calibrate_stereo_rob_handeye(CameraCV cameraCV, Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize, string file_name = "bfs_cal.txt", RobotFrame.RobotType robot = RobotFrame.RobotType.PULSE)
+        static public List< Matrix<double>> calibrate_stereo_rob_handeye(CameraCV cameraCV, Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float markSize, string file_name = "bfs_cal.txt", RobotFrame.RobotType robot = RobotFrame.RobotType.PULSE,GraphicGL graphic = null)
         {
 
             var p_rob = new List<Point3d_GL>();
