@@ -4127,7 +4127,7 @@ namespace opengl3
 
 
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(2);
             }
         }
 
@@ -9342,6 +9342,20 @@ namespace opengl3
                 }
                 prin.t(q_cur);
                 set_conf_robot(q_cur,RobotFrame.RobotType.KUKA);
+            }
+        }
+
+        private void but_printing_Click(object sender, EventArgs e)
+        {
+            if(printing)
+            {
+                printing = false;
+                but_printing.Text = "Печать";
+            }
+            else
+            {
+                printing = true;
+                but_printing.Text = "Выкл печать";
             }
         }
         //void send_to_ard(TextBox textBox,)
