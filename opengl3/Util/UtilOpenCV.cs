@@ -1582,6 +1582,7 @@ namespace opengl3
             CvInvoke.InitUndistortRectifyMap(matrixCamera, reversDistor, null, matr, size, DepthType.Cv32F,1, mapx, mapy);
 
             var und_pic = new Mat();
+            if (mat == null) return null;
             CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
             double k = 0.8;
             var nw = (int)(size.Width * k);

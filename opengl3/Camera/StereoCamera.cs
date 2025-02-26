@@ -23,6 +23,7 @@ namespace opengl3
 
         public Matrix<double> Bbf;//Base->Flange
         public mode scan_coord_sys;
+
         public StereoCamera(CameraCV[] _cameraCVs,string bfs_file = null)
         {
             cameraCVs = _cameraCVs;  
@@ -215,17 +216,25 @@ namespace opengl3
             Bfs_med[1, 3] = mt_m[1, 0];
             Bfs_med[2, 3] = mt_m[2, 0];
             Bfs_med[3, 3] = 1;
+
+            Bfs_med = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });
             var ms_check = new List<Matrix<double>>();
+
+            var pattern = ms_rob[0] * Bfs_med * ms_cam[0];
+
+            ms_check.Add(pattern);
+
             for (int i = 0; i < p_cam.Count; i++)
             {
                 //Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
-                var m_check = ms_rob[i] * Bfs_med * ms_cam[i];
+                //var m_check = ms_rob[i] * Bfs_med * ms_cam[i];
+                var m_check = ms_rob[i];// * Bfs_med;// * ms_cam[i];
                 ms_check.Add(m_check);
                 //prin.t(m_check);
                // Console.WriteLine(ms_rob[i][0, 3] + " " + ms_rob[i][1, 3] + " " + ms_rob[i][2, 3] + " " + i);
                 Console.WriteLine(m_check[0, 3] + " " + m_check[1, 3] + " " + m_check[2, 3] + " " + i);
             }
-
+            
             Settings_loader.save_file(file_name, new object[] { Bfs_med });
             return ms_check;
         }

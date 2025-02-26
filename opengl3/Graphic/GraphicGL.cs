@@ -294,7 +294,8 @@ namespace opengl3
                 VPs[i] = retM[2];
                 Vs[i] = retM[1];
                 Ps[i] = retM[0];
-
+                prin.t("Ps[i]:");
+                prin.t(Ps[i]);
                 txt += "TRZ " + i + ": "+ trz.ToString()+"\n";
             }
             //Console.WriteLine("_________");
@@ -309,10 +310,14 @@ namespace opengl3
             {
                 if (buffersGl.objs.Count != 0)
                 {
-                    foreach (var opglObj in buffersGl.objs)
+                    try
                     {
-                        renderGlobj(opglObj.Value);
+                        foreach (var opglObj in buffersGl.objs)
+                        {
+                            renderGlobj(opglObj.Value);
+                        }
                     }
+                    catch (Exception ex) { Console.WriteLine(ex.Message); }
                 }
             }
             rendercout++;
@@ -1723,8 +1728,9 @@ namespace opengl3
                 p5 = Vs[i].Inverse * p5;
                 verts = new Vertex4f[16]
                 {
-            p1,p2, p1,p3, p1,p4, p1,p5, p2,p3, p3,p5, p5,p4, p4,p2
+                    p1,p2, p1,p3, p1,p4, p1,p5, p2,p3, p3,p5, p5,p4, p4,p2
                 };
+
                    
             }
             else if (trz.viewType_ == viewType.Ortho)
@@ -1766,7 +1772,9 @@ namespace opengl3
 
             if (Convert.ToDouble( trz.view_3d) < 0)
             {
-                transRotZooms[i].view_3d = add_buff_gl(toFloat(verts), toFloat(verts), toFloat(verts), PrimitiveType.Lines, i.ToString());
+                var verts_f = toFloat(verts);
+                var col_f = float_gen_arr(verts_f.Length);
+                transRotZooms[i].view_3d = add_buff_gl(verts_f, col_f, col_f, PrimitiveType.Lines, i.ToString());
             }
             else
             {
@@ -1777,6 +1785,12 @@ namespace opengl3
             //Console.WriteLine(verts[0]);
 
             
+        }
+        float[] float_gen_arr(int len, float val=0.5f)
+        {
+            var arr = new float[len];
+            for (int i = 0; i < len; i++) { arr[i] = val; }
+            return arr;
         }
         float[] toFloat(Point3d_GL[] points)
         {

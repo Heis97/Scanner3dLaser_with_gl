@@ -294,6 +294,7 @@ namespace opengl3
         {
             var _Pm = Matrix4x4f.Identity;
             var _Vm = Matrix4x4f.Identity;
+            //Matrix4x4f.Perspective()
             if (trz.viewType_ == viewType.Perspective)
             {
                 _Pm = Matrix4x4f.Perspective((float)trz.fovx, (float)trz.rect.Width / trz.rect.Height, 1f, 10000f);

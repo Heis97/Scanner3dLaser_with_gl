@@ -291,6 +291,12 @@ namespace opengl3
             cameramatrix_opt = UtilMatr.toMatrix(matr);
             cameramatrix_opt_inv = invMatrix(cameramatrix_opt);
             //cameramatrix =
+            prin.t("cameramatrix_opt");
+            prin.t(cameramatrix_opt);
+            prin.t("cameramatrix_opt_inv");
+            prin.t(cameramatrix_opt_inv);
+
+
             im_centr = new PointF((float)cameramatrix_opt[0, 2], (float)cameramatrix_opt[1, 2]);
             CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F,1, mapx, mapy);//_opt
 
