@@ -940,7 +940,7 @@ namespace opengl3
             // scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
-            load_camers_v2();
+            //load_camers_v2();
 
             /*var m_test = new Mat("test_ph.jpg");
             var fr = new Frame(m_test, "sdf", FrameType.MarkBoard);
@@ -2268,8 +2268,8 @@ namespace opengl3
             //var matr = Matrix4x4f.Translated(0, 0, -100);
             
 
-            var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal2502.txt")[0];
-            matr_bfs = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });
+           // var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal2502.txt")[0];
+            var matr_bfs = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });
             load_3d_model_robot_kuka();
             var fr_kuka = new RobotFrame("-577.4208 -50.8899 101.8039 3.11022 -0.00162 -1.60832");
 

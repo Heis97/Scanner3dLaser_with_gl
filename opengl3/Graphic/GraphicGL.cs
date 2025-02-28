@@ -305,7 +305,7 @@ namespace opengl3
             
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             addCams();
-
+            lights_view();
             if (buffersGl.objs != null)
             {
                 if (buffersGl.objs.Count != 0)
@@ -494,7 +494,7 @@ namespace opengl3
             init_texture();
             // addLight();
 
-          /*  //scan_light
+            //scan_light
             lightSources.Add(new LightSourceGL
             {
                 position_z = 100,
@@ -507,7 +507,7 @@ namespace opengl3
                 cut_off = 0.99999f,
                 type_light = LightSourceGL.type.Disc
             
-            });*/
+            });
            
             lightSources.Add(new LightSourceGL
             {
@@ -1786,10 +1786,54 @@ namespace opengl3
 
             
         }
+        void lights_view()
+        {
+            for (int i = 0; i < lightSources.Count;i++)
+            {
+                add_light_view(lightSources[i],"light_"+i);
+            }
+        }
+        void add_light_view(LightSourceGL light,string name)
+        {
+            buffersGl.removeObj(name);
+            float dimens = 20;
+            var p0 = new Vertex4f(light.position_x, light.position_y, light.position_z, 1);
+            double x = 1000;
+            var p1 = new Vertex4f(dimens, 0, 0, 1) + p0;
+            var p2 = new Vertex4f(-dimens, 0, 0, 1) + p0;
+            var p3 = new Vertex4f(0, dimens, 0, 1) + p0;
+            var p4 = new Vertex4f(0, -dimens, 0, 1) + p0;
+            var p5 = new Vertex4f(0, 0, dimens, 1) + p0;
+            var p6 = new Vertex4f(0, 0, -dimens, 1) + p0;
+
+            var verts = new Vertex4f[6]
+            {
+                    p1,p2, p3,p4, p5,p6
+            };
+
+            var verts_f = toFloat(verts);
+            var col_f = float_gen_arr(verts_f.Length,light.color_r, light.color_g, light.color_b);
+            add_buff_gl(verts_f, col_f, col_f, PrimitiveType.Lines, name);
+            // if()
+            //ligh
+
+        }
+
         float[] float_gen_arr(int len, float val=0.5f)
         {
             var arr = new float[len];
             for (int i = 0; i < len; i++) { arr[i] = val; }
+            return arr;
+        }
+        float[] float_gen_arr(int len, float r, float g, float b)
+        {
+            var arr = new float[len];
+            for (int i = 0; i+2 < len; i+=3)
+            { arr[i] = r;
+                arr[i+1] = r;
+                arr[i+2] = r;
+
+            }
             return arr;
         }
         float[] toFloat(Point3d_GL[] points)
