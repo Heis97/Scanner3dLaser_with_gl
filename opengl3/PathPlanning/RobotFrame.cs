@@ -351,7 +351,7 @@ namespace opengl3
                     ", V" + round(V) + ", D" + D + " \n";
         }
 
-        public string ToStr(string del = " ",bool nums = false,bool full = true, bool rad = true)
+        public string ToStr(string del = " ",bool nums = false,bool full = true, bool rad = true,bool new_line = true)
         {
             var a = A; var b = B; var c = C;
             if(!rad)
@@ -370,8 +370,12 @@ namespace opengl3
                 if (full) { str += del + round(F) + del + round(V) + del + D; }
                 
             }
-            str+= " \n";
-            return str;
+            if (new_line)
+            {
+                str += " \n";
+            }
+
+                return str;
         }
         public string ToStr_start(int num, string del = " ")
         {

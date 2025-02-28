@@ -422,7 +422,11 @@ namespace opengl3
         }
         public static Mat GLnoise(Mat mat, int val = 0, int range = 30, int kernel_size = 7)
         {            
-            CvInvoke.GaussianBlur(mat, mat, new Size(kernel_size, kernel_size), 0);
+            if(kernel_size>0)
+            {
+                CvInvoke.GaussianBlur(mat, mat, new Size(kernel_size, kernel_size), 0);
+            }
+            
             var noise = mat.Clone();
             CvInvoke.Randn(noise, new MCvScalar(val,val,val), new MCvScalar(range,range,range));
 
@@ -1584,7 +1588,7 @@ namespace opengl3
             var und_pic = new Mat();
             if (mat == null) return null;
             CvInvoke.Remap(mat, und_pic, mapx, mapy, Inter.Linear);
-            double k = 0.8;
+            double k = 0.95;
             var nw = (int)(size.Width * k);
             var nh = (int)(size.Height * k);
             var x = (size.Width - nw) / 2;

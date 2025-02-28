@@ -294,8 +294,8 @@ namespace opengl3
                 VPs[i] = retM[2];
                 Vs[i] = retM[1];
                 Ps[i] = retM[0];
-                prin.t("Ps[i]:");
-                prin.t(Ps[i]);
+                //prin.t("Ps[i]:");
+                //prin.t(Ps[i]);
                 txt += "TRZ " + i + ": "+ trz.ToString()+"\n";
             }
             //Console.WriteLine("_________");
@@ -325,7 +325,13 @@ namespace opengl3
             {
                 rendercout = 0;
             }
-            update_tree();
+            try
+            {
+                update_tree();
+            }
+            catch
+            { }
+            
             comp_cur_animation();
             lightSources_arr = lightSources.ToArray();
             lightSources_obj.lightSources = lightSources.ToArray();
@@ -1806,17 +1812,25 @@ namespace opengl3
             var p5 = new Vertex4f(0, 0, dimens, 1) + p0;
             var p6 = new Vertex4f(0, 0, -dimens, 1) + p0;
 
-            var verts = new Vertex4f[6]
+            var verts = new Vertex4f[]
             {
                     p1,p2, p3,p4, p5,p6
             };
 
-            var verts_f = toFloat(verts);
-            var col_f = float_gen_arr(verts_f.Length,light.color_r, light.color_g, light.color_b);
-            add_buff_gl(verts_f, col_f, col_f, PrimitiveType.Lines, name);
-            // if()
+            if(light.type_light == LightSourceGL.type.Disc)
+            {
+                var k = 3;
+                var p7 =  new Vertex4f(k*dimens * light.direction_x, k * dimens * light.direction_y, k * dimens * light.direction_z, 1) + p0;
+                verts = new Vertex4f[]
+                    {
+                    p1,p2, p3,p4, p5,p6,p0,p7
+                    };
+                
+            }
             //ligh
-
+            var verts_f = toFloat(verts);
+            var col_f = float_gen_arr(verts_f.Length, light.color_r, light.color_g, light.color_b);
+            add_buff_gl(verts_f, col_f, col_f, PrimitiveType.Lines, name);
         }
 
         float[] float_gen_arr(int len, float val=0.5f)

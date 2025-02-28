@@ -45,7 +45,6 @@ namespace opengl3
         static public Mat sobel_mat(Mat mat)
         {
             
-
             var gray_x = new Mat();
             var gray_y = new Mat();
             CvInvoke.Sobel(mat, gray_x, DepthType.Cv32F, 1, 0, 3);
@@ -80,25 +79,39 @@ namespace opengl3
         {
             var im_tr = new Mat();
             var orig = new Mat();
-
-
-           /* mat.CopyTo(rec);
-            mat.CopyTo(orig);
-            var im = rec.ToImage<Gray, byte>();
-            var im_blur = im.SmoothGaussian(7);
-            var im_sob = sobel(im_blur);
-            var im_tr = im_sob.ThresholdBinary(new Gray(85), new Gray(255));*/
+            bool debug = false;
+            //debug = true;
+            /* mat.CopyTo(rec);
+             mat.CopyTo(orig);
+             var im = rec.ToImage<Gray, byte>();
+             var im_blur = im.SmoothGaussian(7);
+             var im_sob = sobel(im_blur);
+             var im_tr = im_sob.ThresholdBinary(new Gray(85), new Gray(255));*/
 
             CvInvoke.CvtColor(mat, im_tr, ColorConversion.Bgr2Gray);
             CvInvoke.GaussianBlur(im_tr, im_tr, new Size(7, 7), 3);
-           // CvInvoke.Imshow("gauss", im_tr);
-            //CvInvoke.WaitKey();
+            if(debug)
+            {
+                CvInvoke.Imshow("gauss", im_tr);                
+                CvInvoke.WaitKey();
+            }
             im_tr = sobel_mat(im_tr);
-            //CvInvoke.Imshow("sobel_d", im_tr);
-            //CvInvoke.WaitKey();
+          
+            //CvInvoke.Laplacian(im_tr, im_tr,DepthType.Default);
+            if (debug)
+            {
+               // CvInvoke.Normalize(im_tr, im_tr);
+                CvInvoke.Imshow("sobel_d", im_tr);
+                CvInvoke.WaitKey();
+            }
+
             CvInvoke.Threshold(im_tr, im_tr,65 , 255, ThresholdType.Binary);
-           // CvInvoke.Imshow("im_tr", im_tr);
-           // CvInvoke.WaitKey();
+            if (debug)
+            {
+                CvInvoke.Imshow("im_tr", im_tr);
+                CvInvoke.WaitKey();
+            }
+
 
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             Mat hier = new Mat();
@@ -149,11 +162,12 @@ namespace opengl3
 
             //prin.t(cents);
             //prin.t("____________");
-           // orig = UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0);
-           // CvInvoke.Imshow("fnd", orig);
-            //CvInvoke.WaitKey();
+            // orig = UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0);
+            if (debug)
+            CvInvoke.Imshow("fnd", orig);
+            CvInvoke.WaitKey();
             corn = new System.Drawing.PointF[pattern_size.Width * pattern_size.Height];
-           // UtilOpenCV.drawLines(orig, cents, 0, 255, 0, 2);
+            //UtilOpenCV.drawLines(orig, cents, 0, 255, 0, 2);
             
             if (order)
             {
