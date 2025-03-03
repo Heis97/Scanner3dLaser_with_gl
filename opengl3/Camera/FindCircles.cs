@@ -45,13 +45,76 @@ namespace opengl3
         static public Mat sobel_mat(Mat mat)
         {
             
-            var gray_x = new Mat();
-            var gray_y = new Mat();
-            CvInvoke.Sobel(mat, gray_x, DepthType.Cv32F, 1, 0, 3);
-            CvInvoke.Sobel(mat, gray_y, DepthType.Cv32F, 0, 1, 3);
-            CvInvoke.ConvertScaleAbs(gray_x, gray_x, 1, 0);
-            CvInvoke.ConvertScaleAbs(gray_y, gray_y, 1, 0);
-            return gray_x + gray_y;
+            var gray_x = mat.Clone();
+            var gray_y = mat.Clone(); 
+            var gray_xn = mat.Clone();
+            var gray_yn = mat.Clone();
+
+            var gray_xy_r = mat.Clone();
+            var gray_xy_rn = mat.Clone();
+            var gray_xy_l = mat.Clone();
+            var gray_xy_ln = mat.Clone();
+
+            var med = 10;
+            var min = 3;
+
+            var med_xy = 14;
+            var min_xy = 5;
+            //CvInvoke.Sobel(mat, gray_x, DepthType.Cv32F, 1, 0, 3);
+            // CvInvoke.Sobel(mat, gray_y, DepthType.Cv32F, 0, 1, 3);
+            Point anchor = new Point(-1, -1);
+            Matrix<float> kernel_x = new Matrix<float>(new float[3, 3] { 
+                { -min, 0f, min }, 
+                { - med, 0f, med }, 
+                { -min, 0f, min } });
+            Matrix<float> kernel_y = new Matrix<float>(new float[3, 3] {
+                { min, med, min },
+                { 0f, 0f, 0f },
+                { -min, -med, -min} });
+
+            Matrix<float> kernel_xn = new Matrix<float>(new float[3, 3] {
+                { min, 0f, -min },
+                { med, 0f, -med },
+                { min, 0f, -min } });
+
+            Matrix<float> kernel_yn = new Matrix<float>(new float[3, 3] {
+                { -min, -med, -min },
+                { 0f, 0f, 0f },
+                { min, med, min} });
+
+            Matrix<float> kernel_xy_r = new Matrix<float>(new float[3, 3] {
+                { 0, min_xy, med_xy },
+                { -min_xy, 0f, min_xy },
+                { -med_xy, -min_xy, 0} });
+
+            Matrix<float> kernel_xy_rn = new Matrix<float>(new float[3, 3] {
+                { 0, -min_xy,-med_xy },
+                { min_xy, 0f, -min_xy },
+                { med_xy, min_xy, 0} });
+
+            Matrix<float> kernel_xy_l = new Matrix<float>(new float[3, 3] {
+                {  med_xy, min_xy, 0 },
+                { min_xy, 0f, -min_xy },
+                { 0, -min_xy,  -med_xy } });
+
+            Matrix<float> kernel_xy_ln = new Matrix<float>(new float[3, 3] {
+                {  -med_xy,-min_xy, 0 },
+                { -min_xy, 0f, min_xy },
+                { 0, min_xy,  med_xy } });
+            CvInvoke.Filter2D(mat, gray_yn, kernel_yn, anchor);
+            CvInvoke.Filter2D(mat, gray_xn, kernel_xn, anchor);
+            CvInvoke.Filter2D(mat, gray_x, kernel_x, anchor);
+            CvInvoke.Filter2D(mat, gray_y, kernel_y, anchor);
+
+            CvInvoke.Filter2D(mat, gray_xy_r, kernel_xy_r, anchor);
+            CvInvoke.Filter2D(mat, gray_xy_rn, kernel_xy_rn, anchor);
+            CvInvoke.Filter2D(mat, gray_xy_l, kernel_xy_l, anchor);
+            CvInvoke.Filter2D(mat, gray_xy_ln, kernel_xy_ln, anchor);
+
+            //  CvInvoke.ConvertScaleAbs(gray_x, gray_x, 1, 0);
+            //CvInvoke.ConvertScaleAbs(gray_y, gray_y, 1, 0);
+            return 0.2 * gray_x + 0.2 * gray_y + 0.2 * gray_xn + 0.2 * gray_yn
+                +0.2 * gray_xy_r + 0.2 * gray_xy_rn + 0.2 * gray_xy_l + 0.2 * gray_xy_ln;
 
         }
 
@@ -80,7 +143,7 @@ namespace opengl3
             var im_tr = new Mat();
             var orig = new Mat();
             bool debug = false;
-            //debug = true;
+           // debug = true;
             /* mat.CopyTo(rec);
              mat.CopyTo(orig);
              var im = rec.ToImage<Gray, byte>();

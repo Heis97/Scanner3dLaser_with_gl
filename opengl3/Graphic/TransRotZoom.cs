@@ -65,8 +65,8 @@ namespace opengl3
             }
             return matrixGL;
         }
-
     }
+
     public class TransRotZoom
     {
         public enum TRZtype { Master, Slave, Const }
@@ -77,7 +77,7 @@ namespace opengl3
         public double off_x;
         public double off_y;
         public double off_z;
-        public double fovx = 53;
+        public double fovx = 46;
         public double fovy = 53;
         public TRZtype type;
         public viewType viewType_;

@@ -284,6 +284,7 @@ namespace opengl3
             mapx = new Mat();
             mapy = new Mat();
             newRoI = new Rectangle();
+            if(cameramatrix == null) { return; }
             var matr = CvInvoke.GetOptimalNewCameraMatrix(cameramatrix, distortmatrix, image_size, 1, image_size, ref newRoI);
             /* prin.t(cameramatrix);
              Console.WriteLine("optim");
@@ -352,6 +353,7 @@ namespace opengl3
         }*/
         static public Matrix<double> invMatrix(Matrix<double> matr)
         {
+            if (matr == null) return null;
             var inv_matr = new Matrix<double>(matr.Size);
             CvInvoke.Invert(matr, inv_matr, DecompMethod.LU);
             return inv_matr;
@@ -533,8 +535,8 @@ namespace opengl3
                 prin.t(points3d);*/
                 compPos(points3d, points2d);
                 UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 1);
-              //  CvInvoke.Imshow("pos" + points2d[0].X, matDraw);
-                //CvInvoke.WaitKey();
+                //CvInvoke.Imshow("pos" + points2d[0].X, matDraw);
+               // CvInvoke.WaitKey();
                 mat = null;
                 matDraw = null;
 
@@ -571,6 +573,9 @@ namespace opengl3
         }
         void calibrateCam(Frame[] frames, Size size, float markSize, MCvPoint3D32f[][] obp_inp)
         {
+            if (frames== null) { return; }
+            if (frames.Length == 0) { return; }
+
             this.frames = frames;
             this.mark_size = markSize;
             Matrix<double> _cameramatrix = new Matrix<double>(3, 3);

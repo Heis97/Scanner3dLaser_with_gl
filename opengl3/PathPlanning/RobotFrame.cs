@@ -931,7 +931,7 @@ namespace opengl3
            
             var p6p = new Point3d_GL(pm3[0, 3], pm3[1, 3], pm3[2, 3]);
             var vz = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
-            Console.WriteLine("p3p: " + p6p);
+            //Console.WriteLine("p3p: " + p6p);
             var scara = p6p - new Point3d_GL(0, 0, L0);
             var sq1 = -scara.y / scara.magnitude_xy();
             var cq1 = -scara.x / scara.magnitude_xy();

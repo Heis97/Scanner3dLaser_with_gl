@@ -1260,11 +1260,11 @@ namespace opengl3
         {
             markSize = 10f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_2802b", FrameType.Pattern, PatternType.Mesh);
-            //var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            //cam1.save_camera("sing_cam1_2802v.txt");
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\hand_eye_2012_2c\2", FrameType.Pattern, PatternType.Mesh);
+            var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
+            cam1.save_camera("sing_cam1_2012c.txt");
             comboImages.Items.AddRange(frms_1);
-           // cameraCVcommon = cam1;
+            cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
              chess_size = new Size(10, 11);//new Size(10, 11);
              var frms_2 = FrameLoader.loadImages_diff(@"cam2\cam2_cal_190623_2", FrameType.Pattern, PatternType.Mesh);
@@ -2278,8 +2278,8 @@ namespace opengl3
 
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             //test_gen_traj();
-            comp_mask();
-            //load_kuka_scene();
+            //comp_mask();
+            load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);
@@ -2332,11 +2332,12 @@ namespace opengl3
         {
             pattern =  GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
             flat = generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-            //var matr = Matrix4x4f.Translated(0, 0, -100);
-            
+            var matr = Matrix4x4f.Translated(-560, -100, -100);
+            GL1.buffersGl.setMatrobj(pattern, 0, matr);
+            GL1.buffersGl.setMatrobj(flat, 0, matr);
 
-           // var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal2502.txt")[0];
-            var matr_bfs = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });
+            var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal.txt")[0];
+            //var matr_bfs = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });
 
             load_3d_model_robot_kuka();
             var fr_kuka = new RobotFrame("-577.4208 -50.8899 101.8039 3.11022 -0.00162 -1.60832");
@@ -2395,6 +2396,7 @@ namespace opengl3
              }*/
 
             bool find_gl =true;
+           // find_gl = false;
             var num_cam = 1;
             if (find_gl)
             {
@@ -2406,7 +2408,7 @@ namespace opengl3
                 imBox_mark1.Image = mat1;
                 imProcess_virt(mat1, 1);
                 var corn = new System.Drawing.PointF[0];
-                imBox_mark1.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
+                //imBox_mark1.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
 
 
                 if(num_cam>1)
@@ -2420,7 +2422,7 @@ namespace opengl3
                         CvInvoke.Rotate(mat2, mat2, RotateFlags.Rotate180);
                     }
                     mat2 = UtilOpenCV.remapDistImOpenCvCentr(mat2, cameraDistortionCoeffs_dist);
-                    mat2 = UtilOpenCV.GLnoise(mat2, 2, 2);
+                    mat2 = UtilOpenCV.GLnoise(mat2, 2, 2,-1);
                     imBox_mark2.Image = mat2;
                     imProcess_virt(mat2, 2);
                 }
@@ -2804,8 +2806,8 @@ namespace opengl3
                 var mq = Matrix4x4f.Identity;
                 var fr = RobotFrame.comp_forv_kinem(q, i, true, robotType);
                 qms[i] = UtilMatr.matrix_kuka(fr.position, fr.rotation.toDegree()) * ms[i];//UtilMatr.matrix_kuka(fr.position, fr.rotation.toDegree())
-                prin.t(" ________________qms[] " + i);
-                prin.t(qms[i]);
+                //prin.t(" ________________qms[] " + i);
+               // prin.t(qms[i]);
                 GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
             }
             //  GL1.buffersGl.setMatrobj("t2", 0, qms[7]);//pulse
@@ -5677,8 +5679,8 @@ namespace opengl3
             var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; //var reverse = true;
             //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
             //var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, scanner_config.rotate_cam);
-            
-            var frms_stereo = FrameLoader.load_rob_frames(cams_path[0]);
+            var cam_path = textB_scan_path.Text;
+            var frms_stereo = FrameLoader.load_rob_frames(cam_path);
 
             var cam1_conf_path = textB_cam1_conf.Text;
             var cam2_conf_path = textB_cam2_conf.Text;
@@ -5697,12 +5699,12 @@ namespace opengl3
             //make_photos_robot(ms_check);
             for (int i=0; i<ms_check.Count;i++)
             {
-                //GL1.addFrame(ms_check[i]);
+                GL1.addFrame(ms_check[i]);
             }
             comboImages.Items.AddRange(frms_stereo);
             matrices_cal = ms_check;
-            var thr = new Thread(make_photos_robot);
-            thr.Start();
+           // var thr = new Thread(make_photos_robot);
+           // thr.Start();
         }
 
         void make_photos_robot()
@@ -5710,11 +5712,12 @@ namespace opengl3
             int mon = 0;
             GL1.transRotZooms[mon].visible = true;
             GL1.transRotZooms[mon].robot_camera = true;
-            matrix_pattern = UtilOpenCV.to_matrix_opengl(matrices_cal[0]) * Matrix4x4f.RotatedX(180) * Matrix4x4f.Translated(-40,-40,0);
+            var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal.txt")[0];
+            matrix_pattern = UtilOpenCV.to_matrix_opengl(matrices_cal[0]) * Matrix4x4f.RotatedX(180);// * Matrix4x4f.Translated(20,-60,0);
             
             GL1.buffersGl.setMatrobj(pattern, 0, matrix_pattern);
             GL1.buffersGl.setMatrobj(flat, 0, matrix_pattern);
-            var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal.txt")[0];
+            
             for (int i = 1; i < matrices_cal.Count; i++)
             {
                 var fr_kuka = new RobotFrame(matrices_cal[i],current_robot);
@@ -5725,7 +5728,7 @@ namespace opengl3
                 var bfs = UtilOpenCV.to_matrix_opengl(matrices_cal[i]* matr_bfs) * Matrix4x4f.RotatedX(180);
                 GL1.transRotZooms[mon].robot_matr = bfs.Inverse;              
                 Thread.Sleep(100);
-                UtilOpenCV.saveImage(imBox_mark1, "virt\\calib_fl_2802b", fr_kuka.ToStr(" ",true,false,true,false));
+                UtilOpenCV.saveImage(imBox_mark1, "virt\\calib_fl_0303a", fr_kuka.ToStr(" ",true,false,true,false));
             }
             
         }
