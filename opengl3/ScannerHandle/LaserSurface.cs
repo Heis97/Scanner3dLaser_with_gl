@@ -224,11 +224,11 @@ namespace opengl3
             ps_l.Add(new PointF(points[points.Length-1- len_from_board]));
             ps = ps_l.ToArray();
 
-            /*var orig_c = mat.Clone();
+            var orig_c = mat.Clone();
             UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
-            UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
-            CvInvoke.Imshow("corn", orig_c);
-            CvInvoke.WaitKey();*/
+            //UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
+           // CvInvoke.Imshow("corn", orig_c);
+            //CvInvoke.WaitKey();
 
             var lines = PointCloud.computeTracesCam(ps, cameraCV);
             this.lines = lines;

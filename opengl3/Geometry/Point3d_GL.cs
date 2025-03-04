@@ -932,7 +932,21 @@ namespace opengl3
             }
             return ps_max;
         }
-
+        public static int Min_norm_i(Point3d_GL[] ps)
+        {
+            var norm_max = double.MaxValue;
+            int i_min = 0;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                var cur_magn = ps[i].magnitude();
+                if(cur_magn< norm_max)
+                {
+                    norm_max = cur_magn;
+                    i_min = i;
+                }
+            }
+            return i_min;
+        }
         public Point3d_GL setx(double x) { this.x = x; return this; }
         public Point3d_GL sety(double y) { this.y = y; return this; }
         public Point3d_GL setz(double z) { this.z = z; return this; }

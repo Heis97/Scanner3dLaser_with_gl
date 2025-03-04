@@ -75,6 +75,7 @@ namespace opengl3
         }
         public double str_to_double(string s)
         {
+            
             var s1 = s;
             if (s1.Contains(","))
             {
@@ -92,7 +93,7 @@ namespace opengl3
             var coords_s = coords_w.Trim().Split(' ');
             if (coords_s.Length < 6)
                 return;
-            if(coords_s[0][0]=='g')
+            if(coords_w.Contains('x'))
             {
                 X = str_to_double(coords_s[1].Substring(1));
                 Y = str_to_double(coords_s[2].Substring(1));

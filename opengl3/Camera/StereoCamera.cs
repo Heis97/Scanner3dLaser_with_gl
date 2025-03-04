@@ -22,6 +22,8 @@ namespace opengl3
         public Matrix<double> Bfs_r;//Flange->scaner
 
         public Matrix<double> Bbf;//Base->Flange
+
+        public Matrix<double> BS;//Flange->scaner
         public mode scan_coord_sys;
 
         public StereoCamera(CameraCV[] _cameraCVs,string bfs_file = null)

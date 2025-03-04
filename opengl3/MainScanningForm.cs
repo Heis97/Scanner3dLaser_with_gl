@@ -1509,7 +1509,7 @@ namespace opengl3
             var stereo = new StereoCamera(new CameraCV[] { cam1, cam1 });
             scanner.stereoCamera = stereo;
             this.scanner = scanner;
-
+            scanner.stereoCamera.Bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal.txt")[0];
             return scanner;
         }
         void load_scan_sing(Scanner scanner, string scan_path, int strip = 1, double smooth = -1)
@@ -1521,9 +1521,41 @@ namespace opengl3
             // foreach(var line in ps) GL1.addLineMeshTraj(line);  
             var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
            var scan_stl = Polygon3d_GL.toMesh(mesh);
+
             scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
+            var matr = UtilOpenCV.to_matrix_opengl( scanner.stereoCamera.Bbf * scanner.stereoCamera.Bfs);
+           // GL1.buffersGl.setMatrobj(scan_i, 0, matr);
+
+        }
+        
+        static public Point3d_GL[] get_charachter_ps_from_model(Point3d_GL[] model)
+        {
+            var p0 = Point3d_GL.Min_norm_i(model);
 
 
+            return null;
+        }
+        static public Point3d_GL[] unite_point_cloud(Point3d_GL[] model,Point3d_GL p0,double max_dist)
+        {
+            var map_xyz = new RasterMap(model,1);
+            var united = new List<Point3d_GL>();
+            var united_ind = new List<int>();
+            united.Add(p0);
+            var inds = map_xyz.get_ps(p0);
+            int i_cur = 0;
+            for(int i=0;i<model.Length;i++)
+            {
+                if(!united_ind.Contains(i))
+                {
+
+
+
+                    var dist = (united[i_cur] - model[i]).magnitude();
+
+                }
+            }
+
+            return null;
         }
 
         void load_calib_sing(Scanner scanner, string scan_path, int strip = 1, double smooth = -1)
@@ -2145,7 +2177,7 @@ namespace opengl3
                 GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
 
                 GL1.transRotZooms[0].viewType_ = viewType.Perspective;
-                GL1.transRotZooms[1].viewType_ = viewType.Perspective;
+               // GL1.transRotZooms[1].viewType_ = viewType.Perspective;
             }
             else if (monitor_num == 2)
             {
@@ -5703,6 +5735,7 @@ namespace opengl3
             }
             comboImages.Items.AddRange(frms_stereo);
             matrices_cal = ms_check;
+            cameraCVcommon = cam1;
            // var thr = new Thread(make_photos_robot);
            // thr.Start();
         }
@@ -7797,9 +7830,11 @@ namespace opengl3
 
             int strip = scanner_config.strip;
             double smooth = Convert.ToDouble(scanner_config.smooth);
-
+            
             var scanner = loadScanner_sing(cam1_conf_path,laser_line_path);
+            scanner.robotType = current_robot;
             load_scan_sing(scanner, scan_path, strip, smooth);
+
         }
         private void but_load_sing_calib_Click(object sender, EventArgs e)
         {

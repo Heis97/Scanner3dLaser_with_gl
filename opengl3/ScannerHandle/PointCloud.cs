@@ -102,8 +102,8 @@ namespace opengl3
             //var points_im = Detection.detectLineDiff(mat);
             if (points_im == null) return false;
             //Console.WriteLine(points_im.Length);
-            var orig_c = mat.Clone();
-           /* UtilOpenCV.drawPoints(orig_c, points_im, 0, 255, 0,2);
+           /* var orig_c = mat.Clone();
+            UtilOpenCV.drawPoints(orig_c, points_im, 0, 255, 0,2);
             CvInvoke.Imshow("ps", orig_c);
             CvInvoke.WaitKey();*/
             //prin.t(points_im);
@@ -114,7 +114,7 @@ namespace opengl3
             // var flat = LaserSurface.zeroFlatInCam(cameraCV.matrixSC, z);
             var las_fl_c = linearAxis.getLaserSurf(LinPos);
            // Console.Write(" "+las_fl_c+" ");
-            var points_cam = fromLines(points_im, cameraCV, las_fl_c);
+            var points_cam = fromLines(PointF.filter_exist( points_im), cameraCV, las_fl_c);
             //graphicGL?.addFlat3d_XY(flat);
 
            
@@ -140,6 +140,8 @@ namespace opengl3
             points3d = ps_list.ToArray();
             return true;
         }
+
+        
         double pos_from_las_flat(Flat3d_GL f, LinearAxis linearAxis)
         {
             var pos = (f.D - linearAxis.start_LasFlat.D) / linearAxis.oneLasFlat.D + linearAxis.start_pos;

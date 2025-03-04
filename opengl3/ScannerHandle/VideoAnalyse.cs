@@ -363,12 +363,14 @@ namespace opengl3
             //CvInvoke.AdaptiveThreshold(orig1, mat_or_tr,  255, ThresholdType.);
 
             //CvInvoke.Imshow("thr", mat_or_tr);
-
+            
             Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
             var ve_paths = get_video_path(1, filepath);
             string video_path = ve_paths[0];
             string enc_path = ve_paths[1];
-
+            var name_v1 = Path.GetFileNameWithoutExtension(ve_paths[0]);
+            scanner.set_rob_pos(name_v1,scanner.robotType);
+            // scanner.stereoCamera.Bfs = 
             var capture1 = new VideoCapture(video_path);
             var all_frames1 = capture1.Get  (CapProp.FrameCount);
             // orig1 = scanner.cameraCV.undist(orig1);

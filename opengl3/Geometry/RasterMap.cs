@@ -270,7 +270,7 @@ namespace opengl3
         {
             var x_len = (int)(p_len.x * 1.1) + 1;
             var y_len = (int)(p_len.y * 1.1) + 1;
-            var z_len = (int)(p_len.z * 1.1)+1;
+            var z_len = (int)(p_len.z * 1.1) + 1;
             var map_xyz = new int[x_len, y_len, z_len][];
 
             int triangle_overlay = 0;
@@ -614,7 +614,16 @@ namespace opengl3
            
             return loc_inds.ToArray();
         }
+        public int[] get_ps(Point3d_GL p)
+        {
+            var p_xyz = (p - pt_min) / res;
+            var x_c = (int)p_xyz.x;
+            var y_c = (int)p_xyz.y;
+            var z_c = (int)p_xyz.z;
 
+
+            return map_xyz[x_c,y_c,z_c];
+        }
         static public Point3d_GL[] get_ps_from_inds(Point3d_GL[] ps, int[] inds)
         {
             var ps_ind = new List<Point3d_GL>();

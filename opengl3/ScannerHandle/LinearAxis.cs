@@ -199,6 +199,7 @@ namespace opengl3
             double dest_max = 0;
             for (int i = 0; i< mats.Length;i++)
             {         
+
                 var ps = Detection.detectLineDiff(cameraCV.undist( mats[i].Clone()),cameraCV.scanner_config);
                 var ps_par = Detection.parall_Points(Detection.filtr_y0_Points(ps));
                 var ps_o = LaserSurface.order_x(ps_par);
@@ -308,6 +309,7 @@ namespace opengl3
             var pos_all = (double[])positions.Clone();
             //var sob = FindCircles.sobel_mat(orig);
             //CvInvoke.Imshow("sobel", sob);
+
             var inds_part = Detection.max_claster_im(cameraCV.scan_points.ToArray(), 4);
 
            /* CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4+10]]);
@@ -379,7 +381,7 @@ namespace opengl3
             //orig_c = cameraCV.undist(orig_c);
 
             UtilOpenCV.drawPointsF(orig_c, corners,255,0,0,2,true);
-            //CvInvoke.Imshow("orig_corn", orig_c);
+           // CvInvoke.Imshow("orig_corn", orig_c);
             //CvInvoke.WaitKey();
             cameraCV.compPos(new MCvPoint3D32f[] {
                 new MCvPoint3D32f(0,0,0),
@@ -399,7 +401,8 @@ namespace opengl3
                 LasSurfs.Add(las);
                 PositionsAxis.Add(positions[i]);
                 Console.WriteLine(" "+positions[i]+" "+las.flat3D);
-                //graphicGL.addFlat3d_YZ(las.flat3D,null,0.3f);
+               // var flat = graphicGL.addFlat3d_YZ(las.flat3D,null, Color3d_GL.gray());
+                //graphicGL.buffersGl.setTranspobj(flat, 0.3f);
                 LasFlats.Add(las.flat3D);
             }
 
@@ -409,11 +412,11 @@ namespace opengl3
             var flat_e = LasFlats[LasFlats.Count - 2];
             var f_0 = LaserSurface.zeroFlatInCam_XZ(null, 0);
 
-            //graphicGL.addFlat3d_YZ(flat_b);
+           // graphicGL.addFlat3d_YZ(flat_b);
             //graphicGL.addFlat3d_YZ(flat_e);
-            //graphicGL.addFlat3d_XZ(f_0);
+           // graphicGL.addFlat3d_XZ(f_0);
 
-
+            //return false;
             var p_las = Flat3d_GL.cross(flat_e, flat_b, f_0);
 
             //PositionsAxis = new List<double>();
@@ -429,14 +432,15 @@ namespace opengl3
                 LasFlats_all.Add(fl);
             }
             LasFlats = LasFlats_all;
+            //return false;
             //---------------------------------------
-            var f_i = 2;
+           /* var f_i = 2;
             var l_i = LasSurfs.Count - 3;
             var ps1 = PointCloud.intersectWithFlat(new Line3d_GL[] { LasSurfs[f_i].lines[5], LasSurfs[f_i].lines[6] }, LasSurfs[f_i].flat3D);
             var ps2 = PointCloud.intersectWithFlat(new Line3d_GL[] { LasSurfs[l_i].lines[5], LasSurfs[l_i].lines[6] }, LasSurfs[l_i].flat3D);
 
             //graphicGL.addPointMesh(ps1, Color3d_GL.red());
-           // graphicGL.addPointMesh(ps2, Color3d_GL.red());
+            //graphicGL.addPointMesh(ps2, Color3d_GL.red());
 
             var flat1 = new Flat3d_GL(ps2[0], ps1[0], ps1[1]);
             var flat2 = new Flat3d_GL(ps2[0], ps1[1], ps2[1]);
@@ -475,9 +479,9 @@ namespace opengl3
             LasFlats = LasFlats_all2;
             PositionsAxis = pos_all.ToList();
             mats_calib = mats_work.ToArray();
-            positions = PositionsAxis.ToArray();
+            positions = PositionsAxis.ToArray();*/
             //---------------------------------------
-            //comp_flat_koef_full(LasFlats.ToArray(), PositionsAxis.ToArray());
+            comp_flat_koef_full(LasFlats.ToArray(), PositionsAxis.ToArray());
 
 
             var flats_cam_sm = Flat3d_GL.gaussFilter_v2(LasFlats.ToArray(), 3).ToList();
@@ -488,13 +492,13 @@ namespace opengl3
                 flats_cam_sm[i] = fl;
             }
 
-            FileManage.saveToJson_flats(flats_cam_sm.ToArray(), "linearcal_" + positions[0] + "_.json");
+           // FileManage.saveToJson_flats(flats_cam_sm.ToArray(), "linearcal_" + positions[0] + "_.json");
             LasFlats = flats_cam_sm;
             start_flat =(int)LasFlats[0].numb;
             var flats_del = new List<Flat3d_GL>();
             calibrated = true;
             Console.WriteLine("_____________");
-           // pointCloud = null;
+           pointCloud = null;
 
             if (pointCloud!=null)
             {
@@ -793,7 +797,7 @@ namespace opengl3
             return new Flat3d_GL();
         }
 
-        public Flat3d_GL getLaserSurf_regr2(double PositionLinear)
+        public Flat3d_GL getLaserSurf(double PositionLinear)//_regr2
         {
             if (calibrated)
             {
@@ -807,7 +811,7 @@ namespace opengl3
             return new Flat3d_GL();
         }
 
-        public Flat3d_GL getLaserSurf(double PositionLinear)//_match
+        public Flat3d_GL getLaserSurf_match(double PositionLinear)//_match
         {
             if (calibrated)
             {
