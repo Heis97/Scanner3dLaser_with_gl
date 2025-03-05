@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Accord;
 using PathPlanning;
 
 
@@ -624,8 +625,153 @@ namespace opengl3
 
             return map_xyz[x_c,y_c,z_c];
         }
+
+        public Point3d_GL get_cell(Point3d_GL p)
+        {
+            var p_xyz = (p - pt_min) / res;
+            var x_c = (int)p_xyz.x;
+            var y_c = (int)p_xyz.y;
+            var z_c = (int)p_xyz.z;
+
+
+            return new Point3d_GL(x_c, y_c, z_c);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="p">cell coords</param>
+        /// <returns></returns>
+        public Point3d_GL[] get_cells_around(Point3d_GL p,int rad = 1)
+        {
+            var cells = new List<Point3d_GL>();
+            var x_b = (int)p.x - rad; var x_e = (int)p.x + rad;
+            var y_b = (int)p.y - rad; var y_e = (int)p.y + rad;
+            var z_b = (int)p.z - rad; var z_e = (int)p.z + rad;
+            if (x_b < 0) x_b = 0; if (x_e > map_xyz.GetLength(0) - 2) x_e = map_xyz.GetLength(0) - 2;
+            if (y_b < 0) y_b = 0; if (y_e > map_xyz.GetLength(1) - 2) y_e = map_xyz.GetLength(1) - 2;
+            if (z_b < 0) z_b = 0; if (z_e > map_xyz.GetLength(2) - 2) z_e = map_xyz.GetLength(2) - 2;
+            for (int x = x_b; x<=x_e;x++)
+            {
+                for (int y = y_b; y <= y_e; y++)
+                {
+                    for (int z = z_b; z <= z_e; z++)
+                    {
+                        var p_cur = new Point3d_GL(x, y, z);
+                        if (map_xyz[x, y, z] != null && (p - p_cur).magnitude() > 0.1)
+                        {
+                            if (map_xyz[x, y, z].Length != 0)
+                            {
+                                cells.Add(p_cur);
+                            }
+                        }
+                    }
+                }
+            }
+            return cells.ToArray();
+        }
+        public Point3d_GL[] unite_point_cloud(Point3d_GL p0, double max_dist, Point3d_GL[] ps)
+        {
+            var dim = (int)(max_dist / res);
+            var c0 = get_cell(p0);
+            var cells_all = new List<Point3d_GL>();
+            var cells_boarder_prev = get_cells_around(c0, dim).ToList();
+            var cells_boarder = new List<Point3d_GL>();
+            cells_all.AddRange(cells_boarder);
+            bool boarder = true;
+            Console.WriteLine(cells_boarder.Count);
+            while (boarder)
+            {
+                for (int i = 0; i < cells_boarder.Count; i++)
+                {
+                    var cell_cur = get_cells_around(cells_boarder[i], dim);
+                    cell_cur = cross_inv_points(cells_all.ToArray(), cell_cur, 0.1);
+                    cell_cur = cross_inv_points(cells_all.ToArray(), cells_all.ToArray(), 0.1);
+                    cells_boarder.AddRange(cell_cur);
+                }
+                if (cells_boarder != null)
+                {
+                    Console.WriteLine(cells_boarder.Count);
+                    cells_boarder_prev = cells_boarder;
+                    cells_boarder = new List<Point3d_GL>();
+                    cells_all.AddRange(cells_boarder);
+                }
+                else
+                {
+                    boarder = false;
+                }
+            }
+            var ps_uniq = get_ps_from_cells(ps,cells_all.ToArray());
+
+            return ps_uniq;
+        }
+
+        public Point3d_GL[] join_points(Point3d_GL[] ps1, Point3d_GL[] ps2, double res)
+        {
+            var ps_j = ps1.ToList();
+            for (int j = 0; j < ps2.Length; j++)
+            {
+                for (int i = 0; i < ps1.Length; i++)
+                {
+                    if((ps2[j] - ps1[i]).magnitude() > res)
+                    {
+                        ps_j.Add(ps1[i]);
+                    }
+                }
+            }
+            return ps_j.ToArray();
+        }
+
+        public Point3d_GL[] cross_points(Point3d_GL[] ps1, Point3d_GL[] ps2, double res)
+        {
+            var ps_j = new List<Point3d_GL>();
+            for (int j = 0; j < ps2.Length; j++)
+            {
+                for (int i = 0; i < ps1.Length; i++)
+                {
+                    if ((ps2[j] - ps1[i]).magnitude() > res)
+                    {
+                        ps_j.Add(ps1[i]);
+                    }
+                }
+            }
+            return ps_j.ToArray();
+        }
+        public Point3d_GL[] cross_inv_points(Point3d_GL[] ps1, Point3d_GL[] ps2, double res)
+        {
+            var ps_j = new List<Point3d_GL>();
+            for (int j = 0; j < ps2.Length; j++)
+            {
+                bool have = false;
+                for (int i = 0; i < ps1.Length; i++)
+                {
+                    if ((ps2[j] - ps1[i]).magnitude() > res)
+                    {
+                        
+                        have = true;
+                    }
+                }
+                if(!have)
+                {
+                    ps_j.Add(ps2[j]);
+                }
+            }
+            return ps_j.ToArray();
+        }
+
+        public Point3d_GL[] get_ps_from_cells(Point3d_GL[] ps, Point3d_GL[] cells)
+        {
+            var ps_all = new List<Point3d_GL>();
+            for (int i = 0; i < cells.Length; i++)
+            {
+                var ps_c = get_ps_from_inds(ps, map_xyz[(int)cells[i].x, (int)cells[i].y, (int)cells[i].z]);
+                if(ps_c != null) ps_all.AddRange(ps_c);
+            }
+            return ps_all.ToArray();
+        }
         static public Point3d_GL[] get_ps_from_inds(Point3d_GL[] ps, int[] inds)
         {
+            if (inds ==  null) return null;
+            if(inds.Length == 0) return null;
             var ps_ind = new List<Point3d_GL>();
             for(int i = 0; i < inds.Length; i++)
             {

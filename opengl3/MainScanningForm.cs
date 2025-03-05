@@ -27,6 +27,7 @@ using System.Globalization;
 using Accord.Math.Geometry;
 using System.Net;
 using System.Drawing.Drawing2D;
+using Emgu.CV.Dnn;
 
 namespace opengl3
 {
@@ -1531,31 +1532,11 @@ namespace opengl3
         static public Point3d_GL[] get_charachter_ps_from_model(Point3d_GL[] model)
         {
             var p0 = Point3d_GL.Min_norm_i(model);
+            var map_xyz = new RasterMap(model, 1);
+           var ps_un = map_xyz.unite_point_cloud(model[p0], 1, model);
 
 
-            return null;
-        }
-        static public Point3d_GL[] unite_point_cloud(Point3d_GL[] model,Point3d_GL p0,double max_dist)
-        {
-            var map_xyz = new RasterMap(model,1);
-            var united = new List<Point3d_GL>();
-            var united_ind = new List<int>();
-            united.Add(p0);
-            var inds = map_xyz.get_ps(p0);
-            int i_cur = 0;
-            for(int i=0;i<model.Length;i++)
-            {
-                if(!united_ind.Contains(i))
-                {
-
-
-
-                    var dist = (united[i_cur] - model[i]).magnitude();
-
-                }
-            }
-
-            return null;
+            return ps_un;
         }
 
         void load_calib_sing(Scanner scanner, string scan_path, int strip = 1, double smooth = -1)
@@ -2311,16 +2292,26 @@ namespace opengl3
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             //test_gen_traj();
             //comp_mask();
-            load_kuka_scene();
+           //load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);
             //test_diff_angles(1.6);
-
+            test_unite();
             //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
             //test_go_to_point_robot();
+        }
+
+        void test_unite()
+        {
+            var stl_name = "scan_12_20_17_46_51.stl";
+            var scan_stl = new Model3d(stl_name, false);
+            var pols = scan_stl.pols;
+            var ps = Polygon3d_GL.get_uniq_points(pols);
+            scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles, Path.GetFileNameWithoutExtension(stl_name));
+            get_charachter_ps_from_model(ps);
         }
         void load_scaner_scene()
         {
@@ -2634,6 +2625,7 @@ namespace opengl3
         #endregion
 
         #region test
+
 
         void vel_rob_map()
         {
