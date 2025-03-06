@@ -495,7 +495,12 @@ namespace opengl3
             }
             return ret;
         }
-
+        /// <summary>
+        /// vector multiply
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
         public static Point3d_GL operator |(Point3d_GL p1, Point3d_GL p2)//vector multiply
         {
             return new Point3d_GL(
@@ -528,6 +533,7 @@ namespace opengl3
             prin.t(m_res);
             prin.t("p_n");
             prin.t(p_n.ToString());*/
+           p_n.color = p.color;
             return p_n;
         }
        /*public static Point3d_GL operator *(Point3d_GL p, Matrix<double> m)//хрень
@@ -583,6 +589,96 @@ namespace opengl3
         {
             return arccos(p1 ^ p2);
         }
+
+        public static Matrix<double> get_align_matrix_flat(Point3d_GL[] ps)
+        {
+            var ps_claster = (Point3d_GL[])ps.Clone();
+            var ps_diag = Point3d_GL.findMainDiag(ps_claster);
+            var p1 = ps_claster[ps_diag[0]];
+            var p2 = ps_claster[ps_diag[1]];
+            var ang = Point3d_GL.calcAngleX(p1, p2);
+            var m_rot = RobotFrame.RotZmatr(-ang);
+            Console.WriteLine("ang: " + ang);
+
+            // string claster = GL1.addPointMesh(ps_claster, Color3d_GL.red(),"claster");
+            //var ps_rot = Point3d_GL.multMatr(ps_claster, m_rot);
+            var ps_rot = Point3d_GL.multMatr_p_m(m_rot, ps_claster);
+
+            var minyi = Point3d_GL.Min_Y_i(ps_rot);
+            Console.WriteLine("p1: " + ps_rot[ps_diag[0]]);
+            Console.WriteLine("p2: " + ps_rot[ps_diag[1]]);
+            //GL1.addPointMesh(ps_rot, Color3d_GL.red());
+
+            if ((p1 - ps_claster[minyi]).magnitude() > (p2 - ps_claster[minyi]).magnitude())
+            {
+                p2 = ps_claster[ps_diag[0]];
+                p1 = ps_claster[ps_diag[1]];
+            }
+            var vx = (p2 - ps_claster[minyi]).normalize();
+            var vy = (p1 - ps_claster[minyi]).normalize();
+            var vz = vx | vy;
+            var m = RobotFrame.matrix_assemble(vx, vy, vz, ps_claster[minyi]);
+
+            var m_inv = UtilOpenCV.inv(m);
+            return m_inv;
+        }
+        public static Point3d_GL[][] get_sides(Point3d_GL[] ps)
+        {
+            var cx = Point3d_GL.Min(ps) + (Point3d_GL.Max(ps) - Point3d_GL.Min(ps)) / 2;
+            var ps_cent = Point3d_GL.add_arr(ps, -cx);
+
+            var left = new List<Point3d_GL>();
+            for (int i = 0; i < ps_cent.Length; i++)
+            {
+                if (ps_cent[i].y < 0)
+                {
+                    left.Add(ps_cent[i]);
+                }
+            }
+
+            var right = new List<Point3d_GL>();
+            for (int i = 0; i < ps_cent.Length; i++)
+            {
+                if (ps_cent[i].y > 0)
+                {
+                    right.Add(ps_cent[i]);
+                }
+            }
+            return new Point3d_GL[][] { left.ToArray(), right.ToArray() };
+        }
+
+        public static Point3d_GL[] add_inds_internal(Point3d_GL[] ps)
+        {
+            var ps_int = new List<Point3d_GL>();
+            for(int i = 0;i < ps.Length;i++)
+            {
+                var p = ps[i];
+                p.color.r = i;
+                ps_int.Add(p);
+            }
+            return ps_int.ToArray();
+        }
+
+        public static int get_ind_internal(Point3d_GL[] ps, int ind)
+        {
+            for (int i = 0; i < ps.Length; i++)
+            {
+                if(Math.Abs(ps[i].color.r - ind)<0.1) return i;
+            }
+            return -1;
+        }
+
+        public static int[] get_corners_45_xy(Point3d_GL[] ps)
+        {
+            var m_rot = RobotFrame.RotZmatr(Math.PI/4);
+            var ps_rot = Point3d_GL.multMatr_p_m(m_rot, ps);
+            var pts = new int[4];
+            pts[0] = Min_X_i(ps_rot);
+            pts[1] = Min_Y_i(ps_rot);
+            pts[2] = Max_X_i(ps_rot);
+            pts[3] = Max_Y_i(ps_rot);
+            return pts;
+        }
         public static bool one_dir(Point3d_GL p1, Point3d_GL p2)
         {
             if (ang(p1, p2) < Math.PI / 2) return true;
@@ -619,6 +715,41 @@ namespace opengl3
             }
             sb.Append("};");
             return sb.ToString();
+        }
+
+        static public  int[] findMainDiag(Point3d_GL[] ps)
+        {
+            // Console.WriteLine("P_LEN : " + ps.Length);
+            var max = double.MinValue;
+            var min = double.MaxValue;
+            int ind1 = 0;
+            int ind2 = 0;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                for (int j = i + 1; j < ps.Length; j++)
+                {
+                    var dist = (ps[i] - ps[j]).magnitude();
+                    if (dist > max)
+                    {
+                        max = dist;
+                        ind1 = i;
+                        ind2 = j;
+                    }
+                    if (dist < min)
+                    {
+                        min = dist;
+                        //Console.WriteLine("min: "+min);
+                    }
+                }
+            }
+            return new int[] { ind1, ind2, (int)Math.Sqrt(min) };
+        }
+        public static double calcAngleX(Point3d_GL p1, Point3d_GL p2)
+        {
+            var v1 = new Point3d_GL(p1.x - p2.x, p1.y - p2.y);
+            var v2 = new Point3d_GL(1);
+            var angle = Math.Sign(p1.y - p2.y) * Math.Acos(v1 ^ v2);
+            return angle;
         }
         public static Point3d_GL[] order_points(Point3d_GL[] ps)
         {
@@ -942,6 +1073,68 @@ namespace opengl3
                 if(cur_magn< norm_max)
                 {
                     norm_max = cur_magn;
+                    i_min = i;
+                }
+            }
+            return i_min;
+        }
+
+        public static int Min_X_i(Point3d_GL[] ps)
+        {
+            var x_max = double.MaxValue;
+            int i_min = 0;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                var cur_magn = ps[i].x;
+                if (cur_magn < x_max)
+                {
+                    x_max = cur_magn;
+                    i_min = i;
+                }
+            }
+            return i_min;
+        }
+        public static int Max_X_i(Point3d_GL[] ps)
+        {
+            var x_min = double.MinValue;
+            int i_min = 0;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                var cur_magn = ps[i].x;
+                if (cur_magn > x_min)
+                {
+                    x_min = cur_magn;
+                    i_min = i;
+                }
+            }
+            return i_min;
+        }
+        public static int Min_Y_i(Point3d_GL[] ps)
+        {
+            var y_max = double.MaxValue;
+            int i_min = 0;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                var cur_magn = ps[i].y;
+                if (cur_magn < y_max)
+                {
+                    y_max = cur_magn;
+                    i_min = i;
+                }
+            }
+            return i_min;
+        }
+
+        public static int Max_Y_i(Point3d_GL[] ps)
+        {
+            var y_min = double.MinValue;
+            int i_min = 0;
+            for (int i = 0; i < ps.Length; i++)
+            {
+                var cur_magn = ps[i].y;
+                if (cur_magn > y_min)
+                {
+                    y_min = cur_magn;
                     i_min = i;
                 }
             }

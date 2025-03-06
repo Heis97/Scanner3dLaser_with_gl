@@ -1529,7 +1529,7 @@ namespace opengl3
 
         }
         
-        static public Point3d_GL[][] get_charachter_ps_from_model(Point3d_GL[] model)
+        static public Point3d_GL[][] unite_point_cloud(Point3d_GL[] model)
         {
             var p0 = Point3d_GL.Min_norm_i(model);
             var map_xyz = new RasterMap(model, 1);
@@ -2149,7 +2149,7 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
            
             //GL1.SortObj();
-            int monitor_num = 2;
+            int monitor_num = 1;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -2293,29 +2293,126 @@ namespace opengl3
             //GL1.add_robot(q_cur, 8, RobotFrame.RobotType.KUKA, true, Color3d_GL.black(), "orig");
             //test_gen_traj();
             //comp_mask();
-           //load_kuka_scene();
+            //load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);
             //test_diff_angles(1.6);
-            test_unite();
+            //get_ps_char("scan_12_20_17_46_51.stl");
             //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
             //test_go_to_point_robot();
         }
 
-        void test_unite()
+        void get_ps_char(string stl_name)
         {
-            var stl_name = "scan_12_20_17_50_36.stl";
             var scan_stl = new Model3d(stl_name, false);
             var pols = scan_stl.pols;
             var ps = Polygon3d_GL.get_uniq_points(pols);
-            scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles, Path.GetFileNameWithoutExtension(stl_name));
-            var ps_un = get_charachter_ps_from_model(ps);
-            for(int i=0; i<ps_un.Length;i++)
-                GL1.addPointMesh(ps_un[i], Color3d_GL.random());
+            ps = Point3d_GL.add_inds_internal(ps);
+            scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Points, Path.GetFileNameWithoutExtension(stl_name));
+            var ps_un = unite_point_cloud(ps);
+            //for(int i=0; i<ps_un.Length;i++)
+               // GL1.addPointMesh(ps_un[i], Color3d_GL.random());
+
+            var ps_claster =  Point3d_GL.unifPoints2d(ps_un);
+            /*var ps_diag = Point3d_GL.findMainDiag(ps_claster);
+            var p1 = ps_claster[ps_diag[0]];
+            var p2 = ps_claster[ps_diag[1]];
+            var ang = Point3d_GL.calcAngleX(p1, p2);
+            var m_rot = RobotFrame.RotZmatr(-ang);
+            Console.WriteLine("ang: " + ang);
+
+           // string claster = GL1.addPointMesh(ps_claster, Color3d_GL.red(),"claster");
+            //var ps_rot = Point3d_GL.multMatr(ps_claster, m_rot);
+            var ps_rot = Point3d_GL.multMatr_p_m(m_rot,ps_claster);
+
+            var minyi = Point3d_GL.Min_Y_i(ps_rot);
+            Console.WriteLine("p1: " + ps_rot[ps_diag[0]]);
+            Console.WriteLine("p2: " + ps_rot[ps_diag[1]]);
+            //GL1.addPointMesh(ps_rot, Color3d_GL.red());
+
+            if((p1- ps_claster[minyi]).magnitude()> (p2 - ps_claster[minyi]).magnitude())
+            {
+                p2 = ps_claster[ps_diag[0]];
+                p1 = ps_claster[ps_diag[1]];
+            }
+            var vx = (p2 - ps_claster[minyi]).normalize();
+            var vy = (p1 - ps_claster[minyi]).normalize();
+            var vz = vx | vy;
+            var m = RobotFrame.matrix_assemble(vx, vy, vz, ps_claster[minyi]);*/
+
+            var m_inv = Point3d_GL.get_align_matrix_flat(ps_claster);
+            var ps_align_xy = Point3d_GL.multMatr_p_m(m_inv, ps);
+            //string align_xy = GL1.addPointMesh(ps_align_xy, Color3d_GL.gray(), "ps_align_xy");
+
+            var up_ps = new List<Point3d_GL>();
+            for(int i=0; i<ps_align_xy.Length;i++)
+            {
+                if (Math.Abs(ps_align_xy[i].z)<4)
+                {
+                    up_ps.Add(ps_align_xy[i]);
+                }
+            }
+            var m_inv_2 = Point3d_GL.get_align_matrix_flat(up_ps.ToArray());
+            var ps_align_xy_2 = Point3d_GL.multMatr_p_m(m_inv_2, ps_align_xy);
+
+
+            
+
+            var level0 = new List<Point3d_GL>();
+            for (int i = 0; i < ps_align_xy_2.Length; i++)
+            {
+                if (Math.Abs(ps_align_xy_2[i].z) < 2)
+                {
+                    level0.Add(ps_align_xy_2[i]);
+                }
+            }
+
+
+            var level1 = new List<Point3d_GL>();
+            for (int i = 0; i < ps_align_xy_2.Length; i++)
+            {
+                if (Math.Abs(ps_align_xy_2[i].z+10) < 2)
+                {
+                    level1.Add(ps_align_xy_2[i]);
+                }
+            }
+
+
+          //  GL1.addPointMesh(level0.ToArray(), Color3d_GL.red(), "level0");
+           // GL1.addPointMesh(level1.ToArray(), Color3d_GL.green(), "level1");
+
+            var sides0 =  Point3d_GL.get_sides(level0.ToArray());
+            var corn0_l = Point3d_GL.get_corners_45_xy(sides0[0]);
+            var corn0_r = Point3d_GL.get_corners_45_xy(sides0[1]);
+
+            var sides1 = Point3d_GL.get_sides(level1.ToArray());
+            var corn1_l = Point3d_GL.get_corners_45_xy(sides1[0]);
+            var corn1_r = Point3d_GL.get_corners_45_xy(sides1[1]);
+            var colors = new Color3d_GL[] { Color3d_GL.red(), Color3d_GL.green(), Color3d_GL.aqua(), Color3d_GL.purple() };
+            var ps_char = new List<Point3d_GL>();
+            for (int i = 0;i<4; i++)
+            {
+                var ps_corn = new List<Point3d_GL>
+                {
+                    ps[(int)( sides0[0][corn0_l[i]].color.r )],
+                    ps[(int)( sides0[1][corn0_r[i]].color.r )],
+                    ps[(int)( sides1[0][corn1_l[i]].color.r )],
+                    ps[(int)( sides1[1][corn1_r[i]].color.r )],
+                };
+                GL1.addPointMesh(ps_corn.ToArray(), colors[i],"corn_"+i);
+                ps_char.AddRange(ps_corn);
+            }
+            FormSettings.save_obj(Path.GetFileNameWithoutExtension(stl_name)+"_ps.json", ps_char);
+            //var matr = UtilOpenCV.to_matrix_opengl(m);
+            //GL1.buffersGl.setMatrobj(claster, 0, matr.Inverse);
+
         }
+       
+
+
         void load_scaner_scene()
         {
             /*var L0 = 360;
@@ -3557,7 +3654,7 @@ namespace opengl3
         }
         void test_pr()
         {
-            var ps_2 = FileManage.loadFromJson("settings_pulse.json");
+            var ps_2 = FileManage.loadFromJson ("settings_pulse.json");
             var ps = new List<Point3d_GL>();
             ps.Add(ps_2[3]["b_2806a"].to_point3dgl());
             ps.Add(ps_2[3]["cal_1_2"].to_point3dgl());

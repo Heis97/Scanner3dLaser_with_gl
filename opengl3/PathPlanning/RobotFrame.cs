@@ -1090,7 +1090,7 @@ namespace opengl3
             return q;
         }
 
-        static Matrix<double> matrix_assemble(Point3d_GL vx, Point3d_GL vy, Point3d_GL vz, Point3d_GL p)
+        static public Matrix<double> matrix_assemble(Point3d_GL vx, Point3d_GL vy, Point3d_GL vz, Point3d_GL p)
         {
           /*  return new Matrix<double>(new double[,] {
             {vx.x,vx.y,vx.z,p.x },

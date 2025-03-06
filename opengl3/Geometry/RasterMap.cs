@@ -677,6 +677,7 @@ namespace opengl3
             var cells_all = new List<Point3d_GL[]>();
             var cells_next = new List<Point3d_GL>();
             var cells_boarder_prev = this.get_cells_around(c0, dim).ToList();
+            cells_boarder_prev.Add(c0);
             var cells_boarder = cells_boarder_prev;
             cells_all.Add(cells_boarder.ToArray());
             bool boarder = true;
