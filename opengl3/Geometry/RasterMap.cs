@@ -36,7 +36,7 @@ namespace opengl3
             }
            
         }
-        public RasterMap(Point3d_GL[] ps, double resolution, type_map type = type_map.XY)
+        public RasterMap(Point3d_GL[] ps, double resolution, type_map type = type_map.XYZ)
         {
             switch (type)
             {
@@ -217,7 +217,7 @@ namespace opengl3
             if (resolution < 0)
             {
 
-                resolution = 4* d_max/Math.Sqrt(points.Length);
+                resolution =2* d_max/Math.Sqrt(points.Length);
                 Console.WriteLine(resolution);
             }
             var p_len = (p_max - p_min) / resolution;
@@ -593,9 +593,9 @@ namespace opengl3
             var y_b = y_c - wind; if (y_b < 0) y_b = 0;
             var z_b = z_c - wind; if (z_b < 0) z_b = 0;
 
-            var x_e = x_c + wind; if (x_e > map_xyz.GetLength(0)) x_e = map_xyz.GetLength(0);
-            var y_e = y_c + wind; if (y_e > map_xyz.GetLength(1)) y_e = map_xyz.GetLength(1);
-            var z_e = z_c + wind; if (z_e > map_xyz.GetLength(2)) z_e = map_xyz.GetLength(2);
+            var x_e = x_c + wind; if (x_e >= map_xyz.GetLength(0)) x_e = map_xyz.GetLength(0)-1;
+            var y_e = y_c + wind; if (y_e >= map_xyz.GetLength(1)) y_e = map_xyz.GetLength(1)-1;
+            var z_e = z_c + wind; if (z_e >= map_xyz.GetLength(2)) z_e = map_xyz.GetLength(2)-1;
 
             var loc_inds = new List<int>();
 
@@ -669,40 +669,54 @@ namespace opengl3
             }
             return cells.ToArray();
         }
-        public Point3d_GL[] unite_point_cloud(Point3d_GL p0, double max_dist, Point3d_GL[] ps)
+        public Point3d_GL[][] unite_point_cloud(Point3d_GL p0, double max_dist, Point3d_GL[] ps)
         {
             var dim = (int)(max_dist / res);
             var c0 = get_cell(p0);
-            var cells_all = new List<Point3d_GL>();
-            var cells_boarder_prev = get_cells_around(c0, dim).ToList();
-            var cells_boarder = new List<Point3d_GL>();
-            cells_all.AddRange(cells_boarder);
+            Console.WriteLine(map_xyz.GetLength(0));
+            var cells_all = new List<Point3d_GL[]>();
+            var cells_next = new List<Point3d_GL>();
+            var cells_boarder_prev = this.get_cells_around(c0, dim).ToList();
+            var cells_boarder = cells_boarder_prev;
+            cells_all.Add(cells_boarder.ToArray());
             bool boarder = true;
+            Console.WriteLine("cells_start");
             Console.WriteLine(cells_boarder.Count);
             while (boarder)
             {
                 for (int i = 0; i < cells_boarder.Count; i++)
                 {
-                    var cell_cur = get_cells_around(cells_boarder[i], dim);
-                    cell_cur = cross_inv_points(cells_all.ToArray(), cell_cur, 0.1);
-                    cell_cur = cross_inv_points(cells_all.ToArray(), cells_all.ToArray(), 0.1);
-                    cells_boarder.AddRange(cell_cur);
+                    var cell_cur = this.get_cells_around(cells_boarder[i], dim);
+                    cell_cur = cross_inv_points(cells_boarder_prev.ToArray(), cell_cur, 0.1);
+                    cell_cur = cross_inv_points(cells_boarder.ToArray(), cell_cur, 0.1);
+                    cell_cur = cross_inv_points(cells_next.ToArray(), cell_cur, 0.1);
+                    //cell_cur = cross_inv_points(cells_all.ToArray(), cell_cur.ToArray(), 0.1);
+                    cells_next.AddRange(cell_cur);
                 }
-                if (cells_boarder != null)
+                if (cells_next.Count!=0)
                 {
                     Console.WriteLine(cells_boarder.Count);
                     cells_boarder_prev = cells_boarder;
-                    cells_boarder = new List<Point3d_GL>();
-                    cells_all.AddRange(cells_boarder);
+                    cells_boarder = cells_next;
+                    
+                    cells_all.Add(cells_next.ToArray());
+                    cells_next = new List<Point3d_GL>();
                 }
                 else
                 {
+
+
                     boarder = false;
                 }
             }
-            var ps_uniq = get_ps_from_cells(ps,cells_all.ToArray());
+            var ps_b = new List<Point3d_GL[]>();
+            for(int i=0; i<cells_all.Count; i++)
+            {
+                ps_b.Add(get_ps_from_cells(ps, cells_all[i]));
+            }
+            //var ps_uniq = ;
 
-            return ps_uniq;
+            return ps_b.ToArray();
         }
 
         public Point3d_GL[] join_points(Point3d_GL[] ps1, Point3d_GL[] ps2, double res)
@@ -744,7 +758,7 @@ namespace opengl3
                 bool have = false;
                 for (int i = 0; i < ps1.Length; i++)
                 {
-                    if ((ps2[j] - ps1[i]).magnitude() > res)
+                    if ((ps2[j] - ps1[i]).magnitude() < res)
                     {
                         
                         have = true;

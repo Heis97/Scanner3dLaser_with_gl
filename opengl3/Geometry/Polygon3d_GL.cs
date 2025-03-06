@@ -886,7 +886,7 @@ namespace opengl3
                     inds_ch[i] = true;
 
                 }
-                //Console.WriteLine("remesh: " + i + "/" + ps.Count);
+               // Console.WriteLine("remesh: " + i + "/" + ps.Count);
             }
             Console.WriteLine(ps_uniq.Count);
             for (int i = 0; i < inds_ch.Length; i++)

@@ -102,7 +102,7 @@ namespace opengl3
             //var points_im = Detection.detectLineDiff(mat);
             if (points_im == null) return false;
             //Console.WriteLine(points_im.Length);
-           /* var orig_c = mat.Clone();
+            /*var orig_c = mat.Clone();
             UtilOpenCV.drawPoints(orig_c, points_im, 0, 255, 0,2);
             CvInvoke.Imshow("ps", orig_c);
             CvInvoke.WaitKey();*/

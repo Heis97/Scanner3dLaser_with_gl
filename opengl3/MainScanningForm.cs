@@ -1524,16 +1524,17 @@ namespace opengl3
            var scan_stl = Polygon3d_GL.toMesh(mesh);
 
             scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
-            var matr = UtilOpenCV.to_matrix_opengl( scanner.stereoCamera.Bbf * scanner.stereoCamera.Bfs);
+            //var matr = UtilOpenCV.to_matrix_opengl( scanner.stereoCamera.Bbf * scanner.stereoCamera.Bfs);
            // GL1.buffersGl.setMatrobj(scan_i, 0, matr);
 
         }
         
-        static public Point3d_GL[] get_charachter_ps_from_model(Point3d_GL[] model)
+        static public Point3d_GL[][] get_charachter_ps_from_model(Point3d_GL[] model)
         {
             var p0 = Point3d_GL.Min_norm_i(model);
             var map_xyz = new RasterMap(model, 1);
-           var ps_un = map_xyz.unite_point_cloud(model[p0], 1, model);
+            Console.WriteLine(map_xyz.map_xyz.GetLength(0));
+           var ps_un = map_xyz.unite_point_cloud(model[p0], 2, model);
 
 
             return ps_un;
@@ -2306,12 +2307,14 @@ namespace opengl3
 
         void test_unite()
         {
-            var stl_name = "scan_12_20_17_46_51.stl";
+            var stl_name = "scan_12_20_17_50_36.stl";
             var scan_stl = new Model3d(stl_name, false);
             var pols = scan_stl.pols;
             var ps = Polygon3d_GL.get_uniq_points(pols);
             scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Triangles, Path.GetFileNameWithoutExtension(stl_name));
-            get_charachter_ps_from_model(ps);
+            var ps_un = get_charachter_ps_from_model(ps);
+            for(int i=0; i<ps_un.Length;i++)
+                GL1.addPointMesh(ps_un[i], Color3d_GL.random());
         }
         void load_scaner_scene()
         {
