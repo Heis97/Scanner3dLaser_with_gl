@@ -343,6 +343,7 @@ namespace opengl3
             anim_is_go = true;
             cur_time_an = 0;
             end_time_an = end;
+            Console.WriteLine("end_anim: " + end);
             if(form1 != null)
             {
                 form = (MainScanningForm)form1;
@@ -364,9 +365,11 @@ namespace opengl3
                 fi -= df;
                 lightSources[0].direction_z = Math.Cos(fi);
                 */
-                lightSources[0].direction_z -= df;
-               // form?.set_pos_traj_robot(cur_time_an);
+                //lightSources[0].direction_z -= df;
+                // form?.set_pos_traj_robot(cur_time_an);
+                form?.set_angle_laser_external(cur_time_an);
                 cur_time_an++;
+                Console.WriteLine("cur_anim: " + cur_time_an + "/" + end_time_an);
                 if (cur_time_an > end_time_an) anim_is_go = false;
             }
             
@@ -445,9 +448,9 @@ namespace opengl3
             locationBox = contr.Location;
             Gl.Initialize();
             Gl.Enable(EnableCap.Multisample);
-           // Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
+            Gl.ClearColor(0.9f, 0.9f, 0.95f, 0.0f);
             //Gl.ClearColor(1f, 1f, 1f, 0.0f);
-            Gl.ClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+            //Gl.ClearColor(0.1f, 0.1f, 0.1f, 0.0f);
             Gl.PointSize(2f);
             
             var VertexSourceGL = assembCode(new string[] { @"Graphic\Shaders_face\Vert\VertexSh_Models.glsl" });
@@ -1872,6 +1875,15 @@ namespace opengl3
                 fl[3 * i + 2] = points[i].z;
             }
             return fl;
+        }
+        public string add_buff_gl(Model3d model, PrimitiveType tp, string name = "new obj")
+        {
+            return add_buff_gl(model.mesh, model.color, model.normale, tp, name);
+        }
+
+        public string add_buff_gl(Model3d model,Color3d_GL color, PrimitiveType tp, string name = "new obj")
+        {
+            return add_buff_gl(model.mesh, color, model.normale, tp, name);
         }
         public string add_buff_gl(float[] data_v, Color3d_GL color, float[] data_n, PrimitiveType tp, string name = "new obj")
         {

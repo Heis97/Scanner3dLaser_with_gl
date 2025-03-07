@@ -42,9 +42,18 @@ namespace opengl3
     public static class FindCircles
     {
         static int counter = 0;
-        static public Mat sobel_mat(Mat mat)
+        static public Mat sobel_mat(Mat mat,bool simple=false)
         {
-            
+            if(simple)
+            {
+                var gray_x0 = new Mat();
+                var gray_y0 = new Mat();
+                CvInvoke.Sobel(mat, gray_x0, DepthType.Cv32F, 1, 0, 3);
+                 CvInvoke.Sobel(mat, gray_y0, DepthType.Cv32F, 0, 1, 3);
+                  CvInvoke.ConvertScaleAbs(gray_x0, gray_x0, 1, 0);
+                CvInvoke.ConvertScaleAbs(gray_y0, gray_y0, 1, 0);
+                return gray_x0 + gray_y0;
+            }
             var gray_x = mat.Clone();
             var gray_y = mat.Clone(); 
             var gray_xn = mat.Clone();
@@ -60,8 +69,7 @@ namespace opengl3
 
             var med_xy = 14;
             var min_xy = 5;
-            //CvInvoke.Sobel(mat, gray_x, DepthType.Cv32F, 1, 0, 3);
-            // CvInvoke.Sobel(mat, gray_y, DepthType.Cv32F, 0, 1, 3);
+            
             Point anchor = new Point(-1, -1);
             Matrix<float> kernel_x = new Matrix<float>(new float[3, 3] { 
                 { -min, 0f, min }, 

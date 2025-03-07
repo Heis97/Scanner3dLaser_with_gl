@@ -381,8 +381,8 @@ namespace opengl3
             //orig_c = cameraCV.undist(orig_c);
 
             UtilOpenCV.drawPointsF(orig_c, corners,255,0,0,2,true);
-           // CvInvoke.Imshow("orig_corn", orig_c);
-            //CvInvoke.WaitKey();
+            CvInvoke.Imshow("orig_corn", orig_c);
+            CvInvoke.WaitKey();
             cameraCV.compPos(new MCvPoint3D32f[] {
                 new MCvPoint3D32f(0,0,0),
             new MCvPoint3D32f(0,y_dim,0),
@@ -401,8 +401,8 @@ namespace opengl3
                 LasSurfs.Add(las);
                 PositionsAxis.Add(positions[i]);
                 Console.WriteLine(" "+positions[i]+" "+las.flat3D);
-               // var flat = graphicGL.addFlat3d_YZ(las.flat3D,null, Color3d_GL.gray());
-                //graphicGL.buffersGl.setTranspobj(flat, 0.3f);
+                var flat = graphicGL.addFlat3d_YZ(las.flat3D,null, Color3d_GL.gray());
+                graphicGL.buffersGl.setTranspobj(flat, 0.3f);
                 LasFlats.Add(las.flat3D);
             }
 

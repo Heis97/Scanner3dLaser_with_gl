@@ -1168,7 +1168,8 @@ namespace opengl3
                             orderby p.Y
                             select p).ToArray();*/
             int board = 10;
-            if (inp == null) return null; 
+            if (inp == null) return null;
+            if (inp.Length < board + 2) return null;
             var ps = (PointF[])inp.Clone();
 
             var dx = ps[board].X - ps[ps.Length - board].X;
@@ -1304,7 +1305,7 @@ namespace opengl3
             if (mat != null)
             {
                 var mat_p = UtilOpenCV.drawPointsF(mat, paral, 0, 255, 0);
-               // CvInvoke.Imshow("mat_p", mat_p);
+                //CvInvoke.Imshow("mat_p", mat_p);
                // CvInvoke.WaitKey();
             }
             var ps_max = claster_Points(paral, clast_count,false);
@@ -1341,6 +1342,7 @@ namespace opengl3
                     {
                     var ps1 = filtr_y0_Points(ps[i]);
                     var paral = parall_Points(ps1);
+                    if (paral == null) continue;
                     var ps_or = (from p in paral
                                  orderby p.X
                                  select p).ToArray();
