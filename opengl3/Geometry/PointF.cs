@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace opengl3
 {
@@ -248,6 +249,20 @@ namespace opengl3
             for (int i = 0; i < ps.Length; i++)
             {
                 ret[i] = new System.Drawing.PointF(ps[i].X, ps[i].Y);
+            }
+            return ret;
+        }
+        public static System.Drawing.PointF[] addNoise(System.Drawing.PointF[] ps,float ampl)
+        {
+            if (ps == null)
+            {
+                return null;
+            }
+            var ret = new System.Drawing.PointF[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+                var rand = Accord.Math.Random.Generator.Random;
+                ret[i] = new System.Drawing.PointF(ps[i].X+ampl* (float)rand.NextDouble(), ps[i].Y + ampl * (float)rand.NextDouble());
             }
             return ret;
         }

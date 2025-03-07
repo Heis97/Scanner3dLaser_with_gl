@@ -190,8 +190,15 @@ namespace opengl3
         Point3d_GL[] points3dInCam_step(Mat mat, CameraCV cameraCV, PatternType patternType, int div = -1, GraphicGL graphicGL = null)
         {
             mat = cameraCV.undist(mat);
-            var points = order_y(Detection.detectLineDiff(mat, cameraCV.scanner_config));
-            points = PointF.filter_global_x(points, 120);
+            var ps_all = Detection.detectLineDiff(mat, cameraCV.scanner_config);
+            
+            var points = order_y(ps_all);
+            points = PointF.filter_global_x(points, 180);
+
+           /* var m_ps = UtilOpenCV.drawPointsF(mat.Clone(), points, 255, 0, 255, 1, false);
+            //UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
+            CvInvoke.Imshow("corn", m_ps);
+            CvInvoke.WaitKey();*/
             var x_min_cl = Detection.x_min_claster(points, 3, mat);
             var ps_m = order_y(x_min_cl);//x_min
             //CvInvoke.Imshow("orig_las_step", UtilOpenCV.drawPointsF(mat, ps_m, 255, 0, 0));
@@ -225,10 +232,10 @@ namespace opengl3
             ps = ps_l.ToArray();
 
             var orig_c = mat.Clone();
-            UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
+           /* UtilOpenCV.drawPointsF(orig_c, ps,255,0,255,2,true);
             //UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);
             CvInvoke.Imshow("corn", orig_c);
-            CvInvoke.WaitKey();
+            CvInvoke.WaitKey();*/
 
             var lines = PointCloud.computeTracesCam(ps, cameraCV);
             this.lines = lines;

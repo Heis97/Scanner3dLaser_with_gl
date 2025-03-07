@@ -44,7 +44,7 @@ namespace opengl3
         static int counter = 0;
         static public Mat sobel_mat(Mat mat,bool simple=false)
         {
-            simple = true;
+            simple = false;
             if (simple)
             {
                 var gray_x0 = new Mat();

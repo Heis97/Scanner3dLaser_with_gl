@@ -523,8 +523,9 @@ namespace opengl3
                 }
                 var mat_p1 = UtilOpenCV.drawPointsF(_mat, cornF, 255, 0, 0);
                 last_corners = (System.Drawing.PointF[])cornF.Clone();
-               // CvInvoke.Imshow("pos", mat_p1);
-               // CvInvoke.WaitKey();
+                // CvInvoke.Imshow("pos", mat_p1);
+                // CvInvoke.WaitKey();
+               // cornF = PointF.addNoise(cornF, 0.8f);
                 var points2d = UtilOpenCV.takeGabObp(cornF, size_patt);
 
 
@@ -747,7 +748,7 @@ namespace opengl3
                    // CvInvoke.Imshow("asda", f_c);
                    // CvInvoke.WaitKey();
                 }
-                
+                //cornF = PointF.addNoise(cornF, 0.8f);
                 //mat = null;
                 //Console.WriteLine(" cornF");
                 //prin.t(cornF);

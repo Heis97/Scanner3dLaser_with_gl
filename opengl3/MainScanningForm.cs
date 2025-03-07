@@ -70,7 +70,7 @@ namespace opengl3
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
-        RobotFrame.RobotType current_robot = RobotFrame.RobotType.PULSE;
+        RobotFrame.RobotType current_robot = RobotFrame.RobotType.KUKA;
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4, 4);
         Point3d_GL off_cyl = new Point3d_GL();
@@ -1261,9 +1261,9 @@ namespace opengl3
         {
             markSize = 10f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\fl_cal_0703", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_2802b\1", FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("misis_cam1_0703a.txt");
+            cam1.save_camera("cam1_v_err_0703a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -1521,11 +1521,11 @@ namespace opengl3
             var ps = scanner.getPointsLinesScene();
             // foreach(var line in ps) GL1.addLineMeshTraj(line);  
             var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
-           var scan_stl = Polygon3d_GL.toMesh(mesh);
+            var scan_stl = Polygon3d_GL.toMesh(mesh);
 
             scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
-            //var matr = UtilOpenCV.to_matrix_opengl( scanner.stereoCamera.Bbf * scanner.stereoCamera.Bfs);
-           // GL1.buffersGl.setMatrobj(scan_i, 0, matr);
+            var matr = UtilOpenCV.to_matrix_opengl( scanner.stereoCamera.Bbf * scanner.stereoCamera.Bfs);
+            GL1.buffersGl.setMatrobj(scan_i, 0, matr);
 
         }
         
@@ -1534,7 +1534,7 @@ namespace opengl3
             var p0 = Point3d_GL.Min_norm_i(model);
             var map_xyz = new RasterMap(model, 1);
             Console.WriteLine(map_xyz.map_xyz.GetLength(0));
-           var ps_un = map_xyz.unite_point_cloud(model[p0], 2, model);
+            var ps_un = map_xyz.unite_point_cloud(model[p0], 1, model);
 
 
             return ps_un;
@@ -1549,7 +1549,7 @@ namespace opengl3
             if (scanner.pointCloud.points3d_lines == null) return;
             if (scanner.pointCloud.points3d_lines.Count == 0) return;
             var ps = scanner.getPointsLinesScene();
-             foreach(var line in ps) GL1.addLineMeshTraj(line);  
+            foreach(var line in ps) GL1.addLineMeshTraj(line);  
             /*var mesh = Polygon3d_GL.triangulate_lines_xy(ps, smooth);
             var scan_stl = Polygon3d_GL.toMesh(mesh);
             scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, "scan_sing");*/
@@ -2149,7 +2149,7 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
            
             //GL1.SortObj();
-            int monitor_num = 1;
+            int monitor_num = 2;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -2300,7 +2300,7 @@ namespace opengl3
             //vel_rob_map();
             //test_diff_angles(0.6);
             //test_diff_angles(1.6);
-            //get_ps_char("scan_12_20_17_46_51.stl");
+            get_ps_char("scan_12_20_17_46_51.stl");
             //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
@@ -2310,10 +2310,17 @@ namespace opengl3
         void get_ps_char(string stl_name)
         {
             var scan_stl = new Model3d(stl_name, false);
+           
             var pols = scan_stl.pols;
+            Console.WriteLine("pols.Length1: "+pols.Length);
+           // pols = Polygon3d_GL.clear_nz(pols, 0.5);
+            //pols = Polygon3d_GL.clear_dim(pols, 0.5);
+            Console.WriteLine("pols.Length2: " + pols.Length);
             var ps = Polygon3d_GL.get_uniq_points(pols);
             ps = Point3d_GL.add_inds_internal(ps);
-            scan_i = GL1.add_buff_gl(scan_stl.mesh, scan_stl.color, scan_stl.normale, PrimitiveType.Points, Path.GetFileNameWithoutExtension(stl_name));
+            var mesh = Polygon3d_GL.toMesh(pols);
+            scan_i = GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Points, Path.GetFileNameWithoutExtension(stl_name));
+           // return;
             var ps_un = unite_point_cloud(ps);
             //for(int i=0; i<ps_un.Length;i++)
                // GL1.addPointMesh(ps_un[i], Color3d_GL.random());
@@ -2456,19 +2463,19 @@ namespace opengl3
         Matrix<double> matrix_robot_current = null;
         double max_angle_laser = 0;
         double min_angle_laser = 0;
-        int n_virt_scan = 750;
+        int n_virt_scan = 350;
 
         void load_kuka_scene()
         {
           
-           // var calibr = GL1.add_buff_gl(new Model3d("models\\calibr_exm.stl", false),Color3d_GL.white(), PrimitiveType.Triangles, "scan");
+            var calibr = GL1.add_buff_gl(new Model3d("models\\calibr_exm.stl", false),Color3d_GL.white(), PrimitiveType.Triangles, "scan");
            
-            pattern =  GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
-            flat = generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-            var matr = Matrix4x4f.Translated(-560, -100, -100);
-            GL1.buffersGl.setMatrobj(pattern, 0, matr);
+            flat =  GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
+            pattern = generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            var matr = Matrix4x4f.Translated(-530, -90, -30);
+            //GL1.buffersGl.setMatrobj(pattern, 0, matr);
             GL1.buffersGl.setMatrobj(flat, 0, matr);
-          //  GL1.buffersGl.setMatrobj(calibr, 0, matr *Matrix4x4f.RotatedZ(90) ); 
+            GL1.buffersGl.setMatrobj(calibr, 0, matr *Matrix4x4f.RotatedZ(90) ); 
 
             var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal.txt")[0];
             //var matr_bfs = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });
@@ -2498,7 +2505,7 @@ namespace opengl3
 
             GL1.buffersGl.setMatrobj("cam_fr", 0, m_bfs);
             matrix_robot_current = m;
-            set_angle_laser(90, m);
+            set_angle_laser(20, m);
             set_conf_robot_kuka(q_res[1], RobotFrame.RobotType.KUKA);
             //GL1.set_trz(0, fr_kuka);
             GL1.transRotZooms[0].robot_matr = m_bfs.Inverse;
@@ -2508,7 +2515,7 @@ namespace opengl3
         void set_angle_laser(float angle,Matrix<double> matrix_robot)
         {
             var m_t_d = UtilOpenCV.to_matrix_opengl(matrix_robot);
-            var matr_laser = new Matrix<double>(new double[,] { { -1, 0, 0, 40 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });
+            var matr_laser = new Matrix<double>(new double[,] { { -1, 0, 0, 70 }, { 0, 0, 1, 16 }, { 0, 1, 0, 28 }, { 0, 0, 0, 1 } });
             var m_laser = m_t_d * UtilOpenCV.to_matrix_opengl(matr_laser) * Matrix4x4f.RotatedY(angle);
             //prin.t(m_laser);
             prin.t(angle);
@@ -5732,11 +5739,12 @@ namespace opengl3
             video_scan_name = (new RobotFrame(matrix_robot_current,current_robot)).ToStr(" ", true, true, true, false) ;
             boxN.Text = "120";
             var n = n_virt_scan;
-            min_angle_laser = -20;
-            max_angle_laser = 45;
+            min_angle_laser = (float)to_double_textbox(textBox_laser_pos_gl_min, -10000, 10000);
+            max_angle_laser = (float)to_double_textbox(textBox_laser_pos_gl_max, -10000, 10000);
             GL1.start_animation(n,this);
             var folder_scan = box_scanFolder.Text;
             UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, "1.png", folder_scan + "\\orig");
+            sb_enc = new StringBuilder();
             startWrite(1, n);
            // startWrite(2, n);
         }
@@ -6010,27 +6018,7 @@ namespace opengl3
             }
 
         }
-        void imProcess_virt(Mat mat, int ind)
-        {
-
-            if (videoframe_counts[ind - 1] == 0)
-            {
-                initWrite(ind, GL1.transRotZooms[ind-1].rect.Width, GL1.transRotZooms[ind - 1].rect.Height);
-                videoframe_counts[ind - 1]++;
-            }
-
-            if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
-            {
-                //Console.WriteLine("mat" + " " + mat.Width + " " + mat.Height);
-                video_writer[ind - 1]?.Write(mat);
-                videoframe_counts[ind - 1]++;
-                //Console.WriteLine(ind+" "+videoframe_counts[ind - 1]);
-            }
-            else
-            {
-                video_writer[ind - 1]?.Dispose();
-            }
-        }
+       
 
         void initWrite(int ind,int w, int h)
         {
@@ -6489,6 +6477,73 @@ namespace opengl3
                 // video_writer[ind - 1]?.Dispose();
             }
 
+        }
+
+
+        void imProcess_virt(Mat mat, int ind)
+        {
+
+            if (videoframe_counts[ind - 1] == 0)
+            {
+                initWrite(ind, GL1.transRotZooms[ind - 1].rect.Width, GL1.transRotZooms[ind - 1].rect.Height);
+                videoframe_counts[ind - 1]++;
+            }
+
+            if (videoframe_counts[ind - 1] > 0 && videoframe_counts[ind - 1] < videoframe_counts_stop[ind - 1])
+            {
+                //Console.WriteLine("mat" + " " + mat.Width + " " + mat.Height);
+               
+                
+                //Console.WriteLine(ind+" "+videoframe_counts[ind - 1]);
+
+
+                bool without_las_pos = true;
+                sb_enc?.Append(LaserLine.get_las_pos_time(laserLine, without_las_pos) + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                //if (sb_enc == null) Console.WriteLine("NULL!");
+                //sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
+                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind-1] + " " + ind + " ");
+                sb_enc?.Append("\n");
+                //video_writer[ind - 1]?.Write(mat);
+                video_writer[ind - 1]?.Write(mat);
+                //var p = Detection.detectLineSensor(mat)[0];
+                //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
+                sb_enc?.Append(LaserLine.get_las_pos_time(laserLine, without_las_pos) + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                //sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
+                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                sb_enc?.Append("\n");
+
+                videoframe_counts[ind - 1]++;
+            }
+            else if(videoframe_counts[ind - 1] == videoframe_counts_stop[ind - 1])
+            {
+                string path = "cam1" + "\\" + box_scanFolder.Text + "\\enc.txt";
+                Console.WriteLine(path);
+                try
+                {
+                    using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
+                    {
+                        if (sb_enc != null)
+                        {
+                            var str = sb_enc.ToString();
+                            sw.Write(str);
+                            sb_enc = null;
+
+                        }
+
+                    }
+                }
+                catch
+
+                {
+                    Console.WriteLine("don t save enc");
+                }
+                video_writer[ind - 1]?.Dispose();
+                videoframe_counts[ind - 1] = videoframe_counts_stop[ind - 1]+100;
+            }
+            else
+            {
+
+            }
         }
         #endregion
 
@@ -9730,6 +9785,11 @@ namespace opengl3
                 printing = true;
                 but_printing.Text = "Выкл печать";
             }
+        }
+
+        private void but_set_laser_pos_gl_Click(object sender, EventArgs e)
+        {
+            set_angle_laser((float)to_double_textbox(textBox_laser_pos_gl,-10000,10000), matrix_robot_current);
         }
         //void send_to_ard(TextBox textBox,)
     }

@@ -60,7 +60,33 @@ namespace opengl3
             }
             return pols_mul;
         }
-
+        static public Polygon3d_GL[] clear_nz(Polygon3d_GL[] pols, double z_val_max)
+        {
+            var pols_mul = new List<Polygon3d_GL>();
+            for (int i = 0; i < pols.Length; i++)
+            {
+                var nz = Math.Abs(pols[i].flat3D.n.z);
+                //Console.WriteLine(nz);
+                if  (nz > z_val_max) { 
+                    pols_mul.Add(pols[i]); 
+                }
+            }
+            return pols_mul.ToArray();
+        }
+        static public Polygon3d_GL[] clear_dim(Polygon3d_GL[] pols, double dim_max)
+        {
+            var pols_mul = new List<Polygon3d_GL>();
+            for (int i = 0; i < pols.Length; i++)
+            {
+                var dim = pols[i].dim;
+                //Console.WriteLine(nz);
+                if (dim < dim_max)
+                {
+                    pols_mul.Add(pols[i]);
+                }
+            }
+            return pols_mul.ToArray();
+        }
         public Polygon3d_GL set_color(Color3d_GL color)
         {
             ps[0].color = color;
