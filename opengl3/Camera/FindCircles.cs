@@ -44,7 +44,8 @@ namespace opengl3
         static int counter = 0;
         static public Mat sobel_mat(Mat mat,bool simple=false)
         {
-            if(simple)
+            simple = true;
+            if (simple)
             {
                 var gray_x0 = new Mat();
                 var gray_y0 = new Mat();
@@ -176,7 +177,7 @@ namespace opengl3
                 CvInvoke.WaitKey();
             }
 
-            CvInvoke.Threshold(im_tr, im_tr,65 , 255, ThresholdType.Binary);
+            CvInvoke.Threshold(im_tr, im_tr,55 , 255, ThresholdType.Binary);
             if (debug)
             {
                 CvInvoke.Imshow("im_tr", im_tr);
@@ -1089,7 +1090,7 @@ namespace opengl3
 
         static System.Drawing.PointF[,] arr_zero_to_up(System.Drawing.PointF[,] ps)
         {
-            float k = 0.01f;
+            float k = 0.3f;
             if(ps == null) return null ;
             var ps_zu = new System.Drawing.PointF[ps.GetLength(0), ps.GetLength(1)];
             var psc = new System.Drawing.PointF[] { ps[0, 0], ps[ps.GetLength(0) - 1, 0], ps[0, ps.GetLength(1) - 1], ps[ps.GetLength(0) - 1, ps.GetLength(1) - 1] };

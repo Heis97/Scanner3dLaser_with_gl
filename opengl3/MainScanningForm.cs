@@ -70,7 +70,7 @@ namespace opengl3
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
-        RobotFrame.RobotType current_robot = RobotFrame.RobotType.KUKA;
+        RobotFrame.RobotType current_robot = RobotFrame.RobotType.PULSE;
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4, 4);
         Point3d_GL off_cyl = new Point3d_GL();
@@ -1261,9 +1261,9 @@ namespace opengl3
         {
             markSize = 10f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\camera_cal_2012", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\fl_cal_0703", FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("sing_cam1_2012a.txt");
+            cam1.save_camera("misis_cam1_0703a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -1699,9 +1699,9 @@ namespace opengl3
                 Thread.Sleep(2);
                 laserLine?.setPower(power_laser);
                 Thread.Sleep(2);
-                laserLine?.setPower(power_laser);
+                laserLine?.laserOn();
                 Thread.Sleep(2);
-                laserLine?.setPower(power_laser);
+                laserLine?.laserOn();
                 Thread.Sleep(100);
                 Thread.Sleep(2);
 
@@ -2149,7 +2149,7 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
            
             //GL1.SortObj();
-            int monitor_num = 2;
+            int monitor_num = 1;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -5850,8 +5850,8 @@ namespace opengl3
             comboImages.Items.AddRange(frms_stereo);
             matrices_cal = ms_check;
             cameraCVcommon = cam1;
-            var thr = new Thread(make_photos_robot);
-            thr.Start();
+           // var thr = new Thread(make_photos_robot);
+           // thr.Start();
         }
 
         void make_photos_robot()
