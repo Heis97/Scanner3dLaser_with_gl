@@ -8362,7 +8362,7 @@ namespace opengl3
         private void but_rob_traj_pulse_Click(object sender, EventArgs e)
         {
             var tool = new RobotFrame(tB_tool_inf.Text);
-            if (tool.get_pos().magnitude() + tool.get_rot().magnitude() < 0.0001) tool = null;
+            if (tool.get_pos().magnitude() + tool.get_rot().magnitude() < 0.0001) tool = null;//yhf
             debugBox.Text = gen_traj_rob(RobotFrame.RobotType.PULSE,tool);
         }
 
