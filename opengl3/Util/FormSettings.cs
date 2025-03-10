@@ -53,6 +53,8 @@ namespace opengl3
                 {
                     jsontext = file.ReadToEnd();
                 }
+                Console.WriteLine(path+"__________________________");
+                Console.WriteLine(jsontext);
                 return JsonConvert.DeserializeObject<T>(jsontext);
             }
             catch

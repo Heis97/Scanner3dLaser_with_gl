@@ -369,23 +369,23 @@ namespace opengl3
             var y_dim = 50;//50
 
             // var corners = corner_step(orig);
-            /*ps_g = new System.Drawing.PointF[]
+            ps_g = new System.Drawing.PointF[]
              {
                 new System.Drawing.PointF(79,370),
                 new System.Drawing.PointF(79,90),
                 new System.Drawing.PointF(468,90),
                 new System.Drawing.PointF(475,367)
 
-             };*/
+             };
 
-            ps_g = new System.Drawing.PointF[]
+           /* ps_g = new System.Drawing.PointF[]
              {
                 new System.Drawing.PointF(199,401),
                 new System.Drawing.PointF(191,49),
                 new System.Drawing.PointF(678,32),
                 new System.Drawing.PointF(697,381)
 
-             };
+             };*/
             var corners = ps_g;
 
             

@@ -18,17 +18,17 @@ namespace opengl3
         public bool exist { get; set; }
         public Color3d_GL color { get; set; }
         //public PointF uv { get; set; }
-        public Point3d_GL(double _x = 0, double _y = 0, double _z = 0, Color3d_GL _color = null)
+        public Point3d_GL(double _x = 0, double _y = 0, double _z = 0, Color3d_GL _color = default)
         {
             x = _x;
             y = _y;
             z = _z;
             exist = true;
-            if (_color != null) color = _color;
+            if (_color != default) color = _color;
             else color = new Color3d_GL(0.5f, 0.5f, 0.5f);
         }
 
-        public Point3d_GL(Vertex4f vertex, Color3d_GL _color = null)
+        public Point3d_GL(Vertex4f vertex, Color3d_GL _color = default)
         {
             x = vertex.x;
             y = vertex.y;
@@ -49,7 +49,7 @@ namespace opengl3
             y = p.Y;
             z = _z;
             exist = true;
-            color = null;
+            color = default;
         }
         public Point3d_GL(PointF p, double _z)
         {
@@ -57,7 +57,7 @@ namespace opengl3
             y = p.Y;
             z = _z;
             exist = true;
-            color = null;
+            color = default;
         }
         public Point3d_GL(Point3d_GL p1, Point3d_GL p2)
         {
@@ -73,7 +73,7 @@ namespace opengl3
         {
             return new Point3d_GL(x, y, z, color);
         }
-        public Point3d_GL(double[,] cor, Color3d_GL _color = null)
+        public Point3d_GL(double[,] cor, Color3d_GL _color = default)
         {
             x = cor[0, 0];
             y = cor[1, 0];
@@ -653,7 +653,7 @@ namespace opengl3
             for(int i = 0;i < ps.Length;i++)
             {
                 var p = ps[i];
-                p.color.r = i;
+                p.color.set_r(i);
                 ps_int.Add(p);
             }
             return ps_int.ToArray();
@@ -821,6 +821,22 @@ namespace opengl3
                 }
             }
             return count;
+        }
+
+        public static Point3d_GL[][] sort_ps_dist_betw(Point3d_GL[][] ps)
+        {
+            var ps_sort = new List<Point3d_GL[]>();
+            ps_sort.Add(ps[0]);
+            for(int i=1; i < ps.Length; i++)
+            {
+                var ps_sort_cur = new List<Point3d_GL>();
+                for (int j = 0; j < ps[i].Length;j++)
+                {
+                    ps_sort_cur.Add(ps[i][nearest_point(ps[0], ps[i][j])]);
+                }
+                ps_sort.Add(ps_sort_cur.ToArray());
+            }
+            return ps_sort.ToArray();
         }
 
 
@@ -1270,7 +1286,7 @@ namespace opengl3
                 return line_aver_btw(ps_s, iter);
         }
        
-        public static Point3d_GL aver(Point3d_GL[] ps, Color3d_GL color = null)
+        public static Point3d_GL aver(Point3d_GL[] ps, Color3d_GL color = default)
         {
             var p = new Point3d_GL(0, 0, 0);
             for (int i = 0; i < ps.Length; i++)

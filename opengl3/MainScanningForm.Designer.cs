@@ -542,6 +542,7 @@ namespace opengl3
             this.imBox_disparity = new Emgu.CV.UI.ImageBox();
             this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.but_comp_calibr_points = new System.Windows.Forms.Button();
             this.but_flange_calib_basis = new System.Windows.Forms.Button();
             this.prop_gr_scan = new System.Windows.Forms.PropertyGrid();
             this.lab_scan_pres = new System.Windows.Forms.Label();
@@ -662,6 +663,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.but_calc_calib_ps = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -6148,10 +6150,10 @@ namespace opengl3
             this.tabPage8.Controls.Add(this.but_scan_virt);
             this.tabPage8.Controls.Add(this.imBox_disparity);
             this.tabPage8.Controls.Add(this.imBox_3dDebug);
-            this.tabPage8.Location = new System.Drawing.Point(4, 25);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(869, 962);
+            this.tabPage8.Size = new System.Drawing.Size(869, 965);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "mat_gl";
             this.tabPage8.UseVisualStyleBackColor = true;
@@ -6314,6 +6316,8 @@ namespace opengl3
             // 
             // tabPage9
             // 
+            this.tabPage9.Controls.Add(this.but_calc_calib_ps);
+            this.tabPage9.Controls.Add(this.but_comp_calibr_points);
             this.tabPage9.Controls.Add(this.but_flange_calib_basis);
             this.tabPage9.Controls.Add(this.prop_gr_scan);
             this.tabPage9.Controls.Add(this.lab_scan_pres);
@@ -6336,13 +6340,23 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Location = new System.Drawing.Point(4, 25);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(869, 965);
+            this.tabPage9.Size = new System.Drawing.Size(869, 962);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // but_comp_calibr_points
+            // 
+            this.but_comp_calibr_points.Location = new System.Drawing.Point(142, 844);
+            this.but_comp_calibr_points.Name = "but_comp_calibr_points";
+            this.but_comp_calibr_points.Size = new System.Drawing.Size(155, 64);
+            this.but_comp_calibr_points.TabIndex = 173;
+            this.but_comp_calibr_points.Text = "Нахождение калибровочных точек";
+            this.but_comp_calibr_points.UseVisualStyleBackColor = true;
+            this.but_comp_calibr_points.Click += new System.EventHandler(this.but_comp_calibr_points_Click);
             // 
             // but_flange_calib_basis
             // 
@@ -7690,6 +7704,16 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // but_calc_calib_ps
+            // 
+            this.but_calc_calib_ps.Location = new System.Drawing.Point(303, 844);
+            this.but_calc_calib_ps.Name = "but_calc_calib_ps";
+            this.but_calc_calib_ps.Size = new System.Drawing.Size(155, 64);
+            this.but_calc_calib_ps.TabIndex = 174;
+            this.but_calc_calib_ps.Text = "Рассчёт калибровочных точек";
+            this.but_calc_calib_ps.UseVisualStyleBackColor = true;
+            this.but_calc_calib_ps.Click += new System.EventHandler(this.but_calc_calib_ps_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -8481,6 +8505,8 @@ namespace opengl3
         private System.Windows.Forms.Label label114;
         private System.Windows.Forms.TextBox textBox_laser_pos_gl_max;
         private System.Windows.Forms.TextBox textBox_laser_pos_gl_min;
+        private System.Windows.Forms.Button but_comp_calibr_points;
+        private System.Windows.Forms.Button but_calc_calib_ps;
     }
 }
 

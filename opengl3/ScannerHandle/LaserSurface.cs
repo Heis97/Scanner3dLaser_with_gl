@@ -193,7 +193,7 @@ namespace opengl3
             var ps_all = Detection.detectLineDiff(mat, cameraCV.scanner_config);
             
             var points = order_y(ps_all);
-            points = PointF.filter_global_x(points, 180);
+            points = PointF.filter_global_x(points, 100);
 
            /* var m_ps = UtilOpenCV.drawPointsF(mat.Clone(), points, 255, 0, 255, 1, false);
             //UtilOpenCV.drawPointsF(orig_c, ps_m, 0,255,  0, 2);

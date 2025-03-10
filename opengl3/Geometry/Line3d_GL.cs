@@ -13,7 +13,7 @@ namespace opengl3
         public Point3d_GL p;//start_point
         public Point3d_GL p_end;//start_point
         public Color3d_GL color;
-        public Line3d_GL(Vector3d_GL _k, Point3d_GL _p, Color3d_GL _color = null)
+        public Line3d_GL(Vector3d_GL _k, Point3d_GL _p, Color3d_GL _color = default)
         {
             k = new Point3d_GL(_k.x, _k.y, _k.z);
             p = _p;
