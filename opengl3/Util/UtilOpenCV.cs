@@ -1570,6 +1570,7 @@ namespace opengl3
             var size = mat.Size;
             var matr = new Mat();
             var reversDistor = new Matrix<double>(5, 1);
+            if (matrixDistCoef == null) return mat.Clone();
             for (int i = 0; i < 5; i++)
             {
                 reversDistor[i, 0] = -matrixDistCoef[i, 0];

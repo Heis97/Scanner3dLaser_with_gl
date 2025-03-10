@@ -542,6 +542,7 @@ namespace opengl3
             this.imBox_disparity = new Emgu.CV.UI.ImageBox();
             this.imBox_3dDebug = new Emgu.CV.UI.ImageBox();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.but_calc_calib_ps = new System.Windows.Forms.Button();
             this.but_comp_calibr_points = new System.Windows.Forms.Button();
             this.but_flange_calib_basis = new System.Windows.Forms.Button();
             this.prop_gr_scan = new System.Windows.Forms.PropertyGrid();
@@ -663,7 +664,9 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_calc_calib_ps = new System.Windows.Forms.Button();
+            this.textBox_pos_rob_gl = new System.Windows.Forms.TextBox();
+            this.button_pos_rob_gl_get = new System.Windows.Forms.Button();
+            this.button_pos_rob_gl_set = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -5027,9 +5030,8 @@ namespace opengl3
             // 
             // tabOpenGl
             // 
-            this.tabOpenGl.Controls.Add(this.glControl1);
-            this.tabOpenGl.Controls.Add(this.tB_tool_inf);
             this.tabOpenGl.Controls.Add(this.win_tab_diff);
+            this.tabOpenGl.Controls.Add(this.glControl1);
             this.tabOpenGl.Location = new System.Drawing.Point(4, 25);
             this.tabOpenGl.Name = "tabOpenGl";
             this.tabOpenGl.Padding = new System.Windows.Forms.Padding(3);
@@ -5063,7 +5065,7 @@ namespace opengl3
             // tB_tool_inf
             // 
             this.tB_tool_inf.Cursor = System.Windows.Forms.Cursors.Default;
-            this.tB_tool_inf.Location = new System.Drawing.Point(676, 7);
+            this.tB_tool_inf.Location = new System.Drawing.Point(202, 761);
             this.tB_tool_inf.Name = "tB_tool_inf";
             this.tB_tool_inf.Size = new System.Drawing.Size(328, 22);
             this.tB_tool_inf.TabIndex = 166;
@@ -5224,10 +5226,10 @@ namespace opengl3
             this.tabPage2.Controls.Add(this.lab_check);
             this.tabPage2.Controls.Add(this.lab_TRZ);
             this.tabPage2.Controls.Add(this.but_point_type);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(869, 965);
+            this.tabPage2.Size = new System.Drawing.Size(869, 962);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Объекты сцены";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -6133,6 +6135,10 @@ namespace opengl3
             // 
             // tabPage8
             // 
+            this.tabPage8.Controls.Add(this.button_pos_rob_gl_set);
+            this.tabPage8.Controls.Add(this.button_pos_rob_gl_get);
+            this.tabPage8.Controls.Add(this.textBox_pos_rob_gl);
+            this.tabPage8.Controls.Add(this.tB_tool_inf);
             this.tabPage8.Controls.Add(this.label115);
             this.tabPage8.Controls.Add(this.label114);
             this.tabPage8.Controls.Add(this.textBox_laser_pos_gl_max);
@@ -6150,10 +6156,10 @@ namespace opengl3
             this.tabPage8.Controls.Add(this.but_scan_virt);
             this.tabPage8.Controls.Add(this.imBox_disparity);
             this.tabPage8.Controls.Add(this.imBox_3dDebug);
-            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Location = new System.Drawing.Point(4, 25);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(869, 965);
+            this.tabPage8.Size = new System.Drawing.Size(869, 962);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "mat_gl";
             this.tabPage8.UseVisualStyleBackColor = true;
@@ -6161,7 +6167,7 @@ namespace opengl3
             // label115
             // 
             this.label115.AutoSize = true;
-            this.label115.Location = new System.Drawing.Point(163, 931);
+            this.label115.Location = new System.Drawing.Point(164, 936);
             this.label115.Name = "label115";
             this.label115.Size = new System.Drawing.Size(92, 16);
             this.label115.TabIndex = 176;
@@ -6170,7 +6176,7 @@ namespace opengl3
             // label114
             // 
             this.label114.AutoSize = true;
-            this.label114.Location = new System.Drawing.Point(169, 903);
+            this.label114.Location = new System.Drawing.Point(170, 908);
             this.label114.Name = "label114";
             this.label114.Size = new System.Drawing.Size(86, 16);
             this.label114.TabIndex = 175;
@@ -6178,7 +6184,7 @@ namespace opengl3
             // 
             // textBox_laser_pos_gl_max
             // 
-            this.textBox_laser_pos_gl_max.Location = new System.Drawing.Point(261, 928);
+            this.textBox_laser_pos_gl_max.Location = new System.Drawing.Point(262, 933);
             this.textBox_laser_pos_gl_max.Name = "textBox_laser_pos_gl_max";
             this.textBox_laser_pos_gl_max.Size = new System.Drawing.Size(100, 22);
             this.textBox_laser_pos_gl_max.TabIndex = 174;
@@ -6186,7 +6192,7 @@ namespace opengl3
             // 
             // textBox_laser_pos_gl_min
             // 
-            this.textBox_laser_pos_gl_min.Location = new System.Drawing.Point(261, 900);
+            this.textBox_laser_pos_gl_min.Location = new System.Drawing.Point(262, 905);
             this.textBox_laser_pos_gl_min.Name = "textBox_laser_pos_gl_min";
             this.textBox_laser_pos_gl_min.Size = new System.Drawing.Size(100, 22);
             this.textBox_laser_pos_gl_min.TabIndex = 173;
@@ -6194,7 +6200,7 @@ namespace opengl3
             // 
             // textBox_laser_pos_gl
             // 
-            this.textBox_laser_pos_gl.Location = new System.Drawing.Point(386, 830);
+            this.textBox_laser_pos_gl.Location = new System.Drawing.Point(262, 877);
             this.textBox_laser_pos_gl.Name = "textBox_laser_pos_gl";
             this.textBox_laser_pos_gl.Size = new System.Drawing.Size(100, 22);
             this.textBox_laser_pos_gl.TabIndex = 172;
@@ -6202,7 +6208,7 @@ namespace opengl3
             // 
             // but_set_laser_pos_gl
             // 
-            this.but_set_laser_pos_gl.Location = new System.Drawing.Point(492, 818);
+            this.but_set_laser_pos_gl.Location = new System.Drawing.Point(377, 884);
             this.but_set_laser_pos_gl.Name = "but_set_laser_pos_gl";
             this.but_set_laser_pos_gl.Size = new System.Drawing.Size(96, 53);
             this.but_set_laser_pos_gl.TabIndex = 171;
@@ -6292,7 +6298,7 @@ namespace opengl3
             // 
             this.but_scan_virt.Location = new System.Drawing.Point(6, 818);
             this.but_scan_virt.Name = "but_scan_virt";
-            this.but_scan_virt.Size = new System.Drawing.Size(149, 69);
+            this.but_scan_virt.Size = new System.Drawing.Size(149, 34);
             this.but_scan_virt.TabIndex = 164;
             this.but_scan_virt.Text = "Сканирование GL";
             this.but_scan_virt.UseVisualStyleBackColor = true;
@@ -6347,6 +6353,16 @@ namespace opengl3
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // but_calc_calib_ps
+            // 
+            this.but_calc_calib_ps.Location = new System.Drawing.Point(303, 844);
+            this.but_calc_calib_ps.Name = "but_calc_calib_ps";
+            this.but_calc_calib_ps.Size = new System.Drawing.Size(155, 64);
+            this.but_calc_calib_ps.TabIndex = 174;
+            this.but_calc_calib_ps.Text = "Рассчёт калибровочных точек";
+            this.but_calc_calib_ps.UseVisualStyleBackColor = true;
+            this.but_calc_calib_ps.Click += new System.EventHandler(this.but_calc_calib_ps_Click);
             // 
             // but_comp_calibr_points
             // 
@@ -7704,15 +7720,33 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // but_calc_calib_ps
+            // textBox_pos_rob_gl
             // 
-            this.but_calc_calib_ps.Location = new System.Drawing.Point(303, 844);
-            this.but_calc_calib_ps.Name = "but_calc_calib_ps";
-            this.but_calc_calib_ps.Size = new System.Drawing.Size(155, 64);
-            this.but_calc_calib_ps.TabIndex = 174;
-            this.but_calc_calib_ps.Text = "Рассчёт калибровочных точек";
-            this.but_calc_calib_ps.UseVisualStyleBackColor = true;
-            this.but_calc_calib_ps.Click += new System.EventHandler(this.but_calc_calib_ps_Click);
+            this.textBox_pos_rob_gl.Cursor = System.Windows.Forms.Cursors.Default;
+            this.textBox_pos_rob_gl.Location = new System.Drawing.Point(135, 856);
+            this.textBox_pos_rob_gl.Name = "textBox_pos_rob_gl";
+            this.textBox_pos_rob_gl.Size = new System.Drawing.Size(328, 22);
+            this.textBox_pos_rob_gl.TabIndex = 177;
+            // 
+            // button_pos_rob_gl_get
+            // 
+            this.button_pos_rob_gl_get.Location = new System.Drawing.Point(10, 856);
+            this.button_pos_rob_gl_get.Name = "button_pos_rob_gl_get";
+            this.button_pos_rob_gl_get.Size = new System.Drawing.Size(119, 25);
+            this.button_pos_rob_gl_get.TabIndex = 178;
+            this.button_pos_rob_gl_get.Text = "поз роб get";
+            this.button_pos_rob_gl_get.UseVisualStyleBackColor = true;
+            this.button_pos_rob_gl_get.Click += new System.EventHandler(this.button_pos_rob_gl_get_Click);
+            // 
+            // button_pos_rob_gl_set
+            // 
+            this.button_pos_rob_gl_set.Location = new System.Drawing.Point(469, 855);
+            this.button_pos_rob_gl_set.Name = "button_pos_rob_gl_set";
+            this.button_pos_rob_gl_set.Size = new System.Drawing.Size(119, 24);
+            this.button_pos_rob_gl_set.TabIndex = 179;
+            this.button_pos_rob_gl_set.Text = "поз роб отпр";
+            this.button_pos_rob_gl_set.UseVisualStyleBackColor = true;
+            this.button_pos_rob_gl_set.Click += new System.EventHandler(this.button_pos_rob_gl_set_Click);
             // 
             // MainScanningForm
             // 
@@ -7804,7 +7838,6 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.histogramBox1)).EndInit();
             this.tabOpenGl.ResumeLayout(false);
-            this.tabOpenGl.PerformLayout();
             this.win_tab_diff.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
@@ -8507,6 +8540,9 @@ namespace opengl3
         private System.Windows.Forms.TextBox textBox_laser_pos_gl_min;
         private System.Windows.Forms.Button but_comp_calibr_points;
         private System.Windows.Forms.Button but_calc_calib_ps;
+        private System.Windows.Forms.Button button_pos_rob_gl_set;
+        private System.Windows.Forms.Button button_pos_rob_gl_get;
+        private System.Windows.Forms.TextBox textBox_pos_rob_gl;
     }
 }
 

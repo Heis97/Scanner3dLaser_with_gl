@@ -170,6 +170,15 @@ namespace opengl3
             set { cam2_ind = value; }
         }
 
+        public bool many_maxes;
+        [Description("Несколько максимумов")]
+        [Category("Лазерная линия")]
+        [DisplayName("many_maxes")]
+        public bool Mamy_maxes
+        {
+            get { return many_maxes; }
+            set { many_maxes = value; }
+        }
 
         public int wind_regr;
         [Description("Окно регрессии")]

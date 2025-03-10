@@ -191,7 +191,7 @@ namespace opengl3
 
                 //Console.WriteLine(comp_pos);
             }
-          //  int k = 12;
+            //int k = 12;
             ms_rob = get_matrices_filter(ms_rob,k);
             ms_cam = get_matrices_filter(ms_cam, k);
             VectorOfMat mr_r, mr_t, mc_r, mc_t;
@@ -232,19 +232,19 @@ namespace opengl3
             ms_check.Add(pattern);
             prin.t("pattern");
             prin.t(pattern);
-            graphic.addFrame(pattern,50,"PATTERN");
+            //graphic.addFrame(pattern,50,"PATTERN");
             for (int i = 0; i < ms_cam.Count; i++)
             {
                 //Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
-               // var m_check = ms_rob[i] * Bfs_med * ms_cam[i];
+                //var m_check = ms_rob[i] * Bfs_med * ms_cam[i];
                 var m_check = ms_rob[i];// * Bfs_med;// * ms_cam[i];
                 ms_check.Add(m_check);
 
                 var m_check2 = ms_rob[i] * Bfs_med * ms_cam[i];
-               // graphic.addFrame(m_check2);
+                //graphic.addFrame(m_check2);
                 //prin.t(m_check2);
                  
-               // Console.WriteLine(m_check2[0, 3] + " " + m_check2[1, 3] + " " + m_check2[2, 3] + " " + i);
+                //Console.WriteLine(m_check2[0, 3] + " " + m_check2[1, 3] + " " + m_check2[2, 3] + " " + i);
             }
 
             for (int i = 0; i < ms_cam.Count; i++)
@@ -254,7 +254,7 @@ namespace opengl3
             }
 
 
-            Settings_loader.save_file(file_name, new object[] { Bfs_med });
+            Settings_loader.save_file(file_name, new object[] { Bfs_med_real });// Bfs_med
             return ms_check;
         }
 

@@ -1893,7 +1893,8 @@ namespace opengl3
                 return null;
             }
             var data_c = new float[data_v.Length];
-            if(color!=default)
+
+            if (color!=default)
             {
                 for (int i = 0; i < data_c.Length; i += 3)
                 {
@@ -2539,7 +2540,7 @@ namespace opengl3
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
-            if (color == null) color = new Color3d_GL(0.1);
+            if (color == default) color = new Color3d_GL(0.1);
             for (int i = 0; i < color_buffer_data.Length; i += 3)
             {
                 color_buffer_data[i] = color.r;
@@ -2634,7 +2635,7 @@ namespace opengl3
                 
                 
             }
-            if (color == null) color = new Color3d_GL(0.1);
+            if (color == default) color = new Color3d_GL(0.1);
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
             for (int i = 0; i < color_buffer_data.Length; i += 3)
             {

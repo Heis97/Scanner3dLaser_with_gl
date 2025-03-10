@@ -77,7 +77,7 @@ namespace opengl3
         public double off_x;
         public double off_y;
         public double off_z;
-        public double fovx = 46;
+        public double fovx = 52;
         public double fovy = 53;
         public TRZtype type;
         public viewType viewType_;

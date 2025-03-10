@@ -406,9 +406,9 @@ namespace opengl3
 
             
         }
-        static double round(double val)
+        static double round(double val, double pres = 3)
         {
-            return Math.Round(val, 4);
+            return Math.Round(val, 3);
         }
         public  static List<Point3d_GL> to_points(List<RobotFrame> frs)
         {

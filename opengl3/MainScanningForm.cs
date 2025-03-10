@@ -922,7 +922,8 @@ namespace opengl3
                 smooth = 1,
                 strip = 3,
                 syncr = true,
-                gauss_kern = 7
+                gauss_kern = 7,
+                many_maxes = false,
             };
 
             (scanner_config, traj_config, patt_config) = formSettings.load_confs();
@@ -938,7 +939,7 @@ namespace opengl3
             debugBox.Text = "0.3 0.3 1";
 
             //scan_dist = ch_b_dist.Checked;
-            // scan_sync = ch_b_sync.Checked;
+            //scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
             //load_camers_v2();
@@ -1261,9 +1262,9 @@ namespace opengl3
         {
             markSize = 10f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_2802b\1", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_1003a", FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam1_v_err_0703a.txt");
+            cam1.save_camera("cam1_v_err_1003a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -1530,7 +1531,6 @@ namespace opengl3
             var fr_m = new RobotFrame(m, current_robot);
             var stl_name = fr_m.ToStr(" ", true, true, true, false)+";"+scan_i+".stl";
             STLmodel.saveMesh(scan_stl[0], stl_name);
-
         }
         
         static public Point3d_GL[][] unite_point_cloud(Point3d_GL[] model)
@@ -1539,14 +1539,11 @@ namespace opengl3
             var map_xyz = new RasterMap(model, 1);
             Console.WriteLine(map_xyz.map_xyz.GetLength(0));
             var ps_un = map_xyz.unite_point_cloud(model[p0], 1, model);
-
-
             return ps_un;
         }
 
         void load_calib_sing(Scanner scanner, string scan_path, int strip = 1, double smooth = -1)
         {
-
             var scan_path_1 = scan_path.Split('\\').Reverse().ToArray()[0];
             scanner = VideoAnalyse.loadVideo_sing_cam(scan_path_1, this, scanner, scanner_config, true);
             // scanner.linearAxis.save("linear.txt");
@@ -2157,20 +2154,22 @@ namespace opengl3
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
-               // GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
+                // GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
                 GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1);
                 GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
                 GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
 
                 GL1.transRotZooms[0].viewType_ = viewType.Perspective;
-               // GL1.transRotZooms[1].viewType_ = viewType.Perspective;
+                GL1.transRotZooms[0].cameraCV.distortmatrix = new Matrix<double>(new double[5, 1] { { -0.27 },{ -0.37 }, { 0 },{ 0 }, { 0 } });
+                // GL1.transRotZooms[1].viewType_ = viewType.Perspective;
             }
             else if (monitor_num == 2)
             {
                 GL1.addMonitor(new Rectangle(0, 0, w, h / 2), 0);
                 GL1.addMonitor(new Rectangle(0, h / 2, w, h / 2),1);//, 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
                 GL1.transRotZooms[0].viewType_ = viewType.Perspective;
-                GL1.transRotZooms[1].viewType_ = viewType.Perspective;
+                GL1.transRotZooms[0].cameraCV.distortmatrix = new Matrix<double>(new double[5, 1] { { -0.27 }, { -0.37 }, { 0 }, { 0 }, { 0 } });
+               // GL1.transRotZooms[1].viewType_ = viewType.Perspective;
             }
             else
             {
@@ -2299,7 +2298,7 @@ namespace opengl3
             //comp_mask();
 
 
-            //load_kuka_scene();
+            load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);
@@ -2468,27 +2467,35 @@ namespace opengl3
             GL1.transRotZooms[0].robot_camera = true;
         }
         Matrix<double> matrix_robot_current = null;
+        float cur_angle = 90;
         double max_angle_laser = 0;
         double min_angle_laser = 0;
         int n_virt_scan = 350;
 
         void load_kuka_scene()
         {
-          
+            
             var calibr = GL1.add_buff_gl(new Model3d("models\\calibr_exm.stl", false),Color3d_GL.white(), PrimitiveType.Triangles, "scan");
            
             flat =  GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
             pattern = generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-            var matr = Matrix4x4f.Translated(-530, -90, -30);
+            var matr = Matrix4x4f.Translated(-640, -82, -30);
             //GL1.buffersGl.setMatrobj(pattern, 0, matr);
             GL1.buffersGl.setMatrobj(flat, 0, matr);
-            GL1.buffersGl.setMatrobj(calibr, 0, matr *Matrix4x4f.RotatedZ(90) ); 
+            GL1.buffersGl.setMatrobj(calibr, 0, matr * Matrix4x4f.Translated(100,0,0) * Matrix4x4f.RotatedZ(90)); 
 
-            var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal.txt")[0];
-            //var matr_bfs = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });
-
+           
+         
+            
+            GL1.transRotZooms[0].visible = true;
+            GL1.transRotZooms[0].robot_camera = true;
             load_3d_model_robot_kuka();
-            var fr_kuka = new RobotFrame("-577.4208 -50.8899 101.8039 3.11022 -0.00162 -1.60832");
+            var fr_kuka = new RobotFrame("-557.421 -30.89 90.804 3.11 -0.002 -1.608");//-557.421 -30.89 101.804 3.11 -0.002 -1.608
+            //-490.3822 -20.9971 112.3028 3.11045 -0.60005 -1.60844   
+            set_robot_kuka_with_scanner(fr_kuka);
+        }
+        void set_robot_kuka_with_scanner(RobotFrame fr_kuka)
+        {
 
             var q_res = RobotFrame.comp_inv_kinem(fr_kuka.get_position_rob(), RobotFrame.RobotType.KUKA);
 
@@ -2497,30 +2504,31 @@ namespace opengl3
             var m = fr_kuka.getMatrix();
             var inv_m = UtilOpenCV.inv(m);
             var eye1 = inv_m * m;
-          /*  prin.t("m");
-            prin.t(m);
-            prin.t("inv_m");
-            prin.t(inv_m);*/
+            /*  prin.t("m");
+              prin.t(m);
+              prin.t("inv_m");
+              prin.t(inv_m);*/
             var fr_kuka_inv = new RobotFrame(m, RobotFrame.RobotType.KUKA);
             //var q_cur = new double[8] { 0.7, 0.7, 0, -0.2, 0.5, 0.8, 0.9, 0 };
 
             //GL1.addFrame(eye1, 40, "cam_fr");
             var m_t_d = UtilOpenCV.to_matrix_opengl(m);
-
+            var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal.txt")[0];
+             matr_bfs = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });
             var m_bfs = m_t_d * UtilOpenCV.to_matrix_opengl(matr_bfs) * Matrix4x4f.RotatedX(180);
 
 
             GL1.buffersGl.setMatrobj("cam_fr", 0, m_bfs);
             matrix_robot_current = m;
-            set_angle_laser(20, m);
+            set_angle_laser(cur_angle, m);
             set_conf_robot_kuka(q_res[1], RobotFrame.RobotType.KUKA);
             //GL1.set_trz(0, fr_kuka);
             GL1.transRotZooms[0].robot_matr = m_bfs.Inverse;
-            GL1.transRotZooms[0].visible = true;
-            GL1.transRotZooms[0].robot_camera = true;
         }
+
         void set_angle_laser(float angle,Matrix<double> matrix_robot)
         {
+            cur_angle = angle;
             var m_t_d = UtilOpenCV.to_matrix_opengl(matrix_robot);
             var matr_laser = new Matrix<double>(new double[,] { { -1, 0, 0, 70 }, { 0, 0, 1, 16 }, { 0, 1, 0, 28 }, { 0, 0, 0, 1 } });
             var m_laser = m_t_d * UtilOpenCV.to_matrix_opengl(matr_laser) * Matrix4x4f.RotatedY(angle);
@@ -2559,7 +2567,8 @@ namespace opengl3
                 var mat1_or = GL1.matFromMonitor(0);
                 var mat1 = new Mat();
                 CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
-                mat1 = UtilOpenCV.remapDistImOpenCvCentr(mat1, cameraDistortionCoeffs_dist);
+                //prin.t(GL1.transRotZooms[0].cameraCV.distortmatrix);
+                mat1 = UtilOpenCV.remapDistImOpenCvCentr(mat1, GL1.transRotZooms[0].cameraCV.distortmatrix);
                 mat1 = UtilOpenCV.GLnoise(mat1, 2, 2,-1);
                 imBox_mark1.Image = mat1;
                 imProcess_virt(mat1, 1);
@@ -2577,7 +2586,7 @@ namespace opengl3
                         CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
                         CvInvoke.Rotate(mat2, mat2, RotateFlags.Rotate180);
                     }
-                    mat2 = UtilOpenCV.remapDistImOpenCvCentr(mat2, cameraDistortionCoeffs_dist);
+                    mat2 = UtilOpenCV.remapDistImOpenCvCentr(mat2, GL1.transRotZooms[1].cameraCV.distortmatrix);
                     mat2 = UtilOpenCV.GLnoise(mat2, 2, 2,-1);
                     imBox_mark2.Image = mat2;
                     imProcess_virt(mat2, 2);
@@ -5853,20 +5862,20 @@ namespace opengl3
             chess_size = new Size(6, 7);
             var markSize = 10f;
             //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
-
             //stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
-            var ms_check = StereoCamera.calibrate_stereo_rob_handeye(cam1, frms_stereo, PatternType.Mesh, chess_size, markSize, "bfs_cal.txt", current_robot,GL1);
+
+            var ms_check = StereoCamera.calibrate_stereo_rob_handeye(cam1, frms_stereo, PatternType.Mesh, chess_size, markSize, "bfs_cal_virt_orig.txt", current_robot,GL1);
 
             //make_photos_robot(ms_check);
             for (int i=0; i<ms_check.Count;i++)
             {
-                GL1.addFrame(ms_check[i]);
+              //  GL1.addFrame(ms_check[i]);
             }
             comboImages.Items.AddRange(frms_stereo);
             matrices_cal = ms_check;
             cameraCVcommon = cam1;
-           // var thr = new Thread(make_photos_robot);
-           // thr.Start();
+            //var thr = new Thread(make_photos_robot);
+            //thr.Start();
         }
 
         void make_photos_robot()
@@ -5874,11 +5883,11 @@ namespace opengl3
             int mon = 0;
             GL1.transRotZooms[mon].visible = true;
             GL1.transRotZooms[mon].robot_camera = true;
-            var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal.txt")[0];
+            var matr_bfs = (Matrix<double>)Settings_loader.load_data("bfs_cal_virt_orig.txt")[0];
             matrix_pattern = UtilOpenCV.to_matrix_opengl(matrices_cal[0]) * Matrix4x4f.RotatedX(180);// * Matrix4x4f.Translated(20,-60,0);
             
-            GL1.buffersGl.setMatrobj(pattern, 0, matrix_pattern);
-            GL1.buffersGl.setMatrobj(flat, 0, matrix_pattern);
+            //GL1.buffersGl.setMatrobj(pattern, 0, matrix_pattern);
+            //GL1.buffersGl.setMatrobj(flat, 0, matrix_pattern);
             
             for (int i = 1; i < matrices_cal.Count; i++)
             {
@@ -5890,7 +5899,7 @@ namespace opengl3
                 var bfs = UtilOpenCV.to_matrix_opengl(matrices_cal[i]* matr_bfs) * Matrix4x4f.RotatedX(180);
                 GL1.transRotZooms[mon].robot_matr = bfs.Inverse;              
                 Thread.Sleep(100);
-                UtilOpenCV.saveImage(imBox_mark1, "virt\\calib_fl_0303a", fr_kuka.ToStr(" ",true,false,true,false));
+                UtilOpenCV.saveImage(imBox_mark1, "virt\\calib_fl_1003a", fr_kuka.ToStr(" ",true,false,true,false));
             }
             
         }
@@ -9796,6 +9805,7 @@ namespace opengl3
 
         private void but_set_laser_pos_gl_Click(object sender, EventArgs e)
         {
+
             set_angle_laser((float)to_double_textbox(textBox_laser_pos_gl,-10000,10000), matrix_robot_current);
         }
 
@@ -9836,6 +9846,22 @@ namespace opengl3
                 Console.WriteLine();
             }
         
+        }
+
+        private void button_pos_rob_gl_get_Click(object sender, EventArgs e)
+        {
+            var fr = new RobotFrame(matrix_robot_current, current_robot);
+            textBox_pos_rob_gl.Text = fr.ToStr(" ",true,true,true,false);
+        }
+
+        private void button_pos_rob_gl_set_Click(object sender, EventArgs e)
+        {
+
+            var fr_kuka =new RobotFrame( textBox_pos_rob_gl.Text,current_robot);
+            if (fr_kuka != null)
+            { 
+                set_robot_kuka_with_scanner(fr_kuka);
+            }
         }
         //void send_to_ard(TextBox textBox,)
     }

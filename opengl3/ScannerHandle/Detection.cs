@@ -622,7 +622,7 @@ namespace opengl3
 
 
 
-
+            var threshold = config.threshold;
 
             for (int i = (int)(config.board * data.GetLength(1)); i < data.GetLength(1) - (int)(config.board * data.GetLength(1)); i++)
             //for (int i = start; i < stop; i+=di)
@@ -630,7 +630,7 @@ namespace opengl3
                 bool p_add = false;
                 var br_max = int.MinValue;
                 int j_max = 0;
-
+                var maxes = new List<PointF>();
                 bool reverse_direct = false;
 
                 if (reverse_direct)
@@ -654,20 +654,24 @@ namespace opengl3
                 {
                     for (int j = 0; j < data.GetLength(0); j++)
                     {
+
                         int br_cur = (int)data[j, i];
                         // for(int i_w =0; i_w<wind-1; i_w++)
                         //br_cur += (int)data[j + i_w, i ];
 
-                        if (br_cur > br_max)
+                        if (br_cur > threshold)
                         {
                             br_max = br_cur;
                             j_max = j;
                         }
                         ps_arr_j[j] = new PointF(j, br_cur);
+                                              
                     }
                 }
+                if (config.many_maxes)
+                {
 
-
+                }
                 var ps_list_j = ps_arr_j.ToList();
                 var start_i = j_max - config.wind_regr; var stop_i = j_max + config.wind_regr + 1;
                 if (start_i < 0) start_i = 0;
@@ -685,7 +689,7 @@ namespace opengl3
                 //for (int k1 = j_max - wind; k1 < j_max + wind; k1++)
                 // vals_regr.Add(new double[] { data[k1, i],k1 });
 
-                var threshold = config.threshold;
+                
                 var koef = Regression.regression(vals_regr.ToArray(), 2);
                 var a = koef[2];
                 var b = koef[1];
@@ -1075,6 +1079,36 @@ namespace opengl3
             GC.Collect();
            
             return ps;
+        }
+
+
+        static PointF[] get_maxes_from_line(PointF[] ps)
+        {
+            var diff = diff_line(ps);
+            var maxes = new List<PointF>();
+            for (int i = 1; i < diff.Length; i++)
+            {
+               // if()
+            }
+            return null;
+
+        }
+        static PointF[] diff_line(PointF[] ps)
+        {
+            var diff = new List<PointF>();
+            for(int i = 1; i< ps.Length;i++)
+            {
+                diff.Add(ps[i]- ps[i-1]);
+            }
+            return diff.ToArray();
+        }
+        static PointF get_right_max(PointF[] ps)
+        {
+            var maxes = get_maxes_from_line (ps);
+            if (maxes == null) return default;
+            if (maxes.Length==0) return default;
+
+            return maxes[0];
         }
 
         static PointF[] rotatePointsClockwise(PointF[] ps,Size size)
