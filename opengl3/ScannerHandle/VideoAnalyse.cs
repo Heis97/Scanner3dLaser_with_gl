@@ -512,6 +512,7 @@ namespace opengl3
                 videoframe_count++;
                // Console.WriteLine("loading...      " + videoframe_count + "/" + all_frames);
             }
+            form.get_combo_im().Items.AddRange(frames_show.ToArray());
             Console.WriteLine("p_match: "+p_match);
             //comboImages.Items.AddRange(frames_show.ToArray());
             Console.WriteLine("stop video_________");
@@ -523,7 +524,7 @@ namespace opengl3
 
             //UtilOpenCV.drawPointsF(orig1, corn, 255, 0, 0, 2, true);
             //CvInvoke.Imshow("corn", orig1);
-            form.get_combo_im().Items.AddRange(frames_show.ToArray());
+           
             return scanner;
         }
         static public Scanner loadVideo_sing_cam_move(string filepath, MainScanningForm form, Scanner scanner = null, ScannerConfig config = null, bool calib = false)

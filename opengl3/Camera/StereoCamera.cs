@@ -254,7 +254,7 @@ namespace opengl3
             }
 
 
-            Settings_loader.save_file(file_name, new object[] { Bfs_med_real });// Bfs_med
+            Settings_loader.save_file(file_name, new object[] { Bfs_med });// Bfs_med_real   // Bfs_med
             return ms_check;
         }
 

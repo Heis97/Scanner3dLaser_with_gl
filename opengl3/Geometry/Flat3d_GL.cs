@@ -29,7 +29,9 @@ namespace opengl3
         {
             A = vals[0];
             B = vals[1];
-            C = vals[2];
+            C = 0;
+            if (vals.Length > 2) C = vals[2]; 
+          
             D = 0;
             n = new Vector3d_GL(A, B, C);
             exist = true;

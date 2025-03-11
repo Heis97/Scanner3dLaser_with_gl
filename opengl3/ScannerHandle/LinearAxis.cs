@@ -199,7 +199,6 @@ namespace opengl3
             double dest_max = 0;
             for (int i = 0; i< mats.Length;i++)
             {         
-
                 var ps = Detection.detectLineDiff(cameraCV.undist( mats[i].Clone()),cameraCV.scanner_config);
                 var ps_par = Detection.parall_Points(Detection.filtr_y0_Points(ps));
                 var ps_o = LaserSurface.order_x(ps_par);
@@ -281,8 +280,8 @@ namespace opengl3
                         {
                             up_surf += bin;
                         }
-                        CvInvoke.Imshow("up_surf", up_surf);
-                        CvInvoke.WaitKey();
+                       // CvInvoke.Imshow("up_surf", up_surf);
+                       // CvInvoke.WaitKey();
 
                     }
                 }
@@ -321,7 +320,7 @@ namespace opengl3
             CvInvoke.WaitKey();
             */
 
-            //var up_surf = bin_to_green( get_corners_calibrate_model(mats, cameraCV));
+           // var up_surf = bin_to_green( get_corners_calibrate_model(mats, cameraCV));
             var up_surf = orig.Clone();
            CvInvoke.Imshow(" up_surf", up_surf+orig);
             CvInvoke.WaitKey();
@@ -369,23 +368,31 @@ namespace opengl3
             var y_dim = 50;//50
 
             // var corners = corner_step(orig);
+            /*  ps_g = new System.Drawing.PointF[]
+               {
+                  new System.Drawing.PointF(79,370),
+                  new System.Drawing.PointF(79,90),
+                  new System.Drawing.PointF(468,90),
+                  new System.Drawing.PointF(475,367)
+
+               };
+              */
+            /* ps_g = new System.Drawing.PointF[]
+              {
+                 new System.Drawing.PointF(199,401),
+                 new System.Drawing.PointF(191,49),
+                 new System.Drawing.PointF(678,32),
+                 new System.Drawing.PointF(697,381)
+
+              };*/
             ps_g = new System.Drawing.PointF[]
-             {
-                new System.Drawing.PointF(79,370),
-                new System.Drawing.PointF(79,90),
-                new System.Drawing.PointF(468,90),
-                new System.Drawing.PointF(475,367)
+              {
+                new System.Drawing.PointF(216,370),
+                new System.Drawing.PointF(218,48),
+                new System.Drawing.PointF(665,31),
+                new System.Drawing.PointF(681,358)
 
-             };
-
-           /* ps_g = new System.Drawing.PointF[]
-             {
-                new System.Drawing.PointF(199,401),
-                new System.Drawing.PointF(191,49),
-                new System.Drawing.PointF(678,32),
-                new System.Drawing.PointF(697,381)
-
-             };*/
+              };
             var corners = ps_g;
 
             
@@ -414,8 +421,8 @@ namespace opengl3
                 LasSurfs.Add(las);
                 PositionsAxis.Add(positions[i]);
                 Console.WriteLine(" "+positions[i]+" "+las.flat3D);
-                //var flat = graphicGL.addFlat3d_YZ(las.flat3D,null, Color3d_GL.gray());
-                //graphicGL.buffersGl.setTranspobj(flat, 0.3f);
+                var flat = graphicGL.addFlat3d_YZ(las.flat3D,null, Color3d_GL.gray());
+                graphicGL.buffersGl.setTranspobj(flat, 0.3f);
                 LasFlats.Add(las.flat3D);
             }
 
@@ -714,7 +721,7 @@ namespace opengl3
 
             /* int start_ind = (int)(LasFlats.Count / 2) + 1;
                         int end_ind = (int)(LasFlats.Count / 2) - 1;*/
-            int grad = 2;
+            int grad = 1;
             var flats = new Flat3d_GL[] { start_LasFlat, betw_LasFlat, stop_LasFlat };
             var poses = new double[] { start_pos, betw_pos, stop_pos };
             var aval = new double[flats.Length][];
@@ -744,7 +751,7 @@ namespace opengl3
 
             /* int start_ind = (int)(LasFlats.Count / 2) + 1;
                         int end_ind = (int)(LasFlats.Count / 2) - 1;*/
-            int grad = 2;
+            int grad = 1;
             var aval = new double[flats.Length][];
             var bval = new double[flats.Length][];
             var cval = new double[flats.Length][];
