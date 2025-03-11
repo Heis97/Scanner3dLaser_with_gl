@@ -9,6 +9,7 @@ using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using Emgu.CV.UI;
 using System.Drawing;
+using Accord;
 
 
 namespace opengl3
@@ -313,7 +314,7 @@ namespace opengl3
             var kern3 = new Matrix<float>(new float[,] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } });
 
             var kern5 = new Matrix<float>(new float[,] { { 1, 1, 1, 1,1 }, { 1, 1, 1, 1,1 }, { 1, 1, 1,1,1 }, { 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1 } });
-            CvInvoke.Filter2D(matAll, matAll, kern5, new Point(-1, -1));
+            CvInvoke.Filter2D(matAll, matAll, kern5, new System.Drawing.Point(-1, -1));
             //CvInvoke.Sobel(gray, sob, DepthType.Cv8U, 0, 1);
             //CvInvoke.Threshold(matAll, bin, 80, 255, ThresholdType.Binary);
             //Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
@@ -668,10 +669,13 @@ namespace opengl3
                                               
                     }
                 }
+
                 if (config.many_maxes)
                 {
-
+                    var max = get_left_max(ps_arr_j, config.threshold);
+                    j_max =(int) max.X;
                 }
+                
                 var ps_list_j = ps_arr_j.ToList();
                 var start_i = j_max - config.wind_regr; var stop_i = j_max + config.wind_regr + 1;
                 if (start_i < 0) start_i = 0;
@@ -1082,15 +1086,48 @@ namespace opengl3
         }
 
 
-        static PointF[] get_maxes_from_line(PointF[] ps)
+        static PointF[] get_maxes_from_line(PointF[] ps,double min_val)
         {
             var diff = diff_line(ps);
             var maxes = new List<PointF>();
-            for (int i = 1; i < diff.Length; i++)
+            var cur_clast_zero = new List<PointF>();
+            for (int i = 1; i < diff.Length-1; i++)
             {
-               // if()
+                if(diff[i].Y < 0 && diff[i-1].Y > 0)
+                {
+                    if(ps[i - 1].Y> min_val)
+                    {
+                        maxes.Add(ps[i - 1]);
+                    }
+                   
+                }
+
+                if(diff[i].Y==0 )
+                {
+                    if (diff[i - 1].Y > 0)
+                    {
+                        cur_clast_zero = new List<PointF>();
+                        cur_clast_zero.Add(ps[i]);
+                    }
+                    else if(cur_clast_zero.Count>0)
+                    {
+                        cur_clast_zero.Add(ps[i]);
+                    }
+                    if(diff[i + 1].Y < 0 && cur_clast_zero.Count>0)
+                    {
+                        var j_cl = (int)(cur_clast_zero.Count / 2);
+                        if (cur_clast_zero[j_cl].Y > min_val)
+                        {
+                            maxes.Add(cur_clast_zero[j_cl]);
+                        }
+                            
+                        cur_clast_zero = new List<PointF>();
+                    }
+                }
+
+                
             }
-            return null;
+            return maxes.ToArray();
 
         }
         static PointF[] diff_line(PointF[] ps)
@@ -1098,18 +1135,28 @@ namespace opengl3
             var diff = new List<PointF>();
             for(int i = 1; i< ps.Length;i++)
             {
-                diff.Add(ps[i]- ps[i-1]);
+                diff.Add(ps[i] - ps[i-1]);
             }
             return diff.ToArray();
         }
-        static PointF get_right_max(PointF[] ps)
+        static PointF get_right_max(PointF[] ps,double min_val)
         {
-            var maxes = get_maxes_from_line (ps);
+            var maxes = get_maxes_from_line (ps, min_val);
             if (maxes == null) return default;
             if (maxes.Length==0) return default;
 
             return maxes[0];
         }
+
+        static PointF get_left_max(PointF[] ps, double min_val)
+        {
+            var maxes = get_maxes_from_line(ps, min_val);
+            if (maxes == null) return default;
+            if (maxes.Length == 0) return default;
+
+            return maxes[maxes.Length-1];
+        }
+
 
         static PointF[] rotatePointsClockwise(PointF[] ps,Size size)
         {

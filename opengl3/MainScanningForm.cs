@@ -206,6 +206,13 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
+
+
+            var mat_test = new Mat("im4.png");
+            var ps = Detection.detectLineDiff(mat_test, scanner_config);
+            mat_test =UtilOpenCV.drawPointsF(mat_test, ps, 0, 255, 0);
+            CvInvoke.Imshow("test", mat_test);
+            CvInvoke.WaitKey();
             //Manipulator.calcRob();
 
             var vals_regr = new double[][]//laser and pos
@@ -932,6 +939,8 @@ namespace opengl3
             prop_gr_scan.SelectedObject = scanner_config;
             propGrid_pattern.SelectedObject = patt_config;
             propGrid_traj.SelectedObject = traj_config;
+
+            
             // if(scanner_config.pos_laser_compens == null)
             // textBox_compens_las_pos.Text = scanner_config.pos_laser_compens.ToString();
 
