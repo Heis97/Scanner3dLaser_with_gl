@@ -70,7 +70,7 @@ namespace opengl3
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
-        RobotFrame.RobotType current_robot = RobotFrame.RobotType.KUKA;
+        RobotFrame.RobotType current_robot = RobotFrame.RobotType.PULSE;
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4, 4);
         Point3d_GL off_cyl = new Point3d_GL();
@@ -208,11 +208,11 @@ namespace opengl3
 
 
 
-            var mat_test = new Mat("im4.png");
+            /*var mat_test = new Mat("im4.png");
             var ps = Detection.detectLineDiff(mat_test, scanner_config);
             mat_test =UtilOpenCV.drawPointsF(mat_test, ps, 0, 255, 0);
             CvInvoke.Imshow("test", mat_test);
-            CvInvoke.WaitKey();
+            CvInvoke.WaitKey();*/
             //Manipulator.calcRob();
 
             var vals_regr = new double[][]//laser and pos
@@ -2159,7 +2159,7 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
            
             //GL1.SortObj();
-            int monitor_num = 2;
+            int monitor_num = 1;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -2307,7 +2307,7 @@ namespace opengl3
             //comp_mask();
 
 
-            load_kuka_scene();
+            //load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);

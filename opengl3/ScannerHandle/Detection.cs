@@ -623,7 +623,7 @@ namespace opengl3
 
 
 
-            var threshold = config.threshold;
+           
 
             for (int i = (int)(config.board * data.GetLength(1)); i < data.GetLength(1) - (int)(config.board * data.GetLength(1)); i++)
             //for (int i = start; i < stop; i+=di)
@@ -631,7 +631,6 @@ namespace opengl3
                 bool p_add = false;
                 var br_max = int.MinValue;
                 int j_max = 0;
-                var maxes = new List<PointF>();
                 bool reverse_direct = false;
 
                 if (reverse_direct)
@@ -660,7 +659,7 @@ namespace opengl3
                         // for(int i_w =0; i_w<wind-1; i_w++)
                         //br_cur += (int)data[j + i_w, i ];
 
-                        if (br_cur > threshold)
+                        if (br_cur > br_max)
                         {
                             br_max = br_cur;
                             j_max = j;
@@ -669,7 +668,7 @@ namespace opengl3
                                               
                     }
                 }
-
+                var threshold = config.threshold;
                 if (config.many_maxes)
                 {
                     var max = get_left_max(ps_arr_j, config.threshold);
