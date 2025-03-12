@@ -2323,17 +2323,21 @@ namespace opengl3
 
         void get_ps_char(string stl_name)
         {
+            bool model3d = false;
             var scan_stl = new Model3d(stl_name, false);
            
             var pols = scan_stl.pols;
             Console.WriteLine("pols.Length1: "+pols.Length);
             pols = Polygon3d_GL.clear_nz(pols, 0.5);
-            pols = Polygon3d_GL.clear_dim(pols, 0.5);
+            pols = Polygon3d_GL.clear_dim(pols, 0.9);
             Console.WriteLine("pols.Length2: " + pols.Length);
             var ps = Polygon3d_GL.get_uniq_points(pols);
             ps = Point3d_GL.add_inds_internal(ps);
             var mesh = Polygon3d_GL.toMesh(pols);
-           // scan_i = GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Points, Path.GetFileNameWithoutExtension(stl_name));
+            if (model3d)
+            {
+                scan_i = GL1.add_buff_gl(mesh[0], mesh[1], mesh[2], PrimitiveType.Points, Path.GetFileNameWithoutExtension(stl_name));
+            }
           //  return; 
             var ps_un = unite_point_cloud(ps);
           //  for(int i=0; i<ps_un.Length;i++)
@@ -2365,10 +2369,12 @@ namespace opengl3
             var vy = (p1 - ps_claster[minyi]).normalize();
             var vz = vx | vy;
             var m = RobotFrame.matrix_assemble(vx, vy, vz, ps_claster[minyi]);*/
+ 
+           
 
             var m_inv = Point3d_GL.get_align_matrix_flat(ps_claster);
             var ps_align_xy = Point3d_GL.multMatr_p_m(m_inv, ps);
-           // string align_xy = GL1.addPointMesh(ps_align_xy, Color3d_GL.gray(), "ps_align_xy");
+            if (model3d) { string align_xy = GL1.addPointMesh(ps_align_xy, Color3d_GL.gray(), "ps_align_xy"); }
 
             var up_ps = new List<Point3d_GL>();
             for(int i=0; i<ps_align_xy.Length;i++)
@@ -2382,7 +2388,10 @@ namespace opengl3
             var ps_align_xy_2 = Point3d_GL.multMatr_p_m(m_inv_2, ps_align_xy);
 
 
-          //  string align_xy_2 = GL1.addPointMesh(ps_align_xy_2, Color3d_GL.gray(), "ps_align_xy_2");
+            if (model3d)
+            {
+                string align_xy_2 = GL1.addPointMesh(ps_align_xy_2, Color3d_GL.gray(), "ps_align_xy_2");
+            }
 
             var level0 = new List<Point3d_GL>();
             for (int i = 0; i < ps_align_xy_2.Length; i++)
@@ -2404,11 +2413,13 @@ namespace opengl3
             }
             Console.WriteLine("level0.Count: " + level0.Count);
             Console.WriteLine("level1.Count: " + level1.Count);
-
-            //GL1.addPointMesh(level0.ToArray(), Color3d_GL.red(), "level0");
-            //GL1.addPointMesh(level1.ToArray(), Color3d_GL.green(), "level1");
-            //return;
-            var sides0 =  Point3d_GL.get_sides(level0.ToArray());
+            if (model3d)
+            {
+                GL1.addPointMesh(level0.ToArray(), Color3d_GL.red(), "level0");
+                GL1.addPointMesh(level1.ToArray(), Color3d_GL.green(), "level1");
+                //return;
+            }
+                var sides0 =  Point3d_GL.get_sides(level0.ToArray());
             var corn0_l = Point3d_GL.get_corners_45_xy(sides0[0]);
             var corn0_r = Point3d_GL.get_corners_45_xy(sides0[1]);
 
@@ -9835,7 +9846,7 @@ namespace opengl3
 
         private void but_calc_calib_ps_Click(object sender, EventArgs e)
         { 
-            var names = Directory.GetFiles("points");
+            var names = Directory.GetFiles("points_virt");
             var ps_all = new List<Point3d_GL[]>();
             for (int i = 0; i < names.Length; i++)
             {

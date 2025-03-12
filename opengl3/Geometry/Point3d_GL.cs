@@ -653,7 +653,7 @@ namespace opengl3
             for(int i = 0;i < ps.Length;i++)
             {
                 var p = ps[i];
-                p.color.set_r(i);
+                p.color =  p.color.set_r(i);
                 ps_int.Add(p);
             }
             return ps_int.ToArray();
