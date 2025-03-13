@@ -9846,7 +9846,7 @@ namespace opengl3
 
         private void but_calc_calib_ps_Click(object sender, EventArgs e)
         { 
-            var names = Directory.GetFiles("points_virt");
+            var names = Directory.GetFiles("points");
             var ps_all = new List<Point3d_GL[]>();
             for (int i = 0; i < names.Length; i++)
             {
@@ -9858,16 +9858,32 @@ namespace opengl3
                 GL1.addPointMesh(ps_world);
             }
             ps_all = Point3d_GL.sort_ps_dist_betw(ps_all.ToArray()).ToList();
-            for (int j = 0; j < ps_all.Count; j++)
+            /* for (int j = 0; j < ps_all.Count; j++)
+             {
+
+                 for (int i = 0; i < ps_all[0].Length; i++)
+                 {
+
+                     Console.Write((ps_all[j][i] - ps_all[1][i]).magnitude() + " ");
+                 }
+                 Console.WriteLine();
+             }*/
+            for (int i = 0; i < ps_all[0].Length; i++) 
             {
-                for (int i = 0; i < ps_all[0].Length; i++)
+                var p_med = new Point3d_GL();
+                for (int j = 0; j < ps_all.Count; j++)
+                {
+                    p_med += ps_all[j][i];
+
+                }
+                p_med /= ps_all.Count;
+                for (int j = 0; j < ps_all.Count; j++)
                 {
 
-                    Console.Write((ps_all[j][i]- ps_all[1][i]).magnitude() + " ");
+                    Console.Write((ps_all[j][i] - p_med).magnitude() + " ");
                 }
                 Console.WriteLine();
             }
-        
         }
 
         private void button_pos_rob_gl_get_Click(object sender, EventArgs e)
