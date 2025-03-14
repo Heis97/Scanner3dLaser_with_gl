@@ -955,7 +955,7 @@ namespace opengl3
             //scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
-            load_camers_v2();
+            //load_camers_v2();
             /*var m_test = new Mat("test_ph.jpg");
             var fr = new Frame(m_test, "sdf", FrameType.MarkBoard);
             CameraCV.findPoints(fr, new Size(9, 10));*/
@@ -2163,7 +2163,7 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
            
             //GL1.SortObj();
-            int monitor_num = 2;
+            int monitor_num = 1;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -2312,7 +2312,7 @@ namespace opengl3
 
 
            
-          load_kuka_scene();
+            //load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);
