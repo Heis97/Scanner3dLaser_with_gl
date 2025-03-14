@@ -9846,7 +9846,7 @@ namespace opengl3
 
         private void but_calc_calib_ps_Click(object sender, EventArgs e)
         { 
-            var names = Directory.GetFiles("points");
+            var names = Directory.GetFiles("points_virt");
             var ps_all = new List<Point3d_GL[]>();
             for (int i = 0; i < names.Length; i++)
             {
@@ -9877,12 +9877,15 @@ namespace opengl3
 
                 }
                 p_med /= ps_all.Count;
+                var sq_sum = 0d;
                 for (int j = 0; j < ps_all.Count; j++)
                 {
-
-                    Console.Write((ps_all[j][i] - p_med).magnitude() + " ");
+                    sq_sum += Math.Pow((ps_all[j][i] - p_med).magnitude(), 2);
+                    //Console.Write((ps_all[j][i] - p_med).magnitude() + " ");
                 }
-                Console.WriteLine();
+                sq_sum /= ps_all.Count;
+                sq_sum = Math.Sqrt(sq_sum);
+                Console.WriteLine(sq_sum);
             }
         }
 
