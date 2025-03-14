@@ -207,13 +207,17 @@ namespace opengl3
             init_vars();
 
 
+/*
+            var mat_test = new Mat("im4.png");
 
-            /*var mat_test = new Mat("im4.png");
+
             var ps = Detection.detectLineDiff(mat_test, scanner_config);
-            mat_test =UtilOpenCV.drawPointsF(mat_test, ps, 0, 255, 0);
+            mat_test =UtilOpenCV.drawPointsF(mat_test, ps, 255, 0, 0,4);
             CvInvoke.Imshow("test", mat_test);
-            CvInvoke.WaitKey();*/
-            //Manipulator.calcRob();
+            CvInvoke.WaitKey();
+            */
+
+            //Manipulator.calcRob()
 
             var vals_regr = new double[][]//laser and pos
                 {
@@ -951,7 +955,7 @@ namespace opengl3
             //scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
-            //load_camers_v2();
+            load_camers_v2();
             /*var m_test = new Mat("test_ph.jpg");
             var fr = new Frame(m_test, "sdf", FrameType.MarkBoard);
             CameraCV.findPoints(fr, new Size(9, 10));*/
@@ -1273,7 +1277,7 @@ namespace opengl3
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
             var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_1003a\2", FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam1_v_err_1103a.txt");
+            cam1.save_camera("cam1_v_err_1403a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -2163,8 +2167,8 @@ namespace opengl3
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
-                // GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
-                GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1);
+                GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
+              //  GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1);
                 GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
                 GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
 
@@ -2307,7 +2311,8 @@ namespace opengl3
             //comp_mask();
 
 
-           // load_kuka_scene();
+           
+          load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);
