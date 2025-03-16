@@ -44,17 +44,25 @@ namespace opengl3
                 serializer.Serialize(writer, obj);
             }
         }
-        static public T load_obj<T>(string path)
+        static public T load_obj<T>(string path, string text = null)
         {
             string jsontext = "";
+            
             try
             {
-                using (StreamReader file = File.OpenText(path))
+                if (text != null)
                 {
-                    jsontext = file.ReadToEnd();
+                    jsontext = text;
                 }
-                Console.WriteLine(path+"__________________________");
-                Console.WriteLine(jsontext);
+                else
+                {
+                    using (StreamReader file = File.OpenText(path))
+                    {
+                        jsontext = file.ReadToEnd();
+                    }
+                   // Console.WriteLine(path + "__________________________");
+                    //Console.WriteLine(jsontext);
+                }
                 return JsonConvert.DeserializeObject<T>(jsontext);
             }
             catch
@@ -63,6 +71,7 @@ namespace opengl3
             }
             
         }
+
         public void save_confs(object scan_conf, object traj_conf, object patt_conf)
         {
             save_obj(scanner_conf_path, scan_conf);

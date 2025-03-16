@@ -68,7 +68,113 @@ namespace opengl3
             color = p1.color;
         }
 
+        public static List<Point3d_GL> comp_blend_lines(Point3d_GL p1, Point3d_GL p2, Point3d_GL p3, double r, double d)
+    {
+        Point3d_GL v1 = p1 - p2;
+        Point3d_GL v2 = p3 - p2;
+        double alph = Point3d_GL.ang(v1, v2);
+        double dAlph = d / 2 * Math.PI * r;
 
+        if (alph < dAlph || Math.PI - alph < dAlph)
+        {
+            return new List<Point3d_GL> { p2 };
+        }
+        else
+        {
+            double r1 = r / Math.Sin(alph / 2);
+            Point3d_GL vr = (v1.normalize() + v2.normalize()).normalize() * r1;
+            Point3d_GL rc = p2 + vr;
+            double dr = Math.Sqrt(r1 * r1 - r * r);
+            Point3d_GL vr1 = v1 * dr - vr;
+            Point3d_GL vr2 = v2 * dr - vr;
+            double alphR = Point3d_GL.ang(vr1, vr2);
+            Point3d_GL dvr = vr1 - vr2;
+            int n = (int)((alph / (2 * Math.PI)) * 2 * Math.PI * r / d);
+
+            List<Point3d_GL> vp2s = new List<Point3d_GL>();
+            vp2s.Add(p2 + vr + vr1.normalize() * r);
+
+            for (int i = 1; i < n; i++)
+            {
+                double ang = 0.5 * Math.PI * i / n;
+                Point3d_GL p = p2 + vr + (vr1.normalize() * Math.Cos(ang) + vr2.normalize() * Math.Sin(ang)).normalize() * r;
+                vp2s.Add(p);
+            }
+
+            vp2s.Add(p2 + vr + vr2.normalize() * r);
+            return vp2s;
+            }
+        }
+
+        public static List<Point3d_GL> blend_lines(List<Point3d_GL> ps, double r, double d)
+        {
+            List<Point3d_GL> psB = new List<Point3d_GL> { ps[0] };
+
+            for (int i = 1; i < ps.Count - 1; i++)
+            {
+                psB.AddRange(comp_blend_lines(ps[i - 1], ps[i], ps[i + 1], r, d));
+
+                if (i % 100 == 0)
+                {
+                    Console.WriteLine($"{i} / {ps.Count}");
+                }
+            }
+
+            psB.Add(ps[ps.Count - 1]);
+            return psB;
+        }
+
+        public static List<Point3d_GL> filtr_dist(List<Point3d_GL> ps, double d)
+        {
+            List<Point3d_GL> psF = new List<Point3d_GL> { ps[0] };
+
+            for (int i = 1; i < ps.Count; i++)
+            {
+                if ((ps[i] - psF[psF.Count - 1]).magnitude() > d)
+                {
+                    psF.Add(ps[i]);
+                }
+            }
+
+            return psF;
+        }
+        public static (List<Point3d_GL>, double) div_traj(Point3d_GL p1, Point3d_GL p2, double dist, double cd)
+        {
+            double d = (p2 - p1).magnitude();
+            int divCount = (int)(d / dist);
+
+            if (divCount == 0)
+            {
+                return (new List<Point3d_GL>(), cd - d);
+            }
+
+            Point3d_GL ortV = (p2 - p1).normalize();
+            Point3d_GL dp = ortV * dist;
+            List<Point3d_GL> ps = new List<Point3d_GL>();
+
+            Point3d_GL p1s = p1 + ortV * (dist - cd);
+            for (int i = 0; i < divCount; i++)
+            {
+                ps.Add(p1s + dp * i);
+            }
+
+            return (ps, d - divCount * dist + cd);
+        }
+
+        public static List<Point3d_GL> comp_traj_to_anim(List<Point3d_GL> trajectory, double dist)//WORK NOT RIGHT!
+        {
+            List<Point3d_GL> ps = new List<Point3d_GL>();
+            double cd = 0;
+
+            for (int i = 0; i < trajectory.Count - 1; i++)
+            {
+                var (psD, newCd) = div_traj(trajectory[i], trajectory[i + 1], dist, cd);
+                ps.AddRange(psD);
+                cd = newCd;
+            }
+
+            return ps;
+        }
         public Point3d_GL Copy()
         {
             return new Point3d_GL(x, y, z, color);

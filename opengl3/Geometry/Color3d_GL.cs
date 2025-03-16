@@ -42,7 +42,7 @@ namespace opengl3
         }
         public static bool operator ==(Color3d_GL color1, Color3d_GL color2)
         {
-            return (color1.r == color2.r) && (color1.g == color2.g) || (color1.b == color2.b) || (color1.a == color2.a);
+            return (color1.r == color2.r) && (color1.g == color2.g) && (color1.b == color2.b) && (color1.a == color2.a);
         }
         public static Color3d_GL black() { return new Color3d_GL(0, 0, 0); }
         public static Color3d_GL red() { return new Color3d_GL(1, 0, 0); }

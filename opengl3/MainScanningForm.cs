@@ -28,6 +28,7 @@ using Accord.Math.Geometry;
 using System.Net;
 using System.Drawing.Drawing2D;
 using Emgu.CV.Dnn;
+using Accord.Statistics.Kernels;
 
 namespace opengl3
 {
@@ -205,10 +206,17 @@ namespace opengl3
             //nfi.
             InitializeComponent();
             init_vars();
+           /* var poses_sym = new List<Pose>(new Pose[] { 
+                new Pose(new double[] { 1, 2, 3, 4, 5, 6 }),
+                new Pose(new double[] { 12, 22, 3, 42, 52, 6 })
+            });
+            FormSettings.save_obj("feedback_teset.json", poses_sym);*/
+           
 
 
-/*
-            var mat_test = new Mat("im4.png");
+
+            /*
+           var mat_test = new Mat("im4.png");
 
 
             var ps = Detection.detectLineDiff(mat_test, scanner_config);
@@ -2311,7 +2319,7 @@ namespace opengl3
             //comp_mask();
 
 
-           
+
             //load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
@@ -2324,8 +2332,34 @@ namespace opengl3
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
             //test_go_to_point_robot();
+            test_poses();
         }
 
+        void test_poses()
+        {
+            var poses = Pose.load_from_json("feedback.json");
+            var frs = new List<RobotFrame>();
+            foreach (var pose in poses) frs.Add(new RobotFrame(pose,RobotFrame.RobotType.PULSE));
+            //var frs = new List<RobotFrame>();
+            //foreach (var fr in frs) GL1.addFrame(fr.getMatrix());
+
+            var ps = new List<Point3d_GL>();
+            foreach (var fr in frs) ps.Add( fr.get_pos() );
+            GL1.addPointMesh(ps.ToArray());
+
+            var p_st = new RobotFrame("-381.1144 202.80110 209.6792 -1.574908 0.065792 -0.75671575",RobotFrame.RobotType.PULSE);
+            var ps_traj = new List<Point3d_GL>
+            {
+               p_st.get_pos()+ new Point3d_GL(0, 0, 10),
+                p_st.get_pos()+ new Point3d_GL(0, 0, 0),
+                p_st.get_pos()+  new Point3d_GL(0, 30, 0),
+                p_st.get_pos()+  new Point3d_GL(1, 30, 0),
+                 p_st.get_pos()+   new Point3d_GL(1, 0, 0)
+            };
+            var ps_blend = Point3d_GL.blend_lines(ps_traj, 0.3, 0.1);
+            var ps_an = PathPlanner.unif_dist(ps_blend, 0.2);
+            GL1.addLineMeshTraj(ps_an.ToArray(),Color3d_GL.red());
+        }
         void get_ps_char(string stl_name)
         {
             bool model3d = false;

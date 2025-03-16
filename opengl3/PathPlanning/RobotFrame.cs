@@ -42,7 +42,7 @@ namespace opengl3
         public enum RobotType { KUKA = 1, PULSE = 2, FABION2 = 3};
 
         public RobotType robotType;
-
+        public DateTime timestamp;
 
         public RobotFrame(double x = 0, double y = 0, double z = 0, double a = 0, double b = 0, double c = 0, double v = 0, double d = 0, double f = 0, RobotType robotType = RobotType.PULSE)
         {
@@ -71,6 +71,20 @@ namespace opengl3
             D = d;
             F = f;
             frame = pos;
+            this.robotType = robotType;
+        }
+
+        public RobotFrame(Pose pose, RobotType robotType)
+        {
+            var pos = comp_forv_kinem(pose.angles.ToArray(), pose.angles.Count, pose.radians, robotType);
+            X = pos.position.x;
+            Y = pos.position.y;
+            Z = pos.position.z;
+            A = pos.rotation.x;
+            B = pos.rotation.y;
+            C = pos.rotation.z;
+            frame = pos;
+            timestamp = pose.timestamp;
             this.robotType = robotType;
         }
         public double str_to_double(string s)
@@ -126,6 +140,7 @@ namespace opengl3
             {
                 this.robotType = RobotType.PULSE;
             }*/
+            this.frame = new PositionRob(new Point3d_GL(X, Y,Z), new Point3d_GL(A, B,C));
             V = 0;
             D = 0;
             Console.WriteLine(this.robotType);

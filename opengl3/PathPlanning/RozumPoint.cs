@@ -65,4 +65,34 @@ namespace opengl3
             return roll + " " + pitch + " " + yaw+";";
         }
     }
+    public class Pose
+    {
+        public List<double> angles;
+        public DateTime timestamp;
+        public bool radians;
+        public Pose(double[] angles)
+        {
+            this.angles = angles.ToList();
+            timestamp = DateTime.Now;
+        }
+        public override string ToString()
+        {
+            var text = "";
+            foreach (var angle in angles) { text += angle.ToString()+" "; }
+            return text +" "+ timestamp.ToUniversalTime();
+        }
+
+        static public Pose[] load_from_json(string path)
+        {
+            var list_poses = FormSettings.load_obj<string[]>(path);
+            var poses = new List<Pose>();
+            for(int i = 0; i < list_poses.Length; i++)
+            {
+                var pose = FormSettings.load_obj<Pose>("", list_poses[i]);
+                pose.radians = false;
+                poses.Add(pose);
+            }
+            return poses.ToArray();
+        }
+    }
 }
