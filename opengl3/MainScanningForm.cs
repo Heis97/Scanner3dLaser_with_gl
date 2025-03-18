@@ -71,7 +71,7 @@ namespace opengl3
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
-        RobotFrame.RobotType current_robot = RobotFrame.RobotType.KUKA;
+        RobotFrame.RobotType current_robot = RobotFrame.RobotType.PULSE;
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4, 4);
         Point3d_GL off_cyl = new Point3d_GL();
@@ -2350,16 +2350,41 @@ namespace opengl3
             var p_st = new RobotFrame("-381.1144 202.80110 209.6792 -1.574908 0.065792 -0.75671575",RobotFrame.RobotType.PULSE);
             var ps_traj = new List<Point3d_GL>
             {
-               p_st.get_pos()+ new Point3d_GL(0, 0, 10),
-                p_st.get_pos()+ new Point3d_GL(0, 0, 0),
-                p_st.get_pos()+  new Point3d_GL(0, 30, 0),
-                p_st.get_pos()+  new Point3d_GL(1, 30, 0),
-                 p_st.get_pos()+   new Point3d_GL(1, 0, 0)
+                new Point3d_GL(0, 0, 10),
+               new Point3d_GL(0, 0, 0),
+               new Point3d_GL(0, 30, 0),
+                new Point3d_GL(1, 30, 0),
+                 new Point3d_GL(1, 0, 0)
             };
             var ps_blend = Point3d_GL.blend_lines(ps_traj, 0.3, 0.1);
-            var ps_an = PathPlanner.unif_dist(ps_blend, 0.2);
+            var ps_an = PathPlanner.unif_dist(ps_blend, 0.3);
+            var frs_model = new List<RobotFrame>();
+            var poses_model = new List<Pose>();
+            for (int i = 0; i < ps_an.Count; i++)
+            {
+                var fr = new RobotFrame(p_st.X + ps_an[i].x, p_st.Y + ps_an[i].y, p_st.Z + ps_an[i].z, p_st.A, p_st.B, p_st.C, 0, 0, 0, current_robot);
+                var ang = RobotFrame.comp_inv_kinem(fr.frame, current_robot)[6];
+
+                frs_model.Add(fr);
+                poses_model.Add(new Pose(ang));
+                 
+                prin.t(to_degree(ang));
+            }
             GL1.addLineMeshTraj(ps_an.ToArray(),Color3d_GL.red());
         }
+
+        double[] to_degree(double[] vals)
+        {
+            if(vals==null) return null;
+            if(vals.Length==0) return null;
+            var degree = new double[vals.Length];
+            for(int i = 0; i < degree.Length; i++)
+            {
+                degree[i] = 360 * vals[i] / Math.PI ;
+            }
+            return degree;
+        }
+
         void get_ps_char(string stl_name)
         {
             bool model3d = false;
