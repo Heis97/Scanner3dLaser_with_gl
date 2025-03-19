@@ -70,10 +70,11 @@ namespace opengl3
         public List<double> angles;
         public DateTime timestamp;
         public bool radians;
-        public Pose(double[] angles)
+        public Pose(double[] angles,bool radians = true)
         {
             this.angles = angles.ToList();
             timestamp = DateTime.Now;
+            this.radians = radians;
         }
         public override string ToString()
         {

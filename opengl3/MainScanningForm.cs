@@ -2342,7 +2342,7 @@ namespace opengl3
             foreach (var pose in poses) frs.Add(new RobotFrame(pose,RobotFrame.RobotType.PULSE));
             //var frs = new List<RobotFrame>();
             //foreach (var fr in frs) GL1.addFrame(fr.getMatrix());
-
+            Console.WriteLine("frs: "+frs[0]);
             var ps = new List<Point3d_GL>();
             foreach (var fr in frs) ps.Add( fr.get_pos() );
             GL1.addPointMesh(ps.ToArray());
@@ -2359,17 +2359,24 @@ namespace opengl3
             var ps_blend = Point3d_GL.blend_lines(ps_traj, 0.3, 0.1);
             var ps_an = PathPlanner.unif_dist(ps_blend, 0.3);
             var frs_model = new List<RobotFrame>();
+            load_3d_model_robot_pulse();
+            
             var poses_model = new List<Pose>();
             for (int i = 0; i < ps_an.Count; i++)
             {
                 var fr = new RobotFrame(p_st.X + ps_an[i].x, p_st.Y + ps_an[i].y, p_st.Z + ps_an[i].z, p_st.A, p_st.B, p_st.C, 0, 0, 0, current_robot);
-                var ang = RobotFrame.comp_inv_kinem(fr.frame, current_robot)[6];
-
+                var ang = RobotFrame.comp_inv_kinem(fr.frame, current_robot)[1];//1 5 
+                prin.t(to_degree(ang));
+                set_conf_robot_pulse(ang);
                 frs_model.Add(fr);
+                var fr_test = new RobotFrame(new Pose(ang,true), RobotFrame.RobotType.PULSE);
+                Console.WriteLine(fr_test);
                 poses_model.Add(new Pose(ang));
                  
-                prin.t(to_degree(ang));
+                
             }
+
+            ps_an = RobotFrame.to_points(frs_model);
             GL1.addLineMeshTraj(ps_an.ToArray(),Color3d_GL.red());
         }
 
@@ -2954,6 +2961,8 @@ namespace opengl3
             GL1.buffersGl.setMatrobj("ax_7", 0, ms[7]);
             GL1.buffersGl.setMatrobj("t2", 0, ms[7]);
 
+            GL1.buffersGl.setTranspobj("t2", 0);
+
 
         }
         void load_3d_model_robot_kuka()
@@ -3041,8 +3050,8 @@ namespace opengl3
                 }
                // var fr = RobotFrame.comp_forv_kinem(q, i,true, robotType);
                 qms[i] =mq * ms[i];//UtilMatr.matrix_kuka(fr.position, fr.rotation.toDegree())
-                prin.t(" ________________qms[] " + i);
-                prin.t(qms[i]);
+                //prin.t(" ________________qms[] " + i);
+                //prin.t(qms[i]);
                 GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
             }
           //  GL1.buffersGl.setMatrobj("t2", 0, qms[7]);//pulse
