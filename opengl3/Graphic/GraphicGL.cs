@@ -305,7 +305,7 @@ namespace opengl3
             
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             addCams();
-            lights_view();
+           // lights_view();
             if (buffersGl.objs != null)
             {
                 if (buffersGl.objs.Count != 0)

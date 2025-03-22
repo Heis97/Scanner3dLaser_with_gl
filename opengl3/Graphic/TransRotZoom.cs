@@ -289,7 +289,17 @@ namespace opengl3
             yRot = valuey;
             zRot = valuez;
         }
+        static string get_matrix_parametrs(float fovy, float aspect,float near, float far)
+        {
+            float num = near * (float)Math.Tan(Angle.ToRadians(fovy / 2f));
+            float num2 = num * aspect;
 
+            float left = 0f - num2;
+            float right = num2;
+            float bottom = 0f - num;
+            float top =  num;
+            return "left: " + left + "; right: " + right + "; bottom: " + bottom + "; top: " + top + "; near: " + near + "; far: " + far;
+        }
         static public Matrix4x4f[] getVPmatrix(TransRotZoom trz)
         {
             var _Pm = Matrix4x4f.Identity;
@@ -302,6 +312,9 @@ namespace opengl3
                     Matrix4x4f.RotatedX((float)trz.xRot) *
                     Matrix4x4f.RotatedY((float)trz.yRot) *
                     Matrix4x4f.RotatedZ((float)trz.zRot);
+                //Console.WriteLine(_Pm.ToString());
+                //Console.WriteLine(get_matrix_parametrs((float)trz.fovx, (float)trz.rect.Width / trz.rect.Height, 1f, 10000f));
+
             }
             else if (trz.viewType_ == viewType.Ortho)
             {

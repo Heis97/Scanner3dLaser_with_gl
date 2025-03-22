@@ -71,7 +71,7 @@ namespace opengl3
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
-        RobotFrame.RobotType current_robot = RobotFrame.RobotType.PULSE;
+        RobotFrame.RobotType current_robot = RobotFrame.RobotType.KUKA;
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4, 4);
         Point3d_GL off_cyl = new Point3d_GL();
@@ -206,15 +206,18 @@ namespace opengl3
             //nfi.
             InitializeComponent();
             init_vars();
-           /* var poses_sym = new List<Pose>(new Pose[] { 
-                new Pose(new double[] { 1, 2, 3, 4, 5, 6 }),
-                new Pose(new double[] { 12, 22, 3, 42, 52, 6 })
-            });
-            FormSettings.save_obj("feedback_teset.json", poses_sym);*/
-           
+            /* var poses_sym = new List<Pose>(new Pose[] { 
+                 new Pose(new double[] { 1, 2, 3, 4, 5, 6 }),
+                 new Pose(new double[] { 12, 22, 3, 42, 52, 6 })
+             });
+             FormSettings.save_obj("feedback_teset.json", poses_sym);*/
 
-
-
+            var f = 512.56;
+           // distort_folder();
+            Matrix<double> persp_matr = new Matrix<double>(new double[3, 3] { { f, 0, 500 }, { 0, f, 250 }, { 0, 0, 1 } });
+            Matrix<double> camera_distors = new Matrix<double>(5, 1);
+            var cam1 = new CameraCV(persp_matr, camera_distors, new Size(1000,500));
+            cam1.save_camera("cam1_virt_orig_1.txt");
             /*
            var mat_test = new Mat("im4.png");
 
@@ -226,6 +229,9 @@ namespace opengl3
             */
 
             //Manipulator.calcRob()
+
+
+
 
             var vals_regr = new double[][]//laser and pos
                 {
@@ -963,7 +969,7 @@ namespace opengl3
             //scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
-            //load_camers_v2();
+            load_camers_v2();
             /*var m_test = new Mat("test_ph.jpg");
             var fr = new Frame(m_test, "sdf", FrameType.MarkBoard);
             CameraCV.findPoints(fr, new Size(9, 10));*/
@@ -1283,9 +1289,9 @@ namespace opengl3
         {
             markSize = 10f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_1003a\2", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_2203a\dist", FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam1_v_err_1403a.txt");
+            cam1.save_camera("cam1_v_2203_dist_1.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -1294,6 +1300,25 @@ namespace opengl3
              var cam2 = new CameraCV(frms_2, chess_size, markSize, null);
              cam2.save_camera("cam2_conf_190623_test.txt");
              comboImages.Items.AddRange(frms_2);*/
+        }
+
+        void distort_folder()
+        {
+            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_2203a", FrameType.Pattern, PatternType.Mesh);
+            cameraDistortionCoeffs[0, 0] =-0.3;
+            cameraDistortionCoeffs[1, 0] =-0.4;
+            cameraDistortionCoeffs[2, 0] = 0;
+            cameraDistortionCoeffs[3, 0] = 0;
+            cameraDistortionCoeffs[4, 0] = 1;
+            for (int i = 0; i<frms_1.Length; i++)
+            {
+                var mat_d= UtilOpenCV.remapDistImOpenCvCentr(frms_1[i].im, cameraDistortionCoeffs);
+                mat_d.Save(@"virt\calib_fl_2203a\dist\" + frms_1[i].name);
+               // CvInvoke.Imshow("asd", mat_d);
+                //CvInvoke.WaitKey();
+            }
+          
+
         }
         Scanner loadScanner_v2(string conf1, string conf2, string stereo_cal, string bfs_file = null)
         {
@@ -2171,7 +2196,7 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
            
             //GL1.SortObj();
-            int monitor_num = 1;
+            int monitor_num = 2;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -2320,7 +2345,7 @@ namespace opengl3
 
 
 
-            //load_kuka_scene();
+            load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);
@@ -2332,7 +2357,7 @@ namespace opengl3
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
             //test_go_to_point_robot();
-            test_poses();
+           // test_poses();
         }
 
         void test_poses()
@@ -2571,9 +2596,9 @@ namespace opengl3
             flat =  GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
             pattern = generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
             var matr = Matrix4x4f.Translated(-640, -82, -30);
-            //GL1.buffersGl.setMatrobj(pattern, 0, matr);
+            GL1.buffersGl.setMatrobj(pattern, 0, matr);
             GL1.buffersGl.setMatrobj(flat, 0, matr);
-            GL1.buffersGl.setMatrobj(calibr, 0, matr * Matrix4x4f.Translated(100,0,0) * Matrix4x4f.RotatedZ(90)); 
+           // GL1.buffersGl.setMatrobj(calibr, 0, matr * Matrix4x4f.Translated(100,0,0) * Matrix4x4f.RotatedZ(90)); 
 
            
          
@@ -2659,8 +2684,8 @@ namespace opengl3
                 var mat1 = new Mat();
                 CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
                 //prin.t(GL1.transRotZooms[0].cameraCV.distortmatrix);
-                mat1 = UtilOpenCV.remapDistImOpenCvCentr(mat1, GL1.transRotZooms[0].cameraCV.distortmatrix);
-                mat1 = UtilOpenCV.GLnoise(mat1, 2, 2,-1);
+               // mat1 = UtilOpenCV.remapDistImOpenCvCentr(mat1, GL1.transRotZooms[0].cameraCV.distortmatrix);
+               // mat1 = UtilOpenCV.GLnoise(mat1, 2, 2,-1);
                 imBox_mark1.Image = mat1;
                 imProcess_virt(mat1, 1);
                 var corn = new System.Drawing.PointF[0];
@@ -5994,7 +6019,7 @@ namespace opengl3
                 var bfs = UtilOpenCV.to_matrix_opengl(matrices_cal[i]* matr_bfs) * Matrix4x4f.RotatedX(180);
                 GL1.transRotZooms[mon].robot_matr = bfs.Inverse;              
                 Thread.Sleep(100);
-                UtilOpenCV.saveImage(imBox_mark1, "virt\\calib_fl_1003a", fr_kuka.ToStr(" ",true,false,true,false));
+                UtilOpenCV.saveImage(imBox_mark1, "virt\\calib_fl_2203a", fr_kuka.ToStr(" ",true,false,true,false));
             }
             
         }

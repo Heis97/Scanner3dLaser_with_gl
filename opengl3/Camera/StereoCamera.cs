@@ -222,7 +222,8 @@ namespace opengl3
             Bfs_med[2, 3] = mt_m[2, 0];
             Bfs_med[3, 3] = 1;
 
-            var Bfs_med_real = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });
+            var Bfs_med_real = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });//
+            Bfs_med = Bfs_med_real;//
             var ms_check = new List<Matrix<double>>();
 
             var pattern = ms_rob[0] * Bfs_med * ms_cam[0];
