@@ -2293,7 +2293,7 @@ namespace opengl3
             // GL1.add_buff_gl(scan_stl_orig.mesh, scan_stl_orig.color, scan_stl_orig.normale, PrimitiveType.Triangles, "scan");
 
             //test_abc_matr();
-            // test_3d_models();
+             //test_3d_models();
             /* var m = new Matrix<double>(4,4);
              m[0, 3] = 10;
              for (int i = 0; i < 4; i++) m[i, i] = 1;
@@ -2365,10 +2365,13 @@ namespace opengl3
         {
             var poses = Pose.load_from_json("feedback_prog_1903_v20.json");
             var frs = new List<RobotFrame>();
-            var tool_fr = new RobotFrame("193.346 0.591 31.60 1.12302 -1.52354 1.30575", current_robot);
+            var tool_fr = new RobotFrame(193.346, 0.591, 31.60, 1.12302, -1.52354, 1.30575,0,0,0, current_robot);// 1.12302 -1.52354 1.30575
             var tool_fr_inv = tool_fr.inv();
             foreach (var pose in poses) frs.Add(new RobotFrame(pose,RobotFrame.RobotType.PULSE)* tool_fr);
             //var frs = new List<RobotFrame>();
+            
+
+
             //foreach (var fr in frs) GL1.addFrame(fr.getMatrix());
             Console.WriteLine("frs: "+frs[0]);
             var ps = new List<Point3d_GL>();
@@ -2389,11 +2392,11 @@ namespace opengl3
                 var fr = new RobotFrame(ps_an[i].x, ps_an[i].y, ps_an[i].z, p_st.A, p_st.B, p_st.C, 0, 0, 0, current_robot) * tool_fr_inv;
 
                 var ang = RobotFrame.comp_inv_kinem(fr.frame, current_robot)[1];//1 5 
-                prin.t(to_degree(ang));
+                prin.t(ang);
                 set_conf_robot_pulse(ang);
                 frs_model.Add(fr);
                 var fr_test = new RobotFrame(new Pose(ang,true), RobotFrame.RobotType.PULSE);
-                Console.WriteLine(fr_test);
+                //Console.WriteLine(fr_test);
                 poses_model.Add(new Pose(ang));
                  
                 

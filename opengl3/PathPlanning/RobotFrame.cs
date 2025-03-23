@@ -732,12 +732,12 @@ namespace opengl3
         {
             if(robotType==RobotType.PULSE)
             {
-                var L1 = 231.1;
+                var L1 = 247.1;
                 var L2 = 450;
                 var L3 = 370;
                 var L4 = 135.1;
                 var L5 = 182.5;
-                var L6 = 132.5;
+                var L6 = 134;
 
                 if(!rad)
                     q = to_rad(q);
@@ -854,7 +854,7 @@ namespace opengl3
             var L3 = 370;
             var L4 = 135.1;
             var L5 = 182.5;
-            var L6 = 132.5;
+            var L6 = 134;
 
             var dz = eye_matr(4);
             dz[2, 3] = -L6;
