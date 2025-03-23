@@ -143,7 +143,7 @@ namespace opengl3
             this.frame = new PositionRob(new Point3d_GL(X, Y,Z), new Point3d_GL(A, B,C));
             V = 0;
             D = 0;
-            Console.WriteLine(this.robotType);
+            //Console.WriteLine(this.robotType);
         }
 
         public static RobotFrame[] parse_g_code(string g_code, RobotType robotType = RobotType.PULSE)
@@ -362,7 +362,7 @@ namespace opengl3
             var fr = this.Clone();
             var m1 = fr.getMatrix();
             var m_inv = UtilOpenCV.inv(m1);
-            var fr_1 = new RobotFrame(m1, fr.robotType);
+            var fr_1 = new RobotFrame(m_inv, fr.robotType);
             fr_1.timestamp = fr.timestamp;
 
             return fr_1;

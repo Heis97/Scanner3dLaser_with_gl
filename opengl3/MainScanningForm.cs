@@ -2363,20 +2363,22 @@ namespace opengl3
 
         void test_poses()
         {
+            //robot*tool = traj
+            //robot = traj*(tool)-1
+
             var poses = Pose.load_from_json("feedback_prog_1903_v20.json");
             var frs = new List<RobotFrame>();
+            var frs_end = new List<RobotFrame>();
             var tool_fr = new RobotFrame(193.346, 0.591, 31.60, 1.12302, -1.52354, 1.30575,0,0,0, current_robot);// 1.12302 -1.52354 1.30575
             var tool_fr_inv = tool_fr.inv();
-            foreach (var pose in poses) frs.Add(new RobotFrame(pose,RobotFrame.RobotType.PULSE)* tool_fr);
-            //var frs = new List<RobotFrame>();
-            
-
-
-            //foreach (var fr in frs) GL1.addFrame(fr.getMatrix());
+            //Console.WriteLine("tesr eye: " + tool_fr * tool_fr_inv);
+            foreach (var pose in poses) frs.Add(new RobotFrame(pose,RobotFrame.RobotType.PULSE));//* tool_fr
+            foreach (var pose in poses) frs_end.Add(new RobotFrame(pose, RobotFrame.RobotType.PULSE) * tool_fr);
             Console.WriteLine("frs: "+frs[0]);
             var ps = new List<Point3d_GL>();
             GL1.addPointMesh(RobotFrame.to_points(frs).ToArray());
-            var file = File.ReadAllText("traj_1903.txt");
+            GL1.addPointMesh(RobotFrame.to_points(frs_end).ToArray(),Color3d_GL.green());
+            var file = File.ReadAllText("traj_1903_prep.txt");
             var frms = RobotFrame.parse_g_code(file,RobotFrame.RobotType.PULSE).ToList();
             var p_st = frms[0];
             var ps_traj = RobotFrame.to_points(frms);
@@ -2392,18 +2394,28 @@ namespace opengl3
                 var fr = new RobotFrame(ps_an[i].x, ps_an[i].y, ps_an[i].z, p_st.A, p_st.B, p_st.C, 0, 0, 0, current_robot) * tool_fr_inv;
 
                 var ang = RobotFrame.comp_inv_kinem(fr.frame, current_robot)[1];//1 5 
-                prin.t(ang);
+                var test_fr = new RobotFrame(new Pose(ang), RobotFrame.RobotType.PULSE);
+                var test_ang = RobotFrame.comp_inv_kinem(test_fr.frame, current_robot)[1];
+                var test_fr2 = new RobotFrame(new Pose(test_ang), RobotFrame.RobotType.PULSE);
+                //prin.t(ang);
                 set_conf_robot_pulse(ang);
-                frs_model.Add(fr);
+                frs_model.Add(test_fr);
                 var fr_test = new RobotFrame(new Pose(ang,true), RobotFrame.RobotType.PULSE);
                 //Console.WriteLine(fr_test);
                 poses_model.Add(new Pose(ang));
                  
                 
             }
-
-           // ps_an = RobotFrame.to_points(frs_model);
+            GL1.addLineMeshTraj(RobotFrame.to_points(frs_model).ToArray(), Color3d_GL.blue());
             GL1.addLineMeshTraj(ps_an.ToArray(),Color3d_GL.red());
+            Console.WriteLine("frs: (R)" + frs[0]);
+            Console.WriteLine(" frs_model: (R)" + frs_model[0]);
+            Console.WriteLine(" frms_model*tool_fr_inv: (TR)" + frms[0] * tool_fr_inv);
+            Console.WriteLine(" frs_end*tool_fr_inv: (TR)" + frs_end[0] * tool_fr_inv);
+            Console.WriteLine(" frms_model: (TR)" + frms[0] );
+            Console.WriteLine(" frs_end: (TR)" + frs_end[0] );
+
+
         }
 
         double[] to_degree(double[] vals)
