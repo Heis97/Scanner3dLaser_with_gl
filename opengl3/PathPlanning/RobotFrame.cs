@@ -346,6 +346,28 @@ namespace opengl3
             fr.A -= fr2.A; fr.B -= fr2.B; fr.C -= fr2.C;
             return fr;
         }
+
+        static public RobotFrame operator *(RobotFrame fr1, RobotFrame fr2)
+        {
+            var fr = fr1.Clone();
+            var m1 = fr1.getMatrix();
+            var m2 = fr2.getMatrix();
+            fr = new RobotFrame(m1 * m2, fr1.robotType);
+            fr.timestamp = fr1.timestamp;
+         
+            return fr;
+        }
+        public RobotFrame inv()
+        {
+            var fr = this.Clone();
+            var m1 = fr.getMatrix();
+            var m_inv = UtilOpenCV.inv(m1);
+            var fr_1 = new RobotFrame(m1, fr.robotType);
+            fr_1.timestamp = fr.timestamp;
+
+            return fr_1;
+        }
+
         static public RobotFrame operator *(RobotFrame fr1, double k)
         {
             var fr = fr1.Clone();
@@ -827,7 +849,7 @@ namespace opengl3
 
             var pm = getMatrixPos(pos, RobotType.PULSE );
             var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
-            var L1 = 231.1;
+            var L1 = 247.1;
             var L2 = 450;
             var L3 = 370;
             var L4 = 135.1;

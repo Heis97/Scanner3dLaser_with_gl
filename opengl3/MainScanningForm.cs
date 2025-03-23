@@ -71,7 +71,7 @@ namespace opengl3
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
-        RobotFrame.RobotType current_robot = RobotFrame.RobotType.KUKA;
+        RobotFrame.RobotType current_robot = RobotFrame.RobotType.PULSE;
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4, 4);
         Point3d_GL off_cyl = new Point3d_GL();
@@ -212,12 +212,12 @@ namespace opengl3
              });
              FormSettings.save_obj("feedback_teset.json", poses_sym);*/
 
-            var f = 512.56;
-           // distort_folder();
-            Matrix<double> persp_matr = new Matrix<double>(new double[3, 3] { { f, 0, 500 }, { 0, f, 250 }, { 0, 0, 1 } });
-            Matrix<double> camera_distors = new Matrix<double>(5, 1);
-            var cam1 = new CameraCV(persp_matr, camera_distors, new Size(1000,500));
-            cam1.save_camera("cam1_virt_orig_1.txt");
+            // var f = 512.56;
+            // distort_folder();
+            //Matrix<double> persp_matr = new Matrix<double>(new double[3, 3] { { f, 0, 500 }, { 0, f, 250 }, { 0, 0, 1 } });
+            //Matrix<double> camera_distors = new Matrix<double>(5, 1);
+            //  var cam1 = new CameraCV(persp_matr, camera_distors, new Size(1000,500));
+            //  cam1.save_camera("cam1_virt_orig_1.txt");
             /*
            var mat_test = new Mat("im4.png");
 
@@ -230,7 +230,8 @@ namespace opengl3
 
             //Manipulator.calcRob()
 
-
+          //  var date_test = DateTime.Parse("2025-03-19 20:43:36.345352");
+            
 
 
             var vals_regr = new double[][]//laser and pos
@@ -2196,7 +2197,7 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
            
             //GL1.SortObj();
-            int monitor_num = 2;
+            int monitor_num = 1;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -2345,7 +2346,7 @@ namespace opengl3
 
 
 
-            load_kuka_scene();
+            //load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);
@@ -2357,39 +2358,36 @@ namespace opengl3
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
             //test_go_to_point_robot();
-           // test_poses();
+            test_poses();
         }
 
         void test_poses()
         {
-            var poses = Pose.load_from_json("feedback.json");
+            var poses = Pose.load_from_json("feedback_prog_1903_v20.json");
             var frs = new List<RobotFrame>();
-            foreach (var pose in poses) frs.Add(new RobotFrame(pose,RobotFrame.RobotType.PULSE));
+            var tool_fr = new RobotFrame("193.346 0.591 31.60 1.12302 -1.52354 1.30575", current_robot);
+            var tool_fr_inv = tool_fr.inv();
+            foreach (var pose in poses) frs.Add(new RobotFrame(pose,RobotFrame.RobotType.PULSE)* tool_fr);
             //var frs = new List<RobotFrame>();
             //foreach (var fr in frs) GL1.addFrame(fr.getMatrix());
             Console.WriteLine("frs: "+frs[0]);
             var ps = new List<Point3d_GL>();
-            foreach (var fr in frs) ps.Add( fr.get_pos() );
-            GL1.addPointMesh(ps.ToArray());
-
-            var p_st = new RobotFrame("-381.1144 202.80110 209.6792 -1.574908 0.065792 -0.75671575",RobotFrame.RobotType.PULSE);
-            var ps_traj = new List<Point3d_GL>
-            {
-                new Point3d_GL(0, 0, 10),
-               new Point3d_GL(0, 0, 0),
-               new Point3d_GL(0, 30, 0),
-                new Point3d_GL(1, 30, 0),
-                 new Point3d_GL(1, 0, 0)
-            };
+            GL1.addPointMesh(RobotFrame.to_points(frs).ToArray());
+            var file = File.ReadAllText("traj_1903.txt");
+            var frms = RobotFrame.parse_g_code(file,RobotFrame.RobotType.PULSE).ToList();
+            var p_st = frms[0];
+            var ps_traj = RobotFrame.to_points(frms);
             var ps_blend = Point3d_GL.blend_lines(ps_traj, 0.3, 0.1);
             var ps_an = PathPlanner.unif_dist(ps_blend, 0.3);
             var frs_model = new List<RobotFrame>();
             load_3d_model_robot_pulse();
             
+
             var poses_model = new List<Pose>();
             for (int i = 0; i < ps_an.Count; i++)
             {
-                var fr = new RobotFrame(p_st.X + ps_an[i].x, p_st.Y + ps_an[i].y, p_st.Z + ps_an[i].z, p_st.A, p_st.B, p_st.C, 0, 0, 0, current_robot);
+                var fr = new RobotFrame(ps_an[i].x, ps_an[i].y, ps_an[i].z, p_st.A, p_st.B, p_st.C, 0, 0, 0, current_robot) * tool_fr_inv;
+
                 var ang = RobotFrame.comp_inv_kinem(fr.frame, current_robot)[1];//1 5 
                 prin.t(to_degree(ang));
                 set_conf_robot_pulse(ang);
@@ -2401,7 +2399,7 @@ namespace opengl3
                 
             }
 
-            ps_an = RobotFrame.to_points(frs_model);
+           // ps_an = RobotFrame.to_points(frs_model);
             GL1.addLineMeshTraj(ps_an.ToArray(),Color3d_GL.red());
         }
 

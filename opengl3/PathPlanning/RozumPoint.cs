@@ -76,6 +76,17 @@ namespace opengl3
             timestamp = DateTime.Now;
             this.radians = radians;
         }
+        public Pose(string data, bool radians = false)
+        {
+            var spl = data.Split(';');
+            angles = new List<double>();
+            for (int i = 0; i < spl.Length - 1; i++)
+            {
+                angles.Add(double.Parse(spl[i]));
+            }
+            timestamp = DateTime.Parse(spl[spl.Length-1]);
+            this.radians = radians;
+        }
         public override string ToString()
         {
             var text = "";
@@ -83,7 +94,7 @@ namespace opengl3
             return text +" "+ timestamp.ToUniversalTime();
         }
 
-        static public Pose[] load_from_json(string path)
+        static public Pose[] load_from_json_old(string path)
         {
             var list_poses = FormSettings.load_obj<string[]>(path);
             var poses = new List<Pose>();
@@ -92,6 +103,17 @@ namespace opengl3
                 var pose = FormSettings.load_obj<Pose>("", list_poses[i]);
                 pose.radians = false;
                 poses.Add(pose);
+            }
+            return poses.ToArray();
+        }
+
+        static public Pose[] load_from_json(string path)
+        {
+            var list_poses = FormSettings.load_obj<string[]>(path);
+            var poses = new List<Pose>();
+            for (int i = 0; i < list_poses.Length; i++)
+            {
+                poses.Add(new Pose(list_poses[i],true));
             }
             return poses.ToArray();
         }

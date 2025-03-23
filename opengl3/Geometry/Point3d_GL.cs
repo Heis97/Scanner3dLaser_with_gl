@@ -124,6 +124,8 @@ namespace opengl3
             return psB;
         }
 
+
+
         public static List<Point3d_GL> filtr_dist(List<Point3d_GL> ps, double d)
         {
             List<Point3d_GL> psF = new List<Point3d_GL> { ps[0] };
