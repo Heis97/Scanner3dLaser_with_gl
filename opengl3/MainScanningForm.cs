@@ -2376,8 +2376,8 @@ namespace opengl3
             foreach (var pose in poses) frs_end.Add(new RobotFrame(pose, RobotFrame.RobotType.PULSE) * tool_fr);
             Console.WriteLine("frs: "+frs[0]);
             var ps = new List<Point3d_GL>();
-            GL1.addPointMesh(RobotFrame.to_points(frs).ToArray());
-            GL1.addPointMesh(RobotFrame.to_points(frs_end).ToArray(),Color3d_GL.green());
+            GL1.addPointMesh(RobotFrame.to_points(frs).ToArray());// R from q
+            GL1.addPointMesh(RobotFrame.to_points(frs_end).ToArray(),Color3d_GL.green());// TR from q
             var file = File.ReadAllText("traj_1903_prep.txt");
             var frms = RobotFrame.parse_g_code(file,RobotFrame.RobotType.PULSE).ToList();
             var p_st = frms[0];
@@ -2399,15 +2399,15 @@ namespace opengl3
                 var test_fr2 = new RobotFrame(new Pose(test_ang), RobotFrame.RobotType.PULSE);
                 //prin.t(ang);
                 set_conf_robot_pulse(ang);
-                frs_model.Add(test_fr);
+                frs_model.Add(test_fr2);
                 var fr_test = new RobotFrame(new Pose(ang,true), RobotFrame.RobotType.PULSE);
                 //Console.WriteLine(fr_test);
                 poses_model.Add(new Pose(ang));
                  
                 
             }
-            GL1.addLineMeshTraj(RobotFrame.to_points(frs_model).ToArray(), Color3d_GL.blue());
-            GL1.addLineMeshTraj(ps_an.ToArray(),Color3d_GL.red());
+            GL1.addLineMeshTraj(RobotFrame.to_points(frs_model).ToArray(), Color3d_GL.blue());// R from prog
+            GL1.addLineMeshTraj(ps_an.ToArray(),Color3d_GL.red());// TR from prog
             Console.WriteLine("frs: (R)" + frs[0]);
             Console.WriteLine(" frs_model: (R)" + frs_model[0]);
             Console.WriteLine(" frms_model*tool_fr_inv: (TR)" + frms[0] * tool_fr_inv);
