@@ -781,7 +781,7 @@ namespace opengl3
         }
 
 
-        static Mat[] load_video(string path)
+        static public Mat[] load_video(string path)
         {
 
             var capture = new VideoCapture(path);
@@ -800,7 +800,25 @@ namespace opengl3
             Console.WriteLine(path + " loaded.");
             return frames.ToArray();
         }
+        static public Frame[] load_video_frs(string path)
+        {
 
+            var capture = new VideoCapture(path);
+            var all_frames = capture.Get(CapProp.FrameCount);
+            var frames = new List<Frame>();
+            var videoframe_count = 0;
+
+            //CvInvoke.mea
+            while (videoframe_count < all_frames)
+            {
+                Mat im = new Mat();
+                while (!capture.Read(im)) { }
+                frames.Add(new Frame(im,videoframe_count.ToString(),FrameType.ThreeDimens));
+                videoframe_count++;
+            }
+            Console.WriteLine(path + " loaded.");
+            return frames.ToArray();
+        }
         public static void noise_analyse(string path)
         {
             var mats = load_video(path);

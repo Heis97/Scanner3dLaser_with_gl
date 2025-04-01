@@ -502,7 +502,7 @@ namespace opengl3
              CvInvoke.Imshow("find",find );
              CvInvoke.WaitKey();
              */
-          
+           comboImages.Items.AddRange( VideoAnalyse.load_video_frs("video_focus.mp4"));
         }
 
         #region something
@@ -2358,7 +2358,7 @@ namespace opengl3
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
             //test_go_to_point_robot();
-            test_poses();
+            //test_poses();
         }
 
         void test_poses()
@@ -4218,12 +4218,43 @@ namespace opengl3
             }
             if (fr.frameType == FrameType.LasLin || fr.frameType == FrameType.LasDif)
             {
-
-
-
             }
-
+            if (fr.frameType == FrameType.ThreeDimens)
+            {
+                imageBox1.Image = fr.im;
+                var lapl = new Mat();
+                CvInvoke.Laplacian(fr.im, lapl, DepthType.Default);
+                var im = lapl.ToImage<Gray, byte>();
+                var r = im.GetAverage();
+                CvInvoke.PutText(im, Math.Round( r.Intensity, 3).ToString(),new Point(100,800),FontFace.HersheyScriptSimplex,3,new MCvScalar(255),2);
+                imageBox2.Image = get_focal_surface(fr.im);
+            }
             //imageBox2.Image = cameraCVcommon.undist(fr.im);
+        }
+
+        static Mat get_focal_surface(Mat mat)
+        {
+            var lapl = new Mat();
+            var im = mat.ToImage<Gray, byte>();
+            CvInvoke.Laplacian(im, lapl, DepthType.Default);
+            Console.WriteLine("depth = "+lapl.Depth);
+            CvInvoke.Threshold(lapl,lapl,20,255,ThresholdType.Binary);
+            var im_th = lapl.ToImage<Gray, byte>();
+            Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(3, 3));
+
+            Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(2, 2));
+            Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
+
+            Mat ellips7 = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(7, 7), new Point(1, 1));
+            int num = 4;
+            Image<Gray, Byte> im_med = im_th;
+            for (int i=0;i<num;i++)
+            {
+                im_med = im_med.MorphologyEx(MorphOp.Dilate, ellips7, new Point(-1, -1), 3, BorderType.Default, new MCvScalar());
+                im_med = im_med.MorphologyEx(MorphOp.Close, ellips7, new Point(-1, -1), 3, BorderType.Default, new MCvScalar());
+            }
+         
+            return im_med.Mat;
         }
         private void but_resize_Click(object sender, EventArgs e)
         {
@@ -6767,7 +6798,7 @@ namespace opengl3
             int i = 0;
             Console.WriteLine(vertex_buffer_data.Length);
             Console.WriteLine("-----------------------------------");
-            var z_mult_cam = 0.5f;
+            var z_mult_cam = 10f;
             for (int x = 0; x < im2.Width - 1; x++)
             {
                 for (int y = 0; y < im2.Height - 1; y++)
