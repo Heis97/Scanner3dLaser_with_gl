@@ -4237,7 +4237,6 @@ namespace opengl3
             var lapl = new Mat();
             var im = mat.ToImage<Gray, byte>();
             CvInvoke.Laplacian(im, lapl, DepthType.Default);
-            Console.WriteLine("depth = "+lapl.Depth);
             CvInvoke.Threshold(lapl,lapl,20,255,ThresholdType.Binary);
             var im_th = lapl.ToImage<Gray, byte>();
             Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(3, 3));
@@ -4251,10 +4250,27 @@ namespace opengl3
             for (int i=0;i<num;i++)
             {
                 im_med = im_med.MorphologyEx(MorphOp.Dilate, ellips7, new Point(-1, -1), 3, BorderType.Default, new MCvScalar());
-                im_med = im_med.MorphologyEx(MorphOp.Close, ellips7, new Point(-1, -1), 3, BorderType.Default, new MCvScalar());
+                im_med = im_med.MorphologyEx(MorphOp.Close, ellips7, new Point(-1, -1), 10, BorderType.Default, new MCvScalar());
             }
-         
-            return im_med.Mat;
+            //var mat_r = new Image<>
+            var ret = new Mat();
+            var spl = mat.Split();
+            spl[1] += im_med.Mat * 0.3;
+            CvInvoke.Merge(new VectorOfMat( spl), ret);
+            return ret;
+        }
+
+        static Mat get_focal_surface_for_conf(Mat mat)
+        {
+            var lapl = new Mat();
+            var im = mat.ToImage<Gray, byte>();
+            CvInvoke.Laplacian(im, lapl, DepthType.Default);
+            var r = im.GetAverage();
+            CvInvoke.Threshold(lapl, lapl, 20, 255, ThresholdType.Binary);
+            var conf = new Mat();
+            CvInvoke.BitwiseAnd(mat, mat, conf, lapl);
+
+            return conf;
         }
         private void but_resize_Click(object sender, EventArgs e)
         {
