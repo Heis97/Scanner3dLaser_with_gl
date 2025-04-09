@@ -9121,6 +9121,21 @@ namespace opengl3
             return val;
         }
 
+        double to_double(string val)
+        {
+            if (val == null) return 0;
+            if (val.Length == 0) return 0;
+            val = val.Replace(',', '.');
+            try
+            {
+                return Convert.ToDouble(val);
+            }
+            catch
+            {
+                return double.NaN;
+            }
+            //return 
+        }
         private void textBox_z1_vel_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -9411,21 +9426,6 @@ namespace opengl3
             laserLine?.set_pos_disp(pos_z_steps);
         }
 
-        double to_double(string val)
-        {
-            if (val == null) return 0;
-            if (val.Length == 0) return 0;
-            val = val.Replace(',', '.');
-            try
-            {
-                return Convert.ToDouble(val);
-            }
-            catch
-            {
-                return double.NaN;
-            }
-            //return 
-        }
 
         #endregion
 
