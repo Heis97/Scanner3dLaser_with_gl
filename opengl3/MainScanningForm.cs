@@ -71,7 +71,7 @@ namespace opengl3
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
-        RobotFrame.RobotType current_robot = RobotFrame.RobotType.PULSE;
+        RobotFrame.RobotType current_robot = RobotFrame.RobotType.KUKA;
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4, 4);
         Point3d_GL off_cyl = new Point3d_GL();
@@ -2191,13 +2191,13 @@ namespace opengl3
             var h = send.Height;
             var d = 1000;
             var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
-            GL1.buffersGl.setTranspobj(fr, 0.4f);
+            GL1.buffersGl.setTranspobj(fr, 0.0f);
             
 
-            //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Chess);
+            //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
            
             //GL1.SortObj();
-            int monitor_num = 1;
+            int monitor_num = 4;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -2278,7 +2278,7 @@ namespace opengl3
             //test_surf_rec_2();
             //test_find_cont_1();
 
-            //GL1.addFlat3d_XY_zero_s(0);
+            //GL1.addFlat3d_XY_zero_s(0,Color3d_GL.white());
             //var ps = SurfaceReconstraction.gen_random_cont_XY(20, 40, 2,new Point3d_GL(20,10));
 
             /*var ps_circ = SurfaceReconstraction.ps_fit_circ_XY_mnk(ps);
@@ -2346,7 +2346,7 @@ namespace opengl3
 
 
 
-            //load_kuka_scene();
+            load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);
@@ -2359,6 +2359,7 @@ namespace opengl3
 
             //test_go_to_point_robot();
             //test_poses();
+          
         }
 
         void test_poses()
@@ -2622,6 +2623,7 @@ namespace opengl3
             var fr_kuka = new RobotFrame("-557.421 -30.89 90.804 3.11 -0.002 -1.608");//-557.421 -30.89 101.804 3.11 -0.002 -1.608
             //-490.3822 -20.9971 112.3028 3.11045 -0.60005 -1.60844   
             set_robot_kuka_with_scanner(fr_kuka);
+
         }
         void set_robot_kuka_with_scanner(RobotFrame fr_kuka)
         {
@@ -6040,7 +6042,7 @@ namespace opengl3
             stereocam_scan = stereo;
             //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
             chess_size = new Size(6, 7);
-            var markSize = 10f;
+            var markSize = 9.733f;// 10f;
             //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
             //stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
 
@@ -6054,8 +6056,8 @@ namespace opengl3
             comboImages.Items.AddRange(frms_stereo);
             matrices_cal = ms_check;
             cameraCVcommon = cam1;
-            //var thr = new Thread(make_photos_robot);
-            //thr.Start();
+            var thr = new Thread(make_photos_robot);
+            thr.Start();
         }
 
         void make_photos_robot()

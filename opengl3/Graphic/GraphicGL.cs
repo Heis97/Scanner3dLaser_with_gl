@@ -513,7 +513,7 @@ namespace opengl3
                 color_r = 0.3f,
                 color_g = 0.20f,
                 color_b = 0.25f,
-                power = 100000,
+                power = 0,//100000,
                 cut_off = 0.99999f,
                 type_light = LightSourceGL.type.Disc
             
@@ -527,7 +527,7 @@ namespace opengl3
                 color_r = 0.6f,
                 color_g = 0.6f,
                 color_b = 0.6f,
-                power = 5000000,
+                power =5000000,
                 cut_off = 0.9999f,
                 type_light = LightSourceGL.type.Point
 
