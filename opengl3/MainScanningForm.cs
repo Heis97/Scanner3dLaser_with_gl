@@ -409,7 +409,7 @@ namespace opengl3
             //UtilOpenCV.takeLineFromMat(im_las, 1);
 
             // test_basis();
-            UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
+            //UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
             // load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
@@ -502,7 +502,7 @@ namespace opengl3
              CvInvoke.Imshow("find",find );
              CvInvoke.WaitKey();
              */
-           comboImages.Items.AddRange( VideoAnalyse.load_video_frs("video_focus.mp4"));
+          // comboImages.Items.AddRange( VideoAnalyse.load_video_frs("video_focus.mp4"));
         }
 
         #region something
@@ -970,7 +970,7 @@ namespace opengl3
             //scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
-            //load_camers_v2();
+            load_camers_v2();
             /*var m_test = new Mat("test_ph.jpg");
             var fr = new Frame(m_test, "sdf", FrameType.MarkBoard);
             CameraCV.findPoints(fr, new Size(9, 10));*/
@@ -1290,9 +1290,9 @@ namespace opengl3
         {
             markSize = 10f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\camera_cal_2012", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_2203a", FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam1_v_2203_dist_1фыв.txt");
+            cam1.save_camera("virt\\calib_fl_2203b.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f

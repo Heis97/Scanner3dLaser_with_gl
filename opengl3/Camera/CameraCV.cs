@@ -299,7 +299,7 @@ namespace opengl3
 
 
             im_centr = new PointF((float)cameramatrix_opt[0, 2], (float)cameramatrix_opt[1, 2]);
-            CvInvoke.InitUndistortRectifyMap(cameramatrix, distortmatrix, null, matr, image_size, DepthType.Cv32F,1, mapx, mapy);//_opt
+            CvInvoke.InitUndistortRectifyMap(cameramatrix_opt, distortmatrix, null, matr, image_size, DepthType.Cv32F,1, mapx, mapy);//_opt
 
             pos = new float[3] { 0, 0, 0 };
         }
