@@ -202,6 +202,7 @@ namespace opengl3
                         var z = m[2, 3];
 
                         var sRy = -m[2, 0];
+
                         var cRy = Math.Pow((1-sRy*sRy), 0.5);
 
                         var sRz = m[1,0] / cRy;

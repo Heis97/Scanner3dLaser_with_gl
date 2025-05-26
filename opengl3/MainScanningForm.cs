@@ -376,7 +376,7 @@ namespace opengl3
                       new double[] {16 ,227},
               };
             koef_y = Regression.regression(vals_regr, 2);
-           // prin.t(vals_regr);
+            // prin.t(vals_regr);
             //prin.t("_____________-");
             /* var p1 = new PosTimestamp(7000, 1);
              var p2 = new PosTimestamp(8000, 3);
@@ -502,7 +502,14 @@ namespace opengl3
              CvInvoke.Imshow("find",find );
              CvInvoke.WaitKey();
              */
-          // comboImages.Items.AddRange( VideoAnalyse.load_video_frs("video_focus.mp4"));
+            // comboImages.Items.AddRange( VideoAnalyse.load_video_frs("video_focus.mp4"));
+
+            var fr_p = new RobotFrame(100, 200, 300, 0.4, 0.2, 0.8);
+            var fr_p_m = fr_p.getMatrix();
+            prin.t(fr_p_m);
+            var fr_p2 = new RobotFrame(fr_p_m);
+            Console.WriteLine(fr_p);
+            Console.WriteLine(fr_p2);
         }
 
         #region something
@@ -970,7 +977,7 @@ namespace opengl3
             //scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
-            load_camers_v2();
+            //load_camers_v2();
             /*var m_test = new Mat("test_ph.jpg");
             var fr = new Frame(m_test, "sdf", FrameType.MarkBoard);
             CameraCV.findPoints(fr, new Size(9, 10));*/
