@@ -112,7 +112,7 @@ namespace opengl3
             }
             
             //Console.WriteLine("Mes12.Length: " + Mes1.Length + " " + Mes2.Length);
-            Console.WriteLine(Mes1 + " " + Mes2 + " " + Mes3 + " ");
+            //Console.WriteLine(Mes1 + " " + Mes2 + " " + Mes3 + " ");
             if (Mes1.Length <= 4 && Mes2.Length <= 2)
             {
                 while (Mes1.Length < 4)
@@ -135,12 +135,31 @@ namespace opengl3
                 //try
                 {
                  Console.WriteLine("Out: " + Mes1);
+                    int count = 0;
+                    int count_max = 200;
                 if(this.serialPort.IsOpen)
                 {
                     this.serialPort.WriteLine(Mes1);
                     Thread.Sleep(5);
                     var resp = reseav();
-                    Console.WriteLine(resp);
+                    //Console.WriteLine(resp);
+                    while(!check_mes(resp,val,var,adr) && count<count_max)
+                    {
+                        this.serialPort.WriteLine(Mes1);
+                        resp = reseav();
+                        //Console.WriteLine(resp);
+                        Thread.Sleep(2);
+                        count++;
+                       
+                    }
+                        Console.WriteLine("missimg_connect: " + count);
+                        if (count>count_max-2)
+                        {
+                            Console.WriteLine("connection problem");
+                        }
+
+
+
                 }
                             
 
@@ -159,7 +178,34 @@ namespace opengl3
                
             
         }
-        
+        static bool check_mes(string resp_lines, int _val, int _var, int _adr)
+        {
+            if(resp_lines == null) return false;
+            if (resp_lines.Length == 0) return false;
+            var resp = resp_lines.Split('\n')[0];
+            if (resp == null) return false;
+            if (resp.Length == 0) return false;
+            if (!resp.Contains(':')) return false;
+            var list = resp.Split(':');
+            if(list.Length != 4) return false;
+            try
+            {
+                int _var_resp = Convert.ToInt32(list[1]);
+                int _val_resp = Convert.ToInt32(list[2]);
+                int _adr_resp = Convert.ToInt32(list[3]);
+                //Console.WriteLine("out: " + _val + " " + _var + " " + _adr + " ");
+                //Console.WriteLine("resp: " + _val_resp + " " + _var_resp + " " + _adr_resp + " ");
+                if (_val ==  _val_resp && _var == _var_resp && _adr == _adr_resp)
+                {
+                    return true;
+                }
+            }
+            catch (Exception e) {
+                return false;
+            }
+            
+            return false;
+        }
         public  string reseav()
         {
             /*var res = "";
@@ -169,8 +215,17 @@ namespace opengl3
             }*/
             //return res;
             if (response == null) response = new StringBuilder();
-            //response.Clear();
-            var res = serialPort.ReadExisting();
+            response.Clear();
+            var res = "";
+            try
+            {
+                res = serialPort.ReadExisting();
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+           
             //serialPort.
             if(res!=null) response.Append(res);
 

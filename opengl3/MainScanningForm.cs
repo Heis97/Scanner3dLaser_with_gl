@@ -1744,57 +1744,27 @@ namespace opengl3
                     );
             Thread.Sleep(200);
 
-
-
+            videoCaptures[scanner_config.Cam1_ind]?.Set(CapProp.Exposure, -8);
+            videoCaptures[scanner_config.Cam2_ind]?.Set(CapProp.Exposure, -8);
+            Thread.Sleep(200);
             if (typescan == 3)
             {
                 var t_video = (double)counts / fps;
                 var v_laser = (p2_cur_scan.x - p1_cur_scan.x) / t_video;
                 laserLine?.setPower(power_laser);
-                Thread.Sleep(2);
-                laserLine?.setPower(power_laser);
-                Thread.Sleep(2);
-                laserLine?.laserOn();
-                Thread.Sleep(2);
+                Thread.Sleep(100);
                 laserLine?.laserOn();
                 Thread.Sleep(100);
-                Thread.Sleep(2);
-
                 laserLine?.setShvpVel(200);
                 Thread.Sleep(200);
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p1_cur_scan.x);
-
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p1_cur_scan.x);
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p1_cur_scan.x);
-                Thread.Sleep(2);
                 laserLine?.setShvpPos((int)p1_cur_scan.x);
                 Thread.Sleep(4000);
-                
-                Console.WriteLine(v_laser + " v_las");
-                Thread.Sleep(2);
-                laserLine?.setShvpVel(v_laser);
-                Thread.Sleep(2);
-                laserLine?.setShvpVel(v_laser);
-                Thread.Sleep(2);
-                laserLine?.setShvpVel(v_laser);
-                Thread.Sleep(2);
                 laserLine?.setShvpVel(v_laser);
                 Thread.Sleep(400);
-                Thread.Sleep(2);
                 startWrite(1, counts);
                 startWrite(2, counts);
                 laserLine?.setShvpPos((int)p2_cur_scan.x);
                 Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p2_cur_scan.x);
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p2_cur_scan.x);
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p2_cur_scan.x);
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p2_cur_scan.x);
                 sb_enc = new StringBuilder();
 
             }
@@ -2204,7 +2174,7 @@ namespace opengl3
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
            
             //GL1.SortObj();
-            int monitor_num = 4;
+            int monitor_num = 1;
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
@@ -2353,7 +2323,7 @@ namespace opengl3
 
 
 
-            load_kuka_scene();
+            //load_kuka_scene();
             //load_scaner_scene();
             //vel_rob_map();
             //test_diff_angles(0.6);
@@ -2612,13 +2582,13 @@ namespace opengl3
         void load_kuka_scene()
         {
             
-            var calibr = GL1.add_buff_gl(new Model3d("models\\calibr_exm.stl", false),Color3d_GL.white(), PrimitiveType.Triangles, "scan");
+            //var calibr = GL1.add_buff_gl(new Model3d("models\\calibr_exm.stl", false),Color3d_GL.white(), PrimitiveType.Triangles, "scan");
            
             flat =  GL1.addFlat3d_XY_zero_s(-0.01f, new Color3d_GL(135, 117, 103, 1, 255) * 1.4);
             pattern = generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-            var matr = Matrix4x4f.Translated(-640, -82, -30);
+            /*var matr = Matrix4x4f.Translated(-640, -82, -30);
             GL1.buffersGl.setMatrobj(pattern, 0, matr);
-            GL1.buffersGl.setMatrobj(flat, 0, matr);
+            GL1.buffersGl.setMatrobj(flat, 0, matr);*/
            // GL1.buffersGl.setMatrobj(calibr, 0, matr * Matrix4x4f.Translated(100,0,0) * Matrix4x4f.RotatedZ(90)); 
 
            
@@ -3037,10 +3007,10 @@ namespace opengl3
             //var scan_stl = new Model3d("models\\lowres\\t2.stl", false, 1);
             //GL1.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "t2");
 
-            var scan_stl = new Model3d("models\\kuka\\scaner3.stl", false, 1);
+            //var scan_stl = new Model3d("models\\kuka\\scaner3.stl", false, 1);
            
-            GL1.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "scaner2");
-            GL1.buffersGl.setTranspobj("scaner2", 0.03f);
+            //GL1.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "scaner2");
+            //GL1.buffersGl.setTranspobj("scaner2", 0.03f);
             var L0 = 360;
             var L1 = 420;
             var L2 = 400;
@@ -6217,9 +6187,11 @@ namespace opengl3
                     }
                    
                 }
+                videoCaptures[scanner_config.Cam1_ind]?.Set(CapProp.AutoExposure, 1);
+                videoCaptures[scanner_config.Cam2_ind]?.Set(CapProp.AutoExposure, 1);
 
 
-               // video_writer[ind - 1]?.Dispose();
+                // video_writer[ind - 1]?.Dispose();
             }
 
         }
@@ -6382,19 +6354,23 @@ namespace opengl3
         //--------------------------------------------------------
         private void videoStart_sam(int number)
         {
-            var capture = new VideoCapture(number);
+            var capture = new VideoCapture(number,VideoCapture.API.DShow);
+
+            //'M', 'J', 'P', 'G');
             videoCaptures[number] = capture;
             //capture.SetCaptureProperty(CapProp.
             capture.Set(CapProp.FrameWidth, cameraSize.Width);
 
-            // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
+            capture.Set(CapProp.FrameHeight, cameraSize.Height);
+            
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
-           // capture.Set(CapProp.AutoExposure, 1);
-           // capture.Set(CapProp.Exposure, -8);
-
-            cameraSize.Width =(int) capture.Get(CapProp.FrameWidth);
+            capture.Set(CapProp.AutoExposure, 1);
+            //capture.Set(CapProp.Exposure, -8);
+            capture.Set(CapProp.FourCC, VideoWriter.Fourcc('M', 'J', 'P', 'G'));
+            cameraSize.Width = (int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
+            //videoCaptures[scanner_config.Cam1_ind]?.Set(CapProp.AutoExposure, 1);
             Console.WriteLine(cameraSize.Width.ToString() + " " + cameraSize.Height.ToString() + " " + capture.Get(CapProp.Fps));
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
             camera_ind_ptr[number] = capture.Ptr;
@@ -6479,7 +6455,7 @@ namespace opengl3
 
                 case FrameType.LasLin://laser sensor
                     //try
-                    if(ind==0 && !scanning_status && comp_current_compens)
+                    if(ind==0 && !scanning_status)// && comp_current_compens)
                     {
                         /* var ps = Detection.detectLineSensor(mat);
                          Console.Write(ps[0].X + " ");
@@ -6553,7 +6529,7 @@ namespace opengl3
                             }
                             else
                             {
-                                laserLine?.test();
+                                //laserLine?.test();
                             }
 
                         }
@@ -6676,9 +6652,11 @@ namespace opengl3
                     }
                     label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.Text = "Сканирование завершено"));
                     label_scan_ready.BeginInvoke((MethodInvoker)(() => label_scan_ready.ForeColor = Color.ForestGreen));
+                    videoCaptures[scanner_config.Cam1_ind]?.Set(CapProp.AutoExposure, 1);
+                    videoCaptures[scanner_config.Cam2_ind]?.Set(CapProp.AutoExposure, 1);
                 }
                 scanning_status = false;
-
+               
                 // video_writer[ind - 1]?.Dispose();
             }
 
@@ -7372,7 +7350,7 @@ namespace opengl3
             else if (combo_improc.SelectedIndex == 3)
             {
                 imProcType = FrameType.LasLin;
-                laserLine?.onLaserSensor();
+                //laserLine?.onLaserSensor();
             }
             else if (combo_improc.SelectedIndex == 4)
             {
@@ -8317,10 +8295,10 @@ namespace opengl3
             //windowsTabs.Controls.Remove(tabPage_tube);
 
 
-          /*  this.tabP_connect.Controls.Add(this.imageBox1);
+            this.tabP_connect.Controls.Add(this.imageBox1);
             this.tabP_connect.Controls.Add(this.imageBox2);
             this.tabP_scanning_printing.Controls.Add(this.glControl1);
-          */
+          
             
             add_buttons_rob_contr();
             formSettings.load_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
@@ -8637,8 +8615,10 @@ namespace opengl3
         //__________________SIMP______________________
         private void but_con_set_ard_con_Click(object sender, EventArgs e)
         {
-            Thread connect_las_thread = new Thread(connect_las);
             Thread connect_cam_thread = new Thread(connect_cams);
+            Thread.Sleep(1000);
+            Thread connect_las_thread = new Thread(connect_las);
+            
             connect_las_thread.Start();
             connect_cam_thread.Start();
         }
@@ -8649,10 +8629,11 @@ namespace opengl3
             label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.ForeColor = Color.Firebrick));
             DeviceArduino.find_ports(cb_ard_ext,true);
             Thread.Sleep(300);
-            laserLine = new LaserLine(portArd); Thread.Sleep(1500);
-            laserLine?.setShvpVel(200); Thread.Sleep(100);
+            laserLine = new LaserLine(portArd); Thread.Sleep(4500);
+            // laserLine?.setShvpVel(200); Thread.Sleep(100);
+            laserLine?.setPower(250); Thread.Sleep(100);
             laserLine?.laserOn(); Thread.Sleep(100);
-            laserLine?.set_home_laser(); Thread.Sleep(1000);
+            laserLine?.set_home_laser(); Thread.Sleep(4000);
             laserLine?.setShvpPos(350); Thread.Sleep(100);
             laserLine?.laserOff();
             label_ard_connect.BeginInvoke((MethodInvoker)(() => label_ard_connect.Text = "Контр РО подключён"));
@@ -8863,6 +8844,9 @@ namespace opengl3
             label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_scan_ready_load.Text = "3D модель не загружена"));
             label_scan_ready_load.BeginInvoke((MethodInvoker)(() => label_scan_ready_load.ForeColor = Color.Firebrick));
             var pos_rob = positionFromRobot_str(con1);
+
+            //videoCaptures[scanner_config.Cam1_ind]?.Set(CapProp.Exposure, -8);
+            //videoCaptures[scanner_config.Cam2_ind]?.Set(CapProp.Exposure, -8);
             Console.WriteLine(pos_rob);
 
             if (pos_rob != null)
@@ -9751,46 +9735,19 @@ namespace opengl3
             if (comp_current_compens)
             {
                 laserLine?.set_send_poses(1); Thread.Sleep(2);
-                laserLine?.set_send_poses(1);Thread.Sleep(2);
-                laserLine?.set_send_poses(1);Thread.Sleep(2);
-                laserLine?.set_send_poses(1);Thread.Sleep(2);
-
                 laserLine?.setShvpVel(200); Thread.Sleep(2);
-                laserLine?.setShvpVel(200); Thread.Sleep(2);
-                laserLine?.setShvpVel(200); Thread.Sleep(2);
-                laserLine?.setShvpVel(200); Thread.Sleep(2);
-
-
-                laserLine?.set_home_z(); Thread.Sleep(2);
-                laserLine?.set_home_z(); Thread.Sleep(2);
-                laserLine?.set_home_z(); Thread.Sleep(2);
                 laserLine?.set_home_z(); Thread.Sleep(2);
                 Thread.Sleep(6000);
-
-                laserLine?.set_home_laser(); Thread.Sleep(2);
-                laserLine?.set_home_laser(); Thread.Sleep(2);
-                laserLine?.set_home_laser(); Thread.Sleep(2);
                 laserLine?.set_home_laser(); Thread.Sleep(2);
                 Thread.Sleep(4000);
-                laserLine?.laserOn(); Thread.Sleep(2);
-                laserLine?.laserOn(); Thread.Sleep(2);
-                laserLine?.laserOn(); Thread.Sleep(2);
-                laserLine?.laserOn(); Thread.Sleep(2);
-
-               
-
+                laserLine?.laserOn(); Thread.Sleep(2);          
                 var las_pos = Convert.ToInt32(textBox_compens_las_pos.Text);
-                laserLine?.setShvpPos(las_pos); Thread.Sleep(2);
-                laserLine?.setShvpPos(las_pos); Thread.Sleep(2);
-                laserLine?.setShvpPos(las_pos); Thread.Sleep(2);
                 laserLine?.setShvpPos(las_pos); Thread.Sleep(2);
             }
             else
             {
                 laserLine?.set_send_poses(0); Thread.Sleep(2);
-                laserLine?.set_send_poses(0); Thread.Sleep(2);
-                laserLine?.set_send_poses(0); Thread.Sleep(2);
-                laserLine?.set_send_poses(0); Thread.Sleep(2);
+
             }
         }
 
