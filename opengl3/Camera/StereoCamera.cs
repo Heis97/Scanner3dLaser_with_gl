@@ -161,6 +161,7 @@ namespace opengl3
             Console.WriteLine("calibrate_stereo_rob");
             for (int i = 0; i < frames.Length; i++)
             {
+                Console.WriteLine(frames[i].name);
                 var pos1 = cameraCV.compPos(frames[i].im, patternType, pattern_size, markSize);
                 if (pos1 )
                 {

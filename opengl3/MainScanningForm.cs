@@ -504,12 +504,19 @@ namespace opengl3
              */
             // comboImages.Items.AddRange( VideoAnalyse.load_video_frs("video_focus.mp4"));
 
-            var fr_p = new RobotFrame(100, 200, 300, 0.4, 0.2, 0.8);
+          /*  var fr_p = new RobotFrame(100, 200, 300, 0.4, 0.2, 0.8);
             var fr_p_m = fr_p.getMatrix();
             prin.t(fr_p_m);
             var fr_p2 = new RobotFrame(fr_p_m);
             Console.WriteLine(fr_p);
-            Console.WriteLine(fr_p2);
+            Console.WriteLine(fr_p2);*/
+
+            var r_type = RobotFrame.RobotType.KUKA;
+            var f_kuka = new RobotFrame(500, 100, 200, -2.3, 0.5, -2, 0, 0, 0, r_type);
+            var m_kuka = f_kuka.getMatrix();
+            var f_kuka2 = new RobotFrame(m_kuka, r_type);
+            Console.WriteLine(f_kuka);
+            Console.WriteLine(f_kuka2);
         }
 
         #region something
@@ -877,7 +884,7 @@ namespace opengl3
                 mat_global[i] = new Mat();
             }
 
-            radioButton_dynamic_surface.Checked = true;
+            //radioButton_dynamic_surface.Checked = true;
             if (comboImages.Items.Count > 0)
             {
                 comboImages.SelectedIndex = 0;
@@ -1386,6 +1393,8 @@ namespace opengl3
                     scan_i = GL1.add_buff_gl(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Triangles, scan_path_1);
                 }
                 smooth_mesh(scan_i, config.smooth);
+
+                
                 // if (scan_stl != null) scan_i = GL1.add_buff_gl_dyn(scan_stl[0], scan_stl[1], scan_stl[2], PrimitiveType.Points);
             }
             Console.WriteLine("Loading end.");
@@ -2668,7 +2677,7 @@ namespace opengl3
              }*/
 
             bool find_gl =true;
-           // find_gl = false;
+            find_gl = false;
             var num_cam = 1;
             if (find_gl)
             {
@@ -4604,13 +4613,13 @@ namespace opengl3
                     {
                         if (res.Length > 3)
                         {
-                            //Console.WriteLine("tcp res: " + res);
+                            Console.WriteLine("tcp res: " + res);
 
 
                             if (res.Contains("finish"))
                             {
-                                if (surface_type == 1) compensation = false;
-                                laserLine?.set_home_z(); Thread.Sleep(2);
+                                //if (surface_type == 1) compensation = false;
+                               /* laserLine?.set_home_z(); Thread.Sleep(2);
                                 laserLine?.set_home_z(); Thread.Sleep(20);
                                 laserLine?.set_home_z(); Thread.Sleep(20);
                                 laserLine?.set_home_z(); Thread.Sleep(20);
@@ -4620,13 +4629,13 @@ namespace opengl3
                                 laserLine?.set_home_z(); Thread.Sleep(20);
                                 laserLine?.set_home_z(); Thread.Sleep(20);
                                 laserLine?.set_home_z(); Thread.Sleep(20);
-                                Console.WriteLine("COMPENSATION STOP");
+                                Console.WriteLine("COMPENSATION STOP");*/
 
                             }
                             else if (res.Contains("start"))
                             {
-                                if (surface_type == 1) compensation = true;
-                                Console.WriteLine("COMPENSATION START");
+                               // if (surface_type == 1) compensation = true;
+                                //Console.WriteLine("COMPENSATION START");
                             }
                             else
                             {
@@ -6033,8 +6042,8 @@ namespace opengl3
             comboImages.Items.AddRange(frms_stereo);
             matrices_cal = ms_check;
             cameraCVcommon = cam1;
-            var thr = new Thread(make_photos_robot);
-            thr.Start();
+            //var thr = new Thread(make_photos_robot);
+            //thr.Start();
         }
 
         void make_photos_robot()
@@ -6589,19 +6598,19 @@ namespace opengl3
             if (videoframe_counts[ind] > 0 && videoframe_counts[ind ] < videoframe_counts_stop[ind])
             {
                 bool without_las_pos = true;
-                sb_enc?.Append(LaserLine.get_las_pos_time(laserLine,without_las_pos) + " " + videoframe_counts[ind] + " " + ind + " ");
+                //sb_enc?.Append(LaserLine.get_las_pos_time(laserLine,without_las_pos) + " " + videoframe_counts[ind] + " " + ind + " ");
                 //if (sb_enc == null) Console.WriteLine("NULL!");
                 //sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
-                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind] + " " + ind + " ");
-                sb_enc?.Append("\n");
+                //sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind] + " " + ind + " ");
+               // sb_enc?.Append("\n");
                 //video_writer[ind - 1]?.Write(mat);
                 video_mats[ind]?.Add(mat.Clone());
                 //var p = Detection.detectLineSensor(mat)[0];
                 //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
-                sb_enc?.Append(LaserLine.get_las_pos_time(laserLine, without_las_pos) + " " + videoframe_counts[ind] + " " + ind + " ");
+               // sb_enc?.Append(LaserLine.get_las_pos_time(laserLine, without_las_pos) + " " + videoframe_counts[ind] + " " + ind + " ");
                 //sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
-                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind ] + " " + ind + " ");
-                sb_enc?.Append("\n");
+               // sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind ] + " " + ind + " ");
+               // sb_enc?.Append("\n");
 
                 videoframe_counts[ind]++;
             }
@@ -6681,19 +6690,26 @@ namespace opengl3
 
 
                 bool without_las_pos = true;
-                sb_enc?.Append(LaserLine.get_las_pos_time(laserLine, without_las_pos) + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                //sb_enc?.Append(LaserLine.get_las_pos_time(laserLine, without_las_pos) + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 //if (sb_enc == null) Console.WriteLine("NULL!");
                 //sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
-                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind-1] + " " + ind + " ");
-                sb_enc?.Append("\n");
+                //sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind-1] + " " + ind + " ");
+                //sb_enc?.Append("\n");
                 //video_writer[ind - 1]?.Write(mat);
-                video_writer[ind - 1]?.Write(mat);
+                try
+                {
+                    video_writer[ind - 1]?.Write(mat);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
                 //var p = Detection.detectLineSensor(mat)[0];
                 //Console.WriteLine(ind + " " + video_mats[ind-1].Count+" "+p);
-                sb_enc?.Append(LaserLine.get_las_pos_time(laserLine, without_las_pos) + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+                //sb_enc?.Append(LaserLine.get_las_pos_time(laserLine, without_las_pos) + " " + videoframe_counts[ind - 1] + " " + ind + " ");
                 //sb_enc?.Append("0" + " " + videoframe_counts[ind ] + " " + ind + " ");
-                sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
-                sb_enc?.Append("\n");
+                //sb_enc?.Append(DateTime.Now.Ticks + " " + videoframe_counts[ind - 1] + " " + ind + " ");
+               // sb_enc?.Append("\n");
 
                 videoframe_counts[ind - 1]++;
             }
@@ -7531,7 +7547,7 @@ namespace opengl3
 
                 rob_traj = PathPlanner.join_traj(_traj);
                 var ps = PathPlanner.matr_to_traj(rob_traj);
-                if (tool == null)
+                /*if (tool == null)
                 {
                     tool = new RobotFrame(0);
                 }
@@ -7540,7 +7556,7 @@ namespace opengl3
                for(int i=0; i<rob_traj.Count;i++)
                 {
                     rob_traj[i] *= tool_inv;
-                }
+                }*/
 
                 if (GL1.buffersGl.objs.Keys.Contains(traj_i)) GL1.buffersGl.removeObj(traj_i);
 
@@ -8430,7 +8446,7 @@ namespace opengl3
         private void but_rob_con_sc_Click(object sender, EventArgs e)
         {
 
-            connect_robot(RobotFrame.RobotType.PULSE);
+            connect_robot(current_robot);
 
         }
 
@@ -8900,13 +8916,13 @@ namespace opengl3
             {
                 if(comboBox_syrenge_size.SelectedIndex == 0)
                 {
-                    traj_config.off_z = 10;
+                    //traj_config.off_z = 10;
                 }
                
             }
             else
             {
-                traj_config.off_z = 0;
+                //traj_config.off_z = 0;
             }
             debugBox.Text = gen_traj_rob(RobotFrame.RobotType.KUKA,null,scan_i);
         }

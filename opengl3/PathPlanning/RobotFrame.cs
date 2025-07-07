@@ -545,9 +545,9 @@ namespace opengl3
         }
 
 
-        static public List<RobotFrame> decrease_angle(List<RobotFrame> frames, double k_decr)//1 full ang,0 const ang
+        static public List<RobotFrame> decrease_angle(List<RobotFrame> frames, double k_decr, RobotType robotType)//1 full ang,0 const ang
         {
-            var aver_fr = new RobotFrame(0,0,0,0,0,0,0,0,0,RobotType.PULSE);
+            var aver_fr = new RobotFrame(0,0,0,0,0,0,0,0,0, robotType);
             aver_fr = get_average_angle(frames, aver_fr);
             var frames_decrease = new List<RobotFrame>();
             for (int i = 0; i < frames.Count; i++)
@@ -574,6 +574,26 @@ namespace opengl3
             target_frame.A = a / frames.Count;
             target_frame.B = b / frames.Count;
             target_frame.C = c / frames.Count;
+            return target_frame;
+        }
+
+        static RobotFrame get_central_angle(List<RobotFrame> frames, RobotFrame target_frame)
+        {
+            double a_max = double.MinValue, b_max = double.MinValue, c_max = double.MinValue;
+            double a_min = double.MaxValue, b_min = double.MaxValue, c_min = double.MaxValue;
+            for (int i = 0; i < frames.Count; i++)
+            {
+                a_max = Math.Max(a_max, frames[i].A);
+                b_max = Math.Max(b_max, frames[i].B);
+                c_max = Math.Max(c_max, frames[i].C);
+
+                a_min = Math.Min(a_min, frames[i].A);
+                b_min = Math.Min(b_min, frames[i].B);
+                c_min = Math.Min(c_min, frames[i].C);
+            }
+            target_frame.A = (a_max + a_min)/ 2;
+            target_frame.B = (b_max + b_min) / 2;
+            target_frame.C = (c_max + c_min) / 2;
             return target_frame;
         }
         static RobotFrame get_average_frame(List<RobotFrame> frames)

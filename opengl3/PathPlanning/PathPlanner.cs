@@ -1305,7 +1305,10 @@ namespace PathPlanning
                         var d = (p2.get_pos()- p1.get_pos()).magnitude();
                         if(d!=0)
                         {
-                            var p_bt = p1 +   (p2 - p1)* (k / d);
+                            var p_bt = p1 + (p2 - p1) * (k / d);
+                            p_bt.A = p1.A;
+                            p_bt.B = p1.B;// / 2;
+                            p_bt.C = p1.C;// / 2;
                             ps_u.Add(p_bt);
                         }
                        
@@ -1637,11 +1640,14 @@ namespace PathPlanning
             }
             // traj_rob = unif_dist(traj_rob, 0.5);
             //traj_rob = line_aver_btw(traj_rob.ToArray(), 10).ToList();
-            //traj_rob = divide_traj(traj_rob, trajParams.div_step);
+            // traj_rob = divide_traj(traj_rob, trajParams.div_step);
+            Console.WriteLine("def:__"+traj_rob[10].ToStr());
             traj_rob = unif_dist(traj_rob, trajParams.div_step );
-
-            traj_rob = RobotFrame.smooth_angle(traj_rob, trajParams.w_smooth_ang);
-            traj_rob = RobotFrame.decrease_angle(traj_rob, trajParams.k_decr_ang);
+            Console.WriteLine("unif:__" + traj_rob[10].ToStr() );
+           traj_rob = RobotFrame.smooth_angle(traj_rob, trajParams.w_smooth_ang);
+            Console.WriteLine("smooth:__" + traj_rob[10].ToStr());
+            traj_rob = RobotFrame.decrease_angle(traj_rob, trajParams.k_decr_ang,type_robot);
+            Console.WriteLine("decriase:__" + traj_rob[10].ToStr());
             for (int i = 0; i < traj_rob.Count; i++)
             {
                 graphic?.addFrame(traj_rob[i].getMatrix(), 5, "sda");

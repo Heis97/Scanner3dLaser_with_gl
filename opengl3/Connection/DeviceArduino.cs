@@ -134,7 +134,7 @@ namespace opengl3
                 }
                 //try
                 {
-                 Console.WriteLine("Out: " + Mes1);
+                 //Console.WriteLine("Out: " + Mes1);
                     int count = 0;
                     int count_max = 200;
                 if(this.serialPort.IsOpen)
@@ -152,7 +152,7 @@ namespace opengl3
                         count++;
                        
                     }
-                        Console.WriteLine("missimg_connect: " + count);
+                        //Console.WriteLine("missimg_connect: " + count);
                         if (count>count_max-2)
                         {
                             Console.WriteLine("connection problem");

@@ -423,8 +423,6 @@ namespace opengl3
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.histogramBox1 = new Emgu.CV.UI.HistogramBox();
             this.tabOpenGl = new System.Windows.Forms.TabPage();
-            this.glControl1 = new OpenGL.GlControl();
-            this.tB_tool_inf = new System.Windows.Forms.TextBox();
             this.win_tab_diff = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.but_show_traj_fr_tb = new System.Windows.Forms.Button();
@@ -524,6 +522,10 @@ namespace opengl3
             this.trackY_light = new System.Windows.Forms.TrackBar();
             this.label27 = new System.Windows.Forms.Label();
             this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.button_pos_rob_gl_set = new System.Windows.Forms.Button();
+            this.button_pos_rob_gl_get = new System.Windows.Forms.Button();
+            this.textBox_pos_rob_gl = new System.Windows.Forms.TextBox();
+            this.tB_tool_inf = new System.Windows.Forms.TextBox();
             this.label115 = new System.Windows.Forms.Label();
             this.label114 = new System.Windows.Forms.Label();
             this.textBox_laser_pos_gl_max = new System.Windows.Forms.TextBox();
@@ -566,6 +568,7 @@ namespace opengl3
             this.but_scan_path = new System.Windows.Forms.Button();
             this.but_calibr_Bfs = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
+            this.glControl1 = new OpenGL.GlControl();
             this.windowsTabs = new System.Windows.Forms.TabControl();
             this.tabP_connect = new System.Windows.Forms.TabPage();
             this.but_con_ext_discon_com = new System.Windows.Forms.Button();
@@ -664,9 +667,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.textBox_pos_rob_gl = new System.Windows.Forms.TextBox();
-            this.button_pos_rob_gl_get = new System.Windows.Forms.Button();
-            this.button_pos_rob_gl_set = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2162,7 +2162,7 @@ namespace opengl3
             this.tb_port_tcp.Name = "tb_port_tcp";
             this.tb_port_tcp.Size = new System.Drawing.Size(100, 26);
             this.tb_port_tcp.TabIndex = 144;
-            this.tb_port_tcp.Text = "30006";
+            this.tb_port_tcp.Text = "30003";
             // 
             // rob_res
             // 
@@ -3874,6 +3874,7 @@ namespace opengl3
             // 
             this.radioButton_static_surface.AccessibleName = "0";
             this.radioButton_static_surface.AutoSize = true;
+            this.radioButton_static_surface.Checked = true;
             this.radioButton_static_surface.Location = new System.Drawing.Point(437, 31);
             this.radioButton_static_surface.Name = "radioButton_static_surface";
             this.radioButton_static_surface.Size = new System.Drawing.Size(195, 20);
@@ -5040,36 +5041,6 @@ namespace opengl3
             this.tabOpenGl.Text = "3Д";
             this.tabOpenGl.UseVisualStyleBackColor = true;
             // 
-            // glControl1
-            // 
-            this.glControl1.AccessibleName = "1";
-            this.glControl1.Animation = true;
-            this.glControl1.AnimationTime = 60;
-            this.glControl1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.glControl1.ColorBits = ((uint)(24u));
-            this.glControl1.DepthBits = ((uint)(24u));
-            this.glControl1.Location = new System.Drawing.Point(6, 4);
-            this.glControl1.Margin = new System.Windows.Forms.Padding(4);
-            this.glControl1.MultisampleBits = ((uint)(8u));
-            this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(1000, 1000);
-            this.glControl1.StencilBits = ((uint)(0u));
-            this.glControl1.TabIndex = 65;
-            this.glControl1.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_ContextCreated);
-            this.glControl1.Render += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_Render);
-            this.glControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControl1_MouseDown);
-            this.glControl1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControl1_MouseMove);
-            this.glControl1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Form1_mousewheel);
-            this.glControl1.Resize += new System.EventHandler(this.glControl1_Resize);
-            // 
-            // tB_tool_inf
-            // 
-            this.tB_tool_inf.Cursor = System.Windows.Forms.Cursors.Default;
-            this.tB_tool_inf.Location = new System.Drawing.Point(202, 761);
-            this.tB_tool_inf.Name = "tB_tool_inf";
-            this.tB_tool_inf.Size = new System.Drawing.Size(328, 22);
-            this.tB_tool_inf.TabIndex = 166;
-            // 
             // win_tab_diff
             // 
             this.win_tab_diff.Controls.Add(this.tabPage1);
@@ -5226,10 +5197,10 @@ namespace opengl3
             this.tabPage2.Controls.Add(this.lab_check);
             this.tabPage2.Controls.Add(this.lab_TRZ);
             this.tabPage2.Controls.Add(this.but_point_type);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(869, 962);
+            this.tabPage2.Size = new System.Drawing.Size(869, 965);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Объекты сцены";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -6156,13 +6127,49 @@ namespace opengl3
             this.tabPage8.Controls.Add(this.but_scan_virt);
             this.tabPage8.Controls.Add(this.imBox_disparity);
             this.tabPage8.Controls.Add(this.imBox_3dDebug);
-            this.tabPage8.Location = new System.Drawing.Point(4, 25);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(869, 962);
+            this.tabPage8.Size = new System.Drawing.Size(869, 965);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "mat_gl";
             this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // button_pos_rob_gl_set
+            // 
+            this.button_pos_rob_gl_set.Location = new System.Drawing.Point(469, 855);
+            this.button_pos_rob_gl_set.Name = "button_pos_rob_gl_set";
+            this.button_pos_rob_gl_set.Size = new System.Drawing.Size(119, 24);
+            this.button_pos_rob_gl_set.TabIndex = 179;
+            this.button_pos_rob_gl_set.Text = "поз роб отпр";
+            this.button_pos_rob_gl_set.UseVisualStyleBackColor = true;
+            this.button_pos_rob_gl_set.Click += new System.EventHandler(this.button_pos_rob_gl_set_Click);
+            // 
+            // button_pos_rob_gl_get
+            // 
+            this.button_pos_rob_gl_get.Location = new System.Drawing.Point(10, 856);
+            this.button_pos_rob_gl_get.Name = "button_pos_rob_gl_get";
+            this.button_pos_rob_gl_get.Size = new System.Drawing.Size(119, 25);
+            this.button_pos_rob_gl_get.TabIndex = 178;
+            this.button_pos_rob_gl_get.Text = "поз роб get";
+            this.button_pos_rob_gl_get.UseVisualStyleBackColor = true;
+            this.button_pos_rob_gl_get.Click += new System.EventHandler(this.button_pos_rob_gl_get_Click);
+            // 
+            // textBox_pos_rob_gl
+            // 
+            this.textBox_pos_rob_gl.Cursor = System.Windows.Forms.Cursors.Default;
+            this.textBox_pos_rob_gl.Location = new System.Drawing.Point(135, 856);
+            this.textBox_pos_rob_gl.Name = "textBox_pos_rob_gl";
+            this.textBox_pos_rob_gl.Size = new System.Drawing.Size(328, 22);
+            this.textBox_pos_rob_gl.TabIndex = 177;
+            // 
+            // tB_tool_inf
+            // 
+            this.tB_tool_inf.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tB_tool_inf.Location = new System.Drawing.Point(202, 761);
+            this.tB_tool_inf.Name = "tB_tool_inf";
+            this.tB_tool_inf.Size = new System.Drawing.Size(328, 22);
+            this.tB_tool_inf.TabIndex = 166;
             // 
             // label115
             // 
@@ -6579,6 +6586,28 @@ namespace opengl3
             this.label13.Size = new System.Drawing.Size(36, 16);
             this.label13.TabIndex = 117;
             this.label13.Text = "scan";
+            // 
+            // glControl1
+            // 
+            this.glControl1.AccessibleName = "1";
+            this.glControl1.Animation = true;
+            this.glControl1.AnimationTime = 60;
+            this.glControl1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.glControl1.ColorBits = ((uint)(24u));
+            this.glControl1.DepthBits = ((uint)(24u));
+            this.glControl1.Location = new System.Drawing.Point(6, 4);
+            this.glControl1.Margin = new System.Windows.Forms.Padding(4);
+            this.glControl1.MultisampleBits = ((uint)(8u));
+            this.glControl1.Name = "glControl1";
+            this.glControl1.Size = new System.Drawing.Size(1000, 1000);
+            this.glControl1.StencilBits = ((uint)(0u));
+            this.glControl1.TabIndex = 65;
+            this.glControl1.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_ContextCreated);
+            this.glControl1.Render += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_Render);
+            this.glControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControl1_MouseDown);
+            this.glControl1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControl1_MouseMove);
+            this.glControl1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Form1_mousewheel);
+            this.glControl1.Resize += new System.EventHandler(this.glControl1_Resize);
             // 
             // windowsTabs
             // 
@@ -7719,34 +7748,6 @@ namespace opengl3
             // 
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // textBox_pos_rob_gl
-            // 
-            this.textBox_pos_rob_gl.Cursor = System.Windows.Forms.Cursors.Default;
-            this.textBox_pos_rob_gl.Location = new System.Drawing.Point(135, 856);
-            this.textBox_pos_rob_gl.Name = "textBox_pos_rob_gl";
-            this.textBox_pos_rob_gl.Size = new System.Drawing.Size(328, 22);
-            this.textBox_pos_rob_gl.TabIndex = 177;
-            // 
-            // button_pos_rob_gl_get
-            // 
-            this.button_pos_rob_gl_get.Location = new System.Drawing.Point(10, 856);
-            this.button_pos_rob_gl_get.Name = "button_pos_rob_gl_get";
-            this.button_pos_rob_gl_get.Size = new System.Drawing.Size(119, 25);
-            this.button_pos_rob_gl_get.TabIndex = 178;
-            this.button_pos_rob_gl_get.Text = "поз роб get";
-            this.button_pos_rob_gl_get.UseVisualStyleBackColor = true;
-            this.button_pos_rob_gl_get.Click += new System.EventHandler(this.button_pos_rob_gl_get_Click);
-            // 
-            // button_pos_rob_gl_set
-            // 
-            this.button_pos_rob_gl_set.Location = new System.Drawing.Point(469, 855);
-            this.button_pos_rob_gl_set.Name = "button_pos_rob_gl_set";
-            this.button_pos_rob_gl_set.Size = new System.Drawing.Size(119, 24);
-            this.button_pos_rob_gl_set.TabIndex = 179;
-            this.button_pos_rob_gl_set.Text = "поз роб отпр";
-            this.button_pos_rob_gl_set.UseVisualStyleBackColor = true;
-            this.button_pos_rob_gl_set.Click += new System.EventHandler(this.button_pos_rob_gl_set_Click);
             // 
             // MainScanningForm
             // 
