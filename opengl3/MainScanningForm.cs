@@ -7522,7 +7522,7 @@ namespace opengl3
             {
                 selected_obj = obj_3d;
                 traj_config.ang_x = scanner.stereoCamera.cur_pos.A;               
-                traj_config.line_width = Convert.ToDouble(tb_scan_line_width_d.Text);
+                traj_config.line_width =1* Convert.ToDouble(tb_scan_line_width_d.Text);
                 traj_config.dz = Convert.ToDouble(tb_scan_ext_line_h.Text);
                 traj_config.Step = Convert.ToDouble(tb_scan_ext_grid_d.Text);
                 traj_config.vel = Convert.ToDouble(tb_scan_extprinting_vel.Text);
@@ -10043,6 +10043,26 @@ namespace opengl3
             { 
                 set_robot_kuka_with_scanner(fr_kuka);
             }
+        }
+
+        private void but_pos_z_up_Click(object sender, EventArgs e)
+        {
+            var pos_z_mm = to_double(textBox_con_ext_set_z_pos.Text)-0.2;
+            // var pos_z_steps = (int)(pos_z_mm / 10 * laserLine.steps_per_unit_z);
+            textBox_con_ext_set_z_pos.Text = pos_z_mm.ToString();
+            // Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
+            laserLine?.set_adr(-1);
+            laserLine?.set_move_z(pos_z_mm + z_syrenge_offset);
+        }
+
+        private void but_pos_z_down_Click(object sender, EventArgs e)
+        {
+            var pos_z_mm = to_double(textBox_con_ext_set_z_pos.Text) + 0.2;
+            // var pos_z_steps = (int)(pos_z_mm / 10 * laserLine.steps_per_unit_z);
+            textBox_con_ext_set_z_pos.Text = pos_z_mm.ToString();
+            // Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
+            laserLine?.set_adr(-1);
+            laserLine?.set_move_z(pos_z_mm + z_syrenge_offset);
         }
         //void send_to_ard(TextBox textBox,)
     }

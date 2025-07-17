@@ -493,7 +493,7 @@ namespace opengl3
         public static Point3d_GL[] smooth_points(Point3d_GL[] ps, double rad)
         {
             var ps_sm = new Point3d_GL[ps.Length];
-            var ps_map = new RasterMap(ps, -1, type_map.XYZ);
+            var ps_map = new RasterMap(ps, rad*1.5, type_map.XYZ);
             for (int i = 0; i < ps.Length; i++)
             {
                 var inds = ps_map.get_local_ps(ps[i], -1, rad);
