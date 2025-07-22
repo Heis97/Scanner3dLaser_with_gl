@@ -71,7 +71,7 @@ namespace opengl3
         Matrix4x4f[] qms = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
-        RobotFrame.RobotType current_robot = RobotFrame.RobotType.KUKA;
+        RobotFrame.RobotType current_robot = RobotFrame.RobotType.PULSE;
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4, 4);
         Point3d_GL off_cyl = new Point3d_GL();

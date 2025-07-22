@@ -590,6 +590,8 @@ namespace opengl3
             this.but_con_ext_rob_discon = new System.Windows.Forms.Button();
             this.but_con_ext_rob_con = new System.Windows.Forms.Button();
             this.groupBox_disp_contr_ext = new System.Windows.Forms.GroupBox();
+            this.but_pos_z_down = new System.Windows.Forms.Button();
+            this.but_pos_z_up = new System.Windows.Forms.Button();
             this.label99 = new System.Windows.Forms.Label();
             this.label98 = new System.Windows.Forms.Label();
             this.textBox_con_ext_set_temp = new System.Windows.Forms.TextBox();
@@ -667,8 +669,6 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.but_pos_z_up = new System.Windows.Forms.Button();
-            this.but_pos_z_down = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2164,7 +2164,7 @@ namespace opengl3
             this.tb_port_tcp.Name = "tb_port_tcp";
             this.tb_port_tcp.Size = new System.Drawing.Size(100, 26);
             this.tb_port_tcp.TabIndex = 144;
-            this.tb_port_tcp.Text = "30007";
+            this.tb_port_tcp.Text = "30006";
             // 
             // rob_res
             // 
@@ -3834,10 +3834,10 @@ namespace opengl3
             this.tabP_scanning_printing_ext.Controls.Add(this.groupBox6);
             this.tabP_scanning_printing_ext.Controls.Add(this.groupBox7);
             this.tabP_scanning_printing_ext.Controls.Add(this.groupBox8);
-            this.tabP_scanning_printing_ext.Location = new System.Drawing.Point(4, 25);
+            this.tabP_scanning_printing_ext.Location = new System.Drawing.Point(4, 22);
             this.tabP_scanning_printing_ext.Name = "tabP_scanning_printing_ext";
             this.tabP_scanning_printing_ext.Padding = new System.Windows.Forms.Padding(3);
-            this.tabP_scanning_printing_ext.Size = new System.Drawing.Size(669, 965);
+            this.tabP_scanning_printing_ext.Size = new System.Drawing.Size(669, 968);
             this.tabP_scanning_printing_ext.TabIndex = 1;
             this.tabP_scanning_printing_ext.Text = "Расширенные настройки";
             this.tabP_scanning_printing_ext.UseVisualStyleBackColor = true;
@@ -5199,10 +5199,10 @@ namespace opengl3
             this.tabPage2.Controls.Add(this.lab_check);
             this.tabPage2.Controls.Add(this.lab_TRZ);
             this.tabPage2.Controls.Add(this.but_point_type);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(869, 965);
+            this.tabPage2.Size = new System.Drawing.Size(869, 962);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Объекты сцены";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -5458,10 +5458,10 @@ namespace opengl3
             this.tabPage3.Controls.Add(this.but_rob_con_sc);
             this.tabPage3.Controls.Add(this.but_rob_manual_sc);
             this.tabPage3.Controls.Add(this.but_rob_start_sc);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(869, 965);
+            this.tabPage3.Size = new System.Drawing.Size(869, 962);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Управление роботом";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -6918,6 +6918,36 @@ namespace opengl3
             this.groupBox_disp_contr_ext.TabStop = false;
             this.groupBox_disp_contr_ext.Text = "Управление диспенсером и линейным модулем";
             // 
+            // but_pos_z_down
+            // 
+            this.but_pos_z_down.BackColor = System.Drawing.Color.SteelBlue;
+            this.but_pos_z_down.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.but_pos_z_down.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.but_pos_z_down.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
+            this.but_pos_z_down.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.but_pos_z_down.Location = new System.Drawing.Point(829, 265);
+            this.but_pos_z_down.Name = "but_pos_z_down";
+            this.but_pos_z_down.Size = new System.Drawing.Size(118, 33);
+            this.but_pos_z_down.TabIndex = 32;
+            this.but_pos_z_down.Text = "\\/";
+            this.but_pos_z_down.UseVisualStyleBackColor = false;
+            this.but_pos_z_down.Click += new System.EventHandler(this.but_pos_z_down_Click);
+            // 
+            // but_pos_z_up
+            // 
+            this.but_pos_z_up.BackColor = System.Drawing.Color.SteelBlue;
+            this.but_pos_z_up.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.but_pos_z_up.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.but_pos_z_up.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
+            this.but_pos_z_up.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.but_pos_z_up.Location = new System.Drawing.Point(830, 224);
+            this.but_pos_z_up.Name = "but_pos_z_up";
+            this.but_pos_z_up.Size = new System.Drawing.Size(118, 33);
+            this.but_pos_z_up.TabIndex = 31;
+            this.but_pos_z_up.Text = "/\\";
+            this.but_pos_z_up.UseVisualStyleBackColor = false;
+            this.but_pos_z_up.Click += new System.EventHandler(this.but_pos_z_up_Click);
+            // 
             // label99
             // 
             this.label99.AutoSize = true;
@@ -7752,36 +7782,6 @@ namespace opengl3
             // 
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // but_pos_z_up
-            // 
-            this.but_pos_z_up.BackColor = System.Drawing.Color.SteelBlue;
-            this.but_pos_z_up.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
-            this.but_pos_z_up.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_pos_z_up.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
-            this.but_pos_z_up.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.but_pos_z_up.Location = new System.Drawing.Point(830, 224);
-            this.but_pos_z_up.Name = "but_pos_z_up";
-            this.but_pos_z_up.Size = new System.Drawing.Size(118, 33);
-            this.but_pos_z_up.TabIndex = 31;
-            this.but_pos_z_up.Text = "/\\";
-            this.but_pos_z_up.UseVisualStyleBackColor = false;
-            this.but_pos_z_up.Click += new System.EventHandler(this.but_pos_z_up_Click);
-            // 
-            // but_pos_z_down
-            // 
-            this.but_pos_z_down.BackColor = System.Drawing.Color.SteelBlue;
-            this.but_pos_z_down.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
-            this.but_pos_z_down.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.but_pos_z_down.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
-            this.but_pos_z_down.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.but_pos_z_down.Location = new System.Drawing.Point(829, 265);
-            this.but_pos_z_down.Name = "but_pos_z_down";
-            this.but_pos_z_down.Size = new System.Drawing.Size(118, 33);
-            this.but_pos_z_down.TabIndex = 32;
-            this.but_pos_z_down.Text = "\\/";
-            this.but_pos_z_down.UseVisualStyleBackColor = false;
-            this.but_pos_z_down.Click += new System.EventHandler(this.but_pos_z_down_Click);
             // 
             // MainScanningForm
             // 
