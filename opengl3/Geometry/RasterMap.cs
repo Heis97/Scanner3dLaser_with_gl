@@ -554,11 +554,15 @@ namespace opengl3
         //unite areas, cross spheres for new triangulation
         static Point3d_GL[] remesh_cloud(Point3d_GL[] ps_in, double size)
         {
+
+
             return null;
         }
 
         static Matrix<double> corner_dirty_matching(Point3d_GL[] ps_in1, Point3d_GL[] ps_in2)
         {
+            //find centr points and match
+            //rotate around this for matching corners
             return null;
         }
 
