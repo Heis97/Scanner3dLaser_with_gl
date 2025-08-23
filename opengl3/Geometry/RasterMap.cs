@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Accord;
+using Emgu.CV;
 using PathPlanning;
 
 
@@ -526,20 +527,43 @@ namespace opengl3
             return ps_sm;
         }
 
-
-        static RobotFrame allign_meshes(Point3d_GL[] ps1, Point3d_GL[] ps2)
+        #region matching
+        static Matrix<double> allign_meshes(Point3d_GL[] ps1, Point3d_GL[] ps2,double max_dist,double triangle_size)
         {
-            var match_ind = matches_two_cloud(ps1, ps2);
+            var match_ind = matches_two_cloud(ps1, ps2);//need indeces of cells, not ps
             var ps1_cut = get_ps_from_inds(ps1, match_ind[0]);
             var ps2_cut = get_ps_from_inds(ps2, match_ind[1]);
+            var ps1_re = remesh_cloud(ps1_cut, triangle_size);
+            var ps2_re = remesh_cloud(ps2_cut, triangle_size);
 
+            //var m_off_d = corner_dirty_matching()
 
+            //use offset
+
+            //maybe rematch
+
+            //for rotation use points on corners
+            //comp main function
+            //result - vector of deviation, can use angle with normal of triangle
+            //find offset with best result
 
             return null;
         }
 
 
+        //unite areas, cross spheres for new triangulation
+        static Point3d_GL[] remesh_cloud(Point3d_GL[] ps_in, double size)
+        {
+            return null;
+        }
 
+        static Matrix<double> corner_dirty_matching(Point3d_GL[] ps_in1, Point3d_GL[] ps_in2)
+        {
+            return null;
+        }
+
+
+        #endregion
         public static Point3d_GL[] intersec_line_of_two_mesh(float[] mesh1, float[] mesh2)
         {
             var obj1 = Polygon3d_GL.polygs_from_mesh(mesh1);
