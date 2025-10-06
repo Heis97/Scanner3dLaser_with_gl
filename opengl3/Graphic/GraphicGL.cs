@@ -366,8 +366,8 @@ namespace opengl3
                 lightSources[0].direction_z = Math.Cos(fi);
                 */
                 //lightSources[0].direction_z -= df;
-                // form?.set_pos_traj_robot(cur_time_an);
-                form?.set_angle_laser_external(cur_time_an);
+                 form?.set_pos_traj_robot_pulse(cur_time_an);
+                //form?.set_angle_laser_external(cur_time_an);
                 cur_time_an++;
                 Console.WriteLine("cur_anim: " + cur_time_an + "/" + end_time_an);
                 if (cur_time_an > end_time_an) anim_is_go = false;
@@ -505,7 +505,7 @@ namespace opengl3
             // addLight();
 
             //scan_light
-            lightSources.Add(new LightSourceGL
+            /*lightSources.Add(new LightSourceGL
             {
                 position_z = 100,
                 direction_x = 1,
@@ -517,8 +517,20 @@ namespace opengl3
                 cut_off = 0.99999f,
                 type_light = LightSourceGL.type.Disc
             
+            });*/
+            lightSources.Add(new LightSourceGL
+            {
+                position_x = 500,
+                position_z = 3000,
+                direction_z = -1,
+                color_r = 0.6f,
+                color_g = 0.6f,
+                color_b = 0.6f,
+                power = 5000000,
+                cut_off = 0.9999f,
+                type_light = LightSourceGL.type.Point
+
             });
-           
             lightSources.Add(new LightSourceGL
             {
                 position_x = 500,
