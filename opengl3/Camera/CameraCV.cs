@@ -604,7 +604,7 @@ namespace opengl3
             int i_c = 0;
             foreach (var frame in frames)
             {
-                if(i_c%3==0)
+                if(i_c%1==0)
                 {
                     var corn2 = findPoints(frame, size);
                     //prin.t(corn2);

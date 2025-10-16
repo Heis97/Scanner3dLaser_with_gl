@@ -410,7 +410,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
-             //load_camers_v2();
+             load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -1302,11 +1302,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 10f;//6.2273f//10f//9.6f
+            markSize = 9.66f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_2203a\dist", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_sing_home_cal_1610a", FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("virt\\calib_fl_2203d.txt");
+            cam1.save_camera("cam_sing_home_cal_1610a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -1734,6 +1734,8 @@ namespace opengl3
             var fps = Convert.ToInt32(tB_fps_scan.Text);
             float x = (float)p1_cur_scan.x;
 
+            
+
             var delx = (float)(p2_cur_scan.x - p1_cur_scan.x) / (float)counts;
             if (laserLine == null)
             {
@@ -1802,8 +1804,8 @@ namespace opengl3
 
                 var t_video = (double)counts / fps;
                 var v_laser = Math.Abs((p2_cur_scan.x - p1_cur_scan.x) / t_video);
-                
-
+                p1_cur_scan.x = Convert.ToDouble(nameX2.Text);
+                /*
                 laserLine?.laserOn();
                 Thread.Sleep(200);
                 //laserLine?.setShvpVel(200);
@@ -1831,23 +1833,24 @@ namespace opengl3
                 Thread.Sleep(2);
                 laserLine?.send_pos_laser(1);
                 Thread.Sleep(2);
-                startWrite_sam(0, counts+50);
+                
+                Thread.Sleep(200);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(2);
+                laserLine?.setShvpPos((int)p2_cur_scan.x);
+                Thread.Sleep(200);
+
+                laserLine?.setShvpPos((int)p2_cur_scan.x);*/
+                startWrite_sam(0, counts + 50);
                 sb_enc = new StringBuilder();
-                Thread.Sleep(200);
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p2_cur_scan.x);
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p2_cur_scan.x);
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p2_cur_scan.x);
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p2_cur_scan.x);
-                Thread.Sleep(2);
-                laserLine?.setShvpPos((int)p2_cur_scan.x);
-                Thread.Sleep(200);
-
-                laserLine?.setShvpPos((int)p2_cur_scan.x);
-
+                linearPlatf?.setShvpPos(p1_cur_scan.x);
             }
 
             for (int i = 0; i < counts; i++)
