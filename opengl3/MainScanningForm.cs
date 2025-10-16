@@ -410,7 +410,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
-             load_camers_v2();
+             //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -2169,6 +2169,9 @@ namespace opengl3
             int i = Convert.ToInt32(((Button)sender).AccessibleName);
             GL1.SaveToFolder(openGl_folder, i);
         }
+        
+        
+
         private void glControl1_ContextCreated(object sender, GlControlEventArgs e)
         {
             var send = (Control)sender;

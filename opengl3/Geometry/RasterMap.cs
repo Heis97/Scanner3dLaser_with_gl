@@ -528,6 +528,29 @@ namespace opengl3
         }
 
         #region matching
+
+        static Matrix<double> allign_meshes_simple(Point3d_GL[] ps1, Point3d_GL[] ps2, double max_dist, double triangle_size)
+        {
+            var match_ind = matches_two_cloud(ps1, ps2);//need indeces of cells, not ps
+            var ps1_cut = get_ps_from_inds(ps1, match_ind[0]);
+            var ps2_cut = get_ps_from_inds(ps2, match_ind[1]);
+            var ps1_re = remesh_cloud(ps1_cut, triangle_size);
+            var ps2_re = remesh_cloud(ps2_cut, triangle_size);
+
+            //var m_off_d = corner_dirty_matching()
+
+            //use offset
+
+            //maybe rematch
+
+            //for rotation use points on corners
+            //comp main function
+            //result - vector of deviation, can use angle with normal of triangle 
+            //find offset with best result
+
+            return null;
+        }
+
         static Matrix<double> allign_meshes(Point3d_GL[] ps1, Point3d_GL[] ps2,double max_dist,double triangle_size)
         {
             var match_ind = matches_two_cloud(ps1, ps2);//need indeces of cells, not ps
