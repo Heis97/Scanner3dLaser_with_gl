@@ -410,7 +410,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
-            // load_camers_v2();
+             load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -1304,9 +1304,9 @@ namespace opengl3
         {
             markSize = 10f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_2203a", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"virt\calib_fl_2203a\dist", FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("virt\\calib_fl_2203b.txt");
+            cam1.save_camera("virt\\calib_fl_2203d.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -2180,7 +2180,7 @@ namespace opengl3
             //GL1.buffersGl.setTranspobj(fr, 0.0f);
             
 
-            //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
            
             //GL1.SortObj();
             int monitor_num = 1;
@@ -2343,7 +2343,7 @@ namespace opengl3
             //var ps_ob =(Polygon3d_GL[]) Model3d.parsing_raw_binary("body")[1];
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
-            test_go_to_point_robot();
+            //test_go_to_point_robot();
             //test_poses();
             //load_3d_model_robot_pulse();
           
@@ -2678,7 +2678,7 @@ namespace opengl3
              }*/
 
             bool find_gl =true;
-            find_gl = false;
+            //find_gl = false;
             var num_cam = 1;
             if (find_gl)
             {
@@ -2686,15 +2686,17 @@ namespace opengl3
                 var mat1 = new Mat();
                 CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
                 //prin.t(GL1.transRotZooms[0].cameraCV.distortmatrix);
-               // mat1 = UtilOpenCV.remapDistImOpenCvCentr(mat1, GL1.transRotZooms[0].cameraCV.distortmatrix);
-               // mat1 = UtilOpenCV.GLnoise(mat1, 2, 2,-1);
+                mat1 = UtilOpenCV.remapDistImOpenCvCentr(mat1, GL1.cameraCV.distortmatrix);
+                //GL1.transRotZooms[0].cameraCV.distortmatrix
+                // mat1 = UtilOpenCV.GLnoise(mat1, 2, 2,-1);
                 imBox_mark1.Image = mat1;
                 imProcess_virt(mat1, 1);
+                imBox_mark2.Image = mat1;
                 var corn = new System.Drawing.PointF[0];
-                //imBox_mark1.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
+                imBox_mark1.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
 
-
-                if(num_cam>1)
+                
+                if (num_cam>1)
                 {
                     var mat2_or = GL1.matFromMonitor(1);
                     var mat2 = new Mat();
@@ -4198,6 +4200,7 @@ namespace opengl3
                 else if (fr.frameType == FrameType.Pattern)
                 {
 
+                    
                     
                     var corn = new System.Drawing.PointF[0];
                     //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
@@ -5950,7 +5953,20 @@ namespace opengl3
 
         private void but_photo_gl_Click(object sender, EventArgs e)
         {
-            UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, txBx_photoName.Text + "_" + photo_number.ToString() + ".png", box_photoFolder.Text);
+            var matr_cam1 = GL1.Vs[0];
+
+            var coords = GL1.transRotZooms[0].off_x + " "
+                + (-GL1.transRotZooms[0].off_y) + " "
+                + GL1.transRotZooms[0].zoom * GL1.transRotZooms[0].off_z + " " +
+                GL1.transRotZooms[0].xRot + " " +
+                  GL1.transRotZooms[0].yRot + " " +
+                  GL1.transRotZooms[0].zRot + " ";
+            var pos = new RobotFrame(coords);
+            video_scan_name = pos.ToStr(" ", true, true, true, false);
+
+            label_ard_connect.BeginInvoke((MethodInvoker)(() => txBx_photoName.Text = video_scan_name));
+
+            UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, txBx_photoName.Text + " " + photo_number.ToString() + ".png", box_photoFolder.Text);
             photo_number++;
         }
 
@@ -8317,8 +8333,8 @@ namespace opengl3
             //windowsTabs.Controls.Remove(tabPage_tube);
 
 
-            this.tabP_connect.Controls.Add(this.imageBox1);
-            this.tabP_connect.Controls.Add(this.imageBox2);
+            //this.tabP_connect.Controls.Add(this.imageBox1);
+            //this.tabP_connect.Controls.Add(this.imageBox2);
            // this.tabP_scanning_printing.Controls.Add(this.glControl1);
           
             

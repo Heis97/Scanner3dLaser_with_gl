@@ -1074,6 +1074,7 @@ namespace opengl3
         static System.Drawing.PointF[,] arrFromP_2(System.Drawing.PointF[] ps, int[][] ind, Size size)
         {
             if (ind[0] == null) return null ;
+            //if(ind.Length!=)
             var ps_arr = new System.Drawing.PointF[ind.Length, ind[0].Length];
             for (int i = 0; i < ind.Length; i++)
             {
