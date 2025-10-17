@@ -347,6 +347,18 @@ namespace opengl3
             Console.WriteLine(matches.Length);
             return matches;
         }
+
+        static public (int[][], int[][][]) matches_two_cloud_ext(Point3d_GL[] points1, Point3d_GL[] points2)
+        {
+            var res1 = comp_resol(points1);
+            var res2 = comp_resol(points1);
+            var res = Math.Min(res1, res2);
+            var maps = map_two_cloud(points1, points2, res);
+            var matches = matches_area_inds(maps[0], maps[1]);
+            var matches_tr = matches_area_inds_trans(maps[0], maps[1]);
+            Console.WriteLine(matches.Length);
+            return (matches,matches_tr);
+        }
         static RasterMap[] map_two_mesh(Polygon3d_GL[] surface1, Polygon3d_GL[] surface2,double resolution)
         {
             var p_minmax1 = Polygon3d_GL.get_dimens_minmax_arr(surface1);
@@ -462,7 +474,29 @@ namespace opengl3
             }
             return new int[][] { inds1.ToArray(), inds2.ToArray() };
         }
+        static int[][][] matches_area_inds_trans(RasterMap map1, RasterMap map2)
+        {
+            var inds1 = new List<int[][]>();
 
+            if (map1.map_xyz.Length != map2.map_xyz.Length) return null;
+
+            for (int x = 0; x < map1.map_xyz.GetLength(0); x++)
+            {
+                for (int y = 0; y < map1.map_xyz.GetLength(1); y++)
+                {
+                    for (int z = 0; z < map1.map_xyz.GetLength(2); z++)
+                    {
+                        //--------------------
+                        if (map1.map_xyz[x, y, z] != null && map2.map_xyz[x, y, z] != null)
+                        {
+                            inds1.Add(new int[][] { map1.map_xyz[x, y, z], map2.map_xyz[x, y, z] });
+                        }
+                        //--------------------
+                    }
+                }
+            }
+            return inds1.ToArray();
+        }
 
 
         public static Point3d_GL[] calc_intersec(Polygon3d_GL[] surface1, Polygon3d_GL[] surface2,int[][] inters)
@@ -531,22 +565,19 @@ namespace opengl3
 
         static Matrix<double> allign_meshes_simple(Point3d_GL[] ps1, Point3d_GL[] ps2, double max_dist, double triangle_size)
         {
-            var match_ind = matches_two_cloud(ps1, ps2);//need indeces of cells, not ps
+            var match_ind = new int[0][];
+            var match_ind_ext = new int[0][][];
+            (match_ind,match_ind_ext) = matches_two_cloud_ext(ps1, ps2);//need indeces of cells, not ps
             var ps1_cut = get_ps_from_inds(ps1, match_ind[0]);
             var ps2_cut = get_ps_from_inds(ps2, match_ind[1]);
-            var ps1_re = remesh_cloud(ps1_cut, triangle_size);
-            var ps2_re = remesh_cloud(ps2_cut, triangle_size);
+            //соответственные индексы
 
-            //var m_off_d = corner_dirty_matching()
 
-            //use offset
+            //
+              
+/**/
 
-            //maybe rematch
 
-            //for rotation use points on corners
-            //comp main function
-            //result - vector of deviation, can use angle with normal of triangle 
-            //find offset with best result
 
             return null;
         }
