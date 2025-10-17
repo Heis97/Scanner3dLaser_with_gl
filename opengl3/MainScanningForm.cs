@@ -1593,7 +1593,7 @@ namespace opengl3
             GL1.buffersGl.setMatrobj(scan_i, 0, matr);
             var fr_m = new RobotFrame(m, current_robot);
             var stl_name = fr_m.ToStr(" ", true, true, true, false)+";"+scan_i+".stl";
-            STLmodel.saveMesh(scan_stl[0], stl_name);
+           // STLmodel.saveMesh(scan_stl[0], stl_name);
         }
         
         static public Point3d_GL[][] unite_point_cloud(Point3d_GL[] model)
@@ -2684,7 +2684,7 @@ namespace opengl3
              }*/
 
             bool find_gl =true;
-            //find_gl = false;
+            find_gl = false;
             var num_cam = 1;
             if (find_gl)
             {

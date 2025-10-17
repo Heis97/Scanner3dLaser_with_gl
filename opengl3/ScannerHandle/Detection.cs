@@ -1371,7 +1371,7 @@ namespace opengl3
             return ps3.ToArray();
         }
 
-        static public PointF[]  x_max_claster(PointF[] ps,int clast_count)
+        static public PointF[]  x_max_claster(PointF[] ps,int clast_count, Mat mat = null)
         {
             if (ps == null) return null;
             var paral = parall_Points(filtr_y0_Points(ps));

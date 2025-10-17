@@ -420,7 +420,7 @@ namespace opengl3
                     ps_filter.Add( new PointF(ps[i].X, ps[i].Y));
                 }
             }
-            Console.WriteLine(ps.Length + " " + ps_filter.Count + " " + aver_x);
+           // Console.WriteLine(ps.Length + " " + ps_filter.Count + " " + aver_x);
             return ps_filter.ToArray();
         }
     }

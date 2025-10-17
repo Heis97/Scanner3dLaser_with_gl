@@ -359,11 +359,12 @@ namespace opengl3
         {
             var videoframe_count = 0;
             var orig1 = new Mat(Directory.GetFiles("cam1\\" + filepath + "\\orig")[0]);
+            CvInvoke.Rotate(orig1, orig1, RotateFlags.Rotate180);
             //var mat_or_tr = new Mat();
             //CvInvoke.AdaptiveThreshold(orig1, mat_or_tr,  255, ThresholdType.);
 
             //CvInvoke.Imshow("thr", mat_or_tr);
-            
+
             Console.WriteLine(Directory.GetFiles("cam1\\" + filepath)[0]);
             var ve_paths = get_video_path(1, filepath);
             string video_path = ve_paths[0];
@@ -372,7 +373,7 @@ namespace opengl3
             scanner.set_rob_pos(name_v1,scanner.robotType);
             // scanner.stereoCamera.Bfs = 
             var capture1 = new VideoCapture(video_path);
-            var all_frames1 = capture1.Get  (CapProp.FrameCount);
+            var all_frames1 = capture1.Get(CapProp.FrameCount);
             // orig1 = scanner.cameraCV.undist(orig1);
             var fr_st_vid = new Frame(orig1, "sd", FrameType.Test);
             var frames_show = new List<Frame>();
@@ -416,9 +417,9 @@ namespace opengl3
                 enc_file = sr.ReadToEnd();
             }
             //var inc_pos = enc_pos(enc_file, (int)all_frames);
-            var enc_pos_time = analys_sync(enc_path);
+           // var enc_pos_time = analys_sync(enc_path);
             //enc_pos_time = recomp_pos_sing_linear(enc_pos_time);
-            var inc_pos = enc_pos(enc_pos_time,false);
+           // var inc_pos = enc_pos(enc_pos_time,false);
 
             
 
@@ -429,7 +430,7 @@ namespace opengl3
 
             var im1_cals = new List<Mat>();
             var im1_buff_list = new List<Mat>();
-            for(int i=0; i< inc_pos.Length; i++)
+           // for(int i=0; i< inc_pos.Length; i++)
             {
                // Console.WriteLine(i+" "+inc_pos[i]);
             }
@@ -441,6 +442,7 @@ namespace opengl3
                 while (!capture1.Read(im1)) { }
                 if (scanner != null)
                 {
+                    CvInvoke.Rotate(im1, im1, RotateFlags.Rotate180);
                     var buffer_mat1 = im1.Clone();
                     //if (videoframe_count % strip == 0)
                     if ((videoframe_count % config.strip == 0 )&& (im1_buff_list.Count > buff_diff) && videoframe_count > 3)// && videoframe_count <83)
@@ -493,12 +495,14 @@ namespace opengl3
                            if( scanner.addPointsSingLas_2d(im1, true, calib,config));
 
                             {
-                                pos_inc_cal.Add(inc_pos[videoframe_count]);
+                                //pos_inc_cal.Add(inc_pos[videoframe_count]);
+                                pos_inc_cal.Add(videoframe_count);
                                 im1_cals.Add(im1);
                             }
                             
                         }
-                        else scanner.addPointsLinLas_step(im1, im_orig, inc_pos[videoframe_count], PatternType.Mesh,config);
+                       // else scanner.addPointsLinLas_step(im1, im_orig, inc_pos[videoframe_count], PatternType.Mesh,config);
+                        else scanner.addPointsLinLas_step(im1, im_orig, videoframe_count, PatternType.Mesh, config);
 
                     }
                     im1_buff = buffer_mat1.Clone();

@@ -313,17 +313,17 @@ namespace opengl3
             //CvInvoke.Imshow("sobel", sob);
 
             var inds_part = Detection.max_claster_im(cameraCV.scan_points.ToArray(), 4);
-
-           /* CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4+10]]);
+            /*
+            CvInvoke.Imshow("im1", mats[inds_part[inds_part.Length / 4]]);
             CvInvoke.Imshow("im2", mats[inds_part[inds_part.Length* 2/ 4]]);
-            CvInvoke.Imshow("im3", mats[inds_part[inds_part.Length*3 / 4-10]]);
+            CvInvoke.Imshow("im3", mats[inds_part[inds_part.Length*3 / 4]]);
             CvInvoke.WaitKey();
             */
 
            // var up_surf = bin_to_green( get_corners_calibrate_model(mats, cameraCV));
             var up_surf = orig.Clone();
-           CvInvoke.Imshow(" up_surf", up_surf+orig);
-            CvInvoke.WaitKey();
+          // CvInvoke.Imshow(" up_surf", up_surf+orig);
+          //  CvInvoke.WaitKey();
             var aff_matr = CameraCV.affinematr(Math.PI / 4,1,500);
             var aff_matr_inv = aff_matr.Clone();
             var up_s_r = new Mat();
@@ -350,12 +350,13 @@ namespace opengl3
             //CvInvoke.WaitKey();
             //var mats_calib = new Mat[] { mats[inds_part[inds_part.Length/4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3*inds_part.Length / 4]] };
             //positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
-
-            var mats_calib = new Mat[] { mats[inds_part[inds_part.Length / 4]], mats[inds_part[2 * inds_part.Length / 4]], mats[inds_part[3 * inds_part.Length / 4]] };
+            var ind_ind_st = 15;
+            var ind_ind_end = 10;
+            var mats_calib = new Mat[] {  };
             //positions = new double[] { positions[inds_part[inds_part.Length / 4]], positions[inds_part[2 * inds_part.Length / 4]], positions[inds_part[3 * inds_part.Length / 4]] };
             var mats_calib_l = new List<Mat>();
             var positions_l = new List<double>();
-            for(int i = inds_part.Length/4+5; i < 3* inds_part.Length/4-13;i++)//(int i = inds_part.Length/6; i < 5* inds_part.Length/6;i++ )
+            for(int i = ind_ind_st; i < inds_part.Length - ind_ind_end; i++)//(int i = inds_part.Length/6; i < 5* inds_part.Length/6;i++ )
             {
                 mats_calib_l.Add(mats[inds_part[i]]);
                 //CvInvoke.Imshow(" mats[inds_part[i]]", mats[inds_part[i]]);
@@ -364,8 +365,8 @@ namespace opengl3
             }
             mats_calib = mats_calib_l.ToArray();
             positions = positions_l.ToArray();
-            var x_dim = 70;//70
-            var y_dim = 50;//50
+            var x_dim = 68f;//70
+            var y_dim = 48.6f;//50
 
             // var corners = corner_step(orig);
             /*  ps_g = new System.Drawing.PointF[]
@@ -387,12 +388,13 @@ namespace opengl3
               };*/
             ps_g = new System.Drawing.PointF[]
               {
-                new System.Drawing.PointF(216,370),
-                new System.Drawing.PointF(218,48),
-                new System.Drawing.PointF(665,31),
-                new System.Drawing.PointF(681,358)
+                new System.Drawing.PointF(orig.Width - 172,orig.Height -551),
+                new System.Drawing.PointF(orig.Width -170,orig.Height -112),
+                new System.Drawing.PointF(orig.Width -692,orig.Height -150),
+                new System.Drawing.PointF(orig.Width -691,orig.Height  - 517)
 
               };
+            //CvInvoke.Rotate(ps_g, ps_g, RotateFlags.Rotate180);
             var corners = ps_g;
 
             
@@ -415,14 +417,15 @@ namespace opengl3
             Console.WriteLine("cur_matrix_cam");
             prin.t(cur_matrix_cam);
             var LasSurfs = new List<LaserSurface>();
+            Console.WriteLine("orig flats_________________");
             for (int i=0;i< mats_calib.Length;i++)
             {
                 var las = new LaserSurface(mats_calib[i], cameraCV, patternType,graphicGL);    
                 LasSurfs.Add(las);
                 PositionsAxis.Add(positions[i]);
                 Console.WriteLine(" "+positions[i]+" "+las.flat3D);
-                var flat = graphicGL.addFlat3d_YZ(las.flat3D,null, Color3d_GL.gray());
-                graphicGL.buffersGl.setTranspobj(flat, 0.3f);
+                //var flat = graphicGL.addFlat3d_YZ(las.flat3D,null, Color3d_GL.gray());
+                //graphicGL.buffersGl.setTranspobj(flat, 0.3f);
                 LasFlats.Add(las.flat3D);
             }
 
@@ -441,6 +444,7 @@ namespace opengl3
 
             //PositionsAxis = new List<double>();
             var LasFlats_all = new List<Flat3d_GL>();
+            Console.WriteLine("new flats_________________");
             for (int i = 0; i < mats_calib.Length; i++)
             {
                 var fl = new Flat3d_GL(p_las, LasSurfs[i].ps[0], LasSurfs[i].ps[1]);
@@ -513,12 +517,12 @@ namespace opengl3
             }
 
            // FileManage.saveToJson_flats(flats_cam_sm.ToArray(), "linearcal_" + positions[0] + "_.json");
-            LasFlats = flats_cam_sm;
+            //LasFlats = flats_cam_sm;
             start_flat =(int)LasFlats[0].numb;
             var flats_del = new List<Flat3d_GL>();
             calibrated = true;
             Console.WriteLine("_____________");
-           pointCloud = null;
+           //pointCloud = null;
 
             if (pointCloud!=null)
             {
@@ -544,6 +548,9 @@ namespace opengl3
                     Console.Write(" " + positions[i] + " " + points_im[p_i_1].X);
 
                     var get_flat = getLaserSurf(positions[i]);
+
+                    //var get_flat = LasFlats[i];
+
                     //LasFlats[i] = new Flat3d_GL(LasFlats[i].A, get_flat.B, LasFlats[i].C, LasFlats[i].D);
 
                     //var las_fl_c = flats_cam_sm[i];//flats_cam_sm[i] // LasFlats[i]
@@ -751,17 +758,19 @@ namespace opengl3
 
             /* int start_ind = (int)(LasFlats.Count / 2) + 1;
                         int end_ind = (int)(LasFlats.Count / 2) - 1;*/
-            int grad = 1;
+            int grad = 2;
             var aval = new double[flats.Length][];
             var bval = new double[flats.Length][];
             var cval = new double[flats.Length][];
             var dval = new double[flats.Length][];
+            Console.WriteLine("comp_flat");
             for (int i = 0; i < flats.Length; i++)
             {
                 aval[i] = new double[] { poses[i], flats[i].A };
                 bval[i] = new double[] { poses[i], flats[i].B };
                 cval[i] = new double[] { poses[i], flats[i].C };
                 dval[i] = new double[] { poses[i], flats[i].D };
+                Console.WriteLine(poses[i] + " " + flats[i].A + " " + flats[i].B + " " + flats[i].C + " " + flats[i].D);
             }
             akoef = new Flat3d_GL(Regression.regression(aval, grad));
             bkoef = new Flat3d_GL(Regression.regression(bval, grad));
