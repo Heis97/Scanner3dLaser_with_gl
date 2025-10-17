@@ -563,7 +563,7 @@ namespace opengl3
 
         #region matching
 
-        static Matrix<double> allign_meshes_simple(Point3d_GL[] ps1, Point3d_GL[] ps2, double max_dist, double triangle_size)
+        public static Matrix<double> allign_meshes_simple(Point3d_GL[] ps1, Point3d_GL[] ps2, double max_dist, double triangle_size)
         {
             var match_ind = new int[0][];
             var match_ind_ext = new int[0][][];
