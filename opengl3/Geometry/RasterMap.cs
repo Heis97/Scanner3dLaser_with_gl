@@ -348,14 +348,17 @@ namespace opengl3
             return matches;
         }
 
-        static public (int[][], int[][][]) matches_two_cloud_ext(Point3d_GL[] points1, Point3d_GL[] points2)
+        static public (int[][], int[][][]) matches_two_cloud_ext(Point3d_GL[] points1, Point3d_GL[] points2,double resol = -1,double dist_max = -1,GraphicGL graphic = null)
         {
             var res1 = comp_resol(points1);
             var res2 = comp_resol(points1);
             var res = Math.Min(res1, res2);
+            if (resol > 0) res = resol;
+            var rad = 2;
+            if (dist_max > 0) rad = (int)(dist_max / res);
             var maps = map_two_cloud(points1, points2, res);
             var matches = matches_area_inds(maps[0], maps[1]);
-            var matches_tr = matches_area_inds_trans(maps[0], maps[1]);
+            var matches_tr = matches_area_inds_trans(maps[0], maps[1],rad);
             Console.WriteLine(matches.Length);
             return (matches,matches_tr);
         }
@@ -474,7 +477,7 @@ namespace opengl3
             }
             return new int[][] { inds1.ToArray(), inds2.ToArray() };
         }
-        static int[][][] matches_area_inds_trans(RasterMap map1, RasterMap map2)
+        static int[][][] matches_area_inds_trans(RasterMap map1, RasterMap map2, int rad)
         {
             var inds1 = new List<int[][]>();
 
@@ -487,9 +490,28 @@ namespace opengl3
                     for (int z = 0; z < map1.map_xyz.GetLength(2); z++)
                     {
                         //--------------------
-                        if (map1.map_xyz[x, y, z] != null && map2.map_xyz[x, y, z] != null)
+                        var inds1_loc = new List<int>();
+                        var inds2_loc = new List<int>();
+                        var x_b = x - rad / 2; if(x_b<=0) x_b = 0;  var x_e = x + rad / 2; if (x_e > map1.map_xyz.GetLength(0) - 2) x_e = map1.map_xyz.GetLength(0) - 2;
+                        var y_b = y - rad / 2; if (y_b <= 0) y_b = 0; var y_e = y + rad / 2; if (y_e > map1.map_xyz.GetLength(1) - 2) y_e = map1.map_xyz.GetLength(1) - 2;
+                        var z_b = z - rad / 2; if (z_b <= 0) z_b = 0; var z_e = z + rad / 2; if (z_e > map1.map_xyz.GetLength(2) - 2) z_e = map1.map_xyz.GetLength(0) - 2;
+                        for (int x_l = x_b; x_l < x_e; x_l++)
                         {
-                            inds1.Add(new int[][] { map1.map_xyz[x, y, z], map2.map_xyz[x, y, z] });
+                            for (int y_l = y_b; y_l < y_e; y_l++)
+                            {
+                                for (int z_l = z_b; z_l < z_e; z_l++)
+                                {
+                                    if (map1.map_xyz[x_l, y_l, z_l] != null) inds1_loc.AddRange(map1.map_xyz[x_l, y_l, z_l]);
+                                    if (map2.map_xyz[x_l, y_l, z_l] != null) inds2_loc.AddRange(map2.map_xyz[x_l, y_l, z_l]);
+                                }
+
+                            }
+                        }
+
+
+                        if (inds1_loc.Count>0 && inds2_loc.Count > 0)
+                        {
+                            inds1.Add(new int[][] { inds1_loc.ToArray(), inds2_loc.ToArray() });
                         }
                         //--------------------
                     }
@@ -562,20 +584,40 @@ namespace opengl3
         }
 
         #region matching
+        public static Point3d_GL[][] get_vecs_match(Point3d_GL[] ps1, Point3d_GL[] ps2, int[][][] inds)
+        {
+            if (inds == null)  return null; 
+            var vecs = new List<Point3d_GL[]>();
+            for (int i = 0; i<inds.Length;i++)
+            {
+                var ps1_loc = get_ps_from_inds(ps1, inds[i][0]);
+                var ps2_loc = get_ps_from_inds(ps2, inds[i][1]);
+                var ins = Point3d_GL.nearest_ps(ps1_loc, ps2_loc);
+                vecs.Add(new Point3d_GL[] { ps1_loc[ins[0]], ps2_loc[ins[1]] });
+                if (i % 1000 == 0) Console.WriteLine("vecs_match progr: " + i + "/" + inds.Length);
+            }
 
-        public static Matrix<double> allign_meshes_simple(Point3d_GL[] ps1, Point3d_GL[] ps2, double max_dist, double triangle_size)
+            return vecs.ToArray();
+        }
+        public static Matrix<double> allign_meshes_simple(Point3d_GL[] ps1, Point3d_GL[] ps2, double max_dist, double triangle_size,GraphicGL graphic = null)
         {
             var match_ind = new int[0][];
             var match_ind_ext = new int[0][][];
-            (match_ind,match_ind_ext) = matches_two_cloud_ext(ps1, ps2);//need indeces of cells, not ps
+            (match_ind,match_ind_ext) = matches_two_cloud_ext(ps1, ps2,0.5,1,graphic);//need indeces of cells, not ps
             var ps1_cut = get_ps_from_inds(ps1, match_ind[0]);
             var ps2_cut = get_ps_from_inds(ps2, match_ind[1]);
+
+            var vecs = get_vecs_match(ps1, ps2, match_ind_ext);
+
+            graphic?.addLinesMeshTraj(vecs, Color3d_GL.red());
+           // graphic?.addPointMesh(ps1_cut, Color3d_GL.random(), "ps1_cut");
+            //graphic?.addPointMesh(ps2_cut, Color3d_GL.random(), "ps2_cut");
             //соответственные индексы
 
 
             //
-              
-/**/
+
+            /**/
 
 
 

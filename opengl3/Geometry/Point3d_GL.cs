@@ -776,6 +776,8 @@ namespace opengl3
             return -1;
         }
 
+
+
         public static int[] get_corners_45_xy(Point3d_GL[] ps)
         {
             var m_rot = RobotFrame.RotZmatr(Math.PI/4);
@@ -1042,6 +1044,28 @@ namespace opengl3
                     if (dist < min)
                     {
                         min = dist;
+                        //  Console.WriteLine("min: "+min);
+                    }
+                }
+            }
+            return new int[] { ind1, ind2, (int)min };
+        }
+
+        public static int[] nearest_ps(Point3d_GL[] ps1, Point3d_GL[] ps2)
+        {
+            var min = double.MaxValue;
+            int ind1 = 0;
+            int ind2 = 0;
+            for (int i = 0; i < ps1.Length; i++)
+            {
+                for (int j = 0; j < ps2.Length; j++)
+                {
+                    var dist = (ps1[i] - ps2[j]).magnitude();
+                    if (dist < min)
+                    {
+                        min = dist;
+                        ind1 = i;
+                        ind2 = j;
                         //  Console.WriteLine("min: "+min);
                     }
                 }
