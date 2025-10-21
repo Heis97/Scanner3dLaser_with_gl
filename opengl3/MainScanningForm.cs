@@ -2352,15 +2352,32 @@ namespace opengl3
             //test_go_to_point_robot();
             //test_poses();
             //load_3d_model_robot_pulse();
-            var scan_orig = new Model3d("fiting1710_def_zero.stl", false);
-            //GL1.add_buff_gl(scan_orig.mesh,    Color3d_GL.red(), scan_orig.normale, PrimitiveType.Points, "fiting1710_orig");
+           // var scan_orig = new Model3d("fiting1710_def_zero.stl", false);
+            var scan_orig = new Model3d("fiting1710_orig.stl", false);
+            var model1 =  GL1.add_buff_gl(scan_orig.mesh,    Color3d_GL.red(), scan_orig.normale, PrimitiveType.Triangles, "fiting1710_orig");
 
-            var scan_scan = new Model3d("fiting1710_def_dzdy.stl", false);
-           // GL1.add_buff_gl(scan_scan.mesh, Color3d_GL.green(), scan_scan.normale, PrimitiveType.Points, "fiting1710_scan");
+           // var scan_scan = new Model3d("fiting1710_def_rx.stl", false);
+            var scan_scan = new Model3d("fiting1710c.stl", false);
+            var model2 = GL1.add_buff_gl(scan_scan.mesh, Color3d_GL.green(), scan_scan.normale, PrimitiveType.Triangles, "fiting1710_scan");
+            var inds_mesh_orig = new IndexedMesh(scan_orig.pols);
+            var inds_mesh_scan = new IndexedMesh(scan_scan.pols);
 
-            RasterMap.allign_meshes_simple(Point3d_GL.fromMesh(scan_orig.mesh), Point3d_GL.fromMesh(scan_scan.mesh), 1.5, 0.8,GL1);
+            var ps1 = inds_mesh_orig.ps_uniq;
+            var ps2 = inds_mesh_scan.ps_uniq;
+            var ps2_move = RasterMap.allign_meshes_simple(ps1, ps2, 1.5, 0.8,GL1);
+            inds_mesh_scan.ps_uniq = ps2_move;
 
 
+            var model3 = GL1.add_buff_gl(Polygon3d_GL.toMesh(inds_mesh_scan.get_polygs())[0] , Color3d_GL.blue(), scan_scan.normale, PrimitiveType.Triangles, "fiting1710_scan_move");
+
+
+            var scan_scan_move = new Model3d("fiting1710_scan_move.stl", false);
+            var model4 = GL1.add_buff_gl(scan_scan_move.mesh, Color3d_GL.aqua(), scan_scan_move.normale, PrimitiveType.Triangles, "fiting1710_scan_move_prev");
+
+            GL1.buffersGl.setlight(model1, false);
+            GL1.buffersGl.setlight(model2, false);
+            GL1.buffersGl.setlight(model3, false);
+            GL1.buffersGl.setlight(model4, false);
         }
 
         void test_poses()

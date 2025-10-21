@@ -501,9 +501,9 @@ namespace opengl3
         {
             var ps_ret = new Point3d_GL[ps.Length];
             var ps_shift = add_arr(ps,-p_centr);
-            for (int i = 0; i < ps_ret.Length; i++)
+            for (int i = 0; i < ps_shift.Length; i++)
             {
-                ps_ret[i] = ps[i] * matrix;
+                ps_ret[i] = ps_shift[i] * matrix;
             }
             ps_ret = add_arr(ps_ret, p_centr);
             return ps_ret;

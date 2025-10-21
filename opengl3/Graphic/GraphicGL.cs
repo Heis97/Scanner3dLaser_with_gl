@@ -468,7 +468,7 @@ namespace opengl3
             var CompShaderGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo_f.glsl" });
             programID_comp = createShaderCompute(CompShaderGL);
 
-            var CompShaderGL_allign = assembCode(new string[] { @"CompSh_allign.glsl" });
+            var CompShaderGL_allign = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_allign.glsl" });
             programID_comp_allign = createShaderCompute(CompShaderGL_allign);
 
             //var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one.glsl" });
@@ -854,7 +854,7 @@ namespace opengl3
             var ps_data_div = Point3d_GL.divide_data(ps_data, w);
             var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
             Console.WriteLine("loaded from gpu.");
-            Point3d_GL.colorPoints2d(ps1, ps_cr);
+           // Point3d_GL.colorPoints2d(ps1, ps_cr);
             Console.WriteLine("colored.");
 
             //Console.WriteLine(toStringBuf(debug_t.getData(),w * 4, 4, "debug_t"));

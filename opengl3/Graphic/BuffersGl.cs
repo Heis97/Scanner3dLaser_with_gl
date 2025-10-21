@@ -131,6 +131,10 @@ namespace opengl3
         {
             objs[name] = objs[name].setVisible(visible);
         }
+        public void setlight(string name, bool visible)
+        {
+            objs[name] = objs[name].setlight_vis(0,visible);
+        }
         public void set_cross_flat_obj(string name, Vertex4f flat)
         {
             objs[name] = objs[name].crossFlat(flat);
