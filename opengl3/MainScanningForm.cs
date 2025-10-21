@@ -2352,10 +2352,10 @@ namespace opengl3
             //test_go_to_point_robot();
             //test_poses();
             //load_3d_model_robot_pulse();
-            var scan_orig = new Model3d("fiting1710_orig.stl", false);
+            var scan_orig = new Model3d("fiting1710_def_zero.stl", false);
             //GL1.add_buff_gl(scan_orig.mesh,    Color3d_GL.red(), scan_orig.normale, PrimitiveType.Points, "fiting1710_orig");
 
-            var scan_scan = new Model3d("fiting1710_scan.stl", false);
+            var scan_scan = new Model3d("fiting1710_def_dzdy.stl", false);
            // GL1.add_buff_gl(scan_scan.mesh, Color3d_GL.green(), scan_scan.normale, PrimitiveType.Points, "fiting1710_scan");
 
             RasterMap.allign_meshes_simple(Point3d_GL.fromMesh(scan_orig.mesh), Point3d_GL.fromMesh(scan_scan.mesh), 1.5, 0.8,GL1);

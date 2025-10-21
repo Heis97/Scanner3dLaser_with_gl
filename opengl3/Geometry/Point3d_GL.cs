@@ -496,6 +496,18 @@ namespace opengl3
             }
             return ps_ret;
         }
+
+        public static Point3d_GL[] multMatr_p_m_rot_cent(Matrix<double> matrix, Point3d_GL[] ps,Point3d_GL p_centr)
+        {
+            var ps_ret = new Point3d_GL[ps.Length];
+            var ps_shift = add_arr(ps,-p_centr);
+            for (int i = 0; i < ps_ret.Length; i++)
+            {
+                ps_ret[i] = ps[i] * matrix;
+            }
+            ps_ret = add_arr(ps_ret, p_centr);
+            return ps_ret;
+        }
         public static Point3d_GL[] mult(Point3d_GL[] ps, double k)
         {
             var ps_ret = new Point3d_GL[ps.Length];

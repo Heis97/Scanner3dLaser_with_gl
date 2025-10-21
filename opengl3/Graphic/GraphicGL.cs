@@ -187,6 +187,7 @@ namespace opengl3
         Point lastPos;
 
         uint programID_comp;
+        uint programID_comp_allign;
         public int texture_vis = 0;
 
         int currentMonitor = 0;
@@ -467,13 +468,16 @@ namespace opengl3
             var CompShaderGL = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_cross_stereo_f.glsl" });
             programID_comp = createShaderCompute(CompShaderGL);
 
+            var CompShaderGL_allign = assembCode(new string[] { @"CompSh_allign.glsl" });
+            programID_comp_allign = createShaderCompute(CompShaderGL_allign);
+
             //var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one.glsl" });
             //idsCsSlice.programID = createShaderCompute(CompShaderSliceGL);
 
             //var CompShaderCsGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_test.glsl" });
             //idsCs.programID = createShaderCompute(CompShaderCsGL);
 
-            
+
 
 
             idsLs.programID = createShader(VertexSourceGL, GeometryShaderLinesGL, FragmentSimpleSourceGL);
@@ -813,6 +817,55 @@ namespace opengl3
 
             return Point3d_GL.filtrExistPoints2d(ps_cr) ;
         }
+
+
+        public Point3d_GL[][] comp_allign(Point3d_GL[] ps1, Point3d_GL[] ps2, Point3d_GL[] delts)
+        {
+            if (ps1 == null || ps2 == null)
+            {
+                return null;
+            }
+            if (ps1.Length == 0 || ps2.Length == 0)
+            {
+                return null;
+            }
+            var ps1_data = Point3d_GL.toData(ps1);
+            var ps2_data = Point3d_GL.toData(ps2);
+
+            int h = ps1.Length;
+            int w = delts.Length;
+
+
+            var movm = new TextureGL(3, w, 6, PixelFormat.Rgba);//delts
+            var debug_t = new TextureGL(4, w, 6, PixelFormat.Rgba);//deb
+            var ps1_t = new TextureGL(5, w, h, PixelFormat.Rgba, ps1_data);//ps
+            var ps2_t = new TextureGL(6, w, h, PixelFormat.Rgba, ps2_data);//ps_move
+            var ps_cross_t = new TextureGL(7, w, h, PixelFormat.Rgba);//ans
+            Console.WriteLine("loaded on gpu.");
+            //Console.WriteLine(toStringBuf(ps1_t.getData(), 4, 0, "ps1_t"));
+            //Console.WriteLine(toStringBuf(ps2_t.getData(), 4, 0, "ps2_t"));
+            //Console.WriteLine(toStringBuf(ps_cross_t.getData(), 4, 0, "ps_cross_t"));
+
+            Gl.UseProgram(programID_comp);
+            Gl.DispatchCompute((uint)w, (uint)h, 1);
+            Gl.MemoryBarrier(MemoryBarrierMask.ShaderImageAccessBarrierBit);
+            Console.WriteLine("computed.");
+            var ps_data = ps_cross_t.getData();
+            var ps_data_div = Point3d_GL.divide_data(ps_data, w);
+            var ps_cr = Point3d_GL.dataToPoints2d(ps_data_div);
+            Console.WriteLine("loaded from gpu.");
+            Point3d_GL.colorPoints2d(ps1, ps_cr);
+            Console.WriteLine("colored.");
+
+            //Console.WriteLine(toStringBuf(debug_t.getData(),w * 4, 4, "debug_t"));
+            //Console.WriteLine(w + " " + h);
+            //Console.WriteLine(toStringBuf(ps_cross_t.getData(), w*4, 4, "ps_cross_t"));
+
+
+            return Point3d_GL.filtrExistPoints2d(ps_cr);
+        }
+
+
         public Point3d_GL[][] cross_flat_gpu_mesh(float[] mesh_m, Flat3d_GL[] flats)
         {
             mesh_m = Point3d_GL.mesh3to4(mesh_m);

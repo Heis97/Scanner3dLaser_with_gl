@@ -584,21 +584,33 @@ namespace opengl3
         }
 
         #region matching
-        public static Point3d_GL[][] get_vecs_match(Point3d_GL[] ps1, Point3d_GL[] ps2, int[][][] inds)
+        public static Point3d_GL[][] get_vecs_match(Point3d_GL[] ps1, Point3d_GL[] ps2, int[][][] inds,int strip = 100)
         {
             if (inds == null)  return null; 
             var vecs = new List<Point3d_GL[]>();
-            for (int i = 0; i<inds.Length;i++)
+            for (int i = 0; i<inds.Length;i+=strip)
             {
                 var ps1_loc = get_ps_from_inds(ps1, inds[i][0]);
                 var ps2_loc = get_ps_from_inds(ps2, inds[i][1]);
                 var ins = Point3d_GL.nearest_ps(ps1_loc, ps2_loc);
                 vecs.Add(new Point3d_GL[] { ps1_loc[ins[0]], ps2_loc[ins[1]] });
-                if (i % 1000 == 0) Console.WriteLine("vecs_match progr: " + i + "/" + inds.Length);
+                //if (i % 1000 == 0) Console.WriteLine("vecs_match progr: " + i + "/" + inds.Length);
             }
 
             return vecs.ToArray();
         }
+        public static double dist_vecs(Point3d_GL[][] vecs)
+        {
+            if (vecs == null) return -1;
+            if (vecs.Length == 0) return -1;
+            var dist = 0d;
+            for(int i = 0; i < vecs.Length; i++)
+            {
+                dist += (vecs[i][1] - vecs[i][0]).magnitude();
+            }
+            return dist/vecs.Length;
+        }
+        //ps1 static, move ps2
         public static Matrix<double> allign_meshes_simple(Point3d_GL[] ps1, Point3d_GL[] ps2, double max_dist, double triangle_size,GraphicGL graphic = null)
         {
             var match_ind = new int[0][];
@@ -607,10 +619,104 @@ namespace opengl3
             var ps1_cut = get_ps_from_inds(ps1, match_ind[0]);
             var ps2_cut = get_ps_from_inds(ps2, match_ind[1]);
 
-            var vecs = get_vecs_match(ps1, ps2, match_ind_ext);
+            var min_move = 0.005;
 
-            graphic?.addLinesMeshTraj(vecs, Color3d_GL.red());
-           // graphic?.addPointMesh(ps1_cut, Color3d_GL.random(), "ps1_cut");
+            var min_rot = 0.005;
+            var delts = new Point3d_GL[]
+            {
+                new Point3d_GL(0,0,0),
+                new Point3d_GL(min_move,0,0),
+                new Point3d_GL(-min_move,0,0),
+                new Point3d_GL(0,min_move,0),
+                new Point3d_GL(0,-min_move,0),
+                new Point3d_GL(0,0,min_move),
+                new Point3d_GL(0,0,-min_move),
+            };
+
+            var delts_orient = new Point3d_GL[]
+           {
+                new Point3d_GL(0,0,0),
+                new Point3d_GL(min_rot,0,0),
+                new Point3d_GL(-min_rot,0,0),
+                new Point3d_GL(0,min_rot,0),
+                new Point3d_GL(0,-min_rot,0),
+                new Point3d_GL(0,0,min_rot),
+                new Point3d_GL(0,0,-min_rot),
+           };
+
+            var delts_orig = new Point3d_GL[]
+            {
+                new Point3d_GL(0,0,0),
+                new Point3d_GL(min_move,0,0),
+                new Point3d_GL(-min_move,0,0),
+                new Point3d_GL(0,min_move,0),
+                new Point3d_GL(0,-min_move,0),
+                new Point3d_GL(0,0,min_move),
+                new Point3d_GL(0,0,-min_move),
+            };
+
+            var delts_orient_orig = new Point3d_GL[]
+            {
+                new Point3d_GL(0,0,0),
+                new Point3d_GL(min_rot,0,0),
+                new Point3d_GL(-min_rot,0,0),
+                new Point3d_GL(0,min_rot,0),
+                new Point3d_GL(0,-min_rot,0),
+                new Point3d_GL(0,0,min_rot),
+                new Point3d_GL(0,0,-min_rot),
+            };
+
+            int k_max = 150;
+            int k = 0;
+            double err_min = min_move;
+            double err = double.MaxValue;
+            var p_centr = (Point3d_GL.Max(ps1) - Point3d_GL.Max(ps2)) / 2;
+            Console.WriteLine("allign: _______");
+            while (k<k_max  &&  err>err_min)
+            {
+                int i_min_err = 0;
+                var err_cur = double.MaxValue;
+                for (int i = 0; i < delts.Length; i++)
+                {
+                    Point3d_GL[] ps_2_move = null;
+                    if(k%2==0) ps_2_move = Point3d_GL.add_arr(ps2, delts[i]);
+                    else
+                    {
+                        ps_2_move = Point3d_GL.multMatr_p_m_rot_cent(
+                            RobotFrame.ABCmatr(0, 0, 0, delts_orient[i].x, delts_orient[i].y, delts_orient[i].z, RobotFrame.RobotType.PULSE),
+                            ps2,
+                            p_centr);
+                    }
+
+                    var vecs = get_vecs_match(ps1, ps_2_move, match_ind_ext);
+                    err = dist_vecs(vecs);
+                    Console.WriteLine(i + " " + err);
+                    if(err < err_cur)
+                    {
+                        err_cur = err;
+                        i_min_err = i;
+                    }
+                }
+                if (k % 2 == 0) delts = Point3d_GL.add_arr(delts, delts_orig[i_min_err]);
+                else delts_orient = Point3d_GL.add_arr(delts_orient, delts_orient_orig[i_min_err]);
+                
+                    
+                Console.WriteLine("comp_delt_xyz: " + delts[i_min_err]);
+                Console.WriteLine("comp_delt_abc: " + delts_orient[i_min_err]);
+                k++;
+
+
+
+
+
+            }
+
+            //Console.WriteLine(i + " " + err);
+
+
+
+            //  graphic?.addLinesMeshTraj(vecs, Color3d_GL.red());
+            // graphic?.addPointMesh(ps1_cut, Color3d_GL.random(), "ps1_cut");
             //graphic?.addPointMesh(ps2_cut, Color3d_GL.random(), "ps2_cut");
             //соответственные индексы
 
@@ -623,6 +729,8 @@ namespace opengl3
 
             return null;
         }
+
+
 
         static Matrix<double> allign_meshes(Point3d_GL[] ps1, Point3d_GL[] ps2,double max_dist,double triangle_size)
         {
