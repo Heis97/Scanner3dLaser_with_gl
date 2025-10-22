@@ -200,7 +200,7 @@ namespace opengl3
             (mc_r, mc_t) = UtilOpenCV.to_vec_mat(ms_cam.ToArray());
             Mat mr = new Mat();
             Mat mt = new Mat();
-            CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt,HandEyeCalibrationMethod.Andreff);
+            CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt,HandEyeCalibrationMethod.Horaud);//andreff
             prin.t("result:");
             prin.t(mr);
             prin.t(mt);

@@ -103,7 +103,7 @@ namespace opengl3
         Matrix<double> persp_matr = new Matrix<double>(new double[3, 3] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } });
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
-        float markSize = 10f;
+        float markSize = 9.78f;
        // Size chess_size = new Size(8, 9);
          Size chess_size = new Size(6, 7);
         Size chess_size_real = new Size(6, 7);
@@ -410,7 +410,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
-            load_camers_v2();
+            //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -1302,11 +1302,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 9.6f;//6.2273f//10f//9.6f
+            markSize = 9.78f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_sing_home_cal_1610a", FrameType.Pattern, PatternType.Mesh);//
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_cal_misis_p90_0210_1", FrameType.Pattern, PatternType.Mesh);//
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam_sing_home_cal_1610a.txt");
+            cam1.save_camera("cam_cal_misis_p90_0210_1a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -2714,7 +2714,7 @@ namespace opengl3
              }*/
 
             bool find_gl =true;
-            //find_gl = false;
+            find_gl = false;
             var num_cam = 1;
             if (find_gl)
             {
@@ -6091,7 +6091,7 @@ namespace opengl3
             stereocam_scan = stereo;
             //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
             chess_size = new Size(6, 7);
-            var markSize = 9.733f;// 10f;
+            var markSize = 9.78f;// 10f;//9.733f
             //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
             //stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
 
