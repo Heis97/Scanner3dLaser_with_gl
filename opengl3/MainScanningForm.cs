@@ -410,7 +410,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
-            //load_camers_v2();
+            load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -1302,11 +1302,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 9.78f;//6.2273f//10f//9.6f
+            markSize = 9.78f;//6.2273f//10f//9.78f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_cal_misis_p90_0210_1", FrameType.Pattern, PatternType.Mesh);//
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_sing_home_cal_1610a", FrameType.Pattern, PatternType.Mesh);//
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam_cal_misis_p90_0210_1a.txt");
+            cam1.save_camera("cam_sing_home_cal_1610aa.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -4025,7 +4025,7 @@ namespace opengl3
         #region buttons
         private void comboImages_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            Console.WriteLine(comboImages.SelectedItem);
+            //Console.WriteLine(comboImages.SelectedItem);
             Frame fr2 = null;
             if (comboImages.SelectedIndex > 1)
             {
@@ -4240,7 +4240,11 @@ namespace opengl3
                     var fr_r = new RobotFrame(comboImages.SelectedItem.ToString());
                     cameraCVcommon.compPos(fr.im.Clone(), PatternType.Mesh, chess_size);
                     //Console.WriteLine("p: " + ((float)cameraCVcommon.matrixSC[0, 3]) + " " + ((float)cameraCVcommon.matrixSC[1, 3]) + " " + ((float)cameraCVcommon.matrixSC[2, 3]) + " ");
-                    Console.WriteLine("p: " + (fr_r.X -(float)cameraCVcommon.matrixSC[0, 3]) + " " + (fr_r.Y + (float)cameraCVcommon.matrixSC[1, 3]) + " " + (fr_r.Z + (float)cameraCVcommon.matrixSC[2, 3]) + " ");
+                    var p1 = new Point3d_GL(fr_r.X, fr_r.Y, fr_r.Z);
+                    var p2 = new Point3d_GL(cameraCVcommon.matrixSC[0, 3], -cameraCVcommon.matrixSC[1, 3], -cameraCVcommon.matrixSC[2, 3]);
+
+                    Console.WriteLine((p1 - p2).magnitude());
+                    //Console.WriteLine("p: " + (fr_r.X -(float)cameraCVcommon.matrixSC[0, 3]) + " " + (fr_r.Y + (float)cameraCVcommon.matrixSC[1, 3]) + " " + (fr_r.Z + (float)cameraCVcommon.matrixSC[2, 3]) + " ");
                     var corn = new System.Drawing.PointF[0];
                     //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
                     //imageBox1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
