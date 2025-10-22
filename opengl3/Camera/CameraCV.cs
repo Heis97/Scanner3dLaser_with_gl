@@ -395,7 +395,7 @@ namespace opengl3
             var matrs = assemblMatrix(cur_r, cur_t);
             matrixCS = matrs[0];
             matrixSC = matrs[1];
-
+            Console.WriteLine("M_sc: " + (float)matrixSC[0, 3] + " " + (float)matrixSC[1, 3] + " " + (float)matrixSC[2, 3] + " " );
             /*prin.t(matrixCS);
             prin.t(matrixSC);
             var data_mx = new double[4, 4]
@@ -417,6 +417,7 @@ namespace opengl3
             setPos();
             return pos;
         }
+
         public bool compPos(Mat _mat, PatternType patternType,Size pattern_size,float mark = -1,bool centr = false)
         {
             var mat = _mat.Clone();
@@ -504,10 +505,16 @@ namespace opengl3
                         new MCvPoint3D32f(0,0,0)
                     };*/
 
+                    /* points3d = new MCvPoint3D32f[]
+                     {
+                         new MCvPoint3D32f(0,y,0), new MCvPoint3D32f(0,0,0),
+                         new MCvPoint3D32f(x,y,0), new MCvPoint3D32f(x,0,0)
+                     };*/
+
                     points3d = new MCvPoint3D32f[]
                     {
-                        new MCvPoint3D32f(0,y,0), new MCvPoint3D32f(0,0,0),
-                        new MCvPoint3D32f(x,y,0), new MCvPoint3D32f(x,0,0)
+                        new MCvPoint3D32f(0,0,0), new MCvPoint3D32f(0,y,0),
+                        new MCvPoint3D32f(x,0,0), new MCvPoint3D32f(x,y,0)
                     };
                 }
 
@@ -535,10 +542,11 @@ namespace opengl3
                 
                 prin.t("points3d");
                 prin.t(points3d);*/
-                compPos(points3d, points2d);
-                UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 1);
-                //CvInvoke.Imshow("pos" + points2d[0].X, matDraw);
-               // CvInvoke.WaitKey();
+               var pos_cur = compPos(points3d, points2d);
+                Console.WriteLine(pos_cur[0] + " " + pos_cur[1] + " " + pos_cur[2] + " ");
+               // UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 1);
+               // CvInvoke.Imshow("pos"  , matDraw);//points2d[0].X
+                //CvInvoke.WaitKey();
                 mat = null;
                 matDraw = null;
 

@@ -190,11 +190,11 @@ namespace opengl3
             var ps2d = new System.Drawing.PointF[4];
             var w = patt_size.Width;
             var h = patt_size.Height;
-            Console.WriteLine("take ob: "+w + " "+h);
+            //Console.WriteLine("take ob: "+w + " "+h);
             var inds_1 = new int[4] {
                 0             ,          w - 1,
                obp.Length- w   ,    obp.Length - 1 };
-            Console.WriteLine(inds_1[0] + " " + inds_1[1] + " " + inds_1[2] + " " + inds_1[3] + " ");
+            //Console.WriteLine(inds_1[0] + " " + inds_1[1] + " " + inds_1[2] + " " + inds_1[3] + " ");
             for (int i = 0; i < inds_1.Length; i++)
             {
                 ps2d[i] = obp[inds_1[i]];

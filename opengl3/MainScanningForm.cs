@@ -410,7 +410,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
-            // load_camers_v2();
+            load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -1302,11 +1302,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 9.66f;//6.2273f//10f//9.6f
+            markSize = 10.0f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_sing_home_cal_1610a", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_virt_cal_2110", FrameType.Pattern, PatternType.Mesh);
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam_sing_home_cal_1610a.txt");
+            cam1.save_camera("cam_virt_cal_2110a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -2183,7 +2183,7 @@ namespace opengl3
             var h = send.Height;
             var d = 1000;
             var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
-            //GL1.buffersGl.setTranspobj(fr, 0.0f);
+            GL1.buffersGl.setTranspobj(fr, 0.0f);
             
 
             generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
@@ -2352,34 +2352,39 @@ namespace opengl3
             //test_go_to_point_robot();
             //test_poses();
             //load_3d_model_robot_pulse();
-           // var scan_orig = new Model3d("fiting1710_def_zero.stl", false);
+            
+            
+        }
+        void test_allign_mesh()
+        {
+            //var scan_orig = new Model3d("fiting1710_def_zero.stl", false);
             var scan_orig = new Model3d("fiting1710_orig.stl", false);
-            var model1 =  GL1.add_buff_gl(scan_orig.mesh,    Color3d_GL.red(), scan_orig.normale, PrimitiveType.Triangles, "fiting1710_orig");
+            var model1 = GL1.add_buff_gl(scan_orig.mesh, Color3d_GL.red(), scan_orig.normale, PrimitiveType.Triangles, "fiting1710_orig");
 
-           // var scan_scan = new Model3d("fiting1710_def_rx.stl", false);
-            var scan_scan = new Model3d("fiting1710c.stl", false);
+            var scan_scan = new Model3d("fiting1710_scan.stl", false);
+            //var scan_scan = new Model3d("fiting1710_def_rxrz.stl", false);
             var model2 = GL1.add_buff_gl(scan_scan.mesh, Color3d_GL.green(), scan_scan.normale, PrimitiveType.Triangles, "fiting1710_scan");
             var inds_mesh_orig = new IndexedMesh(scan_orig.pols);
             var inds_mesh_scan = new IndexedMesh(scan_scan.pols);
 
             var ps1 = inds_mesh_orig.ps_uniq;
             var ps2 = inds_mesh_scan.ps_uniq;
-            var ps2_move = RasterMap.allign_meshes_simple(ps1, ps2, 1.5, 0.8,GL1);
+            var ps2_move = RasterMap.allign_meshes_simple(ps1, ps2, 1, 0.5, 0.005, 0.001, GL1);
+
             inds_mesh_scan.ps_uniq = ps2_move;
 
 
-            var model3 = GL1.add_buff_gl(Polygon3d_GL.toMesh(inds_mesh_scan.get_polygs())[0] , Color3d_GL.blue(), scan_scan.normale, PrimitiveType.Triangles, "fiting1710_scan_move");
+            var model3 = GL1.add_buff_gl(Polygon3d_GL.toMesh(inds_mesh_scan.get_polygs())[0], Color3d_GL.blue(), scan_scan.normale, PrimitiveType.Triangles, "fiting1710_scan_move");
 
 
-            var scan_scan_move = new Model3d("fiting1710_scan_move.stl", false);
-            var model4 = GL1.add_buff_gl(scan_scan_move.mesh, Color3d_GL.aqua(), scan_scan_move.normale, PrimitiveType.Triangles, "fiting1710_scan_move_prev");
+            //var scan_scan_move = new Model3d("fiting1710_scan_move.stl", false);
+            //var model4 = GL1.add_buff_gl(scan_scan_move.mesh, Color3d_GL.aqua(), scan_scan_move.normale, PrimitiveType.Triangles, "fiting1710_scan_move_prev");
+            //GL1.buffersGl.setlight(model4, false);
 
             GL1.buffersGl.setlight(model1, false);
             GL1.buffersGl.setlight(model2, false);
             GL1.buffersGl.setlight(model3, false);
-            GL1.buffersGl.setlight(model4, false);
         }
-
         void test_poses()
         {
             //robot*tool = traj
@@ -2709,7 +2714,7 @@ namespace opengl3
              }*/
 
             bool find_gl =true;
-            find_gl = false;
+            //find_gl = false;
             var num_cam = 1;
             if (find_gl)
             {
@@ -2720,11 +2725,11 @@ namespace opengl3
                 mat1 = UtilOpenCV.remapDistImOpenCvCentr(mat1, GL1.cameraCV.distortmatrix);
                 //GL1.transRotZooms[0].cameraCV.distortmatrix
                 // mat1 = UtilOpenCV.GLnoise(mat1, 2, 2,-1);
-                imBox_mark1.Image = mat1;
-                imProcess_virt(mat1, 1);
                 imBox_mark2.Image = mat1;
+                imProcess_virt(mat1, 1);
+                imBox_mark1.Image = mat1;
                 var corn = new System.Drawing.PointF[0];
-                imBox_mark1.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
+                imBox_mark2.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
 
                 
                 if (num_cam>1)
@@ -2739,7 +2744,7 @@ namespace opengl3
                     }
                     mat2 = UtilOpenCV.remapDistImOpenCvCentr(mat2, GL1.transRotZooms[1].cameraCV.distortmatrix);
                     mat2 = UtilOpenCV.GLnoise(mat2, 2, 2,-1);
-                    imBox_mark2.Image = mat2;
+                    imBox_mark1.Image = mat2;
                     imProcess_virt(mat2, 2);
                 }
 
@@ -4046,6 +4051,7 @@ namespace opengl3
                 }
                 else if (fr.frameType == FrameType.Pattern)
                 {
+                   
                     System.Drawing.PointF[] corn = null;
                     if (false)
                     {
@@ -4231,8 +4237,9 @@ namespace opengl3
                 else if (fr.frameType == FrameType.Pattern)
                 {
 
-                    
-                    
+
+                    cameraCVcommon.compPos(fr.im, PatternType.Mesh, chess_size);
+
                     var corn = new System.Drawing.PointF[0];
                     //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
                     //imageBox1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
@@ -5984,7 +5991,9 @@ namespace opengl3
 
         private void but_photo_gl_Click(object sender, EventArgs e)
         {
-            var matr_cam1 = GL1.Vs[0];
+            var matr_cam1 = UtilMatr.to_matrix( GL1.Vs[0]);
+
+            
 
             var coords = GL1.transRotZooms[0].off_x + " "
                 + (-GL1.transRotZooms[0].off_y) + " "
@@ -5992,12 +6001,12 @@ namespace opengl3
                 GL1.transRotZooms[0].xRot + " " +
                   GL1.transRotZooms[0].yRot + " " +
                   GL1.transRotZooms[0].zRot + " ";
-            var pos = new RobotFrame(coords);
+            var pos = new RobotFrame(matr_cam1);
             video_scan_name = pos.ToStr(" ", true, true, true, false);
 
-            label_ard_connect.BeginInvoke((MethodInvoker)(() => txBx_photoName.Text = video_scan_name));
-
-            UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, txBx_photoName.Text + " " + photo_number.ToString() + ".png", box_photoFolder.Text);
+            //label_ard_connect.BeginInvoke((MethodInvoker)(() => txBx_photoName.Text = video_scan_name));
+            // txBx_photoName.Text
+            UtilOpenCV.saveImage(imBox_mark1, imBox_mark2, video_scan_name + " " + photo_number.ToString() + ".png", box_photoFolder.Text);
             photo_number++;
         }
 

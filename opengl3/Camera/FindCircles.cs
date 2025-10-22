@@ -236,8 +236,11 @@ namespace opengl3
             //prin.t("____________");
             // orig = UtilOpenCV.drawPointsF(orig, cents, 255, 0, 0);
             if (debug)
-            CvInvoke.Imshow("fnd", orig);
-            CvInvoke.WaitKey();
+            {
+                CvInvoke.Imshow("fnd", orig);
+                CvInvoke.WaitKey();
+            }
+            
             corn = new System.Drawing.PointF[pattern_size.Width * pattern_size.Height];
             //UtilOpenCV.drawLines(orig, cents, 0, 255, 0, 2);
             
@@ -1073,9 +1076,13 @@ namespace opengl3
 
         static System.Drawing.PointF[,] arrFromP_2(System.Drawing.PointF[] ps, int[][] ind, Size size)
         {
+            if (ind == null) return null;
+            if (ind.Length == 0) return null;
             if (ind[0] == null) return null ;
-            //if(ind.Length!=)
+            if (ind[0].Length == 0) return null;
+            if (ind.Length * ind[0].Length != size.Width*size.Height) return null;
             var ps_arr = new System.Drawing.PointF[ind.Length, ind[0].Length];
+         
             for (int i = 0; i < ind.Length; i++)
             {
                 if (ind[i] != null)

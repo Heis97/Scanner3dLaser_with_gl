@@ -611,17 +611,15 @@ namespace opengl3
             return dist/vecs.Length;
         }
         //ps1 static, move ps2
-        public static Point3d_GL[] allign_meshes_simple(Point3d_GL[] ps1, Point3d_GL[] ps2, double max_dist, double triangle_size,GraphicGL graphic = null)
+        public static Point3d_GL[] allign_meshes_simple(Point3d_GL[] ps1, Point3d_GL[] ps2, double max_dist, double triangle_size, double min_move, double min_rot, GraphicGL graphic = null)
         {
             var match_ind = new int[0][];
             var match_ind_ext = new int[0][][];
-            (match_ind,match_ind_ext) = matches_two_cloud_ext(ps1, ps2,0.5,1,graphic);//need indeces of cells, not ps
+            (match_ind,match_ind_ext) = matches_two_cloud_ext(ps1, ps2,triangle_size,max_dist,graphic);//need indeces of cells, not ps
             var ps1_cut = get_ps_from_inds(ps1, match_ind[0]);
             var ps2_cut = get_ps_from_inds(ps2, match_ind[1]);
 
-            var min_move = 0.005;
-
-            var min_rot = 0.002;
+            
             var delts = new Point3d_GL[]
             {
                 new Point3d_GL(0,0,0),
@@ -634,7 +632,7 @@ namespace opengl3
             };
 
             var delts_orient = new Point3d_GL[]
-           {
+            {
                 new Point3d_GL(0,0,0),
                 new Point3d_GL(min_rot,0,0),
                 new Point3d_GL(-min_rot,0,0),
@@ -642,7 +640,7 @@ namespace opengl3
                 new Point3d_GL(0,-min_rot,0),
                 new Point3d_GL(0,0,min_rot),
                 new Point3d_GL(0,0,-min_rot),
-           };
+            };
 
             var delts_orig = new Point3d_GL[]
             {
@@ -667,7 +665,7 @@ namespace opengl3
             };
 
             int k_max = 60;
-            int n_max = 15;
+            int n_max = 85;
             double err_min = min_move;
             double err = double.MaxValue;
             double err_com = double.MaxValue;
@@ -687,14 +685,11 @@ namespace opengl3
             {
                 j_min_err = 0;
                 for (int j = 0; j < delts_orient.Length; j++)
-                {
-
-                
+                {                
                     ps_2_move_cur = Point3d_GL.multMatr_p_m_rot_cent(
                            RobotFrame.ABCmatr(0, 0, 0, delts_orient[j].x, delts_orient[j].y, delts_orient[j].z, RobotFrame.RobotType.PULSE),
                            ps2,
                            p_centr);
-
                     var err_cur = double.MaxValue;
                     i_min_err = -1;
                     for (int k = 0; k < k_max && i_min_err!=0; k++)
@@ -713,8 +708,6 @@ namespace opengl3
                                 i_min_err = i;
                             }
                         }
-
-
                         delts = Point3d_GL.add_arr(delts, delts_orig[i_min_err]);
                         if (k == k_max - 2) Console.WriteLine("k not appr");
                         //Console.WriteLine("n: " + n + " k: " + k);

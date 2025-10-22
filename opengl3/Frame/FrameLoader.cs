@@ -450,7 +450,7 @@ namespace opengl3
         {
             string name = Path.GetFileName(filepath);
             var im = undistMat(new Mat(filepath),cameraCV,undist);
-            CvInvoke.Rotate(im, im, RotateFlags.Rotate180);//!!!!!!!!!!!
+           // CvInvoke.Rotate(im, im, RotateFlags.Rotate180);//!!!!!!!!!!!
             var fr = new Frame(im, name, frameType, patternType);
             fr.dateTime = File.GetCreationTime(filepath);
             return fr;
