@@ -395,7 +395,7 @@ namespace opengl3
             var matrs = assemblMatrix(cur_r, cur_t);
             matrixCS = matrs[0];
             matrixSC = matrs[1];
-            Console.WriteLine("M_sc: " + (float)matrixSC[0, 3] + " " + (float)matrixSC[1, 3] + " " + (float)matrixSC[2, 3] + " " );
+            
             /*prin.t(matrixCS);
             prin.t(matrixSC);
             var data_mx = new double[4, 4]
@@ -543,7 +543,7 @@ namespace opengl3
                 prin.t("points3d");
                 prin.t(points3d);*/
                var pos_cur = compPos(points3d, points2d);
-                Console.WriteLine(pos_cur[0] + " " + pos_cur[1] + " " + pos_cur[2] + " ");
+                //Console.WriteLine(pos_cur[0] + " " + pos_cur[1] + " " + pos_cur[2] + " ");
                // UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 1);
                // CvInvoke.Imshow("pos"  , matDraw);//points2d[0].X
                 //CvInvoke.WaitKey();
@@ -657,7 +657,7 @@ namespace opengl3
              prin.t(this.corners);*/
 
 
-            var err = CvInvoke.CalibrateCamera(this.objps, this.corners, this.image_size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(100, 0.01), out rvecs, out tvecs);
+            var err = CvInvoke.CalibrateCamera(this.objps, this.corners, this.image_size, _cameramatrix, _distortmatrix, CalibType.Default, new MCvTermCriteria(3000, 0.0001), out rvecs, out tvecs);
 
             Console.WriteLine("err: " + err);
             Console.WriteLine("t,r_len: " + tvecs.Length + " " + rvecs.Length);

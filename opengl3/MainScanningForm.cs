@@ -1302,11 +1302,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 10.0f;//6.2273f//10f//9.6f
+            markSize = 9.6f;//6.2273f//10f//9.6f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_virt_cal_2110", FrameType.Pattern, PatternType.Mesh);
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_sing_home_cal_1610a", FrameType.Pattern, PatternType.Mesh);//
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam_virt_cal_2110a.txt");
+            cam1.save_camera("cam_sing_home_cal_1610a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -4034,7 +4034,7 @@ namespace opengl3
             }
 
             var fr = (Frame)comboImages.SelectedItem;
-            Console.WriteLine(fr.frameType);
+            //Console.WriteLine(fr.frameType);
 
             if (fr.stereo)
             {
@@ -4237,9 +4237,10 @@ namespace opengl3
                 else if (fr.frameType == FrameType.Pattern)
                 {
 
-
-                    cameraCVcommon.compPos(fr.im, PatternType.Mesh, chess_size);
-
+                    var fr_r = new RobotFrame(comboImages.SelectedItem.ToString());
+                    cameraCVcommon.compPos(fr.im.Clone(), PatternType.Mesh, chess_size);
+                    //Console.WriteLine("p: " + ((float)cameraCVcommon.matrixSC[0, 3]) + " " + ((float)cameraCVcommon.matrixSC[1, 3]) + " " + ((float)cameraCVcommon.matrixSC[2, 3]) + " ");
+                    Console.WriteLine("p: " + (fr_r.X -(float)cameraCVcommon.matrixSC[0, 3]) + " " + (fr_r.Y + (float)cameraCVcommon.matrixSC[1, 3]) + " " + (fr_r.Z + (float)cameraCVcommon.matrixSC[2, 3]) + " ");
                     var corn = new System.Drawing.PointF[0];
                     //imageBox1.Image = UtilOpenCV.drawInsideRectCirc(fr.im, chess_size);
                     //imageBox1.Image = GeometryAnalyse.findCirclesIter(fr.im.Clone(), ref corn, chess_size);
