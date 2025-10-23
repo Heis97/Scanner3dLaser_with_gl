@@ -1302,11 +1302,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 9.78f;//6.2273f//10f//9.78f
+            markSize = 10f;//6.2273f//10f//9.78f
             chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_sing_home_cal_1610a", FrameType.Pattern, PatternType.Mesh);//
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_virt_cal_2110", FrameType.Pattern, PatternType.Mesh);//
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam_sing_home_cal_1610aa.txt");
+            cam1.save_camera("cam_virt_cal_2110a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
