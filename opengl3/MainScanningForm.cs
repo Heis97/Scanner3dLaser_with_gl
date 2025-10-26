@@ -3020,7 +3020,7 @@ namespace opengl3
 
             ms[6] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 180, 180)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
 
-            ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, -90)) * UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
 
             GL1.buffersGl.setMatrobj("ax_0", 0, ms[0]);
             GL1.buffersGl.setMatrobj("ax_1", 0, ms[1]);
@@ -3211,7 +3211,7 @@ namespace opengl3
                 // prin.t(mf);
 
 
-                var solv = RobotFrame.comp_inv_kinem_priv(new RobotFrame(mf).frame, new int[] { 1, 1, 1 });
+                var solv = RobotFrame.comp_inv_kinem_priv(new RobotFrame(mf).frame, RobotFrame.turn_from(turn));
                 set_conf_robot_pulse(solv);
             }
             
@@ -3402,7 +3402,7 @@ namespace opengl3
         public void set_pos_traj_robot_pulse(int i)
         {
             if (i < frames_rob.Count)
-                set_pos_robot_pulse(frames_rob[i],null,null,true);
+                set_pos_robot_pulse(frames_rob[i],null,null);//turn
             if (i % 3 == 0)
             {
                 //GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
@@ -10145,6 +10145,14 @@ namespace opengl3
             // Console.WriteLine("pos_z_steps_man: " + pos_z_steps);
             laserLine?.set_adr(-1);
             laserLine?.set_move_z(pos_z_mm + z_syrenge_offset);
+        }
+
+        int turn = 0;
+        private void but_cahge_robot_turn_Click(object sender, EventArgs e)
+        {
+            turn++;
+            if (turn > 7) turn = 0;
+            but_cahge_robot_turn.Text  = "turn: " +turn.ToString();
         }
         //void send_to_ard(TextBox textBox,)
     }

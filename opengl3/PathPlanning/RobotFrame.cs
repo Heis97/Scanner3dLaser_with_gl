@@ -840,7 +840,22 @@ namespace opengl3
 
             return solvs.ToArray();
         }
-
+        static public int[] turn_from(int num)
+        {
+            if(num<0 || num>7) return null;
+            var turns = new int[][]
+            {
+               new int[] { -1, -1, -1 },
+                new int[]{-1, -1, 1 },
+                new int[]{-1, 1, -1 },
+                new int[]{-1, 1, 1},
+                new int[]{1, -1, -1},
+                new int[]{1, -1, 1},
+                new int[]{1, 1, -1},
+                new int[]{1, 1, 1}
+            };
+            return turns[num];
+        }
 
         public static Point3d_GL calc_inters_2circ(double x1, double y1, double x2, double y2, double R1, double R2, double sign)
         {
