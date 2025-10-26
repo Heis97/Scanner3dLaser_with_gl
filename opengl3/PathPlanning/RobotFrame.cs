@@ -85,6 +85,7 @@ namespace opengl3
             C = pos.rotation.z;
             frame = pos;
             timestamp = pose.timestamp;
+            q = pose.angles.ToArray();
             this.robotType = robotType;
         }
         public double str_to_double(string s)

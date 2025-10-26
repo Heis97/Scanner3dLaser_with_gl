@@ -72,6 +72,7 @@ namespace opengl3
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
         RobotFrame.RobotType current_robot = RobotFrame.RobotType.PULSE;
+        RobotFrame tool_robot = null;
         double r_cyl = 1;
         Matrix<double> m_cyl = new Matrix<double>(4, 4);
         Point3d_GL off_cyl = new Point3d_GL();
@@ -410,7 +411,7 @@ namespace opengl3
 
             // test_basis();
             //UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
-            load_camers_v2();
+            //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
              var paths = Directory.GetDirectories(path);
@@ -2350,7 +2351,7 @@ namespace opengl3
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
             //test_go_to_point_robot();
-            //test_poses();
+            test_poses();
             //load_3d_model_robot_pulse();
             
             
@@ -2393,15 +2394,16 @@ namespace opengl3
             var poses = Pose.load_from_json("feedback_prog_1903_v20.json");
             var frs = new List<RobotFrame>();
             var frs_end = new List<RobotFrame>();
-            var tool_fr = new RobotFrame(193.346, 0.591, 31.60, 1.12302, -1.52354, 1.30575,0,0,0, current_robot);// 1.12302 -1.52354 1.30575
+            var tool_fr = new RobotFrame(193.346, 0.591, 31.60, 1.12302, -1.52354, -1.30575,0,0,0, current_robot);// 1.12302 -1.52354 1.30575
+            tool_robot = tool_fr;
             var tool_fr_inv = tool_fr.inv();
             //Console.WriteLine("tesr eye: " + tool_fr * tool_fr_inv);
             foreach (var pose in poses) frs.Add(new RobotFrame(pose,RobotFrame.RobotType.PULSE));//* tool_fr
             foreach (var pose in poses) frs_end.Add(new RobotFrame(pose, RobotFrame.RobotType.PULSE) * tool_fr);
             Console.WriteLine("frs: "+frs[0]);
             var ps = new List<Point3d_GL>();
-            GL1.addPointMesh(RobotFrame.to_points(frs).ToArray());// R from q
-            GL1.addPointMesh(RobotFrame.to_points(frs_end).ToArray(),Color3d_GL.green());// TR from q
+           // GL1.addPointMesh(RobotFrame.to_points(frs).ToArray());// R from q
+           // GL1.addPointMesh(RobotFrame.to_points(frs_end).ToArray(),Color3d_GL.blue());// TR from q
             var file = File.ReadAllText("traj_1903_prep.txt");
             var frms = RobotFrame.parse_g_code(file,RobotFrame.RobotType.PULSE).ToList();
             var p_st = frms[0];
@@ -2410,34 +2412,38 @@ namespace opengl3
             var ps_an = PathPlanner.unif_dist(ps_blend, 0.3);
             var frs_model = new List<RobotFrame>();
             load_3d_model_robot_pulse();
-            
 
-            var poses_model = new List<Pose>();
+            frames_rob = new List<RobotFrame>();
+            frames_rob_end = new List<RobotFrame>();
+            var poses_model = new List<Pose>();//angles blend
             for (int i = 0; i < ps_an.Count; i++)
             {
-                var fr = new RobotFrame(ps_an[i].x, ps_an[i].y, ps_an[i].z, p_st.A, p_st.B, p_st.C, 0, 0, 0, current_robot) * tool_fr_inv;
+                var fr_end = new RobotFrame(ps_an[i].x, ps_an[i].y, ps_an[i].z, p_st.A, p_st.B, p_st.C, 0, 0, 0, current_robot);
+                var fr = fr_end * tool_fr_inv;
 
                 var ang = RobotFrame.comp_inv_kinem(fr.frame, current_robot)[1];//1 5 
                 var test_fr = new RobotFrame(new Pose(ang), RobotFrame.RobotType.PULSE);
                 var test_ang = RobotFrame.comp_inv_kinem(test_fr.frame, current_robot)[1];
                 var test_fr2 = new RobotFrame(new Pose(test_ang), RobotFrame.RobotType.PULSE);
+                frames_rob.Add(test_fr);
+                frames_rob_end.Add(fr_end);
                 //prin.t(ang);
-                set_conf_robot_pulse(ang);
+                //set_conf_robot_pulse(ang);
                 frs_model.Add(test_fr2);
                 var fr_test = new RobotFrame(new Pose(ang,true), RobotFrame.RobotType.PULSE);
                 //Console.WriteLine(fr_test);
                 poses_model.Add(new Pose(ang));
-                 
-                
+
+                Console.WriteLine(i + "/" + ps_an.Count);
             }
-            GL1.addLineMeshTraj(RobotFrame.to_points(frs_model).ToArray(), Color3d_GL.blue());// R from prog
-            GL1.addLineMeshTraj(ps_an.ToArray(),Color3d_GL.red());// TR from prog
-            Console.WriteLine("frs: (R)" + frs[0]);
+           // GL1.addLineMeshTraj(RobotFrame.to_points(frs_model).ToArray(), Color3d_GL.blue());// R from prog
+          //  GL1.addLineMeshTraj(ps_an.ToArray(),Color3d_GL.red());// TR from prog
+            Console.WriteLine("(R)_real" + frs[0]);
             Console.WriteLine(" frs_model: (R)" + frs_model[0]);
             Console.WriteLine(" frms_model*tool_fr_inv: (TR)" + frms[0] * tool_fr_inv);
             Console.WriteLine(" frs_end*tool_fr_inv: (TR)" + frs_end[0] * tool_fr_inv);
-            Console.WriteLine(" frms_model: (TR)" + frms[0] );
-            Console.WriteLine(" frs_end: (TR)" + frs_end[0] );
+            Console.WriteLine("(TR)_model_prep" + frms[0] );
+            Console.WriteLine("(TR)_real" + frs_end[0] );
 
 
         }
@@ -2972,10 +2978,10 @@ namespace opengl3
         void load_3d_model_robot_pulse()
         {
             var color_skin = new Color3d_GL(213 / 255f, 172 / 255f, 129 / 255f);
-            var scan_stl_orig1 = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
-            GL1.add_buff_gl(scan_stl_orig1.mesh, color_skin, scan_stl_orig1.normale, PrimitiveType.Triangles, "scan");
-            var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
-            GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
+           // var scan_stl_orig1 = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+           // GL1.add_buff_gl(scan_stl_orig1.mesh, color_skin, scan_stl_orig1.normale, PrimitiveType.Triangles, "scan");
+          //  var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+          //  GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
             
 
             var color_arm = Color3d_GL.black();
@@ -3014,7 +3020,7 @@ namespace opengl3
 
             ms[6] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 180, 180)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
 
-            ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, -90)) * UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
 
             GL1.buffersGl.setMatrobj("ax_0", 0, ms[0]);
             GL1.buffersGl.setMatrobj("ax_1", 0, ms[1]);
@@ -3174,33 +3180,41 @@ namespace opengl3
             var solv = RobotFrame.comp_inv_kinem_priv(new RobotFrame(mf).frame, new int[] { 1, 1, 1 });
             set_conf_robot_kuka(solv);
         }
-        public void set_pos_robot_pulse(RobotFrame rf, RobotFrame tool = null, RobotFrame model = null)
+        public void set_pos_robot_pulse(RobotFrame rf, RobotFrame tool = null, RobotFrame model = null,bool q = false)
         {
-            var mr = rf.getMatrix();
-            var mt = eye_matr(4);
-            var mm = eye_matr(4);
-            if (tool != null) mt = tool.getMatrix().Clone();
-            if (model != null) mm = model.getMatrix();
-            // Console.WriteLine(rf.ToStr());
-            var tool_inv = mt.Clone();
-            var model_inv = mm.Clone();
+            if(q)
+            {
+                set_conf_robot_pulse(rf.q);
+            }
+            else
+            {
+                var mr = rf.getMatrix();
+                var mt = eye_matr(4);
+                var mm = eye_matr(4);
+                if (tool != null) mt = tool.getMatrix().Clone();
+                if (model != null) mm = model.getMatrix();
+                // Console.WriteLine(rf.ToStr());
+                var tool_inv = mt.Clone();
+                var model_inv = mm.Clone();
 
-            CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
-            CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
-            /*prin.t(" model_inv");
-            prin.t(model_inv);
-            prin.t("mr");
-            prin.t(mr);
-            prin.t("tool_inv");
-            prin.t(tool_inv);*/
-            var mf = model_inv * mr * tool_inv;
+                CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
+                CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
+                /*prin.t(" model_inv");
+                prin.t(model_inv);
+                prin.t("mr");
+                prin.t(mr);
+                prin.t("tool_inv");
+                prin.t(tool_inv);*/
+                var mf = model_inv * mr * tool_inv;
 
-            //prin.t("mf");
-            // prin.t(mf);
+                //prin.t("mf");
+                // prin.t(mf);
 
 
-            var solv = RobotFrame.comp_inv_kinem_priv(new RobotFrame(mf).frame, new int[] { 1, 1, 1 });
-            set_conf_robot_pulse(solv);
+                var solv = RobotFrame.comp_inv_kinem_priv(new RobotFrame(mf).frame, new int[] { 1, 1, 1 });
+                set_conf_robot_pulse(solv);
+            }
+            
         }
         void test_gen_traj(double c = 0)
         {
@@ -3388,13 +3402,13 @@ namespace opengl3
         public void set_pos_traj_robot_pulse(int i)
         {
             if (i < frames_rob.Count)
-                set_pos_robot_pulse(frames_rob[i]);
+                set_pos_robot_pulse(frames_rob[i],null,null,true);
             if (i % 3 == 0)
             {
                 //GL1.addFrame(frames_rob_end[i].getMatrix(), 10, "sdf");
             }
 
-            var tool = new RobotFrame(-170.93, 68.74, 48.09, 1.5511, 1.194616, 0.0).getMatrix();
+            var tool = tool_robot.getMatrix();
             var tool_inv = tool.Clone();
             CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
             var fr_e = frames_rob[i].getMatrix() * tool;
@@ -5987,7 +6001,7 @@ namespace opengl3
 
         private void but_start_anim_Click(object sender, EventArgs e)
         {
-            test_gen_traj(0);
+           // test_gen_traj(0);
             GL1.start_animation(frames_rob.Count-2, this);
 
             //test_gen_traj(0);
