@@ -29,6 +29,7 @@ using System.Net;
 using System.Drawing.Drawing2D;
 using Emgu.CV.Dnn;
 using Accord.Statistics.Kernels;
+using System.Net.Sockets;
 
 namespace opengl3
 {
@@ -105,13 +106,15 @@ namespace opengl3
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
         float markSize = 9.78f;
-       // Size chess_size = new Size(8, 9);
-         Size chess_size = new Size(6, 7);
+        //Size chess_size = new Size(8, 9);
+        Size chess_size = new Size(6, 7);
         Size chess_size_real = new Size(6, 7);
         StereoCameraCV stereocam = null;
         StereoCamera stereocam_scan = null;
         CameraCV cameraCVcommon;
         TCPclient con1;
+
+        UdpClient udp_client;
         private const float PI = 3.14159265358979f;
         private Size cameraSize = new Size(1280, 720);
         // private Size cameraSize = new Size(1280, 960);
@@ -2351,7 +2354,7 @@ namespace opengl3
             //GL1.addMesh(Polygon3d_GL.toMesh(ps_ob)[0], PrimitiveType.Triangles);
 
             //test_go_to_point_robot();
-            test_poses();
+            //test_poses();
             //load_3d_model_robot_pulse();
             
             
@@ -10154,7 +10157,46 @@ namespace opengl3
             if (turn > 7) turn = 0;
             but_cahge_robot_turn.Text  = "turn: " +turn.ToString();
         }
-        //void send_to_ard(TextBox textBox,)
+
+        private void but_connect_udp_Click(object sender, EventArgs e)
+        {
+            connect_udp();
+        }
+
+        private void but_send_udp_Click(object sender, EventArgs e)
+        {
+            var mes = Encoding.ASCII.GetBytes(textB_mes_udp_client.Text);
+            udp_client.SendAsync(mes, mes.Length);
+        }
+
+        void connect_udp()
+        {
+            udp_client = null;
+            GC.Collect();
+
+            udp_client = new UdpClient();
+            string ip = textB_ip_udp_client.Text;
+            var port_tcp = Convert.ToInt32(textB_port_udp_client.Text);
+            udp_client.Connect(ip,port_tcp);
+            tcp_thread = new Thread(recieve_udp);
+            tcp_thread.Start(udp_client);
+
+        }
+
+        void recieve_udp(object obj)
+        {
+            var con = (UdpClient)obj;
+            while (con.Available>0)
+            {
+                var res = con.ReceiveAsync().Result.ToString();
+                if (res != null)
+                {
+                    Console.WriteLine("udp res: " + res);
+                }
+                Thread.Sleep(2);
+            }
+        }
+
     }
 }
 

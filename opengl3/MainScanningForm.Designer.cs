@@ -83,6 +83,14 @@ namespace opengl3
             this.tb_print_vel = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.but_connect_udp = new System.Windows.Forms.Button();
+            this.but_send_udp = new System.Windows.Forms.Button();
+            this.textB_mes_udp_client = new System.Windows.Forms.TextBox();
+            this.label118 = new System.Windows.Forms.Label();
+            this.label117 = new System.Windows.Forms.Label();
+            this.label116 = new System.Windows.Forms.Label();
+            this.textB_port_udp_client = new System.Windows.Forms.TextBox();
+            this.textB_ip_udp_client = new System.Windows.Forms.TextBox();
             this.label45 = new System.Windows.Forms.Label();
             this.trackBar11 = new System.Windows.Forms.TrackBar();
             this.label46 = new System.Windows.Forms.Label();
@@ -670,6 +678,7 @@ namespace opengl3
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1384,6 +1393,14 @@ namespace opengl3
             // 
             // tabPage10
             // 
+            this.tabPage10.Controls.Add(this.but_connect_udp);
+            this.tabPage10.Controls.Add(this.but_send_udp);
+            this.tabPage10.Controls.Add(this.textB_mes_udp_client);
+            this.tabPage10.Controls.Add(this.label118);
+            this.tabPage10.Controls.Add(this.label117);
+            this.tabPage10.Controls.Add(this.label116);
+            this.tabPage10.Controls.Add(this.textB_port_udp_client);
+            this.tabPage10.Controls.Add(this.textB_ip_udp_client);
             this.tabPage10.Controls.Add(this.label45);
             this.tabPage10.Controls.Add(this.trackBar11);
             this.tabPage10.Controls.Add(this.label46);
@@ -1411,6 +1428,79 @@ namespace opengl3
             this.tabPage10.TabIndex = 0;
             this.tabPage10.Text = "Отладка";
             this.tabPage10.UseVisualStyleBackColor = true;
+            // 
+            // but_connect_udp
+            // 
+            this.but_connect_udp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_connect_udp.Location = new System.Drawing.Point(571, 124);
+            this.but_connect_udp.Name = "but_connect_udp";
+            this.but_connect_udp.Size = new System.Drawing.Size(109, 69);
+            this.but_connect_udp.TabIndex = 149;
+            this.but_connect_udp.Text = "Подключиться udp";
+            this.but_connect_udp.UseVisualStyleBackColor = true;
+            this.but_connect_udp.Click += new System.EventHandler(this.but_connect_udp_Click);
+            // 
+            // but_send_udp
+            // 
+            this.but_send_udp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_send_udp.Location = new System.Drawing.Point(571, 199);
+            this.but_send_udp.Name = "but_send_udp";
+            this.but_send_udp.Size = new System.Drawing.Size(109, 69);
+            this.but_send_udp.TabIndex = 148;
+            this.but_send_udp.Text = "Отправить udp";
+            this.but_send_udp.UseVisualStyleBackColor = true;
+            this.but_send_udp.Click += new System.EventHandler(this.but_send_udp_Click);
+            // 
+            // textB_mes_udp_client
+            // 
+            this.textB_mes_udp_client.Location = new System.Drawing.Point(363, 218);
+            this.textB_mes_udp_client.Name = "textB_mes_udp_client";
+            this.textB_mes_udp_client.Size = new System.Drawing.Size(202, 26);
+            this.textB_mes_udp_client.TabIndex = 141;
+            this.textB_mes_udp_client.Text = "test";
+            // 
+            // label118
+            // 
+            this.label118.AutoSize = true;
+            this.label118.Location = new System.Drawing.Point(349, 8);
+            this.label118.Name = "label118";
+            this.label118.Size = new System.Drawing.Size(71, 20);
+            this.label118.TabIndex = 140;
+            this.label118.Text = "Test udp";
+            // 
+            // label117
+            // 
+            this.label117.AutoSize = true;
+            this.label117.Location = new System.Drawing.Point(584, 29);
+            this.label117.Name = "label117";
+            this.label117.Size = new System.Drawing.Size(37, 20);
+            this.label117.TabIndex = 139;
+            this.label117.Text = "port";
+            // 
+            // label116
+            // 
+            this.label116.AutoSize = true;
+            this.label116.Location = new System.Drawing.Point(359, 29);
+            this.label116.Name = "label116";
+            this.label116.Size = new System.Drawing.Size(24, 20);
+            this.label116.TabIndex = 138;
+            this.label116.Text = "IP";
+            // 
+            // textB_port_udp_client
+            // 
+            this.textB_port_udp_client.Location = new System.Drawing.Point(588, 52);
+            this.textB_port_udp_client.Name = "textB_port_udp_client";
+            this.textB_port_udp_client.Size = new System.Drawing.Size(104, 26);
+            this.textB_port_udp_client.TabIndex = 137;
+            this.textB_port_udp_client.Text = "8888";
+            // 
+            // textB_ip_udp_client
+            // 
+            this.textB_ip_udp_client.Location = new System.Drawing.Point(363, 52);
+            this.textB_ip_udp_client.Name = "textB_ip_udp_client";
+            this.textB_ip_udp_client.Size = new System.Drawing.Size(202, 26);
+            this.textB_ip_udp_client.TabIndex = 136;
+            this.textB_ip_udp_client.Text = "192.168.10.212";
             // 
             // label45
             // 
@@ -6131,10 +6221,10 @@ namespace opengl3
             this.tabPage8.Controls.Add(this.but_scan_virt);
             this.tabPage8.Controls.Add(this.imBox_disparity);
             this.tabPage8.Controls.Add(this.imBox_3dDebug);
-            this.tabPage8.Location = new System.Drawing.Point(4, 25);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(869, 962);
+            this.tabPage8.Size = new System.Drawing.Size(869, 965);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "mat_gl";
             this.tabPage8.UseVisualStyleBackColor = true;
@@ -7795,6 +7885,11 @@ namespace opengl3
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -8593,6 +8688,15 @@ namespace opengl3
         private System.Windows.Forms.Button but_pos_z_down;
         private System.Windows.Forms.Button but_pos_z_up;
         private System.Windows.Forms.Button but_cahge_robot_turn;
+        private System.Windows.Forms.Label label117;
+        private System.Windows.Forms.Label label116;
+        private System.Windows.Forms.TextBox textB_port_udp_client;
+        private System.Windows.Forms.TextBox textB_ip_udp_client;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.Label label118;
+        private System.Windows.Forms.TextBox textB_mes_udp_client;
+        private System.Windows.Forms.Button but_send_udp;
+        private System.Windows.Forms.Button but_connect_udp;
     }
 }
 
