@@ -679,6 +679,7 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.but_disconnect_udp = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1393,6 +1394,7 @@ namespace opengl3
             // 
             // tabPage10
             // 
+            this.tabPage10.Controls.Add(this.but_disconnect_udp);
             this.tabPage10.Controls.Add(this.but_connect_udp);
             this.tabPage10.Controls.Add(this.but_send_udp);
             this.tabPage10.Controls.Add(this.textB_mes_udp_client);
@@ -7890,6 +7892,17 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // but_disconnect_udp
+            // 
+            this.but_disconnect_udp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_disconnect_udp.Location = new System.Drawing.Point(456, 124);
+            this.but_disconnect_udp.Name = "but_disconnect_udp";
+            this.but_disconnect_udp.Size = new System.Drawing.Size(109, 69);
+            this.but_disconnect_udp.TabIndex = 150;
+            this.but_disconnect_udp.Text = "Отключиться udp";
+            this.but_disconnect_udp.UseVisualStyleBackColor = true;
+            this.but_disconnect_udp.Click += new System.EventHandler(this.but_disconnect_udp_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -8697,6 +8710,7 @@ namespace opengl3
         private System.Windows.Forms.TextBox textB_mes_udp_client;
         private System.Windows.Forms.Button but_send_udp;
         private System.Windows.Forms.Button but_connect_udp;
+        private System.Windows.Forms.Button but_disconnect_udp;
     }
 }
 

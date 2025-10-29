@@ -54,6 +54,7 @@ namespace opengl3
         bool visualise_compens = false;
         bool scanning_status = false;
         Thread tcp_thread = null;
+        Thread udp_thread = null;
         Thread ard_acust_thread = null;
         MovmentCompensation movm = null;
         List<PosTimestamp> timestamps = new List<PosTimestamp>();
@@ -10178,25 +10179,34 @@ namespace opengl3
             string ip = textB_ip_udp_client.Text;
             var port_tcp = Convert.ToInt32(textB_port_udp_client.Text);
             udp_client.Connect(ip,port_tcp);
-            tcp_thread = new Thread(recieve_udp);
-            tcp_thread.Start(udp_client);
+            udp_thread = new Thread(recieve_udp);
+            udp_thread.Start(udp_client);
 
         }
 
         void recieve_udp(object obj)
         {
-            var con = (UdpClient)obj;
-            while (con.Available>0)
+            while (udp_client!=null)
             {
-                var res = con.ReceiveAsync().Result.ToString();
-                if (res != null)
+               // Console.WriteLine("recive udp");
+                var con = (UdpClient)obj;
+                while (con.Available > 0)
                 {
-                    Console.WriteLine("udp res: " + res);
+                    var res = con.ReceiveAsync().Result.ToString();
+                    if (res != null)
+                    {
+                        Console.WriteLine("udp res: " + res);
+                    }
+                    Thread.Sleep(2);
                 }
-                Thread.Sleep(2);
             }
+            
         }
 
+        private void but_disconnect_udp_Click(object sender, EventArgs e)
+        {
+            udp_client = null;
+        }
     }
 }
 
