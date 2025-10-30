@@ -83,6 +83,7 @@ namespace opengl3
             this.tb_print_vel = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.but_disconnect_udp = new System.Windows.Forms.Button();
             this.but_connect_udp = new System.Windows.Forms.Button();
             this.but_send_udp = new System.Windows.Forms.Button();
             this.textB_mes_udp_client = new System.Windows.Forms.TextBox();
@@ -679,7 +680,7 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.but_disconnect_udp = new System.Windows.Forms.Button();
+            this.label_udp_state = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1394,6 +1395,7 @@ namespace opengl3
             // 
             // tabPage10
             // 
+            this.tabPage10.Controls.Add(this.label_udp_state);
             this.tabPage10.Controls.Add(this.but_disconnect_udp);
             this.tabPage10.Controls.Add(this.but_connect_udp);
             this.tabPage10.Controls.Add(this.but_send_udp);
@@ -1430,6 +1432,17 @@ namespace opengl3
             this.tabPage10.TabIndex = 0;
             this.tabPage10.Text = "Отладка";
             this.tabPage10.UseVisualStyleBackColor = true;
+            // 
+            // but_disconnect_udp
+            // 
+            this.but_disconnect_udp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_disconnect_udp.Location = new System.Drawing.Point(456, 124);
+            this.but_disconnect_udp.Name = "but_disconnect_udp";
+            this.but_disconnect_udp.Size = new System.Drawing.Size(109, 69);
+            this.but_disconnect_udp.TabIndex = 150;
+            this.but_disconnect_udp.Text = "Отключиться udp";
+            this.but_disconnect_udp.UseVisualStyleBackColor = true;
+            this.but_disconnect_udp.Click += new System.EventHandler(this.but_disconnect_udp_Click);
             // 
             // but_connect_udp
             // 
@@ -1573,7 +1586,7 @@ namespace opengl3
             // trackBar14
             // 
             this.trackBar14.AccessibleName = "7";
-            this.trackBar14.Location = new System.Drawing.Point(124, 352);
+            this.trackBar14.Location = new System.Drawing.Point(124, 65);
             this.trackBar14.Maximum = 20;
             this.trackBar14.Name = "trackBar14";
             this.trackBar14.Size = new System.Drawing.Size(188, 45);
@@ -1592,7 +1605,7 @@ namespace opengl3
             // trackBar15
             // 
             this.trackBar15.AccessibleName = "6";
-            this.trackBar15.Location = new System.Drawing.Point(124, 301);
+            this.trackBar15.Location = new System.Drawing.Point(53, 75);
             this.trackBar15.Maximum = 20;
             this.trackBar15.Name = "trackBar15";
             this.trackBar15.Size = new System.Drawing.Size(188, 45);
@@ -1602,7 +1615,7 @@ namespace opengl3
             // label50
             // 
             this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(11, 313);
+            this.label50.Location = new System.Drawing.Point(-8, 97);
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(110, 20);
             this.label50.TabIndex = 125;
@@ -7892,16 +7905,14 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // but_disconnect_udp
+            // label_udp_state
             // 
-            this.but_disconnect_udp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_disconnect_udp.Location = new System.Drawing.Point(456, 124);
-            this.but_disconnect_udp.Name = "but_disconnect_udp";
-            this.but_disconnect_udp.Size = new System.Drawing.Size(109, 69);
-            this.but_disconnect_udp.TabIndex = 150;
-            this.but_disconnect_udp.Text = "Отключиться udp";
-            this.but_disconnect_udp.UseVisualStyleBackColor = true;
-            this.but_disconnect_udp.Click += new System.EventHandler(this.but_disconnect_udp_Click);
+            this.label_udp_state.AutoSize = true;
+            this.label_udp_state.Location = new System.Drawing.Point(14, 333);
+            this.label_udp_state.Name = "label_udp_state";
+            this.label_udp_state.Size = new System.Drawing.Size(66, 20);
+            this.label_udp_state.TabIndex = 151;
+            this.label_udp_state.Text = "minDisp";
             // 
             // MainScanningForm
             // 
@@ -8711,6 +8722,7 @@ namespace opengl3
         private System.Windows.Forms.Button but_send_udp;
         private System.Windows.Forms.Button but_connect_udp;
         private System.Windows.Forms.Button but_disconnect_udp;
+        private System.Windows.Forms.Label label_udp_state;
     }
 }
 

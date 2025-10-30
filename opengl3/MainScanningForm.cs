@@ -30,6 +30,7 @@ using System.Drawing.Drawing2D;
 using Emgu.CV.Dnn;
 using Accord.Statistics.Kernels;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 
 namespace opengl3
 {
@@ -116,6 +117,7 @@ namespace opengl3
         TCPclient con1;
 
         UdpClient udp_client;
+        IPEndPoint udp_addres_1;
         private const float PI = 3.14159265358979f;
         private Size cameraSize = new Size(1280, 720);
         // private Size cameraSize = new Size(1280, 960);
@@ -10177,30 +10179,62 @@ namespace opengl3
 
             udp_client = new UdpClient();
             string ip = textB_ip_udp_client.Text;
-            var port_tcp = Convert.ToInt32(textB_port_udp_client.Text);
-            udp_client.Connect(ip,port_tcp);
+            var port_udp = Convert.ToInt32(textB_port_udp_client.Text);
+            udp_addres_1 = new IPEndPoint(parse_ip(ip), port_udp);
+            udp_client.Connect(udp_addres_1);
             udp_thread = new Thread(recieve_udp);
             udp_thread.Start(udp_client);
-
+           
+    
         }
+        public static IPAddress parse_ip(string ip)
+        {
+            if (ip == null) return null;
+            if (ip.Length < 3) return null;
+            if (ip.Count(c => c == '.') != 3) return null;
+            
+            var cells = ip.Split('.');
+            var bytes = new byte[] { 0, 0, 0, 0 };
+            for(int i=0;i<cells.Length;i++)
+            {
+                int cur_cell = -1;
+                if (int.TryParse( cells[i],out cur_cell))
+                {
+                    if(  !(cur_cell>=0 && cur_cell<256)  )
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        bytes[i] =(byte) cur_cell;
+                    }
+                }
+            }
+            return new IPAddress(bytes);
+        }
+        
 
         void recieve_udp(object obj)
         {
-            while (udp_client!=null)
+            while (obj != null)
             {
                // Console.WriteLine("recive udp");
                 var con = (UdpClient)obj;
                 while (con.Available > 0)
                 {
-                    var res = con.ReceiveAsync().Result.ToString();
+
+                    
+                    var res = con.Receive(ref udp_addres_1);
+
+                    var mes = Encoding.ASCII.GetString(res);
                     if (res != null)
                     {
-                        Console.WriteLine("udp res: " + res);
+                        //Console.WriteLine("udp res: " + mes);
+                        label_udp_state.BeginInvoke((MethodInvoker)(() => label_udp_state.Text = mes));
                     }
                     Thread.Sleep(2);
                 }
-            }
-            
+            }            
         }
 
         private void but_disconnect_udp_Click(object sender, EventArgs e)
