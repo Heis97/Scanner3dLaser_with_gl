@@ -1358,7 +1358,7 @@ namespace opengl3
                 stereocam_scan = stereo_cam;
             }
             chess_size = new Size(6, 7);
-            var marksize = 10f;// 9.6f;// 10f;
+            var marksize = 9.78f;// 9.6f;// 10f;
             var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, scanner_config.rotate_cam);
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh, chess_size, marksize);
@@ -2190,10 +2190,10 @@ namespace opengl3
             var h = send.Height;
             var d = 1000;
             var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
-            GL1.buffersGl.setTranspobj(fr, 0.0f);
+            //GL1.buffersGl.setTranspobj(fr, 0.0f);
             
 
-            generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
+            //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
            
             //GL1.SortObj();
             int monitor_num = 1;
@@ -7608,7 +7608,8 @@ namespace opengl3
             if (obj_3d != null)
             {
                 selected_obj = obj_3d;
-                traj_config.ang_x = scanner.stereoCamera.cur_pos.A;               
+
+                if (robotType == RobotFrame.RobotType.KUKA) traj_config.ang_x = scanner.stereoCamera.cur_pos.A;               
                 traj_config.line_width =1* Convert.ToDouble(tb_scan_line_width_d.Text);
                 traj_config.dz = Convert.ToDouble(tb_scan_ext_line_h.Text);
                 traj_config.Step = Convert.ToDouble(tb_scan_ext_grid_d.Text);
@@ -8398,9 +8399,9 @@ namespace opengl3
             //windowsTabs.Controls.Remove(tabPage_tube);
 
 
-            //this.tabP_connect.Controls.Add(this.imageBox1);
-            //this.tabP_connect.Controls.Add(this.imageBox2);
-           // this.tabP_scanning_printing.Controls.Add(this.glControl1);
+            this.tabP_connect.Controls.Add(this.imageBox1);
+            this.tabP_connect.Controls.Add(this.imageBox2);
+            this.tabP_scanning_printing.Controls.Add(this.glControl1);
           
             
             add_buttons_rob_contr();
@@ -8773,7 +8774,7 @@ namespace opengl3
         }
         private void but_con_set_rob_con_Click(object sender, EventArgs e)
         {
-            connect_robot(RobotFrame.RobotType.KUKA);
+            connect_robot(current_robot);
         }
         //-----------------EXT--------------------
         private void but_con_ext_disp_down_Click(object sender, EventArgs e)
@@ -9011,7 +9012,7 @@ namespace opengl3
             {
                 //traj_config.off_z = 0;
             }
-            debugBox.Text = gen_traj_rob(RobotFrame.RobotType.KUKA,null,scan_i);
+            debugBox.Text = gen_traj_rob(current_robot,null,scan_i);
         }
 
         private void but_scan_simp_start_print_Click(object sender, EventArgs e)

@@ -83,6 +83,7 @@ namespace opengl3
             this.tb_print_vel = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.label_udp_state = new System.Windows.Forms.Label();
             this.but_disconnect_udp = new System.Windows.Forms.Button();
             this.but_connect_udp = new System.Windows.Forms.Button();
             this.but_send_udp = new System.Windows.Forms.Button();
@@ -680,7 +681,6 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.label_udp_state = new System.Windows.Forms.Label();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1432,6 +1432,15 @@ namespace opengl3
             this.tabPage10.TabIndex = 0;
             this.tabPage10.Text = "Отладка";
             this.tabPage10.UseVisualStyleBackColor = true;
+            // 
+            // label_udp_state
+            // 
+            this.label_udp_state.AutoSize = true;
+            this.label_udp_state.Location = new System.Drawing.Point(14, 333);
+            this.label_udp_state.Name = "label_udp_state";
+            this.label_udp_state.Size = new System.Drawing.Size(66, 20);
+            this.label_udp_state.TabIndex = 151;
+            this.label_udp_state.Text = "minDisp";
             // 
             // but_disconnect_udp
             // 
@@ -6858,7 +6867,7 @@ namespace opengl3
             this.but_con_set_rob_con.Name = "but_con_set_rob_con";
             this.but_con_set_rob_con.Size = new System.Drawing.Size(707, 114);
             this.but_con_set_rob_con.TabIndex = 1;
-            this.but_con_set_rob_con.Text = "Подключиться к роботической системе\r\nKUKA LBR Med 14 R820";
+            this.but_con_set_rob_con.Text = "Подключиться к роботической системе\r\n";
             this.but_con_set_rob_con.UseVisualStyleBackColor = false;
             this.but_con_set_rob_con.Click += new System.EventHandler(this.but_con_set_rob_con_Click);
             // 
@@ -6985,7 +6994,7 @@ namespace opengl3
             this.but_con_ext_rob_discon.Name = "but_con_ext_rob_discon";
             this.but_con_ext_rob_discon.Size = new System.Drawing.Size(420, 74);
             this.but_con_ext_rob_discon.TabIndex = 3;
-            this.but_con_ext_rob_discon.Text = "Отключиться от роботической системы\r\nKUKA LBR Med 14 R820\r\n";
+            this.but_con_ext_rob_discon.Text = "Отключиться от роботической системы\r\n";
             this.but_con_ext_rob_discon.UseVisualStyleBackColor = false;
             this.but_con_ext_rob_discon.Click += new System.EventHandler(this.rob_discon_Click);
             // 
@@ -7000,7 +7009,7 @@ namespace opengl3
             this.but_con_ext_rob_con.Name = "but_con_ext_rob_con";
             this.but_con_ext_rob_con.Size = new System.Drawing.Size(420, 74);
             this.but_con_ext_rob_con.TabIndex = 2;
-            this.but_con_ext_rob_con.Text = "Подключиться к роботической системе\r\nKUKA LBR Med 14 R820";
+            this.but_con_ext_rob_con.Text = "Подключиться к роботической системе";
             this.but_con_ext_rob_con.UseVisualStyleBackColor = false;
             this.but_con_ext_rob_con.Click += new System.EventHandler(this.but_rob_con_sc_Click);
             // 
@@ -7904,15 +7913,6 @@ namespace opengl3
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // label_udp_state
-            // 
-            this.label_udp_state.AutoSize = true;
-            this.label_udp_state.Location = new System.Drawing.Point(14, 333);
-            this.label_udp_state.Name = "label_udp_state";
-            this.label_udp_state.Size = new System.Drawing.Size(66, 20);
-            this.label_udp_state.TabIndex = 151;
-            this.label_udp_state.Text = "minDisp";
             // 
             // MainScanningForm
             // 
