@@ -92,7 +92,7 @@ namespace opengl3
         {
 
             //Console.WriteLine("send: "+val+" " + var);
-           
+           bool check_feedback = false;
                 
             string Mes1 = "0";
             string Mes2 = "0";
@@ -142,21 +142,25 @@ namespace opengl3
                     this.serialPort.WriteLine(Mes1);
                     Thread.Sleep(5);
                     var resp = reseav();
-                    //Console.WriteLine(resp);
-                    while(!check_mes(resp,val,var,adr) && count<count_max)
-                    {
-                        this.serialPort.WriteLine(Mes1);
-                        resp = reseav();
-                        //Console.WriteLine(resp);
-                        Thread.Sleep(2);
-                        count++;
-                       
-                    }
-                        //Console.WriteLine("missimg_connect: " + count);
-                        if (count>count_max-2)
+                        if(check_feedback)
                         {
-                            Console.WriteLine("connection problem");
+                            while (!check_mes(resp, val, var, adr) && count < count_max)
+                            {
+                                this.serialPort.WriteLine(Mes1);
+                                resp = reseav();
+                                //Console.WriteLine(resp);
+                                Thread.Sleep(2);
+                                count++;
+
+                            }
+                            //Console.WriteLine("missimg_connect: " + count);
+                            if (count > count_max - 2)
+                            {
+                                Console.WriteLine("connection problem");
+                            }
                         }
+                    //Console.WriteLine(resp);
+                   
 
 
 

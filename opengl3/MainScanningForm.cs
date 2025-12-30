@@ -7385,6 +7385,27 @@ namespace opengl3
         private void but_open_Click(object sender, EventArgs e)
         {
             laserLine = new LaserLine(portArd);
+            ard_acust_thread = new Thread(ard_cur_pos);
+            ard_acust_thread.Start();
+        }
+
+        void ard_cur_pos()
+        {
+            while(true)
+            {
+                if (laserLine != null)
+                {
+                    var ret = laserLine.parse_pos_z();
+                    laserLine.test();
+                    if (ret[0]>=0)
+                    {
+                        label_scan_ready.BeginInvoke((MethodInvoker)(() => label_tens_cur.Text = ret[0] + " " + ret[1]));
+                    }
+                   
+
+                }
+            }
+            
         }
 
         private void but_laserOn_Click(object sender, EventArgs e)
@@ -10241,6 +10262,21 @@ namespace opengl3
         private void but_disconnect_udp_Click(object sender, EventArgs e)
         {
             udp_client = null;
+        }
+
+        private void button_tens_mesur_on_Click(object sender, EventArgs e)
+        {
+            laserLine.send(1, 51);
+        }
+
+        private void buttontens_mesur_off_Click(object sender, EventArgs e)
+        {
+            laserLine.send(0, 51);
+        }
+
+        private void button_set_force_dest_Click(object sender, EventArgs e)
+        {
+            laserLine.send(Convert.ToInt32(textBox_target_tens_val.Text) , 50);
         }
     }
 }

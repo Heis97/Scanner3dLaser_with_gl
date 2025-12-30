@@ -601,6 +601,10 @@ namespace opengl3
             this.but_con_ext_rob_discon = new System.Windows.Forms.Button();
             this.but_con_ext_rob_con = new System.Windows.Forms.Button();
             this.groupBox_disp_contr_ext = new System.Windows.Forms.GroupBox();
+            this.textBox_target_tens_val = new System.Windows.Forms.TextBox();
+            this.buttontens_mesur_off = new System.Windows.Forms.Button();
+            this.button_tens_mesur_on = new System.Windows.Forms.Button();
+            this.label_tens_cur = new System.Windows.Forms.Label();
             this.but_pos_z_down = new System.Windows.Forms.Button();
             this.but_pos_z_up = new System.Windows.Forms.Button();
             this.label99 = new System.Windows.Forms.Label();
@@ -681,6 +685,7 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.button_set_force_dest = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -7016,6 +7021,11 @@ namespace opengl3
             // groupBox_disp_contr_ext
             // 
             this.groupBox_disp_contr_ext.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.groupBox_disp_contr_ext.Controls.Add(this.button_set_force_dest);
+            this.groupBox_disp_contr_ext.Controls.Add(this.textBox_target_tens_val);
+            this.groupBox_disp_contr_ext.Controls.Add(this.buttontens_mesur_off);
+            this.groupBox_disp_contr_ext.Controls.Add(this.button_tens_mesur_on);
+            this.groupBox_disp_contr_ext.Controls.Add(this.label_tens_cur);
             this.groupBox_disp_contr_ext.Controls.Add(this.but_pos_z_down);
             this.groupBox_disp_contr_ext.Controls.Add(this.but_pos_z_up);
             this.groupBox_disp_contr_ext.Controls.Add(this.label99);
@@ -7043,6 +7053,56 @@ namespace opengl3
             this.groupBox_disp_contr_ext.TabIndex = 1;
             this.groupBox_disp_contr_ext.TabStop = false;
             this.groupBox_disp_contr_ext.Text = "Управление диспенсером и линейным модулем";
+            // 
+            // textBox_target_tens_val
+            // 
+            this.textBox_target_tens_val.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F);
+            this.textBox_target_tens_val.Location = new System.Drawing.Point(475, 496);
+            this.textBox_target_tens_val.Name = "textBox_target_tens_val";
+            this.textBox_target_tens_val.Size = new System.Drawing.Size(79, 38);
+            this.textBox_target_tens_val.TabIndex = 36;
+            this.textBox_target_tens_val.Text = "10";
+            this.textBox_target_tens_val.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // buttontens_mesur_off
+            // 
+            this.buttontens_mesur_off.BackColor = System.Drawing.Color.SteelBlue;
+            this.buttontens_mesur_off.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.buttontens_mesur_off.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttontens_mesur_off.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttontens_mesur_off.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.buttontens_mesur_off.Location = new System.Drawing.Point(656, 403);
+            this.buttontens_mesur_off.Name = "buttontens_mesur_off";
+            this.buttontens_mesur_off.Size = new System.Drawing.Size(168, 74);
+            this.buttontens_mesur_off.TabIndex = 35;
+            this.buttontens_mesur_off.Text = "Выключить";
+            this.buttontens_mesur_off.UseVisualStyleBackColor = false;
+            this.buttontens_mesur_off.Click += new System.EventHandler(this.buttontens_mesur_off_Click);
+            // 
+            // button_tens_mesur_on
+            // 
+            this.button_tens_mesur_on.BackColor = System.Drawing.Color.SteelBlue;
+            this.button_tens_mesur_on.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.button_tens_mesur_on.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_tens_mesur_on.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_tens_mesur_on.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.button_tens_mesur_on.Location = new System.Drawing.Point(475, 403);
+            this.button_tens_mesur_on.Name = "button_tens_mesur_on";
+            this.button_tens_mesur_on.Size = new System.Drawing.Size(175, 74);
+            this.button_tens_mesur_on.TabIndex = 34;
+            this.button_tens_mesur_on.Text = "Учёт силы";
+            this.button_tens_mesur_on.UseVisualStyleBackColor = false;
+            this.button_tens_mesur_on.Click += new System.EventHandler(this.button_tens_mesur_on_Click);
+            // 
+            // label_tens_cur
+            // 
+            this.label_tens_cur.AutoSize = true;
+            this.label_tens_cur.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label_tens_cur.Location = new System.Drawing.Point(836, 345);
+            this.label_tens_cur.Name = "label_tens_cur";
+            this.label_tens_cur.Size = new System.Drawing.Size(31, 20);
+            this.label_tens_cur.TabIndex = 33;
+            this.label_tens_cur.Text = "мм";
             // 
             // but_pos_z_down
             // 
@@ -7914,6 +7974,21 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // button_set_force_dest
+            // 
+            this.button_set_force_dest.BackColor = System.Drawing.Color.SteelBlue;
+            this.button_set_force_dest.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.button_set_force_dest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_set_force_dest.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_set_force_dest.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.button_set_force_dest.Location = new System.Drawing.Point(560, 483);
+            this.button_set_force_dest.Name = "button_set_force_dest";
+            this.button_set_force_dest.Size = new System.Drawing.Size(175, 74);
+            this.button_set_force_dest.TabIndex = 37;
+            this.button_set_force_dest.Text = "Установить силу";
+            this.button_set_force_dest.UseVisualStyleBackColor = false;
+            this.button_set_force_dest.Click += new System.EventHandler(this.button_set_force_dest_Click);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -8723,6 +8798,11 @@ namespace opengl3
         private System.Windows.Forms.Button but_connect_udp;
         private System.Windows.Forms.Button but_disconnect_udp;
         private System.Windows.Forms.Label label_udp_state;
+        private System.Windows.Forms.Label label_tens_cur;
+        private System.Windows.Forms.Button buttontens_mesur_off;
+        private System.Windows.Forms.Button button_tens_mesur_on;
+        private System.Windows.Forms.TextBox textBox_target_tens_val;
+        private System.Windows.Forms.Button button_set_force_dest;
     }
 }
 
