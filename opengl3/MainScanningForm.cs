@@ -10278,6 +10278,11 @@ namespace opengl3
         {
             laserLine.send(Convert.ToInt32(textBox_target_tens_val.Text) , 50);
         }
+
+        private void button_drill_pwm_Click(object sender, EventArgs e)
+        {
+            laserLine.send(Convert.ToInt32(textBox_drill_pwm.Text), 52);
+        }
     }
 }
 
