@@ -21,7 +21,7 @@ namespace opengl3
             serialPort.DtrEnable = true;
         }
 
-        int calcSum(string command)
+        static public int calcSum(string command)
         {
             int sum = 0;
             foreach (var symb in command) sum ^= symb;

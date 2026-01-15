@@ -55,7 +55,7 @@ namespace opengl3
         bool visualise_compens = false;
         bool scanning_status = false;
         Thread tcp_thread = null;
-        Thread udp_thread = null;
+        
         Thread ard_acust_thread = null;
         MovmentCompensation movm = null;
         List<PosTimestamp> timestamps = new List<PosTimestamp>();
@@ -116,8 +116,7 @@ namespace opengl3
         CameraCV cameraCVcommon;
         TCPclient con1;
 
-        UdpClient udp_client;
-        IPEndPoint udp_addres_1;
+        
         private const float PI = 3.14159265358979f;
         private Size cameraSize = new Size(1280, 720);
         // private Size cameraSize = new Size(1280, 960);
@@ -10182,12 +10181,27 @@ namespace opengl3
             if (turn > 7) turn = 0;
             but_cahge_robot_turn.Text  = "turn: " +turn.ToString();
         }
+        UdpClient udp_client;
+        IPEndPoint udp_addres_1;
+        Thread udp_thread = null;
 
+        UdpClient udp_client2;
+        IPEndPoint udp_addres_2;
+        Thread udp_thread_2 = null;
         private void but_connect_udp_Click(object sender, EventArgs e)
         {
             connect_udp();
         }
+        private void but_send_udp_2_Click(object sender, EventArgs e)
+        {
+            var mes = Encoding.ASCII.GetBytes(textB_mes_udp_client_2.Text);
+            udp_client2.SendAsync(mes, mes.Length);
+        }
 
+        private void but_connect_udp_2_Click(object sender, EventArgs e)
+        {
+            connect_udp2();
+        }
         private void but_send_udp_Click(object sender, EventArgs e)
         {
             var mes = Encoding.ASCII.GetBytes(textB_mes_udp_client.Text);
@@ -10209,6 +10223,23 @@ namespace opengl3
            
     
         }
+
+        void connect_udp2()
+        {
+            udp_client2 = null;
+            GC.Collect();
+
+            udp_client2 = new UdpClient();
+            string ip = textB_ip_udp_client_2.Text;
+            var port_udp = Convert.ToInt32(textB_port_udp_client_2.Text);
+            udp_addres_2 = new IPEndPoint(parse_ip(ip), port_udp);
+            udp_client2.Connect(udp_addres_2);
+            udp_thread_2 = new Thread(recieve_udp2);
+            udp_thread_2.Start(udp_client2);
+
+
+        }
+
         public static IPAddress parse_ip(string ip)
         {
             if (ip == null) return null;
@@ -10238,6 +10269,7 @@ namespace opengl3
 
         void recieve_udp(object obj)
         {
+            int count_ins = 0;
             while (obj != null)
             {
                // Console.WriteLine("recive udp");
@@ -10249,21 +10281,70 @@ namespace opengl3
                     var res = con.Receive(ref udp_addres_1);
 
                     var mes = Encoding.ASCII.GetString(res);
+
+                    var vals = mes.Trim().Split(' ');
+
                     if (res != null)
                     {
                         //Console.WriteLine("udp res: " + mes);
-                        label_udp_state.BeginInvoke((MethodInvoker)(() => label_udp_state.Text = mes));
+                        label_udp_state_1.BeginInvoke((MethodInvoker)(() => label_udp_state_1.Text = mes));
+
+                        var com = "M584 U E" + count_ins;
+                        var command = "N" + count_ins.ToString() + " " + com;
+
+                        command += "*" + DeviceMarlin.calcSum(command).ToString() + "\n";
+                        var mes_out = Encoding.ASCII.GetBytes(command); count_ins++;
+                        udp_client.SendAsync(mes_out, mes_out.Length);
+
                     }
                     Thread.Sleep(2);
                 }
             }            
         }
 
+
+        void recieve_udp2(object obj)
+        {
+            int count_ins = 0;
+            while (obj != null)
+            {
+                // Console.WriteLine("recive udp");
+                var con = (UdpClient)obj;
+                while (con.Available > 0)
+                {
+
+
+                    var res = con.Receive(ref udp_addres_2);
+
+                    var mes = Encoding.ASCII.GetString(res);
+
+                    var vals = mes.Trim().Split(' ');
+
+                    if (res != null)
+                    {
+                        //Console.WriteLine("udp res: " + mes);
+                        label_udp_state_2.BeginInvoke((MethodInvoker)(() => label_udp_state_2.Text = mes));
+
+                        var com = "M585 F" + count_ins;
+                        var command = "N" + count_ins.ToString() + " " + com;
+
+                        command += "*" + DeviceMarlin.calcSum(command).ToString() + "\n";
+                        var mes_out = Encoding.ASCII.GetBytes(command); count_ins++;
+                        udp_client2.SendAsync(mes_out, mes_out.Length);
+
+                    }
+                    Thread.Sleep(2);
+                }
+            }
+        }
+
+
+
         private void but_disconnect_udp_Click(object sender, EventArgs e)
         {
             udp_client = null;
         }
-
+        //----------------------------------------------------------------------------
         private void button_tens_mesur_on_Click(object sender, EventArgs e)
         {
             laserLine.send(1, 51);
@@ -10283,6 +10364,8 @@ namespace opengl3
         {
             laserLine.send(Convert.ToInt32(textBox_drill_pwm.Text), 52);
         }
+
+        
     }
 }
 

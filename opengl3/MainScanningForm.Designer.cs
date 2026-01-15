@@ -83,17 +83,23 @@ namespace opengl3
             this.tb_print_vel = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage10 = new System.Windows.Forms.TabPage();
-            this.label_udp_state = new System.Windows.Forms.Label();
+            this.label_udp_state_2 = new System.Windows.Forms.Label();
+            this.but_connect_udp_2 = new System.Windows.Forms.Button();
+            this.but_send_udp_2 = new System.Windows.Forms.Button();
+            this.textB_mes_udp_client_2 = new System.Windows.Forms.TextBox();
+            this.label119 = new System.Windows.Forms.Label();
+            this.label120 = new System.Windows.Forms.Label();
+            this.textB_port_udp_client_2 = new System.Windows.Forms.TextBox();
+            this.textB_ip_udp_client_2 = new System.Windows.Forms.TextBox();
             this.but_disconnect_udp = new System.Windows.Forms.Button();
             this.but_connect_udp = new System.Windows.Forms.Button();
             this.but_send_udp = new System.Windows.Forms.Button();
             this.textB_mes_udp_client = new System.Windows.Forms.TextBox();
-            this.label118 = new System.Windows.Forms.Label();
+            this.label_udp_state_1 = new System.Windows.Forms.Label();
             this.label117 = new System.Windows.Forms.Label();
             this.label116 = new System.Windows.Forms.Label();
             this.textB_port_udp_client = new System.Windows.Forms.TextBox();
             this.textB_ip_udp_client = new System.Windows.Forms.TextBox();
-            this.label45 = new System.Windows.Forms.Label();
             this.trackBar11 = new System.Windows.Forms.TrackBar();
             this.label46 = new System.Windows.Forms.Label();
             this.trackBar12 = new System.Windows.Forms.TrackBar();
@@ -101,17 +107,11 @@ namespace opengl3
             this.trackBar13 = new System.Windows.Forms.TrackBar();
             this.label48 = new System.Windows.Forms.Label();
             this.trackBar14 = new System.Windows.Forms.TrackBar();
-            this.label49 = new System.Windows.Forms.Label();
             this.trackBar15 = new System.Windows.Forms.TrackBar();
-            this.label50 = new System.Windows.Forms.Label();
             this.trackBar16 = new System.Windows.Forms.TrackBar();
-            this.label51 = new System.Windows.Forms.Label();
             this.trackBar17 = new System.Windows.Forms.TrackBar();
-            this.label52 = new System.Windows.Forms.Label();
             this.trackBar18 = new System.Windows.Forms.TrackBar();
-            this.label53 = new System.Windows.Forms.Label();
             this.trackBar19 = new System.Windows.Forms.TrackBar();
-            this.label54 = new System.Windows.Forms.Label();
             this.trackBar20 = new System.Windows.Forms.TrackBar();
             this.tabPage11 = new System.Windows.Forms.TabPage();
             this.label89 = new System.Windows.Forms.Label();
@@ -601,6 +601,8 @@ namespace opengl3
             this.but_con_ext_rob_discon = new System.Windows.Forms.Button();
             this.but_con_ext_rob_con = new System.Windows.Forms.Button();
             this.groupBox_disp_contr_ext = new System.Windows.Forms.GroupBox();
+            this.button_drill_pwm = new System.Windows.Forms.Button();
+            this.textBox_drill_pwm = new System.Windows.Forms.TextBox();
             this.button_set_force_dest = new System.Windows.Forms.Button();
             this.textBox_target_tens_val = new System.Windows.Forms.TextBox();
             this.buttontens_mesur_off = new System.Windows.Forms.Button();
@@ -686,8 +688,6 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.button_drill_pwm = new System.Windows.Forms.Button();
-            this.textBox_drill_pwm = new System.Windows.Forms.TextBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1397,22 +1397,28 @@ namespace opengl3
             this.tabControl1.Location = new System.Drawing.Point(1183, 7);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(705, 399);
+            this.tabControl1.Size = new System.Drawing.Size(705, 392);
             this.tabControl1.TabIndex = 139;
             // 
             // tabPage10
             // 
-            this.tabPage10.Controls.Add(this.label_udp_state);
+            this.tabPage10.Controls.Add(this.label_udp_state_2);
+            this.tabPage10.Controls.Add(this.but_connect_udp_2);
+            this.tabPage10.Controls.Add(this.but_send_udp_2);
+            this.tabPage10.Controls.Add(this.textB_mes_udp_client_2);
+            this.tabPage10.Controls.Add(this.label119);
+            this.tabPage10.Controls.Add(this.label120);
+            this.tabPage10.Controls.Add(this.textB_port_udp_client_2);
+            this.tabPage10.Controls.Add(this.textB_ip_udp_client_2);
             this.tabPage10.Controls.Add(this.but_disconnect_udp);
             this.tabPage10.Controls.Add(this.but_connect_udp);
             this.tabPage10.Controls.Add(this.but_send_udp);
             this.tabPage10.Controls.Add(this.textB_mes_udp_client);
-            this.tabPage10.Controls.Add(this.label118);
+            this.tabPage10.Controls.Add(this.label_udp_state_1);
             this.tabPage10.Controls.Add(this.label117);
             this.tabPage10.Controls.Add(this.label116);
             this.tabPage10.Controls.Add(this.textB_port_udp_client);
             this.tabPage10.Controls.Add(this.textB_ip_udp_client);
-            this.tabPage10.Controls.Add(this.label45);
             this.tabPage10.Controls.Add(this.trackBar11);
             this.tabPage10.Controls.Add(this.label46);
             this.tabPage10.Controls.Add(this.trackBar12);
@@ -1420,39 +1426,97 @@ namespace opengl3
             this.tabPage10.Controls.Add(this.trackBar13);
             this.tabPage10.Controls.Add(this.label48);
             this.tabPage10.Controls.Add(this.trackBar14);
-            this.tabPage10.Controls.Add(this.label49);
             this.tabPage10.Controls.Add(this.trackBar15);
-            this.tabPage10.Controls.Add(this.label50);
             this.tabPage10.Controls.Add(this.trackBar16);
-            this.tabPage10.Controls.Add(this.label51);
             this.tabPage10.Controls.Add(this.trackBar17);
-            this.tabPage10.Controls.Add(this.label52);
             this.tabPage10.Controls.Add(this.trackBar18);
-            this.tabPage10.Controls.Add(this.label53);
             this.tabPage10.Controls.Add(this.trackBar19);
-            this.tabPage10.Controls.Add(this.label54);
             this.tabPage10.Controls.Add(this.trackBar20);
             this.tabPage10.Location = new System.Drawing.Point(4, 29);
             this.tabPage10.Name = "tabPage10";
             this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage10.Size = new System.Drawing.Size(697, 366);
+            this.tabPage10.Size = new System.Drawing.Size(697, 359);
             this.tabPage10.TabIndex = 0;
             this.tabPage10.Text = "Отладка";
             this.tabPage10.UseVisualStyleBackColor = true;
             // 
-            // label_udp_state
+            // label_udp_state_2
             // 
-            this.label_udp_state.AutoSize = true;
-            this.label_udp_state.Location = new System.Drawing.Point(14, 333);
-            this.label_udp_state.Name = "label_udp_state";
-            this.label_udp_state.Size = new System.Drawing.Size(66, 20);
-            this.label_udp_state.TabIndex = 151;
-            this.label_udp_state.Text = "minDisp";
+            this.label_udp_state_2.AutoSize = true;
+            this.label_udp_state_2.Location = new System.Drawing.Point(23, 313);
+            this.label_udp_state_2.Name = "label_udp_state_2";
+            this.label_udp_state_2.Size = new System.Drawing.Size(71, 20);
+            this.label_udp_state_2.TabIndex = 159;
+            this.label_udp_state_2.Text = "Test udp";
+            // 
+            // but_connect_udp_2
+            // 
+            this.but_connect_udp_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_connect_udp_2.Location = new System.Drawing.Point(571, 217);
+            this.but_connect_udp_2.Name = "but_connect_udp_2";
+            this.but_connect_udp_2.Size = new System.Drawing.Size(109, 69);
+            this.but_connect_udp_2.TabIndex = 158;
+            this.but_connect_udp_2.Text = "Подключиться udp";
+            this.but_connect_udp_2.UseVisualStyleBackColor = true;
+            this.but_connect_udp_2.Click += new System.EventHandler(this.but_connect_udp_2_Click);
+            // 
+            // but_send_udp_2
+            // 
+            this.but_send_udp_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_send_udp_2.Location = new System.Drawing.Point(456, 217);
+            this.but_send_udp_2.Name = "but_send_udp_2";
+            this.but_send_udp_2.Size = new System.Drawing.Size(109, 69);
+            this.but_send_udp_2.TabIndex = 157;
+            this.but_send_udp_2.Text = "Отправить udp";
+            this.but_send_udp_2.UseVisualStyleBackColor = true;
+            this.but_send_udp_2.Click += new System.EventHandler(this.but_send_udp_2_Click);
+            // 
+            // textB_mes_udp_client_2
+            // 
+            this.textB_mes_udp_client_2.Location = new System.Drawing.Point(318, 233);
+            this.textB_mes_udp_client_2.Name = "textB_mes_udp_client_2";
+            this.textB_mes_udp_client_2.Size = new System.Drawing.Size(121, 26);
+            this.textB_mes_udp_client_2.TabIndex = 156;
+            this.textB_mes_udp_client_2.Text = "test";
+            // 
+            // label119
+            // 
+            this.label119.AutoSize = true;
+            this.label119.Location = new System.Drawing.Point(561, 180);
+            this.label119.Name = "label119";
+            this.label119.Size = new System.Drawing.Size(37, 20);
+            this.label119.TabIndex = 155;
+            this.label119.Text = "port";
+            // 
+            // label120
+            // 
+            this.label120.AutoSize = true;
+            this.label120.Location = new System.Drawing.Point(359, 180);
+            this.label120.Name = "label120";
+            this.label120.Size = new System.Drawing.Size(24, 20);
+            this.label120.TabIndex = 154;
+            this.label120.Text = "IP";
+            // 
+            // textB_port_udp_client_2
+            // 
+            this.textB_port_udp_client_2.Location = new System.Drawing.Point(613, 177);
+            this.textB_port_udp_client_2.Name = "textB_port_udp_client_2";
+            this.textB_port_udp_client_2.Size = new System.Drawing.Size(67, 26);
+            this.textB_port_udp_client_2.TabIndex = 153;
+            this.textB_port_udp_client_2.Text = "52100";
+            // 
+            // textB_ip_udp_client_2
+            // 
+            this.textB_ip_udp_client_2.Location = new System.Drawing.Point(389, 177);
+            this.textB_ip_udp_client_2.Name = "textB_ip_udp_client_2";
+            this.textB_ip_udp_client_2.Size = new System.Drawing.Size(166, 26);
+            this.textB_ip_udp_client_2.TabIndex = 152;
+            this.textB_ip_udp_client_2.Text = "192.168.10.211";
             // 
             // but_disconnect_udp
             // 
             this.but_disconnect_udp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_disconnect_udp.Location = new System.Drawing.Point(456, 124);
+            this.but_disconnect_udp.Location = new System.Drawing.Point(203, 41);
             this.but_disconnect_udp.Name = "but_disconnect_udp";
             this.but_disconnect_udp.Size = new System.Drawing.Size(109, 69);
             this.but_disconnect_udp.TabIndex = 150;
@@ -1463,7 +1527,7 @@ namespace opengl3
             // but_connect_udp
             // 
             this.but_connect_udp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_connect_udp.Location = new System.Drawing.Point(571, 124);
+            this.but_connect_udp.Location = new System.Drawing.Point(571, 46);
             this.but_connect_udp.Name = "but_connect_udp";
             this.but_connect_udp.Size = new System.Drawing.Size(109, 69);
             this.but_connect_udp.TabIndex = 149;
@@ -1474,7 +1538,7 @@ namespace opengl3
             // but_send_udp
             // 
             this.but_send_udp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_send_udp.Location = new System.Drawing.Point(571, 199);
+            this.but_send_udp.Location = new System.Drawing.Point(456, 46);
             this.but_send_udp.Name = "but_send_udp";
             this.but_send_udp.Size = new System.Drawing.Size(109, 69);
             this.but_send_udp.TabIndex = 148;
@@ -1484,25 +1548,25 @@ namespace opengl3
             // 
             // textB_mes_udp_client
             // 
-            this.textB_mes_udp_client.Location = new System.Drawing.Point(363, 218);
+            this.textB_mes_udp_client.Location = new System.Drawing.Point(318, 62);
             this.textB_mes_udp_client.Name = "textB_mes_udp_client";
-            this.textB_mes_udp_client.Size = new System.Drawing.Size(202, 26);
+            this.textB_mes_udp_client.Size = new System.Drawing.Size(121, 26);
             this.textB_mes_udp_client.TabIndex = 141;
             this.textB_mes_udp_client.Text = "test";
             // 
-            // label118
+            // label_udp_state_1
             // 
-            this.label118.AutoSize = true;
-            this.label118.Location = new System.Drawing.Point(349, 8);
-            this.label118.Name = "label118";
-            this.label118.Size = new System.Drawing.Size(71, 20);
-            this.label118.TabIndex = 140;
-            this.label118.Text = "Test udp";
+            this.label_udp_state_1.AutoSize = true;
+            this.label_udp_state_1.Location = new System.Drawing.Point(23, 128);
+            this.label_udp_state_1.Name = "label_udp_state_1";
+            this.label_udp_state_1.Size = new System.Drawing.Size(71, 20);
+            this.label_udp_state_1.TabIndex = 140;
+            this.label_udp_state_1.Text = "Test udp";
             // 
             // label117
             // 
             this.label117.AutoSize = true;
-            this.label117.Location = new System.Drawing.Point(584, 29);
+            this.label117.Location = new System.Drawing.Point(561, 9);
             this.label117.Name = "label117";
             this.label117.Size = new System.Drawing.Size(37, 20);
             this.label117.TabIndex = 139;
@@ -1511,7 +1575,7 @@ namespace opengl3
             // label116
             // 
             this.label116.AutoSize = true;
-            this.label116.Location = new System.Drawing.Point(359, 29);
+            this.label116.Location = new System.Drawing.Point(359, 9);
             this.label116.Name = "label116";
             this.label116.Size = new System.Drawing.Size(24, 20);
             this.label116.TabIndex = 138;
@@ -1519,28 +1583,19 @@ namespace opengl3
             // 
             // textB_port_udp_client
             // 
-            this.textB_port_udp_client.Location = new System.Drawing.Point(588, 52);
+            this.textB_port_udp_client.Location = new System.Drawing.Point(613, 6);
             this.textB_port_udp_client.Name = "textB_port_udp_client";
-            this.textB_port_udp_client.Size = new System.Drawing.Size(104, 26);
+            this.textB_port_udp_client.Size = new System.Drawing.Size(67, 26);
             this.textB_port_udp_client.TabIndex = 137;
-            this.textB_port_udp_client.Text = "8888";
+            this.textB_port_udp_client.Text = "52000";
             // 
             // textB_ip_udp_client
             // 
-            this.textB_ip_udp_client.Location = new System.Drawing.Point(363, 52);
+            this.textB_ip_udp_client.Location = new System.Drawing.Point(389, 6);
             this.textB_ip_udp_client.Name = "textB_ip_udp_client";
-            this.textB_ip_udp_client.Size = new System.Drawing.Size(202, 26);
+            this.textB_ip_udp_client.Size = new System.Drawing.Size(166, 26);
             this.textB_ip_udp_client.TabIndex = 136;
             this.textB_ip_udp_client.Text = "192.168.10.212";
-            // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(55, 52);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(66, 20);
-            this.label45.TabIndex = 135;
-            this.label45.Text = "minDisp";
             // 
             // trackBar11
             // 
@@ -1602,121 +1657,67 @@ namespace opengl3
             // trackBar14
             // 
             this.trackBar14.AccessibleName = "7";
-            this.trackBar14.Location = new System.Drawing.Point(124, 65);
+            this.trackBar14.Location = new System.Drawing.Point(195, 446);
             this.trackBar14.Maximum = 20;
             this.trackBar14.Name = "trackBar14";
             this.trackBar14.Size = new System.Drawing.Size(188, 45);
             this.trackBar14.TabIndex = 128;
             this.trackBar14.Value = 10;
             // 
-            // label49
-            // 
-            this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(57, 363);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(62, 20);
-            this.label49.TabIndex = 127;
-            this.label49.Text = "prefilter";
-            // 
             // trackBar15
             // 
             this.trackBar15.AccessibleName = "6";
-            this.trackBar15.Location = new System.Drawing.Point(53, 75);
+            this.trackBar15.Location = new System.Drawing.Point(153, 461);
             this.trackBar15.Maximum = 20;
             this.trackBar15.Name = "trackBar15";
             this.trackBar15.Size = new System.Drawing.Size(188, 45);
             this.trackBar15.TabIndex = 126;
             this.trackBar15.Value = 10;
             // 
-            // label50
-            // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(-8, 97);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(110, 20);
-            this.label50.TabIndex = 125;
-            this.label50.Text = "Disp12maxdiff";
-            // 
             // trackBar16
             // 
             this.trackBar16.AccessibleName = "5";
-            this.trackBar16.Location = new System.Drawing.Point(124, 250);
+            this.trackBar16.Location = new System.Drawing.Point(153, 471);
             this.trackBar16.Maximum = 60;
             this.trackBar16.Name = "trackBar16";
             this.trackBar16.Size = new System.Drawing.Size(188, 45);
             this.trackBar16.TabIndex = 124;
             this.trackBar16.Value = 10;
             // 
-            // label51
-            // 
-            this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(92, 266);
-            this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(27, 20);
-            this.label51.TabIndex = 123;
-            this.label51.Text = "p2";
-            // 
             // trackBar17
             // 
             this.trackBar17.AccessibleName = "4";
-            this.trackBar17.Location = new System.Drawing.Point(124, 199);
+            this.trackBar17.Location = new System.Drawing.Point(127, 436);
             this.trackBar17.Maximum = 60;
             this.trackBar17.Name = "trackBar17";
             this.trackBar17.Size = new System.Drawing.Size(188, 45);
             this.trackBar17.TabIndex = 122;
             this.trackBar17.Value = 10;
             // 
-            // label52
-            // 
-            this.label52.AutoSize = true;
-            this.label52.Location = new System.Drawing.Point(92, 212);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(27, 20);
-            this.label52.TabIndex = 121;
-            this.label52.Text = "p1";
-            // 
             // trackBar18
             // 
             this.trackBar18.AccessibleName = "3";
-            this.trackBar18.Location = new System.Drawing.Point(124, 148);
+            this.trackBar18.Location = new System.Drawing.Point(147, 410);
             this.trackBar18.Maximum = 20;
             this.trackBar18.Name = "trackBar18";
             this.trackBar18.Size = new System.Drawing.Size(188, 45);
             this.trackBar18.TabIndex = 120;
             this.trackBar18.Value = 10;
             // 
-            // label53
-            // 
-            this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(49, 166);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(77, 20);
-            this.label53.TabIndex = 119;
-            this.label53.Text = "blockSize";
-            // 
             // trackBar19
             // 
             this.trackBar19.AccessibleName = "2";
-            this.trackBar19.Location = new System.Drawing.Point(124, 97);
+            this.trackBar19.Location = new System.Drawing.Point(168, 468);
             this.trackBar19.Maximum = 20;
             this.trackBar19.Name = "trackBar19";
             this.trackBar19.Size = new System.Drawing.Size(188, 45);
             this.trackBar19.TabIndex = 118;
             this.trackBar19.Value = 2;
             // 
-            // label54
-            // 
-            this.label54.AutoSize = true;
-            this.label54.Location = new System.Drawing.Point(49, 111);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(72, 20);
-            this.label54.TabIndex = 117;
-            this.label54.Text = "manDisp";
-            // 
             // trackBar20
             // 
             this.trackBar20.AccessibleName = "1";
-            this.trackBar20.Location = new System.Drawing.Point(124, 46);
+            this.trackBar20.Location = new System.Drawing.Point(187, 416);
             this.trackBar20.Maximum = 20;
             this.trackBar20.Name = "trackBar20";
             this.trackBar20.Size = new System.Drawing.Size(188, 45);
@@ -7058,6 +7059,31 @@ namespace opengl3
             this.groupBox_disp_contr_ext.TabStop = false;
             this.groupBox_disp_contr_ext.Text = "Управление диспенсером и линейным модулем";
             // 
+            // button_drill_pwm
+            // 
+            this.button_drill_pwm.BackColor = System.Drawing.Color.SteelBlue;
+            this.button_drill_pwm.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.button_drill_pwm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_drill_pwm.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_drill_pwm.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.button_drill_pwm.Location = new System.Drawing.Point(758, 487);
+            this.button_drill_pwm.Name = "button_drill_pwm";
+            this.button_drill_pwm.Size = new System.Drawing.Size(175, 74);
+            this.button_drill_pwm.TabIndex = 39;
+            this.button_drill_pwm.Text = "Установить скорость";
+            this.button_drill_pwm.UseVisualStyleBackColor = false;
+            this.button_drill_pwm.Click += new System.EventHandler(this.button_drill_pwm_Click);
+            // 
+            // textBox_drill_pwm
+            // 
+            this.textBox_drill_pwm.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F);
+            this.textBox_drill_pwm.Location = new System.Drawing.Point(673, 506);
+            this.textBox_drill_pwm.Name = "textBox_drill_pwm";
+            this.textBox_drill_pwm.Size = new System.Drawing.Size(79, 38);
+            this.textBox_drill_pwm.TabIndex = 38;
+            this.textBox_drill_pwm.Text = "10";
+            this.textBox_drill_pwm.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // button_set_force_dest
             // 
             this.button_set_force_dest.BackColor = System.Drawing.Color.SteelBlue;
@@ -7993,31 +8019,6 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // button_drill_pwm
-            // 
-            this.button_drill_pwm.BackColor = System.Drawing.Color.SteelBlue;
-            this.button_drill_pwm.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
-            this.button_drill_pwm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_drill_pwm.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button_drill_pwm.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.button_drill_pwm.Location = new System.Drawing.Point(758, 487);
-            this.button_drill_pwm.Name = "button_drill_pwm";
-            this.button_drill_pwm.Size = new System.Drawing.Size(175, 74);
-            this.button_drill_pwm.TabIndex = 39;
-            this.button_drill_pwm.Text = "Установить скорость";
-            this.button_drill_pwm.UseVisualStyleBackColor = false;
-            this.button_drill_pwm.Click += new System.EventHandler(this.button_drill_pwm_Click);
-            // 
-            // textBox_drill_pwm
-            // 
-            this.textBox_drill_pwm.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F);
-            this.textBox_drill_pwm.Location = new System.Drawing.Point(673, 506);
-            this.textBox_drill_pwm.Name = "textBox_drill_pwm";
-            this.textBox_drill_pwm.Size = new System.Drawing.Size(79, 38);
-            this.textBox_drill_pwm.TabIndex = 38;
-            this.textBox_drill_pwm.Text = "10";
-            this.textBox_drill_pwm.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -8585,7 +8586,6 @@ namespace opengl3
         private System.Windows.Forms.Label label85;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage10;
-        private System.Windows.Forms.Label label45;
         private System.Windows.Forms.TrackBar trackBar11;
         private System.Windows.Forms.Label label46;
         private System.Windows.Forms.TrackBar trackBar12;
@@ -8593,17 +8593,11 @@ namespace opengl3
         private System.Windows.Forms.TrackBar trackBar13;
         private System.Windows.Forms.Label label48;
         private System.Windows.Forms.TrackBar trackBar14;
-        private System.Windows.Forms.Label label49;
         private System.Windows.Forms.TrackBar trackBar15;
-        private System.Windows.Forms.Label label50;
         private System.Windows.Forms.TrackBar trackBar16;
-        private System.Windows.Forms.Label label51;
         private System.Windows.Forms.TrackBar trackBar17;
-        private System.Windows.Forms.Label label52;
         private System.Windows.Forms.TrackBar trackBar18;
-        private System.Windows.Forms.Label label53;
         private System.Windows.Forms.TrackBar trackBar19;
-        private System.Windows.Forms.Label label54;
         private System.Windows.Forms.TrackBar trackBar20;
         private System.Windows.Forms.TabPage tabPage11;
         private System.Windows.Forms.Button button2;
@@ -8821,12 +8815,11 @@ namespace opengl3
         private System.Windows.Forms.TextBox textB_port_udp_client;
         private System.Windows.Forms.TextBox textB_ip_udp_client;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.Label label118;
+        private System.Windows.Forms.Label label_udp_state_1;
         private System.Windows.Forms.TextBox textB_mes_udp_client;
         private System.Windows.Forms.Button but_send_udp;
         private System.Windows.Forms.Button but_connect_udp;
         private System.Windows.Forms.Button but_disconnect_udp;
-        private System.Windows.Forms.Label label_udp_state;
         private System.Windows.Forms.Label label_tens_cur;
         private System.Windows.Forms.Button buttontens_mesur_off;
         private System.Windows.Forms.Button button_tens_mesur_on;
@@ -8834,6 +8827,14 @@ namespace opengl3
         private System.Windows.Forms.Button button_set_force_dest;
         private System.Windows.Forms.Button button_drill_pwm;
         private System.Windows.Forms.TextBox textBox_drill_pwm;
+        private System.Windows.Forms.Button but_connect_udp_2;
+        private System.Windows.Forms.Button but_send_udp_2;
+        private System.Windows.Forms.TextBox textB_mes_udp_client_2;
+        private System.Windows.Forms.Label label119;
+        private System.Windows.Forms.Label label120;
+        private System.Windows.Forms.TextBox textB_port_udp_client_2;
+        private System.Windows.Forms.TextBox textB_ip_udp_client_2;
+        private System.Windows.Forms.Label label_udp_state_2;
     }
 }
 
