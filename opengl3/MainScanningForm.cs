@@ -10190,8 +10190,10 @@ namespace opengl3
         Thread udp_thread_2 = null;
         private void but_connect_udp_Click(object sender, EventArgs e)
         {
-            connect_udp();
+            connect_udp_all();
         }
+
+
         private void but_send_udp_2_Click(object sender, EventArgs e)
         {
             var mes = Encoding.ASCII.GetBytes(textB_mes_udp_client_2.Text);
@@ -10213,23 +10215,23 @@ namespace opengl3
             udp_client = null;
             GC.Collect();
 
-            udp_client = new UdpClient();
+            udp_client = new UdpClient(50000);
             string ip = textB_ip_udp_client.Text;
             var port_udp = Convert.ToInt32(textB_port_udp_client.Text);
             udp_addres_1 = new IPEndPoint(parse_ip(ip), port_udp);
             udp_client.Connect(udp_addres_1);
             udp_thread = new Thread(recieve_udp);
-            udp_thread.Start(udp_client);
-           
-    
+            udp_thread.Start(udp_client);    
         }
 
+
+        
         void connect_udp2()
         {
             udp_client2 = null;
             GC.Collect();
 
-            udp_client2 = new UdpClient();
+            udp_client2 = new UdpClient(50001);
             string ip = textB_ip_udp_client_2.Text;
             var port_udp = Convert.ToInt32(textB_port_udp_client_2.Text);
             udp_addres_2 = new IPEndPoint(parse_ip(ip), port_udp);
@@ -10237,8 +10239,53 @@ namespace opengl3
             udp_thread_2 = new Thread(recieve_udp2);
             udp_thread_2.Start(udp_client2);
 
+            _TCPserver1 = new TCPserver(62000);
+            server_thread1= new Thread(_TCPserver1.startServer);
+            server_thread1.Start();
+
+            _TCPserver2 = new TCPserver(62100);
+            server_thread2 = new Thread(_TCPserver2.startServer);
+            server_thread2.Start();
+
 
         }
+        Thread server_thread1 = null;
+        TCPserver _TCPserver1 = null;
+
+        Thread server_thread2 = null;
+        TCPserver _TCPserver2 = null;
+        void connect_udp_all()
+        {
+            udp_client = null;
+            GC.Collect();
+
+            udp_client = new UdpClient(50000);
+            string ip1 = textB_ip_udp_client.Text;
+            var port_udp1 = Convert.ToInt32(textB_port_udp_client.Text);
+            udp_addres_1 = new IPEndPoint(parse_ip(ip1), port_udp1);
+            udp_client.Connect(udp_addres_1);
+            
+
+
+            udp_client2 = null;
+            GC.Collect();
+
+            udp_client2 = new UdpClient(50001);
+            string ip2 = textB_ip_udp_client_2.Text;
+            var port_udp2 = Convert.ToInt32(textB_port_udp_client_2.Text);
+            udp_addres_2 = new IPEndPoint(parse_ip(ip2), port_udp2);
+            udp_client2.Connect(udp_addres_2);
+
+
+            udp_thread = new Thread(recieve_udp_all);
+            udp_thread.Start();
+
+            _TCPserver1 = new TCPserver(62000);
+            server_thread1 = new Thread(_TCPserver1.startServer);
+            server_thread1.Start();
+
+        }
+
 
         public static IPAddress parse_ip(string ip)
         {
@@ -10275,20 +10322,27 @@ namespace opengl3
                // Console.WriteLine("recive udp");
                 var con = (UdpClient)obj;
                 while (con.Available > 0)
-                {
-
-                    
+                {                 
                     var res = con.Receive(ref udp_addres_1);
 
-                    var mes = Encoding.ASCII.GetString(res);
-
-                    var vals = mes.Trim().Split(' ');
-
+                    var mes = Encoding.ASCII.GetString(res) + "\n";
                     if (res != null)
                     {
                         //Console.WriteLine("udp res: " + mes);
                         label_udp_state_1.BeginInvoke((MethodInvoker)(() => label_udp_state_1.Text = mes));
+                        if (_TCPserver1.connected)
 
+                        {
+
+                            if(_TCPserver1.getBuffer().Length>0)
+                            {
+                                
+                            }
+                            _TCPserver1.pushBuffer(mes);
+
+                        }
+
+                        
                         var com = "M584 U E" + count_ins;
                         var command = "N" + count_ins.ToString() + " " + com;
 
@@ -10300,6 +10354,133 @@ namespace opengl3
                     Thread.Sleep(2);
                 }
             }            
+        }
+
+        List<string>  coms1 = new List<string>();
+        List<string>  coms2 = new List<string>();
+
+
+        void recieve_udp_all()
+        {
+            int count_ins = 0;
+            while (udp_client != null && udp_client2 != null)
+            {
+                // Console.WriteLine("recive udp");
+                int com_num = 0;
+                bool parsed_val = false;
+
+                
+                //coms2 = new List<string>();
+
+                if (_TCPserver1.connected)
+                {
+                    var data = _TCPserver1.getBuffer();
+
+
+                    if (data.Length > 3)
+                    {
+                        data = data.Replace('\r', ' ');
+                        var coms = data.Trim().Split('\n');
+                        //Console.WriteLine("data: " + data);
+                        foreach (var command in coms)
+                        {
+                            if (command.Length > 3)
+                                if (command.Contains("M577") || command.Contains("M578") || command.Contains("M579") || command.Contains("M580") || command.Contains("M584") || command.Contains("M587"))
+                                {
+                                    //Console.WriteLine("add com1");
+                                    coms1.Add(command);
+                                }
+                                else if (command.Contains("M585") || command.Contains("M581"))
+                                {
+                                   // Console.WriteLine("add com2");
+                                    coms2.Add(command);
+                                }
+
+
+                        }
+                    }
+
+
+
+                    while (udp_client2.Available > 0)
+                    {
+
+
+                        var res = udp_client2.Receive(ref udp_addres_2);
+
+                        var mes = Encoding.ASCII.GetString(res) + "\n";
+
+
+                        if (res != null)
+                        {
+                            // Console.WriteLine("udp res: " + mes);
+                            // label_udp_state_2.BeginInvoke((MethodInvoker)(() => label_udp_state_2.Text = mes));
+                            if (_TCPserver1.connected)
+                            {
+                                _TCPserver1.pushBuffer(mes);
+                               // Console.WriteLine("len2: " + coms2.Count);
+                                foreach (var command in coms2)
+                                {
+
+                                    //Console.WriteLine("com2: " + command);
+                                    var mes_out = Encoding.ASCII.GetBytes(command); count_ins++;
+                                    udp_client2.SendAsync(mes_out, mes_out.Length);
+                                    com_num++;
+
+                                }
+                                coms2 = new List<string>();
+
+
+                            }
+
+                        }
+                    }
+
+
+                    while (udp_client.Available > 0)
+                    {
+                        var res = udp_client.Receive(ref udp_addres_1);
+
+                        var mes = Encoding.ASCII.GetString(res) + "\n";
+                        if (res != null)
+                        {
+                            // Console.WriteLine("udp res: " + mes);
+                            //label_udp_state_1.BeginInvoke((MethodInvoker)(() => label_udp_state_1.Text = mes));
+                            if (_TCPserver1.connected)
+                            {
+                                _TCPserver1.pushBuffer(mes);
+                               // Console.WriteLine("len1: " + coms1.Count);
+                                foreach (var command in coms1)
+                                {
+
+                                    //Console.WriteLine("com1: " + command);
+                                    var mes_out = Encoding.ASCII.GetBytes(command);
+                                    udp_client.SendAsync(mes_out, mes_out.Length);
+                                    com_num++;
+
+                                }
+                                coms1 = new List<string>();
+
+                            }
+
+
+
+                        }
+                    }
+                   // if (_TCPserver1.connected) _TCPserver1.handle();
+
+                    if (com_num > 1) Console.WriteLine(com_num);
+                }
+            }
+            
+
+        }
+
+        void send_udp(UdpClient client, string data)
+        {
+            //Console.WriteLine("data:"+ data);
+            var mes_out2 = Encoding.ASCII.GetBytes(data);
+            client.SendAsync(mes_out2, mes_out2.Length);
         }
 
 
@@ -10316,15 +10497,14 @@ namespace opengl3
 
                     var res = con.Receive(ref udp_addres_2);
 
-                    var mes = Encoding.ASCII.GetString(res);
+                    var mes = Encoding.ASCII.GetString(res)+"\n";
 
-                    var vals = mes.Trim().Split(' ');
 
                     if (res != null)
                     {
                         //Console.WriteLine("udp res: " + mes);
                         label_udp_state_2.BeginInvoke((MethodInvoker)(() => label_udp_state_2.Text = mes));
-
+                        if (_TCPserver1.connected) _TCPserver1.pushBuffer(mes);
                         var com = "M585 F" + count_ins;
                         var command = "N" + count_ins.ToString() + " " + com;
 

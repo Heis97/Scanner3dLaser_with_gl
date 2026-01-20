@@ -128,10 +128,11 @@ namespace opengl3
     public class TCPserver
     {
         int port; // порт для прослушивания подключений
-        string buffer_in;
-        string buffer_out;
+        string buffer_in = "";
+        string buffer_out = "";
         private static StringBuilder _response;
         private static NetworkStream _stream;
+        public bool connected = false;
         public TCPserver(int _port)
         {
             port = _port;
@@ -147,6 +148,7 @@ namespace opengl3
 
         public void pushBuffer(string data)
         {
+            //Console.Write(data);
             buffer_out += data;
         }
         public void send_mes(string send_prog)
@@ -176,10 +178,32 @@ namespace opengl3
                 return null;
             }
         }
+
+        public void handle()
+        {
+            var res = reseav();
+            if (res != null)
+            {
+
+                if (res.Length > 3)
+                {
+                    //Console.WriteLine(res);
+                    buffer_in += res;
+                }
+            }
+
+            if (buffer_out.Length > 0)
+            {
+                send_mes(buffer_out);
+                buffer_out = "";
+            }
+        }
+
+
         public void startServer()
         {
             TcpListener server = null;
-            try
+            //try
             {
                 IPAddress localAddr = IPAddress.Parse("127.0.0.1");
                 server = new TcpListener(localAddr, port);
@@ -187,27 +211,26 @@ namespace opengl3
                 Console.WriteLine("start server");
                 TcpClient client = server.AcceptTcpClient();
                 Console.WriteLine("client connected");
+                connected = true;
                 _stream = client.GetStream();
                 _response = new StringBuilder();
                 while (true)
                 {
-                    buffer_in += reseav();
-                    if(buffer_out.Length>0)
-                    {
-                        send_mes(buffer_out);
-                        buffer_out = "";
-                    }
-                   
+
+
+                    handle();
+
+
                 }
             }
-            catch (Exception e)
+            //catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+               // Console.WriteLine(e.Message);
             }
-            finally
+            //finally
             {
-                if (server != null)
-                    server.Stop();
+               // if (server != null)
+                    //server.Stop();
             }
         }
     }
