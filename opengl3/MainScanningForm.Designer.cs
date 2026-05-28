@@ -114,6 +114,7 @@ namespace opengl3
             this.trackBar19 = new System.Windows.Forms.TrackBar();
             this.trackBar20 = new System.Windows.Forms.TrackBar();
             this.tabPage11 = new System.Windows.Forms.TabPage();
+            this.but_con_navig_sys = new System.Windows.Forms.Button();
             this.label89 = new System.Windows.Forms.Label();
             this.but_set_expos = new System.Windows.Forms.Button();
             this.textBox_exp_val = new System.Windows.Forms.TextBox();
@@ -684,10 +685,12 @@ namespace opengl3
             this.but_z1_pl = new System.Windows.Forms.Button();
             this.label80 = new System.Windows.Forms.Label();
             this.textBox_z1_vel = new System.Windows.Forms.TextBox();
+            this.tabPage_navig_debug = new System.Windows.Forms.TabPage();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.but_navig_cl = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -799,6 +802,7 @@ namespace opengl3
             this.groupBox12.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox9.SuspendLayout();
+            this.tabPage_navig_debug.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -1726,6 +1730,7 @@ namespace opengl3
             // 
             // tabPage11
             // 
+            this.tabPage11.Controls.Add(this.but_con_navig_sys);
             this.tabPage11.Controls.Add(this.label89);
             this.tabPage11.Controls.Add(this.but_set_expos);
             this.tabPage11.Controls.Add(this.textBox_exp_val);
@@ -1756,10 +1761,21 @@ namespace opengl3
             this.tabPage11.Location = new System.Drawing.Point(4, 29);
             this.tabPage11.Name = "tabPage11";
             this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage11.Size = new System.Drawing.Size(697, 366);
+            this.tabPage11.Size = new System.Drawing.Size(697, 359);
             this.tabPage11.TabIndex = 1;
             this.tabPage11.Text = "3Д сканер";
             this.tabPage11.UseVisualStyleBackColor = true;
+            // 
+            // but_con_navig_sys
+            // 
+            this.but_con_navig_sys.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_con_navig_sys.Location = new System.Drawing.Point(576, 215);
+            this.but_con_navig_sys.Name = "but_con_navig_sys";
+            this.but_con_navig_sys.Size = new System.Drawing.Size(106, 57);
+            this.but_con_navig_sys.TabIndex = 146;
+            this.but_con_navig_sys.Text = "Connect navig";
+            this.but_con_navig_sys.UseVisualStyleBackColor = true;
+            this.but_con_navig_sys.Click += new System.EventHandler(this.but_con_navig_sys_Click);
             // 
             // label89
             // 
@@ -2066,7 +2082,7 @@ namespace opengl3
             this.tabPage12.Location = new System.Drawing.Point(4, 29);
             this.tabPage12.Name = "tabPage12";
             this.tabPage12.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage12.Size = new System.Drawing.Size(697, 366);
+            this.tabPage12.Size = new System.Drawing.Size(697, 359);
             this.tabPage12.TabIndex = 2;
             this.tabPage12.Text = "Подключение к роботу";
             this.tabPage12.UseVisualStyleBackColor = true;
@@ -2369,7 +2385,7 @@ namespace opengl3
             this.tabPage13.Location = new System.Drawing.Point(4, 29);
             this.tabPage13.Name = "tabPage13";
             this.tabPage13.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage13.Size = new System.Drawing.Size(697, 366);
+            this.tabPage13.Size = new System.Drawing.Size(697, 359);
             this.tabPage13.TabIndex = 3;
             this.tabPage13.Text = "Отладка 2";
             this.tabPage13.UseVisualStyleBackColor = true;
@@ -2524,7 +2540,7 @@ namespace opengl3
             this.tabPage14.Location = new System.Drawing.Point(4, 29);
             this.tabPage14.Name = "tabPage14";
             this.tabPage14.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage14.Size = new System.Drawing.Size(697, 366);
+            this.tabPage14.Size = new System.Drawing.Size(697, 359);
             this.tabPage14.TabIndex = 4;
             this.tabPage14.Text = "Имитация дыхания";
             this.tabPage14.UseVisualStyleBackColor = true;
@@ -2870,7 +2886,7 @@ namespace opengl3
             this.tabPage_drill.Location = new System.Drawing.Point(4, 29);
             this.tabPage_drill.Name = "tabPage_drill";
             this.tabPage_drill.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_drill.Size = new System.Drawing.Size(697, 366);
+            this.tabPage_drill.Size = new System.Drawing.Size(697, 359);
             this.tabPage_drill.TabIndex = 5;
             this.tabPage_drill.Text = "Сверление";
             this.tabPage_drill.UseVisualStyleBackColor = true;
@@ -6756,6 +6772,7 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabP_scanning_printing);
             this.windowsTabs.Controls.Add(this.tabP_developer);
             this.windowsTabs.Controls.Add(this.tabPage_tube);
+            this.windowsTabs.Controls.Add(this.tabPage_navig_debug);
             this.windowsTabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.windowsTabs.Location = new System.Drawing.Point(3, 0);
             this.windowsTabs.Name = "windowsTabs";
@@ -8009,6 +8026,17 @@ namespace opengl3
             this.textBox_z1_vel.Text = "1";
             this.textBox_z1_vel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_z1_vel_KeyDown);
             // 
+            // tabPage_navig_debug
+            // 
+            this.tabPage_navig_debug.Controls.Add(this.but_navig_cl);
+            this.tabPage_navig_debug.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_debug.Name = "tabPage_navig_debug";
+            this.tabPage_navig_debug.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_navig_debug.Size = new System.Drawing.Size(1891, 1000);
+            this.tabPage_navig_debug.TabIndex = 10;
+            this.tabPage_navig_debug.Text = "Навигац";
+            this.tabPage_navig_debug.UseVisualStyleBackColor = true;
+            // 
             // timer1
             // 
             this.timer1.Interval = 10;
@@ -8018,6 +8046,16 @@ namespace opengl3
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // but_navig_cl
+            // 
+            this.but_navig_cl.Location = new System.Drawing.Point(1024, 6);
+            this.but_navig_cl.Name = "but_navig_cl";
+            this.but_navig_cl.Size = new System.Drawing.Size(99, 48);
+            this.but_navig_cl.TabIndex = 0;
+            this.but_navig_cl.Text = "Запуск видео";
+            this.but_navig_cl.UseVisualStyleBackColor = true;
+            this.but_navig_cl.Click += new System.EventHandler(this.but_con_navig_sys_Click);
             // 
             // MainScanningForm
             // 
@@ -8171,6 +8209,7 @@ namespace opengl3
             this.groupBox10.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
+            this.tabPage_navig_debug.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -8835,6 +8874,9 @@ namespace opengl3
         private System.Windows.Forms.TextBox textB_port_udp_client_2;
         private System.Windows.Forms.TextBox textB_ip_udp_client_2;
         private System.Windows.Forms.Label label_udp_state_2;
+        private System.Windows.Forms.Button but_con_navig_sys;
+        private System.Windows.Forms.TabPage tabPage_navig_debug;
+        private System.Windows.Forms.Button but_navig_cl;
     }
 }
 

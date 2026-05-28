@@ -31,12 +31,15 @@ using Emgu.CV.Dnn;
 using Accord.Statistics.Kernels;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using Emgu.CV.Aruco;
 
 namespace opengl3
 {
     public partial class MainScanningForm : Form
     {
         #region var
+
+        bool navig_sys = true;
         Matrix4x4f matrix_pattern = Matrix4x4f.Identity;
         string pattern = "";
         string flat = "";
@@ -6390,7 +6393,7 @@ namespace opengl3
             capture.Set(CapProp.FrameWidth, cameraSize.Width);
             //capture.ser
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-            //capture.SetCaptureProperty(CapProp.Exposure, -4);
+            capture.Set(CapProp.Exposure, -7);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
             Console.WriteLine(capture.Get(CapProp.FrameWidth) + " " + capture.Get(CapProp.FrameHeight)+" "+ capture.Get(CapProp.Fps));
 
@@ -6399,6 +6402,71 @@ namespace opengl3
             capture.ImageGrabbed += capturingVideo;
             capture.Start();
         }
+
+        void navigation_processing()
+        {
+            while (true)
+            {
+               // Console.WriteLine("navig");
+                if (mat_global[0] != null && mat_global[1] != null)
+                {
+                   // Console.WriteLine("proces");
+                     var mat1 = get_aruco_info(mat_global[0]);
+                     var mat2 = get_aruco_info(mat_global[1]);
+
+                     imageBox1.Image = mat1;
+                     imageBox2.Image = mat2;
+
+
+                }
+            }
+                      
+        }
+
+        public static Mat get_aruco_info(Mat image)
+        {
+
+            // 1. Инициализация: загружаем изображение и создаём словарь маркеров
+
+            var dictionary = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_50);
+            var detectorParams = DetectorParameters.GetDefault();
+            
+            // Контейнеры для результатов
+            var corners = new VectorOfVectorOfPointF();
+            var ids = new VectorOfInt();
+            var rejectedPoints = new VectorOfVectorOfPointF();
+
+            // 2. Основной шаг: детекция маркеров
+            if(image.IsEmpty) return null;
+            ArucoInvoke.DetectMarkers(image, dictionary, corners, ids, detectorParams, rejectedPoints);
+            //Console.WriteLine("--Aruco---");
+            // 3. Обработка результатов: рисуем найденные маркеры, если они есть
+            if (ids.Size > 0)
+            {
+                // Отрисовка границ и ID маркеров на изображении
+                ArucoInvoke.DrawDetectedMarkers(image, corners, ids, new Bgr(Color.Green).MCvScalar);
+
+                // Вывод информации в консоль
+                for (int i = 0; i < ids.Size; i++)
+                {
+                    int id = ids[i];
+                   System.Drawing.PointF[] cornersArray = corners[i].ToArray();
+
+                    foreach (var point in cornersArray)
+                    {
+                       // Console.WriteLine($"({point.X:F2}, {point.Y:F2})");
+                    }
+                    //Console.WriteLine("----------");
+                }
+            }
+            else
+            {
+            }
+            
+
+            return image;
+        }
+
         void drawCameras(VideoCapture cap)
         {
             if (camera_ind != null)
@@ -6409,27 +6477,25 @@ namespace opengl3
                     /*var mat = new Mat();
                     cap.Retrieve(mat);
                     imProcess(mat, 1);*/
-
                     cap.Retrieve(mat_global[0]);
-
-                    // CvInvoke.Imshow("im1", mat_global[0]);
-                    camera_frame_time.Add(DateTime.Now.Ticks / 10000);
-                    int fps_c = 100;
-                    if (camera_frame_time.Count > fps_c)
+                   
+                    if (!navig_sys)
                     {
-                        camera_frame_time.RemoveAt(0);
+                        imageBox1.Image = mat_global[0];
+                        // CvInvoke.Imshow("im1", mat_global[0]);
+                        camera_frame_time.Add(DateTime.Now.Ticks / 10000);
+                        int fps_c = 100;
+                        if (camera_frame_time.Count > fps_c)
+                        {
+                            camera_frame_time.RemoveAt(0);
+                        }
+                        if (camera_frame_time.Count == fps_c)
+                        {
+                            var dt = (int)(camera_frame_time[camera_frame_time.Count - 1] - camera_frame_time[0]);
+                            fps1 = Math.Round((double)fps_c * 1000 / dt, 1);
+                        }
+                        imProcess(mat_global[0], 1);
                     }
-                    if (camera_frame_time.Count == fps_c)
-                    {
-                        var dt = (int)(camera_frame_time[camera_frame_time.Count - 1] - camera_frame_time[0]);
-                        fps1 = Math.Round((double)fps_c * 1000 / dt, 1);
-                    }
-
-                    imageBox1.Image = mat_global[0];
-
-                    imProcess(mat_global[0], 1);
-
-
                 }
                 else if ((camera_ind.Count > 1) && (cap.Ptr == camera_ind[1]))
                 {
@@ -6437,10 +6503,12 @@ namespace opengl3
                     cap.Retrieve(mat);
                     imProcess(mat, 2);*/
                     cap.Retrieve(mat_global[1]);
-                    imageBox2.Image = mat_global[1];
-
-                    imProcess(mat_global[1], 2);
-
+                    
+                    if (!navig_sys)
+                    {
+                        imageBox2.Image = mat_global[1];
+                        imProcess(mat_global[1], 2);
+                    }
                     //imBox_base.Image = stereoProc(mat_global[0], mat_global[1]);
                 }
             }
@@ -8419,11 +8487,14 @@ namespace opengl3
             //windowsTabs.Controls.Remove(tabPage_tube);
 
 
-            this.tabP_connect.Controls.Add(this.imageBox1);
-            this.tabP_connect.Controls.Add(this.imageBox2);
-            this.tabP_scanning_printing.Controls.Add(this.glControl1);
-          
-            
+            //this.tabP_connect.Controls.Add(this.imageBox1);
+            //this.tabP_connect.Controls.Add(this.imageBox2);
+            //this.tabP_scanning_printing.Controls.Add(this.glControl1);
+
+            this.tabPage_navig_debug.Controls.Add(this.imageBox1);
+            this.tabPage_navig_debug.Controls.Add(this.imageBox2);
+
+
             add_buttons_rob_contr();
             formSettings.load_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
             for (int i = 0; i < imb_main.Length; i++)
@@ -10545,7 +10616,14 @@ namespace opengl3
             laserLine.send(Convert.ToInt32(textBox_drill_pwm.Text), 52);
         }
 
-        
+        private void but_con_navig_sys_Click(object sender, EventArgs e)
+        {
+            videoStart(0);
+            videoStart(1);
+            var thr_navig = new Thread(navigation_processing);
+            thr_navig.Start();
+
+        }
     }
 }
 
