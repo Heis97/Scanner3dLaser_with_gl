@@ -32,6 +32,7 @@ using Accord.Statistics.Kernels;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using Emgu.CV.Aruco;
+//using Accord;
 
 namespace opengl3
 {
@@ -101,6 +102,7 @@ namespace opengl3
         ImageBox[] imb_base = null;
         ImageBox[] imb_main = null;
         FrameType imProcType = FrameType.Test;
+        ProcessType NavigProcType = ProcessType.Nothing;
         LaserLine laserLine;
         DeviceMarlin linearPlatf;
         Point cam_calib_p1 = new Point(0, 0);
@@ -110,9 +112,9 @@ namespace opengl3
         Matrix<double> persp_matr = new Matrix<double>(new double[3, 3] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } });
         TextBox[] textBoxes_Persp;
         int photo_number = 0;
-        float markSize = 9.78f;
+        float markSize = 16.2f;
         //Size chess_size = new Size(8, 9);
-        Size chess_size = new Size(6, 7);
+        Size chess_size = new Size(11, 8);//(6, 7);
         Size chess_size_real = new Size(6, 7);
         StereoCameraCV stereocam = null;
         StereoCamera stereocam_scan = null;
@@ -206,6 +208,7 @@ namespace opengl3
         double[] koef_x = null;
         double[] koef_y = null;
         Scanner scanner;
+        Scanner navig_system;
         #endregion
 
         public MainScanningForm()
@@ -239,7 +242,7 @@ namespace opengl3
 
             //Manipulator.calcRob()
 
-          //  var date_test = DateTime.Parse("2025-03-19 20:43:36.345352");
+            //var date_test = DateTime.Parse("2025-03-19 20:43:36.345352");
             
 
 
@@ -251,7 +254,7 @@ namespace opengl3
             };
             koef = Regression.regression(vals_regr, 2);
             //var cur = Regression.calcPolynSolv(koef, 37);
-            // Console.WriteLine("test_regr "+cur);
+            //Console.WriteLine("test_regr "+cur);
 
             vals_regr = new double[][]   //pos and y
                 {
@@ -885,6 +888,9 @@ namespace opengl3
 
 
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "св Круги грид", "Ничего" });
+
+            comboBox_navig_proess.Items.AddRange(new string[] { "Ничего", "Шахматный паттерн", "Аруко" });
+
             combo_robot_ch.Items.AddRange(new string[] { "Pulse", "Kuka" });
 
             cameraDistortionCoeffs_dist[0, 0] = -0.3;
@@ -912,7 +918,7 @@ namespace opengl3
             };
 
             // patt = UtilOpenCV.generateImage_chessboard(chess_size.Width, chess_size.Height, 200);
-            // patt = UtilOpenCV.generateImage_chessboard(10, 11, 200);
+             patt = UtilOpenCV.generateImage_chessboard_circle(8, 11, 200);
             #endregion
             imb_base = new ImageBox[] { imBox_base_1, imBox_base_2 };
             imb_main = new ImageBox[] { imageBox1, imageBox2 };
@@ -1311,11 +1317,11 @@ namespace opengl3
 
         void load_camers_v2()
         {
-            markSize = 10f;//6.2273f//10f//9.78f
-            chess_size = new Size(6, 7);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_virt_cal_2110", FrameType.Pattern, PatternType.Mesh);//
+           // markSize = 19.45f;//6.2273f//10f//9.78f
+           // chess_size = new Size(6, 9);//new Size(10, 11);//new Size(6, 7)
+            var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam_cal_2905_4a", FrameType.Pattern, PatternType.Mesh);//
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam_virt_cal_2110a.txt");
+            cam1.save_camera("cam2_cal_2905_4a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -1344,7 +1350,7 @@ namespace opengl3
           
 
         }
-        Scanner loadScanner_v2(string conf1, string conf2, string stereo_cal, string bfs_file = null)
+        Scanner loadScanner_v2(string conf1, string conf2, string stereo_cal, string bfs_file = null, float marksize = 10f)
         {
             var cam1 = CameraCV.load_camera(conf1);
             var cam2 = CameraCV.load_camera(conf2);
@@ -1359,10 +1365,11 @@ namespace opengl3
                 scanner = new Scanner(stereo_cam);
                 stereocam_scan = stereo_cam;
             }
-            chess_size = new Size(6, 7);
-            var marksize = 9.78f;// 9.6f;// 10f;
+            //chess_size = new Size(6, 7);
+            //var marksize = 9.78f;// 9.6f;// 10f;
             var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, scanner_config.rotate_cam);
+            Console.WriteLine(scanner_config.rotate_cam + " " + marksize);
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh, chess_size, marksize);
 
             //comboImages.Items.AddRange(frms_stereo);
@@ -3547,7 +3554,7 @@ namespace opengl3
             var cam2_conf_path = textB_cam2_conf.Text;
             var stereo_cal_path = textB_stereo_cal_path.Text;
             string bfs_path = "bfs_cal.txt";
-            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path,markSize);
             this.scanner = scanner;
 
             string[] scan_paths = new string[]
@@ -3560,7 +3567,7 @@ namespace opengl3
             };
             foreach (var scan_path in scan_paths)
             {
-                scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
+                scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path,markSize);
                 scanner = load_scan_v2(scanner, scan_path, scanner_config);
 
             }
@@ -4250,11 +4257,11 @@ namespace opengl3
                 {
                     var psf = new System.Drawing.PointF[0];
                     imBox_debug1.Image = UtilOpenCV.drawChessboard(fr.im, chess_size, ref psf, false, false, CalibCbType.AdaptiveThresh);
-                    imageBox1.Image = UtilOpenCV.drawInsideRectChessboard(fr.im, chess_size);
+                    //imageBox1.Image = UtilOpenCV.drawInsideRectChessboard(fr.im, chess_size);
 
-                    cameraCVcommon.compPos(fr.im, PatternType.Chess, chess_size);
+                    //cameraCVcommon.compPos(fr.im, PatternType.Chess, chess_size);
 
-
+                    imageBox2.Image = cameraCVcommon.undist(fr.im.Clone());
                 }
                 else if (fr.frameType == FrameType.Pattern)
                 {
@@ -5733,6 +5740,8 @@ namespace opengl3
                 con1.send_mes("q\n");//g
                 con1.close_con();
             }
+
+           
         }
 
         private void but_ProjV_Click(object sender, EventArgs e)
@@ -6116,8 +6125,8 @@ namespace opengl3
             var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
             stereocam_scan = stereo;
             //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
-            chess_size = new Size(6, 7);
-            var markSize = 9.78f;// 10f;//9.733f
+            //chess_size = new Size(6, 7);
+            //var markSize = 9.78f;// 10f;//9.733f
             //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
             //stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
 
@@ -6393,7 +6402,7 @@ namespace opengl3
             capture.Set(CapProp.FrameWidth, cameraSize.Width);
             //capture.ser
             // capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
-            capture.Set(CapProp.Exposure, -7);
+            capture.Set(CapProp.Exposure, -6);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
             Console.WriteLine(capture.Get(CapProp.FrameWidth) + " " + capture.Get(CapProp.FrameHeight)+" "+ capture.Get(CapProp.Fps));
 
@@ -6407,23 +6416,63 @@ namespace opengl3
         {
             while (true)
             {
-               // Console.WriteLine("navig");
-                if (mat_global[0] != null && mat_global[1] != null)
+                if (mat_global[0] != null && mat_global[1] != null && !mat_global[0].IsEmpty && !mat_global[1].IsEmpty)
                 {
-                    //Console.WriteLine("proces");
-                     var mat1 = get_aruco_info(mat_global[0]);
-                     var mat2 = get_aruco_info(mat_global[1]);
+                    //find calibratre board chess
+                    //var mat1 = CameraCV.findPoints_chess(mat_global[0].Clone(), chess_size);
+                    //var mat2 = CameraCV.findPoints_chess(mat_global[1].Clone(), chess_size);
 
-                     imageBox1.Image = mat1;
-                     imageBox2.Image = mat2;
 
+                    //find calibratre board circle
+                    //var mat1 = CameraCV.findPoints_circle(mat_global[0].Clone(), chess_size);
+                    //var mat2 = CameraCV.findPoints_circle(mat_global[1].Clone(), chess_size);
+
+
+                    System.Drawing.PointF[][] points_aruco1 = new System.Drawing.PointF[12][];
+                    System.Drawing.PointF[][] points_aruco2 = new System.Drawing.PointF[12][];
+
+                    var mat1 = get_aruco_info(mat_global[0].Clone(),ref points_aruco1);
+                    var mat2 = get_aruco_info(mat_global[1].Clone(), ref points_aruco2);
+
+                    for (int i = 0; i < points_aruco1.Length; i++)
+                    {
+                        if(points_aruco1[i] != null && points_aruco2[i] != null)
+                        {
+                            if (points_aruco1[i].Length!=0 && points_aruco2[i].Length != 0)
+                            {
+                                Console.WriteLine(i + " " + points_aruco1[i][0].X + " " + points_aruco2[i][0].X + " ");
+                            }
+                        }
+                    }
+
+
+                    imageBox1.Image = mat1;
+                    imageBox2.Image = mat2;
+
+                    /*if (NavigProcType == ProcessType.Nothing)
+                    {
+                        imageBox1.Image = mat_global[0];
+                        imageBox2.Image = mat_global[1];
+                    }
+                    else if(NavigProcType == ProcessType.Chessboard)
+                    {
+                        var mat1 = CameraCV.findPoints_chess(mat_global[0], chess_size);
+                        var mat2 = CameraCV.findPoints_chess(mat_global[1], chess_size);
+
+                        imageBox1.Image = mat1;
+                        imageBox2.Image = mat2;
+                    }
+                    else if (NavigProcType == ProcessType.Aruco)
+                    {
+                        
+                    }*/
 
                 }
             }
                       
         }
 
-        public static Mat get_aruco_info(Mat image)
+        public static Mat get_aruco_info(Mat image,ref System.Drawing.PointF[][] points)
         {
 
             // 1. Инициализация: загружаем изображение и создаём словарь маркеров
@@ -6450,11 +6499,14 @@ namespace opengl3
                 for (int i = 0; i < ids.Size; i++)
                 {
                     int id = ids[i];
-                   System.Drawing.PointF[] cornersArray = corners[i].ToArray();
-
-                    foreach (var point in cornersArray)
+                    System.Drawing.PointF[] cornersArray = corners[i].ToArray();
+                    if (points.Length > id)
                     {
-                       // Console.WriteLine($"({point.X:F2}, {point.Y:F2})");
+                        points[id] = new System.Drawing.PointF[cornersArray.Length];
+                        for (int j = 0; j < cornersArray.Length; j++)
+                        {
+                            points[id][j] = new System.Drawing.PointF( cornersArray[j].X, cornersArray[j].Y );
+                        }
                     }
                     //Console.WriteLine("----------");
                 }
@@ -6466,6 +6518,8 @@ namespace opengl3
 
             return image;
         }
+
+
 
         void drawCameras(VideoCapture cap)
         {
@@ -8208,7 +8262,7 @@ namespace opengl3
             var stereo_cal_path = textB_stereo_cal_path.Text;
             scan_path = scan_path.Split('\\').Reverse().ToArray()[0];
             string bfs_path = "bfs_cal.txt";
-            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path);
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path, markSize);
             this.scanner = scanner;
             var fr = new Frame();
 
@@ -8220,7 +8274,7 @@ namespace opengl3
             //var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
             //var frms_stereo1 = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
             //comboImages.Items.AddRange(frms_stereo1);
-            chess_size = new Size(6, 7);
+            //chess_size = new Size(6, 7);
             var ps = ps3d_frame(fr, scanner);
             //ps3d_frame_sq(fr, scanner);
             GL1.addPointMesh(ps,Color3d_GL.red());
@@ -8344,7 +8398,7 @@ namespace opengl3
             var cam2_conf_path = textB_cam2_conf.Text;
             var stereo_cal_path = textB_stereo_cal_path.Text;
 
-            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path);
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,null, markSize);
             this.scanner = scanner;
             load_scan_v2(scanner,scan_path, scanner_config);
 
@@ -8360,7 +8414,7 @@ namespace opengl3
             var stereo_cal_path = textB_stereo_cal_path.Text;
             string bfs_path = "bfs_cal.txt";
 
-            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path);
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path,bfs_path, markSize);
             scanner.robotType = current_robot;
             this.scanner = scanner;
             load_scan_v2(scanner, scan_path, scanner_config);
@@ -8541,11 +8595,11 @@ namespace opengl3
             var frms_stereo1 = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
             comboImages.Items.AddRange(frms_stereo1);
 
-            chess_size = new Size(10, 11);
-            var markSize = 6.2273f;
+            //chess_size = new Size(10, 11);
+            //var markSize = 6.2273f;
 
-            chess_size = new Size(6, 7);
-            markSize = 10f;
+            //chess_size = new Size(6, 7);
+            //markSize = 10f;
             stereo.calibrateBfs(frms_stereo1,chess_size, markSize);
         }
 
@@ -8567,7 +8621,7 @@ namespace opengl3
         private void but_load_fr_cal_Click(object sender, EventArgs e)
         {
             var stereo_cal_1 = textB_stereo_cal_path.Text.Split('\\').Reverse().ToArray()[0];
-            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = true;
+            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1 }; var reverse = false;
             //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
             var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, reverse);
 
@@ -8577,10 +8631,10 @@ namespace opengl3
             var cam2 = CameraCV.load_camera(cam2_conf_path);
             var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
             stereocam_scan = stereo;
-            //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
-            chess_size = new Size(6, 7);
-            var markSize = 10f;
-            stereocam_scan.calibrate_stereo_rob(frms_stereo, PatternType.Mesh, chess_size,  markSize );
+            stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size,markSize);
+            //chess_size = new Size(6, 7);
+            //var markSize = 10f;
+            //stereocam_scan.calibrate_stereo_rob(frms_stereo, PatternType.Mesh, chess_size,  markSize );
             comboImages.Items.AddRange(frms_stereo);
 
         }
@@ -9020,7 +9074,7 @@ namespace opengl3
 
         #endregion
 
-        #region samara_scan
+            #region samara_scan
 
         private void but_scan_simp_scan_Click(object sender, EventArgs e)
         {
@@ -9072,7 +9126,7 @@ namespace opengl3
             var stereo_cal_path = textB_stereo_cal_path.Text;
             string bfs_path = "bfs_cal.txt";
 
-            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path, markSize);
             this.scanner = scanner;
             scanner_config.strip = Convert.ToInt32(tb_scan_ext_scan_strip.Text);
             scanner_config.smooth = Convert.ToDouble(tb_scan_ext_scan_smooth.Text);
@@ -9160,7 +9214,7 @@ namespace opengl3
             var cam2_conf_path = textB_cam2_conf.Text;
             var stereo_cal_path = textB_stereo_cal_path.Text;
             string bfs_path = "bfs_cal.txt";
-            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path);
+            var scanner = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path, markSize);
             this.scanner = scanner;
             return scanner;
         }
@@ -10616,13 +10670,44 @@ namespace opengl3
             laserLine.send(Convert.ToInt32(textBox_drill_pwm.Text), 52);
         }
 
+
+        //------------------navig-------------------------------------------------
         private void but_con_navig_sys_Click(object sender, EventArgs e)
         {
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var stereo_cal_path = textB_stereo_cal_path.Text;
+            string bfs_path = "bfs_cal.txt";
+            navig_system = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path, markSize);
+            
             videoStart(0);
             videoStart(1);
             var thr_navig = new Thread(navigation_processing);
             thr_navig.Start();
 
+        }
+
+        private void comboBox_navig_proess_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_navig_proess.SelectedIndex == 0)
+            {
+                NavigProcType = ProcessType.Nothing;
+            }
+            else if (comboBox_navig_proess.SelectedIndex == 1)
+            {
+                NavigProcType = ProcessType.Chessboard;
+            }
+            else if (comboBox_navig_proess.SelectedIndex == 2)
+            {
+                NavigProcType = ProcessType.Aruco;
+            }
+            Console.WriteLine(NavigProcType);
+        }
+
+        private void but_save_photo_nav_Click(object sender, EventArgs e)
+        {
+            UtilOpenCV.saveImage(mat_global[0], mat_global[1], txBx_photoName.Text + "_" + photo_number.ToString() + ".png", textBox_photo_nav.Text);
+            photo_number++;
         }
     }
 }

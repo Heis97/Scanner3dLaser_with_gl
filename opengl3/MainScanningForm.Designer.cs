@@ -686,11 +686,15 @@ namespace opengl3
             this.label80 = new System.Windows.Forms.Label();
             this.textBox_z1_vel = new System.Windows.Forms.TextBox();
             this.tabPage_navig_debug = new System.Windows.Forms.TabPage();
+            this.textBox_photo_nav = new System.Windows.Forms.TextBox();
+            this.label45 = new System.Windows.Forms.Label();
+            this.comboBox_navig_proess = new System.Windows.Forms.ComboBox();
+            this.but_save_photo_nav = new System.Windows.Forms.Button();
+            this.but_navig_cl = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.but_navig_cl = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -2090,7 +2094,7 @@ namespace opengl3
             // button6
             // 
             this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button6.Location = new System.Drawing.Point(290, 164);
+            this.button6.Location = new System.Drawing.Point(543, 168);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(116, 33);
             this.button6.TabIndex = 165;
@@ -6505,10 +6509,10 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Location = new System.Drawing.Point(4, 25);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(869, 965);
+            this.tabPage9.Size = new System.Drawing.Size(869, 962);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -6577,7 +6581,7 @@ namespace opengl3
             this.but_load_fr_cal.Name = "but_load_fr_cal";
             this.but_load_fr_cal.Size = new System.Drawing.Size(149, 59);
             this.but_load_fr_cal.TabIndex = 124;
-            this.but_load_fr_cal.Text = "Загрузить калиборовку";
+            this.but_load_fr_cal.Text = "Загрузить калиборовку стерео";
             this.but_load_fr_cal.UseVisualStyleBackColor = true;
             this.but_load_fr_cal.Click += new System.EventHandler(this.but_load_fr_cal_Click);
             // 
@@ -8028,6 +8032,10 @@ namespace opengl3
             // 
             // tabPage_navig_debug
             // 
+            this.tabPage_navig_debug.Controls.Add(this.textBox_photo_nav);
+            this.tabPage_navig_debug.Controls.Add(this.label45);
+            this.tabPage_navig_debug.Controls.Add(this.comboBox_navig_proess);
+            this.tabPage_navig_debug.Controls.Add(this.but_save_photo_nav);
             this.tabPage_navig_debug.Controls.Add(this.but_navig_cl);
             this.tabPage_navig_debug.Location = new System.Drawing.Point(4, 25);
             this.tabPage_navig_debug.Name = "tabPage_navig_debug";
@@ -8036,6 +8044,52 @@ namespace opengl3
             this.tabPage_navig_debug.TabIndex = 10;
             this.tabPage_navig_debug.Text = "Навигац";
             this.tabPage_navig_debug.UseVisualStyleBackColor = true;
+            // 
+            // textBox_photo_nav
+            // 
+            this.textBox_photo_nav.Location = new System.Drawing.Point(1129, 73);
+            this.textBox_photo_nav.Name = "textBox_photo_nav";
+            this.textBox_photo_nav.Size = new System.Drawing.Size(181, 22);
+            this.textBox_photo_nav.TabIndex = 126;
+            this.textBox_photo_nav.Text = "test";
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(1031, 113);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(50, 16);
+            this.label45.TabIndex = 125;
+            this.label45.Text = "Режим";
+            // 
+            // comboBox_navig_proess
+            // 
+            this.comboBox_navig_proess.FormattingEnabled = true;
+            this.comboBox_navig_proess.Location = new System.Drawing.Point(1087, 110);
+            this.comboBox_navig_proess.Name = "comboBox_navig_proess";
+            this.comboBox_navig_proess.Size = new System.Drawing.Size(210, 24);
+            this.comboBox_navig_proess.TabIndex = 124;
+            this.comboBox_navig_proess.SelectedIndexChanged += new System.EventHandler(this.comboBox_navig_proess_SelectedIndexChanged);
+            // 
+            // but_save_photo_nav
+            // 
+            this.but_save_photo_nav.Location = new System.Drawing.Point(1024, 60);
+            this.but_save_photo_nav.Name = "but_save_photo_nav";
+            this.but_save_photo_nav.Size = new System.Drawing.Size(99, 48);
+            this.but_save_photo_nav.TabIndex = 1;
+            this.but_save_photo_nav.Text = "Сохранить";
+            this.but_save_photo_nav.UseVisualStyleBackColor = true;
+            this.but_save_photo_nav.Click += new System.EventHandler(this.but_save_photo_nav_Click);
+            // 
+            // but_navig_cl
+            // 
+            this.but_navig_cl.Location = new System.Drawing.Point(1024, 6);
+            this.but_navig_cl.Name = "but_navig_cl";
+            this.but_navig_cl.Size = new System.Drawing.Size(99, 48);
+            this.but_navig_cl.TabIndex = 0;
+            this.but_navig_cl.Text = "Запуск";
+            this.but_navig_cl.UseVisualStyleBackColor = true;
+            this.but_navig_cl.Click += new System.EventHandler(this.but_con_navig_sys_Click);
             // 
             // timer1
             // 
@@ -8046,16 +8100,6 @@ namespace opengl3
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // but_navig_cl
-            // 
-            this.but_navig_cl.Location = new System.Drawing.Point(1024, 6);
-            this.but_navig_cl.Name = "but_navig_cl";
-            this.but_navig_cl.Size = new System.Drawing.Size(99, 48);
-            this.but_navig_cl.TabIndex = 0;
-            this.but_navig_cl.Text = "Запуск видео";
-            this.but_navig_cl.UseVisualStyleBackColor = true;
-            this.but_navig_cl.Click += new System.EventHandler(this.but_con_navig_sys_Click);
             // 
             // MainScanningForm
             // 
@@ -8210,6 +8254,7 @@ namespace opengl3
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             this.tabPage_navig_debug.ResumeLayout(false);
+            this.tabPage_navig_debug.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -8877,6 +8922,10 @@ namespace opengl3
         private System.Windows.Forms.Button but_con_navig_sys;
         private System.Windows.Forms.TabPage tabPage_navig_debug;
         private System.Windows.Forms.Button but_navig_cl;
+        private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.ComboBox comboBox_navig_proess;
+        private System.Windows.Forms.Button but_save_photo_nav;
+        private System.Windows.Forms.TextBox textBox_photo_nav;
     }
 }
 

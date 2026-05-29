@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 namespace opengl3
 {
     public enum PlanType { X, Y, XY }
+
+    public enum ProcessType { Nothing, Chessboard, Aruco }
     public class Camera
     {
         public Point3d_GL pos;

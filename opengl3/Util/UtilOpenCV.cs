@@ -523,6 +523,9 @@ namespace opengl3
             var mat1 = (Mat)box.Image;
             saveImage(mat1, folder, name);
         }
+
+
+
         public static void saveImage(Mat mat1, string folder, string name)
         {
             if (mat1 != null)
@@ -551,7 +554,21 @@ namespace opengl3
                 mat1.Save("cam2\\" + folder + "\\" + name);
             }
         }
-
+        public static void saveImage(Mat mat1, Mat mat2, string name, string folder)
+        {
+            if (mat1 != null)
+            {
+                Console.WriteLine("cam1\\" + folder + "\\" + name);
+                Directory.CreateDirectory("cam1\\" + folder);
+                mat1.Save("cam1\\" + folder + "\\" + name);
+            }
+            if (mat2 != null)
+            {
+                Console.WriteLine("cam2\\" + folder + "\\" + name);
+                Directory.CreateDirectory("cam2\\" + folder);
+                mat2.Save("cam2\\" + folder + "\\" + name);
+            }
+        }
 
         /// <summary>
         /// ret (err, dist betw 2 points)
@@ -895,6 +912,7 @@ namespace opengl3
         static public Mat drawTours(Mat im, Point[] points, int r=0, int g=0, int b=0, int size = 4)
         {
             int ind = 0;
+            if(points == null) return im;
             if (points.Length != 0)
             {
                 foreach (var p in points)

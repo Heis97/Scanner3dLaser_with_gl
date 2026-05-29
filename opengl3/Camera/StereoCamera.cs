@@ -82,14 +82,13 @@ namespace opengl3
                 }
             }
         }
-        public void calibrate_stereo(Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size)
+        public void calibrate_stereo(Frame[] frames, PatternType patternType, System.Drawing.Size pattern_size, float mark_size)
         {
             
             if (cameraCVs.Length==2)
             {
                 for (int i = 0; i < frames.Length; i++)
                 {
-                    var mark_size = 6.2273f;
                     var pos1 = cameraCVs[0].compPos(frames[i].im, patternType, pattern_size, mark_size);
                     var pos2 = cameraCVs[1].compPos(frames[i].im_sec, patternType, pattern_size, mark_size);
                     if(pos1&&pos2)

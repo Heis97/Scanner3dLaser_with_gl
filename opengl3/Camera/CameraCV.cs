@@ -739,6 +739,22 @@ namespace opengl3
                 return null;
             }
         }
+
+        public static Mat findPoints_chess(Mat mat, Size size_patt)
+        {
+            var gray = mat.ToImage<Gray, byte>();
+            var corn = new VectorOfPointF();
+            if(mat.IsEmpty) return mat;
+            var ret = CvInvoke.FindChessboardCorners(gray, size_patt, corn,CalibCbType.AdaptiveThresh);
+            if (ret == true)
+            {
+               // ret = CvInvoke.FindChessboardCorners(gray, size_patt, corn, CalibCbType.AdaptiveThresh);
+                CvInvoke.CornerSubPix(gray, corn, new Size(5, 5), new Size(-1, -1), new MCvTermCriteria(30, 0.001));
+                CvInvoke.DrawChessboardCorners(mat, size_patt, corn, ret);
+                //var corn2 = corn.ToArray();
+            }
+            return mat;
+        }
         public static System.Drawing.PointF[] findPoints(Frame frame, Size size_patt)
         {
             
@@ -751,6 +767,7 @@ namespace opengl3
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
                 var f_c = FindCircles.findCircles(frame.im,ref cornF, size_patt);
+                
                 if(f_c != null)
                 {
                    // CvInvoke.Imshow("asda", f_c);
@@ -778,6 +795,17 @@ namespace opengl3
 
         }
 
+        public static Mat findPoints_circle(Mat mat, Size size_patt)
+        {
+
+           
+            var len = size_patt.Width * size_patt.Height;
+            var cornF = new System.Drawing.PointF[len];
+            Console.WriteLine("size " + size_patt.Width + " " + size_patt.Height);
+            var f_c = FindCircles.findCircles(mat, ref cornF, size_patt);
+            return f_c;
+
+        }
         static public CameraCV load_camera(string path)
         {
             var settings = Settings_loader.load_data(path);
