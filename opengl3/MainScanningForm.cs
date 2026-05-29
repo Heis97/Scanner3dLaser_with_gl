@@ -6410,7 +6410,7 @@ namespace opengl3
                // Console.WriteLine("navig");
                 if (mat_global[0] != null && mat_global[1] != null)
                 {
-                   // Console.WriteLine("proces");
+                    //Console.WriteLine("proces");
                      var mat1 = get_aruco_info(mat_global[0]);
                      var mat2 = get_aruco_info(mat_global[1]);
 
