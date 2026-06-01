@@ -113,6 +113,7 @@ namespace opengl3
             var C2 = F3.C;
             var D2 = F3.D;
             var d = A * B1 * C2 - A * B2 * C1 - A1 * B * C2 + A1 * B2 * C + A2 * B * C1 - A2 * B1 * C;
+            if (Math.Abs( d)<double.Epsilon) {return new Point3d_GL();}   
             var x = -(B * C1 * D2 - B1 * C * D2 - B * C2 * D1 + B2 * C * D1 + B1 * C2 * D - B2 * C1 * D) / d;
             var y = (A * C1 * D2 - A1 * C * D2 - A * C2 * D1 + A2 * C * D1 + A1 * C2 * D - A2 * C1 * D) / d;
             var z = -(A * B1 * D2 - A1 * B * D2 - A * B2 * D1 + A2 * B * D1 + A1 * B2 * D - A2 * B1 * D) / d;

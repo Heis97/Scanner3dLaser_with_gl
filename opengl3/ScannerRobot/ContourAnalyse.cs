@@ -31,10 +31,10 @@ namespace opengl3
 
             // CvInvoke.Threshold(im, im, bin, 255, ThresholdType.);
             //var im_res = new Image<Gray, Byte>(im.Width, im.Height);
-            Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
-            Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
-            Mat kernel2 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(2, 2), new Point(1, 1));
-            Mat ellips7 = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(7, 7), new Point(1, 1));
+            Mat kernel5 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(5, 5), new Point(1, 1));
+            Mat kernel3 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(3, 3), new Point(1, 1));
+            Mat kernel2 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(2, 2), new Point(1, 1));
+            Mat ellips7 = CvInvoke.GetStructuringElement(MorphShapes.Ellipse, new Size(7, 7), new Point(1, 1));
             var im_res = im_gray.MorphologyEx(MorphOp.Gradient, kernel5, new Point(-1, -1), 6, BorderType.Default, new MCvScalar());
 
             //imageBox3.Image = im_gray.MorphologyEx(MorphOp.Close, kernel5, new Point(-1, -1), 1, BorderType.Default, new MCvScalar());

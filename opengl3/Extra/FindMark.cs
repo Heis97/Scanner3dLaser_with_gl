@@ -615,12 +615,12 @@ namespace opengl3
 
             CvInvoke.MedianBlur(im_med, im_med, 3);
 
-            Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(1, 1));
+            Mat kernel7 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(7, 7), new Point(1, 1));
 
-            Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
-            Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
+            Mat kernel5 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(5, 5), new Point(1, 1));
+            Mat kernel3 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(3, 3), new Point(1, 1));
 
-            Mat ellips7 = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(7, 7), new Point(1, 1));
+            Mat ellips7 = CvInvoke.GetStructuringElement(MorphShapes.Ellipse, new Size(7, 7), new Point(1, 1));
             Image<Gray, Byte> im_med1 = im_med.MorphologyEx(MorphOp.Gradient, kernel5, new Point(-1, -1), 6, BorderType.Default, new MCvScalar());
             //im_med = im_med1.MorphologyEx(MorphOp.Close, kernel3, new Point(-1, -1), 1, BorderType.Default, new MCvScalar());
             CvInvoke.Resize(im_med1, im_med1, new Size(w, h));
@@ -666,12 +666,12 @@ namespace opengl3
             //CvInvoke.AdaptiveThreshold(im_lap, im_med, 255, AdaptiveThresholdType.GaussianC, ThresholdType.Binary, 7, -8);
 
             //box.Image = im_med;
-            /*Mat kernel31 = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(31, 31), new Point(1, 1));
-            Mat kernel11 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(11, 11), new Point(1, 1));
-            Mat kernel9 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(9, 9), new Point(1, 1));
-            Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(1, 1));
-            Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
-            Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
+            /*Mat kernel31 = CvInvoke.GetStructuringElement(MorphShapes.Ellipse, new Size(31, 31), new Point(1, 1));
+            Mat kernel11 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(11, 11), new Point(1, 1));
+            Mat kernel9 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(9, 9), new Point(1, 1));
+            Mat kernel7 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(7, 7), new Point(1, 1));
+            Mat kernel5 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(5, 5), new Point(1, 1));
+            Mat kernel3 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(3, 3), new Point(1, 1));
             Image<Gray, Byte> im_med1 = im_med.MorphologyEx(MorphOp.Gradient, kernel3, new Point(-1, -1), 2, BorderType.Default, new MCvScalar());
             im_med = im_med1.MorphologyEx(MorphOp.Close, kernel31, new Point(-1, -1), 1, BorderType.Default, new MCvScalar());
             CvInvoke.Resize(im_med, im_med, new Size(w, h));

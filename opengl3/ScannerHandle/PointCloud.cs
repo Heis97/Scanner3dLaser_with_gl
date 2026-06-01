@@ -317,7 +317,7 @@ namespace opengl3
         public static Point3d_GL[] fromStereoLaser(PointF[] points_im1, PointF[] points_im2, StereoCamera stereocamera,GraphicGL graphicGL=null, Image<Bgr, byte>[] color_im = null)
         {
 
-            var points3d_1 = computePointsCam(points_im1, stereocamera.cameraCVs[0],color_im[0]) ;
+            var points3d_1 = computePointsCam(points_im1, stereocamera.cameraCVs[0],color_im[0]);
             var lines3d_1 = computeTracesCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);//stereocamera.R
             //var polygons3d_1 = computePolygonsCam(points3d_1, stereocamera.cameraCVs[0].matrixCS);
 
@@ -539,14 +539,24 @@ namespace opengl3
             }
             return points3d;
         }
-        public static Line3d_GL[] computeTracesCam(PointF[] points_im, CameraCV cameraCV,GraphicGL graphicGL=null)
+        public static Line3d_GL[] computeTracesCam(PointF[] points_im, CameraCV cameraCV, Matrix<double> matrix = null)
         {
             var lines3d = new Line3d_GL[points_im.Length];
             for(int i=0; i<lines3d.Length;i++)
             {
-                lines3d[i] = new Line3d_GL(
-                    cameraCV.point3DfromCam(points_im[i]),
-                    new Point3d_GL(0, 0, 0));
+                if(matrix == null)
+                {
+                    lines3d[i] = new Line3d_GL(
+                                        cameraCV.point3DfromCam(points_im[i]),
+                                        new Point3d_GL(0, 0, 0));
+                }
+                else
+                {
+                    lines3d[i] = new Line3d_GL(
+                                         matrix * cameraCV.point3DfromCam(points_im[i]),
+                                         matrix * new Point3d_GL(0, 0, 0));
+                }
+                
             }
             return lines3d;
         }
@@ -609,13 +619,12 @@ namespace opengl3
                 points3d[i].exist = points_im[i].exist;
                 if (image != null)
                 {
-                    var y= (int)points_im[i].Y;
+                    var y = (int)points_im[i].Y;
                     var x = (int)points_im[i].X;
                     if (x >= 0 && x < image.Width && y >= 0 && y < image.Height)
                     {
                         var color = image[y, x];
-                        points3d[i].color = new Color3d_GL((float)color.Red / 255, (float)color.Green / 255, (float)color.Blue / 255);
-                        
+                        points3d[i].color = new Color3d_GL((float)color.Red / 255, (float)color.Green / 255, (float)color.Blue / 255);                        
                         //points3d[i].color = new Color3d_GL(x, y, (float)color.Blue / 255);
                     }                   
                 }               

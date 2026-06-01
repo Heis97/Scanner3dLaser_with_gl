@@ -149,6 +149,7 @@ namespace opengl3
         }
         public static Mat findCircles(Mat mat,ref System.Drawing.PointF[]  corn,Size pattern_size,bool order = true)
         {
+            int Threashold = 100;//55
             var im_tr = new Mat();
             var orig = new Mat();
             bool debug = false;
@@ -161,7 +162,7 @@ namespace opengl3
              var im_tr = im_sob.ThresholdBinary(new Gray(85), new Gray(255));*/
 
             CvInvoke.CvtColor(mat, im_tr, ColorConversion.Bgr2Gray);
-            CvInvoke.GaussianBlur(im_tr, im_tr, new Size(7, 7), 3);
+            CvInvoke.GaussianBlur(im_tr, im_tr, new Size(3, 3), 3);
             if(debug)
             {
                 CvInvoke.Imshow("gauss", im_tr);                
@@ -177,7 +178,7 @@ namespace opengl3
                 CvInvoke.WaitKey();
             }
 
-            CvInvoke.Threshold(im_tr, im_tr,55 , 255, ThresholdType.Binary);
+            CvInvoke.Threshold(im_tr, im_tr, Threashold, 255, ThresholdType.Binary);
             if (debug)
             {
                 CvInvoke.Imshow("im_tr", im_tr);
@@ -192,33 +193,41 @@ namespace opengl3
             contours = size_filter(contours,10);
             orig = mat.Clone();
             CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
+
+
+            CvInvoke.CvtColor(im_tr, im_tr, ColorConversion.Gray2Bgr);
+            CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
+            //CvInvoke.WaitKey();
+            
             //CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
             /*Console.WriteLine("find_circ");
             CvInvoke.Imshow("orig_c", orig);
             CvInvoke.WaitKey();*/
             contours = only_same_centres(contours);
             var conts = sameContours(contours);
+
+            
             if (conts == null)
             {
                 Console.WriteLine("find_circ ret null"); 
-                return null;
+                return im_tr;
             }
             if (conts.Size == 0)
             {
-                Console.WriteLine("find_circ ret null"); 
-                return null;
+                Console.WriteLine("find_circ conts.Size null"); 
+                return im_tr;
             }
            // 
             conts = filter_same_centres(conts);
-            var cents = findCentres(conts);
-            CvInvoke.CvtColor(im_tr, im_tr, ColorConversion.Gray2Bgr);
-            
-            //CvInvoke.WaitKey();
-            if (conts!=null)
+
+            if (conts != null)
             {
-               // CvInvoke.DrawContours(im_tr, conts, -1, new MCvScalar(255, 0, 0), 2, LineType.EightConnected);
+                CvInvoke.DrawContours(im_tr, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
             }
+
+            var cents = findCentres(conts);
            
+          
             //CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
             //CvInvoke.DrawContours(im_tr, conts_sc, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
 
@@ -229,7 +238,7 @@ namespace opengl3
             if (cents == null)
             {
                 Console.WriteLine("find_circ ret null");
-                return null;
+                return im_tr;
             }
 
 
@@ -253,7 +262,8 @@ namespace opengl3
                 //
                 //CvInvoke.Imshow("fnd", orig);
                 //CvInvoke.WaitKey();
-                // UtilOpenCV.drawTours(im_tr, PointF.toPoint(cents), 255, 0, 0, 2);
+                 UtilOpenCV.drawTours(im_tr, PointF.toPoint(cents), 255, 0, 0, 2);
+                //return im_tr;
                 var ps_ord = orderPoints(cents, pattern_size);
                 /*var ps_ord2 = orderPoints_assym(cents, pattern_size);
                 orig = UtilOpenCV.drawPoints_2d(orig,PointF.toSystemPoint_ss_2d( ps_ord2),0, 255,  0);
@@ -1088,7 +1098,7 @@ namespace opengl3
             if (ind.Length == 0) { Console.WriteLine("ind.Length == 0"); return null; }
             if (ind[0] == null) { Console.WriteLine("ind[0] == null"); return null; }
             if (ind[0].Length == 0) { Console.WriteLine("ind[0].Length == 0"); return null; }
-            if (ind.Length * ind[0].Length != size.Width * size.Height) { Console.WriteLine("ind.Length * ind[0].Length"+ ind.Length+" "+ ind[0].Length+" "+ size.Width+" " + size.Height); return null; }
+            if (ind.Length * ind[0].Length != size.Width * size.Height) { Console.WriteLine("ind.Length * ind[0].Length!=size.Width * size.Height " + ind.Length+" "+ ind[0].Length+" "+ size.Width+" " + size.Height); return null; }
             var ps_arr = new System.Drawing.PointF[ind.Length, ind[0].Length];
          
             for (int i = 0; i < ind.Length; i++)

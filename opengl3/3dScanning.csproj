@@ -390,16 +390,16 @@
       <Version>3.8.2-alpha</Version>
     </PackageReference>
     <PackageReference Include="Emgu.CV">
-      <Version>4.9.0.5494</Version>
+      <Version>4.13.0.5924</Version>
     </PackageReference>
     <PackageReference Include="Emgu.CV.Bitmap">
-      <Version>4.9.0.5494</Version>
+      <Version>4.13.0.5924</Version>
     </PackageReference>
     <PackageReference Include="Emgu.CV.runtime.windows">
-      <Version>4.9.0.5494</Version>
+      <Version>4.13.0.5924</Version>
     </PackageReference>
     <PackageReference Include="Emgu.CV.UI">
-      <Version>4.9.0.5494</Version>
+      <Version>4.13.0.5924</Version>
     </PackageReference>
     <PackageReference Include="glfw-net">
       <Version>3.3.1</Version>
@@ -420,7 +420,7 @@
       <Version>0.8.4</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common">
-      <Version>8.0.6</Version>
+      <Version>10.0.8</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Primitives">
       <Version>4.3.0</Version>

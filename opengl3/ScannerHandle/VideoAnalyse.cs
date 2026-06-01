@@ -1539,9 +1539,9 @@ namespace opengl3
            // CvInvoke.Imshow("gauss", gauss);
             CvInvoke.Threshold(gauss, gauss, 10, 255, ThresholdType.Binary);
 
-            Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
-            Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(1, 1));
-            Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Ellipse , new Size(5, 5), new Point(1, 1));
+            Mat kernel3 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(3, 3), new Point(1, 1));
+            Mat kernel7 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(7, 7), new Point(1, 1));
+            Mat kernel5 = CvInvoke.GetStructuringElement(MorphShapes.Ellipse , new Size(5, 5), new Point(1, 1));
 
             CvInvoke.MorphologyEx(gauss, gauss, MorphOp.Dilate, kernel5, new Point(-1, -1), 2, BorderType.Default, new MCvScalar());
             var im_g = gauss.ToImage<Gray, byte>();

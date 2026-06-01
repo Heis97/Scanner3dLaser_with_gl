@@ -44,7 +44,20 @@ namespace opengl3
            
         }
 
-        
+        public Point3d_GL[] comp_points_3d(System.Drawing.PointF[] ps1, System.Drawing.PointF[] ps2)
+        {
+            if (ps1.Length != ps2.Length) return null;
+            var lines1 = PointCloud.computeTracesCam(PointF.toPointF(ps1), cameraCVs[0],cameraCVs[0].matrixCS );
+            var lines2 = PointCloud.computeTracesCam(PointF.toPointF(ps2), cameraCVs[1], cameraCVs[0].matrixCS*R);
+
+            var ps_comp = new Point3d_GL[lines1.Length];
+            for(int i = 0;i<lines1.Length; i++)
+            {
+                ps_comp[i] = Line3d_GL.point_betw_cross_lines(lines1[i],lines2[i]);
+            }
+           
+            return ps_comp;
+        }
 
 
         public void calibrate(Mat[] mats,PatternType patternType,System.Drawing.Size pattern_size, float marksize)

@@ -32,6 +32,9 @@ using Accord.Statistics.Kernels;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using Emgu.CV.Aruco;
+using Emgu.CV.Linemod;
+using System.Security.Policy;
+using System.Security.Cryptography;
 //using Accord;
 
 namespace opengl3
@@ -523,12 +526,24 @@ namespace opengl3
             Console.WriteLine(fr_p);
             Console.WriteLine(fr_p2);*/
 
-            var r_type = RobotFrame.RobotType.KUKA;
+            /*var r_type = RobotFrame.RobotType.KUKA;
             var f_kuka = new RobotFrame(500, 100, 200, -2.3, 0.5, -2, 0, 0, 0, r_type);
             var m_kuka = f_kuka.getMatrix();
             var f_kuka2 = new RobotFrame(m_kuka, r_type);
             Console.WriteLine(f_kuka);
             Console.WriteLine(f_kuka2);
+
+
+
+            var p1 = new Point3d_GL(10, 10, 10);
+            var p2 = new Point3d_GL(20, 60, 10);
+            var p3 = new Point3d_GL(20, 10, 20);
+            var p4 = new Point3d_GL(10, 60, 20);
+
+            var line1 = new Line3d_GL(p1, p2);
+            var line2 = new Line3d_GL(p3, p4);
+            var p_cross= Line3d_GL.point_betw_cross_lines(line1, line2);
+            Console.WriteLine("cross_point: " + p_cross.x + " " + p_cross.y + " " + p_cross.z + " ");*/
         }
 
         #region something
@@ -701,12 +716,12 @@ namespace opengl3
             CvInvoke.Imshow("gg", im1);
             CvInvoke.AdaptiveThreshold(im1, mat2, 255, AdaptiveThresholdType.GaussianC, ThresholdType.Binary, 9, 1);
             CvInvoke.Imshow("ad_thr", mat2);
-            Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(1, 1));
+            Mat kernel7 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(7, 7), new Point(1, 1));
 
-            Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(1, 1));
-            Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
-            Mat kernel2 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(2, 2), new Point(1, 1));
-            Mat ellips7 = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(7, 7), new Point(1, 1));
+            Mat kernel5 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(5, 5), new Point(1, 1));
+            Mat kernel3 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(3, 3), new Point(1, 1));
+            Mat kernel2 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(2, 2), new Point(1, 1));
+            Mat ellips7 = CvInvoke.GetStructuringElement(MorphShapes.Ellipse, new Size(7, 7), new Point(1, 1));
             CvInvoke.MorphologyEx(mat2, mat2, MorphOp.Dilate, kernel2, new Point(-1, -1), 2, BorderType.Default, new MCvScalar());
             CvInvoke.Imshow("m_ex", mat2);
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
@@ -885,7 +900,7 @@ namespace opengl3
             #region important
 
 
-
+           
 
             combo_improc.Items.AddRange(new string[] { "Распознать шахматный паттерн", "Стерео Исп", "Паттерн круги", "Датчик расст", "св Круги грид", "Ничего" });
 
@@ -918,7 +933,7 @@ namespace opengl3
             };
 
             // patt = UtilOpenCV.generateImage_chessboard(chess_size.Width, chess_size.Height, 200);
-             patt = UtilOpenCV.generateImage_chessboard_circle(8, 11, 200);
+            // patt = UtilOpenCV.generateImage_chessboard_circle(chess_size.Width, chess_size.Height, 200);
             #endregion
             imb_base = new ImageBox[] { imBox_base_1, imBox_base_2 };
             imb_main = new ImageBox[] { imageBox1, imageBox2 };
@@ -1000,6 +1015,8 @@ namespace opengl3
 
             tree_models.CheckBoxes = true;
             //load_camers_v2();
+
+            
             /*var m_test = new Mat("test_ph.jpg");
             var fr = new Frame(m_test, "sdf", FrameType.MarkBoard);
             CameraCV.findPoints(fr, new Size(9, 10));*/
@@ -1319,9 +1336,9 @@ namespace opengl3
         {
            // markSize = 19.45f;//6.2273f//10f//9.78f
            // chess_size = new Size(6, 9);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam2\cam_cal_2905_4a", FrameType.Pattern, PatternType.Mesh);//
+            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_cal_virt_0106_2", FrameType.Pattern, PatternType.Mesh);//
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam2_cal_2905_4a.txt");
+            cam1.save_camera("cam1_cal_virt_0106_2.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -1352,8 +1369,10 @@ namespace opengl3
         }
         Scanner loadScanner_v2(string conf1, string conf2, string stereo_cal, string bfs_file = null, float marksize = 10f)
         {
+            Console.WriteLine("loadScanner");
             var cam1 = CameraCV.load_camera(conf1);
             var cam2 = CameraCV.load_camera(conf2);
+            Console.WriteLine("load_camera");
             Scanner scanner;
             if (bfs_file == null)
             {
@@ -2188,9 +2207,9 @@ namespace opengl3
             int i = Convert.ToInt32(((Button)sender).AccessibleName);
             GL1.SaveToFolder(openGl_folder, i);
         }
-        
-        
 
+
+        int monitor_num = 4;
         private void glControl1_ContextCreated(object sender, GlControlEventArgs e)
         {
             var send = (Control)sender;
@@ -2198,18 +2217,20 @@ namespace opengl3
             var w = send.Width;
             var h = send.Height;
             var d = 1000;
-            var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
+            //var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
             //GL1.buffersGl.setTranspobj(fr, 0.0f);
             
 
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-           
+
+            var mat_test = new Mat("aruco_test4.png");
+            generateImage3D_aruko_solid(1, 0, 0, mat_test);
             //GL1.SortObj();
-            int monitor_num = 1;
+
             if (monitor_num == 4)
             {
                 GL1.addMonitor(new Rectangle(w / 2, 0, w / 2, h / 2), 0);
-                GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 60, 0), new Vertex3d(100, 0, -60), 0);
+                GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1, new Vertex3d(0, 20, 0), new Vertex3d(100, 0, -60), 0);
               //  GL1.addMonitor(new Rectangle(0, 0, w / 2, h / 2), 1);
                 GL1.addMonitor(new Rectangle(w / 2, h / 2, w / 2, h / 2), 2);
                 GL1.addMonitor(new Rectangle(0, h / 2, w / 2, h / 2), 3);
@@ -2368,8 +2389,8 @@ namespace opengl3
             //test_go_to_point_robot();
             //test_poses();
             //load_3d_model_robot_pulse();
-            
-            
+
+            load_navig_sys();
         }
         void test_allign_mesh()
         {
@@ -2735,41 +2756,71 @@ namespace opengl3
              }*/
 
             bool find_gl =true;
-            find_gl = false;
-            var num_cam = 1;
+            //find_gl = false;
+            //var num_cam = 4;
             if (find_gl)
             {
-                var mat1_or = GL1.matFromMonitor(0);
-                var mat1 = new Mat();
-                CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
+                var mat1 = GL1.matFromMonitor(0);
+                //var mat1 = new Mat();
+               // CvInvoke.Flip(mat1_or, mat1, FlipType.Vertical);
                 //prin.t(GL1.transRotZooms[0].cameraCV.distortmatrix);
                 mat1 = UtilOpenCV.remapDistImOpenCvCentr(mat1, GL1.cameraCV.distortmatrix);
                 //GL1.transRotZooms[0].cameraCV.distortmatrix
-                // mat1 = UtilOpenCV.GLnoise(mat1, 2, 2,-1);
+                 //mat1 = UtilOpenCV.GLnoise(mat1, 2, 2,-1);
                 imBox_mark2.Image = mat1;
-                imProcess_virt(mat1, 1);
-                imBox_mark1.Image = mat1;
+               // imProcess_virt(mat1, 1);
+               // 
                 var corn = new System.Drawing.PointF[0];
-                imBox_mark2.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
-
-                
-                if (num_cam>1)
+                var points3d_aruco = new Point3d_GL[12][];
+                //imBox_mark2b.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
+                var points_aruco1 = new System.Drawing.PointF[12][];
+                imBox_mark2b.Image = get_aruco_info(navig_system.stereoCamera.cameraCVs[0].undist(mat1), ref points_aruco1);
+                if (monitor_num > 1)
                 {
-                    var mat2_or = GL1.matFromMonitor(1);
-                    var mat2 = new Mat();
+                    var mat2 = GL1.matFromMonitor(1);
+                    //var mat2 = new Mat();
                    
-                    if (mat2_or != null)
+                   // if (mat2_or != null)
                     {
-                        CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
-                        CvInvoke.Rotate(mat2, mat2, RotateFlags.Rotate180);
+                        //CvInvoke.Flip(mat2_or, mat2, FlipType.Vertical);
+                        //CvInvoke.Rotate(mat2, mat2, RotateFlags.Rotate180);
                     }
-                    mat2 = UtilOpenCV.remapDistImOpenCvCentr(mat2, GL1.transRotZooms[1].cameraCV.distortmatrix);
-                    mat2 = UtilOpenCV.GLnoise(mat2, 2, 2,-1);
+                    mat2 = UtilOpenCV.remapDistImOpenCvCentr(mat2, GL1.cameraCV.distortmatrix);
+                    // mat2 = UtilOpenCV.GLnoise(mat2, 2, 2,-1);
+
                     imBox_mark1.Image = mat2;
-                    imProcess_virt(mat2, 2);
+                    var points_aruco2 = new System.Drawing.PointF[12][];
+                    imBox_mark1_b.Image = get_aruco_info(navig_system.stereoCamera.cameraCVs[1].undist(mat2), ref points_aruco2);
+
+                    
+                    for (int i = 0; i < points_aruco1.Length; i++)
+                    {
+                        if (points_aruco1[i] != null && points_aruco2[i] != null)
+                        {
+                            if (points_aruco1[i].Length != 0 && points_aruco2[i].Length != 0)
+                            {
+                                points3d_aruco[i] = navig_system.stereoCamera.comp_points_3d(points_aruco1[i], points_aruco2[i]);
+                                //Console.WriteLine(i + " " + points3d_aruco[i][0].x + " " + points3d_aruco[i][0].z + " ");
+                            }
+                            else
+                            {
+                                points3d_aruco[i] = null;
+                            }
+                        }
+                        else
+                        {
+                            points3d_aruco[i] = null;
+                        }
+                    }
+                    if (points3d_aruco[0]!=null && points3d_aruco[11] != null)
+                    {
+                        Console.WriteLine((points3d_aruco[0][0]- points3d_aruco[11][0]).magnitude());
+                    }
+                    // imBox_mark1_b.Image = FindCircles.findCircles(mat2, ref corn, chess_size);
+                    //imProcess_virt(mat2, 2);
                 }
 
-               
+                
                 //var mat3 = UtilOpenCV.remapDistImOpenCvCentr(mat2, new Matrix<double>(new double[] { -0.5, 0, 0, 0, 0 }));
                 
                 // imBox_mark1.Image = UtilOpenCV.drawChessboard(mat1, new Size(6, 7));
@@ -4308,12 +4359,12 @@ namespace opengl3
             CvInvoke.Laplacian(im, lapl, DepthType.Default);
             CvInvoke.Threshold(lapl,lapl,20,255,ThresholdType.Binary);
             var im_th = lapl.ToImage<Gray, byte>();
-            Mat kernel7 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(7, 7), new Point(3, 3));
+            Mat kernel7 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(7, 7), new Point(3, 3));
 
-            Mat kernel5 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(2, 2));
-            Mat kernel3 = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
+            Mat kernel5 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(5, 5), new Point(2, 2));
+            Mat kernel3 = CvInvoke.GetStructuringElement(MorphShapes.Rectangle, new Size(3, 3), new Point(1, 1));
 
-            Mat ellips7 = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(7, 7), new Point(1, 1));
+            Mat ellips7 = CvInvoke.GetStructuringElement(MorphShapes.Ellipse, new Size(7, 7), new Point(1, 1));
             int num = 4;
             Image<Gray, Byte> im_med = im_th;
             for (int i=0;i<num;i++)
@@ -6422,34 +6473,59 @@ namespace opengl3
                     //var mat1 = CameraCV.findPoints_chess(mat_global[0].Clone(), chess_size);
                     //var mat2 = CameraCV.findPoints_chess(mat_global[1].Clone(), chess_size);
 
-
                     //find calibratre board circle
                     //var mat1 = CameraCV.findPoints_circle(mat_global[0].Clone(), chess_size);
                     //var mat2 = CameraCV.findPoints_circle(mat_global[1].Clone(), chess_size);
 
-
                     System.Drawing.PointF[][] points_aruco1 = new System.Drawing.PointF[12][];
                     System.Drawing.PointF[][] points_aruco2 = new System.Drawing.PointF[12][];
 
-                    var mat1 = get_aruco_info(mat_global[0].Clone(),ref points_aruco1);
+                    Point3d_GL[][] points3d_aruco = new Point3d_GL[12][];
+
+
+                    var mat1 = get_aruco_info(mat_global[0].Clone(), ref points_aruco1);
                     var mat2 = get_aruco_info(mat_global[1].Clone(), ref points_aruco2);
 
-                    for (int i = 0; i < points_aruco1.Length; i++)
+                    /*for (int i = 0; i < points_aruco1.Length; i++)
                     {
                         if(points_aruco1[i] != null && points_aruco2[i] != null)
                         {
                             if (points_aruco1[i].Length!=0 && points_aruco2[i].Length != 0)
                             {
                                 Console.WriteLine(i + " " + points_aruco1[i][0].X + " " + points_aruco2[i][0].X + " ");
+
+
                             }
                         }
+                    }*/
+                    for (int i = 0; i < points_aruco1.Length; i++)
+                    {
+                        if (points_aruco1[i] != null && points_aruco2[i] != null)
+                        {
+                            if (points_aruco1[i].Length != 0 && points_aruco2[i].Length != 0)
+                            {
+                                points3d_aruco[i] = navig_system.stereoCamera.comp_points_3d(points_aruco1[i], points_aruco2[i]);
+                                //Console.WriteLine(i + " " + points3d_aruco[i][0].x + " " + points3d_aruco[i][0].z + " ");
+                            }
+                            else
+                            {
+                                points3d_aruco[i] = null;
+                            }
+                        }
+                        else
+                        {
+                            points3d_aruco[i] = null;
+                        }
                     }
-
+                    if (points3d_aruco[0] != null && points3d_aruco[11] != null)
+                    {
+                        Console.WriteLine((points3d_aruco[0][0] - points3d_aruco[11][0]).magnitude());
+                    }
 
                     imageBox1.Image = mat1;
                     imageBox2.Image = mat2;
 
-                    /*if (NavigProcType == ProcessType.Nothing)
+                    /*if(NavigProcType == ProcessType.Nothing)
                     {
                         imageBox1.Image = mat_global[0];
                         imageBox2.Image = mat_global[1];
@@ -6479,14 +6555,22 @@ namespace opengl3
 
             var dictionary = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_50);
             var detectorParams = DetectorParameters.GetDefault();
+            detectorParams.CornerRefinementMethod = DetectorParameters.RefinementMethod.Contour;
+            //detectorParams.CornerRefinementWinSize = 5;
+            detectorParams.CornerRefinementMaxIterations = 30;
+            detectorParams.CornerRefinementMinAccuracy = 0.1;
+
             
+            //ArucoDetector detector = new ArucoDetector(dictionary, parameters);
             // Контейнеры для результатов
             var corners = new VectorOfVectorOfPointF();
             var ids = new VectorOfInt();
             var rejectedPoints = new VectorOfVectorOfPointF();
 
+            // ArucoInvoke.RefineDetectedMarkers()
             // 2. Основной шаг: детекция маркеров
-            if(image.IsEmpty) return null;
+
+            if (image.IsEmpty) return null;
             ArucoInvoke.DetectMarkers(image, dictionary, corners, ids, detectorParams, rejectedPoints);
             //Console.WriteLine("--Aruco---");
             // 3. Обработка результатов: рисуем найденные маркеры, если они есть
@@ -6494,7 +6578,19 @@ namespace opengl3
             {
                 // Отрисовка границ и ID маркеров на изображении
                 ArucoInvoke.DrawDetectedMarkers(image, corners, ids, new Bgr(Color.Green).MCvScalar);
-
+                /*if (ids.Size > 0)
+                {
+                    for (int i = 0; i < ids.Size; i++)
+                    {
+                        int markerId = ids[i];
+                       System.Drawing.PointF[] markerCorners = corners[i].ToArray(); // Четыре угла текущего маркера
+                        Console.WriteLine($"Маркер ID: {markerId}");
+                        Console.WriteLine($"  Углы: ({markerCorners[0].X:F2}, {markerCorners[0].Y:F2}), " +
+                                          $"({markerCorners[1].X:F2}, {markerCorners[1].Y:F2}), " +
+                                          $"({markerCorners[2].X:F2}, {markerCorners[2].Y:F2}), " +
+                                          $"({markerCorners[3].X:F2}, {markerCorners[3].Y:F2})");
+                    }
+                }*/
                 // Вывод информации в консоль
                 for (int i = 0; i < ids.Size; i++)
                 {
@@ -7233,6 +7329,10 @@ namespace opengl3
             {
                 n++; k++;
             }
+            else
+            {
+                n--; k--;
+            }
 
             float w = sidef * (float)n;
             float h = sidef * (float)k;
@@ -7281,6 +7381,44 @@ namespace opengl3
 
 
         }
+
+        string generateImage3D_aruko_solid(int n,double x_coord, double y_coord, Mat mat = null)
+        {
+
+
+            float z = 0f;
+            float sidef = 1;
+            float[] pattern_mesh = {
+                            0.0f,0.0f,0.0f, // triangle 1 : begin
+                            0.0f,sidef, 0.0f,
+                           sidef,sidef, 0.0f, // triangle 1 : end
+                            sidef, sidef,0.0f, // triangle 2 : begin
+                           sidef,0.0f,0.0f,
+                            0.0f, 0.0f,0.0f};
+
+            var mesh = new List<float>();
+            var im = mat.ToImage<Gray, byte>();
+           
+            for (int x = 0; x < im.Width; x ++)
+            {
+                for (int y = 0; y < im.Height; y ++)
+                {
+                    if (im.Data[y,x,0]< 50)
+                    {
+                        var patt_cur = GraphicGL.translateMesh(pattern_mesh, (float)(x_coord + sidef*x),(float) (y_coord + sidef * y), z);
+                        mesh.AddRange(patt_cur);
+                    }
+                        
+                }
+            }
+            
+
+
+            return GL1.addGLMesh(mesh.ToArray(), PrimitiveType.Triangles, 0, 0, 0, 1, Color3d_GL.black(), "calibrate_board");
+
+
+        }
+
         float[] circle_mesh(float rad,int count)
         {
             var mesh = new List<float>();
@@ -10672,13 +10810,20 @@ namespace opengl3
 
 
         //------------------navig-------------------------------------------------
-        private void but_con_navig_sys_Click(object sender, EventArgs e)
+
+        void load_navig_sys()
         {
             var cam1_conf_path = textB_cam1_conf.Text;
             var cam2_conf_path = textB_cam2_conf.Text;
             var stereo_cal_path = textB_stereo_cal_path.Text;
             string bfs_path = "bfs_cal.txt";
-            navig_system = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, bfs_path, markSize);
+            Console.WriteLine(cam1_conf_path);
+            Console.WriteLine(cam2_conf_path);
+            navig_system = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, null, markSize);
+        }
+        private void but_con_navig_sys_Click(object sender, EventArgs e)
+        {
+            
             
             videoStart(0);
             videoStart(1);

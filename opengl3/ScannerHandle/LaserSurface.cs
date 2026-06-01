@@ -144,7 +144,7 @@ namespace opengl3
                     cameraCV.compPos(mat, patternType, cameraCV.pattern_size);
                 }
             }
-            var lines = PointCloud.computeTracesCam(ps, cameraCV,graphicGL);
+            var lines = PointCloud.computeTracesCam(ps, cameraCV);
             var ps3d = new List<Point3d_GL>();
             ps3d.AddRange( PointCloud.intersectWithFlat(new Line3d_GL[] { lines[0], lines[1] }, zeroFlatInCam(cameraCV.matrixSC,z)));
            // graphicGL?.addFlat3d_XZ(zeroFlatInCam(cameraCV.matrixSC, z));
