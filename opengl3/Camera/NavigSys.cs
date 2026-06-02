@@ -24,6 +24,11 @@ namespace opengl3
         Point3d_GL tcp;
         Point3d_GL rotate;
         public Matrix<double> matrix_frame;
+        Matrix<double> matrix_tcp = new Matrix<double>(new double[,] {
+                {1,0,0,0 },
+                {0,1,0,0 },
+                {0,0,1,0 },
+                {0,0,0,1 }});
         ToolType tool_type;
         /*
          * x down
@@ -118,10 +123,12 @@ namespace opengl3
                 {0,0,1,p_cenr.z },
                 {0,0,0,1 }});
 
-                tcp_aver += m_inv * tcp;
+                tcp_aver += tcp* m_inv;// m_inv* tcp
             }
 
             tcp_aver = tcp_aver / 4;
+
+            this.matrix_tcp = tcp_aver;
 
             this.tcp = new Point3d_GL(tcp_aver[0, 3], tcp_aver[1, 3], tcp_aver[2, 3]);
 
@@ -201,7 +208,18 @@ namespace opengl3
 
             return null;
         }
+        public Matrix<double> get_frame_tcp(Point3d_GL[][] ps_finded)//ps not filterd
+        {
+            var ps = filter_ps(ps_finded);
+            if (!check_aruko_ps(ps)) { return null; }
+            if (tool_type == ToolType.tp4_v1)
+            {
 
+                return get_frame_tr4_v1(ps) * matrix_tcp ;
+            }
+
+            return null;
+        }
         /*
          * x down
          * y right 

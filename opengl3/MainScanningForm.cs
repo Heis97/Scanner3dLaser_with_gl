@@ -6583,10 +6583,10 @@ namespace opengl3
                              Point3d_GL.centr_mass( points3d_aruco[11])};
 
              
-                 navig_tool1.get_frame(points3d_aruco);
+                 
                 label_comp_period.BeginInvoke((MethodInvoker)(() => GL1.buffersGl.setObjVdata(navig_tool1_name, Point3d_GL.toMesh(ps_tool1), Point3d_GL.toMesh(ps_tool1))));
                 label_comp_period.BeginInvoke((MethodInvoker)(() => GL1.remove_buff_gl_id(navig_tool1_frame_name)));
-                label_comp_period.BeginInvoke((MethodInvoker)(() => GL1.addFrame_v2(navig_tool1.matrix_frame,100, navig_tool1_frame_name)));
+                label_comp_period.BeginInvoke((MethodInvoker)(() => GL1.addFrame_v2(navig_tool1.get_frame_tcp(points3d_aruco),100, navig_tool1_frame_name)));
                 //Console.WriteLine("add gl");
                 /*for(int i = 0;i < points3d_aruco[0].Length; i++)
                 {
