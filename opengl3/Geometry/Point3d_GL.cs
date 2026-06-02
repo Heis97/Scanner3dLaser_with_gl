@@ -1,4 +1,5 @@
-﻿using Emgu.CV;
+﻿using Accord.Collections;
+using Emgu.CV;
 using OpenGL;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,11 @@ namespace opengl3
         public double z { get; set; }
         public bool exist { get; set; }
         public Color3d_GL color { get; set; }
+
+        public int ind { get; set; }
+        public int ind_sec { get; set; }
         //public PointF uv { get; set; }
-        public Point3d_GL(double _x = 0, double _y = 0, double _z = 0, Color3d_GL _color = default)
+        public Point3d_GL(double _x = 0, double _y = 0, double _z = 0, Color3d_GL _color = default, int _ind = 0, int _ind_sec = 0)
         {
             x = _x;
             y = _y;
@@ -26,15 +30,19 @@ namespace opengl3
             exist = true;
             if (_color != default) color = _color;
             else color = new Color3d_GL(0.5f, 0.5f, 0.5f);
+            ind = _ind;
+            ind_sec = _ind_sec;
         }
 
-        public Point3d_GL(Vertex4f vertex, Color3d_GL _color = default)
+        public Point3d_GL(Vertex4f vertex, Color3d_GL _color = default, int _ind = 0, int _ind_sec = 0)
         {
             x = vertex.x;
             y = vertex.y;
             z = vertex.z;
             exist = true;
             color = _color;
+            ind = _ind;
+            ind_sec = _ind_sec;
         }
         public Point3d_GL toDegree()
         {
@@ -43,21 +51,25 @@ namespace opengl3
             z = z * 180 / Math.PI;
             return this;
         }
-        public Point3d_GL(Point p, double _z)
+        public Point3d_GL(Point p, double _z, int _ind = 0, int _ind_sec = 0)
         {
             x = p.X;
             y = p.Y;
             z = _z;
             exist = true;
             color = default;
+            ind = _ind;
+            ind_sec = _ind_sec;
         }
-        public Point3d_GL(PointF p, double _z)
+        public Point3d_GL(PointF p, double _z, int _ind = 0, int _ind_sec = 0)
         {
             x = p.X;
             y = p.Y;
             z = _z;
             exist = true;
             color = default;
+            ind = _ind;
+            ind_sec = _ind_sec;
         }
         public Point3d_GL(Point3d_GL p1, Point3d_GL p2)
         {
@@ -66,6 +78,8 @@ namespace opengl3
             z = p1.z + (p2.z - p1.z) / 2;
             exist = true;
             color = p1.color;
+            ind = p1.ind;
+            ind_sec = p1.ind_sec;
         }
 
         public static List<Point3d_GL> comp_blend_lines(Point3d_GL p1, Point3d_GL p2, Point3d_GL p3, double r, double d)
@@ -179,15 +193,17 @@ namespace opengl3
         }
         public Point3d_GL Copy()
         {
-            return new Point3d_GL(x, y, z, color);
+            return new Point3d_GL(x, y, z, color,ind,ind_sec);
         }
-        public Point3d_GL(double[,] cor, Color3d_GL _color = default)
+        public Point3d_GL(double[,] cor, Color3d_GL _color = default, int _ind = 0, int _ind_sec = 0)
         {
             x = cor[0, 0];
             y = cor[1, 0];
             z = cor[2, 0];
             exist = true;
             color = _color;
+            ind = _ind;
+            ind_sec = _ind_sec;
         }
         public Point3d_GL normalize()
         {
@@ -604,6 +620,7 @@ namespace opengl3
         static double[,] Matrix4x4ToDouble(Matrix<double> matrixA)
         {
             // prin.t(matrixA);
+            if (matrixA == null) return null;
             var ret = new double[matrixA.Cols, matrixA.Rows];
             for (var i = 0; i < ret.GetLength(0); i++)
             {
@@ -637,6 +654,7 @@ namespace opengl3
         public static Point3d_GL operator *(Matrix<double> matrixA, Point3d_GL p)
         {
             var matrix = Matrix4x4ToDouble(matrixA);
+            if (matrix == null) return p;
             return matrix * p;
         }
 

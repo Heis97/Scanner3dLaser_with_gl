@@ -133,6 +133,7 @@
   <ItemGroup>
     <Compile Include="Camera\Features.cs" />
     <Compile Include="Camera\FindCircles.cs" />
+    <Compile Include="Camera\NavigSys.cs" />
     <Compile Include="Camera\StereoCamera.cs" />
     <Compile Include="Connection\DeviceArduino.cs" />
     <Compile Include="Connection\DevicesArduino\DeviceMarlin.cs" />

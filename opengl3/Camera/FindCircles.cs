@@ -149,7 +149,8 @@ namespace opengl3
         }
         public static Mat findCircles(Mat mat,ref System.Drawing.PointF[]  corn,Size pattern_size,bool order = true)
         {
-            int Threashold = 100;//55
+            int Threashold = 55;// 100;//55
+            int blur = 7; //3
             var im_tr = new Mat();
             var orig = new Mat();
             bool debug = false;
@@ -162,7 +163,7 @@ namespace opengl3
              var im_tr = im_sob.ThresholdBinary(new Gray(85), new Gray(255));*/
 
             CvInvoke.CvtColor(mat, im_tr, ColorConversion.Bgr2Gray);
-            CvInvoke.GaussianBlur(im_tr, im_tr, new Size(3, 3), 3);
+            CvInvoke.GaussianBlur(im_tr, im_tr, new Size(blur, blur), 3);
             if(debug)
             {
                 CvInvoke.Imshow("gauss", im_tr);                

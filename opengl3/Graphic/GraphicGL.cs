@@ -2229,8 +2229,9 @@ namespace opengl3
             oz += posit;
             return addFrame(posit, ox, oy, oz,name);
         }
-        public string addFrame_v2(Matrix<double> m, double frame_len = 3)
+        public string addFrame_v2(Matrix<double> m, double frame_len = 3, string name = "new Frame")
         {
+            if (m == null){ Console.WriteLine("matrix null"); return name; }
             var posit = m * new Point3d_GL(0, 0, 0);
             /*var ox = matrix * new Point3d_GL(frame_len, 0, 0);
              var oy = matrix * new Point3d_GL(0, frame_len, 0);
@@ -2242,8 +2243,9 @@ namespace opengl3
             ox += posit;
             oy += posit;
             oz += posit;
-            return addFrame(posit, ox, oy, oz);
+            return addFrame(posit, ox, oy, oz, name);
         }
+
         static public float[] comp_grad_color_dz(float[] mesh)
         {
             var mesh_color = new float[mesh.Length];
@@ -2450,7 +2452,7 @@ namespace opengl3
             }
             return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color, name);
         }
-        public void addLineMesh(Point3d_GL[] points, Color3d_GL color = default, string name = "new LineMesh")
+        public string addLineMesh(Point3d_GL[] points, Color3d_GL color = default, string name = "new LineMesh")
         {
             var mesh = new List<float>();
             foreach (var p in points)
@@ -2459,7 +2461,7 @@ namespace opengl3
                 mesh.Add((float)p.y);
                 mesh.Add((float)p.z);
             }
-            addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
         }
         public string addLinesMeshTraj(Point3d_GL[][] lines, Color3d_GL color = default, string name = "new LinesMeshTraj")
         {

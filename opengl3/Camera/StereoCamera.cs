@@ -44,7 +44,7 @@ namespace opengl3
            
         }
 
-        public Point3d_GL[] comp_points_3d(System.Drawing.PointF[] ps1, System.Drawing.PointF[] ps2)
+        public Point3d_GL[] comp_points_3d(System.Drawing.PointF[] ps1, System.Drawing.PointF[] ps2,int ind_main=0)
         {
             if (ps1.Length != ps2.Length) return null;
             var lines1 = PointCloud.computeTracesCam(PointF.toPointF(ps1), cameraCVs[0],cameraCVs[0].matrixCS );
@@ -54,6 +54,8 @@ namespace opengl3
             for(int i = 0;i<lines1.Length; i++)
             {
                 ps_comp[i] = Line3d_GL.point_betw_cross_lines(lines1[i],lines2[i]);
+                ps_comp[i].ind = ind_main;
+                ps_comp[i].ind_sec = i;
             }
            
             return ps_comp;

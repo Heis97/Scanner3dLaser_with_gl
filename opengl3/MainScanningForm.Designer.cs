@@ -533,6 +533,8 @@ namespace opengl3
             this.trackY_light = new System.Windows.Forms.TrackBar();
             this.label27 = new System.Windows.Forms.Label();
             this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.imBox_mark2b = new Emgu.CV.UI.ImageBox();
+            this.imBox_mark1_b = new Emgu.CV.UI.ImageBox();
             this.but_cahge_robot_turn = new System.Windows.Forms.Button();
             this.button_pos_rob_gl_set = new System.Windows.Forms.Button();
             this.button_pos_rob_gl_get = new System.Windows.Forms.Button();
@@ -686,6 +688,9 @@ namespace opengl3
             this.label80 = new System.Windows.Forms.Label();
             this.textBox_z1_vel = new System.Windows.Forms.TextBox();
             this.tabPage_navig_debug = new System.Windows.Forms.TabPage();
+            this.but_select_tb_navig_folder = new System.Windows.Forms.Button();
+            this.but_navig_tool_calibr = new System.Windows.Forms.Button();
+            this.textBox_tool_calibr = new System.Windows.Forms.TextBox();
             this.textBox_photo_nav = new System.Windows.Forms.TextBox();
             this.label45 = new System.Windows.Forms.Label();
             this.comboBox_navig_proess = new System.Windows.Forms.ComboBox();
@@ -695,8 +700,6 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.imBox_mark1_b = new Emgu.CV.UI.ImageBox();
-            this.imBox_mark2b = new Emgu.CV.UI.ImageBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -784,6 +787,8 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.trackZ_light)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackY_light)).BeginInit();
             this.tabPage8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2b)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1_b)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOz)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOx)).BeginInit();
@@ -810,8 +815,6 @@ namespace opengl3
             this.groupBox9.SuspendLayout();
             this.tabPage_navig_debug.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1_b)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2b)).BeginInit();
             this.SuspendLayout();
             // 
             // tabCalibMonit
@@ -6279,13 +6282,29 @@ namespace opengl3
             this.tabPage8.Controls.Add(this.but_scan_virt);
             this.tabPage8.Controls.Add(this.imBox_disparity);
             this.tabPage8.Controls.Add(this.imBox_3dDebug);
-            this.tabPage8.Location = new System.Drawing.Point(4, 25);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(869, 962);
+            this.tabPage8.Size = new System.Drawing.Size(869, 965);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "mat_gl";
             this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // imBox_mark2b
+            // 
+            this.imBox_mark2b.Location = new System.Drawing.Point(452, 412);
+            this.imBox_mark2b.Name = "imBox_mark2b";
+            this.imBox_mark2b.Size = new System.Drawing.Size(778, 400);
+            this.imBox_mark2b.TabIndex = 182;
+            this.imBox_mark2b.TabStop = false;
+            // 
+            // imBox_mark1_b
+            // 
+            this.imBox_mark1_b.Location = new System.Drawing.Point(452, 6);
+            this.imBox_mark1_b.Name = "imBox_mark1_b";
+            this.imBox_mark1_b.Size = new System.Drawing.Size(778, 400);
+            this.imBox_mark1_b.TabIndex = 181;
+            this.imBox_mark1_b.TabStop = false;
             // 
             // but_cahge_robot_turn
             // 
@@ -6761,7 +6780,7 @@ namespace opengl3
             this.glControl1.Margin = new System.Windows.Forms.Padding(4);
             this.glControl1.MultisampleBits = ((uint)(8u));
             this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(1400, 1400);
+            this.glControl1.Size = new System.Drawing.Size(1000, 1000);
             this.glControl1.StencilBits = ((uint)(0u));
             this.glControl1.TabIndex = 65;
             this.glControl1.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_ContextCreated);
@@ -8038,6 +8057,9 @@ namespace opengl3
             // 
             // tabPage_navig_debug
             // 
+            this.tabPage_navig_debug.Controls.Add(this.but_select_tb_navig_folder);
+            this.tabPage_navig_debug.Controls.Add(this.but_navig_tool_calibr);
+            this.tabPage_navig_debug.Controls.Add(this.textBox_tool_calibr);
             this.tabPage_navig_debug.Controls.Add(this.textBox_photo_nav);
             this.tabPage_navig_debug.Controls.Add(this.label45);
             this.tabPage_navig_debug.Controls.Add(this.comboBox_navig_proess);
@@ -8050,6 +8072,34 @@ namespace opengl3
             this.tabPage_navig_debug.TabIndex = 10;
             this.tabPage_navig_debug.Text = "Навигац";
             this.tabPage_navig_debug.UseVisualStyleBackColor = true;
+            // 
+            // but_select_tb_navig_folder
+            // 
+            this.but_select_tb_navig_folder.Location = new System.Drawing.Point(1298, 6);
+            this.but_select_tb_navig_folder.Name = "but_select_tb_navig_folder";
+            this.but_select_tb_navig_folder.Size = new System.Drawing.Size(72, 22);
+            this.but_select_tb_navig_folder.TabIndex = 129;
+            this.but_select_tb_navig_folder.Text = "Выбрать";
+            this.but_select_tb_navig_folder.UseVisualStyleBackColor = true;
+            this.but_select_tb_navig_folder.Click += new System.EventHandler(this.but_select_tb_navig_folder_Click);
+            // 
+            // but_navig_tool_calibr
+            // 
+            this.but_navig_tool_calibr.Location = new System.Drawing.Point(1786, 34);
+            this.but_navig_tool_calibr.Name = "but_navig_tool_calibr";
+            this.but_navig_tool_calibr.Size = new System.Drawing.Size(99, 48);
+            this.but_navig_tool_calibr.TabIndex = 128;
+            this.but_navig_tool_calibr.Text = "Запуск";
+            this.but_navig_tool_calibr.UseVisualStyleBackColor = true;
+            this.but_navig_tool_calibr.Click += new System.EventHandler(this.but_navig_tool_calibr_Click);
+            // 
+            // textBox_tool_calibr
+            // 
+            this.textBox_tool_calibr.Location = new System.Drawing.Point(1376, 6);
+            this.textBox_tool_calibr.Name = "textBox_tool_calibr";
+            this.textBox_tool_calibr.Size = new System.Drawing.Size(509, 22);
+            this.textBox_tool_calibr.TabIndex = 127;
+            this.textBox_tool_calibr.Text = "\"\"";
             // 
             // textBox_photo_nav
             // 
@@ -8083,7 +8133,7 @@ namespace opengl3
             this.but_save_photo_nav.Name = "but_save_photo_nav";
             this.but_save_photo_nav.Size = new System.Drawing.Size(99, 48);
             this.but_save_photo_nav.TabIndex = 1;
-            this.but_save_photo_nav.Text = "Сохранить";
+            this.but_save_photo_nav.Text = "Сохранить изобр";
             this.but_save_photo_nav.UseVisualStyleBackColor = true;
             this.but_save_photo_nav.Click += new System.EventHandler(this.but_save_photo_nav_Click);
             // 
@@ -8106,22 +8156,6 @@ namespace opengl3
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // imBox_mark1_b
-            // 
-            this.imBox_mark1_b.Location = new System.Drawing.Point(452, 6);
-            this.imBox_mark1_b.Name = "imBox_mark1_b";
-            this.imBox_mark1_b.Size = new System.Drawing.Size(778, 400);
-            this.imBox_mark1_b.TabIndex = 181;
-            this.imBox_mark1_b.TabStop = false;
-            // 
-            // imBox_mark2b
-            // 
-            this.imBox_mark2b.Location = new System.Drawing.Point(452, 412);
-            this.imBox_mark2b.Name = "imBox_mark2b";
-            this.imBox_mark2b.Size = new System.Drawing.Size(778, 400);
-            this.imBox_mark2b.TabIndex = 182;
-            this.imBox_mark2b.TabStop = false;
             // 
             // MainScanningForm
             // 
@@ -8240,6 +8274,8 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.trackY_light)).EndInit();
             this.tabPage8.ResumeLayout(false);
             this.tabPage8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2b)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1_b)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOz)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackOx)).EndInit();
@@ -8278,8 +8314,6 @@ namespace opengl3
             this.tabPage_navig_debug.ResumeLayout(false);
             this.tabPage_navig_debug.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark1_b)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBox_mark2b)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -8952,6 +8986,9 @@ namespace opengl3
         private System.Windows.Forms.TextBox textBox_photo_nav;
         private Emgu.CV.UI.ImageBox imBox_mark2b;
         private Emgu.CV.UI.ImageBox imBox_mark1_b;
+        private System.Windows.Forms.TextBox textBox_tool_calibr;
+        private System.Windows.Forms.Button but_navig_tool_calibr;
+        private System.Windows.Forms.Button but_select_tb_navig_folder;
     }
 }
 

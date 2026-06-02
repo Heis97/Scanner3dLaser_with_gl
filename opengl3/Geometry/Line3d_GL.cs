@@ -36,10 +36,10 @@ namespace opengl3
             var v1 = p2 - p1;
             var v2 = p4 - p3;
             var p2_shtr = p3 + v1;
-            var f1 = new Flat3d_GL(p3, p4, p2_shtr);
-           
+            var f1 = new Flat3d_GL(p3, p4, p2_shtr);           
             return f1.dist_to_flat(p1);
         }
+
         static public Point3d_GL point_betw_cross_lines(Line3d_GL l1, Line3d_GL l2)
         {
             var p1 = l1.p; var p2 = l1.p_end;
@@ -57,9 +57,10 @@ namespace opengl3
             var p1_cross = Flat3d_GL.cross(f1_v, f2_v,f1_h);
             var p2_cross = Flat3d_GL.cross(f1_v, f2_v, f2_h);
             var p_med_cross = new Point3d_GL(p1_cross,p2_cross);
-            //Console.WriteLine((p2_cross- p1_cross).magnitude());    
+           // Console.WriteLine((p2_cross- p1_cross).magnitude());    
             return p_med_cross;
         }
+
         public Point3d_GL calcCrossFlat(Flat3d_GL F)
         {
 
