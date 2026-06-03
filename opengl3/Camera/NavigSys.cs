@@ -10,6 +10,8 @@ using Emgu.CV.UI;
 using Emgu.CV;
 using Accord;
 using Emgu.CV.Stitching;
+using Emgu.CV.Aruco;
+using System.Drawing;
 
 namespace opengl3
 {
@@ -24,6 +26,8 @@ namespace opengl3
         Point3d_GL tcp;
         Point3d_GL rotate;
         public Matrix<double> matrix_frame;
+        public Matrix<double> matrix_model;
+        public string name_3d_model = "New tool";
         Matrix<double> matrix_tcp = new Matrix<double>(new double[,] {
                 {1,0,0,0 },
                 {0,1,0,0 },
@@ -44,7 +48,7 @@ namespace opengl3
          * p2-----------p3
 
          * */
-        public NavigTool(int[] _inds, ToolType _tool_type) 
+        public NavigTool(int[] _inds, ToolType _tool_type,string _name_3d_model=null) 
         {
             if (_inds == null) { Console.WriteLine("NavigTool _inds == null"); return ; }
             aruco_number = _inds.Length;
@@ -58,6 +62,10 @@ namespace opengl3
             {
                 aruco_corner_num = 4;
                 if (aruco_number != 4)  Console.WriteLine("NavigTool inds.Length != 4 for ToolType.tp4_v1");
+            }
+            if (_name_3d_model != null)
+            {
+                name_3d_model = _name_3d_model;
             }
             ind_aruco = comp_ind_table(inds);
         }
@@ -104,31 +112,56 @@ namespace opengl3
             var p_cenr_2 = find_center_sphere_4p(ps_calc.GetRange(1,4))[0];
 
 
-            Console.WriteLine("p_cenr: " + p_cenr);
-            Console.WriteLine("p_cenr2: " + p_cenr_2);
+            //Console.WriteLine("p_cenr: " + p_cenr);
+            //Console.WriteLine("p_cenr2: " + p_cenr_2);
 
             var tcp_aver = new Matrix<double>(new double[,] {
-                {1,0,0,0 },
-                {0,1,0,0 },
-                {0,0,1,0 },
-                {0,0,0,1 }});
+                {0,0,0,0 },
+                {0,0,0,0 },
+                {0,0,0,0 },
+                {0,0,0,0 }});
+            int ps_count = 5;
 
-            for (int i = 0; i < 4; i++)
+            var tcp_list = new List<Matrix<double>>();
+            for (int i = 0; i < ps_count; i++)
             {
                 var m_inv = ms[i].Clone();
-                CvInvoke.Invert(m_inv, m_inv, DecompMethod.Eig);
+
+                CvInvoke.Invert(m_inv, m_inv, DecompMethod.Svd);
+
+                var m_test = m_inv * ms[i];
                 var tcp = new Matrix<double>(new double[,] {
                 {1,0,0,p_cenr.x },
                 {0,1,0,p_cenr.y },
                 {0,0,1,p_cenr.z },
                 {0,0,0,1 }});
+                var m_tcp = m_inv * tcp;
+                tcp_list.Add(m_tcp);
+                tcp_aver += m_tcp;// m_inv* tcp
+                //Console.WriteLine("m_inv * tcp");
+                //prin.t(m_inv * tcp);
 
-                tcp_aver += tcp* m_inv;// m_inv* tcp
+            }
+            tcp_aver = tcp_aver / ps_count;
+            var p_err = new Point3d_GL();
+
+            for (int i = 0;i < ps_count;i++)
+            {
+                var p_i = new Point3d_GL(
+                    Math.Abs(tcp_aver[0, 3] - tcp_list[i][0, 3]),
+                    Math.Abs(tcp_aver[1, 3] - tcp_list[i][1, 3]),
+                    Math.Abs(tcp_aver[2, 3] - tcp_list[i][2, 3]));
+                p_err += p_i;
             }
 
-            tcp_aver = tcp_aver / 4;
+
+            Console.WriteLine("Navig_calib p_err x y z: " + p_err/ps_count);
+
+
 
             this.matrix_tcp = tcp_aver;
+            //Console.WriteLine("tcp_aver");
+            //prin.t(tcp_aver);
 
             this.tcp = new Point3d_GL(tcp_aver[0, 3], tcp_aver[1, 3], tcp_aver[2, 3]);
 
@@ -244,8 +277,8 @@ namespace opengl3
             var vx = (p2 - p1).normalize();
             var vyx = (p0 - p1).normalize();
 
-            var vz = vx | vyx;
-            var vy = vz | vx;
+            var vz = (vx | vyx).normalize();
+            var vy = (vz | vx).normalize();
             matrix_frame = RobotFrame.matrix_assemble(vx, vy, vz, p1);
             return matrix_frame;
         }
@@ -330,6 +363,149 @@ namespace opengl3
     }
     class NavigSys
     {
+
+        public NavigTool[] tools;
+        public Scanner stereo;
+        int aruko_max_ind = 1;
+        public NavigSys(Scanner _stereo, int _aruko_max_ind)
+        {
+            stereo = _stereo;
+            aruko_max_ind = _aruko_max_ind;
+        }
+
+        public Point3d_GL[][] navigation_processing_get_points3d(Mat _mat1, Mat _mat2)
+        {
+
+            System.Drawing.PointF[][] points_aruco1 = new System.Drawing.PointF[aruko_max_ind][];
+            System.Drawing.PointF[][] points_aruco2 = new System.Drawing.PointF[aruko_max_ind][];
+
+            Point3d_GL[][] points3d_aruco = new Point3d_GL[aruko_max_ind][];
+
+
+            var mat1 = get_aruco_info(stereo.stereoCamera.cameraCVs[0].undist(_mat1.Clone()), ref points_aruco1);
+            var mat2 = get_aruco_info(stereo.stereoCamera.cameraCVs[1].undist(_mat2.Clone()), ref points_aruco2);
+
+
+            for (int i = 0; i < points_aruco1.Length; i++)
+            {
+                if (points_aruco1[i] != null && points_aruco2[i] != null)
+                {
+                    if (points_aruco1[i].Length != 0 && points_aruco2[i].Length != 0)
+                    {
+                        points3d_aruco[i] = stereo.stereoCamera.comp_points_3d(points_aruco1[i], points_aruco2[i], i);
+                        //Console.WriteLine(i + " " + points3d_aruco[i][0].x + " " + points3d_aruco[i][0].z + " ");
+                    }
+                    else
+                    {
+                        points3d_aruco[i] = null;
+                    }
+                }
+                else
+                {
+                    points3d_aruco[i] = null;
+                }
+            }
+            return points3d_aruco;
+        }
+
+        public Point3d_GL[][] navigation_processing_get_scene(Point3d_GL[][] ps)
+        {
+
+
+            return null;
+        }
+
+        public static Mat get_aruco_info(Mat image, ref System.Drawing.PointF[][] points)
+        {
+
+            // 1. Инициализация: загружаем изображение и создаём словарь маркеров
+
+            var dictionary = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_50);
+            var detectorParams = DetectorParameters.GetDefault();
+            detectorParams.CornerRefinementMethod = DetectorParameters.RefinementMethod.Contour;
+            //detectorParams.CornerRefinementWinSize = 5;
+            detectorParams.CornerRefinementMaxIterations = 30;
+            detectorParams.CornerRefinementMinAccuracy = 0.1;
+
+            CvInvoke.CvtColor(image, image, ColorConversion.Rgb2Gray);
+
+
+            //ArucoDetector detector = new ArucoDetector(dictionary, parameters);
+            // Контейнеры для результатов
+            var corners = new VectorOfVectorOfPointF();
+            var ids = new VectorOfInt();
+            var rejectedPoints = new VectorOfVectorOfPointF();
+
+            // ArucoInvoke.RefineDetectedMarkers()
+            // 2. Основной шаг: детекция маркеров
+
+            if (image.IsEmpty) return null;
+            ArucoInvoke.DetectMarkers(image, dictionary, corners, ids, detectorParams, rejectedPoints);
+
+
+
+            List<System.Drawing.PointF[]> cornersList = corners.ToArrayOfArray().ToList();
+
+
+            List<System.Drawing.PointF[]> cornersList_2 = new List<System.Drawing.PointF[]>();
+            // 2. Настраиваем критерии для CornerSubPix
+            var criteria = new MCvTermCriteria(30, 0.01); // макс. итераций, точность
+
+            // 3. Применяем уточнение к каждому углу каждого маркера
+            foreach (var markerCorners in cornersList)
+            {
+                VectorOfPointF vec = new VectorOfPointF(markerCorners);
+                // CornerSubPix работает с массивом PointF[] или VectorOfPointF
+
+                CvInvoke.CornerSubPix(image, vec, new System.Drawing.Size(3, 3),
+                                      new System.Drawing.Size(-1, -1), criteria);
+                // Обновляем исходный массив, если нужно
+
+                cornersList_2.Add(vec.ToArray());
+            }
+            corners = new VectorOfVectorOfPointF(cornersList_2.ToArray());// cornersList.ToArray();
+            //Console.WriteLine("--Aruco---");
+            // 3. Обработка результатов: рисуем найденные маркеры, если они есть
+            if (ids.Size > 0)
+            {
+                // Отрисовка границ и ID маркеров на изображении
+                ArucoInvoke.DrawDetectedMarkers(image, corners, ids, new Bgr(Color.Green).MCvScalar);
+                /*if (ids.Size > 0)
+                {
+                    for (int i = 0; i < ids.Size; i++)
+                    {
+                        int markerId = ids[i];
+                       System.Drawing.PointF[] markerCorners = corners[i].ToArray(); // Четыре угла текущего маркера
+                        Console.WriteLine($"Маркер ID: {markerId}");
+                        Console.WriteLine($"  Углы: ({markerCorners[0].X:F2}, {markerCorners[0].Y:F2}), " +
+                                          $"({markerCorners[1].X:F2}, {markerCorners[1].Y:F2}), " +
+                                          $"({markerCorners[2].X:F2}, {markerCorners[2].Y:F2}), " +
+                                          $"({markerCorners[3].X:F2}, {markerCorners[3].Y:F2})");
+                    }
+                }*/
+                // Вывод информации в консоль
+                for (int i = 0; i < ids.Size; i++)
+                {
+                    int id = ids[i];
+                    System.Drawing.PointF[] cornersArray = corners[i].ToArray();
+                    if (points.Length > id)
+                    {
+                        points[id] = new System.Drawing.PointF[cornersArray.Length];
+                        for (int j = 0; j < cornersArray.Length; j++)
+                        {
+                            points[id][j] = new System.Drawing.PointF(cornersArray[j].X, cornersArray[j].Y);
+                        }
+                    }
+                    //Console.WriteLine("----------");
+                }
+            }
+            else
+            {
+            }
+
+
+            return image;
+        }
 
     }
 }

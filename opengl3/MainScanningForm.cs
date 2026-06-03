@@ -43,13 +43,20 @@ namespace opengl3
     {
         #region var
 
-        bool navig_sys = true;
+        bool navig_sys_enable = true;
         Matrix4x4f matrix_pattern = Matrix4x4f.Identity;
         string pattern = "";
         string flat = "";
         string navig_tool1_name = "navig_tool1";
         string navig_tool1_frame_name = "navig_frame_tool1";
         NavigTool navig_tool1 = new NavigTool(new int[] { 0, 11, 2, 1 }, NavigTool.ToolType.tp4_v1);
+        NavigTool[] navig_tools = new NavigTool[1];
+        Scanner navig_stereo;
+        NavigSys navig_system;// = new NavigSys(navig_system,12);
+        
+
+        int max_aruko_ind = 12;
+
         List<Matrix<double>> matrices_cal = new List<Matrix<double>>();
         double z_syrenge_offset = 0;
         double z_calibr_offset = 0;
@@ -214,7 +221,7 @@ namespace opengl3
         double[] koef_x = null;
         double[] koef_y = null;
         Scanner scanner;
-        Scanner navig_system;
+        
 
         bool save_navig_ps = false;
         #endregion
@@ -2795,7 +2802,7 @@ namespace opengl3
                 var points3d_aruco = new Point3d_GL[12][];
                 //imBox_mark2b.Image = FindCircles.findCircles(mat1, ref corn, chess_size);
                 var points_aruco1 = new System.Drawing.PointF[12][];
-                imBox_mark2b.Image = get_aruco_info(navig_system.stereoCamera.cameraCVs[0].undist(mat1), ref points_aruco1);
+                //imBox_mark2b.Image = get_aruco_info(navig_system.stereoCamera.cameraCVs[0].undist(mat1), ref points_aruco1);
                 if (monitor_num > 1)
                 {
                     var mat2 = GL1.matFromMonitor(1);
@@ -2811,7 +2818,7 @@ namespace opengl3
 
                     imBox_mark1.Image = mat2;
                     var points_aruco2 = new System.Drawing.PointF[12][];
-                    imBox_mark1_b.Image = get_aruco_info(navig_system.stereoCamera.cameraCVs[1].undist(mat2), ref points_aruco2);
+                    //imBox_mark1_b.Image = get_aruco_info(navig_system.stereoCamera.cameraCVs[1].undist(mat2), ref points_aruco2);
 
                     
                     for (int i = 0; i < points_aruco1.Length; i++)
@@ -2820,7 +2827,7 @@ namespace opengl3
                         {
                             if (points_aruco1[i].Length != 0 && points_aruco2[i].Length != 0)
                             {
-                                points3d_aruco[i] = navig_system.stereoCamera.comp_points_3d(points_aruco1[i], points_aruco2[i]);
+                               // points3d_aruco[i] = navig_system.stereoCamera.comp_points_3d(points_aruco1[i], points_aruco2[i]);
                                 //Console.WriteLine(i + " " + points3d_aruco[i][0].x + " " + points3d_aruco[i][0].z + " ");
                             }
                             else
@@ -6490,213 +6497,17 @@ namespace opengl3
             {
                 if (mat_global[0] != null && mat_global[1] != null && !mat_global[0].IsEmpty && !mat_global[1].IsEmpty)
                 {
+                    var ps3d = navig_system.navigation_processing_get_points3d(mat_global[0], mat_global[1]);    //navyg_sys_info(camera_only)
+                    //navigation_processing_get_scene(Point3d_GL[][] ps)                            //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),  
 
-                    navigation_processing_frame(mat_global[0], mat_global[1]);
-                    /*if(NavigProcType == ProcessType.Nothing)
-                    {
-                        imageBox1.Image = mat_global[0];
-                        imageBox2.Image = mat_global[1];
-                    }
-                    else if(NavigProcType == ProcessType.Chessboard)
-                    {
-                        var mat1 = CameraCV.findPoints_chess(mat_global[0], chess_size);
-                        var mat2 = CameraCV.findPoints_chess(mat_global[1], chess_size);
+                    //GL1.draw_scene                                                                //tools_models,tools_positins
 
-                        imageBox1.Image = mat1;
-                        imageBox2.Image = mat2;
-                    }
-                    else if (NavigProcType == ProcessType.Aruco)
-                    {
-                        
-                    }*/
+                    //scene processing                                                              //tools_positions
 
                 }
             }
                       
         }
-
-        Point3d_GL[][] navigation_processing_frame(Mat _mat1, Mat _mat2)//orig frames
-        {
-            //find calibratre board chess
-            //var mat1 = CameraCV.findPoints_chess(mat_global[0].Clone(), chess_size);
-            //var mat2 = CameraCV.findPoints_chess(mat_global[1].Clone(), chess_size);
-
-            //find calibratre board circle
-            //var mat1 = CameraCV.findPoints_circle(mat_global[0].Clone(), chess_size);
-            //var mat2 = CameraCV.findPoints_circle(mat_global[1].Clone(), chess_size);
-
-            System.Drawing.PointF[][] points_aruco1 = new System.Drawing.PointF[12][];
-            System.Drawing.PointF[][] points_aruco2 = new System.Drawing.PointF[12][];
-
-            Point3d_GL[][] points3d_aruco = new Point3d_GL[12][];
-
-
-            var mat1 = get_aruco_info(navig_system.stereoCamera.cameraCVs[0].undist(_mat1.Clone()), ref points_aruco1);
-            var mat2 = get_aruco_info(navig_system.stereoCamera.cameraCVs[1].undist(_mat2.Clone()), ref points_aruco2);
-
-            //var mat1 = get_aruco_info(mat_global[0].Clone(), ref points_aruco1);
-            //var mat2 = get_aruco_info(mat_global[1].Clone(), ref points_aruco2);
-
-            /*for (int i = 0; i < points_aruco1.Length; i++)
-            {
-                if(points_aruco1[i] != null && points_aruco2[i] != null)
-                {
-                    if (points_aruco1[i].Length!=0 && points_aruco2[i].Length != 0)
-                    {
-                        Console.WriteLine(i + " " + points_aruco1[i][0].X + " " + points_aruco2[i][0].X + " ");
-                    }
-                }
-            }*/
-
-            for (int i = 0; i < points_aruco1.Length; i++)
-            {
-                if (points_aruco1[i] != null && points_aruco2[i] != null)
-                {
-                    if (points_aruco1[i].Length != 0 && points_aruco2[i].Length != 0)
-                    {
-                        points3d_aruco[i] = navig_system.stereoCamera.comp_points_3d(points_aruco1[i], points_aruco2[i],i);
-                        //Console.WriteLine(i + " " + points3d_aruco[i][0].x + " " + points3d_aruco[i][0].z + " ");
-                    }
-                    else
-                    {
-                        points3d_aruco[i] = null;
-                    }
-                }
-                else
-                {
-                    points3d_aruco[i] = null;
-                }
-            }
-
-            var magn = 0d;
-
-            var ps_tool1 = new Point3d_GL[4];
-
-
-
-            if (points3d_aruco[0] != null && points3d_aruco[11] != null && points3d_aruco[1] != null && points3d_aruco[2] != null)
-            {
-                ps_tool1 = new Point3d_GL[] {
-                            Point3d_GL.centr_mass( points3d_aruco[0]),
-                            Point3d_GL.centr_mass(  points3d_aruco[2]),
-                             Point3d_GL.centr_mass( points3d_aruco[1]),
-                             Point3d_GL.centr_mass( points3d_aruco[11])};
-
-             
-                 
-                label_comp_period.BeginInvoke((MethodInvoker)(() => GL1.buffersGl.setObjVdata(navig_tool1_name, Point3d_GL.toMesh(ps_tool1), Point3d_GL.toMesh(ps_tool1))));
-                label_comp_period.BeginInvoke((MethodInvoker)(() => GL1.remove_buff_gl_id(navig_tool1_frame_name)));
-                label_comp_period.BeginInvoke((MethodInvoker)(() => GL1.addFrame_v2(navig_tool1.get_frame_tcp(points3d_aruco),100, navig_tool1_frame_name)));
-                //Console.WriteLine("add gl");
-                /*for(int i = 0;i < points3d_aruco[0].Length; i++)
-                {
-                    magn += (points3d_aruco[0][i] - points3d_aruco[11][i]).magnitude();
-                    //Console.Write(" " + (points3d_aruco[0][i] - points3d_aruco[11][i]).magnitude());
-
-                    //CvInvoke.Line(mat1,new System.Drawing.Point((int)points_aruco1[0][i].X,(int)points_aruco1[0][i].Y), new System.Drawing.Point((int)points_aruco1[11][i].X, (int)points_aruco1[11][i].Y), new MCvScalar(0, 255, 0), 2);
-                }*/
-
-                //Console.WriteLine( magn/points3d_aruco[0].Length );
-            }
-
-            imageBox1.Image = mat1;
-            imageBox2.Image = mat2;
-
-            return points3d_aruco;
-        }
-
-        public static Mat get_aruco_info(Mat image,ref System.Drawing.PointF[][] points)
-        {
-
-            // 1. Инициализация: загружаем изображение и создаём словарь маркеров
-
-            var dictionary = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_50);
-            var detectorParams = DetectorParameters.GetDefault();
-            detectorParams.CornerRefinementMethod = DetectorParameters.RefinementMethod.Contour;
-            //detectorParams.CornerRefinementWinSize = 5;
-            detectorParams.CornerRefinementMaxIterations = 30;
-            detectorParams.CornerRefinementMinAccuracy = 0.1;
-
-            CvInvoke.CvtColor(image, image, ColorConversion.Rgb2Gray);
-
-            
-            //ArucoDetector detector = new ArucoDetector(dictionary, parameters);
-            // Контейнеры для результатов
-            var corners = new VectorOfVectorOfPointF();
-            var ids = new VectorOfInt();
-            var rejectedPoints = new VectorOfVectorOfPointF();
-
-            // ArucoInvoke.RefineDetectedMarkers()
-            // 2. Основной шаг: детекция маркеров
-
-            if (image.IsEmpty) return null;
-            ArucoInvoke.DetectMarkers(image, dictionary, corners, ids, detectorParams, rejectedPoints);
-
-
-
-            List<System.Drawing.PointF[]> cornersList = corners.ToArrayOfArray().ToList();
-
-
-            List<System.Drawing.PointF[]> cornersList_2 = new List<System.Drawing.PointF[]>();
-             // 2. Настраиваем критерии для CornerSubPix
-             var criteria = new MCvTermCriteria(30, 0.01); // макс. итераций, точность
-
-            // 3. Применяем уточнение к каждому углу каждого маркера
-            foreach (var markerCorners in cornersList)
-            {
-                VectorOfPointF vec = new VectorOfPointF(markerCorners);
-                // CornerSubPix работает с массивом PointF[] или VectorOfPointF
-                
-                    CvInvoke.CornerSubPix(image, vec, new System.Drawing.Size(3, 3),
-                                          new System.Drawing.Size(-1, -1), criteria);
-                // Обновляем исходный массив, если нужно
-
-                cornersList_2.Add(vec.ToArray());
-            }
-            corners = new VectorOfVectorOfPointF(cornersList_2.ToArray());// cornersList.ToArray();
-            //Console.WriteLine("--Aruco---");
-            // 3. Обработка результатов: рисуем найденные маркеры, если они есть
-            if (ids.Size > 0)
-            {
-                // Отрисовка границ и ID маркеров на изображении
-                ArucoInvoke.DrawDetectedMarkers(image, corners, ids, new Bgr(Color.Green).MCvScalar);
-                /*if (ids.Size > 0)
-                {
-                    for (int i = 0; i < ids.Size; i++)
-                    {
-                        int markerId = ids[i];
-                       System.Drawing.PointF[] markerCorners = corners[i].ToArray(); // Четыре угла текущего маркера
-                        Console.WriteLine($"Маркер ID: {markerId}");
-                        Console.WriteLine($"  Углы: ({markerCorners[0].X:F2}, {markerCorners[0].Y:F2}), " +
-                                          $"({markerCorners[1].X:F2}, {markerCorners[1].Y:F2}), " +
-                                          $"({markerCorners[2].X:F2}, {markerCorners[2].Y:F2}), " +
-                                          $"({markerCorners[3].X:F2}, {markerCorners[3].Y:F2})");
-                    }
-                }*/
-                // Вывод информации в консоль
-                for (int i = 0; i < ids.Size; i++)
-                {
-                    int id = ids[i];
-                    System.Drawing.PointF[] cornersArray = corners[i].ToArray();
-                    if (points.Length > id)
-                    {
-                        points[id] = new System.Drawing.PointF[cornersArray.Length];
-                        for (int j = 0; j < cornersArray.Length; j++)
-                        {
-                            points[id][j] = new System.Drawing.PointF( cornersArray[j].X, cornersArray[j].Y );
-                        }
-                    }
-                    //Console.WriteLine("----------");
-                }
-            }
-            else
-            {
-            }
-            
-
-            return image;
-        }
-
 
 
         void drawCameras(VideoCapture cap)
@@ -6711,7 +6522,7 @@ namespace opengl3
                     imProcess(mat, 1);*/
                     cap.Retrieve(mat_global[0]);
                    
-                    if (!navig_sys)
+                    if (!navig_sys_enable)
                     {
                         imageBox1.Image = mat_global[0];
                         // CvInvoke.Imshow("im1", mat_global[0]);
@@ -6736,7 +6547,7 @@ namespace opengl3
                     imProcess(mat, 2);*/
                     cap.Retrieve(mat_global[1]);
                     
-                    if (!navig_sys)
+                    if (!navig_sys_enable)
                     {
                         imageBox2.Image = mat_global[1];
                         imProcess(mat_global[1], 2);
@@ -10901,7 +10712,21 @@ namespace opengl3
             string bfs_path = "bfs_cal.txt";
             Console.WriteLine(cam1_conf_path);
             Console.WriteLine(cam2_conf_path);
-            navig_system = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, null, markSize);
+            navig_stereo = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, null, markSize);
+
+
+            //var tool_cal_path_orig = textBox_tool_calibr.Text;
+            var tool_cal_path = "tool1_cal_0206_2";
+            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + tool_cal_path, @"cam2\" + tool_cal_path, FrameType.Test, false);
+
+            var ps_calib = new List<Point3d_GL[][]>();
+
+            for (int i = 0; i < frms_stereo.Length; i++)
+            {
+                ps_calib.Add( navig_system.navigation_processing_get_points3d(frms_stereo[i].im, frms_stereo[i].im_sec));
+            }
+
+            var tcp_cal = navig_tool1.calibrate_tcp_4p(ps_calib.ToArray());
         }
         private void but_con_navig_sys_Click(object sender, EventArgs e)
         {
@@ -10947,7 +10772,7 @@ namespace opengl3
 
             for (int i = 0; i < frms_stereo.Length; i++)
             {
-                ps_calib.Add(navigation_processing_frame(frms_stereo[i].im, frms_stereo[i].im_sec));
+                ps_calib.Add(navig_system.navigation_processing_get_points3d(frms_stereo[i].im, frms_stereo[i].im_sec));
             }
 
             var tcp_cal = navig_tool1.calibrate_tcp_4p(ps_calib.ToArray()); 
