@@ -18,7 +18,7 @@ namespace opengl3
     class NavigTool
     {
         public enum ToolType { tp4_v1 };
-        Point3d_GL[] ps;
+        public Point3d_GL[] ps;
         int[] inds;
         int[] ind_aruco;
         int aruco_corner_num;
@@ -27,13 +27,22 @@ namespace opengl3
         Point3d_GL rotate;
         public Matrix<double> matrix_frame;
         public Matrix<double> matrix_model;
-        public string name_3d_model = "New tool";
+        public Matrix<double> matrix_model_debug = new Matrix<double>(new double[,] {
+                {1,0,0,0 },
+                {0,1,0,0 },
+                {0,0,1,0 },
+                {0,0,0,1 }});
+
+        public string name_3d_model = "new_tool";
+        public string name_3d_model_debug = "new_debug_tool";
+        public string path_3d_model = null;
         Matrix<double> matrix_tcp = new Matrix<double>(new double[,] {
                 {1,0,0,0 },
                 {0,1,0,0 },
                 {0,0,1,0 },
                 {0,0,0,1 }});
         ToolType tool_type;
+
         /*
          * x down
          * y right 
@@ -48,7 +57,8 @@ namespace opengl3
          * p2-----------p3
 
          * */
-        public NavigTool(int[] _inds, ToolType _tool_type,string _name_3d_model=null) 
+
+        public NavigTool(int[] _inds, ToolType _tool_type,string _name_3d_model=null, string _path_3d_model = null, Matrix<double> _matrix_model_debug = null, string _name_3d_model_debug = null) 
         {
             if (_inds == null) { Console.WriteLine("NavigTool _inds == null"); return ; }
             aruco_number = _inds.Length;
@@ -66,6 +76,15 @@ namespace opengl3
             if (_name_3d_model != null)
             {
                 name_3d_model = _name_3d_model;
+            }
+            if (_path_3d_model != null)
+            {
+                path_3d_model = _path_3d_model;
+            }
+            if (_matrix_model_debug != null && _name_3d_model_debug != null)
+            {
+                matrix_model_debug = _matrix_model_debug;
+                name_3d_model_debug = _name_3d_model_debug;
             }
             ind_aruco = comp_ind_table(inds);
         }
@@ -247,8 +266,8 @@ namespace opengl3
             if (!check_aruko_ps(ps)) { return null; }
             if (tool_type == ToolType.tp4_v1)
             {
-
-                return get_frame_tr4_v1(ps) * matrix_tcp ;
+                get_frame_tr4_v1(ps);
+                return  matrix_model;
             }
 
             return null;
@@ -280,8 +299,15 @@ namespace opengl3
             var vz = (vx | vyx).normalize();
             var vy = (vz | vx).normalize();
             matrix_frame = RobotFrame.matrix_assemble(vx, vy, vz, p1);
+           
+            if(tool_type == ToolType.tp4_v1)
+            {
+                matrix_model = matrix_frame * matrix_tcp ;
+            }
+            ps = new Point3d_GL[] { p0, p1, p2, p3,new Point3d_GL(matrix_model[0,3], matrix_model[1, 3], matrix_model[2, 3]) };
             return matrix_frame;
         }
+
         Point3d_GL[][][] filter_ps_array(Point3d_GL[][][] ps)
          {
             var ps_filtr = new List<Point3d_GL[][]>();
@@ -408,11 +434,15 @@ namespace opengl3
             return points3d_aruco;
         }
 
-        public Point3d_GL[][] navigation_processing_get_scene(Point3d_GL[][] ps)
+        public NavigSys navigation_processing_get_scene(Point3d_GL[][] ps)
         {
+            for (int i = 0;i< tools.Length; i++)
+            {
+                tools[i].get_frame(ps);
+            }
 
 
-            return null;
+            return this;
         }
 
         public static Mat get_aruco_info(Mat image, ref System.Drawing.PointF[][] points)

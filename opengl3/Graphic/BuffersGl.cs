@@ -55,7 +55,8 @@ namespace opengl3
 
         public void setObjVdata(string name, float[] v_data, float[] n_data)
         {
-            objs[name].set_vert_data(v_data, n_data);
+
+            if (objs.ContainsKey(name)) objs[name].set_vert_data(v_data, n_data);
         }
 
 
@@ -129,7 +130,7 @@ namespace opengl3
         }
         public void setVisibleobj(string name, bool visible)
         {
-            objs[name] = objs[name].setVisible(visible);
+            if (objs.ContainsKey(name)) objs[name] = objs[name].setVisible(visible);
         }
         public void setlight(string name, bool visible)
         {

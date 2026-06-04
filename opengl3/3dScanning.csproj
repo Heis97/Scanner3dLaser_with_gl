@@ -157,6 +157,7 @@
     <Compile Include="Geometry\Flat3d_GL.cs" />
     <Compile Include="Geometry\Flat_4P.cs" />
     <Compile Include="Geometry\Line3d_GL.cs" />
+    <Compile Include="Graphic\DicomProcess.cs" />
     <Compile Include="Graphic\LightSourceGL.cs" />
     <Compile Include="PathPlanning\PathPlanner.cs" />
     <Compile Include="PathPlanning\PathModeling.cs" />
@@ -402,6 +403,9 @@
     <PackageReference Include="Emgu.CV.UI">
       <Version>4.13.0.5924</Version>
     </PackageReference>
+    <PackageReference Include="fo-dicom">
+      <Version>5.2.6</Version>
+    </PackageReference>
     <PackageReference Include="glfw-net">
       <Version>3.3.1</Version>
     </PackageReference>
@@ -433,7 +437,7 @@
       <Version>4.3.1</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>6.0.0</Version>
+      <Version>6.1.2</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation">
       <Version>4.3.0</Version>
