@@ -158,6 +158,7 @@
     <Compile Include="Geometry\Flat_4P.cs" />
     <Compile Include="Geometry\Line3d_GL.cs" />
     <Compile Include="Graphic\DicomProcess.cs" />
+    <Compile Include="Graphic\GenVoxeModel.cs" />
     <Compile Include="Graphic\LightSourceGL.cs" />
     <Compile Include="PathPlanning\PathPlanner.cs" />
     <Compile Include="PathPlanning\PathModeling.cs" />
@@ -219,6 +220,9 @@
     <Compile Include="Geometry\Vector3d_GL.cs" />
     <Compile Include="Frame\VideoFrame.cs" />
     <Content Include="Connection\Robot_scaner.js" />
+    <Content Include="Graphic\Shaders\Comp\from_voxels_mesh.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Screenshot_2-Photoroom.png-Photoroom.ico" />
     <EmbeddedResource Include="MainScanningForm.resx">
       <DependentUpon>MainScanningForm.cs</DependentUpon>
@@ -406,6 +410,12 @@
     <PackageReference Include="fo-dicom">
       <Version>5.2.6</Version>
     </PackageReference>
+    <PackageReference Include="fo-dicom.Drawing">
+      <Version>4.0.8</Version>
+    </PackageReference>
+    <PackageReference Include="fo-dicom.Imaging.Desktop">
+      <Version>5.2.6</Version>
+    </PackageReference>
     <PackageReference Include="glfw-net">
       <Version>3.3.1</Version>
     </PackageReference>
@@ -494,6 +504,9 @@
     <Content Include="Graphic\Shaders_face\Vert\VertexSh.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

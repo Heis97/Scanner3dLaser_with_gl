@@ -696,6 +696,21 @@ namespace opengl3
             this.comboBox_navig_proess = new System.Windows.Forms.ComboBox();
             this.but_save_photo_nav = new System.Windows.Forms.Button();
             this.but_navig_cl = new System.Windows.Forms.Button();
+            this.tabPage_navig_pan = new System.Windows.Forms.TabPage();
+            this.button5 = new System.Windows.Forms.Button();
+            this.label_ct_gauss = new System.Windows.Forms.Label();
+            this.hScrollBar_gauss_ct = new System.Windows.Forms.HScrollBar();
+            this.label_ct_bin = new System.Windows.Forms.Label();
+            this.hScrollBar_binar_ct = new System.Windows.Forms.HScrollBar();
+            this.vScrollBar_coronal = new System.Windows.Forms.VScrollBar();
+            this.vScrollBar_sagital = new System.Windows.Forms.VScrollBar();
+            this.but_load_ct_scan = new System.Windows.Forms.Button();
+            this.vScrollBar_axial = new System.Windows.Forms.VScrollBar();
+            this.imageBox_navig_coronal = new Emgu.CV.UI.ImageBox();
+            this.imageBox_navig_sagital = new Emgu.CV.UI.ImageBox();
+            this.imageBox_navig_axial = new Emgu.CV.UI.ImageBox();
+            this.but_ct_dir_select = new System.Windows.Forms.Button();
+            this.textBox_ct_dir_path = new System.Windows.Forms.TextBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
@@ -814,6 +829,10 @@ namespace opengl3
             this.groupBox10.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.tabPage_navig_debug.SuspendLayout();
+            this.tabPage_navig_pan.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_coronal)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_sagital)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_axial)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -6802,6 +6821,7 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabP_developer);
             this.windowsTabs.Controls.Add(this.tabPage_tube);
             this.windowsTabs.Controls.Add(this.tabPage_navig_debug);
+            this.windowsTabs.Controls.Add(this.tabPage_navig_pan);
             this.windowsTabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.windowsTabs.Location = new System.Drawing.Point(3, 0);
             this.windowsTabs.Name = "windowsTabs";
@@ -8147,6 +8167,152 @@ namespace opengl3
             this.but_navig_cl.UseVisualStyleBackColor = true;
             this.but_navig_cl.Click += new System.EventHandler(this.but_con_navig_sys_Click);
             // 
+            // tabPage_navig_pan
+            // 
+            this.tabPage_navig_pan.Controls.Add(this.button5);
+            this.tabPage_navig_pan.Controls.Add(this.label_ct_gauss);
+            this.tabPage_navig_pan.Controls.Add(this.hScrollBar_gauss_ct);
+            this.tabPage_navig_pan.Controls.Add(this.label_ct_bin);
+            this.tabPage_navig_pan.Controls.Add(this.hScrollBar_binar_ct);
+            this.tabPage_navig_pan.Controls.Add(this.vScrollBar_coronal);
+            this.tabPage_navig_pan.Controls.Add(this.vScrollBar_sagital);
+            this.tabPage_navig_pan.Controls.Add(this.but_load_ct_scan);
+            this.tabPage_navig_pan.Controls.Add(this.vScrollBar_axial);
+            this.tabPage_navig_pan.Controls.Add(this.imageBox_navig_coronal);
+            this.tabPage_navig_pan.Controls.Add(this.imageBox_navig_sagital);
+            this.tabPage_navig_pan.Controls.Add(this.imageBox_navig_axial);
+            this.tabPage_navig_pan.Controls.Add(this.but_ct_dir_select);
+            this.tabPage_navig_pan.Controls.Add(this.textBox_ct_dir_path);
+            this.tabPage_navig_pan.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_pan.Name = "tabPage_navig_pan";
+            this.tabPage_navig_pan.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_navig_pan.Size = new System.Drawing.Size(1891, 1000);
+            this.tabPage_navig_pan.TabIndex = 11;
+            this.tabPage_navig_pan.Text = "Навиг Планир";
+            this.tabPage_navig_pan.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(1182, 230);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(181, 30);
+            this.button5.TabIndex = 144;
+            this.button5.Text = "Загрузить кт";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
+            // label_ct_gauss
+            // 
+            this.label_ct_gauss.AutoSize = true;
+            this.label_ct_gauss.Location = new System.Drawing.Point(1179, 158);
+            this.label_ct_gauss.Name = "label_ct_gauss";
+            this.label_ct_gauss.Size = new System.Drawing.Size(101, 16);
+            this.label_ct_gauss.TabIndex = 143;
+            this.label_ct_gauss.Text = "Сглаживание: ";
+            // 
+            // hScrollBar_gauss_ct
+            // 
+            this.hScrollBar_gauss_ct.Location = new System.Drawing.Point(1182, 174);
+            this.hScrollBar_gauss_ct.Maximum = 20;
+            this.hScrollBar_gauss_ct.Name = "hScrollBar_gauss_ct";
+            this.hScrollBar_gauss_ct.Size = new System.Drawing.Size(252, 30);
+            this.hScrollBar_gauss_ct.TabIndex = 142;
+            this.hScrollBar_gauss_ct.Value = 1;
+            this.hScrollBar_gauss_ct.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar_gauss_ct_Scroll);
+            // 
+            // label_ct_bin
+            // 
+            this.label_ct_bin.AutoSize = true;
+            this.label_ct_bin.Location = new System.Drawing.Point(1179, 101);
+            this.label_ct_bin.Name = "label_ct_bin";
+            this.label_ct_bin.Size = new System.Drawing.Size(101, 16);
+            this.label_ct_bin.TabIndex = 141;
+            this.label_ct_bin.Text = "Бинаризация: ";
+            // 
+            // hScrollBar_binar_ct
+            // 
+            this.hScrollBar_binar_ct.Location = new System.Drawing.Point(1182, 117);
+            this.hScrollBar_binar_ct.Maximum = 254;
+            this.hScrollBar_binar_ct.Name = "hScrollBar_binar_ct";
+            this.hScrollBar_binar_ct.Size = new System.Drawing.Size(252, 30);
+            this.hScrollBar_binar_ct.TabIndex = 140;
+            this.hScrollBar_binar_ct.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar_binar_ct_Scroll);
+            // 
+            // vScrollBar_coronal
+            // 
+            this.vScrollBar_coronal.Location = new System.Drawing.Point(515, 521);
+            this.vScrollBar_coronal.Name = "vScrollBar_coronal";
+            this.vScrollBar_coronal.Size = new System.Drawing.Size(35, 509);
+            this.vScrollBar_coronal.TabIndex = 139;
+            this.vScrollBar_coronal.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar_coronal_Scroll);
+            // 
+            // vScrollBar_sagital
+            // 
+            this.vScrollBar_sagital.Location = new System.Drawing.Point(1085, 3);
+            this.vScrollBar_sagital.Name = "vScrollBar_sagital";
+            this.vScrollBar_sagital.Size = new System.Drawing.Size(35, 509);
+            this.vScrollBar_sagital.TabIndex = 138;
+            this.vScrollBar_sagital.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar_sagital_Scroll);
+            // 
+            // but_load_ct_scan
+            // 
+            this.but_load_ct_scan.Location = new System.Drawing.Point(1474, 39);
+            this.but_load_ct_scan.Name = "but_load_ct_scan";
+            this.but_load_ct_scan.Size = new System.Drawing.Size(181, 30);
+            this.but_load_ct_scan.TabIndex = 137;
+            this.but_load_ct_scan.Text = "Загрузить кт";
+            this.but_load_ct_scan.UseVisualStyleBackColor = true;
+            this.but_load_ct_scan.Click += new System.EventHandler(this.but_load_ct_scan_Click);
+            // 
+            // vScrollBar_axial
+            // 
+            this.vScrollBar_axial.Location = new System.Drawing.Point(515, 3);
+            this.vScrollBar_axial.Name = "vScrollBar_axial";
+            this.vScrollBar_axial.Size = new System.Drawing.Size(35, 509);
+            this.vScrollBar_axial.TabIndex = 135;
+            this.vScrollBar_axial.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar_axial_Scroll);
+            // 
+            // imageBox_navig_coronal
+            // 
+            this.imageBox_navig_coronal.Location = new System.Drawing.Point(0, 518);
+            this.imageBox_navig_coronal.Name = "imageBox_navig_coronal";
+            this.imageBox_navig_coronal.Size = new System.Drawing.Size(512, 512);
+            this.imageBox_navig_coronal.TabIndex = 133;
+            this.imageBox_navig_coronal.TabStop = false;
+            // 
+            // imageBox_navig_sagital
+            // 
+            this.imageBox_navig_sagital.Location = new System.Drawing.Point(570, 0);
+            this.imageBox_navig_sagital.Name = "imageBox_navig_sagital";
+            this.imageBox_navig_sagital.Size = new System.Drawing.Size(512, 512);
+            this.imageBox_navig_sagital.TabIndex = 132;
+            this.imageBox_navig_sagital.TabStop = false;
+            // 
+            // imageBox_navig_axial
+            // 
+            this.imageBox_navig_axial.Location = new System.Drawing.Point(0, 0);
+            this.imageBox_navig_axial.Name = "imageBox_navig_axial";
+            this.imageBox_navig_axial.Size = new System.Drawing.Size(512, 512);
+            this.imageBox_navig_axial.TabIndex = 2;
+            this.imageBox_navig_axial.TabStop = false;
+            // 
+            // but_ct_dir_select
+            // 
+            this.but_ct_dir_select.Location = new System.Drawing.Point(1287, 39);
+            this.but_ct_dir_select.Name = "but_ct_dir_select";
+            this.but_ct_dir_select.Size = new System.Drawing.Size(181, 30);
+            this.but_ct_dir_select.TabIndex = 131;
+            this.but_ct_dir_select.Text = "Выбрать директорию кт";
+            this.but_ct_dir_select.UseVisualStyleBackColor = true;
+            this.but_ct_dir_select.Click += new System.EventHandler(this.but_ct_dir_select_Click);
+            // 
+            // textBox_ct_dir_path
+            // 
+            this.textBox_ct_dir_path.Location = new System.Drawing.Point(1287, 11);
+            this.textBox_ct_dir_path.Name = "textBox_ct_dir_path";
+            this.textBox_ct_dir_path.Size = new System.Drawing.Size(598, 22);
+            this.textBox_ct_dir_path.TabIndex = 130;
+            this.textBox_ct_dir_path.Text = "\"\"";
+            // 
             // timer1
             // 
             this.timer1.Interval = 10;
@@ -8313,6 +8479,11 @@ namespace opengl3
             this.groupBox9.PerformLayout();
             this.tabPage_navig_debug.ResumeLayout(false);
             this.tabPage_navig_debug.PerformLayout();
+            this.tabPage_navig_pan.ResumeLayout(false);
+            this.tabPage_navig_pan.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_coronal)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_sagital)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_axial)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -8989,6 +9160,21 @@ namespace opengl3
         private System.Windows.Forms.TextBox textBox_tool_calibr;
         private System.Windows.Forms.Button but_navig_tool_calibr;
         private System.Windows.Forms.Button but_select_tb_navig_folder;
+        private System.Windows.Forms.TabPage tabPage_navig_pan;
+        private System.Windows.Forms.Button but_ct_dir_select;
+        private System.Windows.Forms.TextBox textBox_ct_dir_path;
+        private Emgu.CV.UI.ImageBox imageBox_navig_coronal;
+        private Emgu.CV.UI.ImageBox imageBox_navig_sagital;
+        private Emgu.CV.UI.ImageBox imageBox_navig_axial;
+        private System.Windows.Forms.VScrollBar vScrollBar_axial;
+        private System.Windows.Forms.Button but_load_ct_scan;
+        private System.Windows.Forms.Label label_ct_bin;
+        private System.Windows.Forms.HScrollBar hScrollBar_binar_ct;
+        private System.Windows.Forms.VScrollBar vScrollBar_coronal;
+        private System.Windows.Forms.VScrollBar vScrollBar_sagital;
+        private System.Windows.Forms.Label label_ct_gauss;
+        private System.Windows.Forms.HScrollBar hScrollBar_gauss_ct;
+        private System.Windows.Forms.Button button5;
     }
 }
 

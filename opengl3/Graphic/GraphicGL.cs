@@ -12,9 +12,13 @@ using Emgu.CV.UI;
 using Emgu.CV.Structure;
 using Emgu.Util;
 using Accord.Statistics.Distributions.Univariate;
+using System.Numerics;
 
 namespace opengl3
 {   
+
+
+
     public enum modeGL { Paint, View}
     public enum viewType { Perspective, Ortho }
 
@@ -185,7 +189,7 @@ namespace opengl3
         public viewType typeProj = viewType.Perspective;
         Size sizeControl;
         Point lastPos;
-
+        uint programID_comp_voxels;
         uint programID_comp;
         uint programID_comp_allign;
         public int texture_vis = 0;
@@ -471,6 +475,9 @@ namespace opengl3
             var CompShaderGL_allign = assembCode(new string[] { @"Graphic\Shaders\Comp\CompSh_allign.glsl" });
             programID_comp_allign = createShaderCompute(CompShaderGL_allign);
 
+            //var CompShaderGL_voxels = assembCode(new string[] { @"Graphic\Shaders\Comp\from_voxels_mesh.glsl" });
+            //programID_comp_voxels = createShaderCompute(CompShaderGL_voxels);
+            
             //var CompShaderSliceGL = assembCode(new string[] { @"Graphic\Shaders\Comp\slice_shader_one.glsl" });
             //idsCsSlice.programID = createShaderCompute(CompShaderSliceGL);
 
@@ -549,71 +556,71 @@ namespace opengl3
 
             });
 
-         /*   lightSources.Add(new LightSourceGL
-            {
-                 position_z = 50,
-                position_x = -250,
-                 position_y = 200,
-                direction_z = 300,
-                color_r = 0.9f,
-                color_g = 0.9f,
-                color_b = 0.9f,
-                power = 1e7f,
-                cut_off = 0.9999f,
-                type_light = LightSourceGL.type.Point
+            /*   lightSources.Add(new LightSourceGL
+               {
+                    position_z = 50,
+                   position_x = -250,
+                    position_y = 200,
+                   direction_z = 300,
+                   color_r = 0.9f,
+                   color_g = 0.9f,
+                   color_b = 0.9f,
+                   power = 1e7f,
+                   cut_off = 0.9999f,
+                   type_light = LightSourceGL.type.Point
 
-            }) ;*/
-//def light
-           /* lightSources.Add(new LightSourceGL
-            {
-                position_x = -370,
-                position_y = 230,
-                position_z = -100,
-                
-                
-                direction_z = 300,
-                color_r = 0.9f,
-                color_g = 0.9f,
-                color_b = 0.9f,
-                power = 10000f,
-                cut_off = 0.9999f,
-                type_light = LightSourceGL.type.Point
-
-            });
-
-            lightSources.Add(new LightSourceGL
-            {
-                position_x = 0,
-                position_y = 0,
-                position_z = -100,
+               }) ;*/
+            //def light
+            /* lightSources.Add(new LightSourceGL
+             {
+                 position_x = -370,
+                 position_y = 230,
+                 position_z = -100,
 
 
-                direction_z = 300,
-                color_r = 0.9f,
-                color_g = 0.9f,
-                color_b = 0.9f,
-                power = 10000f,
-                cut_off = 0.9999f,
-                type_light = LightSourceGL.type.Point
+                 direction_z = 300,
+                 color_r = 0.9f,
+                 color_g = 0.9f,
+                 color_b = 0.9f,
+                 power = 10000f,
+                 cut_off = 0.9999f,
+                 type_light = LightSourceGL.type.Point
 
-            });
+             });
 
-            lightSources.Add(new LightSourceGL
-            {
-                position_x = 0,
-                position_y = 0,
-                position_z = 100,
+             lightSources.Add(new LightSourceGL
+             {
+                 position_x = 0,
+                 position_y = 0,
+                 position_z = -100,
 
 
-                direction_z = 300,
-                color_r = 0.9f,
-                color_g = 0.9f,
-                color_b = 0.9f,
-                power = 10000f,
-                cut_off = 0.9999f,
-                type_light = LightSourceGL.type.Point
+                 direction_z = 300,
+                 color_r = 0.9f,
+                 color_g = 0.9f,
+                 color_b = 0.9f,
+                 power = 10000f,
+                 cut_off = 0.9999f,
+                 type_light = LightSourceGL.type.Point
 
-            });*/
+             });
+
+             lightSources.Add(new LightSourceGL
+             {
+                 position_x = 0,
+                 position_y = 0,
+                 position_z = 100,
+
+
+                 direction_z = 300,
+                 color_r = 0.9f,
+                 color_g = 0.9f,
+                 color_b = 0.9f,
+                 power = 10000f,
+                 cut_off = 0.9999f,
+                 type_light = LightSourceGL.type.Point
+
+             });*/
             /* lightSources.Add(new LightSourceGL
              {
                  position_z = 10,
@@ -629,7 +636,27 @@ namespace opengl3
             matr[3, 1] = 50;
             buffersGl.setMatrobj(light_name, 0, matr);*/
 
+            const int width = 28;
+            const int height = 28;
+            const int depth = 28;
 
+            // 3. Генерация вокселей: цилиндр радиусом 40, высотой 100, центр в середине
+            bool[,,] voxels = VoxelToStlGpu.GenerateCylinderVoxels(width, height, depth, radius: 5, cylinderHeight: 10);
+
+            // 4. Создаём объект для GPU-генерации меша
+            var gpuMesher = new VoxelToStlGpu(this, width, height, depth);
+
+            // 5. Передаём воксели на GPU
+            gpuMesher.SetVoxelData(voxels);
+
+            // 6. Запускаем вычисления (два прохода) и получаем вершины/индексы
+            gpuMesher.GenerateMesh(out List<Vector3> vertices, out List<uint> indices);
+
+            // 7. Сохраняем результат в STL-файл
+            gpuMesher.SaveAsStl("cylinder_128.stl", vertices, indices);
+
+            Console.WriteLine($"Mesh generated: {vertices.Count} vertices, {indices.Count / 3} triangles");
+            Console.WriteLine("Saved to cylinder_128.stl");
         }
         private void init_vars_gl(IDs ids)
         {
@@ -2730,7 +2757,7 @@ namespace opengl3
 
         #region shader
    
-        string[] assembCode(string[] paths)
+       public string[] assembCode(string[] paths)
         {
             try
             {
@@ -2824,7 +2851,7 @@ namespace opengl3
             }
             return ProgrammID;
         }
-        private uint createShaderCompute(string[] ComputeSourceGL)
+        public uint createShaderCompute(string[] ComputeSourceGL)
         {
 
             var ComputeShaderID = compileShader(ComputeSourceGL, ShaderType.ComputeShader);
