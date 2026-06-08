@@ -2261,7 +2261,7 @@ namespace opengl3
 
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
 
-            var mat_test = new Mat("aruco_test4.png");
+            //var mat_test = new Mat("aruco_test4.png");
            // generateImage3D_aruko_solid(1, 0, 0, mat_test);
             //GL1.SortObj();
 
@@ -2301,7 +2301,7 @@ namespace opengl3
 
             GL1.add_TreeView(tree_models);
 
-
+            //load_navig_sys();
 
             //Manipulator.calcRob(GL1);
 
@@ -2430,7 +2430,7 @@ namespace opengl3
             //test_poses();
             //load_3d_model_robot_pulse();
 
-            load_navig_sys();
+
         }
         void test_allign_mesh()
         {

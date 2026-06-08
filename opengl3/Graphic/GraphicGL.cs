@@ -636,15 +636,18 @@ namespace opengl3
             matr[3, 1] = 50;
             buffersGl.setMatrobj(light_name, 0, matr);*/
 
-            const int width = 28;
-            const int height = 28;
-            const int depth = 28;
+            const int width = 5;
+            const int height = 5;
+            const int depth = 5;
 
             // 3. Генерация вокселей: цилиндр радиусом 40, высотой 100, центр в середине
-            bool[,,] voxels = VoxelToStlGpu.GenerateCylinderVoxels(width, height, depth, radius: 5, cylinderHeight: 10);
+            //bool[,,] voxels = VoxelToStlGpu.GenerateCylinderVoxels(width, height, depth, radius: 5, cylinderHeight: 10);
+
+            bool[,,] voxels = VoxelToStlGpu.GenerateOneVoxels(width);
 
             // 4. Создаём объект для GPU-генерации меша
             var gpuMesher = new VoxelToStlGpu(this, width, height, depth);
+
 
             // 5. Передаём воксели на GPU
             gpuMesher.SetVoxelData(voxels);
@@ -653,7 +656,7 @@ namespace opengl3
             gpuMesher.GenerateMesh(out List<Vector3> vertices, out List<uint> indices);
 
             // 7. Сохраняем результат в STL-файл
-            gpuMesher.SaveAsStl("cylinder_128.stl", vertices, indices);
+            gpuMesher.SaveAsStlAscii("cylinder_128.stl", vertices, indices);
 
             Console.WriteLine($"Mesh generated: {vertices.Count} vertices, {indices.Count / 3} triangles");
             Console.WriteLine("Saved to cylinder_128.stl");
