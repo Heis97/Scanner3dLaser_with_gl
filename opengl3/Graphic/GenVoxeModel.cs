@@ -7,6 +7,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.TextFormatting;
@@ -53,7 +54,7 @@ namespace opengl3
         {
             // Грубая оценка: максимальное количество треугольников ≈ количество кубов × 2
             uint cubeCount = ((uint)Width - 1) * ((uint)Height - 1) * ((uint)Depth - 1); // ~249 млн
-            uint maxTriangles = cubeCount * 2;   // ~498 млн
+            uint maxTriangles = cubeCount /8; //cubeCount * 2;   // ~498 млн
             maxVertexCount = maxTriangles * 3;
             maxIndexCount = maxTriangles * 3;
         }
@@ -88,10 +89,10 @@ namespace opengl3
             Gl.BufferData(BufferTarget.ShaderStorageBuffer, sizeof(uint), IntPtr.Zero, BufferUsage.DynamicDraw);
 
 
-            voxelDataSize = (uint)Width * (uint)Height * (uint)Depth * sizeof(uint);
+            /*voxelDataSize = (uint)Width * (uint)Height * (uint)Depth * sizeof(uint);
             debugTableSSBO = Gl.GenBuffer();
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, debugTableSSBO);
-            Gl.BufferData(BufferTarget.ShaderStorageBuffer, voxelDataSize, IntPtr.Zero, BufferUsage.DynamicDraw);
+            Gl.BufferData(BufferTarget.ShaderStorageBuffer, voxelDataSize, IntPtr.Zero, BufferUsage.DynamicDraw);*/
 
             // Сбросить привязку
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
@@ -99,8 +100,8 @@ namespace opengl3
 
         private void LoadTriTable()
         {
-
-            /*int[] triTableData = new int[4096]
+            /*
+            int[] triTableData = new int[4096]
             {
                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 0
                 0,  3,  8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,    // 1
@@ -359,7 +360,7 @@ namespace opengl3
                 8, 3, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,    // 254
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1   // 255
             };*/
-
+            
             int[] triTableData = new int[4096]
             {
                 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 ,
@@ -448,7 +449,8 @@ namespace opengl3
              10, 6, 5, 1, 9, 7, 1, 7, 3, 7, 9, 4, -1, -1, -1, -1 ,
              6, 1, 2, 6, 5, 1, 4, 7, 8, -1, -1, -1, -1, -1, -1, -1 ,
              1, 2, 5, 5, 2, 6, 3, 0, 4, 3, 4, 7, -1, -1, -1, -1 ,
-             8, 4, 7, 9, 0, 5, 0, 6, 5, 0, 2, 6, -1, -1, -1, -1 ,  7, 3, 9, 7, 9, 4, 3, 2, 9, 5, 9, 6, 2, 6, 9, -1 ,
+             8, 4, 7, 9, 0, 5, 0, 6, 5, 0, 2, 6, -1, -1, -1, -1 ,
+             7, 3, 9, 7, 9, 4, 3, 2, 9, 5, 9, 6, 2, 6, 9, -1 ,
              3, 11, 2, 7, 8, 4, 10, 6, 5, -1, -1, -1, -1, -1, -1, -1 ,
              5, 10, 6, 4, 7, 2, 4, 2, 0, 2, 7, 11, -1, -1, -1, -1 ,
              0, 1, 9, 4, 7, 8, 2, 3, 11, 5, 10, 6, -1, -1, -1, -1 ,
@@ -477,7 +479,8 @@ namespace opengl3
              0, 7, 3, 0, 10, 7, 0, 9, 10, 6, 7, 10, -1, -1, -1, -1 ,
              10, 6, 7, 1, 10, 7, 1, 7, 8, 1, 8, 0, -1, -1, -1, -1 ,
              10, 6, 7, 10, 7, 1, 1, 7, 3, -1, -1, -1, -1, -1, -1, -1 ,
-             1, 2, 6, 1, 6, 8, 1, 8, 9, 8, 6, 7, -1, -1, -1, -1 ,  2, 6, 9, 2, 9, 1, 6, 7, 9, 0, 9, 3, 7, 3, 9, -1 ,
+             1, 2, 6, 1, 6, 8, 1, 8, 9, 8, 6, 7, -1, -1, -1, -1 ,
+             2, 6, 9, 2, 9, 1, 6, 7, 9, 0, 9, 3, 7, 3, 9, -1 ,
              7, 8, 0, 7, 0, 6, 6, 0, 2, -1, -1, -1, -1, -1, -1, -1 ,
              7, 3, 2, 6, 7, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 ,
              2, 3, 11, 10, 6, 8, 10, 8, 9, 8, 6, 7, -1, -1, -1, -1 ,
@@ -530,7 +533,8 @@ namespace opengl3
              3, 4, 8, 3, 5, 4, 3, 2, 5, 10, 5, 2, 11, 7, 6, -1 ,
              7, 2, 3, 7, 6, 2, 5, 4, 9, -1, -1, -1, -1, -1, -1, -1 ,
              9, 5, 4, 0, 8, 6, 0, 6, 2, 6, 8, 7, -1, -1, -1, -1 ,
-             3, 6, 2, 3, 7, 6, 1, 5, 0, 5, 4, 0, -1, -1, -1, -1 ,  6, 2, 8, 6, 8, 7, 2, 1, 8, 4, 8, 5, 1, 5, 8, -1 ,
+             3, 6, 2, 3, 7, 6, 1, 5, 0, 5, 4, 0, -1, -1, -1, -1 ,  
+             6, 2, 8, 6, 8, 7, 2, 1, 8, 4, 8, 5, 1, 5, 8, -1 ,
              9, 5, 4, 10, 1, 6, 1, 7, 6, 1, 3, 7, -1, -1, -1, -1 ,
              1, 6, 10, 1, 7, 6, 1, 0, 7, 8, 7, 0, 9, 5, 4, -1 ,
              4, 0, 10, 4, 10, 5, 0, 3, 10, 6, 10, 7, 3, 7, 10, -1 ,
@@ -616,7 +620,7 @@ namespace opengl3
              0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 ,
              -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
             };
-
+            
             triTableSSBO = Gl.GenBuffer();
 
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, triTableSSBO);
@@ -662,37 +666,49 @@ namespace opengl3
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, voxelSSBO);
             Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, voxelDataSize, data);
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
-
         }
 
-        public void GenerateMesh(out List<Vector3> vertices, out List<uint> indices)
+        public void SetVoxelData(byte[,,] voxels)
+        {
+            // Преобразуем 3D-массив bool в одномерный массив uint
+            uint[] data = new uint[Width * Height * Depth];
+            for (int z = 0; z < Depth; z++)
+                for (int y = 0; y < Height; y++)
+                    for (int x = 0; x < Width; x++)
+                    {
+                        int idx = x + y * Width + z * Width * Height;
+
+
+                        data[idx] = voxels[x, y, z];
+                    }
+
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, voxelSSBO);
+            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, voxelDataSize, data);
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+
+        }
+        public List<float[]> GenerateMesh(out List<Vector3> vertices, out List<int> indices)
         {
             Console.WriteLine("GenerateMesh started");
-            CheckGLError("start");
 
             // 1. Обнуляем счётчики
             uint zero = 0;
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
             Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, sizeof(uint), zero);
-            CheckGLError("BufferSubData vertexCounter");
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexCounterSSBO);
             Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, sizeof(uint), zero);
-            CheckGLError("BufferSubData indexCounter");
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 
             // 2. Активируем шейдерную программу
             Gl.UseProgram(computeProgram);
-            CheckGLError("UseProgram");
-
             // 3. Привязываем SSBO
             Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 0, voxelSSBO);
             Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 1, vertexSSBO);
-            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 2, indexSSBO);
+            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 6, indexSSBO);
             Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 3, vertexCounterSSBO);
             Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 4, indexCounterSSBO);
             Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 5, triTableSSBO);
-            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 6, debugTableSSBO);
-            CheckGLError("BindBufferBase");
+            //Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 6, debugTableSSBO);
 
             // 4. Uniform-переменные
             int passLoc = Gl.GetUniformLocation(computeProgram, "pass");
@@ -701,65 +717,38 @@ namespace opengl3
             int depthLoc = Gl.GetUniformLocation(computeProgram, "depth");
             int isoLevelLoc = Gl.GetUniformLocation(computeProgram, "isoLevel");
 
-            if (passLoc == -1) Console.WriteLine("Warning: uniform 'pass' not found");
-            if (widthLoc == -1) Console.WriteLine("Warning: uniform 'width' not found");
-            if (heightLoc == -1) Console.WriteLine("Warning: uniform 'height' not found");
-            if (depthLoc == -1) Console.WriteLine("Warning: uniform 'depth' not found");
-
             Gl.Uniform1(widthLoc, Width);
             Gl.Uniform1(heightLoc, Height);
             Gl.Uniform1(depthLoc, Depth);
-            Gl.Uniform1(isoLevelLoc, 0.5f);
-            CheckGLError("Uniforms");
+            Gl.Uniform1(isoLevelLoc,127);
 
             Console.WriteLine($"Uniforms set: width={Width}, height={Height}, depth={Depth}");
 
-            
-
-           
             //Console.WriteLine(string.Join(", ", readback));
 
             /*int[] readback = new int[32];
             Gl.BindBuffer(BufferTarget.UniformBuffer, triTableSSBO);
             IntPtr ptr1 = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
+            IntPtr ptr1 = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
             Marshal.Copy(ptr1, readback, 0, 32);
             Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
             Console.WriteLine("First 16 values from triTable SSBO: " + string.Join(", ", readback));*/
-
+            var group_size = 8;
             // 5. Группы
-            /*int groupsX = (Width - 1 + 7) / 8;
-            int groupsY = (Height - 1 + 7) / 8;
-            int groupsZ = (Depth - 1 + 7) / 8;*/
+            int groupsX = (Width - 1 + (group_size-1)) / group_size;
+            int groupsY = (Height - 1 + (group_size - 1)) / group_size;
+            int groupsZ = (Depth - 1 + (group_size - 1)) / group_size;
 
-            int groupsX = Width;
+            /*int groupsX = Width;
             int groupsY = Height;
-            int groupsZ = Depth;
+            int groupsZ = Depth;*/
 
             Console.WriteLine($"Dispatch groups: {groupsX} x {groupsY} x {groupsZ}");
 
             // --- Первый проход ---
             Gl.Uniform1(passLoc, 0);
             Gl.DispatchCompute((uint)groupsX, (uint)groupsY, (uint)groupsZ);
-            CheckGLError("DispatchCompute pass 0");
             Gl.MemoryBarrier(MemoryBarrierMask.AtomicCounterBarrierBit | MemoryBarrierMask.ShaderStorageBarrierBit);
-            CheckGLError("MemoryBarrier pass0");
-
-
-            int[] readback = new int[4096];
-            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, debugTableSSBO);
-            IntPtr ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadWrite);
-            Marshal.Copy(ptr, readback, 0, 4096);
-            Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
-
-            for (int i = 0; i < 256; i++)
-            {
-                for (int j = 0; j < 16; j++)
-                {
-                    Console.Write(readback[i * 16 + j] + " ");
-
-                }
-                Console.WriteLine();
-            }
 
             // ПРОВЕРКА: читаем счётчик вершин после первого прохода
             /*uint tempCount = 0;
@@ -775,28 +764,41 @@ namespace opengl3
             {
                 Console.WriteLine("Failed to map vertex counter after pass 0");
             }*/
+            Gl.MemoryBarrier(MemoryBarrierMask.AtomicCounterBarrierBit | MemoryBarrierMask.ShaderStorageBarrierBit);
             zero = 0;
-            /*Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
             Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, sizeof(uint), zero);
-            CheckGLError("BufferSubData vertexCounter");
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexCounterSSBO);
             Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, sizeof(uint), zero);
-            CheckGLError("BufferSubData indexCounter");
-            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);*/
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 
             // --- Второй проход ---
             Gl.Uniform1(passLoc, 1);
             Gl.DispatchCompute((uint)groupsX, (uint)groupsY, (uint)groupsZ);
-            CheckGLError("DispatchCompute pass 1");
             Gl.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit);
-            CheckGLError("MemoryBarrier pass1");
 
+
+           /* int[] readback = new int[4096];
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, debugTableSSBO);
+            IntPtr ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadWrite);
+            Marshal.Copy(ptr, readback, 0, 4096);
+            Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
+
+            for (int i = 0; i < 256; i++)
+            {
+                for (int j = 0; j < 16; j++)
+                {
+                    Console.Write(readback[i * 16 + j] + " ");
+
+                }
+                Console.WriteLine();
+            }*/
             // Чтение финальных счётчиков
             uint vertexCount = 0;
             uint indexCount = 0;
 
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
-            ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
+            var ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
             if (ptr != IntPtr.Zero)
             {
                 vertexCount = Marshal.PtrToStructure<uint>(ptr);
@@ -825,13 +827,13 @@ namespace opengl3
             if (vertexCount == 0 || indexCount == 0)
             {
                 vertices = new List<Vector3>();
-                indices = new List<uint>();
+                indices = new List<int>();
                 Console.WriteLine("No geometry generated");
-                return;
+                return null;
             }
 
             // 8. Чтение вершин (как float[])
-            float[] vertsFloat = new float[vertexCount * 3];
+            float[] vertsFloat = new float[vertexCount * 4];
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexSSBO);
             ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
             if (ptr != IntPtr.Zero)
@@ -846,13 +848,18 @@ namespace opengl3
             }
 
             Vector3[] verts = new Vector3[vertexCount];
+
+            Vector3[] verts_float = new Vector3[vertexCount];
+
             for (int i = 0; i < vertexCount; i++)
             {
-                verts[i] = new Vector3(vertsFloat[i * 3], vertsFloat[i * 3 + 1], vertsFloat[i * 3 + 2]);
+                verts[i] = new Vector3(vertsFloat[i * 4], vertsFloat[i * 4 + 1], vertsFloat[i * 4 + 2]);
+              
             }
+            
 
-            // 9. Чтение индексов (через int[])
-            int[] idxsInt = new int[indexCount];
+                // 9. Чтение индексов (через int[])
+                int[] idxsInt = new int[indexCount];
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexSSBO);
             ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
             if (ptr != IntPtr.Zero)
@@ -867,16 +874,54 @@ namespace opengl3
             }
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 
-            uint[] idxs = new uint[indexCount];
-            for (int i = 0; i < indexCount; i++)
+
+            float[] mesh = new float[vertexCount * 3];
+            float[] normals = new float[vertexCount*3 ];
+            /*int[] idxs = new int[indexCount];
+            for (int i = 0; i < indexCount; i+=3)
             {
-                idxs[i] = (uint)idxsInt[i];
-            }
+                if (idxsInt[i] % 3 != 0) Console.WriteLine("idxsInt[i] % 3 !=0");
+                int ind_cur =4* idxsInt[i]/3;
+                mesh[i] = vertsFloat[ind_cur];
+                mesh[i+1] = vertsFloat[ind_cur+1];
+                mesh[i+2] = vertsFloat[ind_cur+2];
+            }*/
+
+
 
             vertices = new List<Vector3>(verts);
-            indices = new List<uint>(idxs);
+            indices = new List<int>(idxsInt);
+
+
+            for (int i = 0; i < indices.Count; i += 3)
+            {
+                Vector3 v0 = vertices[indices[i]];
+                Vector3 v1 = vertices[indices[i + 1]];
+                Vector3 v2 = vertices[indices[i + 2]];
+
+                Vector3 normal = Vector3.Normalize(Vector3.Cross(v1 - v0, v2 - v0));
+
+                mesh[3*i] = v0.X; mesh[3 * i+1] = v0.Y; mesh[3 * i+2] = v0.Z;
+                mesh[3 * (i+1)] = v1.X; mesh[3 * (i + 1) + 1] = v1.Y; mesh[3 * (i + 1) + 2] = v1.Z;
+                mesh[3 * (i + 2)] = v2.X; mesh[3 * (i + 2) + 1] = v2.Y; mesh[3 * (i + 2) + 2] = v2.Z;
+
+                normals[3*i] = normal.X; normals[3 * i +1] = normal.Y; normals[3 * i +2] = normal.Z;
+                normals[3 * i] = normal.X; normals[3 * i + 1] = normal.Y; normals[3 * i + 2] = normal.Z;
+                normals[3*i] = normal.X; normals[3 * i + 1] = normal.Y; normals[3 * i + 2] = normal.Z;
+
+                /* writer.WriteLine($"      vertex {v0.X.ToString(culture)} {v0.Y.ToString(culture)} {v0.Z.ToString(culture)}");
+                 writer.WriteLine($"      vertex {v1.X.ToString(culture)} {v1.Y.ToString(culture)} {v1.Z.ToString(culture)}");
+                 writer.WriteLine($"      vertex {v2.X.ToString(culture)} {v2.Y.ToString(culture)} {v2.Z.ToString(culture)}");
+                 writer.WriteLine($"    endloop");
+                 writer.WriteLine($"  endfacet");*/
+            }
+            var ret = new List<float[]>();
+            ret.Add(mesh);
+            ret.Add(normals);
+
+            return ret;
         }
-        public void SaveAsStlAscii(string filename, List<Vector3> vertices, List<uint> indices)
+        public void SaveAsStlAscii(string filename, List<Vector3> vertices, List<int> indices)
         {
             if (indices.Count % 3 != 0)
                 throw new ArgumentException("Index count must be multiple of 3");
@@ -891,9 +936,9 @@ namespace opengl3
 
                 for (int i = 0; i < indices.Count; i += 3)
                 {
-                    Vector3 v0 = vertices[(int)indices[i]];
-                    Vector3 v1 = vertices[(int)indices[i + 1]];
-                    Vector3 v2 = vertices[(int)indices[i + 2]];
+                    Vector3 v0 = vertices[indices[i]];
+                    Vector3 v1 = vertices[indices[i + 1]];
+                    Vector3 v2 = vertices[indices[i + 2]];
 
                     // Вычисляем нормаль (векторное произведение)
                     Vector3 normal = Vector3.Normalize(Vector3.Cross(v1 - v0, v2 - v0));
@@ -941,7 +986,65 @@ namespace opengl3
                 }
             }
         }
+        public static byte[,,] GenerateCylinder(
+        int width, int height, int depth,
+        float radius, float cylinderHeight,
+        float centerX, float baseY, float centerZ,
+        float smoothingEpsilon = 1.0f)
+        {
+            byte[,,] voxels = new byte[width, height, depth];
+            float topY = baseY + cylinderHeight;
 
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    for (int z = 0; z < depth; z++)
+                    {
+                        // Центр вокселя в мировых координатах (индекс = координата)
+                        float px = x;
+                        float py = y;
+                        float pz = z;
+
+                        // Расстояние до оси цилиндра в плоскости XZ
+                        float dx = px - centerX;
+                        float dz = pz - centerZ;
+                        float radialDist = (float)Math.Sqrt(dx * dx + dz * dz) - radius;
+
+                        // Расстояние до вертикальных границ (положительное снаружи, отрицательное внутри)
+                        float verticalDist = Math.Max(baseY - py, py - topY);
+
+                        // Signed Distance Function для конечного цилиндра
+                        float sdf = Math.Max(radialDist, verticalDist);
+
+                        // Преобразование SDF в значение вокселя с учётом сглаживания
+                        byte value;
+                        if (smoothingEpsilon <= 0)
+                        {
+                            // Бинарный режим
+                            value = (sdf <= 0) ? (byte)255 : (byte)0;
+                        }
+                        else
+                        {
+                            if (sdf <= -smoothingEpsilon)
+                                value = 255;
+                            else if (sdf >= smoothingEpsilon)
+                                value = 0;
+                            else
+                            {
+                                // Линейная интерполяция в зоне сглаживания [-eps, +eps]
+                                float t = (sdf + smoothingEpsilon) / (2 * smoothingEpsilon);
+                                value = (byte)((1 - t) * 255);
+                            }
+                        }
+
+                        voxels[x, y, z] = value;
+                    }
+                }
+            }
+
+            return voxels;
+        }
         public static bool[,,] GenerateCylinderVoxels(int width, int height, int depth, float radius, float cylinderHeight)
         {
             var voxels = new bool[width, height, depth];
@@ -982,7 +1085,7 @@ namespace opengl3
                 {
                     for (int z = 0; z < width; z++)
                     {
-                        if (x==centr && y == centr && z == centr )
+                        if (x==centr && y == centr && z == centr)
                         {
                             voxels[x, y, z] = true;
                         }
@@ -996,35 +1099,5 @@ namespace opengl3
             return voxels;
         }
 
-        private void CheckGLError(string context)
-        {
-            ErrorCode err;
-            while ((err = Gl.GetError()) != ErrorCode.NoError)
-            {
-                Console.WriteLine($"OpenGL Error in {context}: {err}");
-            }
-        }
-
-        private void PrintShaderLog(uint shader)
-        {
-            Gl.GetShader(shader, ShaderParameterName.InfoLogLength, out int length);
-            if (length > 0)
-            {
-                StringBuilder sb = new StringBuilder(length);
-                Gl.GetShaderInfoLog(shader, length, out int _, sb);
-                Console.WriteLine($"Shader Info Log: {sb.ToString()}");
-            }
-        }
-
-        private void PrintProgramLog(uint program)
-        {
-            Gl.GetProgram(program, ProgramProperty.InfoLogLength, out int length);
-            if (length > 0)
-            {
-                StringBuilder sb = new StringBuilder(length);
-                Gl.GetProgramInfoLog(program, length, out int _, sb);
-                Console.WriteLine($"Program Info Log: {sb.ToString()}");
-            }
-        }
     }
 }

@@ -156,6 +156,7 @@ namespace opengl3
             Gl.VertexAttribPointer(lvl, strip, VertexAttribType.Float, false, 0, (IntPtr)0);
             return buff;
         }
+
         Matrix4x4f[] modelData()
         {
             var matrs = new Matrix4x4f[trsc.Length];

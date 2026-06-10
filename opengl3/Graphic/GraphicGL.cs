@@ -636,15 +636,15 @@ namespace opengl3
             matr[3, 1] = 50;
             buffersGl.setMatrobj(light_name, 0, matr);*/
 
-            const int width = 5;
-            const int height = 5;
-            const int depth = 5;
-
+           /* const int width = 500;
+            const int height = 500;
+            const int depth = 1000;
+            Console.WriteLine("Total_size: "+width * height * depth);
             // 3. Генерация вокселей: цилиндр радиусом 40, высотой 100, центр в середине
-            //bool[,,] voxels = VoxelToStlGpu.GenerateCylinderVoxels(width, height, depth, radius: 5, cylinderHeight: 10);
-
-            bool[,,] voxels = VoxelToStlGpu.GenerateOneVoxels(width);
-
+            //bool[,,] voxels = VoxelToStlGpu.GenerateCylinderVoxels(width, height, depth, radius: 14, cylinderHeight: 10);
+            var voxels = VoxelToStlGpu.GenerateCylinder(width, height, depth, 40,  400, width/2, height / 2, depth / 2);
+            //bool[,,] voxels = VoxelToStlGpu.GenerateOneVoxels(width);
+             
             // 4. Создаём объект для GPU-генерации меша
             var gpuMesher = new VoxelToStlGpu(this, width, height, depth);
 
@@ -653,13 +653,13 @@ namespace opengl3
             gpuMesher.SetVoxelData(voxels);
 
             // 6. Запускаем вычисления (два прохода) и получаем вершины/индексы
-            gpuMesher.GenerateMesh(out List<Vector3> vertices, out List<uint> indices);
+            var gen_mesh = gpuMesher.GenerateMesh(out List<Vector3> vertices, out List<int> indices);
 
+            add_buff_gl(gen_mesh, Color3d_GL.gray(), null, PrimitiveType.Triangles);
             // 7. Сохраняем результат в STL-файл
-            gpuMesher.SaveAsStlAscii("cylinder_128.stl", vertices, indices);
+            //gpuMesher.SaveAsStlAscii("cylinder_128.stl", vertices, indices);*/
 
-            Console.WriteLine($"Mesh generated: {vertices.Count} vertices, {indices.Count / 3} triangles");
-            Console.WriteLine("Saved to cylinder_128.stl");
+
         }
         private void init_vars_gl(IDs ids)
         {

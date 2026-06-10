@@ -697,7 +697,7 @@ namespace opengl3
             this.but_save_photo_nav = new System.Windows.Forms.Button();
             this.but_navig_cl = new System.Windows.Forms.Button();
             this.tabPage_navig_pan = new System.Windows.Forms.TabPage();
-            this.button5 = new System.Windows.Forms.Button();
+            this.but_generate_model_ct = new System.Windows.Forms.Button();
             this.label_ct_gauss = new System.Windows.Forms.Label();
             this.hScrollBar_gauss_ct = new System.Windows.Forms.HScrollBar();
             this.label_ct_bin = new System.Windows.Forms.Label();
@@ -8169,7 +8169,7 @@ namespace opengl3
             // 
             // tabPage_navig_pan
             // 
-            this.tabPage_navig_pan.Controls.Add(this.button5);
+            this.tabPage_navig_pan.Controls.Add(this.but_generate_model_ct);
             this.tabPage_navig_pan.Controls.Add(this.label_ct_gauss);
             this.tabPage_navig_pan.Controls.Add(this.hScrollBar_gauss_ct);
             this.tabPage_navig_pan.Controls.Add(this.label_ct_bin);
@@ -8191,14 +8191,15 @@ namespace opengl3
             this.tabPage_navig_pan.Text = "Навиг Планир";
             this.tabPage_navig_pan.UseVisualStyleBackColor = true;
             // 
-            // button5
+            // but_generate_model_ct
             // 
-            this.button5.Location = new System.Drawing.Point(1182, 230);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(181, 30);
-            this.button5.TabIndex = 144;
-            this.button5.Text = "Загрузить кт";
-            this.button5.UseVisualStyleBackColor = true;
+            this.but_generate_model_ct.Location = new System.Drawing.Point(1182, 230);
+            this.but_generate_model_ct.Name = "but_generate_model_ct";
+            this.but_generate_model_ct.Size = new System.Drawing.Size(181, 30);
+            this.but_generate_model_ct.TabIndex = 144;
+            this.but_generate_model_ct.Text = "Построить модель";
+            this.but_generate_model_ct.UseVisualStyleBackColor = true;
+            this.but_generate_model_ct.Click += new System.EventHandler(this.but_generate_model_ct_Click);
             // 
             // label_ct_gauss
             // 
@@ -9174,7 +9175,7 @@ namespace opengl3
         private System.Windows.Forms.VScrollBar vScrollBar_sagital;
         private System.Windows.Forms.Label label_ct_gauss;
         private System.Windows.Forms.HScrollBar hScrollBar_gauss_ct;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button but_generate_model_ct;
     }
 }
 

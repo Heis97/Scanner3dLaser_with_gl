@@ -37,6 +37,7 @@ using System.Security.Policy;
 using System.Security.Cryptography;
 using FellowOakDicom;
 using FellowOakDicom.Imaging;
+using System.Windows.Media.Media3D;
 
 
 //using Accord;
@@ -239,10 +240,10 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
-            /*ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
+            ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
             vScrollBar_axial.Maximum = ct_info.SlicesAxial.Count;
             vScrollBar_coronal.Maximum = ct_info.SlicesCoronal.Count;
-            vScrollBar_sagital.Maximum = ct_info.SlicesSagital.Count;*/
+            vScrollBar_sagital.Maximum = ct_info.SlicesSagital.Count;
 
 
             /* var poses_sym = new List<Pose>(new Pose[] { 
@@ -2301,7 +2302,7 @@ namespace opengl3
 
             GL1.add_TreeView(tree_models);
 
-            //load_navig_sys();
+            load_navig_sys();
 
             //Manipulator.calcRob(GL1);
 
@@ -10843,7 +10844,7 @@ namespace opengl3
         private void vScrollBar_axial_Scroll(object sender, ScrollEventArgs e)
         {
            ind_ct_image = ((VScrollBar)sender).Value;
-            if (ind_ct_image < ct_info.SlicesAxial.Count - 1 && ind_ct_image >= 0) imageBox_navig_axial.Image = filter_bone_ct(ct_info.SlicesAxial[ind_ct_image].Image, ct_bin_lvl, ct_gauss_size); 
+            if (ind_ct_image < ct_info.SlicesAxial.Count - 1 && ind_ct_image >= 0) imageBox_navig_axial.Image = DicomProcess.filter_bone_ct(ct_info.SlicesAxial[ind_ct_image].Image, ct_bin_lvl, ct_gauss_size); 
         }
 
         private void but_ct_dir_select_Click(object sender, EventArgs e)
@@ -10863,53 +10864,54 @@ namespace opengl3
         {
             ct_bin_lvl = ((HScrollBar)sender).Value;
             label_ct_bin.Text ="Бинаризация: "+ ct_bin_lvl.ToString();
-            imageBox_navig_axial.Image = filter_bone_ct(ct_info.SlicesAxial[ind_ct_image].Image, ct_bin_lvl, ct_gauss_size);
+            imageBox_navig_axial.Image = DicomProcess.filter_bone_ct(ct_info.SlicesAxial[ind_ct_image].Image, ct_bin_lvl, ct_gauss_size);
         }
 
-        private void hScrollBar_gauss_ct_Scroll(object sender, ScrollEventArgs e)
+        private void hScrollBar_gauss_ct_Scroll(object sender, ScrollEventArgs e)   
         {
             ct_gauss_size =2* ((HScrollBar)sender).Value+1;
             label_ct_gauss.Text = "Сглаживание: " + ct_gauss_size.ToString();
-            imageBox_navig_axial.Image = filter_bone_ct(ct_info.SlicesAxial[ind_ct_image].Image, ct_bin_lvl, ct_gauss_size);
+            imageBox_navig_axial.Image = DicomProcess.filter_bone_ct(ct_info.SlicesAxial[ind_ct_image].Image, ct_bin_lvl, ct_gauss_size);
         }
 
-        Mat filter_bone_ct(Mat mat, int bin_lvl, int gauss_size)
-        {
-            var cur_mat = mat.Clone();
-            var orig = mat.Clone();
-            CvInvoke.CvtColor(orig, orig, ColorConversion.Gray2Bgr);
-
-            CvInvoke.GaussianBlur(cur_mat, cur_mat, new Size(gauss_size, gauss_size), -1);
-            CvInvoke.Threshold(cur_mat, cur_mat, bin_lvl, 255, ThresholdType.Binary);
-
-
-            Mat zeroChannel = Mat.Zeros(cur_mat.Size.Height, cur_mat.Size.Width, DepthType.Cv8U, 1);
-
-            // Формируем массив каналов в порядке BGR
-            VectorOfMat channels = new VectorOfMat();
-            channels.Push(zeroChannel);                // Канал Blue
-            channels.Push(cur_mat);              // Канал Green
-            channels.Push(zeroChannel);                // Канал Red
-
-            // Выполняем слияние
-            Mat result = new Mat();
-            CvInvoke.Merge(channels, result);
-
-
-           return 0.5 * orig + 0.5 * result;
-        }
+       
 
         private void vScrollBar_sagital_Scroll(object sender, ScrollEventArgs e)
         {
            var ind_ct_image = ((VScrollBar)sender).Value;
-            if (ind_ct_image < ct_info.SlicesSagital.Count - 1 && ind_ct_image >= 0) imageBox_navig_sagital.Image = filter_bone_ct(ct_info.SlicesSagital[ind_ct_image], ct_bin_lvl, ct_gauss_size);
+            if (ind_ct_image < ct_info.SlicesSagital.Count - 1 && ind_ct_image >= 0) imageBox_navig_sagital.Image = DicomProcess.filter_bone_ct(ct_info.SlicesSagital[ind_ct_image], ct_bin_lvl, ct_gauss_size);
         }
 
         private void vScrollBar_coronal_Scroll(object sender, ScrollEventArgs e)
         {
             var ind_ct_image = ((VScrollBar)sender).Value;
-            if (ind_ct_image < ct_info.SlicesCoronal.Count - 1 && ind_ct_image >= 0) imageBox_navig_coronal.Image = filter_bone_ct(ct_info.SlicesCoronal[ind_ct_image], ct_bin_lvl, ct_gauss_size);
+            if (ind_ct_image < ct_info.SlicesCoronal.Count - 1 && ind_ct_image >= 0) imageBox_navig_coronal.Image = DicomProcess.filter_bone_ct(ct_info.SlicesCoronal[ind_ct_image], ct_bin_lvl, ct_gauss_size);
         }
+
+        private void but_generate_model_ct_Click(object sender, EventArgs e)
+        {
+           /* const int width = 500;
+            const int height = 500;
+            const int depth = 1000;
+            Console.WriteLine("Total_size: " + width * height * depth);
+            // 3. Генерация вокселей: цилиндр радиусом 40, высотой 100, центр в середине
+            //bool[,,] voxels = VoxelToStlGpu.GenerateCylinderVoxels(width, height, depth, radius: 14, cylinderHeight: 10);
+            var voxels = VoxelToStlGpu.GenerateCylinder(width, height, depth, 40, 400, width / 2, height / 2, depth / 2);
+            //bool[,,] voxels = VoxelToStlGpu.GenerateOneVoxels(width);*/
+
+
+
+            var voxels = DicomProcess.compVoxelModel( DicomProcess.filter_bone_cts(ct_info.SlicesAxial, ct_bin_lvl, ct_gauss_size).ToList());
+            var gpuMesher = new VoxelToStlGpu(GL1, voxels.GetLength(0), voxels.GetLength(1), voxels.GetLength(2));
+            gpuMesher.SetVoxelData(voxels);
+            var gen_mesh = gpuMesher.GenerateMesh(out List<System.Numerics.Vector3> vertices, out List<int> indices);
+
+
+
+            GL1.add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles);
+        }
+
+
     }
 }
 

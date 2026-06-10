@@ -15,6 +15,7 @@ using System.Data;
 using System.IO;
 using Emgu.CV.CvEnum;
 using System.Runtime.InteropServices;
+using Emgu.CV.Util;
 
 namespace opengl3
 {
@@ -104,7 +105,36 @@ namespace opengl3
                 SlicesSagital = slices_sec[1]
             };
         }
+        public static byte[,,] compVoxelModel(List<CtSliceInfo> cts)
+        {
+            var data_axial = new List<byte[,]>();
+            for (int i = 0; i < cts.Count; i++)
+            {
+                data_axial.Add((byte[,])cts[i].Image.GetData());
+            }
 
+            var data_coronal = new List<Mat>();
+
+            var voxel_model = new byte[data_axial[0].GetLength(0), data_axial[0].GetLength(1),data_axial.Count];
+
+            for (int k = 0; k < data_axial[0].GetLength(0); k++)
+            {
+                var data_coronal_slice = new byte[data_axial[0].GetLength(0), data_axial.Count];
+                for (int i = 0; i < cts.Count; i++)
+                {
+                    for (int j = 0; j < data_axial[0].GetLength(1); j++)
+                    {
+                        voxel_model[j,k, i] = data_axial[i][j, k];
+                    }
+                }
+
+                //data_coronal.Add(ByteArrayToMat(data_coronal_slice));
+            }
+
+            return voxel_model;
+        }
+
+        
 
         public static List<List<Mat>> compCoronalAndSagital(List<CtSliceInfo> cts)
         {
@@ -121,7 +151,7 @@ namespace opengl3
                 var data_coronal_slice = new byte[data_axial[0].GetLength(0), data_axial.Count];
                 for (int i = 0; i < cts.Count; i++)
                 {
-                    for (int j = 0; j < data_axial[0].GetLength(0); j++)
+                    for (int j = 0; j < data_axial[0].GetLength(1); j++)
                     {
                         data_coronal_slice[j, i] = data_axial[i][j, k];
                     }
@@ -132,7 +162,7 @@ namespace opengl3
 
             var data_sagital = new List<Mat>();
 
-            for (int k = 0; k < data_axial[0].GetLength(1); k++)
+            for (int k = 0; k < data_axial[0].GetLength(0); k++)
             {
                 var data_sagital_slice = new byte[data_axial[0].GetLength(1), data_axial.Count];
                 for (int i = 0; i < cts.Count; i++)
@@ -240,6 +270,70 @@ namespace opengl3
             {
                // Console.WriteLine($"Ошибка при загрузке файла: {ex.Message}");
             }
+        }
+        public static byte[,,] compVoxelModel(List<Mat> cts)
+        {
+            var data_axial = new List<byte[,]>();
+            for (int i = 0; i < cts.Count; i++)
+            {
+                data_axial.Add((byte[,])cts[i].GetData());
+            }
+
+            var data_coronal = new List<Mat>();
+
+            var voxel_model = new byte[data_axial[0].GetLength(0), data_axial[0].GetLength(1), data_axial.Count];
+
+            for (int k = 0; k < data_axial[0].GetLength(0); k++)
+            {
+                var data_coronal_slice = new byte[data_axial[0].GetLength(0), data_axial.Count];
+                for (int i = 0; i < cts.Count; i++)
+                {
+                    for (int j = 0; j < data_axial[0].GetLength(1); j++)
+                    {
+                        voxel_model[j, k, i] = data_axial[i][j, k];
+                    }
+                }
+
+                //data_coronal.Add(ByteArrayToMat(data_coronal_slice));
+            }
+
+            return voxel_model;
+        }
+        static public Mat filter_bone_ct(Mat mat, int bin_lvl, int gauss_size,int intern = 0)
+        {
+            var cur_mat = mat.Clone();
+            var orig = mat.Clone();
+            CvInvoke.CvtColor(orig, orig, ColorConversion.Gray2Bgr);
+
+            CvInvoke.GaussianBlur(cur_mat, cur_mat, new Size(gauss_size, gauss_size), -1);
+            CvInvoke.Threshold(cur_mat, cur_mat, bin_lvl, 255, ThresholdType.Binary);
+
+            if(intern == 1) return cur_mat;
+
+            Mat zeroChannel = Mat.Zeros(cur_mat.Size.Height, cur_mat.Size.Width, DepthType.Cv8U, 1);
+
+            // Формируем массив каналов в порядке BGR
+            VectorOfMat channels = new VectorOfMat();
+            channels.Push(zeroChannel);                // Канал Blue
+            channels.Push(cur_mat);              // Канал Green
+            channels.Push(zeroChannel);                // Канал Red
+
+            // Выполняем слияние
+            Mat result = new Mat();
+            CvInvoke.Merge(channels, result);
+
+
+            return 0.5 * orig + 0.5 * result;
+        }
+
+        static public Mat[] filter_bone_cts(List<CtSliceInfo> cts, int bin_lvl, int gauss_size)
+        {
+            var mats = new List<Mat>();
+            for (int i = 0; i < cts.Count; i++)
+            {
+                mats.Add(filter_bone_ct(cts[i].Image,bin_lvl,gauss_size,1));
+            }
+            return mats.ToArray();
         }
 
         static public Bitmap ConvertDicomToBitmap(DicomImage dicomImage)
