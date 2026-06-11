@@ -240,10 +240,10 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
-            ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
+           /* ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
             vScrollBar_axial.Maximum = ct_info.SlicesAxial.Count;
             vScrollBar_coronal.Maximum = ct_info.SlicesCoronal.Count;
-            vScrollBar_sagital.Maximum = ct_info.SlicesSagital.Count;
+            vScrollBar_sagital.Maximum = ct_info.SlicesSagital.Count;*/
 
 
             /* var poses_sym = new List<Pose>(new Pose[] { 
@@ -10903,8 +10903,8 @@ namespace opengl3
 
             var voxels = DicomProcess.compVoxelModel( DicomProcess.filter_bone_cts(ct_info.SlicesAxial, ct_bin_lvl, ct_gauss_size).ToList());
             var gpuMesher = new VoxelToStlGpu(GL1, voxels.GetLength(0), voxels.GetLength(1), voxels.GetLength(2));
-            gpuMesher.SetVoxelData(voxels);
-            var gen_mesh = gpuMesher.GenerateMesh(out List<System.Numerics.Vector3> vertices, out List<int> indices);
+            gpuMesher.SetVoxelData(voxels,GL1);
+            var gen_mesh = gpuMesher.GenerateMesh();
 
 
 

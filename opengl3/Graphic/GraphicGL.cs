@@ -13,6 +13,7 @@ using Emgu.CV.Structure;
 using Emgu.Util;
 using Accord.Statistics.Distributions.Univariate;
 using System.Numerics;
+using System.Windows.Media.Media3D;
 
 namespace opengl3
 {   
@@ -636,28 +637,31 @@ namespace opengl3
             matr[3, 1] = 50;
             buffersGl.setMatrobj(light_name, 0, matr);*/
 
-           /* const int width = 500;
-            const int height = 500;
-            const int depth = 1000;
+            const int width = 60;
+            const int height = 60;
+            const int depth = 60;
             Console.WriteLine("Total_size: "+width * height * depth);
             // 3. Генерация вокселей: цилиндр радиусом 40, высотой 100, центр в середине
             //bool[,,] voxels = VoxelToStlGpu.GenerateCylinderVoxels(width, height, depth, radius: 14, cylinderHeight: 10);
-            var voxels = VoxelToStlGpu.GenerateCylinder(width, height, depth, 40,  400, width/2, height / 2, depth / 2);
+            var voxels = VoxelToStlGpu.GenerateCylinder(width, height, depth, 20,  20, width/2, height / 2, depth / 2);
             //bool[,,] voxels = VoxelToStlGpu.GenerateOneVoxels(width);
-             
+
+
+            
+
             // 4. Создаём объект для GPU-генерации меша
             var gpuMesher = new VoxelToStlGpu(this, width, height, depth);
 
 
             // 5. Передаём воксели на GPU
-            gpuMesher.SetVoxelData(voxels);
+            gpuMesher.SetVoxelData(voxels,this);
 
             // 6. Запускаем вычисления (два прохода) и получаем вершины/индексы
-            var gen_mesh = gpuMesher.GenerateMesh(out List<Vector3> vertices, out List<int> indices);
-
-            add_buff_gl(gen_mesh, Color3d_GL.gray(), null, PrimitiveType.Triangles);
+            var gen_mesh = gpuMesher.GenerateMesh();
+            
+            add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles);
             // 7. Сохраняем результат в STL-файл
-            //gpuMesher.SaveAsStlAscii("cylinder_128.stl", vertices, indices);*/
+            //gpuMesher.SaveAsStlAscii("cylinder_128.stl", vertices, indices);
 
 
         }

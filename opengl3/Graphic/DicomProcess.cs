@@ -24,7 +24,10 @@ namespace opengl3
         public List<CtSliceInfo>  SlicesAxial { get; set; }
         public List<Mat> SlicesCoronal { get; set; }
         public List<Mat> SlicesSagital { get; set; }
+
+        public byte[,,] VoxelModel { get; set; }
     }
+
     public class CtSliceInfo
     {
         public string Filename { get; set; }

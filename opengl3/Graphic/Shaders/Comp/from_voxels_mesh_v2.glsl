@@ -8,7 +8,7 @@ layout(std430, binding = 0) readonly buffer VoxelBuffer {
 
 // ---------------------------- Выходные данные ----------------------------
 layout(std430, binding = 1) buffer VertexBuffer {
-    vec3 vertices[];
+    float vertices[];
 };
 
 layout(std430, binding = 6) buffer IndexBuffer {
@@ -189,15 +189,25 @@ void main() {
             vec3 v2 = vertList[i2];
             
             // Запись вершин
-            vertices[baseVertex + tri*3 + 0] = v0;
-            vertices[baseVertex + tri*3 + 1] = v1;
-            vertices[baseVertex + tri*3 + 2] = v2;
 
-            
-            // Запись индексов (просто последовательные)
-            indices[baseIndex + tri*3 + 0] = baseVertex + tri*3 + 0;
-            indices[baseIndex + tri*3 + 1] = baseVertex + tri*3 + 1;
-            indices[baseIndex + tri*3 + 2] = baseVertex + tri*3 + 2;
+            uint vertIdx = baseVertex + tri * 3;
+            // Вершина 0
+            vertices[vertIdx * 3 + 0] = v0.x;
+            vertices[vertIdx * 3 + 1] = v0.y;
+            vertices[vertIdx * 3 + 2] = v0.z;
+            // Вершина 1
+            vertices[(vertIdx + 1) * 3 + 0] = v1.x;
+            vertices[(vertIdx + 1) * 3 + 1] = v1.y;
+            vertices[(vertIdx + 1) * 3 + 2] = v1.z;
+            // Вершина 2
+            vertices[(vertIdx + 2) * 3 + 0] = v2.x;
+            vertices[(vertIdx + 2) * 3 + 1] = v2.y;
+            vertices[(vertIdx + 2) * 3 + 2] = v2.z;
+
+            // Запись индексов (указывают на номер вершины, а не на смещение в float-буфере)
+            indices[baseIndex + tri*3 + 0] = vertIdx;
+            indices[baseIndex + tri*3 + 1] = vertIdx + 1;
+            indices[baseIndex + tri*3 + 2] = vertIdx + 2;
         }
     }
 }

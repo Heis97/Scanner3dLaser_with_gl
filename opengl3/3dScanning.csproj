@@ -284,6 +284,15 @@
     <Content Include="Graphic\Shaders\Comp\from_voxels_mesh_test_counter.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Graphic\Shaders\Comp\voxels_mesh_smooth_r6.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\voxels_mesh_smooth_r_un.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphic\Shaders\Comp\from_voxels_mesh_v2.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Graphic\Shaders\Geom\slice_shader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

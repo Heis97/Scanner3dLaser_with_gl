@@ -1,4 +1,5 @@
-﻿using OpenGL;
+﻿using GLFW.Game;
+using OpenGL;
 
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.TextFormatting;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+
 
 namespace opengl3
 {
@@ -45,7 +48,7 @@ namespace opengl3
             ComputeMaxCounts();
             CreateBuffers();
             
-            var CompShaderGL = graphic.assembCode(new string[] { @"Graphic\Shaders\Comp\from_voxels_mesh.glsl" });
+            var CompShaderGL = graphic.assembCode(new string[] { @"Graphic\Shaders\Comp\from_voxels_mesh_v2.glsl" });
             computeProgram = graphic.createShaderCompute(CompShaderGL);
             LoadTriTable();
         }
@@ -668,7 +671,7 @@ namespace opengl3
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
         }
 
-        public void SetVoxelData(byte[,,] voxels)
+        public void SetVoxelData(byte[,,] voxels, GraphicGL graphic)
         {
             // Преобразуем 3D-массив bool в одномерный массив uint
             uint[] data = new uint[Width * Height * Depth];
@@ -682,12 +685,21 @@ namespace opengl3
                         data[idx] = voxels[x, y, z];
                     }
 
+
+            var smoother = new VoxelSmoothing(Width , Height , Depth, 5);
+            smoother.Init(graphic);
+            var data_sm = smoother.Smooth(data);
+            //smoother.Dispose();
+
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, voxelSSBO);
-            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, voxelDataSize, data);
+            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, voxelDataSize, data_sm);
+
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 
+
+
         }
-        public List<float[]> GenerateMesh(out List<Vector3> vertices, out List<int> indices)
+        public List<float[]> GenerateMesh()
         {
             Console.WriteLine("GenerateMesh started");
 
@@ -698,6 +710,10 @@ namespace opengl3
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexCounterSSBO);
             Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, sizeof(uint), zero);
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+
+
+            
+
 
             // 2. Активируем шейдерную программу
             Gl.UseProgram(computeProgram);
@@ -751,7 +767,7 @@ namespace opengl3
             Gl.MemoryBarrier(MemoryBarrierMask.AtomicCounterBarrierBit | MemoryBarrierMask.ShaderStorageBarrierBit);
 
             // ПРОВЕРКА: читаем счётчик вершин после первого прохода
-            /*uint tempCount = 0;
+           /* uint tempCount = 0;
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
             IntPtr ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
             if (ptr != IntPtr.Zero)
@@ -771,6 +787,14 @@ namespace opengl3
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexCounterSSBO);
             Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, sizeof(uint), zero);
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+
+
+            /*Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexSSBO);
+            Gl.BufferData(BufferTarget.ShaderStorageBuffer, tempCount * 3 * sizeof(float), IntPtr.Zero, BufferUsage.DynamicDraw);
+
+
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexSSBO);
+            Gl.BufferData(BufferTarget.ShaderStorageBuffer, tempCount * 3 * sizeof(uint), IntPtr.Zero, BufferUsage.DynamicDraw);*/
 
             // --- Второй проход ---
             Gl.Uniform1(passLoc, 1);
@@ -824,16 +848,10 @@ namespace opengl3
             }
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 
-            if (vertexCount == 0 || indexCount == 0)
-            {
-                vertices = new List<Vector3>();
-                indices = new List<int>();
-                Console.WriteLine("No geometry generated");
-                return null;
-            }
 
             // 8. Чтение вершин (как float[])
-            float[] vertsFloat = new float[vertexCount * 4];
+            var vertex_offset = 3;
+            float[] vertsFloat = new float[vertexCount * vertex_offset];
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexSSBO);
             ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
             if (ptr != IntPtr.Zero)
@@ -853,13 +871,13 @@ namespace opengl3
 
             for (int i = 0; i < vertexCount; i++)
             {
-                verts[i] = new Vector3(vertsFloat[i * 4], vertsFloat[i * 4 + 1], vertsFloat[i * 4 + 2]);
+                verts[i] = new Vector3(vertsFloat[i * vertex_offset], vertsFloat[i * vertex_offset + 1], vertsFloat[i * vertex_offset + 2]);
               
             }
             
 
                 // 9. Чтение индексов (через int[])
-                int[] idxsInt = new int[indexCount];
+                var  idxsInt = new int[indexCount];
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexSSBO);
             ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
             if (ptr != IntPtr.Zero)
@@ -889,8 +907,8 @@ namespace opengl3
 
 
 
-            vertices = new List<Vector3>(verts);
-            indices = new List<int>(idxsInt);
+            var vertices = new List<Vector3>(verts);
+            var indices = new List<int>(idxsInt);
 
 
             for (int i = 0; i < indices.Count; i += 3)
@@ -1100,4 +1118,115 @@ namespace opengl3
         }
 
     }
+
+    public class VoxelSmoothing
+    {
+        private uint _computeProgram;
+        private uint _ssboInput;
+        private uint _ssboOutput;
+        private uint _ssboParams;
+        private uint _width, _height, _depth;
+        private uint _windowSize;
+
+        public VoxelSmoothing(int width, int height, int depth, int windowSize)
+        {
+            _width = (uint) width;
+            _height = (uint)height;
+            _depth = (uint)depth;
+            _windowSize = (uint)windowSize;
+        }
+
+        // Инициализация OpenGL и создание ресурсов
+        public void Init(GraphicGL graphic)
+        {
+            var CompShaderGL = graphic.assembCode(new string[] { @"Graphic\Shaders\Comp\voxels_mesh_smooth_r_un.glsl" });
+            _computeProgram = graphic.createShaderCompute(CompShaderGL);
+
+            // 2. Создаём SSBO для входных данных (только чтение)
+            _ssboInput = Gl.GenBuffer();
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, _ssboInput);
+            Gl.BufferData(BufferTarget.ShaderStorageBuffer, _width * _height * _depth * sizeof(int), IntPtr.Zero, BufferUsage.DynamicDraw);
+
+            // 3. SSBO для выходных данных
+            _ssboOutput = Gl.GenBuffer();
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, _ssboOutput);
+            Gl.BufferData(BufferTarget.ShaderStorageBuffer, _width * _height * _depth * sizeof(int), IntPtr.Zero, BufferUsage.DynamicDraw);
+
+            _ssboParams = Gl.GenBuffer();
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, _ssboParams);
+            Gl.BufferData(BufferTarget.ShaderStorageBuffer, 4 * sizeof(int), IntPtr.Zero, BufferUsage.DynamicDraw);
+
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+        }
+
+        // Выполнение сглаживания
+        public uint[] Smooth(uint[] inputVoxels)
+        {
+            
+            // Проверка размера
+            if (inputVoxels.Length != _width * _height * _depth)
+                throw new ArgumentException("Input array size mismatch");
+
+            // Загружаем входные данные в SSBO
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, _ssboInput);
+            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, (uint)inputVoxels.Length * sizeof(uint), inputVoxels);
+
+
+            var dimens = new int[] { (int)_width, (int)_height , (int)_depth, (int)_windowSize };
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, _ssboParams);
+            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, 4* sizeof(uint), dimens);
+
+            // Обнуляем выходной буфер (необязательно)
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, _ssboOutput);
+            IntPtr zero = IntPtr.Zero;
+            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, (uint)inputVoxels.Length * sizeof(uint), zero);
+
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+
+           
+
+            Gl.UseProgram(_computeProgram);
+            // Привязываем SSBO к binding точкам (0 и 1 – соответствуют layout в шейдере)
+            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 0, _ssboInput);
+            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 1, _ssboOutput);
+            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 2, _ssboParams);
+
+            uint groupSizeX = (_width + 7) / 8;
+            uint groupSizeY = (_height + 7) / 8;
+            uint groupSizeZ = (_depth + 7) / 8;
+            Gl.DispatchCompute(groupSizeX, groupSizeY, groupSizeZ);
+            Console.WriteLine($"Dispatch groups: {groupSizeX} x {groupSizeY} x {groupSizeZ}");
+            // Барьер для завершения всех записей в SSBO
+            Gl.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit);
+
+            // Чтение результатов
+            var outputVoxels = new int[inputVoxels.Length];
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, _ssboOutput);
+            var ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
+            if (ptr != IntPtr.Zero)
+            {
+                Marshal.Copy(ptr, outputVoxels, 0, outputVoxels.Length);
+                Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
+            }
+            uint[] uint_outputVoxels = new uint[outputVoxels.Length];
+            System.Buffer.BlockCopy(outputVoxels, 0, uint_outputVoxels, 0, outputVoxels.Length * sizeof(int));
+            //------------------------------------------------------------------
+
+            return uint_outputVoxels;
+        }
+
+        // Освобождение ресурсов
+        public void Dispose()
+        {
+            Gl.DeleteProgram(_computeProgram);
+            Gl.DeleteBuffers(_ssboInput);
+            Gl.DeleteBuffers(_ssboOutput);
+        }
+
+        // Вспомогательные методы компиляции шейдера
+
+        
+    }
+
+
 }
