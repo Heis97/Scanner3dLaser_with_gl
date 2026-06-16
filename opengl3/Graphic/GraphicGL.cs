@@ -1771,7 +1771,61 @@ namespace opengl3
         #endregion
 
         #region mesh
+        public static float[] ComputeTriangleNormals(float[] vertices)
+        {
+            if (vertices == null)
+                throw new ArgumentNullException(nameof(vertices));
 
+            int length = vertices.Length;
+            if (length % 9 != 0)
+                throw new ArgumentException("Длина массива должна быть кратна 9 (3 вершины × 3 координаты).");
+
+            float[] normals = new float[length];
+
+            // Обрабатываем каждый треугольник (шаг 9 = 3 вершины * 3 координаты)
+            for (int i = 0; i < length; i += 9)
+            {
+                // Чтение трёх вершин
+                float x0 = vertices[i], y0 = vertices[i + 1], z0 = vertices[i + 2];
+                float x1 = vertices[i + 3], y1 = vertices[i + 4], z1 = vertices[i + 5];
+                float x2 = vertices[i + 6], y2 = vertices[i + 7], z2 = vertices[i + 8];
+
+                // Векторы рёбер
+                float ex1 = x1 - x0, ey1 = y1 - y0, ez1 = z1 - z0;
+                float ex2 = x2 - x0, ey2 = y2 - y0, ez2 = z2 - z0;
+
+                // Векторное произведение (нормаль)
+                float nx = ey1 * ez2 - ez1 * ey2;
+                float ny = ez1 * ex2 - ex1 * ez2;
+                float nz = ex1 * ey2 - ey1 * ex2;
+
+                // Нормализация
+                float len = (float)Math.Sqrt(nx * nx + ny * ny + nz * nz);
+                if (len > 1e-8f)  // избегаем деления на ноль
+                {
+                    float invLen = 1.0f / len;
+                    nx *= invLen;
+                    ny *= invLen;
+                    nz *= invLen;
+                }
+                else
+                {
+                    // Вырожденный треугольник – устанавливаем нулевой вектор
+                    nx = ny = nz = 0.0f;
+                }
+
+                // Дублируем нормаль для каждой из трёх вершин треугольника
+                for (int v = 0; v < 3; v++)
+                {
+                    int idx = i + v * 3;
+                    normals[idx] = nx;
+                    normals[idx + 1] = ny;
+                    normals[idx + 2] = nz;
+                }
+            }
+
+            return normals;
+        }
         public string add_robot(double[] q,int count, RobotFrame.RobotType robotType,bool matrs,Color3d_GL color,string name)
         {
             var ps = new List<Point3d_GL>();
@@ -1984,7 +2038,7 @@ namespace opengl3
         {
             return add_buff_gl(model.mesh, color, model.normale, tp, name);
         }
-        public string add_buff_gl(float[] data_v, Color3d_GL color, float[] data_n, PrimitiveType tp, string name = "new obj")
+        public string add_buff_gl(float[] data_v, Color3d_GL color, float[] data_n, PrimitiveType tp, string name = "new obj",bool comp_normals = false)
         {
             if (data_v == null)
             {
@@ -1992,6 +2046,16 @@ namespace opengl3
                 return null;
             }
             var data_c = new float[data_v.Length];
+            float[] data_normals;
+            if(data_n == null && comp_normals)
+            {
+                data_normals = ComputeTriangleNormals(data_v);
+            }
+            else
+            {
+                data_normals = null;
+            }
+            
 
             if (color!=default)
             {
@@ -2004,7 +2068,7 @@ namespace opengl3
             }
           
 
-            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n, null, tp, name), name);
+            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_normals, null, tp, name), name);
         }
 
         public string add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp,string name = "new obj")

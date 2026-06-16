@@ -119,6 +119,7 @@
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -197,6 +198,7 @@
     <Compile Include="Surface\SurfaceReconstraction.cs" />
     <Compile Include="Util\FileManage.cs" />
     <Compile Include="Util\FormSettings.cs" />
+    <Compile Include="Util\IncremetEditor.cs" />
     <Compile Include="Util\Model3D.cs" />
     <Compile Include="Util\prin.cs" />
     <Compile Include="ScannerRobot\Reconstruction.cs" />

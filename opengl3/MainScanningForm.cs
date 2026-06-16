@@ -38,6 +38,8 @@ using System.Security.Cryptography;
 using FellowOakDicom;
 using FellowOakDicom.Imaging;
 using System.Windows.Media.Media3D;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Xml.Linq;
 
 
 //using Accord;
@@ -123,7 +125,7 @@ namespace opengl3
         bool settingWindow = false;
         Mat[] patt;
         Matrix<double> persp_matr = new Matrix<double>(new double[3, 3] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } });
-        TextBox[] textBoxes_Persp;
+        System.Windows.Forms.TextBox[] textBoxes_Persp;
         int photo_number = 0;
         float markSize = 16.2f*1.111f;
         //Size chess_size = new Size(8, 9);
@@ -245,9 +247,6 @@ namespace opengl3
             vScrollBar_coronal.Maximum = ct_info.SlicesCoronal.Count;
             vScrollBar_sagital.Maximum = ct_info.SlicesSagital.Count;
 
-            /*vScrollBar_axial.Value = ct_info.SlicesAxial.Count/2;
-            vScrollBar_coronal.Value = ct_info.SlicesCoronal.Count / 2;
-            vScrollBar_sagital.Value = ct_info.SlicesSagital.Count / 2;*/
 
             rangeSliderH1_limits_model_w.MinValue = 0;
             rangeSliderV1_limits_model_h.MinValue = 0;
@@ -962,7 +961,7 @@ namespace opengl3
             {
                 comboBox_syrenge_size.SelectedIndex = 0;
             }
-            textBoxes_Persp = new TextBox[]
+            textBoxes_Persp = new System.Windows.Forms.TextBox[]
             {
                 textBoxK_0,textBoxK_1,textBoxK_2,
                 textBoxK_3,textBoxK_4,textBoxK_5,
@@ -2096,12 +2095,12 @@ namespace opengl3
 
 
         }
-        Point3d_GL pointFromTextBox(TextBox textBox1, TextBox textBox2, TextBox textBox3)
+        Point3d_GL pointFromTextBox(System.Windows.Forms.TextBox textBox1, System.Windows.Forms.TextBox textBox2, System.Windows.Forms.TextBox textBox3)
         {
             return new Point3d_GL(Convert.ToDouble(textBox1.Text), Convert.ToDouble(textBox2.Text), Convert.ToDouble(textBox3.Text));
         }
 
-        robFrame robFrameFromTextBox(TextBox textBox1, TextBox textBox2, TextBox textBox3, TextBox textBox4, TextBox textBox5, TextBox textBox6)
+        robFrame robFrameFromTextBox(System.Windows.Forms.TextBox textBox1, System.Windows.Forms.TextBox textBox2, System.Windows.Forms.TextBox textBox3, System.Windows.Forms.TextBox textBox4, System.Windows.Forms.TextBox textBox5, System.Windows.Forms.TextBox textBox6)
         {
             return new robFrame(Convert.ToDouble(textBox1.Text), Convert.ToDouble(textBox2.Text), Convert.ToDouble(textBox3.Text),
                 Convert.ToDouble(textBox4.Text), Convert.ToDouble(textBox5.Text), Convert.ToDouble(textBox6.Text));
@@ -2152,10 +2151,10 @@ namespace opengl3
         {
             GL1.resize(sender, e);
         }
-        Button addButton(TransRotZoom trz, string name, int ind, Size sizeControl, Point locatControl, Size offset)
+        System.Windows.Forms.Button addButton(TransRotZoom trz, string name, int ind, Size sizeControl, Point locatControl, Size offset)
         {
             var recGL = new Rectangle(trz.rect.X, sizeControl.Height - trz.rect.Y - trz.rect.Height, trz.rect.Width, sizeControl.Height - trz.rect.Y);
-            var but1 = new Button();
+            var but1 = new System.Windows.Forms.Button();
             but1.Location = new Point(recGL.X + locatControl.X + offset.Width, recGL.Y + locatControl.Y + offset.Height);
             but1.Size = new Size(20, 20);
             but1.AccessibleName = ind.ToString();
@@ -2163,9 +2162,9 @@ namespace opengl3
             return but1;
         }
 
-        Button addButton(Control control, string name, string ass_name, Size offset)
+        System.Windows.Forms.Button addButton(Control control, string name, string ass_name, Size offset)
         {
-            var but1 = new Button();
+            var but1 = new System.Windows.Forms.Button();
             but1.Location = new Point(control.Location.X + offset.Width, control.Location.Y + offset.Height);
             but1.Size = new Size(30, 30);
             but1.AccessibleName = ass_name;
@@ -2193,7 +2192,7 @@ namespace opengl3
 
         void start_video_but(object sender, EventArgs e)
         {
-            var but = (Button)sender;
+            var but = (System.Windows.Forms.Button)sender;
             Console.WriteLine(but.Text + " " + but.AccessibleName);
             var ind_cam = Convert.ToInt32(but.Text);
             var ind_box = Convert.ToInt32(but.AccessibleName);
@@ -2230,18 +2229,18 @@ namespace opengl3
         }
         void opGl_but_changePers(object sender, EventArgs e)
         {
-            int i = Convert.ToInt32(((Button)sender).AccessibleName);
+            int i = Convert.ToInt32(((System.Windows.Forms.Button)sender).AccessibleName);
             GL1.changeViewType(i);
         }
 
         void opGl_but_changeVisib(object sender, EventArgs e)
         {
-            int i = Convert.ToInt32(((Button)sender).AccessibleName);
+            int i = Convert.ToInt32(((System.Windows.Forms.Button)sender).AccessibleName);
             GL1.changeVisible(i);
         }
         void opGl_but_savePic(object sender, EventArgs e)
         {
-            int i = Convert.ToInt32(((Button)sender).AccessibleName);
+            int i = Convert.ToInt32(((System.Windows.Forms.Button)sender).AccessibleName);
             GL1.SaveToFolder(openGl_folder, i);
         }
 
@@ -2262,20 +2261,23 @@ namespace opengl3
 
             var ps3d = new Point3d_GL[] {p1,p2,p3,p4};
 
-           /* navig_tool1_name = GL1.addLineMesh(ps3d, Color3d_GL.black(), navig_tool1_name);
             var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
-            //GL1.buffersGl.setTranspobj(fr, 0.0f);
-            var matrix_text = new Matrix<double>(new double[,] {
-                { 1, 0.5, 0, 10 },
-                { 0, 1, 0, 0 },
-                { 0, 0, 1, 0 },
-                { 0, 0, 0, 1 } });
-            navig_tool1_frame_name = GL1.addFrame_v2(matrix_text, 5, navig_tool1_frame_name);*/
+
+            /* navig_tool1_name = GL1.addLineMesh(ps3d, Color3d_GL.black(), navig_tool1_name);
+             var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
+             //GL1.buffersGl.setTranspobj(fr, 0.0f);
+             var matrix_text = new Matrix<double>(new double[,] {
+                 { 1, 0.5, 0, 10 },
+                 { 0, 1, 0, 0 },
+                 { 0, 0, 1, 0 },
+                 { 0, 0, 0, 1 } });
+             navig_tool1_frame_name = GL1.addFrame_v2(matrix_text, 5, navig_tool1_frame_name);*/
 
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
 
+
             //var mat_test = new Mat("aruco_test4.png");
-           // generateImage3D_aruko_solid(1, 0, 0, mat_test);
+            //generateImage3D_aruko_solid(1, 0, 0, mat_test);
             //GL1.SortObj();
 
             if (monitor_num == 4)
@@ -4530,7 +4532,7 @@ namespace opengl3
 
         private void but_set_wind_Click(object sender, EventArgs e)
         {
-            var but = (Button)sender;
+            var but = (System.Windows.Forms.Button)sender;
             if (settingWindow)
             {
                 settingWindow = false;
@@ -4621,7 +4623,7 @@ namespace opengl3
         }
         private void tr_Persp_Scroll(object sender, EventArgs e)
         {
-            var trbar = (TrackBar)sender;
+            var trbar = (System.Windows.Forms.TrackBar)sender;
             var ind = Convert.ToInt32(trbar.AccessibleName);
             var txbox = textBoxes_Persp[ind];
             var mult = Convert.ToDouble(txbox.Text);
@@ -4678,7 +4680,7 @@ namespace opengl3
         }
         private void trB_SGBM_Scroll(object sender, EventArgs e)
         {
-            var trbar = (TrackBar)sender;
+            var trbar = (System.Windows.Forms.TrackBar)sender;
             var val = trbar.Value;
             var bs = stereocam.solver_param.blockSize;
             switch (Convert.ToInt32(trbar.AccessibleName))
@@ -4745,7 +4747,7 @@ namespace opengl3
         }
         private void but_modeV_Click(object sender, EventArgs e)
         {
-            var but = (Button)sender;
+            var but = (System.Windows.Forms.Button)sender;
             if (GL1.modeGL == modeGL.Paint)
             {
                 but.Text = "Обзор";
@@ -5692,7 +5694,7 @@ namespace opengl3
         }
         private void comboVideo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var combo = (ComboBox)sender;
+            var combo = (System.Windows.Forms.ComboBox)sender;
             var v = (VideoFrame)combo.SelectedItem;
 
             var mat = findMostWhite(v.im);
@@ -5706,7 +5708,7 @@ namespace opengl3
         }
         private void comboNumber_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var combo = (ComboBox)sender;
+            var combo = (System.Windows.Forms.ComboBox)sender;
             var v = (VideoFrame)comboVideo.SelectedItem;
             int i = (int)combo.SelectedItem;
             if (i < v.im.Length)
@@ -5817,19 +5819,19 @@ namespace opengl3
 
         private void trackOx_Scroll(object sender, EventArgs e)
         {
-            var track = (TrackBar)sender;
+            var track = (System.Windows.Forms.TrackBar)sender;
             GL1.orientXscroll(track.Value);
         }
 
         private void trackOz_Scroll(object sender, EventArgs e)
         {
-            var track = (TrackBar)sender;
+            var track = (System.Windows.Forms.TrackBar)sender;
             GL1.orientZscroll(track.Value);
         }
 
         private void trackOy_Scroll(object sender, EventArgs e)
         {
-            var track = (TrackBar)sender;
+            var track = (System.Windows.Forms.TrackBar)sender;
             GL1.orientYscroll(track.Value);
         }
 
@@ -5850,7 +5852,7 @@ namespace opengl3
 
         private void but_ProjV_Click(object sender, EventArgs e)
         {
-            var but = (Button)sender;
+            var but = (System.Windows.Forms.Button)sender;
             if (GL1.typeProj == viewType.Ortho)
             {
                 but.Text = "Проецирование(текущая: перспектива)";
@@ -5964,6 +5966,8 @@ namespace opengl3
             {
                 prop_grid_model.SelectedObject = GL1.buffersGl.objs[e.Node.Text];
                 prop_grid_model.Text = e.Node.Text;
+
+                
                 if (ModifierKeys == Keys.Control)
                 {
                     e.Node.BackColor = Color.Green;
@@ -6495,7 +6499,7 @@ namespace opengl3
         private void videoStart_Click(object sender, EventArgs e)
         {
 
-            var contr = (TextBox)sender;
+            var contr = (System.Windows.Forms.TextBox)sender;
             videoStart(Convert.ToInt32(contr.Text));
         }
         private void videoStart(int number)
@@ -7371,7 +7375,50 @@ namespace opengl3
             }
             return mesh.ToArray();
         }
-        
+
+
+        public float[] cilindr_mesh(float rad, int count,float height)
+        {
+            var mesh = new List<float>();
+            var angle = 2 * Math.PI / count;
+            var cur_angle = 0d;
+            for (int i = 0; i < count; i++)
+            {
+                var p1x = (float)(rad * Math.Cos(cur_angle));
+                var p1y = (float)(rad * Math.Sin(cur_angle));
+                var p1 = new float[] { p1x, p1y, 0 };
+                cur_angle += angle;
+                var p2x = (float)(rad * Math.Cos(cur_angle));
+                var p2y = (float)(rad * Math.Sin(cur_angle));
+                var p2 = new float[] { p2x, p2y, 0 };
+                var p3 = new float[] { 0, 0, 0 };
+                mesh.AddRange(p1);
+                mesh.AddRange(p2);
+                mesh.AddRange(p3);
+
+                
+
+
+                var p1b = new float[] { p1x, p1y, height };
+                var p2b = new float[] { p2x, p2y, height };
+                var p3b = new float[] { 0, 0, height };
+                mesh.AddRange(p1b);
+                mesh.AddRange(p2b);
+                mesh.AddRange(p3b);
+
+                mesh.AddRange(p2b);
+                mesh.AddRange(p1b);
+                mesh.AddRange(p2);
+
+                mesh.AddRange(p1);
+                mesh.AddRange(p2);
+                mesh.AddRange(p1b);
+
+
+            }
+            return mesh.ToArray();
+        }
+
 
         Image<Gray, float> MeshToIm(float[] mesh, int cols = 41, int rows = 91)
         {
@@ -7635,7 +7682,7 @@ namespace opengl3
         }
         private void comboBox_portsArd_SelectedIndexChanged(object sender, EventArgs e)
         {
-            portArd = (string)((ComboBox)sender).SelectedItem;
+            portArd = (string)((System.Windows.Forms.ComboBox)sender).SelectedItem;
         }
         #endregion
 
@@ -7680,7 +7727,7 @@ namespace opengl3
 
         private void but_scan_start_laser_Click(object sender, EventArgs e)
         {
-            var but = (Button)sender;
+            var but = (System.Windows.Forms.Button)sender;
             var tpScan = Convert.ToInt32( but.AccessibleName);
             startScanLaser(tpScan);
         }
@@ -7707,7 +7754,7 @@ namespace opengl3
 
         private void but_scan_marl_Click(object sender, EventArgs e)
         {
-            var but = (Button)sender;
+            var but = (System.Windows.Forms.Button)sender;
             var tpScan = Convert.ToInt32(but.AccessibleName);
             startScanLaser(tpScan);
         }
@@ -7756,7 +7803,7 @@ namespace opengl3
         {
             return lab_scan_pres;
         }
-        public ComboBox get_combo_im()
+        public System.Windows.Forms.ComboBox get_combo_im()
         {
             return comboImages;
         }
@@ -8619,8 +8666,8 @@ namespace opengl3
             this.tabPage_navig_debug.Controls.Add(this.imageBox1);
             this.tabPage_navig_debug.Controls.Add(this.imageBox2);
 
-            //this.tabPage_navig_pan.Controls.Add(this.glControl1);
-            //glControl1.Location = new Point(500, 500);
+            this.tabPage_navig_pan.Controls.Add(this.glControl1);
+            glControl1.Location = new Point(1150, 10);
             add_buttons_rob_contr();
             formSettings.load_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
             for (int i = 0; i < imb_main.Length; i++)
@@ -9037,7 +9084,7 @@ namespace opengl3
             laserLine?.set_dir_disp(0);
         }
 
-        int get_vel(TextBox pr_vel, TextBox pr_nos_d, TextBox pr_syr_d)
+        int get_vel(System.Windows.Forms.TextBox pr_vel, System.Windows.Forms.TextBox pr_nos_d, System.Windows.Forms.TextBox pr_syr_d)
         {
             double vel_noz = Convert.ToDouble(pr_vel.Text);
             double d_noz = Convert.ToDouble(pr_nos_d.Text);
@@ -9059,9 +9106,9 @@ namespace opengl3
                 add_but_rob_contr("-" + axis[i], new Rectangle(st_x +( dim_x+3) * i+10, st_y + dim_y+20, dim_x, dim_y),  groupBox_rob_con_ext);
             }
         }
-        Button add_but_rob_contr_old(string ax, Rectangle pos,Control[] parents)
+        System.Windows.Forms.Button add_but_rob_contr_old(string ax, Rectangle pos,Control[] parents)
         {
-            var but = new Button();
+            var but = new System.Windows.Forms.Button();
             but.Location = new Point(parents[0].Location.X+pos.X, parents[0].Location.Y + pos.Y);
             but.Size = pos.Size;
             but.AccessibleName = ax;
@@ -9075,9 +9122,9 @@ namespace opengl3
             
             return but;
         }
-        Button add_but_rob_contr(string ax, Rectangle pos, Control parent)
+        System.Windows.Forms.Button add_but_rob_contr(string ax, Rectangle pos, Control parent)
         {
-            var but = new Button();
+            var but = new System.Windows.Forms.Button();
             but.Location = new Point(parent.Location.X + pos.X, parent.Location.Y + pos.Y);
             but.Size = pos.Size;
             but.AccessibleName = ax;
@@ -9096,7 +9143,7 @@ namespace opengl3
         }
         private void but_rob_contr_Click(object sender, EventArgs e)
         {
-            var but = (Button)sender;
+            var but = (System.Windows.Forms.Button)sender;
             var ax = but.AccessibleName;
             var delt = mask_from_ax(ax) * dist_contr_rob;
             Console.WriteLine(delt.ToStr(" ", false, false));
@@ -9417,7 +9464,7 @@ namespace opengl3
         int i2c_adr_valve = 53;//53
         
         double nT = 5000;
-        double to_double_textbox(TextBox textBox, double min,double max)
+        double to_double_textbox(System.Windows.Forms.TextBox textBox, double min,double max)
         {
             var val = to_double(textBox.Text);
             if(val==double.NaN)
@@ -9698,7 +9745,7 @@ namespace opengl3
 
         private void comboBox_ard_tube_SelectedIndexChanged(object sender, EventArgs e)
         {
-            portArd = (string)((ComboBox)sender).SelectedItem;
+            portArd = (string)((System.Windows.Forms.ComboBox)sender).SelectedItem;
         }
 
         #endregion
@@ -9962,7 +10009,7 @@ namespace opengl3
 
         private void comboBox_syrenge_size_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var ind_syr = ((ComboBox)sender).SelectedIndex;
+            var ind_syr = ((System.Windows.Forms.ComboBox)sender).SelectedIndex;
             z_syrenge_offset = syringe_size_vals[ind_syr];
            // Console.WriteLine(syringe_size_vals[ind_syr]);
         }
@@ -10916,7 +10963,8 @@ namespace opengl3
             ct_projections[2] = ct_info.SlicesCoronal[ind_ct_image_coronal].Clone();
             redraw_navig_slices();
         }
-        
+
+        Point3d_GL transf_work_mri;
         private void but_generate_model_ct_Click(object sender, EventArgs e)
         {
             //if(voxel_model==null)
@@ -10929,6 +10977,12 @@ namespace opengl3
             var gen_mesh = voxel_model.GenerateMesh_isoline(ct_bin_lvl);
             GL1.buffersGl.removeObj(generate_model_name);
             generate_model_name = GL1.add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles, generate_model_name);
+            var p_trans = new Point3d_GL(ct_info.pix_xy*(limits_ps[1].Y - limits_ps[1].X)/2, ct_info.pix_xy * (limits_ps[0].Y - limits_ps[0].X)/2, ct_info.pix_xy * (limits_ps[2].Y - limits_ps[2].X)/2);
+            GL1.buffersGl.setTransfObj(generate_model_name, 0, -p_trans, new Point3d_GL(0, 0, 0));
+            GL1.buffersGl.setTranspobj(generate_model_name, 0.5f);
+
+
+            transf_work_mri = p_trans + new Point3d_GL(limits_ps[1].X * ct_info.pix_xy, limits_ps[0].X * ct_info.pix_xy, ct_info.pix_xy * limits_ps[2].X);
         }
 
         private void rangeSliderH1_limits_model_w_ValuesChanged(object sender, EventArgs e)
@@ -10952,6 +11006,12 @@ namespace opengl3
             redraw_navig_slices();
         }
 
+        bool vision_navig_axis = true;
+        bool vision_navig_work_area = true;
+        bool vision_navig_bin_area = false;
+        bool vision_navig_target_traj = true;
+        bool vision_navig_instr = true;
+
         public void redraw_navig_slices()
         {
 
@@ -10959,33 +11019,57 @@ namespace opengl3
             if (ct_info == null) return;
             if (ind_ct_image < ct_info.SlicesAxial.Count - 1 && ind_ct_image >= 0 && ct_projections[0]!=null)
             {
-                mats[0] = DicomProcess.filter_bone_ct(ct_projections[0], ct_bin_lvl, ct_gauss_size);
-                mats[0] = draw_limits_lines(mats[0], limits_ps[0], limits_ps[1]);
+                mats[0] = ct_projections[0].Clone();
+                if (vision_navig_bin_area) mats[0] = DicomProcess.filter_bone_ct(mats[0], ct_bin_lvl, ct_gauss_size);
+                else { CvInvoke.CvtColor(mats[0], mats[0], ColorConversion.Gray2Bgr); }
+
+
+                if (vision_navig_work_area) mats[0] = draw_limits_lines(mats[0], limits_ps[0], limits_ps[1]);
+
+                if(vision_navig_axis)
+                {
+                    CvInvoke.Line(mats[0], new Point(0, ind_ct_image_sagit), new Point(mats[0].Width, ind_ct_image_sagit), new MCvScalar(0, 0, 255), 2);//X
+                    CvInvoke.Line(mats[0], new Point(ind_ct_image_coronal, 0), new Point(ind_ct_image_coronal, mats[0].Height), new MCvScalar(0, 255, 0), 2);//Y
+                }
+                
+
                 imageBox_navig_axial.Image = mats[0];
             }
 
             if (ind_ct_image_sagit < ct_info.SlicesSagital.Count - 1 && ind_ct_image_sagit >= 0 && ct_projections[1] != null)
             {
-                mats[1] = DicomProcess.filter_bone_ct(ct_projections[1], ct_bin_lvl, ct_gauss_size);
-                mats[1] = draw_limits_lines(mats[1], limits_ps[2], limits_ps[0]);
+                mats[1] = ct_projections[1].Clone();
+                if (vision_navig_bin_area) mats[1] = DicomProcess.filter_bone_ct(mats[1], ct_bin_lvl, ct_gauss_size);
+                else { CvInvoke.CvtColor(ct_projections[1], mats[1], ColorConversion.Gray2Bgr); }
+
+                if (vision_navig_work_area) mats[1] = draw_limits_lines(mats[1], limits_ps[2], limits_ps[0]);
+
+                if (vision_navig_axis)
+                {
+                    CvInvoke.Line(mats[1], new Point((int)(ind_ct_image * ct_info.axial_koef), 0), new Point((int)(ind_ct_image * ct_info.axial_koef), mats[1].Height), new MCvScalar(255, 0, 0), 2);//Z
+                    CvInvoke.Line(mats[1], new Point(0, ind_ct_image_coronal), new Point(mats[1].Width, ind_ct_image_coronal), new MCvScalar(0, 255, 0), 2);//Y
+                }
+
                 CvInvoke.Rotate(mats[1], mats[1], RotateFlags.Rotate90Clockwise);
                 imageBox_navig_sagital.Image = mats[1];
             }
 
-            if (ind_ct_image_coronal < ct_info.SlicesCoronal.Count - 1 && ind_ct_image_coronal >= 0 && ct_projections[2] != null) 
+            if (ind_ct_image_coronal < ct_info.SlicesCoronal.Count - 1 && ind_ct_image_coronal >= 0 && ct_projections[2] != null)
             {
-                mats[2] = DicomProcess.filter_bone_ct(ct_projections[2], ct_bin_lvl, ct_gauss_size);
-                mats[2] = draw_limits_lines(mats[2], limits_ps[2], limits_ps[1]);
-                
+                mats[2] = ct_projections[2].Clone();
+                if (vision_navig_bin_area) mats[2] = DicomProcess.filter_bone_ct(mats[2], ct_bin_lvl, ct_gauss_size);
+                else { CvInvoke.CvtColor(ct_projections[2], mats[2], ColorConversion.Gray2Bgr); }
+
+                if (vision_navig_work_area) mats[2] = draw_limits_lines(mats[2], limits_ps[2], limits_ps[1]);
+
+                if (vision_navig_axis)
+                { 
+                    CvInvoke.Line(mats[2], new Point((int)(ind_ct_image * ct_info.axial_koef), 0), new Point((int)(ind_ct_image * ct_info.axial_koef), mats[2].Height), new MCvScalar(255, 0, 0), 2);//Z
+                    CvInvoke.Line(mats[2], new Point(0, ind_ct_image_sagit), new Point(mats[2].Width, ind_ct_image_sagit), new MCvScalar(0, 0, 255), 2);//X
+                }
+
                 imageBox_navig_coronal.Image = mats[2];
             }
-
-
-
-            
-           
-            
-
 
         }
 
@@ -11010,6 +11094,117 @@ namespace opengl3
             mat += mat_rect;
             return mat;
         }
+       
+        private void checkBox_axis_CheckedChanged(object sender, EventArgs e)
+        {
+            vision_navig_axis = ((CheckBox)sender).Checked;
+            redraw_navig_slices();
+        }
+
+        private void checkBox_work_area_CheckedChanged(object sender, EventArgs e)
+        {
+            vision_navig_work_area = ((CheckBox)sender).Checked;
+            redraw_navig_slices();
+        }
+
+        private void checkBox_bin_area_CheckedChanged(object sender, EventArgs e)
+        {
+            vision_navig_bin_area = ((CheckBox)sender).Checked;
+            redraw_navig_slices();
+        }
+
+        private void checkBox_target_traj_CheckedChanged(object sender, EventArgs e)
+        {
+            vision_navig_target_traj = ((CheckBox)sender).Checked;
+            redraw_navig_slices();
+        }
+
+        private void checkBox_navig_instr_CheckedChanged(object sender, EventArgs e)
+        {
+            vision_navig_instr = ((CheckBox)sender).Checked;
+            redraw_navig_slices();
+        }
+        
+        private void treeView_navig_targets_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            propertyGrid_navig_target.SelectedObject = e.Node.Tag;
+        }
+        private void propertyGrid_navig_target_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            if (treeView_navig_targets.SelectedNode?.Tag == propertyGrid_navig_target.SelectedObject)
+            {
+                treeView_navig_targets.SelectedNode.Text = propertyGrid_navig_target.SelectedObject.ToString();
+            }
+            update_navig_target_represent((NavigTarget)propertyGrid_navig_target.SelectedObject);
+        }
+        int i_target = 0;
+        private string update_navig_target_represent(NavigTarget target, bool create = false)
+        {
+            //3d--------------------------------------------
+            var cyl_mesh = cilindr_mesh((float)target.d/2, 30, (float)target.l);
+            if(!create) GL1.buffersGl.removeObj(target.name);
+            var name = GL1.add_buff_gl(cyl_mesh, new Color3d_GL(target.color[0], target.color[1], target.color[2]), null, PrimitiveType.Triangles, target.name, true);
+            GL1.buffersGl.setlight(name,false);
+            GL1.buffersGl.setTranspobj (name, 0.8f);
+            GL1.buffersGl.setTransfObj(target.name, 0, new Point3d_GL(target.x, target.y, target.z), new Point3d_GL(target.a, target.b, target.c));
+
+
+
+            //GL1.buffersGl.setXobj(target.name, 0, target.x);
+            return name;
+        }
+
+        private void button_add_navig_target_Click(object sender, EventArgs e)
+        {
+            if (navig_system.targets == null) navig_system.targets = new List<NavigTarget>();
+
+            NavigTarget newNavigTarget = new NavigTarget();
+            //newNavigTarget.name = GL1.add
+            newNavigTarget.name = "Цель " + i_target;
+            var color = Color3d_GL.random();
+            newNavigTarget.color = new float[] { color.r, color.g, color.b, };
+            newNavigTarget.name = update_navig_target_represent(newNavigTarget, true);  
+            i_target++;
+            navig_system.targets.Add(newNavigTarget);
+
+            TreeNode newNode = new TreeNode(newNavigTarget.ToString());    
+            newNode.Tag = newNavigTarget;
+
+            // 4. Добавляем узел в TreeView
+            treeView_navig_targets.Nodes.Add(newNode);
+
+            // 5. Выделяем новый узел и показываем объект в PropertyGrid
+            treeView_navig_targets.SelectedNode = newNode;
+            propertyGrid_navig_target.SelectedObject = newNavigTarget;
+        }
+
+        private void button_del_navig_target_Click(object sender, EventArgs e)
+        {
+            if (treeView_navig_targets.SelectedNode == null)
+            {
+                MessageBox.Show("Выберите элемент для удаления.");
+                return;
+            }
+
+            // Получаем объект из выделенного узла
+            NavigTarget navigTargetToDelete = treeView_navig_targets.SelectedNode.Tag as NavigTarget;
+            if (navigTargetToDelete == null) return;
+
+            // Удаляем из списка
+            navig_system.targets.Remove(navigTargetToDelete);
+
+            // Удаляем узел из TreeView
+            treeView_navig_targets.Nodes.Remove(treeView_navig_targets.SelectedNode);
+
+            // Очищаем PropertyGrid
+            propertyGrid_navig_target.SelectedObject = null;
+
+            // (Опционально) выбрать первый узел, если есть
+            if (treeView_navig_targets.Nodes.Count > 0)
+                treeView_navig_targets.SelectedNode = treeView_navig_targets.Nodes[0];
+        }
+
+        
     }
 }
 

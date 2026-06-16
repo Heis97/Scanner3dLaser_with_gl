@@ -21,6 +21,12 @@ namespace opengl3
             rotate = _rotate.Clone();
             scale = _scale;
             matr = Matrix4x4f.Identity;
+
+            matr = Matrix4x4f.Translated((float)transl.x, (float)transl.y, (float)transl.z) *
+                Matrix4x4f.RotatedX((float)rotate.x) *
+                Matrix4x4f.RotatedY((float)rotate.y) *
+                Matrix4x4f.RotatedZ((float)rotate.z) *
+                Matrix4x4f.Scaled(scale, scale, scale);
         }
         public trsc(double x, double y, double z, double rx, double ry, double rz, float _scale)
         {

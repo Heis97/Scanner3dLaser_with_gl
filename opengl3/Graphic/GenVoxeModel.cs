@@ -60,7 +60,7 @@ namespace opengl3
         {
             // Грубая оценка: максимальное количество треугольников ≈ количество кубов × 2
             uint cubeCount = ((uint)Width - 1) * ((uint)Height - 1) * ((uint)Depth - 1); // ~249 млн
-            uint maxTriangles = cubeCount /8; //cubeCount * 2;   // ~498 млн
+            uint maxTriangles = cubeCount *2; //cubeCount * 2;   // ~498 млн
             maxVertexCount = maxTriangles * 3;
             maxIndexCount = maxTriangles * 3;
         }

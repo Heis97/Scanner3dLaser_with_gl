@@ -401,7 +401,7 @@ namespace opengl3
 
             // Формируем массив каналов в порядке BGR
             VectorOfMat channels = new VectorOfMat();
-            channels.Push(zeroChannel);                // Канал Blue
+            channels.Push(cur_mat);                     // Канал Blue
             channels.Push(cur_mat);              // Канал Green
             channels.Push(zeroChannel);                // Канал Red
 
@@ -410,7 +410,7 @@ namespace opengl3
             CvInvoke.Merge(channels, result);
 
 
-            return 0.5 * orig + 0.5 * result;
+            return 0.7 * orig + 0.3 * result;
         }
 
         static public Mat[] filter_bone_cts(List<CtSliceInfo> cts, int bin_lvl, int gauss_size)

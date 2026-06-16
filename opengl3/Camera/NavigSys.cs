@@ -12,9 +12,130 @@ using Accord;
 using Emgu.CV.Stitching;
 using Emgu.CV.Aruco;
 using System.Drawing;
+using System.ComponentModel;
+using System.Drawing.Design;
+using System.Windows.Forms.Design;
+using System.ComponentModel.Design;
+using System.Runtime.CompilerServices;
 
 namespace opengl3
 {
+    public class NavigTarget
+    {
+        public float[] color = new float[3] {0.1f,0.1f,0.1f};
+        [Description("Цвет")]
+        [Category("Название")]
+        [DisplayName("Цвет")]
+        public float[] Color
+        {
+            get { return color; }
+            set { color = value; }
+        }
+
+        public string name;
+        [Description("Название")]
+        [Category("Название")]
+        [DisplayName("Name")]
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+
+        public double x;
+        [Description("Координата X")]
+        [Category("Положение")]
+        [DisplayName("X")]
+        [Editor(typeof(DoubleUpDownEditor), typeof(UITypeEditor))]
+        public double X 
+        {
+            get { return x; }
+            set { x = value; }
+        }
+
+        public double y;
+        [Description("Координата Y")]
+        [Category("Положение")]
+        [DisplayName("Y")]
+        [Editor(typeof(DoubleUpDownEditor), typeof(UITypeEditor))]
+        public double Y
+        {
+            get { return y; }
+            set { y = value; }
+        }
+
+        public double z;
+        [Description("Координата Z")]
+        [Category("Положение")]
+        [DisplayName("Z")]
+        [Editor(typeof(DoubleUpDownEditor), typeof(UITypeEditor))]
+        public double Z
+        {
+            get { return z; }
+            set { z = value; }
+        }
+
+        public double a;
+        [Description("Координата A")]
+        [Category("Положение")]
+        [DisplayName("A")]
+        [Editor(typeof(DoubleUpDownEditorAngle), typeof(UITypeEditor))]
+        public double A
+        {
+            get { return a; }
+            set { a = value; }
+        }
+
+        public double b;
+        [Description("Координата B")]
+        [Category("Положение")]
+        [DisplayName("B")]
+        public double B
+        {
+            get { return b; }
+            set { b = value; }
+        }
+
+        public double c;
+        [Description("Координата C")]
+        [Category("Положение")]
+        [DisplayName("C")]
+        public double C
+        {
+            get { return c; }
+            set { c = value; }
+        }
+
+        public double d = 3;
+        [Description("размер D")]
+        [Category("Размер")]
+        [DisplayName("D")]
+        public double D
+        {
+            get { return d; }
+            set { d = value; }
+        }
+
+        public double l = 50;
+        [Description("размер L")]
+        [Category("Размер")]
+        [DisplayName("L")]
+        public double L
+        {
+            get { return l; }
+            set { l = value; }
+        }
+
+        public override string ToString()
+        {
+            return Name; // Это будет использоваться для отображения в TreeView
+        }   
+
+    }
+
+
+
     class NavigTool
     {
         public enum ToolType { tp4_v1 };
@@ -391,6 +512,7 @@ namespace opengl3
     {
 
         public NavigTool[] tools;
+        public List<NavigTarget> targets;
         public Scanner stereo;
         int aruko_max_ind = 1;
         public NavigSys(Scanner _stereo, int _aruko_max_ind)
