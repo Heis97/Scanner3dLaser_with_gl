@@ -697,6 +697,9 @@ namespace opengl3
             this.but_save_photo_nav = new System.Windows.Forms.Button();
             this.but_navig_cl = new System.Windows.Forms.Button();
             this.tabPage_navig_pan = new System.Windows.Forms.TabPage();
+            this.rangeSliderV1_limits_model_h = new RangeSliderV();
+            this.rangeSliderH2_limits_model_d = new RangeSliderH();
+            this.rangeSliderH1_limits_model_w = new RangeSliderH();
             this.but_generate_model_ct = new System.Windows.Forms.Button();
             this.label_ct_gauss = new System.Windows.Forms.Label();
             this.hScrollBar_gauss_ct = new System.Windows.Forms.HScrollBar();
@@ -8169,6 +8172,9 @@ namespace opengl3
             // 
             // tabPage_navig_pan
             // 
+            this.tabPage_navig_pan.Controls.Add(this.rangeSliderV1_limits_model_h);
+            this.tabPage_navig_pan.Controls.Add(this.rangeSliderH2_limits_model_d);
+            this.tabPage_navig_pan.Controls.Add(this.rangeSliderH1_limits_model_w);
             this.tabPage_navig_pan.Controls.Add(this.but_generate_model_ct);
             this.tabPage_navig_pan.Controls.Add(this.label_ct_gauss);
             this.tabPage_navig_pan.Controls.Add(this.hScrollBar_gauss_ct);
@@ -8190,6 +8196,42 @@ namespace opengl3
             this.tabPage_navig_pan.TabIndex = 11;
             this.tabPage_navig_pan.Text = "Навиг Планир";
             this.tabPage_navig_pan.UseVisualStyleBackColor = true;
+            // 
+            // rangeSliderV1_limits_model_h
+            // 
+            this.rangeSliderV1_limits_model_h.Location = new System.Drawing.Point(574, 0);
+            this.rangeSliderV1_limits_model_h.LowerValue = 20;
+            this.rangeSliderV1_limits_model_h.MaxValue = 100;
+            this.rangeSliderV1_limits_model_h.MinValue = 0;
+            this.rangeSliderV1_limits_model_h.Name = "rangeSliderV1_limits_model_h";
+            this.rangeSliderV1_limits_model_h.Size = new System.Drawing.Size(30, 512);
+            this.rangeSliderV1_limits_model_h.TabIndex = 147;
+            this.rangeSliderV1_limits_model_h.UpperValue = 80;
+            this.rangeSliderV1_limits_model_h.ValuesChanged += new System.EventHandler(this.rangeSliderV1_limits_model_h_ValuesChanged);
+            // 
+            // rangeSliderH2_limits_model_d
+            // 
+            this.rangeSliderH2_limits_model_d.Location = new System.Drawing.Point(610, 512);
+            this.rangeSliderH2_limits_model_d.LowerValue = 20;
+            this.rangeSliderH2_limits_model_d.MaxValue = 100;
+            this.rangeSliderH2_limits_model_d.MinValue = 0;
+            this.rangeSliderH2_limits_model_d.Name = "rangeSliderH2_limits_model_d";
+            this.rangeSliderH2_limits_model_d.Size = new System.Drawing.Size(512, 27);
+            this.rangeSliderH2_limits_model_d.TabIndex = 146;
+            this.rangeSliderH2_limits_model_d.UpperValue = 80;
+            this.rangeSliderH2_limits_model_d.ValuesChanged += new System.EventHandler(this.rangeSliderH2_limits_model_d_ValuesChanged);
+            // 
+            // rangeSliderH1_limits_model_w
+            // 
+            this.rangeSliderH1_limits_model_w.Location = new System.Drawing.Point(0, 481);
+            this.rangeSliderH1_limits_model_w.LowerValue = 20;
+            this.rangeSliderH1_limits_model_w.MaxValue = 100;
+            this.rangeSliderH1_limits_model_w.MinValue = 0;
+            this.rangeSliderH1_limits_model_w.Name = "rangeSliderH1_limits_model_w";
+            this.rangeSliderH1_limits_model_w.Size = new System.Drawing.Size(512, 31);
+            this.rangeSliderH1_limits_model_w.TabIndex = 145;
+            this.rangeSliderH1_limits_model_w.UpperValue = 80;
+            this.rangeSliderH1_limits_model_w.ValuesChanged += new System.EventHandler(this.rangeSliderH1_limits_model_w_ValuesChanged);
             // 
             // but_generate_model_ct
             // 
@@ -8240,7 +8282,7 @@ namespace opengl3
             // 
             // vScrollBar_coronal
             // 
-            this.vScrollBar_coronal.Location = new System.Drawing.Point(515, 521);
+            this.vScrollBar_coronal.Location = new System.Drawing.Point(1125, 3);
             this.vScrollBar_coronal.Name = "vScrollBar_coronal";
             this.vScrollBar_coronal.Size = new System.Drawing.Size(35, 509);
             this.vScrollBar_coronal.TabIndex = 139;
@@ -8248,7 +8290,7 @@ namespace opengl3
             // 
             // vScrollBar_sagital
             // 
-            this.vScrollBar_sagital.Location = new System.Drawing.Point(1085, 3);
+            this.vScrollBar_sagital.Location = new System.Drawing.Point(515, 512);
             this.vScrollBar_sagital.Name = "vScrollBar_sagital";
             this.vScrollBar_sagital.Size = new System.Drawing.Size(35, 509);
             this.vScrollBar_sagital.TabIndex = 138;
@@ -8274,7 +8316,7 @@ namespace opengl3
             // 
             // imageBox_navig_coronal
             // 
-            this.imageBox_navig_coronal.Location = new System.Drawing.Point(0, 518);
+            this.imageBox_navig_coronal.Location = new System.Drawing.Point(610, 0);
             this.imageBox_navig_coronal.Name = "imageBox_navig_coronal";
             this.imageBox_navig_coronal.Size = new System.Drawing.Size(512, 512);
             this.imageBox_navig_coronal.TabIndex = 133;
@@ -8282,7 +8324,7 @@ namespace opengl3
             // 
             // imageBox_navig_sagital
             // 
-            this.imageBox_navig_sagital.Location = new System.Drawing.Point(570, 0);
+            this.imageBox_navig_sagital.Location = new System.Drawing.Point(0, 512);
             this.imageBox_navig_sagital.Name = "imageBox_navig_sagital";
             this.imageBox_navig_sagital.Size = new System.Drawing.Size(512, 512);
             this.imageBox_navig_sagital.TabIndex = 132;
@@ -9176,6 +9218,9 @@ namespace opengl3
         private System.Windows.Forms.Label label_ct_gauss;
         private System.Windows.Forms.HScrollBar hScrollBar_gauss_ct;
         private System.Windows.Forms.Button but_generate_model_ct;
+        private RangeSliderV rangeSliderV1_limits_model_h;
+        private RangeSliderH rangeSliderH2_limits_model_d;
+        private RangeSliderH rangeSliderH1_limits_model_w;
     }
 }
 

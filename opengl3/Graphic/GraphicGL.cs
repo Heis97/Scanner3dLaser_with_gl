@@ -643,7 +643,7 @@ namespace opengl3
             Console.WriteLine("Total_size: "+width * height * depth);
             // 3. Генерация вокселей: цилиндр радиусом 40, высотой 100, центр в середине
             //bool[,,] voxels = VoxelToStlGpu.GenerateCylinderVoxels(width, height, depth, radius: 14, cylinderHeight: 10);
-            var voxels = VoxelToStlGpu.GenerateCylinder(width, height, depth, 20,  20, width/2, height / 2, depth / 2);
+            /*var voxels = VoxelToStlGpu.GenerateCylinder(width, height, depth, 20,  20, width/2, height / 2, depth / 2);
             //bool[,,] voxels = VoxelToStlGpu.GenerateOneVoxels(width);
 
 
@@ -659,7 +659,7 @@ namespace opengl3
             // 6. Запускаем вычисления (два прохода) и получаем вершины/индексы
             var gen_mesh = gpuMesher.GenerateMesh();
             
-            add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles);
+            add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles);*/
             // 7. Сохраняем результат в STL-файл
             //gpuMesher.SaveAsStlAscii("cylinder_128.stl", vertices, indices);
 

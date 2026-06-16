@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Accord;
 using FellowOakDicom;
 using FellowOakDicom.Imaging;
 using Emgu.CV;
@@ -22,10 +21,16 @@ namespace opengl3
     public class CtSliceFull
     {
         public List<CtSliceInfo>  SlicesAxial { get; set; }
+        public List<Mat> SlicesAxial_mat { get; set; }
         public List<Mat> SlicesCoronal { get; set; }
         public List<Mat> SlicesSagital { get; set; }
 
         public byte[,,] VoxelModel { get; set; }
+
+        public double pix_xy;
+        public double pix_z;
+
+        public double axial_koef;
     }
 
     public class CtSliceInfo
@@ -36,19 +41,40 @@ namespace opengl3
         public double[] ImageOrientationPatient { get; set; }
         public double SliceNormalProjection { get; set; } // Значение 'd'
         public Mat Image{ get; set; }
+
+       
     }
 
     public class DicomSorter
     {
+
+        
         public static CtSliceFull LoadAndSortSlices(string directoryPath)
         {
             var slices = new List<CtSliceInfo>();
             // Загружаем все DICOM файлы из директории
             var dicomFiles = Directory.GetFiles(directoryPath);//*.dcm
-
+            int ind = 0;
+            var pix_xy = 0.1;
+            var pix_z = 0.1;
             foreach (var file in dicomFiles)
             {
+
+                
                 var dicomFile = DicomFile.Open(file);
+
+                if (ind == 0 && dicomFile.Dataset.Contains(DicomTag.PixelSpacing))
+                {
+                    var pixelSpacing = dicomFile.Dataset.GetValues<double>(DicomTag.PixelSpacing);
+                    var pixelSpacingX = pixelSpacing[0];
+                    var pixelSpacingY = (pixelSpacing.Length > 1) ? pixelSpacing[1] : pixelSpacing[0];
+                    Console.WriteLine("Spacing: " + pixelSpacingX + " " + pixelSpacingY);
+                    pix_xy = pixelSpacingX;
+                }
+
+
+                ind++;
+
                 var dataset = dicomFile.Dataset;
                 Mat mat = LoadDicomAndConvertToMat(file);
                 // Извлекаем необходимые теги
@@ -98,14 +124,22 @@ namespace opengl3
                 {
                     double spacing = sortedSlices[i].SliceNormalProjection - sortedSlices[i - 1].SliceNormalProjection;
                     Console.WriteLine($"  Расстояние до предыдущего среза: {spacing:F3} мм");
+                    pix_z = spacing;
                 }
             }
-            var slices_sec = compCoronalAndSagital(sortedSlices);
+            double size_xy_to_z = pix_z / pix_xy;
+            var slices_sec = compCoronalAndSagital(sortedSlices, size_xy_to_z);
+            GC.Collect();
             return new CtSliceFull
             {
                 SlicesAxial = sortedSlices,
                 SlicesCoronal = slices_sec[0],
-                SlicesSagital = slices_sec[1]
+                SlicesSagital = slices_sec[1],
+                SlicesAxial_mat = slices_sec[2],
+                pix_xy = pix_xy,
+                pix_z = pix_z,
+                axial_koef = size_xy_to_z,
+                
             };
         }
         public static byte[,,] compVoxelModel(List<CtSliceInfo> cts)
@@ -133,18 +167,20 @@ namespace opengl3
 
                 //data_coronal.Add(ByteArrayToMat(data_coronal_slice));
             }
-
+            GC.Collect();
             return voxel_model;
         }
 
         
 
-        public static List<List<Mat>> compCoronalAndSagital(List<CtSliceInfo> cts)
+        public static List<List<Mat>> compCoronalAndSagital(List<CtSliceInfo> cts,double size_xy_to_z)
         {
+            var axial_mats = new List<Mat>();
             var data_axial = new List<byte[,]>();
             for(int i = 0; i<cts.Count;i++)
             {
                 data_axial.Add((byte[,])cts[i].Image.GetData());
+                axial_mats.Add(cts[i].Image);
             }
             
             var data_coronal = new List<Mat>();
@@ -159,9 +195,12 @@ namespace opengl3
                         data_coronal_slice[j, i] = data_axial[i][j, k];
                     }
                 }
-
-                data_coronal.Add(ByteArrayToMat(data_coronal_slice));
+                var mat_data = ByteArrayToMat(data_coronal_slice);
+                CvInvoke.Resize(mat_data,mat_data,new Size((int)(mat_data.Width * size_xy_to_z), mat_data.Height));
+                data_coronal.Add(mat_data);
             }
+
+
 
             var data_sagital = new List<Mat>();
 
@@ -176,11 +215,15 @@ namespace opengl3
                     }
                 }
 
-                data_sagital.Add(ByteArrayToMat(data_sagital_slice));
+                var mat_data = ByteArrayToMat(data_sagital_slice);
+                CvInvoke.Resize(mat_data, mat_data, new Size((int)(mat_data.Width * size_xy_to_z), mat_data.Height));
+                data_sagital.Add(mat_data);
+
+                //data_sagital.Add(ByteArrayToMat(data_sagital_slice));
             }
 
             //CvInvoke.Imshow("mat_test", mat_test);
-            return new List<Mat>[] { data_coronal , data_sagital }.ToList();
+            return new List<Mat>[] { data_coronal , data_sagital,axial_mats }.ToList();
         }
         public static Mat ByteArrayToMat(byte[,] data)
         {
@@ -300,6 +343,47 @@ namespace opengl3
                 //data_coronal.Add(ByteArrayToMat(data_coronal_slice));
             }
 
+            return voxel_model;
+        }
+
+        public static byte[,,] compVoxelModel(List<Mat> cts, Point[] ps)
+        {
+            var data_axial = new List<byte[,]>();
+            for (int i = 0; i < cts.Count; i++)
+            {
+                data_axial.Add((byte[,])cts[i].GetData());
+            }
+
+            var data_coronal = new List<Mat>();
+
+            var x_max = data_axial[0].GetLength(1)-ps[1].X;
+            var x_min = data_axial[0].GetLength(1)-ps[1].Y;
+            var x_dim = x_max - x_min;
+            if (x_min < 0 || x_max >= data_axial[0].GetLength(1) || x_dim < 1) { Console.WriteLine("x_min, x_max, x_dim ,data_axial[0].GetLength(1)" + x_min + " " + x_max + " " + x_dim + " " + cts.Count); return null; }
+
+            var y_max = data_axial[0].GetLength(0) - ps[0].X;
+            var y_min = data_axial[0].GetLength(0) - ps[0].Y;
+            var y_dim = y_max - y_min;
+            if (y_min < 0 || y_max >= data_axial[0].GetLength(0) || y_dim < 1) { Console.WriteLine("y_min, y_max, y_dim ,data_axial[0].GetLength(0)" + y_min + " " + y_max + " " + y_dim + " " + cts.Count); return null; }
+
+            var z_min = ps[2].X;
+            var z_max = ps[2].Y;
+            var z_dim = z_max - z_min;
+            if (z_min < 0 || z_max >= cts.Count || z_dim < 1){ Console.WriteLine("z_min, z_max, z_dim ,cts.Count" + z_min + " " + z_max + " " + z_dim + " "+ cts.Count); return null; }
+
+            var voxel_model = new byte[x_dim, y_dim, z_dim];
+
+            for (int k = 0; k < y_dim; k++)
+            {
+                for (int i = 0; i < z_dim; i++)
+                {
+                    for (int j = 0; j < x_dim; j++)
+                    {
+                        voxel_model[j, k, i] = data_axial[i + z_min][j + x_min, k + y_min];
+                    }
+                }
+            }
+            GC.Collect();
             return voxel_model;
         }
         static public Mat filter_bone_ct(Mat mat, int bin_lvl, int gauss_size,int intern = 0)

@@ -33,7 +33,8 @@ uniform int pass;           // 0 = подсчет, 1 = запись
 uniform int width;          // размер X (вокселей)
 uniform int height;         // размер Y
 uniform int depth;          // размер Z
-uniform float isoLevel = 127;  // уровень изоповерхности (для бинарных вокселов = 0.5)
+uniform int isoLevel;  // уровень изоповерхности (для бинарных вокселов = 0.5)
+uniform float size_per_cell;
 
 // ---------------------------- Таблицы Marching Cubes ----------------------------
 // Таблица рёбер: для каждого индекса куба (0..255) – 12-битная маска, какие рёбра пересекаются
@@ -72,19 +73,11 @@ uint getVoxel(int x, int y, int z) {
     int idx = x + y * width + z * width * height;
     debugTable[idx] = val;
 }*/
-// Получение позиции вершины куба (0..7) в мировых координатах (целые индексы вокселей)
 
-// Интерполяция точки на ребре между двумя вершинами v1 и v2
-// val1, val2 – значения вокселей (0 или 1). Для isoLevel=0.5 даёт среднюю точку.
-/*vec3 interpolate(vec3 p1, vec3 p2, float val1, float val2) {
-   // return (p2 + p1)/2;
-    float t = (isoLevel - val1) / (val2 - val1);
-    return p1 + t * (p2 - p1);
-}*/
 
 vec3 interpolate(vec3 p1, vec3 p2, float v1, float v2) {
     //return (p2 + p1)/2;
-    float t = (isoLevel - v1) / (v2 - v1);
+    float t = (float(isoLevel) - v1) / (v2 - v1);
     return mix(p1, p2, t);
 }
 
@@ -118,7 +111,7 @@ void main() {
     // Вычисление индекса куба (битовая маска вершин, превышающих isoLevel)
     int cubeIndex = 0;
     for (int i = 0; i < 8; i++) {
-        if (float(v[i]) > isoLevel)
+        if (v[i] > isoLevel)
             cubeIndex |= (1 << i);
     }
     
@@ -166,11 +159,11 @@ void main() {
         uint vertexCount = numTriangles * 3;
         atomicAdd(vertexCounter.counter, vertexCount);
         atomicAdd(indexCounter.counter, vertexCount);
-
-        
-        
     } 
-    else {
+
+    else 
+    {
+           
         // Второй проход: запись вершин и индексов в выходные буферы
         // Получаем глобальные смещения для записи
         uint baseVertex = atomicAdd(vertexCounter.counter, numTriangles * 3);  
@@ -192,22 +185,26 @@ void main() {
 
             uint vertIdx = baseVertex + tri * 3;
             // Вершина 0
-            vertices[vertIdx * 3 + 0] = v0.x;
-            vertices[vertIdx * 3 + 1] = v0.y;
-            vertices[vertIdx * 3 + 2] = v0.z;
+            vertices[vertIdx * 3 + 0] = size_per_cell* v0.x;
+            vertices[vertIdx * 3 + 1] = size_per_cell* v0.y;
+            vertices[vertIdx * 3 + 2] = size_per_cell* v0.z;
             // Вершина 1
-            vertices[(vertIdx + 1) * 3 + 0] = v1.x;
-            vertices[(vertIdx + 1) * 3 + 1] = v1.y;
-            vertices[(vertIdx + 1) * 3 + 2] = v1.z;
+            vertices[(vertIdx + 1) * 3 + 0] = size_per_cell*v1.x;
+            vertices[(vertIdx + 1) * 3 + 1] = size_per_cell*v1.y;
+            vertices[(vertIdx + 1) * 3 + 2] = size_per_cell*v1.z;
             // Вершина 2
-            vertices[(vertIdx + 2) * 3 + 0] = v2.x;
-            vertices[(vertIdx + 2) * 3 + 1] = v2.y;
-            vertices[(vertIdx + 2) * 3 + 2] = v2.z;
+            vertices[(vertIdx + 2) * 3 + 0] = size_per_cell*v2.x;
+            vertices[(vertIdx + 2) * 3 + 1] = size_per_cell*v2.y;
+            vertices[(vertIdx + 2) * 3 + 2] = size_per_cell*v2.z;
 
             // Запись индексов (указывают на номер вершины, а не на смещение в float-буфере)
             indices[baseIndex + tri*3 + 0] = vertIdx;
             indices[baseIndex + tri*3 + 1] = vertIdx + 1;
             indices[baseIndex + tri*3 + 2] = vertIdx + 2;
+
+            //vertices[ 0] = isoLevel;
+
+
         }
     }
 }

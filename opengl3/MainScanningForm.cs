@@ -240,11 +240,23 @@ namespace opengl3
             InitializeComponent();
             init_vars();
 
-           /* ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
+            ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
             vScrollBar_axial.Maximum = ct_info.SlicesAxial.Count;
             vScrollBar_coronal.Maximum = ct_info.SlicesCoronal.Count;
-            vScrollBar_sagital.Maximum = ct_info.SlicesSagital.Count;*/
+            vScrollBar_sagital.Maximum = ct_info.SlicesSagital.Count;
 
+            /*vScrollBar_axial.Value = ct_info.SlicesAxial.Count/2;
+            vScrollBar_coronal.Value = ct_info.SlicesCoronal.Count / 2;
+            vScrollBar_sagital.Value = ct_info.SlicesSagital.Count / 2;*/
+
+            rangeSliderH1_limits_model_w.MinValue = 0;
+            rangeSliderV1_limits_model_h.MinValue = 0;
+            rangeSliderH2_limits_model_d.MinValue = 0;
+            
+
+            rangeSliderH1_limits_model_w.MaxValue = ct_info.SlicesCoronal.Count;
+            rangeSliderV1_limits_model_h.MaxValue = ct_info.SlicesSagital.Count;
+            rangeSliderH2_limits_model_d.MaxValue = (int)(ct_info.SlicesAxial_mat.Count* ct_info.axial_koef);
 
             /* var poses_sym = new List<Pose>(new Pose[] { 
                  new Pose(new double[] { 1, 2, 3, 4, 5, 6 }),
@@ -8607,7 +8619,8 @@ namespace opengl3
             this.tabPage_navig_debug.Controls.Add(this.imageBox1);
             this.tabPage_navig_debug.Controls.Add(this.imageBox2);
 
-
+            //this.tabPage_navig_pan.Controls.Add(this.glControl1);
+            //glControl1.Location = new Point(500, 500);
             add_buttons_rob_contr();
             formSettings.load_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
             for (int i = 0; i < imb_main.Length; i++)
@@ -10786,8 +10799,8 @@ namespace opengl3
         private void but_con_navig_sys_Click(object sender, EventArgs e)
         {
                         
-            videoStart(0);
             videoStart(1);
+            videoStart(0);
             var thr_navig = new Thread(navigation_processing);
             thr_navig.Start();
 
@@ -10841,11 +10854,12 @@ namespace opengl3
             formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
         }
         int ind_ct_image = 0;
-        private void vScrollBar_axial_Scroll(object sender, ScrollEventArgs e)
-        {
-           ind_ct_image = ((VScrollBar)sender).Value;
-            if (ind_ct_image < ct_info.SlicesAxial.Count - 1 && ind_ct_image >= 0) imageBox_navig_axial.Image = DicomProcess.filter_bone_ct(ct_info.SlicesAxial[ind_ct_image].Image, ct_bin_lvl, ct_gauss_size); 
-        }
+        int ind_ct_image_sagit = 0;
+        int ind_ct_image_coronal = 0;
+
+        Mat[] ct_projections = new Mat[3];
+
+       
 
         private void but_ct_dir_select_Click(object sender, EventArgs e)
         {
@@ -10860,58 +10874,142 @@ namespace opengl3
         }
         int ct_bin_lvl = 255;
         int ct_gauss_size = 1;
+        VoxelToStlGpu voxel_model;
+        string generate_model_name = "generate_model";
+        byte[,,] orig_model;
+
+        System.Drawing.Point[] limits_ps = new System.Drawing.Point[3];
+
+        
         private void hScrollBar_binar_ct_Scroll(object sender, ScrollEventArgs e)
         {
             ct_bin_lvl = ((HScrollBar)sender).Value;
             label_ct_bin.Text ="Бинаризация: "+ ct_bin_lvl.ToString();
-            imageBox_navig_axial.Image = DicomProcess.filter_bone_ct(ct_info.SlicesAxial[ind_ct_image].Image, ct_bin_lvl, ct_gauss_size);
+            redraw_navig_slices();
         }
 
         private void hScrollBar_gauss_ct_Scroll(object sender, ScrollEventArgs e)   
         {
             ct_gauss_size =2* ((HScrollBar)sender).Value+1;
             label_ct_gauss.Text = "Сглаживание: " + ct_gauss_size.ToString();
-            imageBox_navig_axial.Image = DicomProcess.filter_bone_ct(ct_info.SlicesAxial[ind_ct_image].Image, ct_bin_lvl, ct_gauss_size);
+            redraw_navig_slices();
         }
 
-       
+        private void vScrollBar_axial_Scroll(object sender, ScrollEventArgs e)
+        {
+            ind_ct_image = ((VScrollBar)sender).Value;
+            ct_projections[0] = ct_info.SlicesAxial_mat[ind_ct_image].Clone();
+            redraw_navig_slices();
+        }
 
         private void vScrollBar_sagital_Scroll(object sender, ScrollEventArgs e)
         {
-           var ind_ct_image = ((VScrollBar)sender).Value;
-            if (ind_ct_image < ct_info.SlicesSagital.Count - 1 && ind_ct_image >= 0) imageBox_navig_sagital.Image = DicomProcess.filter_bone_ct(ct_info.SlicesSagital[ind_ct_image], ct_bin_lvl, ct_gauss_size);
+            ind_ct_image_sagit = ((VScrollBar)sender).Value;
+            
+            ct_projections[1] = ct_info.SlicesSagital[ind_ct_image_sagit].Clone();
+            redraw_navig_slices();
         }
 
         private void vScrollBar_coronal_Scroll(object sender, ScrollEventArgs e)
         {
-            var ind_ct_image = ((VScrollBar)sender).Value;
-            if (ind_ct_image < ct_info.SlicesCoronal.Count - 1 && ind_ct_image >= 0) imageBox_navig_coronal.Image = DicomProcess.filter_bone_ct(ct_info.SlicesCoronal[ind_ct_image], ct_bin_lvl, ct_gauss_size);
+            ind_ct_image_coronal = ((VScrollBar)sender).Value;
+            ct_projections[2] = ct_info.SlicesCoronal[ind_ct_image_coronal].Clone();
+            redraw_navig_slices();
         }
-
+        
         private void but_generate_model_ct_Click(object sender, EventArgs e)
         {
-           /* const int width = 500;
-            const int height = 500;
-            const int depth = 1000;
-            Console.WriteLine("Total_size: " + width * height * depth);
-            // 3. Генерация вокселей: цилиндр радиусом 40, высотой 100, центр в середине
-            //bool[,,] voxels = VoxelToStlGpu.GenerateCylinderVoxels(width, height, depth, radius: 14, cylinderHeight: 10);
-            var voxels = VoxelToStlGpu.GenerateCylinder(width, height, depth, 40, 400, width / 2, height / 2, depth / 2);
-            //bool[,,] voxels = VoxelToStlGpu.GenerateOneVoxels(width);*/
-
-
-
-            var voxels = DicomProcess.compVoxelModel( DicomProcess.filter_bone_cts(ct_info.SlicesAxial, ct_bin_lvl, ct_gauss_size).ToList());
-            var gpuMesher = new VoxelToStlGpu(GL1, voxels.GetLength(0), voxels.GetLength(1), voxels.GetLength(2));
-            gpuMesher.SetVoxelData(voxels,GL1);
-            var gen_mesh = gpuMesher.GenerateMesh();
-
-
-
-            GL1.add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles);
+            //if(voxel_model==null)
+            {
+                orig_model = DicomProcess.compVoxelModel(ct_info.SlicesAxial_mat, limits_ps);
+                if (orig_model == null) return;
+                voxel_model = new VoxelToStlGpu(GL1, orig_model.GetLength(0), orig_model.GetLength(1), orig_model.GetLength(2));                
+            }
+            voxel_model.SetVoxelData(orig_model, GL1, ct_gauss_size,(float)ct_info.pix_xy);
+            var gen_mesh = voxel_model.GenerateMesh_isoline(ct_bin_lvl);
+            GL1.buffersGl.removeObj(generate_model_name);
+            generate_model_name = GL1.add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles, generate_model_name);
         }
 
+        private void rangeSliderH1_limits_model_w_ValuesChanged(object sender, EventArgs e)
+        {
+            var slider = (RangeSliderH)sender;
+            limits_ps[0] = new System.Drawing.Point(slider.LowerValue, slider.UpperValue);
+            redraw_navig_slices();
+        }
 
+        private void rangeSliderV1_limits_model_h_ValuesChanged(object sender, EventArgs e)
+        {
+            var slider = (RangeSliderV)sender;
+            limits_ps[1] = new System.Drawing.Point(slider.LowerValue, slider.UpperValue);
+            redraw_navig_slices();
+        }
+
+        private void rangeSliderH2_limits_model_d_ValuesChanged(object sender, EventArgs e)
+        {
+            var slider = (RangeSliderH)sender;
+            limits_ps[2] = new Point(slider.LowerValue, slider.UpperValue);
+            redraw_navig_slices();
+        }
+
+        public void redraw_navig_slices()
+        {
+
+            var mats = new Mat[3];
+            if (ct_info == null) return;
+            if (ind_ct_image < ct_info.SlicesAxial.Count - 1 && ind_ct_image >= 0 && ct_projections[0]!=null)
+            {
+                mats[0] = DicomProcess.filter_bone_ct(ct_projections[0], ct_bin_lvl, ct_gauss_size);
+                mats[0] = draw_limits_lines(mats[0], limits_ps[0], limits_ps[1]);
+                imageBox_navig_axial.Image = mats[0];
+            }
+
+            if (ind_ct_image_sagit < ct_info.SlicesSagital.Count - 1 && ind_ct_image_sagit >= 0 && ct_projections[1] != null)
+            {
+                mats[1] = DicomProcess.filter_bone_ct(ct_projections[1], ct_bin_lvl, ct_gauss_size);
+                mats[1] = draw_limits_lines(mats[1], limits_ps[2], limits_ps[0]);
+                CvInvoke.Rotate(mats[1], mats[1], RotateFlags.Rotate90Clockwise);
+                imageBox_navig_sagital.Image = mats[1];
+            }
+
+            if (ind_ct_image_coronal < ct_info.SlicesCoronal.Count - 1 && ind_ct_image_coronal >= 0 && ct_projections[2] != null) 
+            {
+                mats[2] = DicomProcess.filter_bone_ct(ct_projections[2], ct_bin_lvl, ct_gauss_size);
+                mats[2] = draw_limits_lines(mats[2], limits_ps[2], limits_ps[1]);
+                
+                imageBox_navig_coronal.Image = mats[2];
+            }
+
+
+
+            
+           
+            
+
+
+        }
+
+        public Mat draw_limits_lines(Mat mat, Point px, Point py)
+        {
+            var color_lines_area = new MCvScalar(0, 110, 255);
+            var color_filling_area = new MCvScalar(0, 20, 40);
+            if (mat == null) { Console.WriteLine("mat null"); return null; }
+
+            /*CvInvoke.Line(mat, new Point(px.X, 0), new Point(px.X, mat.Height), color_lines_area, 2);
+            CvInvoke.Line(mat, new Point(px.Y, 0), new Point(px.Y, mat.Height), color_lines_area, 2);
+
+            CvInvoke.Line(mat, new Point(0, mat.Height-py.X), new Point(mat.Width, mat.Height-py.X), color_lines_area, 2);
+            CvInvoke.Line(mat, new Point(0, mat.Height-py.Y), new Point(mat.Width, mat.Height-py.Y), color_lines_area, 2);*/
+
+            var mat_rect = new Mat(mat.Size.Height , mat.Size.Width,DepthType.Cv8U,3);
+            mat_rect.SetTo(new MCvScalar(0, 0, 0));
+            CvInvoke.Rectangle(mat_rect, new Rectangle(px.X, mat.Height - py.X, px.Y - px.X, mat.Height - py.Y - (mat.Height - py.X)), color_filling_area, -1);
+
+            CvInvoke.Rectangle(mat_rect, new Rectangle(px.X, mat.Height - py.X, px.Y - px.X, mat.Height - py.Y - (mat.Height - py.X)), color_lines_area, 1);
+
+            mat += mat_rect;
+            return mat;
+        }
     }
 }
 

@@ -205,7 +205,7 @@ namespace opengl3
 
                
             }
-
+            GC.Collect();
             sb.Append("endsolid\n");
 
             Console.WriteLine("startWRITE");

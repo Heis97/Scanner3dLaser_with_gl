@@ -19,10 +19,13 @@ namespace opengl3
 {
     public class VoxelToStlGpu
     {
+        bool volxels_loaded = false;
+        uint[] data_voxels;
         // Размеры воксельной сетки
         private int Width = 50;
         private int Height = 50;
         private int Depth = 100;
+        private float MmToCell = 1;
 
         // ID шейдерной программы и отдельных буферов
         private uint computeProgram;
@@ -671,8 +674,9 @@ namespace opengl3
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
         }
 
-        public void SetVoxelData(byte[,,] voxels, GraphicGL graphic)
+        public void SetVoxelData(byte[,,] voxels, GraphicGL graphic, int smooth, float size_per_cell = 1)
         {
+            MmToCell = size_per_cell;
             // Преобразуем 3D-массив bool в одномерный массив uint
             uint[] data = new uint[Width * Height * Depth];
             for (int z = 0; z < Depth; z++)
@@ -680,21 +684,16 @@ namespace opengl3
                     for (int x = 0; x < Width; x++)
                     {
                         int idx = x + y * Width + z * Width * Height;
-
-
                         data[idx] = voxels[x, y, z];
                     }
 
 
-            var smoother = new VoxelSmoothing(Width , Height , Depth, 5);
+            var smoother = new VoxelSmoothing(Width , Height , Depth, smooth);
             smoother.Init(graphic);
             var data_sm = smoother.Smooth(data);
             //smoother.Dispose();
-
-            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, voxelSSBO);
-            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, voxelDataSize, data_sm);
-
-            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+            data_voxels = data_sm;
+            
 
 
 
@@ -702,7 +701,7 @@ namespace opengl3
         public List<float[]> GenerateMesh()
         {
             Console.WriteLine("GenerateMesh started");
-
+            volxels_loaded = true;
             // 1. Обнуляем счётчики
             uint zero = 0;
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
@@ -740,24 +739,13 @@ namespace opengl3
 
             Console.WriteLine($"Uniforms set: width={Width}, height={Height}, depth={Depth}");
 
-            //Console.WriteLine(string.Join(", ", readback));
 
-            /*int[] readback = new int[32];
-            Gl.BindBuffer(BufferTarget.UniformBuffer, triTableSSBO);
-            IntPtr ptr1 = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
-            IntPtr ptr1 = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
-            Marshal.Copy(ptr1, readback, 0, 32);
-            Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
-            Console.WriteLine("First 16 values from triTable SSBO: " + string.Join(", ", readback));*/
             var group_size = 8;
             // 5. Группы
             int groupsX = (Width - 1 + (group_size-1)) / group_size;
             int groupsY = (Height - 1 + (group_size - 1)) / group_size;
             int groupsZ = (Depth - 1 + (group_size - 1)) / group_size;
 
-            /*int groupsX = Width;
-            int groupsY = Height;
-            int groupsZ = Depth;*/
 
             Console.WriteLine($"Dispatch groups: {groupsX} x {groupsY} x {groupsZ}");
 
@@ -766,20 +754,7 @@ namespace opengl3
             Gl.DispatchCompute((uint)groupsX, (uint)groupsY, (uint)groupsZ);
             Gl.MemoryBarrier(MemoryBarrierMask.AtomicCounterBarrierBit | MemoryBarrierMask.ShaderStorageBarrierBit);
 
-            // ПРОВЕРКА: читаем счётчик вершин после первого прохода
-           /* uint tempCount = 0;
-            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
-            IntPtr ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
-            if (ptr != IntPtr.Zero)
-            {
-                tempCount = Marshal.PtrToStructure<uint>(ptr);
-                Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
-                Console.WriteLine($"After pass 0, vertex counter = {tempCount}");
-            }
-            else
-            {
-                Console.WriteLine("Failed to map vertex counter after pass 0");
-            }*/
+
             Gl.MemoryBarrier(MemoryBarrierMask.AtomicCounterBarrierBit | MemoryBarrierMask.ShaderStorageBarrierBit);
             zero = 0;
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
@@ -789,35 +764,11 @@ namespace opengl3
             Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 
 
-            /*Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexSSBO);
-            Gl.BufferData(BufferTarget.ShaderStorageBuffer, tempCount * 3 * sizeof(float), IntPtr.Zero, BufferUsage.DynamicDraw);
-
-
-            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexSSBO);
-            Gl.BufferData(BufferTarget.ShaderStorageBuffer, tempCount * 3 * sizeof(uint), IntPtr.Zero, BufferUsage.DynamicDraw);*/
-
             // --- Второй проход ---
             Gl.Uniform1(passLoc, 1);
             Gl.DispatchCompute((uint)groupsX, (uint)groupsY, (uint)groupsZ);
             Gl.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit);
 
-
-           /* int[] readback = new int[4096];
-            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, debugTableSSBO);
-            IntPtr ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadWrite);
-            Marshal.Copy(ptr, readback, 0, 4096);
-            Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
-
-            for (int i = 0; i < 256; i++)
-            {
-                for (int j = 0; j < 16; j++)
-                {
-                    Console.Write(readback[i * 16 + j] + " ");
-
-                }
-                Console.WriteLine();
-            }*/
-            // Чтение финальных счётчиков
             uint vertexCount = 0;
             uint indexCount = 0;
 
@@ -895,18 +846,6 @@ namespace opengl3
 
             float[] mesh = new float[vertexCount * 3];
             float[] normals = new float[vertexCount*3 ];
-            /*int[] idxs = new int[indexCount];
-            for (int i = 0; i < indexCount; i+=3)
-            {
-                if (idxsInt[i] % 3 != 0) Console.WriteLine("idxsInt[i] % 3 !=0");
-                int ind_cur =4* idxsInt[i]/3;
-                mesh[i] = vertsFloat[ind_cur];
-                mesh[i+1] = vertsFloat[ind_cur+1];
-                mesh[i+2] = vertsFloat[ind_cur+2];
-            }*/
-
-
-
             var vertices = new List<Vector3>(verts);
             var indices = new List<int>(idxsInt);
 
@@ -926,12 +865,6 @@ namespace opengl3
                 normals[3*i] = normal.X; normals[3 * i +1] = normal.Y; normals[3 * i +2] = normal.Z;
                 normals[3 * i] = normal.X; normals[3 * i + 1] = normal.Y; normals[3 * i + 2] = normal.Z;
                 normals[3*i] = normal.X; normals[3 * i + 1] = normal.Y; normals[3 * i + 2] = normal.Z;
-
-                /* writer.WriteLine($"      vertex {v0.X.ToString(culture)} {v0.Y.ToString(culture)} {v0.Z.ToString(culture)}");
-                 writer.WriteLine($"      vertex {v1.X.ToString(culture)} {v1.Y.ToString(culture)} {v1.Z.ToString(culture)}");
-                 writer.WriteLine($"      vertex {v2.X.ToString(culture)} {v2.Y.ToString(culture)} {v2.Z.ToString(culture)}");
-                 writer.WriteLine($"    endloop");
-                 writer.WriteLine($"  endfacet");*/
             }
             var ret = new List<float[]>();
             ret.Add(mesh);
@@ -939,6 +872,187 @@ namespace opengl3
 
             return ret;
         }
+
+
+        public List<float[]> GenerateMesh_isoline(int bin_lvl)
+        {
+            Console.WriteLine("GenerateMesh started");
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, voxelSSBO);
+            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, voxelDataSize, data_voxels);
+            // 1. Обнуляем счётчики
+            uint zero = 0;
+           
+
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
+            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, sizeof(uint), zero);
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexCounterSSBO);
+            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, sizeof(uint), zero);
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+
+
+
+
+
+            // 2. Активируем шейдерную программу
+            Gl.UseProgram(computeProgram);
+            // 3. Привязываем SSBO
+            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 0, voxelSSBO);
+            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 1, vertexSSBO);
+            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 6, indexSSBO);
+            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 3, vertexCounterSSBO);
+            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 4, indexCounterSSBO);
+            Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 5, triTableSSBO);
+            //Gl.BindBufferBase(BufferTarget.ShaderStorageBuffer, 6, debugTableSSBO);
+
+            // 4. Uniform-переменные
+            int passLoc = Gl.GetUniformLocation(computeProgram, "pass");
+            int widthLoc = Gl.GetUniformLocation(computeProgram, "width");
+            int heightLoc = Gl.GetUniformLocation(computeProgram, "height");
+            int depthLoc = Gl.GetUniformLocation(computeProgram, "depth");            
+            int isoLevelLoc = Gl.GetUniformLocation(computeProgram, "isoLevel");
+            int size_per_cell = Gl.GetUniformLocation(computeProgram, "size_per_cell");
+
+            Gl.Uniform1(widthLoc, Width);
+            Gl.Uniform1(heightLoc, Height);
+            Gl.Uniform1(depthLoc, Depth);            
+            Gl.Uniform1(isoLevelLoc, bin_lvl);
+            Gl.Uniform1(size_per_cell, MmToCell);
+
+            Console.WriteLine($"Uniforms set: width={Width}, height={Height}, depth={Depth}");
+
+
+            var group_size = 8;
+            // 5. Группы
+            int groupsX = (Width - 1 + (group_size - 1)) / group_size;
+            int groupsY = (Height - 1 + (group_size - 1)) / group_size;
+            int groupsZ = (Depth - 1 + (group_size - 1)) / group_size;
+
+
+            Console.WriteLine($"Dispatch groups: {groupsX} x {groupsY} x {groupsZ}");
+
+            // --- Первый проход ---
+            Gl.Uniform1(passLoc, 0);
+            Gl.DispatchCompute((uint)groupsX, (uint)groupsY, (uint)groupsZ);
+            Gl.MemoryBarrier(MemoryBarrierMask.AtomicCounterBarrierBit | MemoryBarrierMask.ShaderStorageBarrierBit);
+
+            zero = 0;
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
+            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, sizeof(uint), zero);
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexCounterSSBO);
+            Gl.BufferSubData(BufferTarget.ShaderStorageBuffer, IntPtr.Zero, sizeof(uint), zero);
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+
+
+            // --- Второй проход ---
+            Gl.Uniform1(passLoc, 1);
+            Gl.DispatchCompute((uint)groupsX, (uint)groupsY, (uint)groupsZ);
+            Gl.MemoryBarrier(MemoryBarrierMask.ShaderStorageBarrierBit);
+
+            uint vertexCount = 0;
+            uint indexCount = 0;
+
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexCounterSSBO);
+            var ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
+            if (ptr != IntPtr.Zero)
+            {
+                vertexCount = Marshal.PtrToStructure<uint>(ptr);
+                Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
+                Console.WriteLine($"Final vertexCount = {vertexCount}");
+            }
+            else
+            {
+                Console.WriteLine("Failed to map vertex counter final");
+            }
+
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexCounterSSBO);
+            ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
+            if (ptr != IntPtr.Zero)
+            {
+                indexCount = Marshal.PtrToStructure<uint>(ptr);
+                Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
+                Console.WriteLine($"Final indexCount = {indexCount}");
+            }
+            else
+            {
+                Console.WriteLine("Failed to map index counter final");
+            }
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+
+
+            // 8. Чтение вершин (как float[])
+            var vertex_offset = 3;
+            float[] vertsFloat = new float[vertexCount * vertex_offset];
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexSSBO);
+            ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
+            if (ptr != IntPtr.Zero)
+            {
+                Marshal.Copy(ptr, vertsFloat, 0, vertsFloat.Length);
+                Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
+            }
+            else
+            {
+                Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+                throw new InvalidOperationException("Failed to map vertex buffer");
+            }
+
+            Vector3[] verts = new Vector3[vertexCount];
+
+            Vector3[] verts_float = new Vector3[vertexCount];
+
+            for (int i = 0; i < vertexCount; i++)
+            {
+                verts[i] = new Vector3(vertsFloat[i * vertex_offset], vertsFloat[i * vertex_offset + 1], vertsFloat[i * vertex_offset + 2]);
+
+            }
+
+
+            // 9. Чтение индексов (через int[])
+            var idxsInt = new int[indexCount];
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, indexSSBO);
+            ptr = Gl.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
+            if (ptr != IntPtr.Zero)
+            {
+                Marshal.Copy(ptr, idxsInt, 0, idxsInt.Length);
+                Gl.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
+            }
+            else
+            {
+                Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+                throw new InvalidOperationException("Failed to map index buffer");
+            }
+            Gl.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
+
+
+            float[] mesh = new float[vertexCount * 3];
+            float[] normals = new float[vertexCount * 3];
+            var vertices = new List<Vector3>(verts);
+            var indices = new List<int>(idxsInt);
+
+
+            for (int i = 0; i < indices.Count; i += 3)
+            {
+                Vector3 v0 = vertices[indices[i]];
+                Vector3 v1 = vertices[indices[i + 1]];
+                Vector3 v2 = vertices[indices[i + 2]];
+
+                Vector3 normal = Vector3.Normalize(Vector3.Cross(v1 - v0, v2 - v0));
+
+                mesh[3 * i] = v0.X; mesh[3 * i + 1] = v0.Y; mesh[3 * i + 2] = v0.Z;
+                mesh[3 * (i + 1)] = v1.X; mesh[3 * (i + 1) + 1] = v1.Y; mesh[3 * (i + 1) + 2] = v1.Z;
+                mesh[3 * (i + 2)] = v2.X; mesh[3 * (i + 2) + 1] = v2.Y; mesh[3 * (i + 2) + 2] = v2.Z;
+
+                normals[3 * i] = normal.X; normals[3 * i + 1] = normal.Y; normals[3 * i + 2] = normal.Z;
+                normals[3 * i] = normal.X; normals[3 * i + 1] = normal.Y; normals[3 * i + 2] = normal.Z;
+                normals[3 * i] = normal.X; normals[3 * i + 1] = normal.Y; normals[3 * i + 2] = normal.Z;
+            }
+            var ret = new List<float[]>();
+            ret.Add(mesh);
+            ret.Add(normals);
+            GC.Collect();
+            return ret;
+        }
+
+
         public void SaveAsStlAscii(string filename, List<Vector3> vertices, List<int> indices)
         {
             if (indices.Count % 3 != 0)

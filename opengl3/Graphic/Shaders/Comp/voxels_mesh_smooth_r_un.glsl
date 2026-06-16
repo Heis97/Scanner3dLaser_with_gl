@@ -24,7 +24,8 @@ void main() {
     int y = int(gl_GlobalInvocationID.y);
     int z = int(gl_GlobalInvocationID.z);
     if (x >= u_width || y >= u_height || z >= u_depth) return;
-
+    int outIdx = x + y * u_width + z * u_width * u_height;
+    if(x==0 || y==0|| z==0 || x==u_width-1|| y==u_height-1|| z==u_depth-1) {outVoxels[outIdx] = 0 ;return; }
     int radius = u_windowSize / 2;
     int sum = 0;
     int count = 0;
@@ -44,7 +45,8 @@ void main() {
         }
     }
     int avg = int(round(float(sum) / float(count)));
-    int outIdx = x + y * u_width + z * u_width * u_height;
+    
     outVoxels[outIdx] = avg;
+    
 
 }

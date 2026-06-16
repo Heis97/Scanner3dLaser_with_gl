@@ -22,6 +22,5 @@ void main()
 	
 	vs_out.vertexColor = _vertexColor;
 	vs_out.vertexTexture = _vertexTexture;
-	gl_Position = vec4(vs_out.vertexPosition_world,1);	
-	
+	gl_Position = vec4(vs_out.vertexPosition_world,1);		
 }

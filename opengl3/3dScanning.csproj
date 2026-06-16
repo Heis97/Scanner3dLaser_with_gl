@@ -215,6 +215,9 @@
     <Compile Include="Robot\Rob.cs" />
     <Compile Include="Robot\RobotModel.cs" />
     <Compile Include="Connection\TCPconnect.cs" />
+    <Compile Include="Util\RangeSlider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Util\UtilMatr.cs" />
     <Compile Include="Util\UtilOpenCV.cs" />
     <Compile Include="Geometry\Vector3d_GL.cs" />
