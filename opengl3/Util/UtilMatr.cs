@@ -182,6 +182,15 @@ namespace opengl3
                 Matrix4x4f.RotatedY((float)rotate.y) *
                 Matrix4x4f.RotatedZ((float)rotate.z);
         }
+
+        public static Matrix<double> matrix_cv(Point3d_GL transl, Point3d_GL rotate)
+        {
+            var matr = Matrix4x4f.Translated((float)transl.x, (float)transl.y, (float)transl.z) *
+                Matrix4x4f.RotatedX((float)rotate.x) *
+                Matrix4x4f.RotatedY((float)rotate.y) *
+                Matrix4x4f.RotatedZ((float)rotate.z);
+            return to_matrix(matr);
+        }
         public static Matrix4x4f matrix_kuka(Point3d_GL transl, Point3d_GL rotate)
         {
             return Matrix4x4f.Translated((float)transl.x, (float)transl.y, (float)transl.z) *

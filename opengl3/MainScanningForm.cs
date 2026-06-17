@@ -234,10 +234,7 @@ namespace opengl3
             //NumberFormatInfo nfi = new CultureInfo("ru-RU", false).NumberFormat;
             //nfi.NumberDecimalSeparator = ".";
             //nfi.
-            /* DicomProcess.load_dicom(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3\31530100");
-             DicomProcess.load_dicom(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3\31530101");
-             DicomProcess.load_dicom(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3\31530102");*/
-            
+
 
             InitializeComponent();
             init_vars();
@@ -10827,7 +10824,7 @@ namespace opengl3
 
             var tcp_cal = navig_tool1.calibrate_tcp_4p(ps_calib.ToArray());
 
-            for (int i = 0; i < navig_system.tools.Length; i++) 
+            /*for (int i = 0; i < navig_system.tools.Length; i++) 
             {
                 navig_system.tools[i].name_3d_model = GL1.add_buff_gl(new Model3d(navig_system.tools[i].path_3d_model), PrimitiveType.Triangles, navig_system.tools[i].name_3d_model);
                 if(navig_system.tools[i].name_3d_model_debug!=null)
@@ -10840,7 +10837,7 @@ namespace opengl3
             var cam1_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam1");
             var cam2_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam2");
             GL1.buffersGl.setMatrobj(cam1_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS)* Matrix4x4f.RotatedY(90));
-            GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS* navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));
+            GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS* navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));*/
 
         }
         private void but_con_navig_sys_Click(object sender, EventArgs e)
@@ -10905,8 +10902,6 @@ namespace opengl3
         int ind_ct_image_coronal = 0;
 
         Mat[] ct_projections = new Mat[3];
-
-       
 
         private void but_ct_dir_select_Click(object sender, EventArgs e)
         {
@@ -11031,8 +11026,11 @@ namespace opengl3
                     CvInvoke.Line(mats[0], new Point(0, ind_ct_image_sagit), new Point(mats[0].Width, ind_ct_image_sagit), new MCvScalar(0, 0, 255), 2);//X
                     CvInvoke.Line(mats[0], new Point(ind_ct_image_coronal, 0), new Point(ind_ct_image_coronal, mats[0].Height), new MCvScalar(0, 255, 0), 2);//Y
                 }
+                if(navig_system.targets.Count > 0)
+                {
+                    mats[0] = draw_navig_target(mats[0], navig_system.targets[0],0);
+                }
                 
-
                 imageBox_navig_axial.Image = mats[0];
             }
 
@@ -11146,17 +11144,44 @@ namespace opengl3
             var name = GL1.add_buff_gl(cyl_mesh, new Color3d_GL(target.color[0], target.color[1], target.color[2]), null, PrimitiveType.Triangles, target.name, true);
             GL1.buffersGl.setlight(name,false);
             GL1.buffersGl.setTranspobj (name, 0.8f);
-            GL1.buffersGl.setTransfObj(target.name, 0, new Point3d_GL(target.x, target.y, target.z), new Point3d_GL(target.a, target.b, target.c));
+            //GL1.addPointMesh(new Point3d_GL[] { target.p1, target.p2 }, new Color3d_GL(target.color[0], target.color[1], target.color[2]));
+            GL1.buffersGl.setMatrobj(target.name, 0, UtilMatr.to_matrix(target.matr));
 
+            //GL1.buffersGl.setTransfObj(target.name, 0, new Point3d_GL(target.x, target.y, target.z), new Point3d_GL(target.a, target.b, target.c));
+            //2d-------------------------------------------
+
+            redraw_navig_slices();
 
 
             //GL1.buffersGl.setXobj(target.name, 0, target.x);
             return name;
         }
 
+        public Mat draw_navig_target(Mat mat, NavigTarget target, int ax = 0)//ax = 0, 1 ,2 -> x,y,z
+        {
+
+            var tp1 = target.p1;// + transf_work_mri;
+            var tp2 = target.p2;// + transf_work_mri;
+            var p1_x = (int)(tp1.x / ct_info.pix_xy);
+            var p1_y = (int)(tp1.y / ct_info.pix_xy);
+            var p1_z = (int)(tp1.z / ct_info.pix_xy);
+
+            var p2_x = (int)(tp2.x / ct_info.pix_xy);
+            var p2_y = (int)(tp2.y / ct_info.pix_xy);
+            var p2_z = (int)(tp2.z / ct_info.pix_xy);
+
+            if (ax == 0)
+            {
+                var p1 = new Point(mat.Width - p1_y, p1_x);
+                var p2 = new Point(mat.Width - p2_y,  p2_x);
+                CvInvoke.Line(mat, p1, p2, new MCvScalar(255*target.color[2], 255 * target.color[1], 255 * target.color[0]),2);
+            }
+
+            return mat;
+        }
+
         private void button_add_navig_target_Click(object sender, EventArgs e)
         {
-            if (navig_system.targets == null) navig_system.targets = new List<NavigTarget>();
 
             NavigTarget newNavigTarget = new NavigTarget();
             //newNavigTarget.name = GL1.add

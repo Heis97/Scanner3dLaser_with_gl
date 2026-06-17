@@ -17,11 +17,16 @@ using System.Drawing.Design;
 using System.Windows.Forms.Design;
 using System.ComponentModel.Design;
 using System.Runtime.CompilerServices;
+using Emgu.CV.Dnn;
 
 namespace opengl3
 {
     public class NavigTarget
     {
+        public NavigTarget()
+        {
+            update_intrisic_param();
+        }
         public float[] color = new float[3] {0.1f,0.1f,0.1f};
         [Description("Цвет")]
         [Category("Название")]
@@ -51,7 +56,7 @@ namespace opengl3
         public double X 
         {
             get { return x; }
-            set { x = value; }
+            set { x = value; update_intrisic_param(); }
         }
 
         public double y;
@@ -62,7 +67,7 @@ namespace opengl3
         public double Y
         {
             get { return y; }
-            set { y = value; }
+            set { y = value; update_intrisic_param(); }
         }
 
         public double z;
@@ -73,7 +78,7 @@ namespace opengl3
         public double Z
         {
             get { return z; }
-            set { z = value; }
+            set { z = value; update_intrisic_param(); }
         }
 
         public double a;
@@ -84,7 +89,7 @@ namespace opengl3
         public double A
         {
             get { return a; }
-            set { a = value; }
+            set { a = value; update_intrisic_param(); }
         }
 
         public double b;
@@ -94,7 +99,7 @@ namespace opengl3
         public double B
         {
             get { return b; }
-            set { b = value; }
+            set { b = value; update_intrisic_param(); }
         }
 
         public double c;
@@ -104,7 +109,7 @@ namespace opengl3
         public double C
         {
             get { return c; }
-            set { c = value; }
+            set { c = value; update_intrisic_param(); }
         }
 
         public double d = 3;
@@ -124,9 +129,20 @@ namespace opengl3
         public double L
         {
             get { return l; }
-            set { l = value; }
+            set { l = value; update_intrisic_param(); }
         }
 
+        public Matrix<double> matr;
+        public Point3d_GL p1;
+        public Point3d_GL p2;
+        public void update_intrisic_param()
+        {
+            p1 = new Point3d_GL(x, y, z);   
+            p2 = new Point3d_GL(0, 0, l);
+            matr  = UtilMatr.matrix_cv(new Point3d_GL(x,y,z),new Point3d_GL(a,b,c));
+            p2 = matr * p2;
+
+        }
         public override string ToString()
         {
             return Name; // Это будет использоваться для отображения в TreeView
@@ -517,6 +533,7 @@ namespace opengl3
         int aruko_max_ind = 1;
         public NavigSys(Scanner _stereo, int _aruko_max_ind)
         {
+            targets = new List<NavigTarget> ();
             stereo = _stereo;
             aruko_max_ind = _aruko_max_ind;
         }
