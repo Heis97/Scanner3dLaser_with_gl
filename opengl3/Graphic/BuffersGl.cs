@@ -17,12 +17,25 @@ namespace opengl3
         {
             objs = new Dictionary<string, openGlobj>();
         }
-        public string add_obj(openGlobj opgl_obj, string name)
+        public string add_obj(openGlobj opgl_obj, string name, bool new_obj = false)
         {
-            string name_obj =gen_name(name);
-            opgl_obj = opgl_obj.setName(name_obj);
-            objs.Add(opgl_obj.name, opgl_obj);
-            sort_by_transp();
+            string name_obj = name;
+            if (new_obj)
+            {
+                name_obj = gen_name(name);
+
+                opgl_obj = opgl_obj.setName(name_obj);
+                objs.Add(opgl_obj.name, opgl_obj);
+                sort_by_transp();
+            }
+            else
+            {
+                removeObj(name_obj);
+
+                opgl_obj = opgl_obj.setName(name_obj);
+                objs.Add(opgl_obj.name, opgl_obj);
+                sort_by_transp();
+            }
             return name_obj;
         }
 

@@ -48,7 +48,51 @@ namespace opengl3
     public class DicomSorter
     {
 
-        
+        public static CtSliceFull LoadFromVoxel(byte[,,] voxel_model,double vox_size)
+        {
+            var slices = new List<CtSliceInfo>();
+            // Загружаем все DICOM файлы из директории
+            
+            int ind = 0;
+            var pix_xy = 0.5;
+            var pix_z = 0.5;
+
+
+            var axial_mats = new List<Mat>();
+            for (int z = 0; z < voxel_model.GetLength(2); z++)
+            {
+                var data_im = new byte[voxel_model.GetLength(1), voxel_model.GetLength(0),1];
+                for (int x = 0; x < voxel_model.GetLength(0); x++)
+                {
+
+                    for (int y = 0; y < voxel_model.GetLength(1); y++)
+                    {
+                        data_im[y,x,0] = voxel_model[x,y,z];
+
+                    }
+                }
+                var image = new Image<Gray, byte>(data_im);
+                axial_mats.Add(image.Mat);
+            }
+                
+                
+                    
+
+            double size_xy_to_z = pix_z / pix_xy;
+            var slices_sec = compCoronalAndSagital(axial_mats, size_xy_to_z);
+            GC.Collect();
+            return new CtSliceFull
+            {
+                SlicesAxial = null,
+                SlicesCoronal = slices_sec[0],
+                SlicesSagital = slices_sec[1],
+                SlicesAxial_mat = slices_sec[2],
+                pix_xy = pix_xy,
+                pix_z = pix_z,
+                axial_koef = size_xy_to_z,
+
+            };
+        }
         public static CtSliceFull LoadAndSortSlices(string directoryPath)
         {
             var slices = new List<CtSliceInfo>();
@@ -77,6 +121,7 @@ namespace opengl3
 
                 var dataset = dicomFile.Dataset;
                 Mat mat = LoadDicomAndConvertToMat(file);
+
                 // Извлекаем необходимые теги
                 if (dataset.TryGetValues<double>(DicomTag.ImagePositionPatient, out double[] ipp) &&
                     dataset.TryGetValues<double>(DicomTag.ImageOrientationPatient, out double[] iop))
@@ -128,14 +173,21 @@ namespace opengl3
                 }
             }
             double size_xy_to_z = pix_z / pix_xy;
-            var slices_sec = compCoronalAndSagital(sortedSlices, size_xy_to_z);
+
+            var axial_mats = new List<Mat>();
+            for (int i = 0; i < sortedSlices.Count; i++)
+            {
+                axial_mats.Add(sortedSlices[i].Image);
+            }
+
+            var slices_sec = compCoronalAndSagital(axial_mats, size_xy_to_z);
             GC.Collect();
             return new CtSliceFull
             {
                 SlicesAxial = sortedSlices,
                 SlicesCoronal = slices_sec[0],
                 SlicesSagital = slices_sec[1],
-                SlicesAxial_mat = slices_sec[2],
+                SlicesAxial_mat = axial_mats,
                 pix_xy = pix_xy,
                 pix_z = pix_z,
                 axial_koef = size_xy_to_z,
@@ -154,18 +206,15 @@ namespace opengl3
 
             var voxel_model = new byte[data_axial[0].GetLength(0), data_axial[0].GetLength(1),data_axial.Count];
 
-            for (int k = 0; k < data_axial[0].GetLength(0); k++)
+            for (int z = 0; z < cts.Count; z++)                
             {
-                var data_coronal_slice = new byte[data_axial[0].GetLength(0), data_axial.Count];
-                for (int i = 0; i < cts.Count; i++)
+                for (int x = 0; x < data_axial[0].GetLength(1); x++)
                 {
-                    for (int j = 0; j < data_axial[0].GetLength(1); j++)
+                    for (int y = 0; y < data_axial[0].GetLength(0); y++)
                     {
-                        voxel_model[j,k, i] = data_axial[i][j, k];
+                        voxel_model[x,y, z] = data_axial[z][y, x];
                     }
                 }
-
-                //data_coronal.Add(ByteArrayToMat(data_coronal_slice));
             }
             GC.Collect();
             return voxel_model;
@@ -173,45 +222,23 @@ namespace opengl3
 
         
 
-        public static List<List<Mat>> compCoronalAndSagital(List<CtSliceInfo> cts,double size_xy_to_z)
+        public static List<List<Mat>> compCoronalAndSagital(List<Mat>  axial_mats, double size_xy_to_z)
         {
-            var axial_mats = new List<Mat>();
             var data_axial = new List<byte[,]>();
-            for(int i = 0; i<cts.Count;i++)
+            for(int i = 0; i< axial_mats.Count;i++)
             {
-                data_axial.Add((byte[,])cts[i].Image.GetData());
-                axial_mats.Add(cts[i].Image);
+                data_axial.Add((byte[,])axial_mats[i].GetData());
             }
-            
-            var data_coronal = new List<Mat>();
-
-            for(int k = 0;k< data_axial[0].GetLength(0);k++)
-            {
-                var data_coronal_slice = new byte[data_axial[0].GetLength(0), data_axial.Count];
-                for (int i = 0; i < cts.Count; i++)
-                {
-                    for (int j = 0; j < data_axial[0].GetLength(1); j++)
-                    {
-                        data_coronal_slice[j, i] = data_axial[i][j, k];
-                    }
-                }
-                var mat_data = ByteArrayToMat(data_coronal_slice);
-                CvInvoke.Resize(mat_data,mat_data,new Size((int)(mat_data.Width * size_xy_to_z), mat_data.Height));
-                data_coronal.Add(mat_data);
-            }
-
-
-
             var data_sagital = new List<Mat>();
 
-            for (int k = 0; k < data_axial[0].GetLength(0); k++)
+            for (int k = 0; k < data_axial[0].GetLength(1); k++)
             {
-                var data_sagital_slice = new byte[data_axial[0].GetLength(1), data_axial.Count];
-                for (int i = 0; i < cts.Count; i++)
+                var data_sagital_slice = new byte[data_axial[0].GetLength(0), data_axial.Count];
+                for (int i = 0; i < axial_mats.Count; i++)
                 {
-                    for (int j = 0; j < data_axial[0].GetLength(1); j++)
+                    for (int j = 0; j < data_axial[0].GetLength(0); j++)
                     {
-                        data_sagital_slice[j, i] = data_axial[i][k, j];
+                        data_sagital_slice[j, i] = data_axial[i][j, k];
                     }
                 }
 
@@ -222,8 +249,26 @@ namespace opengl3
                 //data_sagital.Add(ByteArrayToMat(data_sagital_slice));
             }
 
+
+            var data_coronal = new List<Mat>();
+
+            for (int k = 0; k < data_axial[0].GetLength(0); k++)
+            {
+                var data_coronal_slice = new byte[data_axial[0].GetLength(1), data_axial.Count];
+                for (int i = 0; i < axial_mats.Count; i++)
+                {
+                    for (int j = 0; j < data_axial[0].GetLength(1); j++)
+                    {
+                        data_coronal_slice[j, i] = data_axial[i][k, j];
+                    }
+                }
+                var mat_data = ByteArrayToMat(data_coronal_slice);
+                CvInvoke.Resize(mat_data, mat_data, new Size((int)(mat_data.Width * size_xy_to_z), mat_data.Height));
+                data_coronal.Add(mat_data);
+            }
+
             //CvInvoke.Imshow("mat_test", mat_test);
-            return new List<Mat>[] { data_coronal , data_sagital,axial_mats }.ToList();
+            return new List<Mat>[] { data_coronal , data_sagital }.ToList();
         }
         public static Mat ByteArrayToMat(byte[,] data)
         {
@@ -356,15 +401,15 @@ namespace opengl3
 
             var data_coronal = new List<Mat>();
 
-            var x_max = data_axial[0].GetLength(1)-ps[1].X;
-            var x_min = data_axial[0].GetLength(1)-ps[1].Y;
+            var x_min = ps[0].X;//data_axial[0].GetLength(0)- 
+            var x_max = ps[0].Y;
             var x_dim = x_max - x_min;
-            if (x_min < 0 || x_max >= data_axial[0].GetLength(1) || x_dim < 1) { Console.WriteLine("x_min, x_max, x_dim ,data_axial[0].GetLength(1)" + x_min + " " + x_max + " " + x_dim + " " + cts.Count); return null; }
+            if (x_min < 0 || x_max >= data_axial[0].GetLength(1) || x_dim < 1) { Console.WriteLine("x_min, x_max, x_dim ,data_axial[0].GetLength(1)" + x_min + " " + x_max + " " + x_dim + " " + data_axial[0].GetLength(1)); return null; }
 
-            var y_max = data_axial[0].GetLength(0) - ps[0].X;
-            var y_min = data_axial[0].GetLength(0) - ps[0].Y;
+            var y_min = ps[1].X;//data_axial[0].GetLength(1) - 
+            var y_max = ps[1].Y;
             var y_dim = y_max - y_min;
-            if (y_min < 0 || y_max >= data_axial[0].GetLength(0) || y_dim < 1) { Console.WriteLine("y_min, y_max, y_dim ,data_axial[0].GetLength(0)" + y_min + " " + y_max + " " + y_dim + " " + cts.Count); return null; }
+            if (y_min < 0 || y_max >= data_axial[0].GetLength(0) || y_dim < 1) { Console.WriteLine("y_min, y_max, y_dim ,data_axial[0].GetLength(0)" + y_min + " " + y_max + " " + y_dim + " " + data_axial[0].GetLength(0)); return null; }
 
             var z_min = ps[2].X;
             var z_max = ps[2].Y;
@@ -372,14 +417,13 @@ namespace opengl3
             if (z_min < 0 || z_max >= cts.Count || z_dim < 1){ Console.WriteLine("z_min, z_max, z_dim ,cts.Count" + z_min + " " + z_max + " " + z_dim + " "+ cts.Count); return null; }
 
             var voxel_model = new byte[x_dim, y_dim, z_dim];
-
-            for (int k = 0; k < y_dim; k++)
+            for (int z = 0; z < z_dim; z++)                
             {
-                for (int i = 0; i < z_dim; i++)
+                for (int y = 0; y < y_dim; y++)
                 {
-                    for (int j = 0; j < x_dim; j++)
+                    for (int x = 0; x < x_dim; x++)
                     {
-                        voxel_model[j, k, i] = data_axial[i + z_min][j + x_min, k + y_min];
+                        voxel_model[x, y,z] = data_axial[z + z_min][ y + y_min, x + x_min];
                     }
                 }
             }

@@ -156,6 +156,7 @@ namespace opengl3
     {
         public enum ToolType { tp4_v1 };
         public Point3d_GL[] ps;
+        public List<Point3d_GL> trace_tcp = new List<Point3d_GL>();
         int[] inds;
         int[] ind_aruco;
         int aruco_corner_num;
@@ -172,6 +173,7 @@ namespace opengl3
 
         public string name_3d_model = "new_tool";
         public string name_3d_model_debug = "new_debug_tool";
+        public string name_3d_model_trace_tcp = "new_trace_tcp";
         public string path_3d_model = null;
         Matrix<double> matrix_tcp = new Matrix<double>(new double[,] {
                 {1,0,0,0 },
@@ -538,7 +540,7 @@ namespace opengl3
             aruko_max_ind = _aruko_max_ind;
         }
 
-        public Point3d_GL[][] navigation_processing_get_points3d(Mat _mat1, Mat _mat2)
+        public Point3d_GL[][] navigation_processing_get_points3d(Mat _mat1, Mat _mat2,out Mat _mat_out1, out Mat _mat_out2)
         {
 
             System.Drawing.PointF[][] points_aruco1 = new System.Drawing.PointF[aruko_max_ind][];
@@ -547,8 +549,8 @@ namespace opengl3
             Point3d_GL[][] points3d_aruco = new Point3d_GL[aruko_max_ind][];
 
 
-            var mat1 = get_aruco_info(stereo.stereoCamera.cameraCVs[0].undist(_mat1.Clone()), ref points_aruco1);
-            var mat2 = get_aruco_info(stereo.stereoCamera.cameraCVs[1].undist(_mat2.Clone()), ref points_aruco2);
+            _mat_out1 = get_aruco_info(stereo.stereoCamera.cameraCVs[0].undist(_mat1.Clone()), ref points_aruco1);
+            _mat_out2 = get_aruco_info(stereo.stereoCamera.cameraCVs[1].undist(_mat2.Clone()), ref points_aruco2);
 
 
             for (int i = 0; i < points_aruco1.Length; i++)
@@ -595,8 +597,8 @@ namespace opengl3
             //detectorParams.CornerRefinementWinSize = 5;
             detectorParams.CornerRefinementMaxIterations = 30;
             detectorParams.CornerRefinementMinAccuracy = 0.1;
-
-            CvInvoke.CvtColor(image, image, ColorConversion.Rgb2Gray);
+            Mat gray = new Mat();
+            CvInvoke.CvtColor(image, gray, ColorConversion.Rgb2Gray);
 
 
             //ArucoDetector detector = new ArucoDetector(dictionary, parameters);
@@ -608,8 +610,8 @@ namespace opengl3
             // ArucoInvoke.RefineDetectedMarkers()
             // 2. Основной шаг: детекция маркеров
 
-            if (image.IsEmpty) return null;
-            ArucoInvoke.DetectMarkers(image, dictionary, corners, ids, detectorParams, rejectedPoints);
+            if (gray.IsEmpty) return null;
+            ArucoInvoke.DetectMarkers(gray, dictionary, corners, ids, detectorParams, rejectedPoints);
 
 
 
@@ -626,7 +628,7 @@ namespace opengl3
                 VectorOfPointF vec = new VectorOfPointF(markerCorners);
                 // CornerSubPix работает с массивом PointF[] или VectorOfPointF
 
-                CvInvoke.CornerSubPix(image, vec, new System.Drawing.Size(3, 3),
+                CvInvoke.CornerSubPix(gray, vec, new System.Drawing.Size(3, 3),
                                       new System.Drawing.Size(-1, -1), criteria);
                 // Обновляем исходный массив, если нужно
 

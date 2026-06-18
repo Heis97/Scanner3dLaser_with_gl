@@ -2029,16 +2029,16 @@ namespace opengl3
             }
             return fl;
         }
-        public string add_buff_gl(Model3d model, PrimitiveType tp, string name = "new obj")
+        public string add_buff_gl(Model3d model, PrimitiveType tp, string name = "new obj", bool new_obj = false)
         {
-            return add_buff_gl(model.mesh, model.color, model.normale, tp, name);
+            return add_buff_gl(model.mesh, model.color, model.normale, tp, name,new_obj);
         }
 
-        public string add_buff_gl(Model3d model,Color3d_GL color, PrimitiveType tp, string name = "new obj")
+        public string add_buff_gl(Model3d model,Color3d_GL color, PrimitiveType tp, string name = "new obj", bool new_obj = false)
         {
-            return add_buff_gl(model.mesh, color, model.normale, tp, name);
+            return add_buff_gl(model.mesh, color, model.normale, tp, name,new_obj);
         }
-        public string add_buff_gl(float[] data_v, Color3d_GL color, float[] data_n, PrimitiveType tp, string name = "new obj",bool comp_normals = false)
+        public string add_buff_gl(float[] data_v, Color3d_GL color, float[] data_n, PrimitiveType tp, string name = "new obj",bool comp_normals = false, bool new_obj = false)
         {
             if (data_v == null)
             {
@@ -2068,17 +2068,17 @@ namespace opengl3
             }
           
 
-            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_normals, null, tp, name), name);
+            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_normals, null, tp, name), name,new_obj);
         }
 
-        public string add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp,string name = "new obj")
+        public string add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp,string name = "new obj", bool new_obj = false)
         {
             if (data_v == null)
             {
                 Console.WriteLine("date_v == NULL");
                 return null;
             }
-            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp,name),name);
+            return buffersGl.add_obj(new openGlobj(data_v, data_c, data_n,null, tp,name),name, new_obj);
         }
 
         public void remove_buff_gl_id(string name)
@@ -2470,7 +2470,7 @@ namespace opengl3
             }
             return mesh;
         }
-        public string addPointMesh(Point3d_GL[] points, Color3d_GL color = default, string name = "new PointMesh")
+        public string addPointMesh(Point3d_GL[] points, Color3d_GL color = default, string name = "new PointMesh",bool new_obj = true)
         {
             if (points == null) return null;
             var mesh = new List<float>();
@@ -2480,7 +2480,7 @@ namespace opengl3
                 mesh.Add((float)p.y);
                 mesh.Add((float)p.z);
             }
-            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, color, name);
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Points, color, name, new_obj);
         }
 
         public string addLine3dMesh(Line3d_GL[] lines, Color3d_GL color = default, string name = "new linesMesh")
@@ -2550,7 +2550,7 @@ namespace opengl3
             }
             return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color, name);
         }
-        public string addLineMesh(Point3d_GL[] points, Color3d_GL color = default, string name = "new LineMesh")
+        public string addLineMesh(Point3d_GL[] points, Color3d_GL color = default, string name = "new LineMesh", bool new_obj = true)
         {
             var mesh = new List<float>();
             foreach (var p in points)
@@ -2559,7 +2559,7 @@ namespace opengl3
                 mesh.Add((float)p.y);
                 mesh.Add((float)p.z);
             }
-            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name, new_obj);
         }
         public string addLinesMeshTraj(Point3d_GL[][] lines, Color3d_GL color = default, string name = "new LinesMeshTraj")
         {
@@ -2581,7 +2581,7 @@ namespace opengl3
             }
            return  addMeshWithoutNorm(mesh_l.ToArray(), PrimitiveType.Lines, color, name);
         }
-        public string addLineMeshTraj(Point3d_GL[] points, Color3d_GL color = default, string name = "new LineMesh")
+        public string addLineMeshTraj(Point3d_GL[] points, Color3d_GL color = default, string name = "new LineMesh", bool new_obj = true)
         {
             var mesh = new List<float>();
             //Gl.LineStipple(2, 58360);
@@ -2598,7 +2598,7 @@ namespace opengl3
                 mesh.Add((float)points[i].y);
                 mesh.Add((float)points[i].z);
             }
-            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name);
+            return addMeshWithoutNorm(mesh.ToArray(), PrimitiveType.Lines, color,name, new_obj);
         }
 
         public string addLineMeshTrajLoop(Point3d_GL[] points, Color3d_GL color = default, string name = "new LineMesh")
@@ -2701,7 +2701,7 @@ namespace opengl3
             }
             return addMeshWithoutNorm(mesh, PrimitiveType.Lines, color,name);
         }
-        public string addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, Color3d_GL color = default, string name = "new mesh without norm")
+        public string addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, Color3d_GL color = default, string name = "new mesh without norm",bool new_obj = false)
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];
@@ -2717,7 +2717,7 @@ namespace opengl3
                 normal_buffer_data[i + 2] = 0.1f;
             }
 
-            return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType,name);
+            return add_buff_gl(gl_vertex_buffer_data, color_buffer_data, normal_buffer_data, primitiveType,name,new_obj);
         }
         public string addMeshWithoutNormDiff(float[] gl_vertex_buffer_data, float[] color_buffer_data, PrimitiveType primitiveType, string name = "new mesh without norm")
         {

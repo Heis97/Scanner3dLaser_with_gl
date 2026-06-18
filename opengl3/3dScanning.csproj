@@ -442,6 +442,9 @@
     <PackageReference Include="GLFW.NET.Natives">
       <Version>1.0.1</Version>
     </PackageReference>
+    <PackageReference Include="MeshLib">
+      <Version>3.1.2.192</Version>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>

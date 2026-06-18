@@ -697,8 +697,10 @@ namespace opengl3
             this.but_save_photo_nav = new System.Windows.Forms.Button();
             this.but_navig_cl = new System.Windows.Forms.Button();
             this.tabPage_navig_pan = new System.Windows.Forms.TabPage();
+            this.rangeSliderVinv_limits_model_h = new RangeSliderVinv();
             this.tabControl_navig = new System.Windows.Forms.TabControl();
             this.tabPage_3d_model_exrtract = new System.Windows.Forms.TabPage();
+            this.checkBox_ct_start_frame = new System.Windows.Forms.CheckBox();
             this.but_load_ct_scan = new System.Windows.Forms.Button();
             this.checkBox_navig_instr = new System.Windows.Forms.CheckBox();
             this.textBox_ct_dir_path = new System.Windows.Forms.TextBox();
@@ -722,7 +724,6 @@ namespace opengl3
             this.vScrollBar_axial = new System.Windows.Forms.VScrollBar();
             this.imageBox_navig_coronal = new Emgu.CV.UI.ImageBox();
             this.imageBox_navig_sagital = new Emgu.CV.UI.ImageBox();
-            this.rangeSliderV1_limits_model_h = new RangeSliderV();
             this.rangeSliderH2_limits_model_d = new RangeSliderH();
             this.rangeSliderH1_limits_model_w = new RangeSliderH();
             this.imageBox_navig_axial = new Emgu.CV.UI.ImageBox();
@@ -730,6 +731,8 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tabPage_navig_debug_page = new System.Windows.Forms.TabPage();
+            this.button_navig_tool_trace = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -852,6 +855,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_sagital)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_axial)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
+            this.tabPage_navig_debug_page.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabCalibMonit
@@ -8187,13 +8191,13 @@ namespace opengl3
             // 
             // tabPage_navig_pan
             // 
+            this.tabPage_navig_pan.Controls.Add(this.rangeSliderVinv_limits_model_h);
             this.tabPage_navig_pan.Controls.Add(this.tabControl_navig);
             this.tabPage_navig_pan.Controls.Add(this.vScrollBar_coronal);
             this.tabPage_navig_pan.Controls.Add(this.vScrollBar_sagital);
             this.tabPage_navig_pan.Controls.Add(this.vScrollBar_axial);
             this.tabPage_navig_pan.Controls.Add(this.imageBox_navig_coronal);
             this.tabPage_navig_pan.Controls.Add(this.imageBox_navig_sagital);
-            this.tabPage_navig_pan.Controls.Add(this.rangeSliderV1_limits_model_h);
             this.tabPage_navig_pan.Controls.Add(this.rangeSliderH2_limits_model_d);
             this.tabPage_navig_pan.Controls.Add(this.rangeSliderH1_limits_model_w);
             this.tabPage_navig_pan.Controls.Add(this.imageBox_navig_axial);
@@ -8205,10 +8209,23 @@ namespace opengl3
             this.tabPage_navig_pan.Text = "Навиг Планир";
             this.tabPage_navig_pan.UseVisualStyleBackColor = true;
             // 
+            // rangeSliderVinv_limits_model_h
+            // 
+            this.rangeSliderVinv_limits_model_h.Location = new System.Drawing.Point(551, 0);
+            this.rangeSliderVinv_limits_model_h.LowerValue = 40;
+            this.rangeSliderVinv_limits_model_h.MaxValue = 100;
+            this.rangeSliderVinv_limits_model_h.MinValue = 0;
+            this.rangeSliderVinv_limits_model_h.Name = "rangeSliderVinv_limits_model_h";
+            this.rangeSliderVinv_limits_model_h.Size = new System.Drawing.Size(30, 512);
+            this.rangeSliderVinv_limits_model_h.TabIndex = 154;
+            this.rangeSliderVinv_limits_model_h.UpperValue = 90;
+            this.rangeSliderVinv_limits_model_h.ValuesChanged += new System.EventHandler(this.rangeSliderV1_limits_model_h_ValuesChanged);
+            // 
             // tabControl_navig
             // 
             this.tabControl_navig.Controls.Add(this.tabPage_3d_model_exrtract);
             this.tabControl_navig.Controls.Add(this.tabPage_navig_target);
+            this.tabControl_navig.Controls.Add(this.tabPage_navig_debug_page);
             this.tabControl_navig.Location = new System.Drawing.Point(553, 542);
             this.tabControl_navig.Name = "tabControl_navig";
             this.tabControl_navig.SelectedIndex = 0;
@@ -8217,6 +8234,7 @@ namespace opengl3
             // 
             // tabPage_3d_model_exrtract
             // 
+            this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_ct_start_frame);
             this.tabPage_3d_model_exrtract.Controls.Add(this.but_load_ct_scan);
             this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_navig_instr);
             this.tabPage_3d_model_exrtract.Controls.Add(this.textBox_ct_dir_path);
@@ -8238,6 +8256,17 @@ namespace opengl3
             this.tabPage_3d_model_exrtract.Text = "Выделение 3д модели";
             this.tabPage_3d_model_exrtract.UseVisualStyleBackColor = true;
             // 
+            // checkBox_ct_start_frame
+            // 
+            this.checkBox_ct_start_frame.AutoSize = true;
+            this.checkBox_ct_start_frame.Location = new System.Drawing.Point(304, 212);
+            this.checkBox_ct_start_frame.Name = "checkBox_ct_start_frame";
+            this.checkBox_ct_start_frame.Size = new System.Drawing.Size(149, 20);
+            this.checkBox_ct_start_frame.TabIndex = 153;
+            this.checkBox_ct_start_frame.Text = "Начало координат";
+            this.checkBox_ct_start_frame.UseVisualStyleBackColor = true;
+            this.checkBox_ct_start_frame.CheckedChanged += new System.EventHandler(this.checkBox_ct_start_frame_CheckedChanged);
+            // 
             // but_load_ct_scan
             // 
             this.but_load_ct_scan.Location = new System.Drawing.Point(193, 35);
@@ -8251,7 +8280,7 @@ namespace opengl3
             // checkBox_navig_instr
             // 
             this.checkBox_navig_instr.AutoSize = true;
-            this.checkBox_navig_instr.Location = new System.Drawing.Point(304, 239);
+            this.checkBox_navig_instr.Location = new System.Drawing.Point(304, 264);
             this.checkBox_navig_instr.Name = "checkBox_navig_instr";
             this.checkBox_navig_instr.Size = new System.Drawing.Size(106, 20);
             this.checkBox_navig_instr.TabIndex = 152;
@@ -8270,7 +8299,7 @@ namespace opengl3
             // checkBox_target_traj
             // 
             this.checkBox_target_traj.AutoSize = true;
-            this.checkBox_target_traj.Location = new System.Drawing.Point(304, 213);
+            this.checkBox_target_traj.Location = new System.Drawing.Point(304, 238);
             this.checkBox_target_traj.Name = "checkBox_target_traj";
             this.checkBox_target_traj.Size = new System.Drawing.Size(161, 20);
             this.checkBox_target_traj.TabIndex = 151;
@@ -8378,10 +8407,10 @@ namespace opengl3
             this.tabPage_navig_target.Controls.Add(this.propertyGrid_navig_target);
             this.tabPage_navig_target.Controls.Add(this.button_del_navig_target);
             this.tabPage_navig_target.Controls.Add(this.button_add_navig_target);
-            this.tabPage_navig_target.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_navig_target.Location = new System.Drawing.Point(4, 25);
             this.tabPage_navig_target.Name = "tabPage_navig_target";
             this.tabPage_navig_target.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_navig_target.Size = new System.Drawing.Size(561, 426);
+            this.tabPage_navig_target.Size = new System.Drawing.Size(561, 423);
             this.tabPage_navig_target.TabIndex = 1;
             this.tabPage_navig_target.Text = "Установка целевых точек";
             this.tabPage_navig_target.UseVisualStyleBackColor = true;
@@ -8425,7 +8454,7 @@ namespace opengl3
             // 
             // vScrollBar_coronal
             // 
-            this.vScrollBar_coronal.Location = new System.Drawing.Point(1087, 0);
+            this.vScrollBar_coronal.Location = new System.Drawing.Point(510, 512);
             this.vScrollBar_coronal.Name = "vScrollBar_coronal";
             this.vScrollBar_coronal.Size = new System.Drawing.Size(35, 509);
             this.vScrollBar_coronal.TabIndex = 139;
@@ -8433,7 +8462,7 @@ namespace opengl3
             // 
             // vScrollBar_sagital
             // 
-            this.vScrollBar_sagital.Location = new System.Drawing.Point(515, 512);
+            this.vScrollBar_sagital.Location = new System.Drawing.Point(1094, 2);
             this.vScrollBar_sagital.Name = "vScrollBar_sagital";
             this.vScrollBar_sagital.Size = new System.Drawing.Size(35, 509);
             this.vScrollBar_sagital.TabIndex = 138;
@@ -8441,7 +8470,7 @@ namespace opengl3
             // 
             // vScrollBar_axial
             // 
-            this.vScrollBar_axial.Location = new System.Drawing.Point(515, 3);
+            this.vScrollBar_axial.Location = new System.Drawing.Point(513, 3);
             this.vScrollBar_axial.Name = "vScrollBar_axial";
             this.vScrollBar_axial.Size = new System.Drawing.Size(35, 509);
             this.vScrollBar_axial.TabIndex = 135;
@@ -8449,7 +8478,7 @@ namespace opengl3
             // 
             // imageBox_navig_coronal
             // 
-            this.imageBox_navig_coronal.Location = new System.Drawing.Point(580, 0);
+            this.imageBox_navig_coronal.Location = new System.Drawing.Point(0, 543);
             this.imageBox_navig_coronal.Name = "imageBox_navig_coronal";
             this.imageBox_navig_coronal.Size = new System.Drawing.Size(512, 512);
             this.imageBox_navig_coronal.TabIndex = 133;
@@ -8457,27 +8486,15 @@ namespace opengl3
             // 
             // imageBox_navig_sagital
             // 
-            this.imageBox_navig_sagital.Location = new System.Drawing.Point(0, 512);
+            this.imageBox_navig_sagital.Location = new System.Drawing.Point(580, 0);
             this.imageBox_navig_sagital.Name = "imageBox_navig_sagital";
             this.imageBox_navig_sagital.Size = new System.Drawing.Size(512, 512);
             this.imageBox_navig_sagital.TabIndex = 132;
             this.imageBox_navig_sagital.TabStop = false;
             // 
-            // rangeSliderV1_limits_model_h
-            // 
-            this.rangeSliderV1_limits_model_h.Location = new System.Drawing.Point(553, 0);
-            this.rangeSliderV1_limits_model_h.LowerValue = 20;
-            this.rangeSliderV1_limits_model_h.MaxValue = 100;
-            this.rangeSliderV1_limits_model_h.MinValue = 0;
-            this.rangeSliderV1_limits_model_h.Name = "rangeSliderV1_limits_model_h";
-            this.rangeSliderV1_limits_model_h.Size = new System.Drawing.Size(30, 512);
-            this.rangeSliderV1_limits_model_h.TabIndex = 147;
-            this.rangeSliderV1_limits_model_h.UpperValue = 80;
-            this.rangeSliderV1_limits_model_h.ValuesChanged += new System.EventHandler(this.rangeSliderV1_limits_model_h_ValuesChanged);
-            // 
             // rangeSliderH2_limits_model_d
             // 
-            this.rangeSliderH2_limits_model_d.Location = new System.Drawing.Point(580, 512);
+            this.rangeSliderH2_limits_model_d.Location = new System.Drawing.Point(581, 512);
             this.rangeSliderH2_limits_model_d.LowerValue = 20;
             this.rangeSliderH2_limits_model_d.MaxValue = 100;
             this.rangeSliderH2_limits_model_d.MinValue = 0;
@@ -8489,7 +8506,7 @@ namespace opengl3
             // 
             // rangeSliderH1_limits_model_w
             // 
-            this.rangeSliderH1_limits_model_w.Location = new System.Drawing.Point(0, 481);
+            this.rangeSliderH1_limits_model_w.Location = new System.Drawing.Point(1, 512);
             this.rangeSliderH1_limits_model_w.LowerValue = 20;
             this.rangeSliderH1_limits_model_w.MaxValue = 100;
             this.rangeSliderH1_limits_model_w.MinValue = 0;
@@ -8516,6 +8533,27 @@ namespace opengl3
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // tabPage_navig_debug_page
+            // 
+            this.tabPage_navig_debug_page.Controls.Add(this.button_navig_tool_trace);
+            this.tabPage_navig_debug_page.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_debug_page.Name = "tabPage_navig_debug_page";
+            this.tabPage_navig_debug_page.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_navig_debug_page.Size = new System.Drawing.Size(561, 423);
+            this.tabPage_navig_debug_page.TabIndex = 2;
+            this.tabPage_navig_debug_page.Text = "Отладка";
+            this.tabPage_navig_debug_page.UseVisualStyleBackColor = true;
+            // 
+            // button_navig_tool_trace
+            // 
+            this.button_navig_tool_trace.Location = new System.Drawing.Point(6, 6);
+            this.button_navig_tool_trace.Name = "button_navig_tool_trace";
+            this.button_navig_tool_trace.Size = new System.Drawing.Size(144, 44);
+            this.button_navig_tool_trace.TabIndex = 0;
+            this.button_navig_tool_trace.Text = "След инструмента";
+            this.button_navig_tool_trace.UseVisualStyleBackColor = true;
+            this.button_navig_tool_trace.Click += new System.EventHandler(this.button_navig_tool_trace_Click);
             // 
             // MainScanningForm
             // 
@@ -8682,6 +8720,7 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_sagital)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_axial)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
+            this.tabPage_navig_debug_page.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -9372,7 +9411,6 @@ namespace opengl3
         private System.Windows.Forms.Label label_ct_gauss;
         private System.Windows.Forms.HScrollBar hScrollBar_gauss_ct;
         private System.Windows.Forms.Button but_generate_model_ct;
-        private RangeSliderV rangeSliderV1_limits_model_h;
         private RangeSliderH rangeSliderH2_limits_model_d;
         private RangeSliderH rangeSliderH1_limits_model_w;
         private System.Windows.Forms.CheckBox checkBox_axis;
@@ -9387,6 +9425,10 @@ namespace opengl3
         private System.Windows.Forms.Button button_del_navig_target;
         private System.Windows.Forms.TreeView treeView_navig_targets;
         private System.Windows.Forms.PropertyGrid propertyGrid_navig_target;
+        private RangeSliderVinv rangeSliderVinv_limits_model_h;
+        private System.Windows.Forms.CheckBox checkBox_ct_start_frame;
+        private System.Windows.Forms.TabPage tabPage_navig_debug_page;
+        private System.Windows.Forms.Button button_navig_tool_trace;
     }
 }
 

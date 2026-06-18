@@ -41,9 +41,6 @@ using System.Windows.Media.Media3D;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Xml.Linq;
 
-
-//using Accord;
-
 namespace opengl3
 {
     public partial class MainScanningForm : Form
@@ -52,7 +49,7 @@ namespace opengl3
 
         CtSliceFull ct_info; 
 
-        bool navig_sys_enable = true;
+        bool navig_sys_enable = false;
 
         NavigSys navig_system;// = new NavigSys(navig_system,12);
         
@@ -231,28 +228,11 @@ namespace opengl3
         public MainScanningForm()
         {
             new DicomSetupBuilder().RegisterServices(s => s.AddImageManager<WinFormsImageManager>()).Build();
-            //NumberFormatInfo nfi = new CultureInfo("ru-RU", false).NumberFormat;
-            //nfi.NumberDecimalSeparator = ".";
-            //nfi.
 
 
             InitializeComponent();
             init_vars();
-
-            ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
-            vScrollBar_axial.Maximum = ct_info.SlicesAxial.Count;
-            vScrollBar_coronal.Maximum = ct_info.SlicesCoronal.Count;
-            vScrollBar_sagital.Maximum = ct_info.SlicesSagital.Count;
-
-
-            rangeSliderH1_limits_model_w.MinValue = 0;
-            rangeSliderV1_limits_model_h.MinValue = 0;
-            rangeSliderH2_limits_model_d.MinValue = 0;
-            
-
-            rangeSliderH1_limits_model_w.MaxValue = ct_info.SlicesCoronal.Count;
-            rangeSliderV1_limits_model_h.MaxValue = ct_info.SlicesSagital.Count;
-            rangeSliderH2_limits_model_d.MaxValue = (int)(ct_info.SlicesAxial_mat.Count* ct_info.axial_koef);
+            //fast_load_ct();
 
             /* var poses_sym = new List<Pose>(new Pose[] { 
                  new Pose(new double[] { 1, 2, 3, 4, 5, 6 }),
@@ -279,6 +259,12 @@ namespace opengl3
             //Manipulator.calcRob()
 
             //var date_test = DateTime.Parse("2025-03-19 20:43:36.345352");
+
+            /*var test_mat = new Mat("im2.png");
+            imageBox1.Image = test_mat;
+
+            var test_data = (byte[,,])test_mat.GetData();
+            Console.WriteLine("dimens: " + test_data.GetLength(0) + " " + test_data.GetLength(1) + " "+ test_data[500,300,0]);*/
 
 
 
@@ -2243,6 +2229,7 @@ namespace opengl3
 
 
         int monitor_num = 1;
+        double main_frame_len = 100;
         private void glControl1_ContextCreated(object sender, GlControlEventArgs e)
         {
             var send = (Control)sender;
@@ -2258,7 +2245,7 @@ namespace opengl3
 
             var ps3d = new Point3d_GL[] {p1,p2,p3,p4};
 
-            var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
+            var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(main_frame_len, 0, 0), new Point3d_GL(0, main_frame_len, 0), new Point3d_GL(0, 0, main_frame_len));
 
             /* navig_tool1_name = GL1.addLineMesh(ps3d, Color3d_GL.black(), navig_tool1_name);
              var fr = GL1.addFrame(new Point3d_GL(0, 0, 0), new Point3d_GL(d, 0, 0), new Point3d_GL(0, d, 0), new Point3d_GL(0, 0, d));
@@ -6501,16 +6488,18 @@ namespace opengl3
         }
         private void videoStart(int number)
         {
-            var capture = new VideoCapture(number);
+            var capture = new VideoCapture(number,VideoCapture.API.DShow);
             videoCaptures[number] = capture;
             //capture.SetCaptureProperty(CapProp.
             capture.Set(CapProp.FrameWidth, cameraSize.Width);
             //capture.ser
             //capture.SetCaptureProperty(CapProp.FrameHeight, cameraSize.Height);
+           // capture.Set(CapProp.AutoExposure, 1);
             capture.Set(CapProp.Exposure, -8);
+            capture.Set(CapProp.FourCC, VideoWriter.Fourcc('M', 'J', 'P', 'G'));
             //capture.SetCaptureProperty(CapProp.Fps, 60);
-            Console.WriteLine(capture.Get(CapProp.FrameWidth) + " " + capture.Get(CapProp.FrameHeight)+" "+ capture.Get(CapProp.Fps));
-
+            //Console.WriteLine(capture.Get(CapProp.FrameWidth) + " " + capture.Get(CapProp.FrameHeight)+" "+ capture.Get(CapProp.Fps) + " " + capture.Get(CapProp.Exposure) + " " + capture.Get(CapProp.AutoExposure));
+            Console.WriteLine(capture.Get(CapProp.FrameWidth) + " " + capture.Get(CapProp.FrameHeight) + " " + capture.Get(CapProp.Fps));
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
             camera_ind.Add(capture.Ptr);
             capture.ImageGrabbed += capturingVideo;
@@ -6523,10 +6512,14 @@ namespace opengl3
             {
                 if (mat_global[0] != null && mat_global[1] != null && !mat_global[0].IsEmpty && !mat_global[1].IsEmpty)
                 {
-                    var ps3d = navig_system.navigation_processing_get_points3d(mat_global[0], mat_global[1]);    //navyg_sys_info(camera_only)
-                    navig_system.navigation_processing_get_scene(ps3d);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),  
+                    var ps3d = navig_system.navigation_processing_get_points3d(mat_global[1], mat_global[0], out Mat mat1, out Mat mat2);    //navyg_sys_info(camera_only)
+                    navig_system.navigation_processing_get_scene(ps3d);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
+                                                                                                //
+                    imb_main[0].Image = mat1;
+                    imb_main[1].Image = mat2;
+
                     //---------------------------------------------------------------------------------------
-                    for(int j=0; j< navig_system.tools.Length;j++)
+                    for (int j=0; j< navig_system.tools.Length;j++)
                     {
                         var name_3d_model_debug = navig_system.tools[j].name_3d_model_debug;
                         var ps_debug = navig_system.tools[j].ps;
@@ -6537,10 +6530,27 @@ namespace opengl3
                         //var matrix_model = navig_system.tools[j].matrix_frame;
                         glControl1.BeginInvoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model, 0, UtilMatr.to_matrix(matrix_model))));
                         glControl1.BeginInvoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model_debug, 0, UtilMatr.to_matrix(matrix_frame * matrix_model_debug))));
+                        if(navig_tool_trace_enable)
+                        {
+                            var ps = navig_system.tools[j].trace_tcp;
+                            if (navig_system.tools[j].ps != null)
+                                if (navig_system.tools[j].ps.Length>4)
+                            {
+                                ps.Add(navig_system.tools[j].ps[4]);
+                                var name_3d_model_trace_tcp = navig_system.tools[j].name_3d_model_trace_tcp;
+                                glControl1.BeginInvoke((MethodInvoker)(() => GL1.addLineMeshTraj(ps.ToArray(), Color3d_GL.red(), name_3d_model_trace_tcp, false)));
+                            }
+                            
+                        }
+                        else
+                        {
+                            if (navig_system.tools[j].trace_tcp.Count != 0) navig_system.tools[j].trace_tcp = new List<Point3d_GL>();
+                        }
+
                         //glControl1.BeginInvoke((MethodInvoker)(() => GL1.buffersGl.removeObj(name_3d_model_debug)));
                         //glControl1.BeginInvoke((MethodInvoker)(() => GL1.addPointMesh(ps_debug,  Color3d_GL.red(), name_3d_model_debug)));
                     }
-                   
+                    
                     //GL1.draw_scene                                                                //tools_models,tools_positins
 
                     //scene processing                                                              //tools_positions
@@ -6562,10 +6572,10 @@ namespace opengl3
                     cap.Retrieve(mat);
                     imProcess(mat, 1);*/
                     cap.Retrieve(mat_global[0]);
-                   
+                    imageBox1.Image = mat_global[0];
                     if (!navig_sys_enable)
                     {
-                        imageBox1.Image = mat_global[0];
+                        
                         // CvInvoke.Imshow("im1", mat_global[0]);
                         camera_frame_time.Add(DateTime.Now.Ticks / 10000);
                         int fps_c = 100;
@@ -6587,10 +6597,10 @@ namespace opengl3
                     cap.Retrieve(mat);
                     imProcess(mat, 2);*/
                     cap.Retrieve(mat_global[1]);
-                    
+                    imageBox2.Image = mat_global[1];
                     if (!navig_sys_enable)
                     {
-                        imageBox2.Image = mat_global[1];
+                        
                         imProcess(mat_global[1], 2);
                     }
                     //imBox_base.Image = stereoProc(mat_global[0], mat_global[1]);
@@ -6612,8 +6622,8 @@ namespace opengl3
             
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
-            capture.Set(CapProp.AutoExposure, 1);
-            //capture.Set(CapProp.Exposure, -8);
+            //capture.Set(CapProp.AutoExposure, 1);
+            capture.Set(CapProp.Exposure, -8);
             capture.Set(CapProp.FourCC, VideoWriter.Fourcc('M', 'J', 'P', 'G'));
             cameraSize.Width = (int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
@@ -6638,7 +6648,7 @@ namespace opengl3
                     {
                         //try
                         {
-                            imb_main[i].Image = mat_global[ind_cam];
+                            //imb_main[i].Image = mat_global[ind_cam];
                             imProcess_sam(mat_global[ind_cam], i);
                         }
                         //catch
@@ -6673,7 +6683,7 @@ namespace opengl3
 
                 case FrameType.Test:
                     //laserLine?.offLaserSensor();
-                    //imb_base[ind-1].Image = mat;
+                    //imb_base[ind].Image = mat;
                     break;
                 case FrameType.MarkBoard:
                     System.Drawing.PointF[] points = null;
@@ -10819,12 +10829,12 @@ namespace opengl3
 
             for (int i = 0; i < frms_stereo.Length; i++)
             {
-                ps_calib.Add( navig_system.navigation_processing_get_points3d(frms_stereo[i].im, frms_stereo[i].im_sec));
+                ps_calib.Add( navig_system.navigation_processing_get_points3d(frms_stereo[i].im, frms_stereo[i].im_sec, out Mat mat1, out Mat mat2));
             }
 
             var tcp_cal = navig_tool1.calibrate_tcp_4p(ps_calib.ToArray());
 
-            /*for (int i = 0; i < navig_system.tools.Length; i++) 
+            for (int i = 0; i < navig_system.tools.Length; i++) 
             {
                 navig_system.tools[i].name_3d_model = GL1.add_buff_gl(new Model3d(navig_system.tools[i].path_3d_model), PrimitiveType.Triangles, navig_system.tools[i].name_3d_model);
                 if(navig_system.tools[i].name_3d_model_debug!=null)
@@ -10837,14 +10847,14 @@ namespace opengl3
             var cam1_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam1");
             var cam2_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam2");
             GL1.buffersGl.setMatrobj(cam1_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS)* Matrix4x4f.RotatedY(90));
-            GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS* navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));*/
+            GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS* navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));
 
         }
         private void but_con_navig_sys_Click(object sender, EventArgs e)
         {
                         
-            videoStart(1);
-            videoStart(0);
+            videoStart_sam(1);
+            videoStart_sam(0);
             var thr_navig = new Thread(navigation_processing);
             thr_navig.Start();
 
@@ -10884,7 +10894,7 @@ namespace opengl3
 
             for (int i = 0; i < frms_stereo.Length; i++)
             {
-                ps_calib.Add(navig_system.navigation_processing_get_points3d(frms_stereo[i].im, frms_stereo[i].im_sec));
+                ps_calib.Add(navig_system.navigation_processing_get_points3d(frms_stereo[i].im, frms_stereo[i].im_sec, out Mat mat1, out Mat mat2));
             }
 
             //var tcp_cal = navig_tool1.calibrate_tcp_4p(ps_calib.ToArray()); 
@@ -10942,6 +10952,7 @@ namespace opengl3
             ind_ct_image = ((VScrollBar)sender).Value;
             ct_projections[0] = ct_info.SlicesAxial_mat[ind_ct_image].Clone();
             redraw_navig_slices();
+            Console.WriteLine(ind_ct_image);
         }
 
         private void vScrollBar_sagital_Scroll(object sender, ScrollEventArgs e)
@@ -10972,12 +10983,12 @@ namespace opengl3
             var gen_mesh = voxel_model.GenerateMesh_isoline(ct_bin_lvl);
             GL1.buffersGl.removeObj(generate_model_name);
             generate_model_name = GL1.add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles, generate_model_name);
-            var p_trans = new Point3d_GL(ct_info.pix_xy*(limits_ps[1].Y - limits_ps[1].X)/2, ct_info.pix_xy * (limits_ps[0].Y - limits_ps[0].X)/2, ct_info.pix_xy * (limits_ps[2].Y - limits_ps[2].X)/2);
+            var p_trans = new Point3d_GL(ct_info.pix_xy*(limits_ps[0].Y - limits_ps[0].X)/2, ct_info.pix_xy * (limits_ps[1].Y - limits_ps[1].X)/2, ct_info.pix_xy * (limits_ps[2].Y - limits_ps[2].X)/2);
             GL1.buffersGl.setTransfObj(generate_model_name, 0, -p_trans, new Point3d_GL(0, 0, 0));
-            GL1.buffersGl.setTranspobj(generate_model_name, 0.5f);
+           // GL1.buffersGl.setTranspobj(generate_model_name, 0.5f);
 
 
-            transf_work_mri = p_trans + new Point3d_GL(limits_ps[1].X * ct_info.pix_xy, limits_ps[0].X * ct_info.pix_xy, ct_info.pix_xy * limits_ps[2].X);
+            transf_work_mri = p_trans + new Point3d_GL(limits_ps[0].X * ct_info.pix_xy, limits_ps[1].X * ct_info.pix_xy, limits_ps[2].X*ct_info.pix_xy);
         }
 
         private void rangeSliderH1_limits_model_w_ValuesChanged(object sender, EventArgs e)
@@ -10989,8 +11000,9 @@ namespace opengl3
 
         private void rangeSliderV1_limits_model_h_ValuesChanged(object sender, EventArgs e)
         {
-            var slider = (RangeSliderV)sender;
-            limits_ps[1] = new System.Drawing.Point(slider.LowerValue, slider.UpperValue);
+            var slider = (RangeSliderVinv)sender;
+            limits_ps[1] = new System.Drawing.Point( slider.LowerValue, slider.UpperValue);
+            //Console.WriteLine(slider.LowerValue + " " + slider.UpperValue);
             redraw_navig_slices();
         }
 
@@ -11004,6 +11016,7 @@ namespace opengl3
         bool vision_navig_axis = true;
         bool vision_navig_work_area = true;
         bool vision_navig_bin_area = false;
+        bool vision_navig_ct_start_frame = false;
         bool vision_navig_target_traj = true;
         bool vision_navig_instr = true;
 
@@ -11012,7 +11025,7 @@ namespace opengl3
 
             var mats = new Mat[3];
             if (ct_info == null) return;
-            if (ind_ct_image < ct_info.SlicesAxial.Count - 1 && ind_ct_image >= 0 && ct_projections[0]!=null)
+            if (ind_ct_image < ct_info.SlicesAxial_mat.Count - 1 && ind_ct_image >= 0 && ct_projections[0]!=null)//axial
             {
                 mats[0] = ct_projections[0].Clone();
                 if (vision_navig_bin_area) mats[0] = DicomProcess.filter_bone_ct(mats[0], ct_bin_lvl, ct_gauss_size);
@@ -11023,12 +11036,18 @@ namespace opengl3
 
                 if(vision_navig_axis)
                 {
-                    CvInvoke.Line(mats[0], new Point(0, ind_ct_image_sagit), new Point(mats[0].Width, ind_ct_image_sagit), new MCvScalar(0, 0, 255), 2);//X
-                    CvInvoke.Line(mats[0], new Point(ind_ct_image_coronal, 0), new Point(ind_ct_image_coronal, mats[0].Height), new MCvScalar(0, 255, 0), 2);//Y
+                    CvInvoke.Line(mats[0], new Point(0, ind_ct_image_coronal), new Point(mats[0].Width, ind_ct_image_coronal), new MCvScalar(0, 0, 255), 2);//X
+                    CvInvoke.Line(mats[0], new Point(ind_ct_image_sagit, 0), new Point(ind_ct_image_sagit, mats[0].Height), new MCvScalar(0, 255, 0), 2);//Y
                 }
-                if(navig_system.targets.Count > 0)
+                if(vision_navig_ct_start_frame)
                 {
-                    mats[0] = draw_navig_target(mats[0], navig_system.targets[0],0);
+                    mats[0] = draw_navig_frame(mats[0], main_frame_len, 2);
+                }
+
+                if(navig_system.targets.Count > 0 && vision_navig_target_traj)
+                {
+                    
+                    mats[0] = draw_navig_targets(mats[0], navig_system.targets,2);                    
                 }
                 
                 imageBox_navig_axial.Image = mats[0];
@@ -11040,15 +11059,23 @@ namespace opengl3
                 if (vision_navig_bin_area) mats[1] = DicomProcess.filter_bone_ct(mats[1], ct_bin_lvl, ct_gauss_size);
                 else { CvInvoke.CvtColor(ct_projections[1], mats[1], ColorConversion.Gray2Bgr); }
 
-                if (vision_navig_work_area) mats[1] = draw_limits_lines(mats[1], limits_ps[2], limits_ps[0]);
+                if (vision_navig_work_area) mats[1] = draw_limits_lines(mats[1], limits_ps[2], limits_ps[1]);
 
                 if (vision_navig_axis)
                 {
                     CvInvoke.Line(mats[1], new Point((int)(ind_ct_image * ct_info.axial_koef), 0), new Point((int)(ind_ct_image * ct_info.axial_koef), mats[1].Height), new MCvScalar(255, 0, 0), 2);//Z
-                    CvInvoke.Line(mats[1], new Point(0, ind_ct_image_coronal), new Point(mats[1].Width, ind_ct_image_coronal), new MCvScalar(0, 255, 0), 2);//Y
+                    CvInvoke.Line(mats[1], new Point(0, ind_ct_image_coronal), new Point(mats[1].Width, ind_ct_image_coronal), new MCvScalar(0, 0, 255), 2);//Y
+                }
+                if (vision_navig_ct_start_frame)
+                {
+                    mats[1] = draw_navig_frame(mats[1], main_frame_len, 0);
                 }
 
-                CvInvoke.Rotate(mats[1], mats[1], RotateFlags.Rotate90Clockwise);
+                 if (navig_system.targets.Count > 0 && vision_navig_target_traj)
+                {                    
+                    mats[1] = draw_navig_targets(mats[1], navig_system.targets, 0);                   
+                }
+                
                 imageBox_navig_sagital.Image = mats[1];
             }
 
@@ -11058,14 +11085,23 @@ namespace opengl3
                 if (vision_navig_bin_area) mats[2] = DicomProcess.filter_bone_ct(mats[2], ct_bin_lvl, ct_gauss_size);
                 else { CvInvoke.CvtColor(ct_projections[2], mats[2], ColorConversion.Gray2Bgr); }
 
-                if (vision_navig_work_area) mats[2] = draw_limits_lines(mats[2], limits_ps[2], limits_ps[1]);
+                if (vision_navig_work_area) mats[2] = draw_limits_lines(mats[2], limits_ps[2], limits_ps[0]);
 
                 if (vision_navig_axis)
                 { 
                     CvInvoke.Line(mats[2], new Point((int)(ind_ct_image * ct_info.axial_koef), 0), new Point((int)(ind_ct_image * ct_info.axial_koef), mats[2].Height), new MCvScalar(255, 0, 0), 2);//Z
-                    CvInvoke.Line(mats[2], new Point(0, ind_ct_image_sagit), new Point(mats[2].Width, ind_ct_image_sagit), new MCvScalar(0, 0, 255), 2);//X
+                    CvInvoke.Line(mats[2], new Point(0, ind_ct_image_sagit), new Point(mats[2].Width, ind_ct_image_sagit), new MCvScalar(0, 255, 0), 2);//X
                 }
-
+                if (vision_navig_ct_start_frame)
+                {
+                    mats[2] = draw_navig_frame(mats[2], main_frame_len, 1);
+                }
+                if (navig_system.targets.Count > 0 && vision_navig_target_traj)
+                {                   
+                    mats[2] = draw_navig_targets(mats[2], navig_system.targets, 1);                   
+                }
+                CvInvoke.Rotate(mats[2], mats[2], RotateFlags.Rotate90Clockwise);
+                CvInvoke.Flip(mats[2], mats[2], FlipType.Horizontal);
                 imageBox_navig_coronal.Image = mats[2];
             }
 
@@ -11085,9 +11121,9 @@ namespace opengl3
 
             var mat_rect = new Mat(mat.Size.Height , mat.Size.Width,DepthType.Cv8U,3);
             mat_rect.SetTo(new MCvScalar(0, 0, 0));
-            CvInvoke.Rectangle(mat_rect, new Rectangle(px.X, mat.Height - py.X, px.Y - px.X, mat.Height - py.Y - (mat.Height - py.X)), color_filling_area, -1);
+            CvInvoke.Rectangle(mat_rect, new Rectangle(px.X, py.X, px.Y - px.X, py.Y - py.X), color_filling_area, -1);
 
-            CvInvoke.Rectangle(mat_rect, new Rectangle(px.X, mat.Height - py.X, px.Y - px.X, mat.Height - py.Y - (mat.Height - py.X)), color_lines_area, 1);
+            CvInvoke.Rectangle(mat_rect, new Rectangle(px.X, py.X, px.Y - px.X, py.Y - py.X), color_lines_area, 1);
 
             mat += mat_rect;
             return mat;
@@ -11110,7 +11146,11 @@ namespace opengl3
             vision_navig_bin_area = ((CheckBox)sender).Checked;
             redraw_navig_slices();
         }
-
+        private void checkBox_ct_start_frame_CheckedChanged(object sender, EventArgs e)
+        {
+            vision_navig_ct_start_frame = ((CheckBox)sender).Checked;
+            redraw_navig_slices();
+        }
         private void checkBox_target_traj_CheckedChanged(object sender, EventArgs e)
         {
             vision_navig_target_traj = ((CheckBox)sender).Checked;
@@ -11156,12 +11196,21 @@ namespace opengl3
             //GL1.buffersGl.setXobj(target.name, 0, target.x);
             return name;
         }
+        public Mat draw_navig_targets(Mat mat, List<NavigTarget> targets, int ax = 0)//ax = 0, 1 ,2 -> x,y,z
+        {
 
+            foreach(var target in targets)
+            {
+                draw_navig_target(mat, target, ax);
+            }
+
+            return mat;
+        }
         public Mat draw_navig_target(Mat mat, NavigTarget target, int ax = 0)//ax = 0, 1 ,2 -> x,y,z
         {
 
-            var tp1 = target.p1;// + transf_work_mri;
-            var tp2 = target.p2;// + transf_work_mri;
+            var tp1 = target.p1+ transf_work_mri;
+            var tp2 = target.p2 + transf_work_mri;
             var p1_x = (int)(tp1.x / ct_info.pix_xy);
             var p1_y = (int)(tp1.y / ct_info.pix_xy);
             var p1_z = (int)(tp1.z / ct_info.pix_xy);
@@ -11172,9 +11221,64 @@ namespace opengl3
 
             if (ax == 0)
             {
-                var p1 = new Point(mat.Width - p1_y, p1_x);
-                var p2 = new Point(mat.Width - p2_y,  p2_x);
+                var p1 = new Point(p1_z, p1_y);
+                var p2 = new Point(p2_z,  p2_y);
                 CvInvoke.Line(mat, p1, p2, new MCvScalar(255*target.color[2], 255 * target.color[1], 255 * target.color[0]),2);
+            }
+
+            if (ax == 1)
+            {
+                var p1 = new Point(p1_z, p1_x);
+                var p2 = new Point(p2_z, p2_x);
+                CvInvoke.Line(mat, p1, p2, new MCvScalar(255 * target.color[2], 255 * target.color[1], 255 * target.color[0]), 2);
+            }
+
+            if (ax == 2)
+            {
+                var p1 = new Point(p1_x, p1_y);
+                var p2 = new Point(p2_x, p2_y);
+                CvInvoke.Line(mat, p1, p2, new MCvScalar(255 * target.color[2], 255 * target.color[1], 255 * target.color[0]), 2);
+            }
+
+            return mat;
+        }
+        
+        public Mat draw_navig_frame(Mat mat, double frame_len, int ax = 0)//ax = 0, 1 ,2 -> x,y,z
+        {
+            var color_x = new MCvScalar(0, 0, 255);
+            var color_y = new MCvScalar(0, 255, 0);
+            var color_z = new MCvScalar(255, 0, 0);
+
+            var tp0 = (new Point3d_GL(frame_len, 0, 0)  + transf_work_mri) / ct_info.pix_xy;
+            var tp1 = (new Point3d_GL(0,frame_len, 0)  + transf_work_mri) / ct_info.pix_xy;
+            var tp2 = (new Point3d_GL(0,0,frame_len)  + transf_work_mri) / ct_info.pix_xy;
+            var tpc = transf_work_mri/ ct_info.pix_xy;
+
+            if (ax == 0)
+            {
+                var p1 = new Point((int)tpc.z, (int)tpc.y);
+                var p2 = new Point((int)tp2.z, (int)tp2.y);
+                var p3 = new Point((int)tp1.z, (int)tp1.y);
+                CvInvoke.Line(mat, p1, p2, color_z, 1);
+                CvInvoke.Line(mat, p1, p3, color_y, 1);
+            }
+
+            if (ax == 1)
+            {
+                var p1 = new Point((int)tpc.z, (int)tpc.x);
+                var p2 = new Point((int)tp2.z, (int)tp2.x);
+                var p3 = new Point((int)tp0.z, (int)tp0.x);
+                CvInvoke.Line(mat, p1, p2, color_z, 1);
+                CvInvoke.Line(mat, p1, p3, color_x, 1);
+            }
+
+            if (ax == 2)
+            {
+                var p1 = new Point((int)tpc.x, (int)tpc.y);
+                var p2 = new Point((int)tp0.x, (int)tp0.y);
+                var p3 = new Point((int)tp1.x, (int)tp1.y);
+                CvInvoke.Line(mat, p1, p2, color_x, 1);
+                CvInvoke.Line(mat, p1, p3, color_y, 1);
             }
 
             return mat;
@@ -11229,7 +11333,30 @@ namespace opengl3
                 treeView_navig_targets.SelectedNode = treeView_navig_targets.Nodes[0];
         }
 
-        
+        void fast_load_ct()
+        {
+            ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
+            vScrollBar_axial.Maximum = ct_info.SlicesAxial_mat.Count;
+            vScrollBar_coronal.Maximum = ct_info.SlicesCoronal.Count;
+            vScrollBar_sagital.Maximum = ct_info.SlicesSagital.Count;
+
+
+            rangeSliderH1_limits_model_w.MinValue = 0;
+            rangeSliderVinv_limits_model_h.MinValue = 0;
+            rangeSliderH2_limits_model_d.MinValue = 0;
+
+
+            rangeSliderH1_limits_model_w.MaxValue = ct_info.SlicesSagital.Count;
+            rangeSliderVinv_limits_model_h.MaxValue = ct_info.SlicesCoronal.Count;
+            rangeSliderH2_limits_model_d.MaxValue = (int)(ct_info.SlicesAxial_mat.Count * ct_info.axial_koef);
+        }
+        bool navig_tool_trace_enable = false;
+        private void button_navig_tool_trace_Click(object sender, EventArgs e)
+        {
+            navig_tool_trace_enable = !navig_tool_trace_enable;
+            if(navig_tool_trace_enable) { button_navig_tool_trace.Text = "След инструмента: вкл"; }
+            if (!navig_tool_trace_enable) { button_navig_tool_trace.Text = "След инструмента: выкл"; }
+        }
     }
 }
 
