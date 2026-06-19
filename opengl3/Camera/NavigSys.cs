@@ -164,8 +164,10 @@ namespace opengl3
         int aruco_number = 0;
         Point3d_GL tcp;
         Point3d_GL rotate;
+
         public Matrix<double> matrix_frame;
         public Matrix<double> matrix_model;
+
         public Matrix<double> matrix_model_debug = new Matrix<double>(new double[,] {
                 {1,0,0,0 },
                 {0,1,0,0 },
