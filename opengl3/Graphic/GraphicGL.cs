@@ -2047,15 +2047,15 @@ namespace opengl3
             }
             var data_c = new float[data_v.Length];
             float[] data_normals;
-            if(data_n == null && comp_normals)
+
+            if (data_n == null && comp_normals)
             {
                 data_normals = ComputeTriangleNormals(data_v);
             }
             else
             {
-                data_normals = null;
+                data_normals = data_n;
             }
-            
 
             if (color!=default)
             {

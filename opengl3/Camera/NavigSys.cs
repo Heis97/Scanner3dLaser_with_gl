@@ -132,9 +132,10 @@ namespace opengl3
             set { l = value; update_intrisic_param(); }
         }
 
-        public Matrix<double> matr;
+        public Matrix<double> matr = UtilMatr.eye_matr(4);
         public Point3d_GL p1;
         public Point3d_GL p2;
+
         public void update_intrisic_param()
         {
             p1 = new Point3d_GL(x, y, z);   

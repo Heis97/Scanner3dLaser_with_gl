@@ -700,6 +700,7 @@ namespace opengl3
             this.rangeSliderVinv_limits_model_h = new RangeSliderVinv();
             this.tabControl_navig = new System.Windows.Forms.TabControl();
             this.tabPage_3d_model_exrtract = new System.Windows.Forms.TabPage();
+            this.button_generate_model_ct_full_area = new System.Windows.Forms.Button();
             this.checkBox_ct_start_frame = new System.Windows.Forms.CheckBox();
             this.but_load_ct_scan = new System.Windows.Forms.Button();
             this.checkBox_navig_instr = new System.Windows.Forms.CheckBox();
@@ -719,6 +720,10 @@ namespace opengl3
             this.propertyGrid_navig_target = new System.Windows.Forms.PropertyGrid();
             this.button_del_navig_target = new System.Windows.Forms.Button();
             this.button_add_navig_target = new System.Windows.Forms.Button();
+            this.tabPage_navig_debug_page = new System.Windows.Forms.TabPage();
+            this.button_navig_tool_trace = new System.Windows.Forms.Button();
+            this.tabPage_registr_point = new System.Windows.Forms.TabPage();
+            this.checkBox_registr_points_visible = new System.Windows.Forms.CheckBox();
             this.vScrollBar_coronal = new System.Windows.Forms.VScrollBar();
             this.vScrollBar_sagital = new System.Windows.Forms.VScrollBar();
             this.vScrollBar_axial = new System.Windows.Forms.VScrollBar();
@@ -731,8 +736,11 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tabPage_navig_debug_page = new System.Windows.Forms.TabPage();
-            this.button_navig_tool_trace = new System.Windows.Forms.Button();
+            this.button_navig_registr_model = new System.Windows.Forms.Button();
+            this.button_navig_write_pos_registr_point_enable = new System.Windows.Forms.Button();
+            this.button_change_navig_number_registr_point_current = new System.Windows.Forms.Button();
+            this.button_change_navig_current_registration_instrument = new System.Windows.Forms.Button();
+            this.button_change_navig_current_model_instrument = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -851,11 +859,12 @@ namespace opengl3
             this.tabControl_navig.SuspendLayout();
             this.tabPage_3d_model_exrtract.SuspendLayout();
             this.tabPage_navig_target.SuspendLayout();
+            this.tabPage_navig_debug_page.SuspendLayout();
+            this.tabPage_registr_point.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_coronal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_sagital)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_axial)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
-            this.tabPage_navig_debug_page.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabCalibMonit
@@ -8226,14 +8235,17 @@ namespace opengl3
             this.tabControl_navig.Controls.Add(this.tabPage_3d_model_exrtract);
             this.tabControl_navig.Controls.Add(this.tabPage_navig_target);
             this.tabControl_navig.Controls.Add(this.tabPage_navig_debug_page);
+            this.tabControl_navig.Controls.Add(this.tabPage_registr_point);
             this.tabControl_navig.Location = new System.Drawing.Point(553, 542);
             this.tabControl_navig.Name = "tabControl_navig";
             this.tabControl_navig.SelectedIndex = 0;
             this.tabControl_navig.Size = new System.Drawing.Size(569, 452);
             this.tabControl_navig.TabIndex = 153;
+            this.tabControl_navig.SelectedIndexChanged += new System.EventHandler(this.tabControl_navig_SelectedIndexChanged);
             // 
             // tabPage_3d_model_exrtract
             // 
+            this.tabPage_3d_model_exrtract.Controls.Add(this.button_generate_model_ct_full_area);
             this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_ct_start_frame);
             this.tabPage_3d_model_exrtract.Controls.Add(this.but_load_ct_scan);
             this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_navig_instr);
@@ -8255,6 +8267,16 @@ namespace opengl3
             this.tabPage_3d_model_exrtract.TabIndex = 0;
             this.tabPage_3d_model_exrtract.Text = "Выделение 3д модели";
             this.tabPage_3d_model_exrtract.UseVisualStyleBackColor = true;
+            // 
+            // button_generate_model_ct_full_area
+            // 
+            this.button_generate_model_ct_full_area.Location = new System.Drawing.Point(14, 300);
+            this.button_generate_model_ct_full_area.Name = "button_generate_model_ct_full_area";
+            this.button_generate_model_ct_full_area.Size = new System.Drawing.Size(181, 30);
+            this.button_generate_model_ct_full_area.TabIndex = 154;
+            this.button_generate_model_ct_full_area.Text = "Построить всю область";
+            this.button_generate_model_ct_full_area.UseVisualStyleBackColor = true;
+            this.button_generate_model_ct_full_area.Click += new System.EventHandler(this.button_generate_model_ct_full_area_Click);
             // 
             // checkBox_ct_start_frame
             // 
@@ -8452,6 +8474,55 @@ namespace opengl3
             this.button_add_navig_target.UseVisualStyleBackColor = true;
             this.button_add_navig_target.Click += new System.EventHandler(this.button_add_navig_target_Click);
             // 
+            // tabPage_navig_debug_page
+            // 
+            this.tabPage_navig_debug_page.Controls.Add(this.button_navig_tool_trace);
+            this.tabPage_navig_debug_page.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_debug_page.Name = "tabPage_navig_debug_page";
+            this.tabPage_navig_debug_page.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_navig_debug_page.Size = new System.Drawing.Size(561, 423);
+            this.tabPage_navig_debug_page.TabIndex = 2;
+            this.tabPage_navig_debug_page.Text = "Отладка";
+            this.tabPage_navig_debug_page.UseVisualStyleBackColor = true;
+            // 
+            // button_navig_tool_trace
+            // 
+            this.button_navig_tool_trace.Location = new System.Drawing.Point(6, 6);
+            this.button_navig_tool_trace.Name = "button_navig_tool_trace";
+            this.button_navig_tool_trace.Size = new System.Drawing.Size(144, 44);
+            this.button_navig_tool_trace.TabIndex = 0;
+            this.button_navig_tool_trace.Text = "След инструмента";
+            this.button_navig_tool_trace.UseVisualStyleBackColor = true;
+            this.button_navig_tool_trace.Click += new System.EventHandler(this.button_navig_tool_trace_Click);
+            // 
+            // tabPage_registr_point
+            // 
+            this.tabPage_registr_point.Controls.Add(this.button_change_navig_current_model_instrument);
+            this.tabPage_registr_point.Controls.Add(this.button_change_navig_current_registration_instrument);
+            this.tabPage_registr_point.Controls.Add(this.button_change_navig_number_registr_point_current);
+            this.tabPage_registr_point.Controls.Add(this.button_navig_write_pos_registr_point_enable);
+            this.tabPage_registr_point.Controls.Add(this.button_navig_registr_model);
+            this.tabPage_registr_point.Controls.Add(this.checkBox_registr_points_visible);
+            this.tabPage_registr_point.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_registr_point.Name = "tabPage_registr_point";
+            this.tabPage_registr_point.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_registr_point.Size = new System.Drawing.Size(561, 423);
+            this.tabPage_registr_point.TabIndex = 3;
+            this.tabPage_registr_point.Text = "Регистрация точек";
+            this.tabPage_registr_point.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_registr_points_visible
+            // 
+            this.checkBox_registr_points_visible.AutoSize = true;
+            this.checkBox_registr_points_visible.Checked = true;
+            this.checkBox_registr_points_visible.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_registr_points_visible.Location = new System.Drawing.Point(8, 6);
+            this.checkBox_registr_points_visible.Name = "checkBox_registr_points_visible";
+            this.checkBox_registr_points_visible.Size = new System.Drawing.Size(146, 20);
+            this.checkBox_registr_points_visible.TabIndex = 149;
+            this.checkBox_registr_points_visible.Text = "Отобразить точки";
+            this.checkBox_registr_points_visible.UseVisualStyleBackColor = true;
+            // 
             // vScrollBar_coronal
             // 
             this.vScrollBar_coronal.Location = new System.Drawing.Point(510, 512);
@@ -8534,26 +8605,55 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // tabPage_navig_debug_page
+            // button_navig_registr_model
             // 
-            this.tabPage_navig_debug_page.Controls.Add(this.button_navig_tool_trace);
-            this.tabPage_navig_debug_page.Location = new System.Drawing.Point(4, 25);
-            this.tabPage_navig_debug_page.Name = "tabPage_navig_debug_page";
-            this.tabPage_navig_debug_page.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_navig_debug_page.Size = new System.Drawing.Size(561, 423);
-            this.tabPage_navig_debug_page.TabIndex = 2;
-            this.tabPage_navig_debug_page.Text = "Отладка";
-            this.tabPage_navig_debug_page.UseVisualStyleBackColor = true;
+            this.button_navig_registr_model.Location = new System.Drawing.Point(374, 100);
+            this.button_navig_registr_model.Name = "button_navig_registr_model";
+            this.button_navig_registr_model.Size = new System.Drawing.Size(181, 50);
+            this.button_navig_registr_model.TabIndex = 150;
+            this.button_navig_registr_model.Text = "Зарегистрировать модель";
+            this.button_navig_registr_model.UseVisualStyleBackColor = true;
+            this.button_navig_registr_model.Click += new System.EventHandler(this.button_navig_registr_model_Click);
             // 
-            // button_navig_tool_trace
+            // button_navig_write_pos_registr_point_enable
             // 
-            this.button_navig_tool_trace.Location = new System.Drawing.Point(6, 6);
-            this.button_navig_tool_trace.Name = "button_navig_tool_trace";
-            this.button_navig_tool_trace.Size = new System.Drawing.Size(144, 44);
-            this.button_navig_tool_trace.TabIndex = 0;
-            this.button_navig_tool_trace.Text = "След инструмента";
-            this.button_navig_tool_trace.UseVisualStyleBackColor = true;
-            this.button_navig_tool_trace.Click += new System.EventHandler(this.button_navig_tool_trace_Click);
+            this.button_navig_write_pos_registr_point_enable.Location = new System.Drawing.Point(135, 31);
+            this.button_navig_write_pos_registr_point_enable.Name = "button_navig_write_pos_registr_point_enable";
+            this.button_navig_write_pos_registr_point_enable.Size = new System.Drawing.Size(144, 44);
+            this.button_navig_write_pos_registr_point_enable.TabIndex = 151;
+            this.button_navig_write_pos_registr_point_enable.Text = "Запись положения";
+            this.button_navig_write_pos_registr_point_enable.UseVisualStyleBackColor = true;
+            this.button_navig_write_pos_registr_point_enable.Click += new System.EventHandler(this.button_navig_write_pos_registr_point_enable_Click);
+            // 
+            // button_change_navig_number_registr_point_current
+            // 
+            this.button_change_navig_number_registr_point_current.Location = new System.Drawing.Point(8, 32);
+            this.button_change_navig_number_registr_point_current.Name = "button_change_navig_number_registr_point_current";
+            this.button_change_navig_number_registr_point_current.Size = new System.Drawing.Size(121, 44);
+            this.button_change_navig_number_registr_point_current.TabIndex = 152;
+            this.button_change_navig_number_registr_point_current.Text = "Текущий номер точки:";
+            this.button_change_navig_number_registr_point_current.UseVisualStyleBackColor = true;
+            this.button_change_navig_number_registr_point_current.Click += new System.EventHandler(this.button_change_navig_number_registr_point_current_Click);
+            // 
+            // button_change_navig_current_registration_instrument
+            // 
+            this.button_change_navig_current_registration_instrument.Location = new System.Drawing.Point(8, 116);
+            this.button_change_navig_current_registration_instrument.Name = "button_change_navig_current_registration_instrument";
+            this.button_change_navig_current_registration_instrument.Size = new System.Drawing.Size(121, 78);
+            this.button_change_navig_current_registration_instrument.TabIndex = 154;
+            this.button_change_navig_current_registration_instrument.Text = "Номер инструмента регистрации:";
+            this.button_change_navig_current_registration_instrument.UseVisualStyleBackColor = true;
+            this.button_change_navig_current_registration_instrument.Click += new System.EventHandler(this.button_change_navig_current_registration_instrument_Click);
+            // 
+            // button_change_navig_current_model_instrument
+            // 
+            this.button_change_navig_current_model_instrument.Location = new System.Drawing.Point(8, 200);
+            this.button_change_navig_current_model_instrument.Name = "button_change_navig_current_model_instrument";
+            this.button_change_navig_current_model_instrument.Size = new System.Drawing.Size(121, 68);
+            this.button_change_navig_current_model_instrument.TabIndex = 155;
+            this.button_change_navig_current_model_instrument.Text = "Номер инструмента для модели:";
+            this.button_change_navig_current_model_instrument.UseVisualStyleBackColor = true;
+            this.button_change_navig_current_model_instrument.Click += new System.EventHandler(this.button_change_navig_current_model_instrument_Click);
             // 
             // MainScanningForm
             // 
@@ -8716,11 +8816,13 @@ namespace opengl3
             this.tabPage_3d_model_exrtract.ResumeLayout(false);
             this.tabPage_3d_model_exrtract.PerformLayout();
             this.tabPage_navig_target.ResumeLayout(false);
+            this.tabPage_navig_debug_page.ResumeLayout(false);
+            this.tabPage_registr_point.ResumeLayout(false);
+            this.tabPage_registr_point.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_coronal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_sagital)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_axial)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
-            this.tabPage_navig_debug_page.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -9429,6 +9531,14 @@ namespace opengl3
         private System.Windows.Forms.CheckBox checkBox_ct_start_frame;
         private System.Windows.Forms.TabPage tabPage_navig_debug_page;
         private System.Windows.Forms.Button button_navig_tool_trace;
+        private System.Windows.Forms.Button button_generate_model_ct_full_area;
+        private System.Windows.Forms.TabPage tabPage_registr_point;
+        private System.Windows.Forms.CheckBox checkBox_registr_points_visible;
+        private System.Windows.Forms.Button button_navig_registr_model;
+        private System.Windows.Forms.Button button_change_navig_current_model_instrument;
+        private System.Windows.Forms.Button button_change_navig_current_registration_instrument;
+        private System.Windows.Forms.Button button_change_navig_number_registr_point_current;
+        private System.Windows.Forms.Button button_navig_write_pos_registr_point_enable;
     }
 }
 

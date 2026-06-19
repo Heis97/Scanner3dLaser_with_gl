@@ -1035,15 +1035,28 @@ namespace opengl3
                 Vector3 v1 = vertices[indices[i + 1]];
                 Vector3 v2 = vertices[indices[i + 2]];
 
-                Vector3 normal = Vector3.Normalize(Vector3.Cross(v1 - v0, v2 - v0));
+                var p1 = new Point3d_GL(v0.X, v0.Y, v0.Z);
+                var p2 = new Point3d_GL(v1.X, v1.Y, v1.Z);
+                var p3 = new Point3d_GL(v2.X, v2.Y, v2.Z);
+                var U = p1 - p2;
+                var V = p1 - p3;
+                var normal = new Point3d_GL(
+                    U.y * V.z - U.z * V.y,
+                    U.z * V.x - U.x * V.z,
+                    U.x * V.y - U.y * V.x);
+
+
+                
+
+                //Vector3 normal = Vector3.Normalize(Vector3.Cross(v1 - v0, v2 - v0));
 
                 mesh[3 * i] = v0.X; mesh[3 * i + 1] = v0.Y; mesh[3 * i + 2] = v0.Z;
-                mesh[3 * (i + 1)] = v1.X; mesh[3 * (i + 1) + 1] = v1.Y; mesh[3 * (i + 1) + 2] = v1.Z;
-                mesh[3 * (i + 2)] = v2.X; mesh[3 * (i + 2) + 1] = v2.Y; mesh[3 * (i + 2) + 2] = v2.Z;
+                mesh[3 * i + 3] = v1.X; mesh[3 * i + 4] = v1.Y; mesh[3 * i + 5] = v1.Z;
+                mesh[3 * i + 6] = v2.X; mesh[3 * i + 7] = v2.Y; mesh[3 * i + 8] = v2.Z;
 
-                normals[3 * i] = normal.X; normals[3 * i + 1] = normal.Y; normals[3 * i + 2] = normal.Z;
-                normals[3 * i] = normal.X; normals[3 * i + 1] = normal.Y; normals[3 * i + 2] = normal.Z;
-                normals[3 * i] = normal.X; normals[3 * i + 1] = normal.Y; normals[3 * i + 2] = normal.Z;
+                normals[3 * i] = (float)normal.x; normals[3 * i + 1] = (float)normal.y; normals[3 * i + 2] = (float)normal.z;
+                normals[3 * i+3] = (float)normal.x; normals[3 * i + 4] = (float)normal.y; normals[3 * i + 5] = (float)normal.z;
+                normals[3 * i+6] = (float)normal.x; normals[3 * i + 7] = (float)normal.y; normals[3 * i + 8] = (float)normal.z;
             }
             var ret = new List<float[]>();
             ret.Add(mesh);

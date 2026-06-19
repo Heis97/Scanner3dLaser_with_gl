@@ -31,6 +31,8 @@ namespace opengl3
         public double pix_z;
 
         public double axial_koef;
+
+        public Point3d_GL[] registr_ps;
     }
 
     public class CtSliceInfo
@@ -371,21 +373,21 @@ namespace opengl3
             }
 
             var data_coronal = new List<Mat>();
+            var x_dim = data_axial[0].GetLength(1);
+            var y_dim = data_axial[0].GetLength(0);
+            var z_dim = data_axial.Count;
 
-            var voxel_model = new byte[data_axial[0].GetLength(0), data_axial[0].GetLength(1), data_axial.Count];
+            var voxel_model = new byte[x_dim, y_dim, z_dim];
 
-            for (int k = 0; k < data_axial[0].GetLength(0); k++)
+            for (int z = 0; z < z_dim; z++)
             {
-                var data_coronal_slice = new byte[data_axial[0].GetLength(0), data_axial.Count];
-                for (int i = 0; i < cts.Count; i++)
+                for (int y = 0; y < y_dim; y++)
                 {
-                    for (int j = 0; j < data_axial[0].GetLength(1); j++)
+                    for (int x = 0; x < x_dim; x++)
                     {
-                        voxel_model[j, k, i] = data_axial[i][j, k];
+                        voxel_model[x, y, z] = data_axial[z][y, x];
                     }
                 }
-
-                //data_coronal.Add(ByteArrayToMat(data_coronal_slice));
             }
 
             return voxel_model;

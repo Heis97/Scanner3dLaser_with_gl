@@ -128,12 +128,19 @@ namespace opengl3
         public void setMatrobj(string name, int i, Matrix4x4f matr)
         {
             if (objs.ContainsKey(name))
+            {
                 objs[name] = objs[name].setMatr(i, matr);
+            }
+                
         }
         public void addMatrobj(string name, int i, Matrix4x4f matr)
         {
             if (objs.ContainsKey(name))
                 objs[name] = objs[name].addMatr(i, matr);
+        }
+        public void setMatrix_store_obj(string name, int i, Matrix4x4f matr)
+        {
+            if (objs.ContainsKey(name)) objs[name] = objs[name].setMatrix_store(i,matr);
         }
         public void setTranspobj(string name, float transp)
         {
@@ -157,6 +164,8 @@ namespace opengl3
         {
             objs[name] = objs[name].setComp_flat(comp);
         }
+
+        
         #endregion
 
     }

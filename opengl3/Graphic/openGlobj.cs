@@ -36,6 +36,8 @@ namespace opengl3
         Vertex4f cross_flat;
         public int comp_flat;
 
+        public Matrix4x4f[] matrixes;
+
         public openGlobj(float[] v_buf, float[] c_buf, float[] n_buf, float[] t_buf=null, PrimitiveType type=PrimitiveType.Triangles,string name = "name", int _count = 1, int textureId = -1)
         {
             selected = false;
@@ -52,7 +54,11 @@ namespace opengl3
             transparency = 1f;
             trsc = new trsc[_count];
             this.name = name;
-
+            matrixes = new Matrix4x4f[4];
+            for(int i=0; i < matrixes.Length; i++)
+            {
+                matrixes[i] = Matrix4x4f.Identity;
+            }
             for (int i=0;i<trsc.Length;i++)
             {
                 trsc[i] = new trsc(Matrix4x4f.Identity);
@@ -214,6 +220,13 @@ namespace opengl3
         public openGlobj setVisible(bool _visible)
         {
             visible = _visible;
+            return this;
+        }
+        public openGlobj setMatrix_store(int i, Matrix4x4f m)
+        {
+            if (i >= matrixes.Length || i < 0) return this;
+            
+            matrixes[i] = m;
             return this;
         }
         public openGlobj setScale(int i, float _scale)
