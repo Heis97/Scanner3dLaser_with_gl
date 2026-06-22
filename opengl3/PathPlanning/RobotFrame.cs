@@ -180,6 +180,23 @@ namespace opengl3
             C = r.z;
             return this;
         }
+
+        public static Matrix<double> matrix_basis_from_ps(Point3d_GL[] ps)
+        {
+            if (ps == null) return null;
+            if (ps.Length < 3) return null;
+            var p0 = ps[0];
+            var p1 = ps[1];
+            var p2 = ps[2];
+
+            var vx = (p2 - p1).normalize();
+            var vyx = (p0 - p1).normalize();
+
+            var vz = (vx | vyx).normalize();
+            var vy = (vz | vx).normalize();
+            return matrix_assemble(vx, vy, vz, p1);
+        }
+
         public Matrix<double>  getMatrix()
         {
 

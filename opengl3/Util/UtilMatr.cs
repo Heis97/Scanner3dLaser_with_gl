@@ -385,8 +385,13 @@ namespace opengl3
 
             var m1 = new Matrix<double>(basis1d);
             var m2 = new Matrix<double>(basis2d);
-            CvInvoke.Invert(m1, m1, Emgu.CV.CvEnum.DecompMethod.LU);
-            return (m1*m2).Transpose();
+            var m1_inv = m1.Clone();
+            CvInvoke.Invert(m1, m1_inv, Emgu.CV.CvEnum.DecompMethod.LU);
+            prin.t("m1 * m1_inv");
+            prin.t(m1 * m1_inv);
+            var m12 = m1_inv * m2;
+            var m12t = m12.Transpose();
+            return m12t;
         }
         static public Mat doubleToMat(double[][] inp, Size size)
         {

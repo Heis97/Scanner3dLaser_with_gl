@@ -723,6 +723,11 @@ namespace opengl3
             this.tabPage_navig_debug_page = new System.Windows.Forms.TabPage();
             this.button_navig_tool_trace = new System.Windows.Forms.Button();
             this.tabPage_registr_point = new System.Windows.Forms.TabPage();
+            this.button_change_navig_current_model_instrument = new System.Windows.Forms.Button();
+            this.button_change_navig_current_registration_instrument = new System.Windows.Forms.Button();
+            this.button_change_navig_number_registr_point_current = new System.Windows.Forms.Button();
+            this.button_navig_write_pos_registr_point_enable = new System.Windows.Forms.Button();
+            this.button_navig_registr_model = new System.Windows.Forms.Button();
             this.checkBox_registr_points_visible = new System.Windows.Forms.CheckBox();
             this.vScrollBar_coronal = new System.Windows.Forms.VScrollBar();
             this.vScrollBar_sagital = new System.Windows.Forms.VScrollBar();
@@ -736,11 +741,7 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.button_navig_registr_model = new System.Windows.Forms.Button();
-            this.button_navig_write_pos_registr_point_enable = new System.Windows.Forms.Button();
-            this.button_change_navig_number_registr_point_current = new System.Windows.Forms.Button();
-            this.button_change_navig_current_registration_instrument = new System.Windows.Forms.Button();
-            this.button_change_navig_current_model_instrument = new System.Windows.Forms.Button();
+            this.button_writing_registr_ps_delete = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -8429,10 +8430,10 @@ namespace opengl3
             this.tabPage_navig_target.Controls.Add(this.propertyGrid_navig_target);
             this.tabPage_navig_target.Controls.Add(this.button_del_navig_target);
             this.tabPage_navig_target.Controls.Add(this.button_add_navig_target);
-            this.tabPage_navig_target.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_target.Location = new System.Drawing.Point(4, 22);
             this.tabPage_navig_target.Name = "tabPage_navig_target";
             this.tabPage_navig_target.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_navig_target.Size = new System.Drawing.Size(561, 423);
+            this.tabPage_navig_target.Size = new System.Drawing.Size(561, 426);
             this.tabPage_navig_target.TabIndex = 1;
             this.tabPage_navig_target.Text = "Установка целевых точек";
             this.tabPage_navig_target.UseVisualStyleBackColor = true;
@@ -8477,10 +8478,10 @@ namespace opengl3
             // tabPage_navig_debug_page
             // 
             this.tabPage_navig_debug_page.Controls.Add(this.button_navig_tool_trace);
-            this.tabPage_navig_debug_page.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_debug_page.Location = new System.Drawing.Point(4, 22);
             this.tabPage_navig_debug_page.Name = "tabPage_navig_debug_page";
             this.tabPage_navig_debug_page.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_navig_debug_page.Size = new System.Drawing.Size(561, 423);
+            this.tabPage_navig_debug_page.Size = new System.Drawing.Size(561, 426);
             this.tabPage_navig_debug_page.TabIndex = 2;
             this.tabPage_navig_debug_page.Text = "Отладка";
             this.tabPage_navig_debug_page.UseVisualStyleBackColor = true;
@@ -8497,6 +8498,7 @@ namespace opengl3
             // 
             // tabPage_registr_point
             // 
+            this.tabPage_registr_point.Controls.Add(this.button_writing_registr_ps_delete);
             this.tabPage_registr_point.Controls.Add(this.button_change_navig_current_model_instrument);
             this.tabPage_registr_point.Controls.Add(this.button_change_navig_current_registration_instrument);
             this.tabPage_registr_point.Controls.Add(this.button_change_navig_number_registr_point_current);
@@ -8510,6 +8512,56 @@ namespace opengl3
             this.tabPage_registr_point.TabIndex = 3;
             this.tabPage_registr_point.Text = "Регистрация точек";
             this.tabPage_registr_point.UseVisualStyleBackColor = true;
+            // 
+            // button_change_navig_current_model_instrument
+            // 
+            this.button_change_navig_current_model_instrument.Location = new System.Drawing.Point(8, 200);
+            this.button_change_navig_current_model_instrument.Name = "button_change_navig_current_model_instrument";
+            this.button_change_navig_current_model_instrument.Size = new System.Drawing.Size(121, 68);
+            this.button_change_navig_current_model_instrument.TabIndex = 155;
+            this.button_change_navig_current_model_instrument.Text = "Номер инструмента для модели:";
+            this.button_change_navig_current_model_instrument.UseVisualStyleBackColor = true;
+            this.button_change_navig_current_model_instrument.Click += new System.EventHandler(this.button_change_navig_current_model_instrument_Click);
+            // 
+            // button_change_navig_current_registration_instrument
+            // 
+            this.button_change_navig_current_registration_instrument.Location = new System.Drawing.Point(8, 116);
+            this.button_change_navig_current_registration_instrument.Name = "button_change_navig_current_registration_instrument";
+            this.button_change_navig_current_registration_instrument.Size = new System.Drawing.Size(121, 78);
+            this.button_change_navig_current_registration_instrument.TabIndex = 154;
+            this.button_change_navig_current_registration_instrument.Text = "Номер инструмента регистрации:";
+            this.button_change_navig_current_registration_instrument.UseVisualStyleBackColor = true;
+            this.button_change_navig_current_registration_instrument.Click += new System.EventHandler(this.button_change_navig_current_registration_instrument_Click);
+            // 
+            // button_change_navig_number_registr_point_current
+            // 
+            this.button_change_navig_number_registr_point_current.Location = new System.Drawing.Point(8, 32);
+            this.button_change_navig_number_registr_point_current.Name = "button_change_navig_number_registr_point_current";
+            this.button_change_navig_number_registr_point_current.Size = new System.Drawing.Size(121, 44);
+            this.button_change_navig_number_registr_point_current.TabIndex = 152;
+            this.button_change_navig_number_registr_point_current.Text = "Текущий номер точки:";
+            this.button_change_navig_number_registr_point_current.UseVisualStyleBackColor = true;
+            this.button_change_navig_number_registr_point_current.Click += new System.EventHandler(this.button_change_navig_number_registr_point_current_Click);
+            // 
+            // button_navig_write_pos_registr_point_enable
+            // 
+            this.button_navig_write_pos_registr_point_enable.Location = new System.Drawing.Point(135, 31);
+            this.button_navig_write_pos_registr_point_enable.Name = "button_navig_write_pos_registr_point_enable";
+            this.button_navig_write_pos_registr_point_enable.Size = new System.Drawing.Size(144, 44);
+            this.button_navig_write_pos_registr_point_enable.TabIndex = 151;
+            this.button_navig_write_pos_registr_point_enable.Text = "Запись положения";
+            this.button_navig_write_pos_registr_point_enable.UseVisualStyleBackColor = true;
+            this.button_navig_write_pos_registr_point_enable.Click += new System.EventHandler(this.button_navig_write_pos_registr_point_enable_Click);
+            // 
+            // button_navig_registr_model
+            // 
+            this.button_navig_registr_model.Location = new System.Drawing.Point(374, 100);
+            this.button_navig_registr_model.Name = "button_navig_registr_model";
+            this.button_navig_registr_model.Size = new System.Drawing.Size(181, 50);
+            this.button_navig_registr_model.TabIndex = 150;
+            this.button_navig_registr_model.Text = "Зарегистрировать модель";
+            this.button_navig_registr_model.UseVisualStyleBackColor = true;
+            this.button_navig_registr_model.Click += new System.EventHandler(this.button_navig_registr_model_Click);
             // 
             // checkBox_registr_points_visible
             // 
@@ -8605,55 +8657,15 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // button_navig_registr_model
+            // button_writing_registr_ps_delete
             // 
-            this.button_navig_registr_model.Location = new System.Drawing.Point(374, 100);
-            this.button_navig_registr_model.Name = "button_navig_registr_model";
-            this.button_navig_registr_model.Size = new System.Drawing.Size(181, 50);
-            this.button_navig_registr_model.TabIndex = 150;
-            this.button_navig_registr_model.Text = "Зарегистрировать модель";
-            this.button_navig_registr_model.UseVisualStyleBackColor = true;
-            this.button_navig_registr_model.Click += new System.EventHandler(this.button_navig_registr_model_Click);
-            // 
-            // button_navig_write_pos_registr_point_enable
-            // 
-            this.button_navig_write_pos_registr_point_enable.Location = new System.Drawing.Point(135, 31);
-            this.button_navig_write_pos_registr_point_enable.Name = "button_navig_write_pos_registr_point_enable";
-            this.button_navig_write_pos_registr_point_enable.Size = new System.Drawing.Size(144, 44);
-            this.button_navig_write_pos_registr_point_enable.TabIndex = 151;
-            this.button_navig_write_pos_registr_point_enable.Text = "Запись положения";
-            this.button_navig_write_pos_registr_point_enable.UseVisualStyleBackColor = true;
-            this.button_navig_write_pos_registr_point_enable.Click += new System.EventHandler(this.button_navig_write_pos_registr_point_enable_Click);
-            // 
-            // button_change_navig_number_registr_point_current
-            // 
-            this.button_change_navig_number_registr_point_current.Location = new System.Drawing.Point(8, 32);
-            this.button_change_navig_number_registr_point_current.Name = "button_change_navig_number_registr_point_current";
-            this.button_change_navig_number_registr_point_current.Size = new System.Drawing.Size(121, 44);
-            this.button_change_navig_number_registr_point_current.TabIndex = 152;
-            this.button_change_navig_number_registr_point_current.Text = "Текущий номер точки:";
-            this.button_change_navig_number_registr_point_current.UseVisualStyleBackColor = true;
-            this.button_change_navig_number_registr_point_current.Click += new System.EventHandler(this.button_change_navig_number_registr_point_current_Click);
-            // 
-            // button_change_navig_current_registration_instrument
-            // 
-            this.button_change_navig_current_registration_instrument.Location = new System.Drawing.Point(8, 116);
-            this.button_change_navig_current_registration_instrument.Name = "button_change_navig_current_registration_instrument";
-            this.button_change_navig_current_registration_instrument.Size = new System.Drawing.Size(121, 78);
-            this.button_change_navig_current_registration_instrument.TabIndex = 154;
-            this.button_change_navig_current_registration_instrument.Text = "Номер инструмента регистрации:";
-            this.button_change_navig_current_registration_instrument.UseVisualStyleBackColor = true;
-            this.button_change_navig_current_registration_instrument.Click += new System.EventHandler(this.button_change_navig_current_registration_instrument_Click);
-            // 
-            // button_change_navig_current_model_instrument
-            // 
-            this.button_change_navig_current_model_instrument.Location = new System.Drawing.Point(8, 200);
-            this.button_change_navig_current_model_instrument.Name = "button_change_navig_current_model_instrument";
-            this.button_change_navig_current_model_instrument.Size = new System.Drawing.Size(121, 68);
-            this.button_change_navig_current_model_instrument.TabIndex = 155;
-            this.button_change_navig_current_model_instrument.Text = "Номер инструмента для модели:";
-            this.button_change_navig_current_model_instrument.UseVisualStyleBackColor = true;
-            this.button_change_navig_current_model_instrument.Click += new System.EventHandler(this.button_change_navig_current_model_instrument_Click);
+            this.button_writing_registr_ps_delete.Location = new System.Drawing.Point(135, 81);
+            this.button_writing_registr_ps_delete.Name = "button_writing_registr_ps_delete";
+            this.button_writing_registr_ps_delete.Size = new System.Drawing.Size(144, 44);
+            this.button_writing_registr_ps_delete.TabIndex = 156;
+            this.button_writing_registr_ps_delete.Text = "Сброс записи";
+            this.button_writing_registr_ps_delete.UseVisualStyleBackColor = true;
+            this.button_writing_registr_ps_delete.Click += new System.EventHandler(this.button_writing_registr_ps_delete_Click);
             // 
             // MainScanningForm
             // 
@@ -9539,6 +9551,7 @@ namespace opengl3
         private System.Windows.Forms.Button button_change_navig_current_registration_instrument;
         private System.Windows.Forms.Button button_change_navig_number_registr_point_current;
         private System.Windows.Forms.Button button_navig_write_pos_registr_point_enable;
+        private System.Windows.Forms.Button button_writing_registr_ps_delete;
     }
 }
 

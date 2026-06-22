@@ -130,6 +130,8 @@ namespace opengl3
             if (objs.ContainsKey(name))
             {
                 objs[name] = objs[name].setMatr(i, matr);
+                //Console.WriteLine(name+ " "+i);
+               // prin.t(matr);
             }
                 
         }

@@ -496,6 +496,7 @@ namespace opengl3
 
         public static Point3d_GL[] multMatr(Point3d_GL[] ps, Matrix<double> matrix)
         {
+            if(ps == null || matrix == null) { return null; }
             var ps_ret = new Point3d_GL[ps.Length];
             for (int i = 0; i < ps_ret.Length; i++)
             {
