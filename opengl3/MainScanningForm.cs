@@ -10764,6 +10764,8 @@ namespace opengl3
                     var ps3d = navig_system.navigation_processing_get_points3d(mat_global[1], mat_global[0], out Mat mat1, out Mat mat2);    //navyg_sys_info(camera_only)
                     navig_system.navigation_processing_get_scene(ps3d);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
                                                                                                 //
+
+                    //draw 3d objs
                     imb_main[0].Image = mat1;
                     imb_main[1].Image = mat2;
 
