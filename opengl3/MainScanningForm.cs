@@ -237,7 +237,20 @@ namespace opengl3
             Console.WriteLine("NavigMatrixType.Self "+(int)NavigMatrixType.Self);
             InitializeComponent();
             init_vars();
-            fast_load_ct();
+            //fast_load_ct();
+
+            var posrob = RobotFrame.comp_forv_kinem(new double[] { 155.107, -121.84573, 82.953987, 14.06147, 116.421089, -83.67874 }, 6, false, RobotFrame.RobotType.PULSE);
+            Console.WriteLine("\n\n");
+            Console.WriteLine("posrob");
+            Console.WriteLine(posrob.ToString());
+
+            var solves = RobotFrame.comp_inv_kinem(posrob, RobotFrame.RobotType.PULSE);
+
+            for (int i = 0; i < solves.Length; i++)
+            {
+                var posrob1 = RobotFrame.comp_forv_kinem(solves[i], 6, true, RobotFrame.RobotType.PULSE);
+                Console.WriteLine(posrob1.ToString());
+            }
 
             /* var poses_sym = new List<Pose>(new Pose[] { 
                  new Pose(new double[] { 1, 2, 3, 4, 5, 6 }),
@@ -10983,9 +10996,14 @@ namespace opengl3
                 {
                     matr = model_scene* self_matr_obj ;
                 }
+
                 else if (state == NavigVisionType.Ct)
                 {
                     matr = self_matr_obj;
+                    if(navig_obj == generate_model_name)
+                    {
+                        //matr = matr * ct_model;
+                    }
                 }
 
                 glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(navig_obj, 0, matr)));
@@ -10994,14 +11012,8 @@ namespace opengl3
 
         public void set_matr_navig_scene_obj_ct(string navig_obj, Matrix4x4f cur_matr, NavigVisionType state)// state: 0 - 3d model; 1 - scene
         {
-           // prin.t("before");
-            //prin.t(GL1.buffersGl.objs[navig_obj].matrixes[(int)NavigMatrixType.Self]);
-            //GL1.buffersGl.setMatrix_store_obj(navig_obj, (int)NavigMatrixType.Self, cur_matr);
             glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrix_store_obj(navig_obj, (int)NavigMatrixType.Self, cur_matr)));
-            //prin.t("after");
-            //prin.t(GL1.buffersGl.objs[navig_obj].matrixes[(int)NavigMatrixType.Self]);
-           
-                update_matrs_navig_scene_obj_ct(navig_obj, state);
+            update_matrs_navig_scene_obj_ct(navig_obj, state);
         }
         public void set_matr_store_navig_scene_objs_ct(NavigMatrixType ind, Matrix4x4f cur_matr, NavigVisionType state)// state: 0 - 3d model; 1 - scene
         {
@@ -11014,11 +11026,8 @@ namespace opengl3
         {
             if (GL1.buffersGl.objs.ContainsKey(navig_obj))
             {
-                //Console.WriteLine("setMatrix_store_obj_________");
                 glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrix_store_obj(navig_obj, (int)ind, cur_matr)));
-                //Console.WriteLine("update_matrs_navig_scene_obj_ct_________");
                 update_matrs_navig_scene_obj_ct(navig_obj, state);
-                //Console.WriteLine("______________");
             }
         }
         private void but_con_navig_sys_Click(object sender, EventArgs e)
@@ -11165,22 +11174,25 @@ namespace opengl3
             generate_model_name = GL1.add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles, generate_model_name);
             add_navig_scene_obj_ct(generate_model_name, NavigVision);
             //========================================================================
-
+            ct_model_matrix = UtilMatr.matrix_cv(new Point3d_GL(), new Point3d_GL());
             if (limits)
             {
                 var p_trans = new Point3d_GL(ct_info.pix_xy * (limits_ps[0].Y - limits_ps[0].X) / 2, ct_info.pix_xy * (limits_ps[1].Y - limits_ps[1].X) / 2, ct_info.pix_xy * (limits_ps[2].Y - limits_ps[2].X) / 2);
-                GL1.buffersGl.setTransfObj(generate_model_name, 0, -p_trans, new Point3d_GL(0, 0, 0));               
-                // GL1.buffersGl.setTranspobj(generate_model_name, 0.5f);
+                var matr_cent = UtilMatr.to_matrix(UtilMatr.matrix_cv(-p_trans, new Point3d_GL(0, 0, 0)));
+                //GL1.buffersGl.setMatrobj(generate_model_name, 0, UtilMatr.to_matrix( UtilMatr.matrix_cv( p_trans, new Point3d_GL(0, 0, 0))));
+                set_matr_store_navig_scene_obj_ct(generate_model_name,NavigMatrixType.Self, matr_cent, NavigVision);
+                //GL1.buffersGl.setTranspobj(generate_model_name, 0.5f);
                 transf_work_mri = p_trans + new Point3d_GL(limits_ps[0].X * ct_info.pix_xy, limits_ps[1].X * ct_info.pix_xy, limits_ps[2].X * ct_info.pix_xy);
+                ct_model_matrix = UtilMatr.matrix_cv(p_trans, new Point3d_GL());
             }
             else
             {
                 transf_work_mri = new Point3d_GL(orig_model.GetLength(0)* ct_info.pix_xy/2, orig_model.GetLength(1) * ct_info.pix_xy / 2, orig_model.GetLength(2) * ct_info.pix_xy / 2);
             }
 
-            ct_model_matrix = UtilMatr.matrix_cv(transf_work_mri, new Point3d_GL());
-            var reg_ps = GL1.addPointMesh(ct_info.registr_ps, Color3d_GL.red(), "reg_ps");
-            add_navig_scene_obj_ct(reg_ps, NavigVision);
+           
+            //var reg_ps = GL1.addPointMesh(ct_info.registr_ps, Color3d_GL.red(), "reg_ps");
+            //add_navig_scene_obj_ct(reg_ps, NavigVision);
             set_matr_store_navig_scene_objs_ct(NavigMatrixType.CtToModel, UtilMatr.to_matrix(ct_model_matrix),NavigVision);  
         }
         private void rangeSliderH1_limits_model_w_ValuesChanged(object sender, EventArgs e)
@@ -11406,7 +11418,7 @@ namespace opengl3
         public Mat draw_navig_target(Mat mat, NavigTarget target, int ax = 0)//ax = 0, 1 ,2 -> x,y,z
         {
 
-            var tp1 = target.p1+ transf_work_mri;
+            var tp1 = target.p1 + transf_work_mri;
             var tp2 = target.p2 + transf_work_mri;
             var p1_x = (int)(tp1.x / ct_info.pix_xy);
             var p1_y = (int)(tp1.y / ct_info.pix_xy);
@@ -11532,8 +11544,8 @@ namespace opengl3
 
         void fast_load_ct()
         {
-            ct_info = DicomSorter.LoadAndSortSlices("dicom_series_mask");
-            //ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
+            //ct_info = DicomSorter.LoadAndSortSlices("dicom_series_mask");
+            ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
             double h_reg_p = 43;
             ct_info.registr_ps = new Point3d_GL[] { new Point3d_GL(9,9, h_reg_p), new Point3d_GL(31, 9, h_reg_p), new Point3d_GL(31, 61, h_reg_p), new Point3d_GL(9, 61, h_reg_p) };
 

@@ -723,6 +723,7 @@ namespace opengl3
             this.tabPage_navig_debug_page = new System.Windows.Forms.TabPage();
             this.button_navig_tool_trace = new System.Windows.Forms.Button();
             this.tabPage_registr_point = new System.Windows.Forms.TabPage();
+            this.button_writing_registr_ps_delete = new System.Windows.Forms.Button();
             this.button_change_navig_current_model_instrument = new System.Windows.Forms.Button();
             this.button_change_navig_current_registration_instrument = new System.Windows.Forms.Button();
             this.button_change_navig_number_registr_point_current = new System.Windows.Forms.Button();
@@ -741,7 +742,21 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.button_writing_registr_ps_delete = new System.Windows.Forms.Button();
+            this.tabPage_navig_process = new System.Windows.Forms.TabPage();
+            this.tabControl_navig_process_tab = new System.Windows.Forms.TabControl();
+            this.tabPage_robot_calibr = new System.Windows.Forms.TabPage();
+            this.tabPage_navig_model_registr = new System.Windows.Forms.TabPage();
+            this.tabPage_navig_target_execute = new System.Windows.Forms.TabPage();
+            this.button_navig_connect_robot = new System.Windows.Forms.Button();
+            this.button_navig_disconnect_robot = new System.Windows.Forms.Button();
+            this.button_navig_robot_start_servo = new System.Windows.Forms.Button();
+            this.button_navig_robot_send = new System.Windows.Forms.Button();
+            this.textBox_navig_robot_send_pos = new System.Windows.Forms.TextBox();
+            this.button_navig_robot_stop_servo = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.button8 = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -866,6 +881,9 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_sagital)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_axial)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
+            this.tabPage_navig_process.SuspendLayout();
+            this.tabControl_navig_process_tab.SuspendLayout();
+            this.tabPage_robot_calibr.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabCalibMonit
@@ -5659,10 +5677,10 @@ namespace opengl3
             this.tabPage3.Controls.Add(this.but_rob_con_sc);
             this.tabPage3.Controls.Add(this.but_rob_manual_sc);
             this.tabPage3.Controls.Add(this.but_rob_start_sc);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(869, 965);
+            this.tabPage3.Size = new System.Drawing.Size(869, 962);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Управление роботом";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -6854,6 +6872,7 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabPage_tube);
             this.windowsTabs.Controls.Add(this.tabPage_navig_debug);
             this.windowsTabs.Controls.Add(this.tabPage_navig_pan);
+            this.windowsTabs.Controls.Add(this.tabPage_navig_process);
             this.windowsTabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.windowsTabs.Location = new System.Drawing.Point(3, 0);
             this.windowsTabs.Name = "windowsTabs";
@@ -8505,13 +8524,23 @@ namespace opengl3
             this.tabPage_registr_point.Controls.Add(this.button_navig_write_pos_registr_point_enable);
             this.tabPage_registr_point.Controls.Add(this.button_navig_registr_model);
             this.tabPage_registr_point.Controls.Add(this.checkBox_registr_points_visible);
-            this.tabPage_registr_point.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_registr_point.Location = new System.Drawing.Point(4, 22);
             this.tabPage_registr_point.Name = "tabPage_registr_point";
             this.tabPage_registr_point.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_registr_point.Size = new System.Drawing.Size(561, 423);
+            this.tabPage_registr_point.Size = new System.Drawing.Size(561, 426);
             this.tabPage_registr_point.TabIndex = 3;
             this.tabPage_registr_point.Text = "Регистрация точек";
             this.tabPage_registr_point.UseVisualStyleBackColor = true;
+            // 
+            // button_writing_registr_ps_delete
+            // 
+            this.button_writing_registr_ps_delete.Location = new System.Drawing.Point(135, 81);
+            this.button_writing_registr_ps_delete.Name = "button_writing_registr_ps_delete";
+            this.button_writing_registr_ps_delete.Size = new System.Drawing.Size(144, 44);
+            this.button_writing_registr_ps_delete.TabIndex = 156;
+            this.button_writing_registr_ps_delete.Text = "Сброс записи";
+            this.button_writing_registr_ps_delete.UseVisualStyleBackColor = true;
+            this.button_writing_registr_ps_delete.Click += new System.EventHandler(this.button_writing_registr_ps_delete_Click);
             // 
             // button_change_navig_current_model_instrument
             // 
@@ -8657,15 +8686,162 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // button_writing_registr_ps_delete
+            // tabPage_navig_process
             // 
-            this.button_writing_registr_ps_delete.Location = new System.Drawing.Point(135, 81);
-            this.button_writing_registr_ps_delete.Name = "button_writing_registr_ps_delete";
-            this.button_writing_registr_ps_delete.Size = new System.Drawing.Size(144, 44);
-            this.button_writing_registr_ps_delete.TabIndex = 156;
-            this.button_writing_registr_ps_delete.Text = "Сброс записи";
-            this.button_writing_registr_ps_delete.UseVisualStyleBackColor = true;
-            this.button_writing_registr_ps_delete.Click += new System.EventHandler(this.button_writing_registr_ps_delete_Click);
+            this.tabPage_navig_process.Controls.Add(this.tabControl_navig_process_tab);
+            this.tabPage_navig_process.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_process.Name = "tabPage_navig_process";
+            this.tabPage_navig_process.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_navig_process.Size = new System.Drawing.Size(1891, 1000);
+            this.tabPage_navig_process.TabIndex = 12;
+            this.tabPage_navig_process.Text = "Навиг Процесс";
+            this.tabPage_navig_process.UseVisualStyleBackColor = true;
+            // 
+            // tabControl_navig_process_tab
+            // 
+            this.tabControl_navig_process_tab.Controls.Add(this.tabPage_robot_calibr);
+            this.tabControl_navig_process_tab.Controls.Add(this.tabPage_navig_model_registr);
+            this.tabControl_navig_process_tab.Controls.Add(this.tabPage_navig_target_execute);
+            this.tabControl_navig_process_tab.Location = new System.Drawing.Point(993, 6);
+            this.tabControl_navig_process_tab.Name = "tabControl_navig_process_tab";
+            this.tabControl_navig_process_tab.SelectedIndex = 0;
+            this.tabControl_navig_process_tab.Size = new System.Drawing.Size(892, 988);
+            this.tabControl_navig_process_tab.TabIndex = 0;
+            // 
+            // tabPage_robot_calibr
+            // 
+            this.tabPage_robot_calibr.Controls.Add(this.button8);
+            this.tabPage_robot_calibr.Controls.Add(this.propertyGrid1);
+            this.tabPage_robot_calibr.Controls.Add(this.button7);
+            this.tabPage_robot_calibr.Controls.Add(this.button5);
+            this.tabPage_robot_calibr.Controls.Add(this.button_navig_robot_stop_servo);
+            this.tabPage_robot_calibr.Controls.Add(this.textBox_navig_robot_send_pos);
+            this.tabPage_robot_calibr.Controls.Add(this.button_navig_robot_send);
+            this.tabPage_robot_calibr.Controls.Add(this.button_navig_robot_start_servo);
+            this.tabPage_robot_calibr.Controls.Add(this.button_navig_disconnect_robot);
+            this.tabPage_robot_calibr.Controls.Add(this.button_navig_connect_robot);
+            this.tabPage_robot_calibr.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_robot_calibr.Name = "tabPage_robot_calibr";
+            this.tabPage_robot_calibr.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_robot_calibr.Size = new System.Drawing.Size(884, 959);
+            this.tabPage_robot_calibr.TabIndex = 0;
+            this.tabPage_robot_calibr.Text = "Калибровка робота";
+            this.tabPage_robot_calibr.UseVisualStyleBackColor = true;
+            // 
+            // tabPage_navig_model_registr
+            // 
+            this.tabPage_navig_model_registr.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_model_registr.Name = "tabPage_navig_model_registr";
+            this.tabPage_navig_model_registr.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_navig_model_registr.Size = new System.Drawing.Size(884, 959);
+            this.tabPage_navig_model_registr.TabIndex = 1;
+            this.tabPage_navig_model_registr.Text = "Регистрация модели";
+            this.tabPage_navig_model_registr.UseVisualStyleBackColor = true;
+            // 
+            // tabPage_navig_target_execute
+            // 
+            this.tabPage_navig_target_execute.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_target_execute.Name = "tabPage_navig_target_execute";
+            this.tabPage_navig_target_execute.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_navig_target_execute.Size = new System.Drawing.Size(884, 959);
+            this.tabPage_navig_target_execute.TabIndex = 2;
+            this.tabPage_navig_target_execute.Text = "Выполнение целевых позиций";
+            this.tabPage_navig_target_execute.UseVisualStyleBackColor = true;
+            // 
+            // button_navig_connect_robot
+            // 
+            this.button_navig_connect_robot.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_navig_connect_robot.Location = new System.Drawing.Point(6, 6);
+            this.button_navig_connect_robot.Name = "button_navig_connect_robot";
+            this.button_navig_connect_robot.Size = new System.Drawing.Size(152, 33);
+            this.button_navig_connect_robot.TabIndex = 138;
+            this.button_navig_connect_robot.Text = "Подключение";
+            this.button_navig_connect_robot.UseVisualStyleBackColor = true;
+            // 
+            // button_navig_disconnect_robot
+            // 
+            this.button_navig_disconnect_robot.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_navig_disconnect_robot.Location = new System.Drawing.Point(6, 45);
+            this.button_navig_disconnect_robot.Name = "button_navig_disconnect_robot";
+            this.button_navig_disconnect_robot.Size = new System.Drawing.Size(152, 33);
+            this.button_navig_disconnect_robot.TabIndex = 139;
+            this.button_navig_disconnect_robot.Text = "Отключение";
+            this.button_navig_disconnect_robot.UseVisualStyleBackColor = true;
+            // 
+            // button_navig_robot_start_servo
+            // 
+            this.button_navig_robot_start_servo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_navig_robot_start_servo.Location = new System.Drawing.Point(6, 137);
+            this.button_navig_robot_start_servo.Name = "button_navig_robot_start_servo";
+            this.button_navig_robot_start_servo.Size = new System.Drawing.Size(152, 33);
+            this.button_navig_robot_start_servo.TabIndex = 140;
+            this.button_navig_robot_start_servo.Text = "Запуск исп поз";
+            this.button_navig_robot_start_servo.UseVisualStyleBackColor = true;
+            // 
+            // button_navig_robot_send
+            // 
+            this.button_navig_robot_send.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_navig_robot_send.Location = new System.Drawing.Point(6, 176);
+            this.button_navig_robot_send.Name = "button_navig_robot_send";
+            this.button_navig_robot_send.Size = new System.Drawing.Size(152, 50);
+            this.button_navig_robot_send.TabIndex = 141;
+            this.button_navig_robot_send.Text = "Отправить позицию";
+            this.button_navig_robot_send.UseVisualStyleBackColor = true;
+            // 
+            // textBox_navig_robot_send_pos
+            // 
+            this.textBox_navig_robot_send_pos.Location = new System.Drawing.Point(178, 191);
+            this.textBox_navig_robot_send_pos.Name = "textBox_navig_robot_send_pos";
+            this.textBox_navig_robot_send_pos.Size = new System.Drawing.Size(373, 22);
+            this.textBox_navig_robot_send_pos.TabIndex = 142;
+            this.textBox_navig_robot_send_pos.Text = "\"\"";
+            // 
+            // button_navig_robot_stop_servo
+            // 
+            this.button_navig_robot_stop_servo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_navig_robot_stop_servo.Location = new System.Drawing.Point(164, 137);
+            this.button_navig_robot_stop_servo.Name = "button_navig_robot_stop_servo";
+            this.button_navig_robot_stop_servo.Size = new System.Drawing.Size(152, 33);
+            this.button_navig_robot_stop_servo.TabIndex = 143;
+            this.button_navig_robot_stop_servo.Text = "Остановка";
+            this.button_navig_robot_stop_servo.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button5.Location = new System.Drawing.Point(6, 390);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(152, 54);
+            this.button5.TabIndex = 144;
+            this.button5.Text = "Вычислить матрицу";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button7.Location = new System.Drawing.Point(6, 232);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(152, 50);
+            this.button7.TabIndex = 145;
+            this.button7.Text = "Принять позицию";
+            this.button7.UseVisualStyleBackColor = true;
+            // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.Location = new System.Drawing.Point(527, 248);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(223, 433);
+            this.propertyGrid1.TabIndex = 146;
+            // 
+            // button8
+            // 
+            this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button8.Location = new System.Drawing.Point(6, 495);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(152, 50);
+            this.button8.TabIndex = 147;
+            this.button8.Text = "Отправить позицию";
+            this.button8.UseVisualStyleBackColor = true;
             // 
             // MainScanningForm
             // 
@@ -8835,6 +9011,10 @@ namespace opengl3
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_sagital)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox_navig_axial)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
+            this.tabPage_navig_process.ResumeLayout(false);
+            this.tabControl_navig_process_tab.ResumeLayout(false);
+            this.tabPage_robot_calibr.ResumeLayout(false);
+            this.tabPage_robot_calibr.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -9552,6 +9732,21 @@ namespace opengl3
         private System.Windows.Forms.Button button_change_navig_number_registr_point_current;
         private System.Windows.Forms.Button button_navig_write_pos_registr_point_enable;
         private System.Windows.Forms.Button button_writing_registr_ps_delete;
+        private System.Windows.Forms.TabPage tabPage_navig_process;
+        private System.Windows.Forms.TabControl tabControl_navig_process_tab;
+        private System.Windows.Forms.TabPage tabPage_robot_calibr;
+        private System.Windows.Forms.TabPage tabPage_navig_model_registr;
+        private System.Windows.Forms.TabPage tabPage_navig_target_execute;
+        private System.Windows.Forms.Button button_navig_disconnect_robot;
+        private System.Windows.Forms.Button button_navig_connect_robot;
+        private System.Windows.Forms.Button button_navig_robot_send;
+        private System.Windows.Forms.Button button_navig_robot_start_servo;
+        private System.Windows.Forms.TextBox textBox_navig_robot_send_pos;
+        private System.Windows.Forms.Button button_navig_robot_stop_servo;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.PropertyGrid propertyGrid1;
     }
 }
 

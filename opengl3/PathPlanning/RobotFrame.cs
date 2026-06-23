@@ -39,7 +39,7 @@ namespace opengl3
         public PositionRob frame;
         public Color3d_GL color;
         public int[] turn;
-        public enum RobotType { KUKA = 1, PULSE = 2, FABION2 = 3};
+        public enum RobotType { KUKA = 1, PULSE = 2, FABION2 = 3, RC5 = 4 };
 
         public RobotType robotType;
         public DateTime timestamp;
@@ -255,6 +255,37 @@ namespace opengl3
 
                         var sRz = -m[0,1] / cRy;
                         var cRz = m[0,0] / cRy;
+
+                        var sRx = -m[1, 2] / cRy;
+                        var cRx = m[2, 2] / cRy;
+
+                        //Console.WriteLine(cRx + " "+ sRx+" "+arccos(cRx));
+                        var Rx = Math.Sign(sRx) * arccos(cRx);
+                        var Ry = Math.Asin(m[0, 2]);
+                        var Rz = Math.Sign(sRz) * arccos(cRz);
+
+                        int d = (int)m[3, 3];
+                        X = x;
+                        Y = y;
+                        Z = z;
+                        A = cut_off_2pi(Rx);//-
+                        B = cut_off_2pi(Ry);//
+                        C = cut_off_2pi(Rz);
+                        D = d;
+                    }
+                    break;
+
+                case RobotType.RC5:
+                    {
+                        var x = m[0, 3];
+                        var y = m[1, 3];
+                        var z = m[2, 3];
+
+                        var sRy = m[0, 2];
+                        var cRy = Math.Pow((1 - sRy * sRy), 0.5);//sign lost
+
+                        var sRz = -m[0, 1] / cRy;
+                        var cRz = m[0, 0] / cRy;
 
                         var sRx = -m[1, 2] / cRy;
                         var cRx = m[2, 2] / cRy;
@@ -755,7 +786,9 @@ namespace opengl3
             for(int i =0; i<q.Length;i++)
             {
                 q_r[i] = q[i] * Math.PI / 180;
+                Console.Write(Math.Round(q_r[i],4)+" ");
             }
+            Console.Write(" q_r[i]");
             return q_r;
         }
         static double to_rad(double q)
@@ -794,6 +827,39 @@ namespace opengl3
                 for (int i=0; i < count;i++)
                 {
                     dh_params_c.Add( dh_params[i]);
+                }
+                var fr = new RobotFrame(calc_pos(dh_params_c.ToArray()), robotType);
+                var pos = fr.frame;
+                return pos;
+            }
+            else if (robotType == RobotType.RC5)
+            {
+                var L1 = 0.1725;
+                var L2 = -0.405;
+                var L3 = -0.37;
+                var L4 = 0.1398;
+                var L5 = 0.1398;
+                var L6 = 0.141;
+
+                var L21 = 0.156;
+                var L31 = -0.148;
+
+                if (!rad)
+                    q = to_rad(q);
+
+                var dh_params = new double[][] {
+                    new double[]{ q[0], Math.PI / 2, 0, L1},
+                    new double[]{ q[1],  0, L2, 0},
+                    new double[]{ q[2],  0, L3,0},
+                    new double[]{ q[3], Math.PI / 2, 0, L4+L21+L31},
+                    new double[]{ q[4], -Math.PI / 2, 0, L5},
+                    new double[]{ q[5],  0, 0, L6}
+                };
+                //var dh_params_c = new double[6][];
+                var dh_params_c = new List<double[]>();
+                for (int i = 0; i < count; i++)
+                {
+                    dh_params_c.Add(dh_params[i]);
                 }
                 var fr = new RobotFrame(calc_pos(dh_params_c.ToArray()), robotType);
                 var pos = fr.frame;
@@ -893,7 +959,8 @@ namespace opengl3
             switch(robotType) 
             {
                 case RobotType.KUKA: return comp_inv_kinem_priv_kuka(pos, turn, graphic); 
-                case RobotType.PULSE: return comp_inv_kinem_priv_pulse(pos, turn); 
+                case RobotType.PULSE: return comp_inv_kinem_priv_pulse(pos, turn);
+                case RobotType.RC5: return comp_inv_kinem_priv_rc5(pos, turn);
                 default: return new double[] { pos.position.x, pos.position.y, pos.position.x, pos.rotation.x, pos.rotation.y, pos.rotation.z };
             }
         }
@@ -998,11 +1065,127 @@ namespace opengl3
                 if (qi > Math.PI) qi -= 2 * Math.PI;
                 if (qi < -Math.PI) qi += 2 * Math.PI;
                 q[i] = qi;
-                //Console.WriteLine(q[i]);
+                Console.Write(Math.Round(q[i], 4) + " ");
             }
-            
+            Console.WriteLine(" q");
             return q;
         }
+
+
+        static public double[] comp_inv_kinem_priv_rc5(PositionRob pos, int[] turn)
+        {
+            var pm = getMatrixPos(pos, RobotType.RC5);
+            var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
+
+            var L21 = 0.156;
+            var L31 = -0.148;
+
+            var L1 = 0.1725;
+            var L2 = -0.405;
+            var L3 = -0.37;
+            var L4 = 0.1398+L21+L31;
+            var L5 = 0.1398;
+            var L6 = 0.141;
+
+            
+
+            var dz = eye_matr(4);
+            dz[2, 3] = -L6;
+            var p0 = pm * dz;
+            var p0p = new Point3d_GL(p0[0, 3], p0[1, 3], p0[2, 3]);
+            var vz = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
+            var xy_d = p0p.magnitude_xy();
+            if (Math.Abs(L4) > Math.Abs(xy_d)) return null;
+            var aa_d = Math.Sqrt(xy_d * xy_d - L4 * L4);
+            var p_circ_cross = calc_inters_2circ(0, 0, p0p.x, p0p.y, aa_d, L4, turn[0]);
+            if (!p.exist) return null;
+            var x2 = p_circ_cross.x;
+            var y2 = p_circ_cross.y;
+            var vf = new Point3d_GL(x2 - p0p.x, y2 - p0p.y);
+            vf = vf.normalize();
+            var ax5y = Point3d_GL.vec_perpend_2_vecs(vz, vf);
+            ax5y *= turn[1];
+
+            var p1 = p0p + ax5y * L5;
+            var p2 = p1 + vf * L4;
+
+            var scara = p2 - new Point3d_GL(0, 0, L1);
+            var sq1 = -scara.y / scara.magnitude_xy();
+            var cq1 = -scara.x / scara.magnitude_xy();
+
+            var q1 = Math.Sign(sq1) * arccos(cq1);
+
+
+            var Ls = scara.magnitude_xy();
+            var Lt = scara.magnitude();
+
+            if (Ls == 0) return null;
+            if (Lt == 0) return null;
+            var omega = Math.Atan(scara.z / Ls);
+            var theta = arccos((L2 * L2 + L3 * L3 - Lt * Lt) / (2 * L2 * L3));
+            var omega_ext = arccos((L2 * L2 + Lt * Lt - L3 * L3) / (2 * L2 * Lt));
+            omega += omega_ext * turn[2];
+
+            var q2 = -omega;
+            var q3 = Math.PI - theta;
+
+            if (turn[0] > 0)
+            {
+                q1 += Math.PI;
+
+
+                q2 *= -1;
+                q2 -= Math.PI;
+                q3 *= -1;
+            }
+
+            if (turn[2] < 0)
+            {
+                q3 *= turn[2];
+            }
+            var ax4z = -ax5y;
+            var ax4y = -vf;
+            var ax4x = ax4y | ax4z;
+
+            var dh_params = new double[][]
+                {
+                    new double[]{ q1, Math.PI / 2, 0, L1 },
+                    new double[]{ q2,  0, L2, 0 },
+                    new double[]{ q3,  0, L3, 0 } };
+
+            var pm3 = calc_pos(dh_params);
+            var ax3x = new Point3d_GL(pm3[0, 0], pm3[1, 0], pm3[2, 0]);
+            var s4 = Point3d_GL.sign_r_v(ax3x, ax4x, ax4y);
+            var q4 = s4 * Point3d_GL.ang(ax3x, ax4x);
+
+
+            var ax6y = new Point3d_GL(pm[0, 1], pm[1, 1], pm[2, 1]);
+            var ax6z = new Point3d_GL(pm[0, 2], pm[1, 2], pm[2, 2]);
+
+            var s6 = Point3d_GL.sign_r_v(ax5y, ax6y, ax6z);
+            var q6 = s6 * Point3d_GL.ang(ax5y, ax6y);
+
+
+
+            var s5 = Point3d_GL.sign_r_v(ax4y, ax6z, ax4z);
+            var q5 = s5 * Point3d_GL.ang(ax4y, ax6z);
+
+            q6 += Math.PI;
+
+            var q = new double[] { q1, q2, q3, q4, q5, q6 };
+            
+            for (int i = 0; i < q.Length; i++)
+            {
+                var qi = q[i];
+                if (qi > Math.PI) qi -= 2 * Math.PI;
+                if (qi < -Math.PI) qi += 2 * Math.PI;
+                q[i] = qi;
+                Console.Write(Math.Round( q[i],4)+" ");
+            }
+            Console.WriteLine(" q");
+            return q;
+        }
+
 
         //---------------------------------------------------------------------
         static public double[] comp_inv_kinem_priv_kuka(PositionRob pos, int[] turn,GraphicGL graphic = null)
