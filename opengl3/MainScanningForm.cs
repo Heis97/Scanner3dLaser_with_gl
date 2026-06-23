@@ -234,23 +234,24 @@ namespace opengl3
         {
             new DicomSetupBuilder().RegisterServices(s => s.AddImageManager<WinFormsImageManager>()).Build();
 
-            Console.WriteLine("NavigMatrixType.Self "+(int)NavigMatrixType.Self);
             InitializeComponent();
             init_vars();
             //fast_load_ct();
-
-            var posrob = RobotFrame.comp_forv_kinem(new double[] { 155.107, -121.84573, 82.953987, 14.06147, 116.421089, -83.67874 }, 6, false, RobotFrame.RobotType.PULSE);
-            Console.WriteLine("\n\n");
+            var cur_rob = RobotFrame.RobotType.RC5;
+            var posrob = RobotFrame.comp_forv_kinem(new double[] { 155.107, -111.8457, 82.953987, 14.06147, 116.421089, -83.67874 }, 6, false, cur_rob);
+            Console.WriteLine("\n");
+            //341.4762 -65.5166 626.3698 0.7603 1.2453 -0.1323
+            var solves = RobotFrame.comp_inv_kinem(posrob, cur_rob);
+            Console.WriteLine("\n");
             Console.WriteLine("posrob");
             Console.WriteLine(posrob.ToString());
-
-            var solves = RobotFrame.comp_inv_kinem(posrob, RobotFrame.RobotType.PULSE);
-
+            Console.WriteLine("\n");
             for (int i = 0; i < solves.Length; i++)
             {
-                var posrob1 = RobotFrame.comp_forv_kinem(solves[i], 6, true, RobotFrame.RobotType.PULSE);
+                var posrob1 = RobotFrame.comp_forv_kinem(solves[i], 6, true, cur_rob);
                 Console.WriteLine(posrob1.ToString());
             }
+
 
             /* var poses_sym = new List<Pose>(new Pose[] { 
                  new Pose(new double[] { 1, 2, 3, 4, 5, 6 }),

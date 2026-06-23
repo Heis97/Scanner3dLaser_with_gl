@@ -323,7 +323,7 @@ namespace opengl3
                     color = new Color3d_GL((float)m[3, 0], (float)m[3, 1], (float)m[3, 2]);
                     break;
             }
-            frame = new PositionRob(new Point3d_GL(X, Y, Z), new Point3d_GL(A, B, C));
+            frame = new PositionRob(new Point3d_GL(X, Y, Z), new Point3d_GL(A, B, C),m);
         }
 
         static public double cut_off_2pi(double angle)
@@ -800,6 +800,18 @@ namespace opengl3
         {
             return q *180/ Math.PI;
         }
+
+
+        static double[] extend_q(double[] q, int n)
+        {
+            var len = Math.Max(n, q.Length);
+            var q_r = new double[len];
+            for(int i = 0; i < q.Length; i++)
+            {
+                q_r[i] = q[i];   
+            }
+            return q_r;
+        }
         static public PositionRob comp_forv_kinem(double[] q,int count, bool rad = true, RobotType robotType = RobotType.PULSE)
         {
             if(robotType==RobotType.PULSE)
@@ -834,34 +846,52 @@ namespace opengl3
             }
             else if (robotType == RobotType.RC5)
             {
-                var L1 = 0.1725;
-                var L2 = -0.405;
-                var L3 = -0.37;
-                var L4 = 0.1398;
-                var L5 = 0.1398;
-                var L6 = 0.141;
+                var L21 = 156;
+                var L31 = -148;
 
-                var L21 = 0.156;
-                var L31 = -0.148;
+                var L1 = 172.5;
+                var L2 = -405;
+                var L3 = -370;
+                var L4 = 139.8 + L21 + L31;
+                var L5 = 139.8;
+                var L6 = 141;
+
+                
 
                 if (!rad)
                     q = to_rad(q);
+
+                q = extend_q(q, 6);
 
                 var dh_params = new double[][] {
                     new double[]{ q[0], Math.PI / 2, 0, L1},
                     new double[]{ q[1],  0, L2, 0},
                     new double[]{ q[2],  0, L3,0},
-                    new double[]{ q[3], Math.PI / 2, 0, L4+L21+L31},
+                    new double[]{ q[3], Math.PI / 2, 0, L4},
                     new double[]{ q[4], -Math.PI / 2, 0, L5},
                     new double[]{ q[5],  0, 0, L6}
                 };
+                bool true_dh = true;
+
+                if(true_dh)
+                {
+                    dh_params = new double[][] {
+                    new double[]{ q[0] - 0.00521167, 1.57076, -3.16453, 172.515},
+                    new double[]{ q[1] - 0.00815129, 0.00474843, -405.234,156.134},
+                    new double[]{ q[2] + 0.00631864, 0.00250139, -371.217,-148.534},
+                    new double[]{ q[3] - 0.00083325, 1.57062,-3.10482,139.763},
+                    new double[]{ q[4] - 0.00064089, -1.57085, 4.56482,139.429},
+                    new double[]{ q[5],  0, 0, 141.079 }
+                };
+                }
                 //var dh_params_c = new double[6][];
                 var dh_params_c = new List<double[]>();
                 for (int i = 0; i < count; i++)
                 {
                     dh_params_c.Add(dh_params[i]);
                 }
-                var fr = new RobotFrame(calc_pos(dh_params_c.ToArray()), robotType);
+                var m = calc_pos(dh_params_c.ToArray());
+                var fr = new RobotFrame(m, robotType);
                 var pos = fr.frame;
                 return pos;
             }
@@ -1077,17 +1107,17 @@ namespace opengl3
             var pm = getMatrixPos(pos, RobotType.RC5);
             var p = new Point3d_GL(pm[0, 3], pm[1, 3], pm[2, 3]);
 
-            var L21 = 0.156;
-            var L31 = -0.148;
+            var L21 = 156;
+            var L31 = -148;
 
-            var L1 = 0.1725;
-            var L2 = -0.405;
-            var L3 = -0.37;
-            var L4 = 0.1398+L21+L31;
-            var L5 = 0.1398;
-            var L6 = 0.141;
+            var L1 = 172.5;
+            var L2 = 405;
+            var L3 = 370;
+            var L4 = 139.8 + L21 + L31;
+            var L5 = 139.8;
+            var L6 = 141;
 
-            
+
 
             var dz = eye_matr(4);
             dz[2, 3] = -L6;
@@ -1150,10 +1180,11 @@ namespace opengl3
             var dh_params = new double[][]
                 {
                     new double[]{ q1, Math.PI / 2, 0, L1 },
-                    new double[]{ q2,  0, L2, 0 },
-                    new double[]{ q3,  0, L3, 0 } };
+                    new double[]{ q2,  0, -L2, 0 },
+                    new double[]{ q3,  0, -L3, 0 } };
 
-            var pm3 = calc_pos(dh_params);
+            var pm3 = comp_forv_kinem(new double[] { q1, q2, q3 }, 3, true, RobotType.RC5).m;
+            //var pm3 = calc_pos(dh_params);
             var ax3x = new Point3d_GL(pm3[0, 0], pm3[1, 0], pm3[2, 0]);
             var s4 = Point3d_GL.sign_r_v(ax3x, ax4x, ax4y);
             var q4 = s4 * Point3d_GL.ang(ax3x, ax4x);
