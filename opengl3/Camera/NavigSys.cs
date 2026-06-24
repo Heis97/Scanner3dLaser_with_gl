@@ -160,20 +160,25 @@ namespace opengl3
 
         private RobotFrame _currentFrame;
         public RobotFrame CurrentFrame => _currentFrame;
-
+        public int _messageCounter = 0;
+        private DateTime _lastStatsTime = DateTime.UtcNow;
         protected override void OnMessageReceived(string message)
         {
+            Interlocked.Increment(ref _messageCounter);
+            /*Console.WriteLine($"Получено: {message}");
             Console.WriteLine($"Получено: {message}");
+
+           
             try
             {
-                /*var frame = JsonSerializer.Deserialize<RobotFrame>(message);
+                var frame = JsonSerializer.Deserialize<RobotFrame>(message);
                 if (frame != null)
                 {
                     _currentFrame = frame;
                     FrameUpdated?.Invoke(frame);
-                }*/
+                }
             }
-            catch { /* Игнорируем не-JSON */ }
+            catch {  }*/
         }
 
         public async Task SendFrameAsync(RobotFrame frame)

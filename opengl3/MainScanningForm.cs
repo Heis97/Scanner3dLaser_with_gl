@@ -11911,6 +11911,9 @@ namespace opengl3
 
         private void UiTimer_Tick(object sender, EventArgs e)
         {
+            int count = Interlocked.Exchange(ref _robotClient._messageCounter, 0);
+            Console.WriteLine($"Сообщений/с: {count}");
+
             RobotFrame frame;
             lock (_lock) { frame = _latestFrame; }
             if (frame != null)
