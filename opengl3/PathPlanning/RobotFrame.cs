@@ -26,6 +26,28 @@ namespace opengl3
             this.rotation = rot;
             this.m = m;
         }
+        public PositionRob(string posrob, char separator = ' ')
+        {
+            this.position = new Point3d_GL();
+            this.rotation = new Point3d_GL();
+            var posrob_2 = posrob.Replace("  ", " ");
+            posrob_2 = posrob_2.Replace("  ", " ");
+            posrob_2 = posrob_2.Replace("  ", " ");
+            posrob_2 = posrob_2.Replace("  ", " ");
+
+            var posrob_l = posrob_2.Trim().Split(separator);
+            if(posrob_l.Length ==6 )
+            {
+                position.x = Convert.ToDouble(posrob_l[0]);
+                position.y = Convert.ToDouble(posrob_l[1]);
+                position.z = Convert.ToDouble(posrob_l[2]);
+                rotation.x = Convert.ToDouble(posrob_l[3]);
+                rotation.y = Convert.ToDouble(posrob_l[4]);
+                rotation.z = Convert.ToDouble(posrob_l[5]);
+            }
+            
+            this.m = new Matrix<double>(4,4);
+        }
         static public PositionRob operator +(PositionRob fr1, PositionRob fr2)
         {
             var fr = fr1;

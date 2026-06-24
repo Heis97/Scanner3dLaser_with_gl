@@ -246,7 +246,9 @@ namespace opengl3
             //test_kin_rc5();
             //341.4762 -65.5166 626.3698 0.7603 1.2453 -0.1323   //target position, know
             var test_point = new PositionRob(new Point3d_GL(341.4762, -65.5166, 626.3698), new Point3d_GL(0.7603, 1.2453, -0.1323));
-
+            Console.WriteLine(test_point.ToString());
+            var test_p2 = new PositionRob(test_point.ToString());
+            Console.WriteLine(test_p2.ToString());
             var cur_turn = RobotFrame.get_current_turn(test_point, new double[] { 2.2, -2.0905, 1.5097, 0.2777, 0.881, 2.4235 },RobotFrame.RobotType.RC5);
             var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(test_point, 1);
 
@@ -11856,6 +11858,8 @@ namespace opengl3
         private string _latestFrame;
         private object _lock = new object();
         private System.Windows.Forms.Timer _uiTimer;
+        int current_robot_turn = 0;
+        RobotFrame.RobotType robot_navig_type = RobotFrame.RobotType.RC5;
         private void button_navig_robot_start_servo_Click(object sender, EventArgs e)
         {
             send_navig_robot( " ddd\n " );
@@ -11870,8 +11874,38 @@ namespace opengl3
         {
 
             textBox_navig_robot_send_pos.Text = label_navig_robot_status_pose.Text;
+            var pose_cur = parse_pose(textBox_navig_robot_send_pos.Text);
+
+            var position_d = RobotFrame.comp_forv_kinem(pose_cur, 6, false, robot_navig_type);
+            var cur_turn = RobotFrame.get_current_turn(position_d, pose_cur, robot_navig_type);
+
+            label_navig_ronot_current_turn.Text = cur_turn.ToString();
+
+            textBox_navig_robot_send_position.Text = position_d.ToString();
+            //var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(test_point, 1);
         }
 
+        double[] parse_pose(string pose_str)
+        {
+            var pose = new double[6];
+            var pose_l = pose_str.Split(',');
+            for(int i=0; i<6;i++)
+            {
+                pose[i] = Convert.ToDouble(pose_l[i]);
+            }
+            return pose;
+        }
+        string pose_to_str(double[] pose)
+        {
+            var pose_str = "";
+            var pose_l = pose_str.Split(',');
+            for (int i = 0; i < pose.Length; i++)
+            {
+                if (i != 5) pose_str += pose[i] + ",";
+                else pose_str += pose[i];
+            }
+            return pose_str;
+        }
         private async void button_navig_connect_robot_Click(object sender, EventArgs e)
         {
             _uiTimer = new System.Windows.Forms.Timer { Interval = 50 };
@@ -11955,13 +11989,17 @@ namespace opengl3
 
         private void button_navig_robot_send_position_Click(object sender, EventArgs e)
         {
-
+            if (current_robot_turn < 0) return;
+            var cur_pos = new PositionRob(textBox_navig_robot_send_position.Text);
+            var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(cur_pos, current_robot_turn);
+            textBox_navig_robot_send_pos.Text = pose_to_str(correct_solve);
         }
 
         private void trackBar_navig_robot_test_servo_Scroll(object sender, EventArgs e)
         {
-            var cur_pos = textBox_navig_robot_send_pos.Text;
             var cur_ang = ((System.Windows.Forms.TrackBar)sender).Value;
+            /*var cur_pos = textBox_navig_robot_send_pos.Text;
+            
             if (cur_pos.Count(',') != 5) return;
             var pos_l = cur_pos.Split(',');
             var q6 = Convert.ToDouble( pos_l[5].Trim())+ cur_ang;
@@ -11972,6 +12010,14 @@ namespace opengl3
             }
             new_pos += Math.Round(q6, 4).ToString();
             send_navig_robot("pose " + new_pos);
+             */
+            var cur_position = new PositionRob(textBox_navig_robot_send_position.Text);
+            cur_position.position.z += cur_angle;
+            var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(cur_position, current_robot_turn);
+            var cur_pose_str = pose_to_str(correct_solve);
+            textBox_navig_robot_send_pos.Text = cur_pose_str;
+
+            send_navig_robot("pose " + cur_pose_str);
         }
     }
 }

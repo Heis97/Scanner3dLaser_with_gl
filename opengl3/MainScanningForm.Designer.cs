@@ -749,7 +749,7 @@ namespace opengl3
             this.button_navig_robot_send_pose = new System.Windows.Forms.Button();
             this.label50 = new System.Windows.Forms.Label();
             this.label49 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.textBox_navig_robot_send_position = new System.Windows.Forms.TextBox();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.button_navig_robot_recieve_pos = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
@@ -8717,7 +8717,7 @@ namespace opengl3
             this.tabPage_robot_calibr.Controls.Add(this.button_navig_robot_send_pose);
             this.tabPage_robot_calibr.Controls.Add(this.label50);
             this.tabPage_robot_calibr.Controls.Add(this.label49);
-            this.tabPage_robot_calibr.Controls.Add(this.textBox2);
+            this.tabPage_robot_calibr.Controls.Add(this.textBox_navig_robot_send_position);
             this.tabPage_robot_calibr.Controls.Add(this.propertyGrid1);
             this.tabPage_robot_calibr.Controls.Add(this.button_navig_robot_recieve_pos);
             this.tabPage_robot_calibr.Controls.Add(this.button5);
@@ -8809,13 +8809,13 @@ namespace opengl3
             this.label49.TabIndex = 149;
             this.label49.Text = "угол";
             // 
-            // textBox2
+            // textBox_navig_robot_send_position
             // 
-            this.textBox2.Location = new System.Drawing.Point(178, 220);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(373, 22);
-            this.textBox2.TabIndex = 148;
-            this.textBox2.Text = "\"\"";
+            this.textBox_navig_robot_send_position.Location = new System.Drawing.Point(178, 220);
+            this.textBox_navig_robot_send_position.Name = "textBox_navig_robot_send_position";
+            this.textBox_navig_robot_send_position.Size = new System.Drawing.Size(373, 22);
+            this.textBox_navig_robot_send_position.TabIndex = 148;
+            this.textBox_navig_robot_send_position.Text = "\"\"";
             // 
             // propertyGrid1
             // 
@@ -9844,7 +9844,7 @@ namespace opengl3
         private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.Label label50;
         private System.Windows.Forms.Label label49;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBox_navig_robot_send_position;
         private System.Windows.Forms.Button button_navig_robot_send_pose;
         private System.Windows.Forms.Label label_navig_ronot_current_turn;
         private System.Windows.Forms.Label label51;
