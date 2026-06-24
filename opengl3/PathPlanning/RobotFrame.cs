@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Emgu.CV;
+using Emgu.CV.CvEnum;
 using Emgu.CV.Stitching;
 using PathPlanning;
 
@@ -25,7 +26,27 @@ namespace opengl3
             this.rotation = rot;
             this.m = m;
         }
-
+        static public PositionRob operator +(PositionRob fr1, PositionRob fr2)
+        {
+            var fr = fr1;
+            fr.position.x += fr2.position.x; fr.position.y += fr2.position.y; fr.position.z += fr2.position.z;
+            fr.rotation.x += fr2.rotation.x; fr.rotation.y += fr2.rotation.y; fr.rotation.z += fr2.rotation.z;
+            return fr;
+        }
+        static public PositionRob operator -(PositionRob fr1, PositionRob fr2)
+        {
+            var fr = fr1;
+            fr.position.x -= fr2.position.x; fr.position.y -= fr2.position.y; fr.position.z -= fr2.position.z;
+            fr.rotation.x -= fr2.rotation.x; fr.rotation.y -= fr2.rotation.y; fr.rotation.z -= fr2.rotation.z;
+            return fr;
+        }
+        static public PositionRob operator *(PositionRob fr1, double k)
+        {
+            var fr = fr1;
+            fr.position.x *= k; fr.position.y *= k; fr.position.z *= k;
+            fr.rotation.x *= k; fr.rotation.y *= k; fr.rotation.z *= k;
+            return fr;
+        }
         public override string ToString()
         {
             return position.ToString()+" "+rotation.ToString();
@@ -1216,8 +1237,89 @@ namespace opengl3
             Console.WriteLine(" q");
             return q;
         }
+        static public int get_current_turn(PositionRob posrob, double[] pose, RobotType robot_type, bool rad = true)
+        {
+            int turn = 0;
+            var solves = comp_inv_kinem(posrob, robot_type);
+            int count_calc = 5;
+            double min_val = double.MaxValue;
+
+            for(int i = 0; i<solves.Length;i++)
+            {
+                double cur_delt = 0;
+                for (int j = 0; j < count_calc; j++)
+                {
+                    cur_delt += Math.Abs(pose[j] - solves[i][j]);
+                    
+                }
+                if(cur_delt < min_val)
+                {
+                    min_val = cur_delt;
+                    turn = i;
+                }
+            }
+
+            return turn;
+        }
+        static public double[] comp_inv_kinem_priv_rc5_real(PositionRob posrob, int target_solve = 0)
+        {
+            var cur_rob = RobotType.RC5;
+            var solves = comp_inv_kinem(posrob, cur_rob);
+            
+            var posrob_start = RobotFrame.comp_forv_kinem(solves[target_solve], 6, true, cur_rob);
+            var err = posrob - posrob_start;
+            var kqs = new PositionRob[6];
+            var dq_val = 0.001;
+            var arr_base = new double[6, 6];
+            var arr_err = new double[6, 1];
+
+            arr_err[0, 0] = err.position.x;
+            arr_err[1, 0] = err.position.y;
+            arr_err[2, 0] = err.position.z;
+
+            arr_err[3, 0] = err.rotation.x;
+            arr_err[4, 0] = err.rotation.y;
+            arr_err[5, 0] = err.rotation.z;
 
 
+            for (int i = 0; i < 6; i++)
+            {
+                var solve_orig = (double[])solves[target_solve].Clone();
+                solve_orig[i] += dq_val;
+                var posrob_dq = RobotFrame.comp_forv_kinem(solve_orig, 6, true, cur_rob);
+                kqs[i] = posrob_start - posrob_dq;
+
+                arr_base[0, i] = kqs[i].position.x;
+                arr_base[1, i] = kqs[i].position.y;
+                arr_base[2, i] = kqs[i].position.z;
+
+                arr_base[3, i] = kqs[i].rotation.x;
+                arr_base[4, i] = kqs[i].rotation.y;
+                arr_base[5, i] = kqs[i].rotation.z;
+
+            }
+            var m_base = new Matrix<double>(arr_base);
+            var m_err = new Matrix<double>(arr_err);
+            var X = new Matrix<double>(6, 1);
+            bool isSuccess = CvInvoke.Solve(m_base, m_err, X, DecompMethod.LU);
+
+
+            var solve_start = (double[])solves[target_solve].Clone();
+            for (int i = 0; i < 6; i++)
+            {
+                solve_start[i] -= dq_val * X[i, 0];
+            }
+            var posrob_first_solve = comp_forv_kinem(solve_start, 6, true, cur_rob);
+
+            Console.WriteLine("\n");
+            Console.WriteLine("posrob_first");
+            Console.WriteLine((posrob-posrob_first_solve).ToString());
+            //Console.WriteLine(posrob.ToString());
+            Console.WriteLine("\n");
+
+            return solve_start;
+
+        }
         //---------------------------------------------------------------------
         static public double[] comp_inv_kinem_priv_kuka(PositionRob pos, int[] turn,GraphicGL graphic = null)
         {

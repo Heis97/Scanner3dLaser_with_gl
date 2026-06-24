@@ -19,6 +19,8 @@ using System.ComponentModel.Design;
 using System.Runtime.CompilerServices;
 using Emgu.CV.Dnn;
 using OpenGL;
+using System.Threading;
+using System.Text.Json;
 
 namespace opengl3
 {
@@ -152,7 +154,35 @@ namespace opengl3
 
     }
 
+    public class RobotClient : TcpClientWrapper
+    {
+        public event Action<RobotFrame> FrameUpdated;  // теперь имя события отражает суть
 
+        private RobotFrame _currentFrame;
+        public RobotFrame CurrentFrame => _currentFrame;
+
+        protected override void OnMessageReceived(string message)
+        {
+            Console.WriteLine($"Получено: {message}");
+            try
+            {
+                /*var frame = JsonSerializer.Deserialize<RobotFrame>(message);
+                if (frame != null)
+                {
+                    _currentFrame = frame;
+                    FrameUpdated?.Invoke(frame);
+                }*/
+            }
+            catch { /* Игнорируем не-JSON */ }
+        }
+
+        public async Task SendFrameAsync(RobotFrame frame)
+        {
+            string json = JsonSerializer.Serialize(frame);
+            await SendAsync(json);
+        }
+
+    }
 
     class NavigTool
     {

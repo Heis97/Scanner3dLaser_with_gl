@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
+using System.Threading;
 
 namespace opengl3
 {
@@ -232,6 +233,105 @@ namespace opengl3
                // if (server != null)
                     //server.Stop();
             }
+        }
+    }
+
+
+
+    public class TcpClientWrapper : IDisposable
+    {
+        private TcpClient _client;
+        private NetworkStream _stream;
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        private Task _readerTask;
+        private readonly byte[] _readBuffer = new byte[4096];
+        private readonly StringBuilder _messageBuilder = new StringBuilder();
+
+        public event Action<string> MessageReceived;
+        public event Action Disconnected;
+        public bool IsConnected => _client?.Connected == true;
+
+        public async Task ConnectAsync(string host, int port)
+        {
+            if (IsConnected)
+                throw new InvalidOperationException("Клиент уже подключён.");
+
+            _client = new TcpClient();
+            await _client.ConnectAsync(host, port);
+            _stream = _client.GetStream();
+            _readerTask = Task.Run(ReaderLoopAsync);
+        }
+
+        public async Task SendAsync(string message)
+        {
+            if (!IsConnected)
+                throw new InvalidOperationException("Клиент не подключён.");
+
+            byte[] data = Encoding.UTF8.GetBytes(message + "\n");
+            await _stream.WriteAsync(data, 0, data.Length);
+        }
+
+        public async Task DisconnectAsync()
+        {
+            if (!IsConnected) return;
+
+            _cts.Cancel();
+            if (_readerTask != null)
+                await _readerTask;
+
+            _stream?.Close();
+            _client?.Close();
+            Disconnected?.Invoke();
+        }
+
+        private async Task ReaderLoopAsync()
+        {
+            try
+            {
+                while (!_cts.Token.IsCancellationRequested && IsConnected)
+                {
+                    int bytesRead = await _stream.ReadAsync(_readBuffer, 0, _readBuffer.Length, _cts.Token);
+                    if (bytesRead == 0) break;
+
+                    string chunk = Encoding.UTF8.GetString(_readBuffer, 0, bytesRead);
+                    _messageBuilder.Append(chunk);
+
+                    int newlineIndex;
+                    while ((newlineIndex = _messageBuilder.ToString().IndexOf('\n')) >= 0)
+                    {
+                        string message = _messageBuilder.ToString(0, newlineIndex);
+                        _messageBuilder.Remove(0, newlineIndex + 1);
+                        OnMessageReceived(message);
+                    }
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                // Логируйте при необходимости
+                System.Diagnostics.Debug.WriteLine($"Ошибка чтения: {ex.Message}");
+            }
+            finally
+            {
+                if (IsConnected)
+                {
+                    _client.Close();
+                    Disconnected?.Invoke();
+                }
+            }
+        }
+
+        protected virtual void OnMessageReceived(string message)
+        {
+            MessageReceived?.Invoke(message);
+        }
+
+        public void Dispose()
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+            _stream?.Dispose();
+            _client?.Dispose();
         }
     }
 }

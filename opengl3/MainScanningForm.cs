@@ -43,13 +43,21 @@ using System.Xml.Linq;
 using static OpenGL.Gl;
 using System.Collections;
 using static opengl3.MainScanningForm;
+using System.ComponentModel.Composition.Primitives;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace opengl3
 {
     public partial class MainScanningForm : Form
     {
         #region var
+        //--------------------------------------------------------
+        private RobotClient _robotClient = new RobotClient();
+        private RobotFrame _latestFrame;
+        private object _lock = new object();
+        private System.Windows.Forms.Timer _uiTimer;
 
+        //--------------------------------------------------------
         CtSliceFull ct_info;
 
         public enum NavigVisionType { Ct, Scene }
@@ -237,21 +245,15 @@ namespace opengl3
             InitializeComponent();
             init_vars();
             //fast_load_ct();
-            var cur_rob = RobotFrame.RobotType.RC5;
-            var posrob = RobotFrame.comp_forv_kinem(new double[] { 155.107, -111.8457, 82.953987, 14.06147, 116.421089, -83.67874 }, 6, false, cur_rob);
-            Console.WriteLine("\n");
-            //341.4762 -65.5166 626.3698 0.7603 1.2453 -0.1323
-            var solves = RobotFrame.comp_inv_kinem(posrob, cur_rob);
-            Console.WriteLine("\n");
-            Console.WriteLine("posrob");
-            Console.WriteLine(posrob.ToString());
-            Console.WriteLine("\n");
-            for (int i = 0; i < solves.Length; i++)
-            {
-                var posrob1 = RobotFrame.comp_forv_kinem(solves[i], 6, true, cur_rob);
-                Console.WriteLine(posrob1.ToString());
-            }
 
+            //test_kin_rc5();
+            //341.4762 -65.5166 626.3698 0.7603 1.2453 -0.1323   //target position, know
+            var test_point = new PositionRob(new Point3d_GL(341.4762, -65.5166, 626.3698), new Point3d_GL(0.7603, 1.2453, -0.1323));
+
+            var cur_turn = RobotFrame.get_current_turn(test_point, new double[] { 2.2, -2.0905, 1.5097, 0.2777, 0.881, 2.4235 },RobotFrame.RobotType.RC5);
+            var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(test_point, 1);
+
+            Console.WriteLine("cur_turn " + cur_turn);
 
             /* var poses_sym = new List<Pose>(new Pose[] { 
                  new Pose(new double[] { 1, 2, 3, 4, 5, 6 }),
@@ -1191,6 +1193,168 @@ namespace opengl3
         }
 
         #endregion
+
+        void test_kin_rc5()
+        {
+            var cur_rob = RobotFrame.RobotType.RC5;
+            var qs = new double[] { 155.107, -111.8457, 82.953987, 14.06147, 116.421089, -83.67874 }; //target pose, don t know
+            var posrob = RobotFrame.comp_forv_kinem(qs, 6, false, cur_rob);
+            var pos_ref = posrob.position;
+            Console.WriteLine("\n");
+            //341.4762 -65.5166 626.3698 0.7603 1.2453 -0.1323   //target position, know
+            var solves = RobotFrame.comp_inv_kinem(posrob, cur_rob);
+            Console.WriteLine("\n");
+             Console.WriteLine("posrob");
+             Console.WriteLine(posrob.ToString());
+             Console.WriteLine("\n");
+             /*for (int i = 0; i < solves.Length; i++)
+             {
+                 var posrob1 = RobotFrame.comp_forv_kinem(solves[i], 6, true, cur_rob);
+                 var pos_cur = posrob1.position;
+                 Console.WriteLine((pos_ref - pos_cur).magnitude());
+             }*/
+
+            /*var posrobdq1s = RobotFrame.comp_forv_kinem(new double[] { 155.107, -111.8457, 82.953987, 14.06147, 116.421089 + dq1, -83.67874 }, 6, false, cur_rob);
+            var posrobdq1ss = RobotFrame.comp_forv_kinem(new double[] { 155.107 , -111.8457, 82.953987, 14.06147, 116.421089 - dq1, -83.67874 }, 6, false, cur_rob);
+
+            var Dq1s = posrobdq1s - posrob;
+            var Dq1ss = posrobdq1ss - posrob;
+            Console.WriteLine("\n\n");
+            Console.WriteLine(Dq1s);
+            Console.WriteLine(Dq1ss);
+
+            Console.WriteLine(Dq1s+Dq1ss);*/
+
+            var target_solve = 1;
+             //
+            var posrob_start = RobotFrame.comp_forv_kinem(solves[target_solve], 6, true, cur_rob);
+
+            Console.WriteLine("\n");
+            Console.WriteLine("posrob_start");
+            Console.WriteLine(posrob_start.ToString());
+            Console.WriteLine("\n");
+
+            //calc koefs---------------------------------------------------
+            var err = posrob - posrob_start;
+            var kqs = new PositionRob[6];
+            var dq_val = 0.01;
+            var arr_base = new double[6,6];
+            var arr_err = new double[6,1];
+
+            arr_err[ 0,0] = err.position.x;
+            arr_err[ 1, 0] = err.position.y;
+            arr_err[ 2, 0] = err.position.z;
+
+            arr_err[ 3, 0] = err.rotation.x;
+            arr_err[ 4, 0] = err.rotation.y;
+            arr_err[ 5, 0] = err.rotation.z;
+
+
+            for (int i = 0; i < 6; i++)
+            {
+                var solve_orig = (double[])solves[target_solve].Clone();
+                solve_orig[i] += dq_val;
+                var posrob_dq = RobotFrame.comp_forv_kinem(solve_orig, 6, true, cur_rob);
+                kqs[i] = posrob_start - posrob_dq;
+
+                arr_base[0, i] = kqs[i].position.x;
+                arr_base[1, i] = kqs[i].position.y;
+                arr_base[2, i] = kqs[i].position.z;
+
+                arr_base[3, i] = kqs[i].rotation.x;
+                arr_base[4, i] = kqs[i].rotation.y;
+                arr_base[5, i] = kqs[i].rotation.z;
+
+            }
+
+
+
+           // Mat A = new Mat(3, 3, DepthType.Cv64F, 1);
+            var m_base = new Matrix<double>(arr_base);
+            //var A = m_base.Mat;
+
+            // 2. Создаем матрицу свободных членов B (RHS)
+            var m_err = new Matrix<double>(arr_err);
+            //var B = m_err.Mat;
+
+            /*Mat B = new Mat(3, 1, DepthType.Cv32F, 1);
+            B.SetTo(new float[,] {
+            { 1 },
+            { -2 },
+            { 0 }
+        });*/
+
+            // 3. Создаем матрицу для результата X
+            var X = new Matrix<double>(6, 1);
+
+            // 4. Решаем систему методом Гаусса (DecompMethod.LU)
+            bool isSuccess = CvInvoke.Solve(m_base, m_err, X, DecompMethod.LU);
+
+            if (isSuccess)
+            {
+                Console.WriteLine("Решение (double):");
+               for(int i=0; i<6; i++)
+                {
+                    Console.WriteLine($"dq{i} = {X[i, 0]:F8}");
+                }
+                
+  
+            }
+            else
+            {
+                Console.WriteLine("Решение не найдено (матрица сингулярна).");
+            }
+
+            var solve_start = (double[])solves[target_solve].Clone();
+            //prin.t(solve_start);
+            for(int i=0; i<6;i++)
+            {
+                solve_start[i] -= dq_val * X[i, 0];
+            }
+            //prin.t(solve_start);
+            var posrob_first_solve = RobotFrame.comp_forv_kinem(solve_start, 6, true, cur_rob);
+
+            Console.WriteLine("\n");
+            Console.WriteLine("posrob_first");
+            Console.WriteLine(posrob_first_solve.ToString());
+            Console.WriteLine(posrob.ToString());
+            Console.WriteLine("\n");
+
+
+            /*double[,] aData = {
+                { 2.0,  1.0, -1.0 },
+                { -3.0, -1.0,  2.0 },
+                { -2.0,  1.0,  2.0 }
+            };
+            Matrix<double> Ar = new Matrix<double>(aData);
+
+            // Столбец правых частей B (3x1) типа double
+            double[,] bData = { { 8.0 }, { -11.0 }, { -3.0 } };
+            Matrix<double> Br = new Matrix<double>(bData);
+
+            // Матрица для результата X (3x1) типа double
+            Matrix<double> Xr = new Matrix<double>(3, 1);
+
+            // Решение методом LU (поддерживает double)
+            bool solved = CvInvoke.Solve(Ar, Br, Xr, DecompMethod.LU);
+
+            if (solved)
+            {
+                Console.WriteLine("Решение (double):");
+                Console.WriteLine($"x = {Xr[0, 0]:F8}");
+                Console.WriteLine($"y = {Xr[1, 0]:F8}");
+                Console.WriteLine($"z = {Xr[2, 0]:F8}");
+            }
+            else
+            {
+                Console.WriteLine("Матрица вырождена.");
+            }*/
+
+
+
+
+
+        }
 
         #region laserScanner
         void loadScanner()
@@ -11690,6 +11854,98 @@ namespace opengl3
         {
             navig_system.tools[current_model_instrument].init_points_for_registr(ct_info.registr_ps.Length);
         }
+
+        private void button_navig_robot_start_servo_Click(object sender, EventArgs e)
+        {
+            send_navig_robot("a\n");
+        }
+
+        private void button_navig_robot_stop_servo_Click(object sender, EventArgs e)
+        {
+            send_navig_robot("m\n");
+        }
+
+        private void button_navig_robot_recieve_pos_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_navig_connect_robot_Click(object sender, EventArgs e)
+        {
+            _uiTimer = new System.Windows.Forms.Timer { Interval = 50 };
+            _uiTimer.Tick += UiTimer_Tick;
+            _uiTimer.Start();
+
+            _robotClient.FrameUpdated += OnFrameUpdated;
+            _robotClient.Disconnected += OnDisconnected;
+
+            UpdateButtons(false);
+        }
+
+        private void button_navig_disconnect_robot_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void UiTimer_Tick(object sender, EventArgs e)
+        {
+            RobotFrame frame;
+            lock (_lock) { frame = _latestFrame; }
+            if (frame != null)
+            {
+               /* lblCurrentX.Text = frame.X.ToString("F3");
+                lblCurrentY.Text = frame.Y.ToString("F3");
+                lblCurrentZ.Text = frame.Z.ToString("F3");*/
+            }
+        }
+        private void OnFrameUpdated(RobotFrame frame)
+        {
+            lock (_lock) { _latestFrame = frame; }
+        }
+
+        private void OnDisconnected()
+        {
+            this.Invoke((MethodInvoker)(() =>
+            {
+
+                label_navig_robot_status.Text = "Отключён";
+                UpdateButtons(false);
+            }));
+        }
+        async void send_navig_robot(string text)
+        {
+            try
+            {
+                if (!_robotClient.IsConnected)
+                {
+                    MessageBox.Show("Нет соединения.");
+                    return;
+                }
+
+                await _robotClient.SendAsync(text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка отправки: {ex.Message}");
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            _uiTimer.Stop();
+            _robotClient.Dispose();
+            base.OnFormClosing(e);
+        }
+        }
+        private void UpdateButtons(bool connected)
+        {
+            /*btnConnect.Enabled = !connected;
+            btnDisconnect.Enabled = connected;
+            btnSend.Enabled = connected;
+            txtHost.Enabled = !connected;
+            txtPort.Enabled = !connected;*/
+        }
+
     }
 }
 
