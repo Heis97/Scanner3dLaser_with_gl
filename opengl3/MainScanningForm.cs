@@ -45,6 +45,7 @@ using System.Collections;
 using static opengl3.MainScanningForm;
 using System.ComponentModel.Composition.Primitives;
 using static System.Net.Mime.MediaTypeNames;
+using CommunityToolkit.HighPerformance;
 
 namespace opengl3
 {
@@ -11857,17 +11858,18 @@ namespace opengl3
         private System.Windows.Forms.Timer _uiTimer;
         private void button_navig_robot_start_servo_Click(object sender, EventArgs e)
         {
-            send_navig_robot("a\n");
+            send_navig_robot("\nd\n");
         }
 
         private void button_navig_robot_stop_servo_Click(object sender, EventArgs e)
         {
-            send_navig_robot("m\n");
+            send_navig_robot("\ne\n");
         }
 
         private void button_navig_robot_recieve_pos_Click(object sender, EventArgs e)
         {
 
+            textBox_navig_robot_send_pos.Text = label_navig_robot_status_pose.Text;
         }
 
         private async void button_navig_connect_robot_Click(object sender, EventArgs e)
@@ -11879,26 +11881,23 @@ namespace opengl3
             _robotClient.FrameUpdated += OnFrameUpdated;
             _robotClient.Disconnected += OnDisconnected;
 
-            UpdateButtons(false);
+
 
 
             try
             {
                 label_navig_robot_status.Text = "Подключение...";
-                UpdateButtons(false);
 
                 string host = "localhost";
                 var port = 30006;
 
                 await _robotClient.ConnectAsync(host, port);
                 label_navig_robot_status.Text = "Подключено";
-                UpdateButtons(true);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка подключения: {ex.Message}");
                 label_navig_robot_status.Text = "Ошибка";
-                UpdateButtons(false);
             }
         }
 
@@ -11906,20 +11905,16 @@ namespace opengl3
         {
             await _robotClient.DisconnectAsync();
             label_navig_robot_status.Text = "Отключён";
-            UpdateButtons(false);
         }
 
         private void UiTimer_Tick(object sender, EventArgs e)
         {
-            // int count = Interlocked.Exchange(ref _robotClient._messageCounter, 0);
-            //Console.WriteLine($"Сообщений/с: {count}");
-            Console.WriteLine(DateTime.Now.Second + " : " + DateTime.Now.Millisecond);
             string frame;
             lock (_lock) { frame = _latestFrame; }
-            Console.WriteLine(frame);
             if (frame != null)
             {
-                label_navig_ronot_current_turn.Text = frame;
+                if(frame.Count(',')==5) label_navig_robot_status_pose.Text = frame;
+                else { Console.WriteLine(frame.Count(',')); };
             }
         }
         private void OnFrameUpdated(string frame)
@@ -11933,7 +11928,6 @@ namespace opengl3
             {
 
                 label_navig_robot_status.Text = "Отключён";
-                UpdateButtons(false);
             }));
         }
         async void send_navig_robot(string text)
@@ -11954,16 +11948,15 @@ namespace opengl3
             }
         }
 
-
-        private void UpdateButtons(bool connected)
+        private void button_navig_robot_send_pose_Click(object sender, EventArgs e)
         {
-            /*btnConnect.Enabled = !connected;
-            btnDisconnect.Enabled = connected;
-            btnSend.Enabled = connected;
-            txtHost.Enabled = !connected;
-            txtPort.Enabled = !connected;*/
+            send_navig_robot("pose "+textBox_navig_robot_send_pos.Text);
         }
 
+        private void button_navig_robot_send_position_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
