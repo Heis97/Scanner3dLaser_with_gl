@@ -741,6 +741,7 @@ namespace opengl3
             this.tabPage_navig_process = new System.Windows.Forms.TabPage();
             this.tabControl_navig_process_tab = new System.Windows.Forms.TabControl();
             this.tabPage_robot_calibr = new System.Windows.Forms.TabPage();
+            this.trackBar_navig_robot_test_servo = new System.Windows.Forms.TrackBar();
             this.label_navig_robot_status_pose = new System.Windows.Forms.Label();
             this.label_navig_robot_status = new System.Windows.Forms.Label();
             this.label_navig_ronot_current_turn = new System.Windows.Forms.Label();
@@ -764,7 +765,6 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.trackBar_navig_robot_test_servo = new System.Windows.Forms.TrackBar();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -891,8 +891,8 @@ namespace opengl3
             this.tabPage_navig_process.SuspendLayout();
             this.tabControl_navig_process_tab.SuspendLayout();
             this.tabPage_robot_calibr.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_navig_robot_test_servo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // tabCalibMonit
@@ -8735,10 +8735,19 @@ namespace opengl3
             this.tabPage_robot_calibr.Text = "Калибровка робота";
             this.tabPage_robot_calibr.UseVisualStyleBackColor = true;
             // 
+            // trackBar_navig_robot_test_servo
+            // 
+            this.trackBar_navig_robot_test_servo.Location = new System.Drawing.Point(199, 281);
+            this.trackBar_navig_robot_test_servo.Maximum = 170;
+            this.trackBar_navig_robot_test_servo.Name = "trackBar_navig_robot_test_servo";
+            this.trackBar_navig_robot_test_servo.Size = new System.Drawing.Size(256, 45);
+            this.trackBar_navig_robot_test_servo.TabIndex = 157;
+            this.trackBar_navig_robot_test_servo.Scroll += new System.EventHandler(this.trackBar_navig_robot_test_servo_Scroll);
+            // 
             // label_navig_robot_status_pose
             // 
             this.label_navig_robot_status_pose.AutoSize = true;
-            this.label_navig_robot_status_pose.Location = new System.Drawing.Point(175, 172);
+            this.label_navig_robot_status_pose.Location = new System.Drawing.Point(175, 161);
             this.label_navig_robot_status_pose.Name = "label_navig_robot_status_pose";
             this.label_navig_robot_status_pose.Size = new System.Drawing.Size(18, 16);
             this.label_navig_robot_status_pose.TabIndex = 156;
@@ -8929,15 +8938,6 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // trackBar_navig_robot_test_servo
-            // 
-            this.trackBar_navig_robot_test_servo.Location = new System.Drawing.Point(199, 281);
-            this.trackBar_navig_robot_test_servo.Maximum = 170;
-            this.trackBar_navig_robot_test_servo.Name = "trackBar_navig_robot_test_servo";
-            this.trackBar_navig_robot_test_servo.Size = new System.Drawing.Size(256, 45);
-            this.trackBar_navig_robot_test_servo.TabIndex = 157;
-            this.trackBar_navig_robot_test_servo.Scroll += new System.EventHandler(this.trackBar_navig_robot_test_servo_Scroll);
-            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -9109,8 +9109,8 @@ namespace opengl3
             this.tabControl_navig_process_tab.ResumeLayout(false);
             this.tabPage_robot_calibr.ResumeLayout(false);
             this.tabPage_robot_calibr.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_navig_robot_test_servo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }

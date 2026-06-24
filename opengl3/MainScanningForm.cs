@@ -11858,12 +11858,12 @@ namespace opengl3
         private System.Windows.Forms.Timer _uiTimer;
         private void button_navig_robot_start_servo_Click(object sender, EventArgs e)
         {
-            send_navig_robot("\nd\n");
+            send_navig_robot( " ddd\n " );
         }
 
         private void button_navig_robot_stop_servo_Click(object sender, EventArgs e)
         {
-            send_navig_robot("\ne\n");
+            send_navig_robot(" eee\n ");
         }
 
         private void button_navig_robot_recieve_pos_Click(object sender, EventArgs e)
@@ -11950,7 +11950,7 @@ namespace opengl3
 
         private void button_navig_robot_send_pose_Click(object sender, EventArgs e)
         {
-            send_navig_robot("pose "+textBox_navig_robot_send_pos.Text);
+            send_navig_robot(" pose "+textBox_navig_robot_send_pos.Text);
         }
 
         private void button_navig_robot_send_position_Click(object sender, EventArgs e)

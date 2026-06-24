@@ -268,7 +268,7 @@ namespace opengl3
             if (!IsConnected)
                 throw new InvalidOperationException("Клиент не подключён.");
 
-            byte[] data = Encoding.UTF8.GetBytes(message + "\n");
+            byte[] data = Encoding.UTF8.GetBytes(message + "\n ");
             await _stream.WriteAsync(data, 0, data.Length);
         }
 
