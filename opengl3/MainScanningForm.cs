@@ -51,11 +51,7 @@ namespace opengl3
     public partial class MainScanningForm : Form
     {
         #region var
-        //--------------------------------------------------------
-        private RobotClient _robotClient = new RobotClient();
-        private RobotFrame _latestFrame;
-        private object _lock = new object();
-        private System.Windows.Forms.Timer _uiTimer;
+       
 
         //--------------------------------------------------------
         CtSliceFull ct_info;
@@ -11854,7 +11850,11 @@ namespace opengl3
         {
             navig_system.tools[current_model_instrument].init_points_for_registr(ct_info.registr_ps.Length);
         }
-
+        //------ROBOT------------------------------------------
+        private RobotClient _robotClient = new RobotClient();
+        private RobotFrame _latestFrame;
+        private object _lock = new object();
+        private System.Windows.Forms.Timer _uiTimer;
         private void button_navig_robot_start_servo_Click(object sender, EventArgs e)
         {
             send_navig_robot("a\n");
@@ -11870,7 +11870,7 @@ namespace opengl3
 
         }
 
-        private void button_navig_connect_robot_Click(object sender, EventArgs e)
+        private async void button_navig_connect_robot_Click(object sender, EventArgs e)
         {
             _uiTimer = new System.Windows.Forms.Timer { Interval = 50 };
             _uiTimer.Tick += UiTimer_Tick;
@@ -11880,11 +11880,33 @@ namespace opengl3
             _robotClient.Disconnected += OnDisconnected;
 
             UpdateButtons(false);
+
+
+            try
+            {
+                label_navig_robot_status.Text = "Подключение...";
+                UpdateButtons(false);
+
+                string host = "localhost"
+                var port = 30006;
+
+                await _robotClient.ConnectAsync(host, port);
+                label_navig_robot_status.Text = "Подключено";
+                UpdateButtons(true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка подключения: {ex.Message}");
+                label_navig_robot_status.Text = "Ошибка";
+                UpdateButtons(false);
+            }
         }
 
-        private void button_navig_disconnect_robot_Click(object sender, EventArgs e)
+        private async void button_navig_disconnect_robot_Click(object sender, EventArgs e)
         {
-
+            await _robotClient.DisconnectAsync();
+            label_navig_robot_status.Text = "Отключён";
+            UpdateButtons(false);
         }
 
         private void UiTimer_Tick(object sender, EventArgs e)
