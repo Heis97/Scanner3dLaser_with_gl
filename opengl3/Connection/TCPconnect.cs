@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace opengl3
 {
@@ -284,7 +285,7 @@ namespace opengl3
             Disconnected?.Invoke();
         }
 
-        /*private async Task ReaderLoopAsync()
+        private async Task ReaderLoopAsync()
         {
             try
             {
@@ -294,15 +295,17 @@ namespace opengl3
                     if (bytesRead == 0) break;
 
                     string chunk = Encoding.UTF8.GetString(_readBuffer, 0, bytesRead);
-                    _messageBuilder.Append(chunk);
+                    //_messageBuilder.Append(chunk);
 
-                    int newlineIndex;
+                    OnMessageReceived(chunk);
+
+                    /*int newlineIndex;
                     while ((newlineIndex = _messageBuilder.ToString().IndexOf('\n')) >= 0)
                     {
                         string message = _messageBuilder.ToString(0, newlineIndex);
                         _messageBuilder.Remove(0, newlineIndex + 1);
                         OnMessageReceived(message);
-                    }
+                    }*/
                 }
             }
             catch (OperationCanceledException) { }
@@ -319,9 +322,9 @@ namespace opengl3
                     Disconnected?.Invoke();
                 }
             }
-        }*/
+        }
 
-        private int _totalBytes = 0;
+        /*private int _totalBytes = 0;
         private int _packetCount = 0;
         private DateTime _lastLog = DateTime.UtcNow;
         private async Task ReaderLoopAsync()
@@ -359,7 +362,7 @@ namespace opengl3
                 }
             }
             
-        }
+        }*/
 
         protected virtual void OnMessageReceived(string message)
         {

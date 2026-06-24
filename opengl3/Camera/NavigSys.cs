@@ -164,12 +164,11 @@ namespace opengl3
         private DateTime _lastStatsTime = DateTime.UtcNow;
         protected override void OnMessageReceived(string message)
         {
-            Interlocked.Increment(ref _messageCounter);
-            /*Console.WriteLine($"Получено: {message}");
-            Console.WriteLine($"Получено: {message}");
+            //Interlocked.Increment(ref _messageCounter);
+            if(message!=null) Console.WriteLine($"Получено: {message}");
 
            
-            try
+           /* try
             {
                 var frame = JsonSerializer.Deserialize<RobotFrame>(message);
                 if (frame != null)
