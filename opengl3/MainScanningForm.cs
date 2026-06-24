@@ -11852,7 +11852,7 @@ namespace opengl3
         }
         //------ROBOT------------------------------------------
         private RobotClient _robotClient = new RobotClient();
-        private RobotFrame _latestFrame;
+        private string _latestFrame;
         private object _lock = new object();
         private System.Windows.Forms.Timer _uiTimer;
         private void button_navig_robot_start_servo_Click(object sender, EventArgs e)
@@ -11876,7 +11876,7 @@ namespace opengl3
             _uiTimer.Tick += UiTimer_Tick;
             _uiTimer.Start();
 
-            //_robotClient.FrameUpdated += OnFrameUpdated;
+            _robotClient.FrameUpdated += OnFrameUpdated;
             _robotClient.Disconnected += OnDisconnected;
 
             UpdateButtons(false);
@@ -11911,19 +11911,18 @@ namespace opengl3
 
         private void UiTimer_Tick(object sender, EventArgs e)
         {
-            int count = Interlocked.Exchange(ref _robotClient._messageCounter, 0);
-            Console.WriteLine($"Сообщений/с: {count}");
-
-            RobotFrame frame;
+            // int count = Interlocked.Exchange(ref _robotClient._messageCounter, 0);
+            //Console.WriteLine($"Сообщений/с: {count}");
+            Console.WriteLine(DateTime.Now.Second + " : " + DateTime.Now.Millisecond);
+            string frame;
             lock (_lock) { frame = _latestFrame; }
+            Console.WriteLine(frame);
             if (frame != null)
             {
-               /* lblCurrentX.Text = frame.X.ToString("F3");
-                lblCurrentY.Text = frame.Y.ToString("F3");
-                lblCurrentZ.Text = frame.Z.ToString("F3");*/
+                label_navig_ronot_current_turn.Text = frame;
             }
         }
-        private void OnFrameUpdated(RobotFrame frame)
+        private void OnFrameUpdated(string frame)
         {
             lock (_lock) { _latestFrame = frame; }
         }

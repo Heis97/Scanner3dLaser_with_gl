@@ -156,16 +156,22 @@ namespace opengl3
 
     public class RobotClient : TcpClientWrapper
     {
-        public event Action<RobotFrame> FrameUpdated;  // теперь имя события отражает суть
-
-        private RobotFrame _currentFrame;
-        public RobotFrame CurrentFrame => _currentFrame;
+        public event Action<string> FrameUpdated;  // теперь имя события отражает суть
+        string cur_pos = "";
+        private string _currentFrame;
+        public string CurrentFrame => _currentFrame;
         public int _messageCounter = 0;
         private DateTime _lastStatsTime = DateTime.UtcNow;
         protected override void OnMessageReceived(string message)
         {
             //Interlocked.Increment(ref _messageCounter);
-            if(message!=null) Console.WriteLine($"Получено: {message}");
+            if (message != null)
+            {
+                _currentFrame = message;
+                FrameUpdated?.Invoke(message);
+
+            }
+            _currentFrame = message;// Console.WriteLine($"Получено: {message}");
 
            
            /* try
