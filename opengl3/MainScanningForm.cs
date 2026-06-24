@@ -11887,7 +11887,7 @@ namespace opengl3
                 label_navig_robot_status.Text = "Подключение...";
                 UpdateButtons(false);
 
-                string host = "localhost"
+                string host = "localhost";
                 var port = 30006;
 
                 await _robotClient.ConnectAsync(host, port);
