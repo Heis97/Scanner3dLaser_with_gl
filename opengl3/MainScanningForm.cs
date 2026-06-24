@@ -11876,7 +11876,7 @@ namespace opengl3
             _uiTimer.Tick += UiTimer_Tick;
             _uiTimer.Start();
 
-            _robotClient.FrameUpdated += OnFrameUpdated;
+            //_robotClient.FrameUpdated += OnFrameUpdated;
             _robotClient.Disconnected += OnDisconnected;
 
             UpdateButtons(false);
@@ -11930,13 +11930,7 @@ namespace opengl3
             }
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            _uiTimer.Stop();
-            _robotClient.Dispose();
-            base.OnFormClosing(e);
-        }
-        }
+
         private void UpdateButtons(bool connected)
         {
             /*btnConnect.Enabled = !connected;
