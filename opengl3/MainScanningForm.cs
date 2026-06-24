@@ -2713,7 +2713,7 @@ namespace opengl3
             var degree = new double[vals.Length];
             for(int i = 0; i < degree.Length; i++)
             {
-                degree[i] = 360 * vals[i] / Math.PI ;
+                degree[i] = 180 * vals[i] / Math.PI ;
             }
             return degree;
         }
@@ -11877,8 +11877,8 @@ namespace opengl3
             var pose_cur = parse_pose(textBox_navig_robot_send_pos.Text);
 
             var position_d = RobotFrame.comp_forv_kinem(pose_cur, 6, false, robot_navig_type);
-            var cur_turn = RobotFrame.get_current_turn(position_d, pose_cur, robot_navig_type);
-
+            var cur_turn = RobotFrame.get_current_turn(position_d, pose_cur, robot_navig_type,false);
+            current_robot_turn = cur_turn;
             label_navig_ronot_current_turn.Text = cur_turn.ToString();
 
             textBox_navig_robot_send_position.Text = position_d.ToString();
@@ -11898,11 +11898,11 @@ namespace opengl3
         string pose_to_str(double[] pose)
         {
             var pose_str = "";
-            var pose_l = pose_str.Split(',');
+             var pose_d = to_degree(pose);
             for (int i = 0; i < pose.Length; i++)
             {
-                if (i != 5) pose_str += pose[i] + ",";
-                else pose_str += pose[i];
+                if (i != 5) pose_str += Math.Round(  pose_d[i],4).ToString() + ",";
+                else pose_str += Math.Round(pose_d[i],4).ToString();
             }
             return pose_str;
         }
@@ -11993,10 +11993,13 @@ namespace opengl3
             var cur_pos = new PositionRob(textBox_navig_robot_send_position.Text);
             var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(cur_pos, current_robot_turn);
             textBox_navig_robot_send_pos.Text = pose_to_str(correct_solve);
+
+            send_navig_robot(" pose " + textBox_navig_robot_send_pos.Text);
         }
 
         private void trackBar_navig_robot_test_servo_Scroll(object sender, EventArgs e)
         {
+            if (current_robot_turn < 0) return;
             var cur_ang = ((System.Windows.Forms.TrackBar)sender).Value;
             /*var cur_pos = textBox_navig_robot_send_pos.Text;
             
@@ -12012,12 +12015,13 @@ namespace opengl3
             send_navig_robot("pose " + new_pos);
              */
             var cur_position = new PositionRob(textBox_navig_robot_send_position.Text);
-            cur_position.position.z += cur_angle;
+            cur_position.position.z += cur_ang;
+            Console.WriteLine(cur_position);
             var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(cur_position, current_robot_turn);
             var cur_pose_str = pose_to_str(correct_solve);
             textBox_navig_robot_send_pos.Text = cur_pose_str;
 
-            send_navig_robot("pose " + cur_pose_str);
+            send_navig_robot(" pose " + cur_pose_str);
         }
     }
 }

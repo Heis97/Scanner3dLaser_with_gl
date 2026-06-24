@@ -829,14 +829,25 @@ namespace opengl3
             for(int i =0; i<q.Length;i++)
             {
                 q_r[i] = q[i] * Math.PI / 180;
-                Console.Write(Math.Round(q_r[i],4)+" ");
+                //Console.Write(Math.Round(q_r[i],4)+" ");
             }
-            Console.Write(" q_r[i]");
+            //Console.Write(" q_r[i]");
             return q_r;
         }
         static double to_rad(double q)
         {
             return q * Math.PI / 180;
+        }
+        static double[] to_degree(double[] vals)
+        {
+            if (vals == null) return null;
+            if (vals.Length == 0) return null;
+            var degree = new double[vals.Length];
+            for (int i = 0; i < degree.Length; i++)
+            {
+                degree[i] = 180 * vals[i] / Math.PI;
+            }
+            return degree;
         }
 
         static double to_degree(double q)
@@ -1254,13 +1265,16 @@ namespace opengl3
                 if (qi > Math.PI) qi -= 2 * Math.PI;
                 if (qi < -Math.PI) qi += 2 * Math.PI;
                 q[i] = qi;
-                Console.Write(Math.Round( q[i],4)+" ");
+               // Console.Write(Math.Round( q[i],4)+" ");
             }
-            Console.WriteLine(" q");
+            //Console.WriteLine(" q");
             return q;
         }
         static public int get_current_turn(PositionRob posrob, double[] pose, RobotType robot_type, bool rad = true)
         {
+            var pose1 = (double[])pose.Clone();
+            if (!rad) pose1 = to_rad(pose1);
+
             int turn = 0;
             var solves = comp_inv_kinem(posrob, robot_type);
             int count_calc = 5;
@@ -1271,7 +1285,7 @@ namespace opengl3
                 double cur_delt = 0;
                 for (int j = 0; j < count_calc; j++)
                 {
-                    cur_delt += Math.Abs(pose[j] - solves[i][j]);
+                    cur_delt += Math.Abs(pose1[j] - solves[i][j]);
                     
                 }
                 if(cur_delt < min_val)
@@ -1280,7 +1294,8 @@ namespace opengl3
                     turn = i;
                 }
             }
-
+            Console.WriteLine("min_val: "+min_val);
+            if (min_val > 0.2) return -1;
             return turn;
         }
         static public double[] comp_inv_kinem_priv_rc5_real(PositionRob posrob, int target_solve = 0)
@@ -1288,7 +1303,7 @@ namespace opengl3
             var cur_rob = RobotType.RC5;
             var solves = comp_inv_kinem(posrob, cur_rob);
             
-            var posrob_start = RobotFrame.comp_forv_kinem(solves[target_solve], 6, true, cur_rob);
+            var posrob_start = comp_forv_kinem(solves[target_solve], 6, true, cur_rob);
             var err = posrob - posrob_start;
             var kqs = new PositionRob[6];
             var dq_val = 0.001;
@@ -1333,11 +1348,11 @@ namespace opengl3
             }
             var posrob_first_solve = comp_forv_kinem(solve_start, 6, true, cur_rob);
 
-            Console.WriteLine("\n");
+            /*Console.WriteLine("\n");
             Console.WriteLine("posrob_first");
             Console.WriteLine((posrob-posrob_first_solve).ToString());
             //Console.WriteLine(posrob.ToString());
-            Console.WriteLine("\n");
+            Console.WriteLine("\n");*/
 
             return solve_start;
 
