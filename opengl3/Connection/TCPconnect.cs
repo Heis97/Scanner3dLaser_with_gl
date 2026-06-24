@@ -284,7 +284,7 @@ namespace opengl3
             Disconnected?.Invoke();
         }
 
-        private async Task ReaderLoopAsync()
+        /*private async Task ReaderLoopAsync()
         {
             try
             {
@@ -319,6 +319,46 @@ namespace opengl3
                     Disconnected?.Invoke();
                 }
             }
+        }*/
+
+        private int _totalBytes = 0;
+        private int _packetCount = 0;
+        private DateTime _lastLog = DateTime.UtcNow;
+        private async Task ReaderLoopAsync()
+        {
+            try
+            {
+                while (!_cts.Token.IsCancellationRequested && IsConnected)
+                {
+                    int bytesRead = await _stream.ReadAsync(_readBuffer, 0, _readBuffer.Length, _cts.Token);
+                    if (bytesRead == 0) break;
+                    Interlocked.Add(ref _totalBytes, bytesRead);
+                    Interlocked.Increment(ref _packetCount);
+
+                    // Раз в секунду выводим статистику
+                    if ((DateTime.UtcNow - _lastLog).TotalSeconds >= 1)
+                    {
+                        int packets = Interlocked.Exchange(ref _packetCount, 0);
+                        int bytes = Interlocked.Exchange(ref _totalBytes, 0);
+                        Console.WriteLine($"Пакетов/с: {packets}, байт/с: {bytes}");
+                        _lastLog = DateTime.UtcNow;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Логируйте при необходимости
+                System.Diagnostics.Debug.WriteLine($"Ошибка чтения: {ex.Message}");
+            }
+            finally
+            {
+                if (IsConnected)
+                {
+                    _client.Close();
+                    Disconnected?.Invoke();
+                }
+            }
+            
         }
 
         protected virtual void OnMessageReceived(string message)
