@@ -11957,6 +11957,22 @@ namespace opengl3
         {
 
         }
+
+        private void trackBar_navig_robot_test_servo_Scroll(object sender, EventArgs e)
+        {
+            var cur_pos = textBox_navig_robot_send_pos.Text;
+            var cur_ang = ((System.Windows.Forms.TrackBar)sender).Value;
+            if (cur_pos.Count(',') != 5) return;
+            var pos_l = cur_pos.Split(',');
+            var q6 = Convert.ToDouble( pos_l[5].Trim())+ cur_ang;
+            var new_pos = "";
+            for(int i=0;  i<5; i++)
+            {
+                new_pos+=pos_l[i]+",";
+            }
+            new_pos += Math.Round(q6, 4).ToString();
+            send_navig_robot("pose " + new_pos);
+        }
     }
 }
 

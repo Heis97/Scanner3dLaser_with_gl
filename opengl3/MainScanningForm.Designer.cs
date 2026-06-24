@@ -764,6 +764,7 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.trackBar_navig_robot_test_servo = new System.Windows.Forms.TrackBar();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -891,6 +892,7 @@ namespace opengl3
             this.tabControl_navig_process_tab.SuspendLayout();
             this.tabPage_robot_calibr.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_navig_robot_test_servo)).BeginInit();
             this.SuspendLayout();
             // 
             // tabCalibMonit
@@ -8707,6 +8709,7 @@ namespace opengl3
             // 
             // tabPage_robot_calibr
             // 
+            this.tabPage_robot_calibr.Controls.Add(this.trackBar_navig_robot_test_servo);
             this.tabPage_robot_calibr.Controls.Add(this.label_navig_robot_status_pose);
             this.tabPage_robot_calibr.Controls.Add(this.label_navig_robot_status);
             this.tabPage_robot_calibr.Controls.Add(this.label_navig_ronot_current_turn);
@@ -8926,6 +8929,15 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // trackBar_navig_robot_test_servo
+            // 
+            this.trackBar_navig_robot_test_servo.Location = new System.Drawing.Point(199, 281);
+            this.trackBar_navig_robot_test_servo.Maximum = 170;
+            this.trackBar_navig_robot_test_servo.Name = "trackBar_navig_robot_test_servo";
+            this.trackBar_navig_robot_test_servo.Size = new System.Drawing.Size(256, 45);
+            this.trackBar_navig_robot_test_servo.TabIndex = 157;
+            this.trackBar_navig_robot_test_servo.Scroll += new System.EventHandler(this.trackBar_navig_robot_test_servo_Scroll);
+            // 
             // MainScanningForm
             // 
             this.ClientSize = new System.Drawing.Size(1904, 1041);
@@ -9098,6 +9110,7 @@ namespace opengl3
             this.tabPage_robot_calibr.ResumeLayout(false);
             this.tabPage_robot_calibr.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graphicGLBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_navig_robot_test_servo)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -9837,6 +9850,7 @@ namespace opengl3
         private System.Windows.Forms.Label label51;
         private System.Windows.Forms.Label label_navig_robot_status;
         private System.Windows.Forms.Label label_navig_robot_status_pose;
+        private System.Windows.Forms.TrackBar trackBar_navig_robot_test_servo;
     }
 }
 
