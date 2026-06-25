@@ -17,6 +17,7 @@ namespace opengl3
         public CameraCV[] cameraCVs;
         public RobotFrame cur_pos;
         public Matrix<double> R;//1 * R -> 2
+        public Matrix<double> R_inv;//1 * R -> 2
         public Matrix<double> Bfs;//Flange->scaner
 
         public Matrix<double> Bfs_r;//Flange->scaner
@@ -46,6 +47,8 @@ namespace opengl3
 
         public Point3d_GL[] comp_points_3d(System.Drawing.PointF[] ps1, System.Drawing.PointF[] ps2,int ind_main=0)
         {
+            if (ps1 == null || ps2 == null) return null;
+
             if (ps1.Length != ps2.Length) return null;
             var lines1 = PointCloud.computeTracesCam(PointF.toPointF(ps1), cameraCVs[0],cameraCVs[0].matrixCS );
             var lines2 = PointCloud.computeTracesCam(PointF.toPointF(ps2), cameraCVs[1], cameraCVs[0].matrixCS*R);
@@ -91,6 +94,8 @@ namespace opengl3
                     CvInvoke.Invert(cameraCVs[1].matrixSC, inv_cs1, DecompMethod.LU);
                     R = cameraCVs[0].matrixSC* inv_cs1  ;
 
+                    R_inv = R.Clone() ;
+                    CvInvoke.Invert(R_inv,R_inv, DecompMethod.LU);
                     Settings_loader.save_file("stereo_cal.txt", new object[] { R });
                     prin.t("stereo calib R_sc:");
                     prin.t(R);
@@ -111,7 +116,9 @@ namespace opengl3
                         var inv_cs1 = new Matrix<double>(4, 4);
                         CvInvoke.Invert(cameraCVs[0].matrixCS, inv_cs1, DecompMethod.LU);
 
-                        R = inv_cs1 * cameraCVs[1].matrixCS; 
+                        R = inv_cs1 * cameraCVs[1].matrixCS;
+                        R_inv = R.Clone();
+                        CvInvoke.Invert(R_inv, R_inv, DecompMethod.LU);
                         var c1 = cameraCVs[0].matrixCS;
                         Console.WriteLine(i + " " + R[0, 3] + " " + R[1, 3] + " " + R[2, 3] + " " + " " + R[0, 2] + " " + R[1, 2] + " " + R[2, 2] + " "//
                         + c1[0, 3] + " " + c1[1, 3] + " " + c1[2, 3] + " " + c1[2, 0] + " " + c1[2, 1] + " " + c1[2, 2]) ;// ; ;
@@ -142,6 +149,8 @@ namespace opengl3
                         CvInvoke.Invert(cameraCVs[0].matrixCS, inv_cs1, DecompMethod.LU);
 
                         R = inv_cs1 * cameraCVs[1].matrixCS;
+                        R_inv = R.Clone();
+                        CvInvoke.Invert(R_inv, R_inv, DecompMethod.LU);
                         var c1 = cameraCVs[0].matrixCS;
                         var rob_pos = new RobotFrame(frames[i].name);
                         var r1 = rob_pos.getMatrix();

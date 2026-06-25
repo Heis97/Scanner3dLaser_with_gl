@@ -551,7 +551,7 @@ namespace opengl3
                 color_r = 0.6f,
                 color_g = 0.6f,
                 color_b = 0.6f,
-                power =5000000,
+                power =50000000,
                 cut_off = 0.9999f,
                 type_light = LightSourceGL.type.Point
 

@@ -21,6 +21,7 @@ using Emgu.CV.Dnn;
 using OpenGL;
 using System.Threading;
 using System.Text.Json;
+using Emgu.CV.XFeatures2D;
 
 namespace opengl3
 {
@@ -196,17 +197,22 @@ namespace opengl3
 
     class NavigTool
     {
-        public enum ToolType { tp4_v1 };
+        public enum ToolType { tp4_v1, tp1_v1 };
         public Point3d_GL[] ps;
         public List<Point3d_GL> trace_tcp = new List<Point3d_GL>();
         int[] inds;
         int[] ind_aruco;
-        int aruco_corner_num;
+        int aruco_corner_num=4;
         int aruco_number = 0;
         Point3d_GL tcp;
         Point3d_GL rotate;
+        NavigSys NavigSys;
 
-        public Matrix<double> matrix_frame;//frame marker
+        public Matrix<double> matrix_frame = new Matrix<double>(new double[,] {//frame markers
+                {1,0,0,0 },
+                {0,1,0,0 },
+                {0,0,1,0 },
+                {0,0,0,1 }});
         public Matrix<double> matrix_frame_inv;
         public Matrix<double> matrix_model;
         public Matrix<double> matrix_model_inv;
@@ -226,7 +232,7 @@ namespace opengl3
                 {0,1,0,0 },
                 {0,0,1,0 },
                 {0,0,0,1 }});
-        ToolType tool_type;
+        public ToolType tool_type;
         public List<List<Point3d_GL>> ps_for_registr = new List<List<Point3d_GL>>();
 
         /*
@@ -246,7 +252,7 @@ namespace opengl3
 
         public NavigTool(int[] _inds, ToolType _tool_type,string _name_3d_model=null, string _path_3d_model = null, Matrix<double> _matrix_model_debug = null, string _name_3d_model_debug = null) 
         {
-            if (_inds == null) { Console.WriteLine("NavigTool _inds == null"); return ; }
+            if (_inds == null) { Console.WriteLine("NavigTool _inds == null"); return; }
             aruco_number = _inds.Length;
             inds = new int[aruco_number];
             for (int i =0; i<_inds.Length;i++)
@@ -256,8 +262,11 @@ namespace opengl3
             tool_type = _tool_type;
             if (_tool_type == ToolType.tp4_v1)
             {
-                aruco_corner_num = 4;
                 if (aruco_number != 4)  Console.WriteLine("NavigTool inds.Length != 4 for ToolType.tp4_v1");
+            }
+            if (_tool_type == ToolType.tp1_v1)
+            {
+                if (aruco_number != 1) Console.WriteLine("NavigTool inds.Length != 1 for ToolType.tp1_v1");
             }
             if (_name_3d_model != null)
             {
@@ -297,9 +306,9 @@ namespace opengl3
 
             return 0;
         }
-        public Point3d_GL calibrate_tcp_4p(Point3d_GL[][][] ps_cal)//ps not filterd
+        public Point3d_GL calibrate_tcp_4p(Point3d_GL[][][] ps_cal)//ps filterd
         {
-            var ps = filter_ps_array(ps_cal);
+            var ps = ps_cal;
             if (ps == null) return Point3d_GL.notExistP();
             if (ps.Length < 5) return Point3d_GL.notExistP();
             var ms = new List<Matrix<double>>();
@@ -372,7 +381,82 @@ namespace opengl3
 
             return this.tcp;
         }
+        public Point3d_GL calibrate_tool_tcp_4p(Point3d_GL[][][] ps_cal)//ps filterd
+        {
+            var ps = ps_cal;
+            if (ps == null) return Point3d_GL.notExistP();
+            if (ps.Length < 5) return Point3d_GL.notExistP();
+            var ms = new List<Matrix<double>>();
+            var ps_calc = new List<Point3d_GL>();
+            for (int i = 0; i < 5; i++)
+            {
+                var m = get_frame(ps[i]);
+                if (m == null) continue;
+                ms.Add(m);
+                ps_calc.Add(new Point3d_GL(m[0, 3], m[1, 3], m[2, 3]));
+            }
 
+
+            var p_cenr = find_center_sphere_4p(ps_calc)[0];
+
+            var p_cenr_2 = find_center_sphere_4p(ps_calc.GetRange(1, 4))[0];
+
+
+            //Console.WriteLine("p_cenr: " + p_cenr);
+            //Console.WriteLine("p_cenr2: " + p_cenr_2);
+
+            var tcp_aver = new Matrix<double>(new double[,] {
+                {0,0,0,0 },
+                {0,0,0,0 },
+                {0,0,0,0 },
+                {0,0,0,0 }});
+            int ps_count = 5;
+
+            var tcp_list = new List<Matrix<double>>();
+            for (int i = 0; i < ps_count; i++)
+            {
+                var m_inv = ms[i].Clone();
+
+                CvInvoke.Invert(m_inv, m_inv, DecompMethod.Svd);
+
+                var m_test = m_inv * ms[i];
+                var tcp = new Matrix<double>(new double[,] {
+                {1,0,0,p_cenr.x },
+                {0,1,0,p_cenr.y },
+                {0,0,1,p_cenr.z },
+                {0,0,0,1 }});
+                var m_tcp = m_inv * tcp;
+                tcp_list.Add(m_tcp);
+                tcp_aver += m_tcp;// m_inv* tcp
+                //Console.WriteLine("m_inv * tcp");
+                //prin.t(m_inv * tcp);
+
+            }
+            tcp_aver = tcp_aver / ps_count;
+            var p_err = new Point3d_GL();
+
+            for (int i = 0; i < ps_count; i++)
+            {
+                var p_i = new Point3d_GL(
+                    Math.Abs(tcp_aver[0, 3] - tcp_list[i][0, 3]),
+                    Math.Abs(tcp_aver[1, 3] - tcp_list[i][1, 3]),
+                    Math.Abs(tcp_aver[2, 3] - tcp_list[i][2, 3]));
+                p_err += p_i;
+            }
+
+
+            Console.WriteLine("Navig_calib p_err x y z: " + p_err / ps_count);
+
+
+
+            this.matrix_tcp = tcp_aver;
+            //Console.WriteLine("tcp_aver");
+            //prin.t(tcp_aver);
+
+            this.tcp = new Point3d_GL(tcp_aver[0, 3], tcp_aver[1, 3], tcp_aver[2, 3]);
+
+            return this.tcp;
+        }
         public static Point3d_GL[] find_center_sphere_4p(List<Point3d_GL> points)
         {
             if (points == null || points.Count < 4)
@@ -438,12 +522,15 @@ namespace opengl3
         public Matrix<double> get_frame(Point3d_GL[][] ps_finded)//ps not filterd
         {
             var ps = filter_ps( ps_finded);
-            if (!check_aruko_ps(ps)) { return null; } 
+            //if (!check_aruko_ps(ps)) { return null; } 
             if (tool_type == ToolType.tp4_v1)
             {
                 return get_frame_tr4_v1(ps);
             }
-
+            else if (tool_type == ToolType.tp1_v1)
+            {
+                return get_frame_tr1_v1(ps);
+            }
             return null;
         }
         public Matrix<double> get_frame_tcp(Point3d_GL[][] ps_finded)//ps not filterd
@@ -455,7 +542,11 @@ namespace opengl3
                 get_frame_tr4_v1(ps);
                 return  matrix_model;
             }
-
+            if (tool_type == ToolType.tp1_v1)
+            {
+                get_frame_tr1_v1(ps);
+                return matrix_model;
+            }
             return null;
         }
         /*
@@ -499,7 +590,56 @@ namespace opengl3
             return matrix_frame;
         }
 
-        
+        public Matrix<double> get_frame_tr1_v1(Point3d_GL[][] ps_finded)//ps filterd
+        {
+            var p0 = ps_finded[0][0];
+            var p1 = ps_finded[0][3];
+            var p2 = ps_finded[0][2];
+            var p3 = ps_finded[0][1];
+
+            var vx = (p2 - p1).normalize();
+            var vyx = (p0 - p1).normalize();
+
+            var vz = (vx | vyx).normalize();
+            var vy = (vz | vx).normalize();
+            matrix_frame = RobotFrame.matrix_basis_from_ps(new Point3d_GL[] { p0, p1, p2 });
+            matrix_frame_inv = matrix_frame.Clone();
+            CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU);
+
+            if (tool_type == ToolType.tp1_v1)
+            {
+                matrix_model = matrix_frame * matrix_tcp;
+            }
+            matrix_model_inv = matrix_model.Clone();
+            CvInvoke.Invert(matrix_model, matrix_model_inv, DecompMethod.LU);
+            var ps_ext = gen_3d_ps_other_corners(new Point3d_GL(9, 9, 0), 50, 100, matrix_frame);
+            ps = new Point3d_GL[] { p0, p1, p2, p3, new Point3d_GL(matrix_model[0, 3], matrix_model[1, 3], matrix_model[2, 3]) };
+            var ps_l = ps.ToList();
+            ps_l.AddRange(ps_ext);
+            ps = ps_l.ToArray();
+
+            
+
+            return matrix_frame;
+        }
+
+        static Point3d_GL[] gen_3d_ps_other_corners(Point3d_GL pc, double marker_size, double corner_lin_dist, Matrix<double> matrix_frame)
+        {
+            var ps_marker = new Point3d_GL[] { new Point3d_GL(0, 0, 0), new Point3d_GL(marker_size, 0, 0), new Point3d_GL(marker_size, marker_size, 0), new Point3d_GL(0, marker_size, 0) };
+            var pc_marker = new Point3d_GL(marker_size/2, marker_size / 2, 0);
+            var ps_corn = Point3d_GL.add_arr(ps_marker, pc - pc_marker);
+
+            var ps_corn_x = Point3d_GL.add_arr(ps_corn, new Point3d_GL(corner_lin_dist,0,0));
+            var ps_corn_y = Point3d_GL.add_arr(ps_corn, new Point3d_GL( 0, corner_lin_dist, 0));
+            var ps_corn_xy = Point3d_GL.add_arr(ps_corn, new Point3d_GL(corner_lin_dist, corner_lin_dist, 0));
+
+            var ps_l = new List<Point3d_GL>();
+            ps_l.AddRange(ps_corn_x);
+            ps_l.AddRange(ps_corn_y);
+            ps_l.AddRange(ps_corn_xy);
+            var ps_arr = Point3d_GL.multMatr( ps_l.ToArray() , matrix_frame);
+            return ps_arr;
+        }
 
         Point3d_GL[][][] filter_ps_array(Point3d_GL[][][] ps)
          {
@@ -532,7 +672,7 @@ namespace opengl3
 
             for (int i = 0; i< ps.Length; i++)
             {
-                if (ps[i]!=null)
+                if (ps[i]!=null && ps[i].Length!=0)
                 {
                     var cur_aruco_ind = ps[i][0].ind;
                     if (inds.Contains(cur_aruco_ind))
@@ -648,12 +788,286 @@ namespace opengl3
             }
             return points3d_aruco;
         }
+        public static Image<Bgr, byte> WarpArucoWithSurroundings(
+        Image<Bgr, byte> image,
+        int markerId,
+        int markerOutputSize = 100,
+        double marginFactor = 10,
+        Dictionary.PredefinedDictionaryName dictionary = Dictionary.PredefinedDictionaryName.Dict4X4_50,
+        Bgr backgroundColor = default)
+        {
+            if (marginFactor < 0)
+                throw new ArgumentException("marginFactor должно быть >= 0.", nameof(marginFactor));
 
-        public NavigSys navigation_processing_get_scene(Point3d_GL[][] ps)
+           // if (backgroundColor == default)
+                backgroundColor = new Bgr(0, 0, 0);
+
+            // 1. Детектируем маркеры
+            var arucoDict = new Dictionary(dictionary);
+            var detectorParams = DetectorParameters.GetDefault();
+
+            var corners = new VectorOfVectorOfPointF();
+            var ids = new VectorOfInt();
+            var rejected = new VectorOfVectorOfPointF();
+
+            ArucoInvoke.DetectMarkers(image, arucoDict, corners, ids, detectorParams, rejected);
+
+            // 2. Ищем нужный ID
+            int index = -1;
+            for (int i = 0; i < ids.Size; i++)
+            {
+                if (ids[i] == markerId)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index == -1)
+                throw new Exception($"Маркер с ID {markerId} не найден.");
+
+            System.Drawing.PointF[] srcPoints = corners[index].ToArray();
+
+            // 3. Вычисляем размер выходного изображения и координаты маркера в центре
+            int outputSize = (int)Math.Round(markerOutputSize * (1 + 2 * marginFactor));
+            int offset = (int)Math.Round(marginFactor * markerOutputSize);
+            int markerSize = markerOutputSize; // маркер будет точно этого размера
+
+            System.Drawing.PointF[] dstPoints = new System.Drawing.PointF[]
+            {
+            new System.Drawing.PointF(offset, offset),
+            new System.Drawing.PointF(offset + markerSize - 1, offset),
+            new System.Drawing.PointF(offset + markerSize - 1, offset + markerSize - 1),
+            new System.Drawing.PointF(offset, offset + markerSize - 1)
+            };
+
+            // 4. Вычисляем гомографию и применяем перспективное преобразование
+            Mat homography = CvInvoke.FindHomography(srcPoints, dstPoints, RobustEstimationAlgorithm.Ransac);
+
+            Mat warpedMat = new Mat();
+            MCvScalar borderColor = new MCvScalar(backgroundColor.Blue, backgroundColor.Green, backgroundColor.Red);
+            CvInvoke.WarpPerspective(image, warpedMat, homography, new Size(outputSize, outputSize),
+                Inter.Linear, Warp.Default, BorderType.Constant, borderColor);
+
+            return warpedMat.ToImage<Bgr, byte>();
+        }
+
+
+
+        public void navigation_processing_draw_points3d(Point3d_GL[] ps, ref Mat _mat_out1, ref Mat _mat_out2)
+        {
+            
+
+        }
+
+        public NavigTool precise_frame_comp( NavigTool tool, ref Mat _mat_out1,ref Mat _mat_out2)
+        {
+            if (tool.tool_type != NavigTool.ToolType.tp1_v1) return tool;
+            var ps1 = precise_points_circles(tool, _mat_out1, 0);
+            var ps2 = precise_points_circles(tool, _mat_out2, 1);
+
+            var ps3d  = stereo.stereoCamera.comp_points_3d(ps1, ps2);
+            var ps_for_frame = new Point3d_GL[1][];
+            if (ps3d == null) { return tool; }
+            if(ps3d.Length != 3) { return tool; }
+            var p4 = Point3d_GL.centr_mass(new Point3d_GL[] { tool.ps[0], tool.ps[1], tool.ps[2], tool.ps[3] });
+            ps_for_frame[0] = new Point3d_GL[] { ps3d[1], ps3d[2],  ps3d[0], p4  };
+
+            _mat_out1 = draw_points(ps_for_frame[0], _mat_out1, 0, new MCvScalar(255, 0, 0));
+           // _mat_out2 = draw_points(ps_for_frame[0], _mat_out2, 1, new MCvScalar(0, 255, 0));
+            tool.get_frame_tr1_v1(ps_for_frame);
+
+
+            return tool;
+        }
+        public Mat draw_points(Point3d_GL[] ps, Mat _mat_out1, int ind, MCvScalar color)
+        {
+            var mat_orig = _mat_out1.Clone();
+            if (ps == null || ps.Length == 0) return null;
+            var ps_draw = new PointF[ps.Length];
+            for (int i = 0; i < ps.Length; i++)
+            {
+
+                var p3d_cam_0 = stereo.stereoCamera.cameraCVs[0].matrixSC * ps[i];
+                if (ind == 1)
+                {
+                    p3d_cam_0 = stereo.stereoCamera.R_inv * p3d_cam_0;
+                }
+                var p2d_0 = stereo.stereoCamera.cameraCVs[ind].point2DfromCam(p3d_cam_0);
+                ps_draw[i] = new PointF(p2d_0.X, p2d_0.Y);
+                
+
+            }
+            _mat_out1 = UtilOpenCV.drawPointsF(_mat_out1, ps_draw, (int)color.V2, (int)color.V1, (int)color.V0, 4, true);
+            return _mat_out1;
+        }
+        public System.Drawing.PointF[] precise_points_circles(NavigTool tool, Mat _mat_out1, int ind)
+        {
+            var mat_orig = _mat_out1.Clone();
+            var ps = tool.ps;
+            if (ps == null || ps.Length == 0) return null;
+            if (ps.Length != 17) return null;
+            var ps2di_0 = new System.Drawing.Point[12];
+
+
+            for (int i = 0; i < ps.Length; i++)
+            {
+
+                var p3d_cam_0 = stereo.stereoCamera.cameraCVs[0].matrixSC * ps[i];
+                if(ind==1)
+                {
+                    p3d_cam_0 = stereo.stereoCamera.R_inv * p3d_cam_0;
+                }
+                var p2d_0 = stereo.stereoCamera.cameraCVs[ind].point2DfromCam(p3d_cam_0);
+                var p2di_0 = new System.Drawing.Point((int)p2d_0.X, (int)p2d_0.Y);
+                //CvInvoke.DrawMarker(_mat_out1, p2di_0, new MCvScalar(0, 0, 255), MarkerTypes.Cross, 5);
+
+                if (i > 4)
+                {
+                    ps2di_0[i - 5] = p2di_0;
+                }
+
+            }
+
+            var ps2di_0_arr = new System.Drawing.Point[3][];
+            ps2di_0_arr[0] = new System.Drawing.Point[4] { ps2di_0[0], ps2di_0[1], ps2di_0[2], ps2di_0[3] };
+            ps2di_0_arr[1] = new System.Drawing.Point[4] { ps2di_0[4], ps2di_0[5], ps2di_0[6], ps2di_0[7] };
+            ps2di_0_arr[2] = new System.Drawing.Point[4] { ps2di_0[8], ps2di_0[9], ps2di_0[10], ps2di_0[11] };
+
+            var ps2di_0_arr_c = new System.Drawing.PointF[] {
+                new System.Drawing.PointF((ps2di_0_arr[0][0].X+ ps2di_0_arr[0][2].X)/2,( ps2di_0_arr[0][0].Y + ps2di_0_arr[0][2].Y)/2),
+                new System.Drawing.PointF((ps2di_0_arr[1][0].X+ ps2di_0_arr[1][2].X)/2,( ps2di_0_arr[1][0].Y + ps2di_0_arr[1][2].Y)/2),
+                new System.Drawing.PointF((ps2di_0_arr[2][0].X+ ps2di_0_arr[2][2].X)/2,( ps2di_0_arr[2][0].Y + ps2di_0_arr[2][2].Y)/2),};
+
+            var _mat_out1n = KeepInsidePolygonsAndFillOutside(mat_orig, ps2di_0_arr, new Bgr(0, 0, 0));
+
+            CvInvoke.CvtColor(_mat_out1n, _mat_out1n, ColorConversion.Bgr2Gray);
+            CvInvoke.GaussianBlur(_mat_out1n, _mat_out1n, new Size(5, 5), -1);
+            CvInvoke.AdaptiveThreshold(_mat_out1n, _mat_out1n, 255, AdaptiveThresholdType.MeanC, ThresholdType.BinaryInv, 7, 7);
+
+
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            Mat hier = new Mat();
+            CvInvoke.FindContours(_mat_out1n, contours, hier, RetrType.Ccomp, ChainApproxMethod.ChainApproxSimple);
+            //var conts = sameContours_cv(contours);
+
+           // CvInvoke.CvtColor(_mat_out1, _mat_out1, ColorConversion.Gray2Bgr);
+
+            contours = FindCircles.size_filter(contours, 20, 3800);
+            contours = FindCircles.only_same_centres_illum(contours, 2);
+
+            var conts = FindCircles.sameContours(contours, 0.3, 1);
+            conts = FindCircles.illum_same_centres(conts, 3);
+
+
+            var psc = PointF.toPointF(FindCircles.get_pc_conts(conts));
+
+
+            var ps2_predict = PointF.toPointF(ps2di_0_arr_c);
+            if (psc == null) return null;
+            if (psc.Length==0) return null;
+
+            if (ps2_predict == null) return null;
+            if (ps2_predict.Length == 0) return null;
+
+            //UtilOpenCV.drawPointsF(_mat_out1, PointF.toSystemPoint(ps2_predict), 128, 128, 128, 3);
+
+            //UtilOpenCV.drawPointsF(_mat_out1, PointF.toSystemPoint(psc), 255, 255, 0, 3);
+
+            for (int i = 0; i < ps2_predict.Length; i++)
+            {
+                var j_min = 0;
+                var dist_min = double.MaxValue;
+                for (int j = 0; j < psc.Length; j++)
+                {
+                    var cur_dist = (ps2_predict[i] - psc[j]).norm;
+                    if (cur_dist < dist_min)
+                    {
+                        j_min = j;
+                        dist_min = cur_dist;
+                    }
+                   
+                }
+                ps2_predict[i] = psc[j_min];
+            }
+
+
+            var ps_result = PointF.toSystemPoint(ps2_predict);
+
+            //UtilOpenCV.drawPointsF(_mat_out1, ps_result, 255, 255, 255, 3, true);
+
+            return ps_result;
+        }
+
+        public static Mat draw_conts_with_charachts(Mat mat, VectorOfVectorOfPoint conts)
+        {
+            Random random = new Random();
+            if (conts == null) return mat;
+            if (conts != null) CvInvoke.DrawContours(mat, conts, -1, new MCvScalar(0, 255, 0), 1, LineType.EightConnected);
+            Console.WriteLine("__________");
+            for (int i = 0; i<conts.Size;i++)
+            {
+                var area = CvInvoke.ContourArea(conts[i]);
+                var cont_pc = FindCircles.findCentrCont(conts[i]);
+                var cont_fig = FindCircles.sumHuMom(conts[i]);
+                CvInvoke.PutText(mat, " f: " + Math.Round(10*cont_fig, 2), new System.Drawing.Point((int)cont_pc.X , (int)cont_pc.Y ), FontFace.HersheyTriplex, 0.5, new MCvScalar(0, 0, 255));
+                Console.WriteLine(" f: " + Math.Round(10 * cont_fig, 2));
+            }
+            
+            return mat;
+        }
+
+        public static  Mat KeepInsidePolygonsAndFillOutside(Mat image, System.Drawing.Point[][] polygons, Bgr bgColor)
+        {
+            if (image == null)
+                return image;
+            if (image.Depth != DepthType.Cv8U || image.NumberOfChannels != 3)
+                return image;
+
+            // Если многоугольников нет — закрашиваем всё изображение
+            if (polygons == null || polygons.Length == 0)
+            {
+                image.SetTo(new MCvScalar(bgColor.Blue, bgColor.Green, bgColor.Red));
+                return image;
+            }
+
+            int width = image.Width;
+            int height = image.Height;
+
+            using (Mat mask = new Mat(height, width, DepthType.Cv8U, 1))
+            {
+                mask.SetTo(new MCvScalar(0));
+
+                // Создаём обёртку для массива контуров
+                using (VectorOfVectorOfPoint vvop = new VectorOfVectorOfPoint(polygons))
+                {
+                    // Заливаем многоугольники белым (255) на маске
+                    CvInvoke.FillPoly(mask, vvop, new MCvScalar(255));
+                }
+
+                // Создаём фоновое изображение, полностью заполненное заданным цветом
+                using (Mat background = new Mat(height, width, image.Depth, image.NumberOfChannels))
+                {
+                    background.SetTo(new MCvScalar(bgColor.Blue, bgColor.Green, bgColor.Red));
+
+                    // Инвертируем маску – выделяем области СНАРУЖИ многоугольников
+                    using (Mat maskInv = new Mat())
+                    {
+                        CvInvoke.BitwiseNot(mask, maskInv);
+
+                        // Копируем фон в исходное изображение только там, где maskInv != 0
+                        background.CopyTo(image, maskInv);
+                    }
+                }
+            }
+            return image; 
+        }
+        public NavigSys navigation_processing_get_scene(Point3d_GL[][] ps, ref Mat _mat_out1, ref Mat _mat_out2)
         {
             for (int i = 0;i< tools.Length; i++)
             {
                 tools[i].get_frame(ps);
+                tools[i] = precise_frame_comp(tools[i],ref _mat_out1,  ref _mat_out2);
             }
 
 
@@ -715,6 +1129,7 @@ namespace opengl3
             {
                 // Отрисовка границ и ID маркеров на изображении
                 ArucoInvoke.DrawDetectedMarkers(image, corners, ids, new Bgr(Color.Green).MCvScalar);
+
                 /*if (ids.Size > 0)
                 {
                     for (int i = 0; i < ids.Size; i++)
@@ -739,10 +1154,18 @@ namespace opengl3
                         for (int j = 0; j < cornersArray.Length; j++)
                         {
                             points[id][j] = new System.Drawing.PointF(cornersArray[j].X, cornersArray[j].Y);
+                            var color = new MCvScalar(128,128,128);//bgr
+                            /*if(j == 0) color = new MCvScalar(0,255,0);
+                            if (j == 1) color = new MCvScalar(0, 0, 0);
+                            if (j == 2) color = new MCvScalar(0, 0, 255);
+                            if (j == 3) color = new MCvScalar(128, 128, 128);
+                            CvInvoke.DrawMarker(image, new System.Drawing.Point((int) cornersArray[j].X, (int)cornersArray[j].Y), color, MarkerTypes.Cross, 3);*/
                         }
                     }
                     //Console.WriteLine("----------");
                 }
+
+
             }
             else
             {

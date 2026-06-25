@@ -305,7 +305,7 @@ namespace opengl3
                 return orig;
             }          
         }
-        static VectorOfVectorOfPoint filter_same_centres(VectorOfVectorOfPoint contours)
+        static public VectorOfVectorOfPoint filter_same_centres(VectorOfVectorOfPoint contours, double dist_same = 10)
         {
             var filtr_conts =new VectorOfVectorOfPoint();
             filtr_conts.Push(contours[0]);
@@ -314,7 +314,7 @@ namespace opengl3
                 bool same_place = false;
                 for (int j = 0; j < filtr_conts.Size; j++)
                 {
-                    if (distContours(contours[i], filtr_conts[j])<10)
+                    if (distContours(contours[i], filtr_conts[j])< dist_same)
                     {
                         same_place = true;
                     }
@@ -327,7 +327,7 @@ namespace opengl3
             return filtr_conts;
         }
 
-        static VectorOfVectorOfPoint only_same_centres(VectorOfVectorOfPoint contours)
+        static public VectorOfVectorOfPoint only_same_centres(VectorOfVectorOfPoint contours)
         {
             var filtr_conts = new VectorOfVectorOfPoint();
             for (int i = 0; i < contours.Size; i++)
@@ -342,6 +342,59 @@ namespace opengl3
                     
                 }
                 if (same_place)
+                {
+                    filtr_conts.Push(contours[i]);
+                }
+            }
+            return filtr_conts;
+        }
+
+        static public VectorOfVectorOfPoint only_same_centres_illum(VectorOfVectorOfPoint contours,double same_dist = 3)
+        {
+            var filtr_conts = new VectorOfVectorOfPoint();
+            for (int i = 0; i < contours.Size; i++)
+            {
+
+                bool same_place = false;
+                for (int j = 0; j < contours.Size; j++)
+                {
+                    if (i != j)
+                        if (distContours(contours[i], contours[j]) < same_dist && CvInvoke.ContourArea(contours[i]) < CvInvoke.ContourArea(contours[j]))
+                        {
+                           
+                            same_place = true;
+                        }
+                            
+
+                }
+                if (same_place)
+                {
+                    filtr_conts.Push(contours[i]);
+                }
+            }
+            return filtr_conts;
+        }
+
+        static public VectorOfVectorOfPoint illum_same_centres(VectorOfVectorOfPoint contours, double same_dist = 3)
+        {
+            if (contours == null) return contours;
+            var filtr_conts = new VectorOfVectorOfPoint();
+            for (int i = 0; i < contours.Size; i++)
+            {
+
+                bool same_place = false;
+                for (int j = 0; j < contours.Size; j++)
+                {
+                    if (i != j)
+                        if (distContours(contours[i], contours[j]) < same_dist && CvInvoke.ContourArea(contours[i]) > CvInvoke.ContourArea(contours[j]))
+                        {
+
+                            same_place = true;
+                        }
+
+
+                }
+                if (!same_place)
                 {
                     filtr_conts.Push(contours[i]);
                 }
@@ -368,6 +421,17 @@ namespace opengl3
         static double distContours(VectorOfPoint c1, VectorOfPoint c2)
         {
             return dist(findCentrCont(c1), findCentrCont(c2));
+        }
+
+        static public  System.Drawing.PointF[] get_pc_conts(VectorOfVectorOfPoint contours)
+        {
+            if(contours == null) return null;
+            var pcs = new System.Drawing.PointF[contours.Size];
+            for(int i = 0;i < contours.Size;i++)
+            {
+                pcs[i] = findCentrCont(contours[i]);
+            }
+            return pcs;
         }
         static VectorOfVectorOfPoint sameContours_cv(VectorOfVectorOfPoint contours)
         {
@@ -417,7 +481,7 @@ namespace opengl3
             CvInvoke.Imshow("match", im);
             return conts_fil;
         }
-        static double sumHuMom(VectorOfPoint cont)
+        static public double sumHuMom(VectorOfPoint cont)
         {
             var M = CvInvoke.Moments(cont);
             var ms = CvInvoke.HuMoments(M);
@@ -551,7 +615,7 @@ namespace opengl3
             }
             return clasters[i_max];
         }
-        public static System.Drawing.PointF findCentrCont(VectorOfPoint contour)
+        public  static System.Drawing.PointF findCentrCont(VectorOfPoint contour)
         {
 
             var M = CvInvoke.Moments(contour);

@@ -562,7 +562,9 @@ namespace opengl3
         }
         public PointF point2DfromCam(Point3d_GL _p)//_opt
         {
-            var p = (cameramatrix * _p);
+            if(_p.z==0) return new PointF(0,0);
+            var p_priv = _p / _p.z;
+            var p = (cameramatrix_opt * p_priv);
             return new PointF(p.x,p.y);
         }
         public Mat undist(Mat mat)

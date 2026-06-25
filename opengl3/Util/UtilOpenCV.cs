@@ -843,7 +843,7 @@ namespace opengl3
             {
                 for (int i = 0; i < points.Length; i++)
                 {
-                    
+                    CvInvoke.DrawMarker(im, points[i], color, MarkerTypes.Cross, size, 2);
                     CvInvoke.Circle(im, points[i], size, color, -1);
                     if(text)
                     {
@@ -2423,7 +2423,7 @@ namespace opengl3
 
             for (int i = 0; i < p_start.Count; i++)
             {   
-               CvInvoke.Circle(im_ret, new Point(p_start[i].X, p_start[i].Y), (int)(q_side / 2.9), new MCvScalar(0, 0, 0),-1);       
+               CvInvoke.Circle(im_ret, new Point(p_start[i].X, p_start[i].Y), (int)(q_side / 4.9), new MCvScalar(0, 0, 0),-1);  //(int)(q_side / 2.9     
             }
             im_ret.Save("black_br_" + n + "_" + m + ".png");
             return new Mat[] { im_ret.Mat, new Matrix<float>(points_all).Mat, new Matrix<float>(points_all).Mat };

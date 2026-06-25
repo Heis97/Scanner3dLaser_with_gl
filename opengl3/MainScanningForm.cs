@@ -241,7 +241,7 @@ namespace opengl3
 
             InitializeComponent();
             init_vars();
-            //fast_load_ct();
+            fast_load_ct();
 
             //test_kin_rc5();
             //341.4762 -65.5166 626.3698 0.7603 1.2453 -0.1323   //target position, know
@@ -463,7 +463,7 @@ namespace opengl3
             //UtilOpenCV.takeLineFromMat(im_las, 1);
 
             // test_basis();
-            //UtilOpenCV.generateImage_chessboard_circle(6, 7, 100);
+            UtilOpenCV.generateImage_chessboard_circle(6, 7, 200);
             //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
@@ -2484,7 +2484,7 @@ namespace opengl3
 
             load_navig_sys();
 
-           
+
             //Manipulator.calcRob(GL1);
 
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
@@ -2611,7 +2611,23 @@ namespace opengl3
             //test_go_to_point_robot();
             //test_poses();
             //load_3d_model_robot_pulse();
+            
+           /* var im1 = new Mat("cam1//test5//photo_13_0.png");
+            
+            var warpedMarker = NavigSys.WarpArucoWithSurroundings(im1.ToImage<Bgr,byte>(), 11);
+            CvInvoke.Imshow("warped", warpedMarker);
+            CvInvoke.WaitKey();
+            // Сохраняем результат
+            //warpedMarker.Save("warped_marker.png");
 
+            if (im1.NumberOfChannels == 3)
+            {
+                CvInvoke.CvtColor(im1, im1, ColorConversion.Bgr2Gray);
+            }
+            CvInvoke.GaussianBlur(im1, im1, new Size(5, 5), -1);
+            CvInvoke.AdaptiveThreshold(im1, im1, 255, AdaptiveThresholdType.MeanC, ThresholdType.Binary, 7, 7);*/
+            //CvInvoke.GaussianBlur(im2, im2, new Size(7, 7), -1);
+            //send_buffer_img(im1.ToImage<Gray, Byte>(), PrimitiveType.Triangles, GL1);
 
         }
         void test_allign_mesh()
@@ -7196,7 +7212,7 @@ namespace opengl3
             int i = 0;
             Console.WriteLine(vertex_buffer_data.Length);
             Console.WriteLine("-----------------------------------");
-            var z_mult_cam = 10f;
+            var z_mult_cam = 0.2f;
             for (int x = 0; x < im2.Width - 1; x++)
             {
                 for (int y = 0; y < im2.Height - 1; y++)
@@ -9331,7 +9347,7 @@ namespace opengl3
 
         #endregion
 
-            #region samara_scan
+        #region samara_scan
 
         private void but_scan_simp_scan_Click(object sender, EventArgs e)
         {
@@ -10939,10 +10955,11 @@ namespace opengl3
                 if (mat_global[0] != null && mat_global[1] != null && !mat_global[0].IsEmpty && !mat_global[1].IsEmpty)
                 {
                     var ps3d = navig_system.navigation_processing_get_points3d(mat_global[1], mat_global[0], out Mat mat1, out Mat mat2);    //navyg_sys_info(camera_only)
-                    navig_system.navigation_processing_get_scene(ps3d);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
+                    navig_system.navigation_processing_get_scene(ps3d,ref mat1,ref mat2);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
                                                                                                 //
-
+                    
                     //draw 3d objs
+                    navig_system.navigation_processing_draw_points3d(navig_system.tools[0].ps,ref mat1, ref mat2);
                     imb_main[0].Image = mat1;
                     imb_main[1].Image = mat2;
 
@@ -10959,7 +10976,7 @@ namespace opengl3
                         var matrix_model_debug = navig_system.tools[j].matrix_model_debug;
                         //var matrix_model = navig_system.tools[j].matrix_frame;
                         //Console.WriteLine(".setMatrobj___"+ j);
-                        if (matrix_model != null && name_3d_model!=null && j != model_instrument) glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model, 0, UtilMatr.to_matrix(matrix_model))));
+                        if (matrix_model != null && name_3d_model!=null ||  j != model_instrument) glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model, 0, UtilMatr.to_matrix(matrix_model))));
                         if (matrix_frame != null && matrix_model_debug != null && name_3d_model_debug != null) glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model_debug, 0, UtilMatr.to_matrix(matrix_frame * matrix_model_debug))));
                         //Console.WriteLine("\n\n" + j);
                         if (navig_tool_trace_enable)
@@ -11005,12 +11022,13 @@ namespace opengl3
                                 if (ps_all.Length!=0)
                                     glControl1.Invoke((MethodInvoker)(() => GL1.addPointMesh(ps_all, Color3d_GL.red(), name_3d_model_trace_tcp, false)));
                         }
-                        
 
+                       
 
-                        
-                        //glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.removeObj(name_3d_model_debug)));
-                        //glControl1.Invoke((MethodInvoker)(() => GL1.addPointMesh(ps_debug,  Color3d_GL.red(), name_3d_model_debug)));
+                        var ps_name = "ps_test" + j;
+                        glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.removeObj(ps_name)));
+                        glControl1.Invoke((MethodInvoker)(() => GL1.addFrame(navig_system.tools[j].matrix_frame, 50, ps_name)));
+                        //glControl1.Invoke((MethodInvoker)(() => GL1.addPointMesh(navig_system.tools[j].ps,  Color3d_GL.red(), ps_name)));
                     }
                     //update matrs ct_objs
 
@@ -11050,18 +11068,19 @@ namespace opengl3
             Console.WriteLine(cam2_conf_path);
             var navig_stereo = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, null, markSize);
 
-            var navig_tool1 = new NavigTool(new int[] { 0, 11, 2, 1 }, NavigTool.ToolType.tp4_v1, "tool1", @"models\nav\tool1.stl",
+            //new int[] { 0, 11, 2, 1 }
+            var navig_tool1 = new NavigTool(new int[] { 11 }, NavigTool.ToolType.tp1_v1, "tool1", @"models\nav\tool1.stl",
                 new Matrix<double>(new double[,] {
-                {1,0,0,50 },
-                {0,1,0,50 },
+                {1,0,0,55 },
+                {0,1,0,55 },
                 {0,0,1,-14 },
                 {0,0,0,1 }}), @"models\nav\marker1.stl"
                 );
-
-            var navig_tool2 = new NavigTool(new int[] {  6, 5, 4, 3 }, NavigTool.ToolType.tp4_v1, "ct", null,
+            //new int[] {  6, 5, 4, 3 }
+            var navig_tool2 = new NavigTool(new int[] {  5}, NavigTool.ToolType.tp1_v1, "ct", null,
                 new Matrix<double>(new double[,] {
-                {1,0,0,50 },
-                {0,1,0,50 },
+                {1,0,0,55 },
+                {0,1,0,55 },
                 {0,0,1,-14 },
                 {0,0,0,1 }}), @"models\nav\calibr_model_navig_v2.stl"
                 );
@@ -11072,17 +11091,19 @@ namespace opengl3
             navig_system.tools = tools.ToArray();
 
             //var tool_cal_path_orig = textBox_tool_calibr.Text;
-            var tool_cal_path = "tool1_cal_0206_2";
+            var tool_cal_path = "tool1_cal_2506_1a";
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + tool_cal_path, @"cam2\" + tool_cal_path, FrameType.Test, false);
 
             var ps_calib = new List<Point3d_GL[][]>();
 
             for (int i = 0; i < frms_stereo.Length; i++)
             {
-                ps_calib.Add( navig_system.navigation_processing_get_points3d(frms_stereo[i].im, frms_stereo[i].im_sec, out Mat mat1, out Mat mat2));
+                var ps3d = navig_system.navigation_processing_get_points3d(frms_stereo[i].im, frms_stereo[i].im_sec, out Mat mat1, out Mat mat2);
+                navig_system.navigation_processing_get_scene(ps3d,ref mat1,ref mat2);
+                ps_calib.Add(new Point3d_GL[][] { navig_tool1.ps });
             }
 
-            var tcp_cal = navig_tool1.calibrate_tcp_4p(ps_calib.ToArray());
+            var tcp_cal = navig_tool1.calibrate_tool_tcp_4p(ps_calib.ToArray());
 
             for (int i = 0; i < navig_system.tools.Length; i++) 
             {
@@ -11708,8 +11729,8 @@ namespace opengl3
 
         void fast_load_ct()
         {
-            //ct_info = DicomSorter.LoadAndSortSlices("dicom_series_mask");
-            ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
+            ct_info = DicomSorter.LoadAndSortSlices("dicom_series_mask");
+            //ct_info = DicomSorter.LoadAndSortSlices(@"C:\Users\Insitu\Downloads\21_spine_trauma_dicom_free\1_compress_fract_typical_ct\31378\3");
             double h_reg_p = 43;
             ct_info.registr_ps = new Point3d_GL[] { new Point3d_GL(9,9, h_reg_p), new Point3d_GL(31, 9, h_reg_p), new Point3d_GL(31, 61, h_reg_p), new Point3d_GL(9, 61, h_reg_p) };
 
@@ -11729,6 +11750,7 @@ namespace opengl3
             rangeSliderVinv_limits_model_h.MaxValue = ct_info.SlicesCoronal.Count;
             rangeSliderH2_limits_model_d.MaxValue = (int)(ct_info.SlicesAxial_mat.Count * ct_info.axial_koef);
         }
+
         bool navig_tool_trace_enable = false;
         private void button_navig_tool_trace_Click(object sender, EventArgs e)
         {
@@ -11766,9 +11788,9 @@ namespace opengl3
         //registration=================================================================
         int number_registr_point_current = 0;
         int current_registration_instrument = 0;
-        int current_model_instrument = 0;
+        int current_model_instrument = 1;
         bool registration_done = false;
-        int model_instrument = 0;
+        int model_instrument = 1;
         private void button_change_navig_number_registr_point_current_Click(object sender, EventArgs e)
         {
             number_registr_point_current++;
@@ -11782,6 +11804,7 @@ namespace opengl3
         bool writing_registr_pos = false;
         private void button_navig_write_pos_registr_point_enable_Click(object sender, EventArgs e)
         {
+            if (ct_info == null) return;
             if(navig_system.tools[current_model_instrument].ps_for_registr.Count==0)
              navig_system.tools[current_model_instrument].init_points_for_registr(ct_info.registr_ps.Length);
             writing_registr_pos = !writing_registr_pos;
