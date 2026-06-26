@@ -2612,24 +2612,29 @@ namespace opengl3
             //test_poses();
             //load_3d_model_robot_pulse();
             
-           /* var im1 = new Mat("cam1//test5//photo_13_0.png");
+            /*var im1 = new Mat("cam1//for_model_v6//photo_13_3.png");
             
-            var warpedMarker = NavigSys.WarpArucoWithSurroundings(im1.ToImage<Bgr,byte>(), 11);
-            CvInvoke.Imshow("warped", warpedMarker);
-            CvInvoke.WaitKey();
+            var warpedMarker = NavigSys.WarpArucoWithSurroundings(im1, 11,50,1.4);//13.6/10.4
+            //CvInvoke.Imshow("warped", warpedMarker);
+            //CvInvoke.WaitKey();
             // Сохраняем результат
             //warpedMarker.Save("warped_marker.png");
-
+            im1 = warpedMarker;
             if (im1.NumberOfChannels == 3)
             {
                 CvInvoke.CvtColor(im1, im1, ColorConversion.Bgr2Gray);
             }
-            CvInvoke.GaussianBlur(im1, im1, new Size(5, 5), -1);
-            CvInvoke.AdaptiveThreshold(im1, im1, 255, AdaptiveThresholdType.MeanC, ThresholdType.Binary, 7, 7);*/
+            CvInvoke.GaussianBlur(im1, im1, new Size(13, 13), -1);
+            CvInvoke.AdaptiveThreshold(im1, im1, 255, AdaptiveThresholdType.MeanC, ThresholdType.Binary, 13, 13);
             //CvInvoke.GaussianBlur(im2, im2, new Size(7, 7), -1);
-            //send_buffer_img(im1.ToImage<Gray, Byte>(), PrimitiveType.Triangles, GL1);
+            send_buffer_img(im1.ToImage<Gray, Byte>(), PrimitiveType.Triangles, GL1);*/
 
         }
+
+
+
+
+
         void test_allign_mesh()
         {
             //var scan_orig = new Model3d("fiting1710_def_zero.stl", false);
@@ -10947,22 +10952,24 @@ namespace opengl3
 
         #endregion
         //------------------navig-------------------------------------------------
-        
+        int cam1_ind = 1;
+        int cam2_ind = 0;
         void navigation_processing()
         {
+            
             while (true)
             {
-                if (mat_global[0] != null && mat_global[1] != null && !mat_global[0].IsEmpty && !mat_global[1].IsEmpty)
+                if (mat_global[cam2_ind] != null && mat_global[cam1_ind] != null && !mat_global[cam2_ind].IsEmpty && !mat_global[cam1_ind].IsEmpty)
                 {
-                    var ps3d = navig_system.navigation_processing_get_points3d(mat_global[1], mat_global[0], out Mat mat1, out Mat mat2);    //navyg_sys_info(camera_only)
-                    navig_system.navigation_processing_get_scene(ps3d,ref mat1,ref mat2);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
+                    var ps3d = navig_system.navigation_processing_get_points3d(mat_global[cam1_ind], mat_global[cam2_ind], out Mat mat1, out Mat mat2);    //navyg_sys_info(camera_only)
+                    navig_system.navigation_processing_get_scene(ps3d);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
                                                                                                 //
                     
                     //draw 3d objs
                     navig_system.navigation_processing_draw_points3d(navig_system.tools[0].ps,ref mat1, ref mat2);
                     imb_main[0].Image = mat1;
                     imb_main[1].Image = mat2;
-
+                    //continue;
                     //GL1.draw_scene---------------------------------------------------------------------------
                     //update tools
                     for (int j = 0; j < navig_system.tools.Length; j++)
@@ -11069,12 +11076,20 @@ namespace opengl3
             var navig_stereo = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, null, markSize);
 
             //new int[] { 0, 11, 2, 1 }
-            var navig_tool1 = new NavigTool(new int[] { 11 }, NavigTool.ToolType.tp1_v1, "tool1", @"models\nav\tool1.stl",
+           /* var navig_tool1 = new NavigTool(new int[] { 11 }, NavigTool.ToolType.tp1_v1, "tool1", @"models\nav\tool1.stl",
                 new Matrix<double>(new double[,] {
                 {1,0,0,55 },
                 {0,1,0,55 },
                 {0,0,1,-14 },
                 {0,0,0,1 }}), @"models\nav\marker1.stl"
+                );*/
+
+            var navig_tool1 = new NavigTool(NavigMarker.get_marker_p1v2(11), NavigTool.ToolType.tp1_v1, "tool1", @"models\nav\tool1.stl",
+                new Matrix<double>(new double[,] {
+                {1,0,0,55 },
+                {0,1,0,55 },
+                {0,0,1,-14},
+                {0,0,0,1  }}), @"models\nav\marker1.stl"
                 );
             //new int[] {  6, 5, 4, 3 }
             var navig_tool2 = new NavigTool(new int[] {  5}, NavigTool.ToolType.tp1_v1, "ct", null,
@@ -11084,14 +11099,14 @@ namespace opengl3
                 {0,0,1,-14 },
                 {0,0,0,1 }}), @"models\nav\calibr_model_navig_v2.stl"
                 );
-            navig_system = new NavigSys(navig_stereo, 50);
+            navig_system = new NavigSys(navig_stereo, 12);
             var tools = new List<NavigTool>();
             tools.Add(navig_tool1);
             tools.Add(navig_tool2);
             navig_system.tools = tools.ToArray();
 
             //var tool_cal_path_orig = textBox_tool_calibr.Text;
-            var tool_cal_path = "tool1_cal_2506_1a";
+            var tool_cal_path = "tool1_cal_2606_3a";
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + tool_cal_path, @"cam2\" + tool_cal_path, FrameType.Test, false);
 
             var ps_calib = new List<Point3d_GL[][]>();
@@ -11099,8 +11114,7 @@ namespace opengl3
             for (int i = 0; i < frms_stereo.Length; i++)
             {
                 var ps3d = navig_system.navigation_processing_get_points3d(frms_stereo[i].im, frms_stereo[i].im_sec, out Mat mat1, out Mat mat2);
-                navig_system.navigation_processing_get_scene(ps3d,ref mat1,ref mat2);
-                ps_calib.Add(new Point3d_GL[][] { navig_tool1.ps });
+                ps_calib.Add(ps3d);
             }
 
             var tcp_cal = navig_tool1.calibrate_tool_tcp_4p(ps_calib.ToArray());
@@ -11132,7 +11146,7 @@ namespace opengl3
             navig_scene_objs_real.Add(cam2_model);
             GL1.buffersGl.setMatrobj(cam1_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS)* Matrix4x4f.RotatedY(90));
             GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS* navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));
-
+            
         }
 
         public void visible_navig_scene_objs_real(bool visible)
@@ -11218,8 +11232,8 @@ namespace opengl3
         private void but_con_navig_sys_Click(object sender, EventArgs e)
         {
                         
-            videoStart_sam(1);
-            videoStart_sam(0);
+            videoStart_sam(cam1_ind);
+            videoStart_sam(cam2_ind);
             var thr_navig = new Thread(navigation_processing);
             thr_navig.Start();
 

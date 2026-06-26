@@ -22,6 +22,8 @@ using OpenGL;
 using System.Threading;
 using System.Text.Json;
 using Emgu.CV.XFeatures2D;
+using CSJ2K.j2k.codestream;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace opengl3
 {
@@ -195,8 +197,33 @@ namespace opengl3
 
     }
 
+    class NavigMarker
+    {
+        public int ind = -1;
+        public double marker_size_mm = -1;
+        public double near_dist = 1;
+        public double far_dist = 1;
+        public int size_circle = 1;
+        public Point3d_GL[] ps_near;
+        public Point3d_GL[] ps_far;
+        
+        static public  NavigMarker get_marker_p1v2(int ind)
+        {
+            var marker = new NavigMarker();
+
+            marker.ind = ind;
+            marker.marker_size_mm = 10.8;
+            marker.near_dist = 13.6;
+            marker.far_dist = 100;
+            marker.size_circle = 50;
+
+            return marker;
+        }
+
+    }
     class NavigTool
     {
+        public NavigMarker marker;
         public enum ToolType { tp4_v1, tp1_v1 };
         public Point3d_GL[] ps;
         public List<Point3d_GL> trace_tcp = new List<Point3d_GL>();
@@ -263,6 +290,38 @@ namespace opengl3
             if (_tool_type == ToolType.tp4_v1)
             {
                 if (aruco_number != 4)  Console.WriteLine("NavigTool inds.Length != 4 for ToolType.tp4_v1");
+            }
+            if (_tool_type == ToolType.tp1_v1)
+            {
+                if (aruco_number != 1) Console.WriteLine("NavigTool inds.Length != 1 for ToolType.tp1_v1");
+            }
+            if (_name_3d_model != null)
+            {
+                name_3d_model = _name_3d_model;
+            }
+            if (_path_3d_model != null)
+            {
+                path_3d_model = _path_3d_model;
+            }
+            if (_matrix_model_debug != null && _name_3d_model_debug != null)
+            {
+                matrix_model_debug = _matrix_model_debug;
+                name_3d_model_debug = _name_3d_model_debug;
+            }
+            ind_aruco = comp_ind_table(inds);
+        }
+        public NavigTool(NavigMarker nmarker, ToolType _tool_type, string _name_3d_model = null, string _path_3d_model = null, Matrix<double> _matrix_model_debug = null, string _name_3d_model_debug = null)
+        {
+            if (nmarker == null) { Console.WriteLine("nmarker == null"); return; }
+
+            marker = nmarker;
+            aruco_number = 1;
+            inds = new int[1];
+            inds[0] = nmarker.ind;
+            tool_type = _tool_type;
+            if (_tool_type == ToolType.tp4_v1)
+            {
+                if (aruco_number != 4) Console.WriteLine("NavigTool inds.Length != 4 for ToolType.tp4_v1");
             }
             if (_tool_type == ToolType.tp1_v1)
             {
@@ -522,7 +581,7 @@ namespace opengl3
         public Matrix<double> get_frame(Point3d_GL[][] ps_finded)//ps not filterd
         {
             var ps = filter_ps( ps_finded);
-            //if (!check_aruko_ps(ps)) { return null; } 
+            if (!check_aruko_ps(ps)) { return null; } 
             if (tool_type == ToolType.tp4_v1)
             {
                 return get_frame_tr4_v1(ps);
@@ -602,21 +661,20 @@ namespace opengl3
 
             var vz = (vx | vyx).normalize();
             var vy = (vz | vx).normalize();
+
             matrix_frame = RobotFrame.matrix_basis_from_ps(new Point3d_GL[] { p0, p1, p2 });
             matrix_frame_inv = matrix_frame.Clone();
-            CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU);
-
-            if (tool_type == ToolType.tp1_v1)
-            {
-                matrix_model = matrix_frame * matrix_tcp;
-            }
+            CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU); 
+            matrix_model = matrix_frame * matrix_tcp;
             matrix_model_inv = matrix_model.Clone();
             CvInvoke.Invert(matrix_model, matrix_model_inv, DecompMethod.LU);
-            var ps_ext = gen_3d_ps_other_corners(new Point3d_GL(9, 9, 0), 50, 100, matrix_frame);
+           
             ps = new Point3d_GL[] { p0, p1, p2, p3, new Point3d_GL(matrix_model[0, 3], matrix_model[1, 3], matrix_model[2, 3]) };
+
+            /*var ps_ext = gen_3d_ps_other_corners(new Point3d_GL(9, 9, 0), 50, 100, matrix_frame);
             var ps_l = ps.ToList();
             ps_l.AddRange(ps_ext);
-            ps = ps_l.ToArray();
+            ps = ps_l.ToArray();*/
 
             
 
@@ -754,17 +812,54 @@ namespace opengl3
             aruko_max_ind = _aruko_max_ind;
         }
 
-        public Point3d_GL[][] navigation_processing_get_points3d(Mat _mat1, Mat _mat2,out Mat _mat_out1, out Mat _mat_out2)
+        static public bool refine_marker(NavigMarker marker, ref System.Drawing.PointF[][] ps,ref Mat im)
+        {
+            //im is gray
+            var psf = PointF.toPointF(ps[marker.ind]);
+            var ps_near = WarpWithSurroundingsPs(ref im, psf,marker.marker_size_mm, marker.near_dist , marker.size_circle,  true);
+            var p0 = PointF.centr_mass(ps_near);
+            if (ps_near == null) { return false; }
+            var ps_far = WarpWithSurroundingsPs(ref im, ps_near, marker.near_dist*2, marker.far_dist,(int)(3* marker.near_dist * marker.size_circle/ marker.near_dist), false);
+            if (ps_far == null) { return false; }
+            var ps_refine = new PointF[]
+            {      p0 ,
+                ps_far[2],
+                ps_far[1],
+                ps_far[0],
+                
+            };
+            ps[marker.ind] = PointF.toSystemPoint(ps_refine) ;
+            //UtilOpenCV.drawPoints(im, PointF.toPoint(ps[marker.ind]), 255, 255, 0, 5, true);
+            /* 
+             CvInvoke.Imshow("asd", im);
+             CvInvoke.WaitKey();*/
+            return true;
+        }
+
+        public Point3d_GL[][] navigation_processing_get_points3d(Mat _mat1, Mat _mat2, out Mat _mat_out1, out Mat _mat_out2)
         {
 
             System.Drawing.PointF[][] points_aruco1 = new System.Drawing.PointF[aruko_max_ind][];
             System.Drawing.PointF[][] points_aruco2 = new System.Drawing.PointF[aruko_max_ind][];
 
             Point3d_GL[][] points3d_aruco = new Point3d_GL[aruko_max_ind][];
+            var mat1_orig = stereo.stereoCamera.cameraCVs[0].undist(_mat1.Clone());
+            var mat2_orig = stereo.stereoCamera.cameraCVs[1].undist(_mat2.Clone());
+
+            _mat_out1 = get_aruco_info(mat1_orig, ref points_aruco1);
+            _mat_out2 = get_aruco_info(mat2_orig, ref points_aruco2);
 
 
-            _mat_out1 = get_aruco_info(stereo.stereoCamera.cameraCVs[0].undist(_mat1.Clone()), ref points_aruco1);
-            _mat_out2 = get_aruco_info(stereo.stereoCamera.cameraCVs[1].undist(_mat2.Clone()), ref points_aruco2);
+
+            for(int i=0; i<tools.Length;i++)
+            {
+                if(tools[i].marker != null)
+                {
+                    refine_marker(tools[i].marker, ref points_aruco1, ref mat1_orig);
+                    refine_marker(tools[i].marker, ref points_aruco2, ref mat2_orig);
+                }
+                
+            }
 
 
             for (int i = 0; i < points_aruco1.Length; i++)
@@ -773,8 +868,24 @@ namespace opengl3
                 {
                     if (points_aruco1[i].Length != 0 && points_aruco2[i].Length != 0)
                     {
+
+                       
                         points3d_aruco[i] = stereo.stereoCamera.comp_points_3d(points_aruco1[i], points_aruco2[i], i);
                         //Console.WriteLine(i + " " + points3d_aruco[i][0].x + " " + points3d_aruco[i][0].z + " ");
+
+                        /*if(i==11)
+                        {
+                            
+                            UtilOpenCV.drawPoints(_mat_out1, PointF.toPoint(points_aruco1[i]), 255, 255, 0, 7, true);
+                            UtilOpenCV.drawPoints(_mat_out2, PointF.toPoint(points_aruco2[i]), 255, 255, 0, 7, true);
+
+                            _mat_out1 = draw_points(points3d_aruco[i], _mat_out1, 0, new MCvScalar(255, 0, 0));
+                             _mat_out2 = draw_points(points3d_aruco[i], _mat_out2, 1, new MCvScalar(255, 0, 0));
+
+                            CvInvoke.Imshow("_mat_out1", _mat_out1);
+                            CvInvoke.Imshow("_mat_out2", _mat_out2);
+                            CvInvoke.WaitKey();
+                        }*/
                     }
                     else
                     {
@@ -786,21 +897,17 @@ namespace opengl3
                     points3d_aruco[i] = null;
                 }
             }
+
+            
             return points3d_aruco;
         }
-        public static Image<Bgr, byte> WarpArucoWithSurroundings(
-        Image<Bgr, byte> image,
-        int markerId,
-        int markerOutputSize = 100,
-        double marginFactor = 10,
-        Dictionary.PredefinedDictionaryName dictionary = Dictionary.PredefinedDictionaryName.Dict4X4_50,
-        Bgr backgroundColor = default)
+        public static Mat WarpArucoArucoWithSurroundings(Mat image, int markerId, int markerOutputSize = 100,double marginFactor = 10,Dictionary.PredefinedDictionaryName dictionary = Dictionary.PredefinedDictionaryName.Dict4X4_50,Gray backgroundColor = default)
         {
             if (marginFactor < 0)
                 throw new ArgumentException("marginFactor должно быть >= 0.", nameof(marginFactor));
 
            // if (backgroundColor == default)
-                backgroundColor = new Bgr(0, 0, 0);
+                backgroundColor = new Gray(0d);
 
             // 1. Детектируем маркеры
             var arucoDict = new Dictionary(dictionary);
@@ -845,14 +952,191 @@ namespace opengl3
             Mat homography = CvInvoke.FindHomography(srcPoints, dstPoints, RobustEstimationAlgorithm.Ransac);
 
             Mat warpedMat = new Mat();
-            MCvScalar borderColor = new MCvScalar(backgroundColor.Blue, backgroundColor.Green, backgroundColor.Red);
+            MCvScalar borderColor = new MCvScalar(backgroundColor.Intensity);
             CvInvoke.WarpPerspective(image, warpedMat, homography, new Size(outputSize, outputSize),
                 Inter.Linear, Warp.Default, BorderType.Constant, borderColor);
 
-            return warpedMat.ToImage<Bgr, byte>();
+            return warpedMat;
+        }
+        
+        public static Mat WarpWithSurroundings(Mat image, System.Drawing.PointF[] srcPoints, int markerOutputSize = 100, double marginFactor = 10, Dictionary.PredefinedDictionaryName dictionary = Dictionary.PredefinedDictionaryName.Dict4X4_50, Gray backgroundColor = default)
+        {
+            // 3. Вычисляем размер выходного изображения и координаты маркера в центре
+            int outputSize = (int)Math.Round(markerOutputSize * (1 + 2 * marginFactor));
+            int offset = (int)Math.Round(marginFactor * markerOutputSize);
+            int markerSize = markerOutputSize; // маркер будет точно этого размера
+
+            System.Drawing.PointF[] dstPoints = new System.Drawing.PointF[]
+            {
+            new System.Drawing.PointF(offset, offset),
+            new System.Drawing.PointF(offset + markerSize - 1, offset),
+            new System.Drawing.PointF(offset + markerSize - 1, offset + markerSize - 1),
+            new System.Drawing.PointF(offset, offset + markerSize - 1)
+            };
+
+            Mat homography = CvInvoke.FindHomography(srcPoints, dstPoints, RobustEstimationAlgorithm.Ransac);
+            Mat warpedMat = new Mat();
+            MCvScalar borderColor = new MCvScalar(backgroundColor.Intensity);
+            CvInvoke.WarpPerspective(image, warpedMat, homography, new Size(outputSize, outputSize),
+                Inter.Linear, Warp.Default, BorderType.Constant, borderColor);
+
+            return warpedMat;
+        }
+
+        public static PointF[] WarpWithSurroundingsPs(ref Mat image, PointF[] srcPoints,double internal_size, double external_size, int markerOutputSize, bool negativ = true, Dictionary.PredefinedDictionaryName dictionary = Dictionary.PredefinedDictionaryName.Dict4X4_50, Gray backgroundColor = default)
+        {
+            if (srcPoints == null) return null;
+            if (srcPoints.Length!=4) return null;
+            //var orig_image = image.Clone();
+            if (image.NumberOfChannels == 3)
+            {
+                CvInvoke.CvtColor(image, image, ColorConversion.Bgr2Gray);
+            }
+            if (internal_size == 0) return null;
+            var k_pix = markerOutputSize/internal_size ;
+            int board = (int)((external_size+ internal_size /2)* k_pix);
+
+
+            // 3. Вычисляем размер выходного изображения и координаты маркера в центре
+            int outputSize = markerOutputSize + 2*board;
+            //var size_warp = 
+
+            System.Drawing.PointF[] dstPoints = new System.Drawing.PointF[]
+            {
+                new System.Drawing.PointF(board, board),
+                new System.Drawing.PointF(board + markerOutputSize , board),
+                new System.Drawing.PointF(board + markerOutputSize, board + markerOutputSize ),
+                new System.Drawing.PointF(board, board + markerOutputSize)
+            };
+
+
+            var pc = new PointF(outputSize / 2, outputSize / 2);
+            Mat homography = CvInvoke.FindHomography(PointF.toSystemPoint( srcPoints), dstPoints, RobustEstimationAlgorithm.Ransac);
+            Mat warpedMat = new Mat();
+            MCvScalar borderColor = new MCvScalar(backgroundColor.Intensity);
+            var homography_inv = homography.Clone();
+            CvInvoke.Invert(homography_inv, homography_inv, DecompMethod.LU);
+            CvInvoke.WarpPerspective(image, warpedMat, homography, new Size(outputSize, outputSize),
+                Inter.Linear, Warp.Default, BorderType.Constant, borderColor);
+
+
+            var im1 = warpedMat;
+            //var warp_orig = warpedMat.Clone();
+
+            CvInvoke.GaussianBlur(im1, im1, new Size(13, 13), -1);
+            CvInvoke.AdaptiveThreshold(im1, im1, 255, AdaptiveThresholdType.MeanC, ThresholdType.BinaryInv, 13, 13);
+            
+            
+            var x_pred = (external_size ) * k_pix;
+            var y_pred = (external_size ) * k_pix; 
+            var ps2d_predict = new PointF[]
+            {
+                pc + new PointF((float)x_pred,(float)y_pred),
+                pc + new PointF((float)-x_pred,(float)y_pred),
+                pc + new PointF((float)-x_pred,(float)-y_pred),
+                pc + new PointF((float)x_pred,(float)-y_pred),
+            };
+            if(!negativ)
+            {
+                ps2d_predict = new PointF[] { 
+                    pc + new PointF(-(float)x_pred, 0),
+                    pc + new PointF(-(float)x_pred, (float)y_pred),
+                    pc + new PointF(0, (float)y_pred),
+                    
+                };
+                
+            }
+            
+
+            var ps_near = refine_contours(ps2d_predict, im1);
+
+            //CvInvoke.CvtColor(warp_orig, warp_orig, ColorConversion.Gray2Bgr);
+            //UtilOpenCV.drawPointsF(warp_orig, ps_near, 255, 0, 0, 3, true);
+            if(!negativ)
+            {
+               // image = warp_orig;
+            }
+            //CvInvoke.Imshow("asd" + negativ, im1);
+            //CvInvoke.WaitKey();
+            if (ps_near == null) return null;
+            var vpf_warp = new VectorOfPointF(PointF.toSystemPoint(ps_near));
+
+            ps_near = PointF.toPointF( CvInvoke.PerspectiveTransform( PointF.toSystemPoint(ps_near), homography_inv));
+           
+            /* CvInvoke.WarpPerspective(vpf_warp, vpf_warp, homography_inv, new Size(outputSize, outputSize),
+                 Inter.Linear, Warp.Default, BorderType.Constant, borderColor);*/
+
+
+
+
+
+            return  ps_near;
         }
 
 
+
+
+
+        public static PointF[] refine_contours(PointF[] pcs_predict, Mat _mat_out1n)
+        {
+
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            Mat hier = new Mat();
+            CvInvoke.FindContours(_mat_out1n, contours, hier, RetrType.Ccomp, ChainApproxMethod.ChainApproxSimple);
+            //var conts = sameContours_cv(contours);
+
+            
+
+           
+            // CvInvoke.CvtColor(_mat_out1, _mat_out1, ColorConversion.Gray2Bgr);
+
+            contours = FindCircles.size_filter(contours, 3, 300);
+            /*contours = FindCircles.only_same_centres_illum(contours, 2);
+
+            contours = FindCircles.sameContours(contours, 0.3, 1);
+            contours = FindCircles.illum_same_centres(contours, 3);*/
+
+
+            var psc = PointF.toPointF(FindCircles.get_pc_conts(contours));
+
+            //draw_conts_with_charachts(_mat_out1n.Clone(), contours);
+           
+
+            var ps2_predict = pcs_predict;
+            if (psc == null) return null;
+            if (psc.Length == 0) return null;
+
+            if (ps2_predict == null) return null;
+            if (ps2_predict.Length == 0) return null;
+
+            //UtilOpenCV.drawPointsF(_mat_out1, PointF.toSystemPoint(ps2_predict), 128, 128, 128, 3);
+            //UtilOpenCV.drawPointsF(_mat_out1, PointF.toSystemPoint(psc), 255, 255, 0, 3);
+
+            for (int i = 0; i < ps2_predict.Length; i++)
+            {
+                var j_min = 0;
+                var dist_min = double.MaxValue;
+                for (int j = 0; j < psc.Length; j++)
+                {
+                    var cur_dist = (ps2_predict[i] - psc[j]).norm;
+                    if (cur_dist < dist_min)
+                    {
+                        j_min = j;
+                        dist_min = cur_dist;
+                    }
+
+                }
+                ps2_predict[i] = psc[j_min];
+            }
+
+
+            //var ps_result = PointF.toSystemPoint(ps2_predict);
+
+           /* UtilOpenCV.drawPointsF(_mat_out1n, ps2_predict, 255, 255, 255, 3, true);
+            CvInvoke.Imshow("asd", _mat_out1n);
+            CvInvoke.WaitKey();*/
+            return ps2_predict;
+        }
 
         public void navigation_processing_draw_points3d(Point3d_GL[] ps, ref Mat _mat_out1, ref Mat _mat_out2)
         {
@@ -882,6 +1166,7 @@ namespace opengl3
         }
         public Mat draw_points(Point3d_GL[] ps, Mat _mat_out1, int ind, MCvScalar color)
         {
+            if(_mat_out1.NumberOfChannels != 3) { CvInvoke.CvtColor(_mat_out1, _mat_out1, ColorConversion.Gray2Bgr); }
             var mat_orig = _mat_out1.Clone();
             if (ps == null || ps.Length == 0) return null;
             var ps_draw = new PointF[ps.Length];
@@ -1001,6 +1286,7 @@ namespace opengl3
 
         public static Mat draw_conts_with_charachts(Mat mat, VectorOfVectorOfPoint conts)
         {
+            CvInvoke.CvtColor(mat, mat, ColorConversion.Gray2Bgr);
             Random random = new Random();
             if (conts == null) return mat;
             if (conts != null) CvInvoke.DrawContours(mat, conts, -1, new MCvScalar(0, 255, 0), 1, LineType.EightConnected);
@@ -1010,10 +1296,18 @@ namespace opengl3
                 var area = CvInvoke.ContourArea(conts[i]);
                 var cont_pc = FindCircles.findCentrCont(conts[i]);
                 var cont_fig = FindCircles.sumHuMom(conts[i]);
-                CvInvoke.PutText(mat, " f: " + Math.Round(10*cont_fig, 2), new System.Drawing.Point((int)cont_pc.X , (int)cont_pc.Y ), FontFace.HersheyTriplex, 0.5, new MCvScalar(0, 0, 255));
-                Console.WriteLine(" f: " + Math.Round(10 * cont_fig, 2));
+                var cont_line = CvInvoke.ArcLength(conts[i],true);
+                var f2 = area/ cont_line;
+                //if(cont_fig < 0.17 && cont_fig > 0.15)
+                {
+                    var text = " f: " + Math.Round(10 * cont_fig, 2) + " f2: " + Math.Round(10 * f2, 2) + " area: " + Math.Round( area, 2);
+                    CvInvoke.PutText(mat, text, new System.Drawing.Point((int)cont_pc.X, (int)cont_pc.Y), FontFace.HersheyTriplex, 0.5, new MCvScalar(0, 0, 255));
+                    CvInvoke.DrawMarker(mat, new System.Drawing.Point((int)cont_pc.X, (int)cont_pc.Y), new MCvScalar(255, 255, 0), MarkerTypes.Cross, 10);
+                    Console.WriteLine(text);
+                }
+                
             }
-            
+            CvInvoke.PutText(mat, conts.Size.ToString(), new System.Drawing.Point(20, 30), FontFace.HersheyTriplex, 0.5, new MCvScalar(0, 0, 255));
             return mat;
         }
 
@@ -1062,12 +1356,11 @@ namespace opengl3
             }
             return image; 
         }
-        public NavigSys navigation_processing_get_scene(Point3d_GL[][] ps, ref Mat _mat_out1, ref Mat _mat_out2)
+        public NavigSys navigation_processing_get_scene(Point3d_GL[][] ps)
         {
             for (int i = 0;i< tools.Length; i++)
             {
                 tools[i].get_frame(ps);
-                tools[i] = precise_frame_comp(tools[i],ref _mat_out1,  ref _mat_out2);
             }
 
 
@@ -1076,74 +1369,31 @@ namespace opengl3
 
         public static Mat get_aruco_info(Mat image, ref System.Drawing.PointF[][] points)
         {
-
-            // 1. Инициализация: загружаем изображение и создаём словарь маркеров
-
             var dictionary = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_50);
             var detectorParams = DetectorParameters.GetDefault();
             detectorParams.CornerRefinementMethod = DetectorParameters.RefinementMethod.Contour;
-            //detectorParams.CornerRefinementWinSize = 5;
             detectorParams.CornerRefinementMaxIterations = 30;
             detectorParams.CornerRefinementMinAccuracy = 0.1;
             Mat gray = new Mat();
             CvInvoke.CvtColor(image, gray, ColorConversion.Rgb2Gray);
-
-
-            //ArucoDetector detector = new ArucoDetector(dictionary, parameters);
-            // Контейнеры для результатов
             var corners = new VectorOfVectorOfPointF();
             var ids = new VectorOfInt();
             var rejectedPoints = new VectorOfVectorOfPointF();
-
-            // ArucoInvoke.RefineDetectedMarkers()
-            // 2. Основной шаг: детекция маркеров
-
             if (gray.IsEmpty) return null;
             ArucoInvoke.DetectMarkers(gray, dictionary, corners, ids, detectorParams, rejectedPoints);
-
-
-
             List<System.Drawing.PointF[]> cornersList = corners.ToArrayOfArray().ToList();
-
-
             List<System.Drawing.PointF[]> cornersList_2 = new List<System.Drawing.PointF[]>();
-            // 2. Настраиваем критерии для CornerSubPix
-            var criteria = new MCvTermCriteria(30, 0.01); // макс. итераций, точность
-
-            // 3. Применяем уточнение к каждому углу каждого маркера
             foreach (var markerCorners in cornersList)
             {
                 VectorOfPointF vec = new VectorOfPointF(markerCorners);
-                // CornerSubPix работает с массивом PointF[] или VectorOfPointF
-
-                CvInvoke.CornerSubPix(gray, vec, new System.Drawing.Size(3, 3),
-                                      new System.Drawing.Size(-1, -1), criteria);
-                // Обновляем исходный массив, если нужно
-
+                CvInvoke.CornerSubPix(gray, vec, new System.Drawing.Size(3, 3), new System.Drawing.Size(-1, -1), new MCvTermCriteria(30, 0.01));
                 cornersList_2.Add(vec.ToArray());
             }
             corners = new VectorOfVectorOfPointF(cornersList_2.ToArray());// cornersList.ToArray();
-            //Console.WriteLine("--Aruco---");
-            // 3. Обработка результатов: рисуем найденные маркеры, если они есть
             if (ids.Size > 0)
             {
                 // Отрисовка границ и ID маркеров на изображении
-                ArucoInvoke.DrawDetectedMarkers(image, corners, ids, new Bgr(Color.Green).MCvScalar);
-
-                /*if (ids.Size > 0)
-                {
-                    for (int i = 0; i < ids.Size; i++)
-                    {
-                        int markerId = ids[i];
-                       System.Drawing.PointF[] markerCorners = corners[i].ToArray(); // Четыре угла текущего маркера
-                        Console.WriteLine($"Маркер ID: {markerId}");
-                        Console.WriteLine($"  Углы: ({markerCorners[0].X:F2}, {markerCorners[0].Y:F2}), " +
-                                          $"({markerCorners[1].X:F2}, {markerCorners[1].Y:F2}), " +
-                                          $"({markerCorners[2].X:F2}, {markerCorners[2].Y:F2}), " +
-                                          $"({markerCorners[3].X:F2}, {markerCorners[3].Y:F2})");
-                    }
-                }*/
-                // Вывод информации в консоль
+                //ArucoInvoke.DrawDetectedMarkers(image, corners, ids, new Bgr(Color.Green).MCvScalar);
                 for (int i = 0; i < ids.Size; i++)
                 {
                     int id = ids[i];

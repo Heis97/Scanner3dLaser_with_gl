@@ -378,9 +378,20 @@ namespace opengl3
             {
                 val += ps[i].Y;
             }
-            return val;
+            return val;// !!!!  mb val/ps.lenght?
         }
-
+        public static PointF centr_mass(PointF[] ps)
+        {
+            var val = new PointF(0, 0);
+            if (ps == null) return val;
+            if (ps.Length ==0) return val;
+            
+            for (int i = 0; i < ps.Length; i++)
+            {
+                val += ps[i];
+            }
+            return val* (1f/ps.Length);
+        }
         public static float aver_x_value(PointF[] ps)
         {
             if (ps == null) return 0;
