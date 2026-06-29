@@ -578,7 +578,7 @@ namespace opengl3
             return 0;
         }
 
-        public Matrix<double> get_frame(Point3d_GL[][] ps_finded)//ps not filterd
+        public Matrix<double> get_frame(Point3d_GL[][] ps_finded,bool filtered = false)//ps not filterd
         {
             var ps = filter_ps( ps_finded);
             if (!check_aruko_ps(ps)) { return null; } 
@@ -588,7 +588,7 @@ namespace opengl3
             }
             else if (tool_type == ToolType.tp1_v1)
             {
-                return get_frame_tr1_v1(ps);
+                return get_frame_tr1_v1(ps, filtered);
             }
             return null;
         }
@@ -649,7 +649,9 @@ namespace opengl3
             return matrix_frame;
         }
 
-        public Matrix<double> get_frame_tr1_v1(Point3d_GL[][] ps_finded)//ps filterd
+        int problem_counter = 0;
+        int problem_max_count = 10;
+        public Matrix<double> get_frame_tr1_v1(Point3d_GL[][] ps_finded,bool filtered = false)//ps filterd
         {
             var p0 = ps_finded[0][0];
             var p1 = ps_finded[0][3];
@@ -661,15 +663,49 @@ namespace opengl3
 
             var vz = (vx | vyx).normalize();
             var vy = (vz | vx).normalize();
+            var matrix_cur = RobotFrame.matrix_basis_from_ps(new Point3d_GL[] { p0, p1, p2 });
+            if (matrix_frame!=null && filtered)
+            {
+                var matrix_prev = matrix_frame.Clone();
 
-            matrix_frame = RobotFrame.matrix_basis_from_ps(new Point3d_GL[] { p0, p1, p2 });
+               
+                var p_cur = new Point3d_GL(matrix_cur[0, 3], matrix_cur[1, 3], matrix_cur[2, 3]);
+
+                var dist_prev_cur = (p_cur - ps[5]).magnitude();
+                //Console.WriteLine(dist_prev_cur);
+                //Console.WriteLine(problem_counter);
+                if (dist_prev_cur < 20 && problem_counter < problem_max_count)
+                {
+                    matrix_frame = matrix_frame + 0.3 * (matrix_cur - matrix_frame);
+                    problem_counter = 0;
+
+                }
+                else
+                {
+
+                    problem_counter++;
+                    if (problem_counter > problem_max_count)
+                    {
+                        problem_counter = 0;
+                        matrix_frame = matrix_cur;
+
+                    }
+                       
+                }
+            }
+            else
+            {
+                matrix_frame = matrix_cur;
+            }
+            
+           
             matrix_frame_inv = matrix_frame.Clone();
             CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU); 
             matrix_model = matrix_frame * matrix_tcp;
             matrix_model_inv = matrix_model.Clone();
             CvInvoke.Invert(matrix_model, matrix_model_inv, DecompMethod.LU);
            
-            ps = new Point3d_GL[] { p0, p1, p2, p3, new Point3d_GL(matrix_model[0, 3], matrix_model[1, 3], matrix_model[2, 3]) };
+            ps = new Point3d_GL[] { p0, p1, p2, p3, new Point3d_GL(matrix_model[0, 3], matrix_model[1, 3], matrix_model[2, 3]), new Point3d_GL(matrix_frame[0, 3], matrix_frame[1, 3], matrix_frame[2, 3]) };
 
             /*var ps_ext = gen_3d_ps_other_corners(new Point3d_GL(9, 9, 0), 50, 100, matrix_frame);
             var ps_l = ps.ToList();
@@ -716,6 +752,7 @@ namespace opengl3
 
         Point3d_GL[][] filter_ps(Point3d_GL[][] ps)
         {
+            if(ps==null) return null;
             var ps_filtr = new Point3d_GL[aruco_number][];
             for (int i = 0; i < ps_filtr.Length; i++)
             {
@@ -754,6 +791,7 @@ namespace opengl3
 
         static bool check_aruko_ps(Point3d_GL[][] ps)
         {
+            if(ps==null) return false;
             bool check_done = true;
             for (int i = 0; i < ps.Length; i++)
             {
@@ -816,10 +854,10 @@ namespace opengl3
         {
             //im is gray
             var psf = PointF.toPointF(ps[marker.ind]);
-            var ps_near = WarpWithSurroundingsPs(ref im, psf,marker.marker_size_mm, marker.near_dist , marker.size_circle,  true);
+            var ps_near = WarpWithSurroundingsPs_v2(ref im, psf,marker.marker_size_mm, marker.near_dist , marker.size_circle,  true);
             var p0 = PointF.centr_mass(ps_near);
             if (ps_near == null) { return false; }
-            var ps_far = WarpWithSurroundingsPs(ref im, ps_near, marker.near_dist*2, marker.far_dist,(int)(3* marker.near_dist * marker.size_circle/ marker.near_dist), false);
+            var ps_far = WarpWithSurroundingsPs_v2(ref im, ps_near, marker.near_dist*2, marker.far_dist,(int)(3* marker.near_dist * marker.size_circle/ marker.near_dist), false);
             if (ps_far == null) { return false; }
             var ps_refine = new PointF[]
             {      p0 ,
@@ -829,11 +867,85 @@ namespace opengl3
                 
             };
             ps[marker.ind] = PointF.toSystemPoint(ps_refine) ;
-            //UtilOpenCV.drawPoints(im, PointF.toPoint(ps[marker.ind]), 255, 255, 0, 5, true);
+            if(im.NumberOfChannels!=3)
+            {
+                CvInvoke.CvtColor(im, im, ColorConversion.Gray2Bgr);
+            }
+            UtilOpenCV.drawPoints(im, PointF.toPoint(ps[marker.ind]), 255, 255, 0, 5, true);
             /* 
              CvInvoke.Imshow("asd", im);
              CvInvoke.WaitKey();*/
             return true;
+        }
+
+        public System.Drawing.PointF[][] navigation_processing_get_points2d_3cam(ref Mat _mat,int cam_ind )
+        {
+
+            var points2d = new System.Drawing.PointF[aruko_max_ind][];
+            var mat_orig = stereo.stereoCamera.cameraCVs[cam_ind].undist(_mat.Clone());
+            var _mat_out = get_aruco_info(mat_orig, ref points2d);
+            
+            for (int i = 0; i < tools.Length; i++)
+            {
+                if (tools[i].marker != null)
+                {
+                    refine_marker(tools[i].marker, ref points2d, ref mat_orig);
+                }
+            }
+            _mat = mat_orig;
+            return points2d;
+        }
+
+        public Point3d_GL[][] navigation_processing_get_points3d_3cam(System.Drawing.PointF[][] points2d_1, System.Drawing.PointF[][] points2d_2, System.Drawing.PointF[][] points2d_3,Mat mat1 = null, Mat mat2 = null, Mat mat3 = null)
+        {
+            if (points2d_1 == null || points2d_2 == null || points2d_3 == null) return null;
+            if (points2d_1.Length != points2d_2.Length || points2d_1.Length != points2d_3.Length) return null;
+            var points3d = new Point3d_GL[points2d_1.Length][];
+            for (int i = 0; i < points2d_1.Length; i++)
+            {
+                if (points2d_1[i] != null && points2d_2[i] != null && points2d_3[i] != null)
+                {
+                    if (points2d_1[i].Length != 0 && points2d_2[i].Length != 0 && points2d_3[i].Length != 0 )
+                    {
+
+                        
+                        points3d[i] = stereo.stereoCamera.comp_points_3d_3cam(points2d_1[i], points2d_2[i], points2d_3[i], i);
+                        
+
+                        if(i==11)
+                        {
+                            //Console.WriteLine(" " + points3d[i][2].x + " " + points3d[i][2].y + " " + points3d[i][2].z + " ");
+                            //UtilOpenCV.drawPoints(_mat_out1, PointF.toPoint(points_aruco1[i]), 255, 255, 0, 7, true);
+                            //UtilOpenCV.drawPoints(_mat_out2, PointF.toPoint(points_aruco2[i]), 255, 255, 0, 7, true);
+
+                            //Console.WriteLine(points_aruco1[i][2].X + " " +points_aruco1[i][2].Y + " " + points_aruco1[i][0].X + " " + points_aruco1[i][0].Y + " " + points_aruco1[i][3].X + " " + points_aruco1[i][3].Y + " " );
+                            /* if(mat1!= null && mat2!= null && mat3 != null)
+                             {
+                                 mat1 = draw_points(points3d[i], mat1, 0, new MCvScalar(255, 0, 0));
+                                 mat2 = draw_points(points3d[i], mat2, 1, new MCvScalar(255, 0, 0));
+                                 mat3 = draw_points(points3d[i], mat3, 2, new MCvScalar(255, 0, 0));
+                                 CvInvoke.Imshow("_mat_out1", mat1);
+                                 CvInvoke.Imshow("_mat_out2", mat2);
+                                 CvInvoke.Imshow("_mat_out3", mat3);
+                                 // CvInvoke.Imshow("_mat_out2", _mat_out2);
+                                 CvInvoke.WaitKey();
+                             }*/
+
+                        }
+                    }
+                    else
+                    {
+                        points3d[i] = null;
+                    }
+                }
+                else
+                {
+                    points3d[i] = null;
+                }
+            }
+
+            
+            return points3d;
         }
 
         public Point3d_GL[][] navigation_processing_get_points3d(Mat _mat1, Mat _mat2, out Mat _mat_out1, out Mat _mat_out2)
@@ -851,14 +963,14 @@ namespace opengl3
 
 
 
-            for(int i=0; i<tools.Length;i++)
+            for (int i = 0; i < tools.Length; i++)
             {
-                if(tools[i].marker != null)
+                if (tools[i].marker != null)
                 {
                     refine_marker(tools[i].marker, ref points_aruco1, ref mat1_orig);
                     refine_marker(tools[i].marker, ref points_aruco2, ref mat2_orig);
                 }
-                
+
             }
 
 
@@ -869,7 +981,7 @@ namespace opengl3
                     if (points_aruco1[i].Length != 0 && points_aruco2[i].Length != 0)
                     {
 
-                       
+
                         points3d_aruco[i] = stereo.stereoCamera.comp_points_3d(points_aruco1[i], points_aruco2[i], i);
                         //Console.WriteLine(i + " " + points3d_aruco[i][0].x + " " + points3d_aruco[i][0].z + " ");
 
@@ -898,9 +1010,10 @@ namespace opengl3
                 }
             }
 
-            
+
             return points3d_aruco;
         }
+
         public static Mat WarpArucoArucoWithSurroundings(Mat image, int markerId, int markerOutputSize = 100,double marginFactor = 10,Dictionary.PredefinedDictionaryName dictionary = Dictionary.PredefinedDictionaryName.Dict4X4_50,Gray backgroundColor = default)
         {
             if (marginFactor < 0)
@@ -1073,9 +1186,138 @@ namespace opengl3
             return  ps_near;
         }
 
+        public static PointF[] WarpWithSurroundingsPs_v2(ref Mat image, PointF[] srcPoints, double internal_size, double external_size, int markerOutputSize, bool negativ = true, Dictionary.PredefinedDictionaryName dictionary = Dictionary.PredefinedDictionaryName.Dict4X4_50, Gray backgroundColor = default)
+        {
+            if (srcPoints == null) return null;
+            if (srcPoints.Length != 4) return null;
+            //var orig_image = image.Clone();
+            if (image.NumberOfChannels == 3)
+            {
+                CvInvoke.CvtColor(image, image, ColorConversion.Bgr2Gray);
+            }
+            if (internal_size == 0) return null;
+            var k_pix = markerOutputSize / internal_size;
+            int board = (int)((external_size + internal_size / 2) * k_pix);
+
+
+            // 3. Вычисляем размер выходного изображения и координаты маркера в центре
+            int outputSize = markerOutputSize + 2 * board;
+            //var size_warp = 
+
+            System.Drawing.PointF[] dstPoints = new System.Drawing.PointF[]
+            {
+                new System.Drawing.PointF(board, board),
+                new System.Drawing.PointF(board + markerOutputSize , board),
+                new System.Drawing.PointF(board + markerOutputSize, board + markerOutputSize ),
+                new System.Drawing.PointF(board, board + markerOutputSize)
+            };
+
+
+            var pc = new PointF(outputSize / 2, outputSize / 2);
+            Mat homography = CvInvoke.FindHomography(PointF.toSystemPoint(srcPoints), dstPoints, RobustEstimationAlgorithm.Ransac);
+            Mat warpedMat = new Mat();
+            MCvScalar borderColor = new MCvScalar(backgroundColor.Intensity);
+            var homography_inv = homography.Clone();
+            if(homography_inv == null || homography_inv.GetData()==null) return null;
+            CvInvoke.Invert(homography_inv, homography_inv, DecompMethod.LU);
+            CvInvoke.WarpPerspective(image, warpedMat, homography, new Size(outputSize, outputSize),
+                Inter.Linear, Warp.Default, BorderType.Constant, borderColor);
+
+
+            var im1 = warpedMat;
+            var warp_orig = warpedMat.Clone();
+
+            //CvInvoke.GaussianBlur(im1, im1, new Size(13, 13), -1);
+            //CvInvoke.AdaptiveThreshold(im1, im1, 255, AdaptiveThresholdType.MeanC, ThresholdType.BinaryInv, 13, 13);
+
+
+            var x_pred = (external_size) * k_pix;
+            var y_pred = (external_size) * k_pix;
+            var ps2d_predict = new PointF[]
+            {
+                pc + new PointF((float)x_pred,(float)y_pred),
+                pc + new PointF((float)-x_pred,(float)y_pred),
+                pc + new PointF((float)-x_pred,(float)-y_pred),
+                pc + new PointF((float)x_pred,(float)-y_pred),
+            };
+            if (!negativ)
+            {
+                ps2d_predict = new PointF[] {
+                    pc + new PointF(-(float)x_pred, 0),
+                    pc + new PointF(-(float)x_pred, (float)y_pred),
+                    pc + new PointF(0, (float)y_pred),
+
+                };
+
+            }
+
+
+            var ps_near = refine_contours_v2(ps2d_predict, im1);
+
+           /* CvInvoke.CvtColor(warp_orig, warp_orig, ColorConversion.Gray2Bgr);
+            UtilOpenCV.drawPointsF(warp_orig, ps_near, 255, 0, 0, 3, true);
+            if (!negativ)
+            {
+                 image = warp_orig;
+            }
+            CvInvoke.Imshow("asd" + negativ, image);
+            CvInvoke.WaitKey();*/
+            if (ps_near == null) return null;
+            var vpf_warp = new VectorOfPointF(PointF.toSystemPoint(ps_near));
+
+            ps_near = PointF.toPointF(CvInvoke.PerspectiveTransform(PointF.toSystemPoint(ps_near), homography_inv));
+
+            /* CvInvoke.WarpPerspective(vpf_warp, vpf_warp, homography_inv, new Size(outputSize, outputSize),
+                 Inter.Linear, Warp.Default, BorderType.Constant, borderColor);*/
 
 
 
+
+
+            return ps_near;
+        }
+
+        public static PointF[] refine_contours_v2(PointF[] pcs_predict, Mat _mat_out1n)
+        {
+            var ps = new System.Drawing.PointF[pcs_predict.Length];
+
+            FindCircles.findCircles_v2(_mat_out1n,ref ps, new Size(5, 5), false);
+            var psc = PointF.toPointF(ps);
+            var ps2_predict = pcs_predict;
+            if (psc == null) return null;
+            if (psc.Length == 0) return null;
+
+            if (ps2_predict == null) return null;
+            if (ps2_predict.Length == 0) return null;
+
+            //UtilOpenCV.drawPointsF(_mat_out1, PointF.toSystemPoint(ps2_predict), 128, 128, 128, 3);
+            //UtilOpenCV.drawPointsF(_mat_out1, PointF.toSystemPoint(psc), 255, 255, 0, 3);
+
+            for (int i = 0; i < ps2_predict.Length; i++)
+            {
+                var j_min = 0;
+                var dist_min = double.MaxValue;
+                for (int j = 0; j < psc.Length; j++)
+                {
+                    var cur_dist = (ps2_predict[i] - psc[j]).norm;
+                    if (cur_dist < dist_min)
+                    {
+                        j_min = j;
+                        dist_min = cur_dist;
+                    }
+
+                }
+                ps2_predict[i] = psc[j_min];
+            }
+
+
+            //var ps_result = PointF.toSystemPoint(ps2_predict);
+
+            /* UtilOpenCV.drawPointsF(_mat_out1n, ps2_predict, 255, 255, 255, 3, true);
+             CvInvoke.Imshow("asd", _mat_out1n);
+             CvInvoke.WaitKey();*/
+            return ps2_predict;
+        }
 
         public static PointF[] refine_contours(PointF[] pcs_predict, Mat _mat_out1n)
         {
@@ -1084,24 +1326,13 @@ namespace opengl3
             Mat hier = new Mat();
             CvInvoke.FindContours(_mat_out1n, contours, hier, RetrType.Ccomp, ChainApproxMethod.ChainApproxSimple);
             //var conts = sameContours_cv(contours);
-
-            
-
-           
             // CvInvoke.CvtColor(_mat_out1, _mat_out1, ColorConversion.Gray2Bgr);
-
             contours = FindCircles.size_filter(contours, 3, 300);
             /*contours = FindCircles.only_same_centres_illum(contours, 2);
-
             contours = FindCircles.sameContours(contours, 0.3, 1);
             contours = FindCircles.illum_same_centres(contours, 3);*/
-
-
             var psc = PointF.toPointF(FindCircles.get_pc_conts(contours));
-
             //draw_conts_with_charachts(_mat_out1n.Clone(), contours);
-           
-
             var ps2_predict = pcs_predict;
             if (psc == null) return null;
             if (psc.Length == 0) return null;
@@ -1177,6 +1408,10 @@ namespace opengl3
                 if (ind == 1)
                 {
                     p3d_cam_0 = stereo.stereoCamera.R_inv * p3d_cam_0;
+                }
+                if (ind == 2)
+                {
+                    p3d_cam_0 = stereo.stereoCamera.R2_inv * p3d_cam_0;
                 }
                 var p2d_0 = stereo.stereoCamera.cameraCVs[ind].point2DfromCam(p3d_cam_0);
                 ps_draw[i] = new PointF(p2d_0.X, p2d_0.Y);
@@ -1360,7 +1595,7 @@ namespace opengl3
         {
             for (int i = 0;i< tools.Length; i++)
             {
-                tools[i].get_frame(ps);
+                tools[i].get_frame(ps,true);
             }
 
 

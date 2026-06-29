@@ -15,6 +15,7 @@ namespace opengl3
     {
         public Mat im;
         public Mat im_sec;
+        public Mat im_third;
         public Mat im_dif;
         public Point3d_GL pos_cam;
         public Point3d_GL pos_rob;
@@ -102,7 +103,17 @@ namespace opengl3
             stereo = true;
 
         }
+        public Frame(Mat _im, Mat _im2, Mat _im3, string _name, FrameType _frameType)
+        {
+            im = _im;
+            im_sec = _im2;
+            im_third = _im3;
+            name = _name;
+            size = _im.Size;
+            frameType = _frameType;
+            stereo = true;
 
+        }
         static public Mat[] getMats(Frame[] frames)
         {
             var mats = new Mat[frames.Length];

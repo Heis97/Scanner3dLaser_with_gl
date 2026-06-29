@@ -306,6 +306,37 @@ namespace opengl3
             fr.dateTime = File.GetCreationTime(filepath1);
             return fr;
         }
+
+        static public Frame loadImage_stereoCV3(string filepath1, string filepath2, string filepath3, FrameType frameType, Mat[] origs = null, bool reverse = false)
+        {
+            string name1 = Path.GetFileName(filepath1);
+            var im1 = new Mat(filepath1);
+            string name2 = Path.GetFileName(filepath2);
+            var im2 = new Mat(filepath2);
+            string name3 = Path.GetFileName(filepath3);
+            var im3 = new Mat(filepath3);
+            Console.WriteLine(name1);
+            Console.WriteLine(name2);
+            Console.WriteLine(name3);
+            Console.WriteLine("------------");
+            if (origs[0] != null)
+            {
+                im1 -= origs[0];
+                im2 -= origs[1];
+                im3 -= origs[2];
+            }
+            if (reverse)
+            {
+                CvInvoke.Rotate(im2, im2, Emgu.CV.CvEnum.RotateFlags.Rotate180);
+            }
+            var fr = new Frame(im1, im2,im3, name1, frameType);
+            fr.stereo = true;
+            //  CvInvoke.Imshow("im1", im1);
+            //    CvInvoke.Imshow("im2", im2);
+            fr.dateTime = File.GetCreationTime(filepath1);
+            return fr;
+        }
+
         public static string[] sortByDate(string[] files)
         {
             
@@ -368,6 +399,32 @@ namespace opengl3
             }
             return null;
         }
+
+        static public Frame[] loadImages_stereoCV3(string path1, string path2, string path3, FrameType frameType, bool reverse = false)
+        {
+            Console.WriteLine(path1);
+            var files1 = sortByDate(Directory.GetFiles(path1));
+            var files2 = sortByDate(Directory.GetFiles(path2));
+            var files3 = sortByDate(Directory.GetFiles(path3));
+            List<Frame> frames = new List<Frame>();
+
+
+
+            for (int i = 0; i < files1.Length; i++)
+            {
+                var frame = loadImage_stereoCV3(files1[i], files2[i], files3[i], frameType, new Mat[] { getOrig(path1, frameType), getOrig(path2, frameType), getOrig(path3, frameType) }, reverse);
+                if (frame != null)
+                {
+                    frames.Add(frame);
+                }
+            }
+            if (frames.Count != 0)
+            {
+                return frames.ToArray();
+            }
+            return null;
+        }
+
 
         static public Frame[] loadImages_laserRob(string path)
         {

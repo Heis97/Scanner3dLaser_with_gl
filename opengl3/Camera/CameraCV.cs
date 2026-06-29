@@ -316,7 +316,7 @@ namespace opengl3
         {
             calibrateCam(_frames, _size, markSize, obp_inp);
             //calibrateCamFish(_frames, _size, markSize, obp_inp);
-            pattern_size = new Size(6, 7);
+            pattern_size = _size;
             init_vars();
         }
 
@@ -522,7 +522,7 @@ namespace opengl3
                 var cornF = new System.Drawing.PointF[len];
                 //CvInvoke.Imshow("mat", mat);
                 //CvInvoke.WaitKey(200);
-                var matDraw = FindCircles.findCircles(mat,ref cornF, size_patt);
+                var matDraw = FindCircles.findCircles_v2(mat,ref cornF, size_patt);
                 //var matDraw = GeometryAnalyse.findCirclesIter(mat.Clone(), ref cornF, size_patt);
                 if (matDraw == null)
                 {
@@ -543,10 +543,10 @@ namespace opengl3
                 prin.t("points3d");
                 prin.t(points3d);*/
                var pos_cur = compPos(points3d, points2d);
-                //Console.WriteLine(pos_cur[0] + " " + pos_cur[1] + " " + pos_cur[2] + " ");
-               // UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 1);
-               // CvInvoke.Imshow("pos"  , matDraw);//points2d[0].X
-                //CvInvoke.WaitKey();
+                /*Console.WriteLine(pos_cur[0] + " " + pos_cur[1] + " " + pos_cur[2] + " ");
+                UtilOpenCV.drawPoints(matDraw, points2d, points3d, 255, 0, 255, 1);
+                CvInvoke.Imshow("pos "+ pos_cur[0] + " " + pos_cur[1] + " " + pos_cur[2] + " ", matDraw);//points2d[0].X
+                CvInvoke.WaitKey();*/
                 mat = null;
                 matDraw = null;
 
@@ -768,7 +768,7 @@ namespace opengl3
             {
                 var len = size_patt.Width * size_patt.Height;
                 var cornF = new System.Drawing.PointF[len];
-                var f_c = FindCircles.findCircles(frame.im,ref cornF, size_patt);
+                var f_c = FindCircles.findCircles_v2(frame.im,ref cornF, size_patt);
                 
                 if(f_c != null)
                 {

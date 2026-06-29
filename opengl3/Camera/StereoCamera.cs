@@ -18,6 +18,11 @@ namespace opengl3
         public RobotFrame cur_pos;
         public Matrix<double> R;//1 * R -> 2
         public Matrix<double> R_inv;//1 * R -> 2
+
+        public Matrix<double> R2;//1 * R -> 3
+        public Matrix<double> R2_inv;//1 * R -> 3
+
+
         public Matrix<double> Bfs;//Flange->scaner
 
         public Matrix<double> Bfs_r;//Flange->scaner
@@ -63,7 +68,25 @@ namespace opengl3
            
             return ps_comp;
         }
+        public Point3d_GL[] comp_points_3d_3cam(System.Drawing.PointF[] ps1, System.Drawing.PointF[] ps2, System.Drawing.PointF[] ps3, int ind_main = 0)
+        {
+            if (ps1 == null || ps2 == null || ps3 == null) return null;
 
+            if (ps1.Length != ps2.Length && ps1.Length != ps3.Length) return null;
+            var lines1 = PointCloud.computeTracesCam(PointF.toPointF(ps1), cameraCVs[0], cameraCVs[0].matrixCS);
+            var lines2 = PointCloud.computeTracesCam(PointF.toPointF(ps2), cameraCVs[1], cameraCVs[0].matrixCS * R);
+            var lines3 = PointCloud.computeTracesCam(PointF.toPointF(ps3), cameraCVs[2], cameraCVs[0].matrixCS * R2);
+
+            var ps_comp = new Point3d_GL[lines1.Length];
+            for (int i = 0; i < lines1.Length; i++)
+            {
+                ps_comp[i] = Line3d_GL.point_betw_cross_lines(lines1[i], lines2[i]);//, lines3[i]);// Line3d_GL.point_betw_cross_lines(lines1[i], lines2[i], lines3[i]);
+                ps_comp[i].ind = ind_main;
+                ps_comp[i].ind_sec = i;
+            }
+
+            return ps_comp;
+        }
 
         public void calibrate(Mat[] mats,PatternType patternType,System.Drawing.Size pattern_size, float marksize)
         {
@@ -76,7 +99,7 @@ namespace opengl3
                     comp_pos &= cameraCVs[i].compPos(mats[i], patternType, pattern_size,marksize);
                     //Console.WriteLine(comp_pos);
                 }
-                if(mats.Length>1 && comp_pos)
+                if(mats.Length==2 && comp_pos)
                 {
                     var inv_cs1 = new Matrix<double>(4,4);
                     CvInvoke.Invert(cameraCVs[0].matrixCS, inv_cs1, DecompMethod.LU);
@@ -99,6 +122,29 @@ namespace opengl3
                     Settings_loader.save_file("stereo_cal.txt", new object[] { R });
                     prin.t("stereo calib R_sc:");
                     prin.t(R);
+                }
+
+                if (mats.Length ==3 && comp_pos)
+                {
+                    var inv_cs1 = new Matrix<double>(4, 4);
+                    CvInvoke.Invert(cameraCVs[1].matrixSC, inv_cs1, DecompMethod.LU);
+                    R = cameraCVs[0].matrixSC * inv_cs1;
+                    R_inv = R.Clone();
+                    CvInvoke.Invert(R_inv, R_inv, DecompMethod.LU);
+
+                    var inv_cs2 = new Matrix<double>(4, 4);
+                    CvInvoke.Invert(cameraCVs[2].matrixSC, inv_cs2, DecompMethod.LU);
+                    R2 = cameraCVs[0].matrixSC * inv_cs2;
+                    R2_inv = R2.Clone();
+                    CvInvoke.Invert(R2_inv, R2_inv, DecompMethod.LU);
+
+
+
+                    Settings_loader.save_file("stereo_cal3.txt", new object[] { R,R2 });
+                    prin.t("stereo calib R_sc:");
+                    prin.t(R);
+                    prin.t("stereo calib R2_sc:");
+                    prin.t(R2);
                 }
             }
         }

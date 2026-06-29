@@ -168,7 +168,7 @@ namespace opengl3
         private float[] color_buffer_data = { 0.0f };
         volatile List<IntPtr> camera_ind = new List<IntPtr>();
         volatile IntPtr[] camera_ind_ptr = new IntPtr[] { (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0, (IntPtr)0 };
-        volatile int[] imb_ind_cam = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+        volatile int[] imb_ind_cam = new int[] { 0, 1, 2, -1, -1, -1, -1, -1, -1, -1 };
         volatile List<long> camera_frame_time = new List<long>();
         List<float[]> im = new List<float[]>();
         public List<Mat> Ims;
@@ -241,18 +241,18 @@ namespace opengl3
 
             InitializeComponent();
             init_vars();
-            fast_load_ct();
+           // fast_load_ct();
 
             //test_kin_rc5();
             //341.4762 -65.5166 626.3698 0.7603 1.2453 -0.1323   //target position, know
-            var test_point = new PositionRob(new Point3d_GL(341.4762, -65.5166, 626.3698), new Point3d_GL(0.7603, 1.2453, -0.1323));
+          /*  var test_point = new PositionRob(new Point3d_GL(341.4762, -65.5166, 626.3698), new Point3d_GL(0.7603, 1.2453, -0.1323));
             Console.WriteLine(test_point.ToString());
             var test_p2 = new PositionRob(test_point.ToString());
             Console.WriteLine(test_p2.ToString());
             var cur_turn = RobotFrame.get_current_turn(test_point, new double[] { 2.2, -2.0905, 1.5097, 0.2777, 0.881, 2.4235 },RobotFrame.RobotType.RC5);
             var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(test_point, 1);
 
-            Console.WriteLine("cur_turn " + cur_turn);
+            Console.WriteLine("cur_turn " + cur_turn);*/
 
             /* var poses_sym = new List<Pose>(new Pose[] { 
                  new Pose(new double[] { 1, 2, 3, 4, 5, 6 }),
@@ -975,7 +975,7 @@ namespace opengl3
             // patt = UtilOpenCV.generateImage_chessboard_circle(chess_size.Width, chess_size.Height, 200);
             #endregion
             imb_base = new ImageBox[] { imBox_base_1, imBox_base_2 };
-            imb_main = new ImageBox[] { imageBox1, imageBox2 };
+            imb_main = new ImageBox[] { imageBox1, imageBox2, imageBox_3cam };
             minArea = 1.0 * k * k * 15;
             maxArea = 15 * k * k * 250;
             red_c = 252;
@@ -1053,7 +1053,7 @@ namespace opengl3
             //scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
-            //load_camers_v2();
+            load_camers_v2();
 
             
             /*var m_test = new Mat("test_ph.jpg");
@@ -1537,9 +1537,9 @@ namespace opengl3
         {
            // markSize = 19.45f;//6.2273f//10f//9.78f
            // chess_size = new Size(6, 9);//new Size(10, 11);//new Size(6, 7)
-            var frms_1 = FrameLoader.loadImages_diff(@"cam1\cam_cal_2905_4a", FrameType.Pattern, PatternType.Mesh);//
+            var frms_1 = FrameLoader.loadImages_diff(@"cam3\cam3_cal_2906_1a", FrameType.Pattern, PatternType.Mesh);//
             var cam1 = new CameraCV(frms_1, chess_size, markSize, null);
-            cam1.save_camera("cam1_cal_2905_4b.txt");
+            cam1.save_camera("cam3_cal_2906_1a.txt");
             comboImages.Items.AddRange(frms_1);
             cameraCVcommon = cam1;
             /* markSize = 6.2273f;//6.2273f
@@ -1591,6 +1591,36 @@ namespace opengl3
             var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, FrameType.Pattern, scanner_config.rotate_cam);
             Console.WriteLine(scanner_config.rotate_cam + " " + marksize);
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec }, PatternType.Mesh, chess_size, marksize);
+
+            //comboImages.Items.AddRange(frms_stereo);
+            comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
+            return scanner;
+        }
+
+        Scanner loadScanner_v3(string conf1, string conf2, string conf3, string stereo_cal, string bfs_file = null, float marksize = 10f)
+        {
+            Console.WriteLine("loadScanner");
+            var cam1 = CameraCV.load_camera(conf1);
+            var cam2 = CameraCV.load_camera(conf2);
+            var cam3 = CameraCV.load_camera(conf3);
+            Console.WriteLine("load_camera");
+            Scanner scanner;
+            if (bfs_file == null)
+            {
+                scanner = new Scanner(new CameraCV[] { cam1, cam2, cam3 });
+            }
+            else
+            {
+                var stereo_cam = new StereoCamera(new CameraCV[] { cam1, cam2, cam3 }, bfs_file);
+                scanner = new Scanner(stereo_cam);
+                stereocam_scan = stereo_cam;
+            }
+            //chess_size = new Size(6, 7);
+            //var marksize = 9.78f;// 9.6f;// 10f;
+            var stereo_cal_1 = stereo_cal.Split('\\').Reverse().ToArray()[0];
+            var frms_stereo = FrameLoader.loadImages_stereoCV3(@"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, @"cam3\" + stereo_cal_1, FrameType.Pattern, scanner_config.rotate_cam);
+            Console.WriteLine(scanner_config.rotate_cam + " " + marksize);
+            scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec, frms_stereo[0].im_third }, PatternType.Mesh, chess_size, marksize);
 
             //comboImages.Items.AddRange(frms_stereo);
             comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
@@ -2482,7 +2512,7 @@ namespace opengl3
 
             GL1.add_TreeView(tree_models);
 
-            load_navig_sys();
+            load_navig_sys_3cam();
 
 
             //Manipulator.calcRob(GL1);
@@ -6027,7 +6057,7 @@ namespace opengl3
         {
             
 
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
             if (con1 != null)
             {
                 
@@ -6396,11 +6426,11 @@ namespace opengl3
 
         private void prop_gr_scan_SelectedGridItemChanged(object sender, SelectedGridItemChangedEventArgs e)
         {
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
         }
         private void prop_gr_scan_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
         }
         private void but_flange_calib_basis_Click(object sender, EventArgs e)
         {
@@ -6777,16 +6807,20 @@ namespace opengl3
             //capture.Set(CapProp.AutoExposure, 1);
             capture.Set(CapProp.Exposure, -8);
             capture.Set(CapProp.FourCC, VideoWriter.Fourcc('M', 'J', 'P', 'G'));
+            //capture.Set(CapProp.Fps, 30);
             cameraSize.Width = (int) capture.Get(CapProp.FrameWidth);
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
             //videoCaptures[scanner_config.Cam1_ind]?.Set(CapProp.AutoExposure, 1);
-            Console.WriteLine(cameraSize.Width.ToString() + " " + cameraSize.Height.ToString() + " " + capture.Get(CapProp.Fps));
+            var fps = capture.Get(CapProp.Fps);
+            Console.WriteLine(cameraSize.Width.ToString() + " " + cameraSize.Height.ToString() + " " + fps);
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
             camera_ind_ptr[number] = capture.Ptr;
 
             capture.ImageGrabbed += capturingVideo_sam;
             capture.Start();
         }
+
+        bool[] set_zoom_imbase = new bool[3] {false,false,false};
         void drawCameras_sam(VideoCapture cap)
         {
             //Console.WriteLine("dr_cam");
@@ -6798,10 +6832,31 @@ namespace opengl3
                 {
                     if (ind_cam == imb_ind_cam[i])
                     {
+                       if(cam_numbers==3)
+                        {
+                            points2d_cams[i] = navig_system.navigation_processing_get_points2d_3cam(ref mat_global[ind_cam], ind_cam);
+                            imb_main[i].Image = mat_global[ind_cam];
+                            var ps = new System.Drawing.PointF[12];
+                            //imb_main[i].Image = FindCircles.findCircles_v2( mat_global[ind_cam],ref ps,chess_size);
+
+
+
+                            if (!set_zoom_imbase[i])
+                            {
+                                var scale = (double)imb_main[i].Width / mat_global[ind_cam].Width;
+                                imb_main[i].Invoke((MethodInvoker)(() => imb_main[i].SetZoomScale(scale, new Point(0, 0))));
+                                set_zoom_imbase[i] = true;
+                            }
+                            
+
+                            //imb_main[1].BeginInvoke((MethodInvoker)(() => imb_main[1].SetZoomScale(scale, new Point(0, 0))));
+
+                        }
+                        //Console.WriteLine("draw: "+ind_cam);
                         //try
                         {
                             //imb_main[i].Image = mat_global[ind_cam];
-                            imProcess_sam(mat_global[ind_cam], i);
+                            //imProcess_sam(mat_global[ind_cam], i);
                         }
                         //catch
                         {
@@ -8782,25 +8837,29 @@ namespace opengl3
         private void but_load_conf_cam1_Click(object sender, EventArgs e)
         {
             textB_cam1_conf.Text =  get_file_name(Directory.GetCurrentDirectory(),"*.txt");
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
         }
 
         private void but_load_conf_cam2_Click(object sender, EventArgs e)
         {
             textB_cam2_conf.Text = get_file_name(Directory.GetCurrentDirectory(), "*.txt; *.json");
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
         }
-
+        private void but_load_conf_cam3_Click(object sender, EventArgs e)
+        {
+            textB_cam3_conf.Text = get_file_name(Directory.GetCurrentDirectory(), "*.txt; *.json");
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+        }
         private void but_stereo_cal_path_Click(object sender, EventArgs e)
         {
             textB_stereo_cal_path.Text = get_folder_name(Directory.GetCurrentDirectory());
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
         }
 
         private void but_scan_path_Click(object sender, EventArgs e)
         {
             textB_scan_path.Text = get_folder_name(Directory.GetCurrentDirectory());
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
         }
 
         private void MainScanningForm_Load(object sender, EventArgs e)
@@ -8828,7 +8887,7 @@ namespace opengl3
             this.tabPage_navig_pan.Controls.Add(this.glControl1);
             glControl1.Location = new Point(1150, 10);
             add_buttons_rob_contr();
-            formSettings.load_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path);
+            formSettings.load_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path);
             for (int i = 0; i < imb_main.Length; i++)
             {
                 imb_main[i].AccessibleName = i.ToString();
@@ -9359,7 +9418,7 @@ namespace opengl3
             //Thread scan_and_load_thread = new Thread(scan_and_load);
             //scan_and_load_thread.Start();
             //load
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
             scan_and_load();
         }
 
@@ -9385,7 +9444,7 @@ namespace opengl3
                 video_scan_name = "1";
             }
             startScanLaser(3);
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
             //start_load_scan();
         }
         private void but_scan_simp_scan_load_Click(object sender, EventArgs e)
@@ -10954,6 +11013,9 @@ namespace opengl3
         //------------------navig-------------------------------------------------
         int cam1_ind = 1;
         int cam2_ind = 0;
+        int cam3_ind = 2;
+
+        static int cam_numbers = 3;
         void navigation_processing()
         {
             
@@ -11004,7 +11066,7 @@ namespace opengl3
 
                         if (j == model_instrument)
                         {
-                            if (writing_registr_pos)
+                            if (writing_registr_pos && navig_system.tools[current_registration_instrument].ps!= null)
                             {                               
                                 navig_system.tools[current_model_instrument].add_point_for_registr(number_registr_point_current, navig_system.tools[current_registration_instrument].ps[4]);
                             }
@@ -11049,6 +11111,106 @@ namespace opengl3
                     //gen_current robot_pos, state
 
                 }
+            }
+
+        }
+
+
+        System.Drawing.PointF[][][] points2d_cams = new System.Drawing.PointF[cam_numbers][][];
+
+        void navigation_processing_3cam()
+        {
+            while (true)
+            {
+                Thread.Sleep(30);
+                var ps3d = navig_system.navigation_processing_get_points3d_3cam(points2d_cams[0], points2d_cams[1], points2d_cams[2]);    //navyg_sys_info(camera_only)
+                navig_system.navigation_processing_get_scene(ps3d);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
+                                                                                            //
+
+                //draw 3d objs
+                //navig_system.navigation_processing_draw_points3d(navig_system.tools[0].ps, ref mat1, ref mat2);
+
+
+                //continue;
+                //GL1.draw_scene---------------------------------------------------------------------------
+                //update tools
+                for (int j = 0; j < navig_system.tools.Length; j++)
+                {
+                    var name_3d_model_debug = navig_system.tools[j].name_3d_model_debug;
+                    var ps_debug = navig_system.tools[j].ps;
+                    var name_3d_model = navig_system.tools[j].name_3d_model;
+                    var matrix_model = navig_system.tools[j].matrix_model;
+                    var matrix_frame = navig_system.tools[j].matrix_frame;
+                    var matrix_tcp = navig_system.tools[j].matrix_tcp;
+                    var matrix_model_debug = navig_system.tools[j].matrix_model_debug;
+                    //var matrix_model = navig_system.tools[j].matrix_frame;
+                    //Console.WriteLine(".setMatrobj___"+ j);
+                    if (matrix_model != null && name_3d_model != null || j != model_instrument) glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model, 0, UtilMatr.to_matrix(matrix_model))));
+                    if (matrix_frame != null && matrix_model_debug != null && name_3d_model_debug != null) glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model_debug, 0, UtilMatr.to_matrix(matrix_frame * matrix_model_debug))));
+                    //Console.WriteLine("\n\n" + j);
+                    if (navig_tool_trace_enable)
+                    {
+                        var ps = navig_system.tools[j].trace_tcp;
+                        if (navig_system.tools[j].ps != null)
+                            if (navig_system.tools[j].ps.Length > 4)
+                            {
+                                ps.Add(navig_system.tools[j].ps[4]);
+                                var name_3d_model_trace_tcp = navig_system.tools[j].name_3d_model_trace_tcp;
+                                glControl1.Invoke((MethodInvoker)(() => GL1.addLineMeshTraj(ps.ToArray(), Color3d_GL.red(), name_3d_model_trace_tcp, false)));
+                            }
+                    }
+                    else
+                    {
+                        if (navig_system.tools[j].trace_tcp.Count != 0) navig_system.tools[j].trace_tcp = new List<Point3d_GL>();
+                    }
+
+                    if (j == model_instrument)
+                    {
+                        if (writing_registr_pos && navig_system.tools[current_registration_instrument].ps != null)
+                        {
+                            navig_system.tools[current_model_instrument].add_point_for_registr(number_registr_point_current, navig_system.tools[current_registration_instrument].ps[4]);
+                        }
+                        if (registration_done)
+                        {
+                            if (matrix_frame != null)
+                            {
+                                var matrix_frame_inv = matrix_frame.Clone();
+                                // CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU);
+                                model_scene_matrix = matrix_frame * matrix_tcp;// * matrix_frame_inv;
+                                //Console.WriteLine("registration_done___");
+                                set_matr_store_navig_scene_objs_ct(NavigMatrixType.ModelToScene, UtilMatr.to_matrix(model_scene_matrix), NavigVision);
+                                //Console.WriteLine("_________________");
+                                //Console.WriteLine("\n\n" + j);
+                            }
+
+                        }
+
+                        var name_3d_model_trace_tcp = navig_system.tools[j].name_3d_model_trace_tcp;
+                        var ps_all = navig_system.tools[current_model_instrument].get_points_for_registr_draw();
+                        if (ps_all != null)
+                            if (ps_all.Length != 0)
+                                glControl1.Invoke((MethodInvoker)(() => GL1.addPointMesh(ps_all, Color3d_GL.red(), name_3d_model_trace_tcp, false)));
+                    }
+
+
+
+                    var ps_name = "ps_test" + j;
+                    glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.removeObj(ps_name)));
+                    glControl1.Invoke((MethodInvoker)(() => GL1.addFrame(navig_system.tools[j].matrix_frame, 50, ps_name)));
+                    //glControl1.Invoke((MethodInvoker)(() => GL1.addPointMesh(navig_system.tools[j].ps,  Color3d_GL.red(), ps_name)));
+                }
+                //update matrs ct_objs
+
+
+                //!GL1.draw_scene--------------------------------------------                                              //tools_models,tools_positins
+
+
+
+                //scene processing                                                              //tools_positions
+
+                //gen_current robot_pos, state
+
+                
             }
 
         }
@@ -11148,7 +11310,97 @@ namespace opengl3
             GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS* navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));
             
         }
+        void load_navig_sys_3cam()
+        {
+            
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var cam3_conf_path = textB_cam3_conf.Text;
+            var stereo_cal_path = textB_stereo_cal_path.Text;
+            string bfs_path = "bfs_cal.txt";
+            Console.WriteLine(cam1_conf_path);
+            Console.WriteLine(cam2_conf_path);
+            Console.WriteLine(cam3_conf_path);
+            var navig_stereo = loadScanner_v3(cam1_conf_path, cam2_conf_path, cam3_conf_path, stereo_cal_path, null, markSize);
 
+            //new int[] { 0, 11, 2, 1 }
+            /* var navig_tool1 = new NavigTool(new int[] { 11 }, NavigTool.ToolType.tp1_v1, "tool1", @"models\nav\tool1.stl",
+                 new Matrix<double>(new double[,] {
+                 {1,0,0,55 },
+                 {0,1,0,55 },
+                 {0,0,1,-14 },
+                 {0,0,0,1 }}), @"models\nav\marker1.stl"
+                 );*/
+
+            var navig_tool1 = new NavigTool(NavigMarker.get_marker_p1v2(11), NavigTool.ToolType.tp1_v1, "tool1", @"models\nav\tool1.stl",
+                new Matrix<double>(new double[,] {
+                {1,0,0,55 },
+                {0,1,0,55 },
+                {0,0,1,-14},
+                {0,0,0,1  }}), @"models\nav\marker1.stl"
+                );
+            //new int[] {  6, 5, 4, 3 }
+            var navig_tool2 = new NavigTool(new int[] { 5 }, NavigTool.ToolType.tp1_v1, "ct", null,
+                new Matrix<double>(new double[,] {
+                {1,0,0,55 },
+                {0,1,0,55 },
+                {0,0,1,-14 },
+                {0,0,0,1 }}), @"models\nav\calibr_model_navig_v2.stl"
+                );
+            navig_system = new NavigSys(navig_stereo, 12);
+            var tools = new List<NavigTool>();
+            tools.Add(navig_tool1);
+            tools.Add(navig_tool2);
+            navig_system.tools = tools.ToArray();
+
+            //var tool_cal_path_orig = textBox_tool_calibr.Text;
+            var tool_cal_path = "tool1_2906_1a";
+            var frms_stereo = FrameLoader.loadImages_stereoCV3(@"cam1\" + tool_cal_path, @"cam2\" + tool_cal_path, @"cam3\" + tool_cal_path, FrameType.Test, false);
+
+            var ps_calib = new List<Point3d_GL[][]>();
+
+            for (int i = 0; i < frms_stereo.Length; i++)
+            {
+                var p2d_1 = navig_system.navigation_processing_get_points2d_3cam(ref frms_stereo[i].im,0);
+                var p2d_2 = navig_system.navigation_processing_get_points2d_3cam(ref frms_stereo[i].im_sec, 1);
+                var p2d_3 = navig_system.navigation_processing_get_points2d_3cam(ref frms_stereo[i].im_third, 2);
+                var ps3d = navig_system.navigation_processing_get_points3d_3cam(p2d_1, p2d_2, p2d_3, frms_stereo[i].im, frms_stereo[i].im_sec, frms_stereo[i].im_third);
+                ps_calib.Add(ps3d);
+            }
+
+             var tcp_cal = navig_tool1.calibrate_tool_tcp_4p(ps_calib.ToArray());
+
+             for (int i = 0; i < navig_system.tools.Length; i++)
+             {
+                 if (navig_system.tools[i].path_3d_model != null && navig_system.tools[i].name_3d_model != null)
+                 {
+                     navig_system.tools[i].name_3d_model = GL1.add_buff_gl(new Model3d(navig_system.tools[i].path_3d_model), PrimitiveType.Triangles, navig_system.tools[i].name_3d_model);
+                     navig_scene_objs_real.Add(navig_system.tools[i].name_3d_model);
+                 }
+
+                 if (navig_system.tools[i].name_3d_model_debug != null)
+                 {
+                     navig_system.tools[i].name_3d_model_debug = GL1.add_buff_gl(new Model3d(navig_system.tools[i].name_3d_model_debug), PrimitiveType.Triangles, navig_system.tools[i].name_3d_model_debug);
+                     navig_scene_objs_real.Add(navig_system.tools[i].name_3d_model_debug);
+                 }
+
+                 if (navig_system.tools[i].name_3d_model_trace_tcp != null)
+                 {
+                     navig_scene_objs_real.Add(navig_system.tools[i].name_3d_model_trace_tcp);
+                 }
+             }
+             //-------------------------------------------------------------------------------------------
+             var cam_model_path = @"models\nav\cam.stl";
+             var cam1_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam1");
+             var cam2_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam2");
+             var cam3_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam3");
+            navig_scene_objs_real.Add(cam1_model);
+             navig_scene_objs_real.Add(cam2_model);
+             GL1.buffersGl.setMatrobj(cam1_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS) * Matrix4x4f.RotatedY(90));
+             GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS * navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));
+            GL1.buffersGl.setMatrobj(cam3_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[2].matrixCS * navig_system.stereo.stereoCamera.R2) * Matrix4x4f.RotatedY(90));
+
+        }
         public void visible_navig_scene_objs_real(bool visible)
         {
             foreach (var navig_obj in navig_scene_objs_real)
@@ -11156,8 +11408,6 @@ namespace opengl3
                 GL1.buffersGl.setVisibleobj(navig_obj, visible);
             }
         }
-
-
         public void visible_navig_scene_objs_ct(bool visible)
         {
             foreach (var navig_obj in navig_scene_objs_ct)
@@ -11234,8 +11484,18 @@ namespace opengl3
                         
             videoStart_sam(cam1_ind);
             videoStart_sam(cam2_ind);
-            var thr_navig = new Thread(navigation_processing);
-            thr_navig.Start();
+            if(cam_numbers==3)
+            {
+                videoStart_sam(cam3_ind);
+                var thr_navig = new Thread(navigation_processing_3cam);
+                thr_navig.Start();
+            }
+            else
+            {
+                var thr_navig = new Thread(navigation_processing);
+                thr_navig.Start();
+            }
+            
 
         }
 
@@ -11284,7 +11544,7 @@ namespace opengl3
         {
             textBox_tool_calibr.Text = get_folder_name(Directory.GetCurrentDirectory());
 
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
         }
         int ind_ct_image = 0;
         int ind_ct_image_sagit = 0;
@@ -11296,7 +11556,7 @@ namespace opengl3
         {
             textBox_ct_dir_path.Text = get_folder_name(Directory.GetCurrentDirectory());
 
-            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_stereo_cal_path, textB_scan_path, scanner_config, traj_config, patt_config);
+            formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
         }
 
         private void but_load_ct_scan_Click(object sender, EventArgs e)
@@ -12060,6 +12320,14 @@ namespace opengl3
 
             send_navig_robot(" pose " + cur_pose_str);
         }
+
+        private void but_save_photo_nav_3_Click(object sender, EventArgs e)
+        {
+            UtilOpenCV.saveImage(mat_global[0], mat_global[1], mat_global[2], txBx_photoName.Text + "_" + photo_number.ToString() + ".png", textBox_photo_nav.Text);
+            photo_number++;
+        }
+
+        
     }
 }
 

@@ -9,6 +9,7 @@ using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using Emgu.CV.UI;
 using System.Drawing;
+using System.Windows.Media;
 
 namespace opengl3
 {
@@ -18,16 +19,40 @@ namespace opengl3
         public double perim;
         public double area;
         public double fig;//  fig = area/perim
+        public double sumhu;
+        Moments moments;
         public System.Drawing.PointF pc;
         public ContourCV(VectorOfPoint cont)
         {
             area= CvInvoke.ContourArea(cont);
             perim = CvInvoke.ArcLength(cont, true);
-            fig = area / perim;
-            pc = FindCircles.findCentrCont(cont);
-            cont_orig = cont;
-        }
+            if (perim != 0)
+            {
+                fig = 1000*area / (perim * perim);
+                //Console.WriteLine("fig "+ fig);
+                // pc = FindCircles.findCentrCont(cont);
+            }
+             cont_orig = cont;
 
+        }
+        public static void comp_cents(ref ContourCV[] cts)
+        {
+            for(int i = 0;i< cts.Length;i++)
+            {
+                cts[i].pc = cts[i].findCentrCont(cts[i].cont_orig);
+                cts[i].sumhu = sumHuMom(cts[i].cont_orig, cts[i].moments);
+            }
+        }
+        public System.Drawing.PointF findCentrCont(VectorOfPoint contour)
+        {
+
+            var M = CvInvoke.Moments(contour);
+            var cX = M.M10 / M.M00;
+            var cY = M.M01 / M.M00;
+            var p = new System.Drawing.PointF((float)cX, (float)cY);
+            moments = M;
+            return p;
+        }
         static public ContourCV[] contourCVs(VectorOfVectorOfPoint conts)
         {
             var conts_cv = new List<ContourCV>();
@@ -38,6 +63,197 @@ namespace opengl3
             return conts_cv.ToArray();
         }
 
+        static public ContourCV[] size_filter(ContourCV[] contours, double min_size = double.MinValue, double max_size = double.MaxValue)
+        {
+            var filtr_conts = new List<ContourCV>();
+            for (int i = 0; i < contours.Length; i++)
+            {
+                if (contours[i].area > min_size && contours[i].area < max_size)
+                {
+                    filtr_conts.Add(contours[i]);
+                }
+            }
+            return filtr_conts.ToArray();
+        }
+        static public ContourCV[] figure_filter(ContourCV[] contours, double min_size = double.MinValue, double max_size = double.MaxValue)
+        {
+            var filtr_conts = new List<ContourCV>();
+            for (int i = 0; i < contours.Length; i++)
+            {
+                if (contours[i].fig > min_size && contours[i].fig < max_size)
+                {
+                    filtr_conts.Add(contours[i]);
+                }
+            }
+            return filtr_conts.ToArray();
+        }
+
+        static public ContourCV[] only_same_centres(ContourCV[] contours,double max_dist )
+        {
+            var filtr_conts = new List<ContourCV>();
+            for (int i = 0; i < contours.Length; i++)
+            {
+                bool same_place = false;
+                for (int j = 0; j < contours.Length; j++)
+                {
+                    if (i != j)
+                        if (dist(contours[i].pc, contours[j].pc) < max_dist)
+                        {
+                            same_place = true;
+                        }
+                            
+                }
+                if (same_place)
+                {
+                    filtr_conts.Add(contours[i]);
+                }
+            }
+            return filtr_conts.ToArray();
+        }
+      
+
+        public static ContourCV[] sameContours(ContourCV[] contours, double err_form = 0.115, double err_area = 0.85)
+        {
+            var clasters = new List<List<ContourCV>>();
+            // Console.WriteLine("------------------------");
+            for (int i = 0; i < contours.Length; i++)
+            {
+
+                if (i == 0)
+                {
+                    clasters.Add(new List<ContourCV>());
+                    clasters[clasters.Count-1].Add(contours[i]);
+                }
+                else
+                {
+                    bool added = false;
+                    for (int j = 0; j < clasters.Count; j++)
+                    {
+                        var area_cur = contours[i].area;
+
+                        var area_clast = AreaAver(clasters[j].ToArray() );
+
+                        //Console.WriteLine(" i: " + i + " j: " + j + " area_clast: " + area_clast + " perim_clast: " + perim_clast + " area_cur: " + area_cur + " perim_cur: " + perim_cur);
+                        var humomaver = HuMomAver(clasters[j].ToArray());
+                        if (Math.Abs(contours[i].sumhu - humomaver) < humomaver * err_form &&
+                            Math.Abs(area_cur - area_clast) < area_clast * err_area)
+                        {
+                            clasters[j].Add(contours[i]);
+                            added = true;
+                            break;
+                        }
+                    }
+                    if (!added)
+                    {
+                        clasters.Add(new List<ContourCV>());
+                        clasters[clasters.Count - 1].Add(contours[i]);
+                    }
+                }
+            }
+
+            int max = int.MinValue;
+            int i_max = 0;
+            for (int i = 0; i < clasters.Count; i++)
+            {
+                if (clasters[i].Count > max)
+                {
+                    i_max = i;
+                    max = clasters[i].Count;
+                }
+                // Console.WriteLine("clasters[i].Size: "+ clasters[i].Size);
+            }
+            if (clasters.Count == 0)
+            {
+                return null;
+            }
+            return clasters[i_max].ToArray();
+        }
+        static public ContourCV[] filter_same_centres(ContourCV[] contours, double dist_same = 10)
+        {
+            if (contours == null) return null;
+            if (contours.Length == 0) return null;   
+            var filtr_conts = new List<ContourCV>();
+            filtr_conts.Add(contours[0]);
+            for (int i = 1; i < contours.Length; i++)
+            {
+                bool same_place = false;
+                for (int j = 0; j < filtr_conts.Count; j++)
+                {
+                    if (distContours(contours[i], filtr_conts[j]) < dist_same)
+                    {
+                        same_place = true;
+                    }
+                }
+                if (!same_place)
+                {
+                    filtr_conts.Add(contours[i]);
+                }
+            }
+            return filtr_conts.ToArray();
+        }
+
+        static public System.Drawing.PointF[] get_centres(ContourCV[] contours, double dist_same = 10)
+        {
+            if (contours == null) return null;
+            if (contours.Length == 0) return null;
+            var pcs = new System.Drawing.PointF[contours.Length];
+            for (int i = 0; i < contours.Length; i++)
+            {
+                pcs[i] = contours[i].pc;
+            }
+            return pcs;
+        }
+        static public VectorOfVectorOfPoint get_conts(ContourCV[] contours, double dist_same = 10)
+        {
+            if (contours == null) return null;
+            if (contours.Length == 0) return null;
+            var conts = new VectorOfVectorOfPoint();
+            for (int i = 0; i < contours.Length; i++)
+            {
+                conts.Push(contours[i].cont_orig);
+            }
+            return conts;
+        }
+        static double dist(System.Drawing.PointF p1, System.Drawing.PointF p2)
+        {
+            return Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
+        }
+
+        static double distContours(ContourCV conts1, ContourCV conts2)
+        {
+            return dist(conts1.pc, conts2.pc);
+        }
+        public static double HuMomAver(ContourCV[] contours)
+        {
+            var mass_2 = 0d;
+            for (int j = 0; j < contours.Length; j++)
+            {
+                mass_2 += contours[j].sumhu;
+            }
+
+            return mass_2/ contours.Length;
+        }
+        public static double AreaAver(ContourCV[] contours)
+        {
+            var mass_2 = 0d;
+            for (int j = 0; j < contours.Length; j++)
+            {
+                mass_2 += contours[j].area;
+            }
+
+            return mass_2 / contours.Length;
+        }
+        static public double sumHuMom(VectorOfPoint cont, Moments M)
+        {
+            var ms = CvInvoke.HuMoments(M);
+
+            var mass_2 = 0d;
+            for (int j = 0; j < ms.Length; j++)
+            {
+                mass_2 += ms[j];
+            }
+            return mass_2;
+        }
     }
     public static class FindCircles
     {
@@ -300,10 +516,137 @@ namespace opengl3
             }
             else
             {
-                cents.CopyTo(corn, 0);
+                if(cents.Length<=corn.Length)  cents.CopyTo(corn, 0);
                 
                 return orig;
             }          
+        }
+
+        public static Mat findCircles_v2(Mat mat, ref System.Drawing.PointF[] corn, Size pattern_size, bool order = true)
+        {
+            var im_tr = new Mat();
+            var orig = new Mat();
+            bool debug = false;
+            if (mat.NumberOfChannels == 3) CvInvoke.CvtColor(mat, im_tr, ColorConversion.Bgr2Gray);
+            else im_tr = mat;
+
+            CvInvoke.GaussianBlur(im_tr, im_tr, new Size(9, 9), -1);
+            CvInvoke.AdaptiveThreshold(im_tr, im_tr, 255, AdaptiveThresholdType.MeanC, ThresholdType.BinaryInv, 9, 9);
+
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            Mat hier = new Mat();
+            CvInvoke.FindContours(im_tr, contours, hier, RetrType.Ccomp, ChainApproxMethod.ChainApproxSimple);
+
+            var contours_comp = ContourCV.contourCVs(contours);
+            ContourCV.comp_cents(ref contours_comp);
+            contours_comp = ContourCV.size_filter(contours_comp, 10,3500);
+            contours_comp = ContourCV.figure_filter (contours_comp, 45, 85);
+            contours_comp = ContourCV.only_same_centres(contours_comp,3);
+            var contours_comp_filtr = ContourCV.sameContours(contours_comp);
+            contours_comp_filtr = ContourCV.filter_same_centres(contours_comp_filtr, 3);
+
+            // orig = mat.Clone();
+            //CvInvoke.DrawContours(orig, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
+
+
+            CvInvoke.CvtColor(im_tr, im_tr, ColorConversion.Gray2Bgr);
+            //CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
+            //CvInvoke.WaitKey();
+
+            //CvInvoke.DrawContours(orig, conts, -1, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
+            /*Console.WriteLine("find_circ");
+            CvInvoke.Imshow("orig_c", orig);
+            CvInvoke.WaitKey();*/
+            var conts = ContourCV.get_conts(contours_comp);
+            var conts_all = ContourCV.get_conts(contours_comp_filtr);
+            var cents = ContourCV.get_centres(contours_comp_filtr);//_filtr
+            if (conts_all != null)
+            {
+                CvInvoke.DrawContours(im_tr, conts_all, -1, new MCvScalar(0, 255, 0), 1, LineType.EightConnected);
+                CvInvoke.DrawContours(im_tr, conts, -1, new MCvScalar(255, 0, 0), 1, LineType.EightConnected);
+            }
+
+            
+
+
+            //CvInvoke.DrawContours(im_tr, contours, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
+            //CvInvoke.DrawContours(im_tr, conts_sc, -1, new MCvScalar(255, 0, 255), 1, LineType.EightConnected);
+
+            //CvInvoke.Imshow("bin ", im_tr);
+
+            counter++;
+
+            if (cents == null)
+            {
+
+                Console.WriteLine("find_circ ret null");
+                return im_tr;
+            }
+
+
+            //prin.t(cents);
+            //prin.t("____________");
+            orig = UtilOpenCV.drawPointsF(im_tr, cents, 255, 0, 0);
+            if (debug)
+            {
+                CvInvoke.Imshow("fnd", orig);
+                CvInvoke.WaitKey();
+            }
+
+            
+            //UtilOpenCV.drawLines(orig, cents, 0, 255, 0, 2);
+            //
+
+
+            if (order)
+            {
+                corn = new System.Drawing.PointF[pattern_size.Width * pattern_size.Height];
+                //orig = UtilOpenCV.drawTours(orig, PointF.toPoint(cents), 255, 0,2);
+                //
+                //CvInvoke.Imshow("fnd", orig);
+                //CvInvoke.WaitKey();
+                UtilOpenCV.drawTours(im_tr, PointF.toPoint(cents), 255, 0, 0, 2);
+                //return im_tr;
+                var ps_ord = orderPoints(cents, pattern_size);
+                /*var ps_ord2 = orderPoints_assym(cents, pattern_size);
+                orig = UtilOpenCV.drawPoints_2d(orig,PointF.toSystemPoint_ss_2d( ps_ord2),0, 255,  0);
+                CvInvoke.Imshow("fnd", orig);
+                CvInvoke.WaitKey();*/
+                //orig = UtilOpenCV.drawTours(orig, PointF.toPoint(ps_ord), 255, 0, 2);
+                //return orig;
+                //ps_ord = ps_ord.Reverse().ToArray();
+                if (ps_ord != null && ps_ord.Length == corn.Length)
+                {
+                    corn = new System.Drawing.PointF[ps_ord.Length];
+                    ps_ord.CopyTo(corn, 0);
+                    //Console.WriteLine("cents");
+                    UtilOpenCV.drawTours(im_tr, PointF.toPoint(ps_ord), 255, 0, 0, 2);
+                    UtilOpenCV.drawTours(im_tr, PointF.toPoint(new System.Drawing.PointF[] { ps_ord[0] }), 0, 255, 255, 10);
+                    /*UtilOpenCV.drawTours(im_tr, PointF.toPoint(corn), 255, 0, 0, 2);
+                    UtilOpenCV.drawLines(im_tr, corn, 0, 0, 255, 2);
+                    CvInvoke.Imshow("circ", im_tr);
+                    CvInvoke.WaitKey();*/
+                }
+                else
+                {
+                    if (ps_ord == null)
+                    {
+                        Console.WriteLine("else ps_ord NULL");
+                        return null;
+                    }
+                }
+                //Console.WriteLine(" corn______________________");
+                //Console.WriteLine(ps_ord.Length+" "+ corn.Length);
+                //prin.t(corn);
+                return im_tr;
+            }
+            else
+            {
+                corn = cents;
+                //if (cents.Length <= corn.Length) cents.CopyTo(corn, 0);
+
+                return orig;
+            }
         }
         static public VectorOfVectorOfPoint filter_same_centres(VectorOfVectorOfPoint contours, double dist_same = 10)
         {
@@ -547,6 +890,9 @@ namespace opengl3
             return clasters[i_max];
         }
 
+
+        
+
         static List<ContourCV> filterContours(VectorOfVectorOfPoint contours)
         {
             var clasters = new List<List<ContourCV>>();
@@ -723,12 +1069,18 @@ namespace opengl3
             var inds_ord = findAllLines(ps, starts, step);
 
             var ind_size = ordBySize(inds_ord, size_patt);
-            if(ind_size == null)
+            if (!checkTransp(ind_size))
+            {
+                Console.WriteLine("ind_size not_regular");
+                return null;
+            }
+            if (ind_size == null)
             {
                 Console.WriteLine("ind_size NULL");
                 return null;
             }
             var arr_def = arrFromP_2(ps, ind_size,size_patt);
+            
             if (arr_def == null) { Console.WriteLine("arr_def1 NULL"); }
             arr_def = arr_zero_to_up(arr_def);
             if(arr_def == null) { Console.WriteLine("arr_def2 NULL"); return null; }
@@ -849,6 +1201,7 @@ namespace opengl3
             {
                 return false;
             }
+
             var len1 = matr[0].Length;
             if(len1==0)
             {

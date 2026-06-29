@@ -569,7 +569,27 @@ namespace opengl3
                 mat2.Save("cam2\\" + folder + "\\" + name);
             }
         }
-
+        public static void saveImage(Mat mat1, Mat mat2, Mat mat3, string name, string folder)
+        {
+            if (mat1 != null && !mat1.IsEmpty)
+            {
+                Console.WriteLine("cam1\\" + folder + "\\" + name);
+                Directory.CreateDirectory("cam1\\" + folder);
+                mat1.Save("cam1\\" + folder + "\\" + name);
+            }
+            if (mat2 != null && !mat2.IsEmpty)
+            {
+                Console.WriteLine("cam2\\" + folder + "\\" + name);
+                Directory.CreateDirectory("cam2\\" + folder);
+                mat2.Save("cam2\\" + folder + "\\" + name);
+            }
+            if (mat3 != null && !mat3.IsEmpty)
+            {
+                Console.WriteLine("cam3\\" + folder + "\\" + name);
+                Directory.CreateDirectory("cam3\\" + folder);
+                mat3.Save("cam3\\" + folder + "\\" + name);
+            }
+        }
         /// <summary>
         /// ret (err, dist betw 2 points)
         /// </summary>

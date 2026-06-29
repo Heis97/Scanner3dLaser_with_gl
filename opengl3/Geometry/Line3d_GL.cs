@@ -61,6 +61,16 @@ namespace opengl3
             return p_med_cross;
         }
 
+
+        static public Point3d_GL point_betw_cross_lines(Line3d_GL l1, Line3d_GL l2, Line3d_GL l3)
+        {
+            var p1 = point_betw_cross_lines(l1, l2);
+            var p2 = point_betw_cross_lines(l2, l3);
+            var p3 = point_betw_cross_lines(l3, l1);
+            return Point3d_GL.centr_mass(new Point3d_GL[] {p1,p2,p3});
+        }
+
+
         public Point3d_GL calcCrossFlat(Flat3d_GL F)
         {
 
