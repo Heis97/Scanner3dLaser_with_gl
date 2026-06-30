@@ -757,7 +757,7 @@ namespace opengl3
             this.textBox_navig_robot_send_position = new System.Windows.Forms.TextBox();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.button_navig_robot_recieve_pos = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
+            this.but_robot_flange_frame_calibr = new System.Windows.Forms.Button();
             this.button_navig_robot_stop_servo = new System.Windows.Forms.Button();
             this.textBox_navig_robot_send_pos = new System.Windows.Forms.TextBox();
             this.button_navig_robot_send_position = new System.Windows.Forms.Button();
@@ -8776,7 +8776,7 @@ namespace opengl3
             this.tabPage_robot_calibr.Controls.Add(this.textBox_navig_robot_send_position);
             this.tabPage_robot_calibr.Controls.Add(this.propertyGrid1);
             this.tabPage_robot_calibr.Controls.Add(this.button_navig_robot_recieve_pos);
-            this.tabPage_robot_calibr.Controls.Add(this.button5);
+            this.tabPage_robot_calibr.Controls.Add(this.but_robot_flange_frame_calibr);
             this.tabPage_robot_calibr.Controls.Add(this.button_navig_robot_stop_servo);
             this.tabPage_robot_calibr.Controls.Add(this.textBox_navig_robot_send_pos);
             this.tabPage_robot_calibr.Controls.Add(this.button_navig_robot_send_position);
@@ -8891,15 +8891,16 @@ namespace opengl3
             this.button_navig_robot_recieve_pos.UseVisualStyleBackColor = true;
             this.button_navig_robot_recieve_pos.Click += new System.EventHandler(this.button_navig_robot_recieve_pos_Click);
             // 
-            // button5
+            // but_robot_flange_frame_calibr
             // 
-            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button5.Location = new System.Drawing.Point(6, 367);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(152, 54);
-            this.button5.TabIndex = 144;
-            this.button5.Text = "Вычислить матрицу";
-            this.button5.UseVisualStyleBackColor = true;
+            this.but_robot_flange_frame_calibr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_robot_flange_frame_calibr.Location = new System.Drawing.Point(6, 367);
+            this.but_robot_flange_frame_calibr.Name = "but_robot_flange_frame_calibr";
+            this.but_robot_flange_frame_calibr.Size = new System.Drawing.Size(152, 54);
+            this.but_robot_flange_frame_calibr.TabIndex = 144;
+            this.but_robot_flange_frame_calibr.Text = "Вычислить матрицу";
+            this.but_robot_flange_frame_calibr.UseVisualStyleBackColor = true;
+            this.but_robot_flange_frame_calibr.Click += new System.EventHandler(this.but_robot_flange_frame_calibr_Click);
             // 
             // button_navig_robot_stop_servo
             // 
@@ -9896,7 +9897,7 @@ namespace opengl3
         private System.Windows.Forms.Button button_navig_robot_start_servo;
         private System.Windows.Forms.TextBox textBox_navig_robot_send_pos;
         private System.Windows.Forms.Button button_navig_robot_stop_servo;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button but_robot_flange_frame_calibr;
         private System.Windows.Forms.Button button_navig_robot_recieve_pos;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.Label label50;

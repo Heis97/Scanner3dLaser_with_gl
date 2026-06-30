@@ -558,9 +558,9 @@ namespace opengl3
              */
             // comboImages.Items.AddRange( VideoAnalyse.load_video_frs("video_focus.mp4"));
 
-          /*  var fr_p = new RobotFrame(100, 200, 300, 0.4, 0.2, 0.8);
+            /*var fr_p = new RobotFrame(100, 200, 300, -0.4, 0.2, 0.8);
             var fr_p_m = fr_p.getMatrix();
-            prin.t(fr_p_m);
+            //prin.t(fr_p_m);
             var fr_p2 = new RobotFrame(fr_p_m);
             Console.WriteLine(fr_p);
             Console.WriteLine(fr_p2);*/
@@ -1053,7 +1053,7 @@ namespace opengl3
             //scan_sync = ch_b_sync.Checked;
 
             tree_models.CheckBoxes = true;
-            load_camers_v2();
+            //load_camers_v2();
 
             
             /*var m_test = new Mat("test_ph.jpg");
@@ -2470,7 +2470,7 @@ namespace opengl3
              navig_tool1_frame_name = GL1.addFrame_v2(matrix_text, 5, navig_tool1_frame_name);*/
 
             //generateImage3D_BOARD_solid(chess_size.Height, chess_size.Width, markSize, PatternType.Mesh);
-
+                
 
             //var mat_test = new Mat("aruco_test4.png");
             //generateImage3D_aruko_solid(1, 0, 0, mat_test);
@@ -2513,7 +2513,7 @@ namespace opengl3
             GL1.add_TreeView(tree_models);
 
             load_navig_sys_3cam();
-
+            //test_go_to_point_robot_rc5();
 
             //Manipulator.calcRob(GL1);
 
@@ -2641,7 +2641,7 @@ namespace opengl3
             //test_go_to_point_robot();
             //test_poses();
             //load_3d_model_robot_pulse();
-            
+
             /*var im1 = new Mat("cam1//for_model_v6//photo_13_3.png");
             
             var warpedMarker = NavigSys.WarpArucoWithSurroundings(im1, 11,50,1.4);//13.6/10.4
@@ -3289,7 +3289,7 @@ namespace opengl3
             var im = Analyse.mapSolv3D(vs);
             imageBox1.Image = im.Mat;
         }
-        void test_go_to_point_robot()
+        void test_go_to_point_robot_pulse()
         {
             load_3d_model_robot_pulse();
            // set_conf_robot_pulse(new double[6] { 0, 0, 0, 0, 0, 0 });
@@ -3346,6 +3346,98 @@ namespace opengl3
             var L6 = 132.5;
 
             ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
+
+            ms[1] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
+
+            ms[2] = UtilMatr.matrix(new Point3d_GL(0, -L1), new Point3d_GL(0, 180, 0));
+
+            ms[3] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
+
+            ms[4] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
+
+            ms[5] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+
+            ms[6] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 180, 180)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+
+            ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, -90)) * UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+
+            GL1.buffersGl.setMatrobj("ax_0", 0, ms[0]);
+            GL1.buffersGl.setMatrobj("ax_1", 0, ms[1]);
+            GL1.buffersGl.setMatrobj("ax_2", 0, ms[2]);
+            GL1.buffersGl.setMatrobj("ax_3", 0, ms[3]);
+            GL1.buffersGl.setMatrobj("ax_4", 0, ms[4]);
+            GL1.buffersGl.setMatrobj("ax_5", 0, ms[5]);
+            GL1.buffersGl.setMatrobj("ax_6", 0, ms[6]);
+            GL1.buffersGl.setMatrobj("ax_7", 0, ms[7]);
+            GL1.buffersGl.setMatrobj("t2", 0, ms[7]);
+
+            //GL1.buffersGl.setTranspobj("t2", 0);
+
+
+        }
+
+        void test_go_to_point_robot_rc5()
+        {
+            load_3d_model_robot_pulse_rc5();
+            // set_conf_robot_pulse(new double[6] { 0, 0, 0, 0, 0, 0 });
+            var fr_test = new RobotFrame(-400, 0, 0, 0, 0, 2);
+            var tool = new RobotFrame(-170.93 + 5, 68.74 + 6.52, 48.09 - 3.35, 1.5511, 1.194616, 0.0);
+            var model = new RobotFrame(605.124, -21.2457, 21.2827, 0.0281105, 0.01776732, -0.00052);
+
+            var tool_inv = tool.getMatrix().Clone();
+            var model_inv = model.getMatrix().Clone();
+            CvInvoke.Invert(tool_inv, tool_inv, DecompMethod.LU);
+            CvInvoke.Invert(model_inv, model_inv, DecompMethod.LU);
+            //prin.t("tool_inv_1");
+            //prin.t(tool_inv);
+
+            //set_pos_robot_pulse(new RobotFrame(fr_test.getMatrix().Clone() * tool_inv));
+
+            //set_pos_robot(fr_test.Clone(), tool.Clone());
+
+            set_conf_robot_pulse(new double[6] { 0, 0, 0, 0, 0, 0 },RobotFrame.RobotType.RC5);
+
+            set_conf_robot_pulse(new double[6] { -1.0182014527219785, -0.8399482246377594, 1.4102135720175166, -0.5804232429885648, -0.598335198427247, -1.5976604316588527 }, RobotFrame.RobotType.RC5);
+            //GL1.addFrame(fr_test.getMatrix() * tool_inv, 50, "asd");
+            // GL1.addFrame(fr_test.getMatrix(), 50, "asd");
+        }
+        void load_3d_model_robot_pulse_rc5()
+        {
+            var color_skin = new Color3d_GL(213 / 255f, 172 / 255f, 129 / 255f);
+            // var scan_stl_orig1 = new Model3d("models\\human arm5.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            // GL1.add_buff_gl(scan_stl_orig1.mesh, color_skin, scan_stl_orig1.normale, PrimitiveType.Triangles, "scan");
+            //  var table_stl_orig = new Model3d("models\\lowres\\table.stl");//@"C:\Users\Dell\Desktop\Диплом ин ситу печать 1804\3d modelsarm_defect.stl" //models\\defects\\ring3.stl
+            //  GL1.add_buff_gl(table_stl_orig.mesh, table_stl_orig.color, table_stl_orig.normale, PrimitiveType.Triangles, "table");
+
+
+            var color_arm = Color3d_GL.black();
+            var color_end = Color3d_GL.white();
+            // var color_skin = new Color3d_GL(213, 172, 129);
+            for (int i = 0; i <= 7; i++)
+            {
+                //if(i<4)
+                {
+                    var scan_stl_orig = new Model3d("models\\rc5\\" + i + ".stl", false);
+                    GL1.add_buff_gl(scan_stl_orig.mesh, color_arm, scan_stl_orig.normale, PrimitiveType.Triangles, "ax_" + i);
+                }
+
+            }
+
+            var scan_stl = new Model3d("models\\rc5\\t2b.stl", false, 1);
+            GL1.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "t2");
+
+            var L21 = 156;
+            var L31 = -148;
+
+            var L1 = 172.5;
+            var L2 = 405;
+            var L3 = 370;
+            var L4 = 139.8 + L21 + L31;
+            var L5 = 139.8;
+            var L6 = 141;
+
+
+            ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0));
 
             ms[1] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
 
@@ -11010,6 +11102,8 @@ namespace opengl3
         }
 
         #endregion
+
+        #region navig
         //------------------navig-------------------------------------------------
         int cam1_ind = 1;
         int cam2_ind = 0;
@@ -11215,8 +11309,6 @@ namespace opengl3
 
         }
 
-
-
         List<string> navig_scene_objs_real = new List<string>();
         List<string> navig_scene_objs_ct = new List<string>();
         NavigVisionType NavigVision = NavigVisionType.Ct;
@@ -11308,8 +11400,10 @@ namespace opengl3
             navig_scene_objs_real.Add(cam2_model);
             GL1.buffersGl.setMatrobj(cam1_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS)* Matrix4x4f.RotatedY(90));
             GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS* navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));
-            
+
         }
+
+        double[] test_rob_pos1 = new double[] { 28.0, -75.0, 120.0, -30.0, 30.0, 0.0 };
         void load_navig_sys_3cam()
         {
             
@@ -11340,7 +11434,7 @@ namespace opengl3
                 {0,0,0,1  }}), @"models\nav\marker1.stl"
                 );
             //new int[] {  6, 5, 4, 3 }
-            var navig_tool2 = new NavigTool(new int[] { 5 }, NavigTool.ToolType.tp1_v1, "ct", null,
+            var navig_tool2 = new NavigTool(NavigMarker.get_marker_p1v2(6), NavigTool.ToolType.tp1_v1, "ct", null,
                 new Matrix<double>(new double[,] {
                 {1,0,0,55 },
                 {0,1,0,55 },
@@ -11353,12 +11447,16 @@ namespace opengl3
             tools.Add(navig_tool2);
             navig_system.tools = tools.ToArray();
 
+
+
+            
+
             //var tool_cal_path_orig = textBox_tool_calibr.Text;
             var tool_cal_path = "tool1_2906_1a";
             var frms_stereo = FrameLoader.loadImages_stereoCV3(@"cam1\" + tool_cal_path, @"cam2\" + tool_cal_path, @"cam3\" + tool_cal_path, FrameType.Test, false);
 
             var ps_calib = new List<Point3d_GL[][]>();
-
+            var ms_calib = new List<Matrix<double>>();
             for (int i = 0; i < frms_stereo.Length; i++)
             {
                 var p2d_1 = navig_system.navigation_processing_get_points2d_3cam(ref frms_stereo[i].im,0);
@@ -11366,9 +11464,16 @@ namespace opengl3
                 var p2d_3 = navig_system.navigation_processing_get_points2d_3cam(ref frms_stereo[i].im_third, 2);
                 var ps3d = navig_system.navigation_processing_get_points3d_3cam(p2d_1, p2d_2, p2d_3, frms_stereo[i].im, frms_stereo[i].im_sec, frms_stereo[i].im_third);
                 ps_calib.Add(ps3d);
+                ms_calib.Add(navig_system.tools[0].matrix_frame);
             }
 
-             var tcp_cal = navig_tool1.calibrate_tool_tcp_4p(ps_calib.ToArray());
+            var cur_rob = RobotFrame.RobotType.RC5;
+            var qs = test_rob_pos1;
+            var posrob = new RobotFrame( RobotFrame.comp_forv_kinem(qs, 6, false, cur_rob),0,0,0,RobotFrame.RobotType.RC5);
+
+            navig_system.test_handeye(ms_calib[0], posrob.getMatrix());
+
+            var tcp_cal = navig_tool1.calibrate_tool_tcp_4p(ps_calib.ToArray());
 
              for (int i = 0; i < navig_system.tools.Length; i++)
              {
@@ -12059,6 +12164,10 @@ namespace opengl3
 
             GL1.buffersGl.setVisibleobj(generate_model_name, true);
         }
+
+        #endregion
+
+        #region registration model
         //registration=================================================================
         int number_registr_point_current = 0;
         int current_registration_instrument = 0;
@@ -12150,8 +12259,11 @@ namespace opengl3
         {
             navig_system.tools[current_model_instrument].init_points_for_registr(ct_info.registr_ps.Length);
         }
+        #endregion
+
+        #region robot_navig
         //------ROBOT------------------------------------------
-        private RobotClient _robotClient = new RobotClient();
+        private NavigRobotClient _robotClient = new NavigRobotClient();
         private string _latestFrame;
         private object _lock = new object();
         private System.Windows.Forms.Timer _uiTimer;
@@ -12320,14 +12432,19 @@ namespace opengl3
 
             send_navig_robot(" pose " + cur_pose_str);
         }
-
+        #endregion
         private void but_save_photo_nav_3_Click(object sender, EventArgs e)
         {
             UtilOpenCV.saveImage(mat_global[0], mat_global[1], mat_global[2], txBx_photoName.Text + "_" + photo_number.ToString() + ".png", textBox_photo_nav.Text);
             photo_number++;
         }
 
-        
+        private void but_robot_flange_frame_calibr_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
     }
 }
 

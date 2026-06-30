@@ -926,8 +926,8 @@ namespace opengl3
                     new double[]{ q[5],  0, 0, L6}
                 };
                 bool true_dh = true;
-
-                if(true_dh)
+                true_dh = false;
+                if (true_dh)
                 {
                     dh_params = new double[][] {
                     new double[]{ q[0] - 0.00521167, 1.57076, -3.16453, 172.515},
