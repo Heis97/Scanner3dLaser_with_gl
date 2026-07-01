@@ -165,10 +165,12 @@ namespace opengl3
         public string CurrentFrame => _currentFrame;
         public int _messageCounter = 0;
         private DateTime _lastStatsTime = DateTime.UtcNow;
-
+        public RobotFrame.RobotType robotType = RobotFrame.RobotType.RC5;
         Matrix<double> _matrix_to_camera;
         Matrix<double> _matrix_tool;
-        Matrix<double> _matrix_frame_base;
+        public Matrix<double> M_base_in_world;
+        public Matrix<double> M_world_in_base;
+        public double[] cur_ang;
         protected override void OnMessageReceived(string message)
         {
             //Interlocked.Increment(ref _messageCounter);
@@ -843,6 +845,7 @@ namespace opengl3
 
         public NavigTool[] tools;
         public List<NavigTarget> targets;
+        public NavigRobotClient robot;
         public Scanner stereo;
         int aruko_max_ind = 1;
         public NavigSys(Scanner _stereo, int _aruko_max_ind)
@@ -1666,41 +1669,93 @@ namespace opengl3
 
 
 
-        public void test_handeye(Matrix<double> start_M_marker_in_world, Matrix<double> start_flange_in_base)
+        public void test_handeye(Matrix<double> start_M_marker_in_world, Matrix<double> start_M_flange_in_base)
         {
-            var Ms_marker_in_world = gen_frames(start_M_marker_in_world, 20.001,0.6,9);
+            var Ms_marker_in_world = gen_frames_v2(start_M_marker_in_world, 0.001,0.5,5);
 
 
            
-            var M_flange_in_marker_real = new RobotFrame(55.3, 55.2, -29.4,0.503, 0.802, -0.003).getMatrix();
-            var fr_p_flange_in_marker = new RobotFrame(55, 55, -30,0.5,0.8);
-            var M_flange_in_marker = fr_p_flange_in_marker.getMatrix();
+            var real_M_flange_in_marker = new RobotFrame(52.3, 58.2, -28.4,0.51, 0.82, -0.003).getMatrix();
+            var prop_M_flange_in_marker = new RobotFrame(55, 55, -30,0.5,0.8).getMatrix();
+            // -271.569051425043 - 471.1574661903 98.040136843397 51
+            //- 271.694355768418 - 471.127457653968 98.0743107217747 52
+            //- 271.824159505325 - 471.10296082707 98.0922115609049 53
+           // var fr_p_flange_in_marker = new RobotFrame( -54.293, -32.924, 52.978, 2.652, -0.011, -3.131);
 
-            var M_marker_in_flange_inv = M_flange_in_marker.Clone();
-            CvInvoke.Invert(M_marker_in_flange_inv, M_marker_in_flange_inv, DecompMethod.LU);
+            var prop_M_marker_in_flange = UtilOpenCV.inv(prop_M_flange_in_marker);
+            var real_M_marker_in_flange = UtilOpenCV.inv(real_M_flange_in_marker);
+            var start_M_base_in_flange = UtilOpenCV.inv(start_M_flange_in_base);
+            var start_M_world_in_marker = UtilOpenCV.inv(start_M_marker_in_world);
+            var prop_M_base_in_world = start_M_marker_in_world * prop_M_flange_in_marker * start_M_base_in_flange;
+            var prop_M_world_in_base = UtilOpenCV.inv(prop_M_base_in_world);
+            var real_M_base_in_world = start_M_marker_in_world * real_M_flange_in_marker * start_M_base_in_flange;
 
-            var start_base_in_flange = start_flange_in_base.Clone();
-            CvInvoke.Invert(start_base_in_flange, start_base_in_flange, DecompMethod.LU);
+            var prop_Ms_flange_in_base = new Matrix<double>[Ms_marker_in_world.Length];
+            var real_Ms_marker_in_world = new Matrix<double>[Ms_marker_in_world.Length];
 
-            var start_M_world_in_marker = start_M_marker_in_world.Clone();
-            CvInvoke.Invert(start_M_world_in_marker, start_M_world_in_marker, DecompMethod.LU);
+            var prop_Ms_base_in_flange = new Matrix<double>[Ms_marker_in_world.Length];
+            var real_Ms_world_in_marker = new Matrix<double>[Ms_marker_in_world.Length];
 
-            var start_M_base_in_world = start_M_marker_in_world * M_flange_in_marker * start_base_in_flange;
-            var start_M_world_in_base = start_M_base_in_world.Clone();
-            CvInvoke.Invert(start_M_world_in_base, start_M_world_in_base, DecompMethod.LU);
-
-
-            var Ms_flange_in_base = new Matrix<double>[Ms_marker_in_world.Length];
-            for(int i = 0; i< Ms_marker_in_world.Length;i++)
+            //UtilOpenCV.noise_matr();
+            for (int i = 0; i< Ms_marker_in_world.Length;i++)
             {
-                Ms_flange_in_base[i] = start_M_world_in_base * Ms_marker_in_world[i] * M_flange_in_marker;
+        
+                prop_Ms_flange_in_base[i] = prop_M_world_in_base * Ms_marker_in_world[i] * prop_M_flange_in_marker;
+                real_Ms_marker_in_world[i] = real_M_base_in_world * prop_Ms_flange_in_base[i] * real_M_marker_in_flange;
+
+                real_Ms_marker_in_world[i] = UtilOpenCV.noise_matr_transf_right_3p(real_Ms_marker_in_world[i],100,0, 0.2);
+
+                prop_Ms_base_in_flange[i] = UtilOpenCV.inv(prop_Ms_flange_in_base[i]);
+                real_Ms_world_in_marker[i] = UtilOpenCV.inv(real_Ms_marker_in_world[i]);
             }
-            StereoCamera.calibrate_stereo_rob_handeye_navig(Ms_marker_in_world, Ms_flange_in_base);
-            prin.t("M_marker_in_flange_inv");
-            prin.t(M_marker_in_flange_inv);
+            //StereoCamera.calibrate_stereo_rob_handeye_navig(real_Ms_marker_in_world, Ms_flange_in_base, real_M_marker_in_flange);
+
+            StereoCamera.calibrate_stereo_rob_handeye_navig(prop_Ms_base_in_flange, real_Ms_marker_in_world, real_M_flange_in_marker);
+            prin.t("fr_marker_in_flange_inv");
+            prin.t( new RobotFrame(real_M_flange_in_marker).ToString());
         }
 
+        static public Matrix<double> set_prop_pos_robot(Matrix<double> start_M_marker_in_world, Matrix<double> start_M_flange_in_base, Matrix<double> prop_M_flange_in_marker)
+        {
+            var prop_M_marker_in_flange = UtilOpenCV.inv(prop_M_flange_in_marker);
+            var start_M_base_in_flange = UtilOpenCV.inv(start_M_flange_in_base);
+            var prop_M_base_in_world = start_M_marker_in_world * prop_M_flange_in_marker * start_M_base_in_flange;
+            return prop_M_base_in_world;
 
+        }
+
+        public void handeye_calibr_navig_frames(Frame[] frames,int ind_tool)//, Matrix<double> prop_M_flange_in_marker)
+        {
+            Matrix<double>[] real_Ms_marker_in_world = new Matrix<double>[frames.Length];
+            Matrix<double>[] prop_Ms_flange_in_base = new Matrix<double>[frames.Length];
+
+            for (int i = 0; i < frames.Length; i++)
+            {
+                var p2d_1 = navigation_processing_get_points2d_3cam(ref frames[i].im, 0);
+                var p2d_2 = navigation_processing_get_points2d_3cam(ref frames[i].im_sec, 1);
+                var p2d_3 = navigation_processing_get_points2d_3cam(ref frames[i].im_third, 2);
+                var ps3d = navigation_processing_get_points3d_3cam(p2d_1, p2d_2, p2d_3, frames[i].im, frames[i].im_sec, frames[i].im_third);
+                //ps_calib.Add(ps3d);
+                real_Ms_marker_in_world[i] = tools[ind_tool].matrix_frame.Clone();
+                prop_Ms_flange_in_base[i] = new RobotFrame(new Pose(frames[i].name),robot.robotType).getMatrix();
+            }
+
+            handeye_calibr(real_Ms_marker_in_world, prop_Ms_flange_in_base);
+        }
+
+        public void handeye_calibr( Matrix<double>[] real_Ms_marker_in_world, Matrix<double>[] prop_Ms_flange_in_base)
+        {
+
+            var prop_Ms_base_in_flange = new Matrix<double>[real_Ms_marker_in_world.Length];
+            for (int i = 0; i < real_Ms_marker_in_world.Length; i++)
+            {
+                prop_Ms_base_in_flange[i] = UtilOpenCV.inv(prop_Ms_flange_in_base[i]);
+            }
+
+            var real_M_flange_in_marker = StereoCamera.calibrate_stereo_rob_handeye_navig(prop_Ms_base_in_flange, real_Ms_marker_in_world, null);
+            prin.t("fr_marker_in_flange_inv");
+           // prin.t(new RobotFrame(real_M_flange_in_marker).ToString());
+        }
         static public Matrix<double>[] gen_frames(Matrix<double> start_frame, double xyz_delt, double abc_delt,int count_one_axis = 5)
         {
             var fr_p = new RobotFrame(start_frame);
@@ -1771,6 +1826,68 @@ namespace opengl3
                 matrixes_gen.Add(fp_gen.getMatrix());
                 abc_delt_cur += abc_incr;
             }
+
+            return matrixes_gen.ToArray();
+        }
+
+
+        static public Matrix<double>[] gen_frames_v2(Matrix<double> start_frame, double xyz_delt, double abc_delt, int count_one_axis = 5)
+        {
+            var fr_p = new RobotFrame(start_frame);
+
+            var matrixes_gen = new List<Matrix<double>>();
+            var xyz_delt_cur = -xyz_delt;
+            var xyz_incr = 2 * xyz_delt / count_one_axis;
+
+            var abc_delt_cur = -abc_delt;
+            var abc_incr = 2 * abc_delt / count_one_axis;
+
+            xyz_delt_cur = -xyz_delt;
+            xyz_incr = 2 * xyz_delt / count_one_axis;
+
+            abc_delt_cur = -abc_delt;
+            abc_incr = 2 * abc_delt / count_one_axis;
+
+            for (int i = 0; i < count_one_axis; i++)
+            {
+                var fp_gen = fr_p.Clone();
+                fp_gen.X += xyz_delt_cur;
+                fp_gen.A += abc_delt_cur;
+                matrixes_gen.Add(fp_gen.getMatrix());
+                xyz_delt_cur += xyz_incr;
+            }
+
+            xyz_delt_cur = -xyz_delt;
+            xyz_incr = 2 * xyz_delt / count_one_axis;
+
+            abc_delt_cur = -abc_delt;
+            abc_incr = 2 * abc_delt / count_one_axis;
+
+            for (int i = 0; i < count_one_axis; i++)
+            {
+                var fp_gen = fr_p.Clone();
+                fp_gen.Y += xyz_delt_cur;
+                fp_gen.B += abc_delt_cur;
+                matrixes_gen.Add(fp_gen.getMatrix());
+                xyz_delt_cur += xyz_incr;
+            }
+
+            xyz_delt_cur = -xyz_delt;
+            xyz_incr = 2 * xyz_delt / count_one_axis;
+
+            abc_delt_cur = -abc_delt;
+            abc_incr = 2 * abc_delt / count_one_axis;
+
+            for (int i = 0; i < count_one_axis; i++)
+            {
+                var fp_gen = fr_p.Clone();
+                fp_gen.Z += xyz_delt_cur;
+                fp_gen.C += abc_delt_cur;
+                matrixes_gen.Add(fp_gen.getMatrix());
+                xyz_delt_cur += xyz_incr;
+            }
+
+
 
             return matrixes_gen.ToArray();
         }

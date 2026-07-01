@@ -420,6 +420,57 @@ namespace opengl3
            // prin.t(matrix);
             return new Image<Bgr,byte>(data).Mat;
         }
+        public static Matrix<double> noise_matr(int size = 4, int val = 0, double range = 2)
+        {
+            Matrix<double> matrix = UtilMatr.zero_matr(size);
+
+            CvInvoke.Randn(matrix, new MCvScalar(val), new MCvScalar(range));
+            return matrix;
+        }
+
+        public static Matrix<double> noise_matr_transf_right( int val = 0, double range = 2)
+        {
+            Matrix<double> matrix = UtilMatr.zero_matr(4);
+
+            CvInvoke.Randn(matrix, new MCvScalar(val), new MCvScalar(range));
+
+            matrix[3, 0] = 0; matrix[3, 1] = 0; matrix[3, 2] = 0; matrix[3, 3] = 1;
+
+            return matrix;
+        }
+
+        public static Matrix<double> noise_matr_transf_right_3p(Matrix<double> start, double dist_ps, int val = 0, double range = 2)
+        {
+            Matrix<double> matrix = UtilMatr.zero_matr(3);
+
+
+            var ps_matr_zero = new Point3d_GL[] { new Point3d_GL(0, dist_ps), new Point3d_GL(0, 0), new Point3d_GL(dist_ps, 0) };
+            var ps_matr = Point3d_GL.multMatr(ps_matr_zero, start);
+
+            for(int i=0; i<3;i++)
+            {
+                matrix[i, 0] = ps_matr[i].x;
+                matrix[i, 1] = ps_matr[i].y;
+                matrix[i, 2] = ps_matr[i].z;
+            }
+
+            var noise_matrix = noise_matr(3, val, range);
+            //prin.t(noise_matr(3, val, range) - UtilMatr.zero_matr(3));
+            matrix += noise_matrix;
+
+            var ps_matr_noise = new Point3d_GL[ps_matr.Length];
+
+            for (int i = 0; i < 3; i++)
+            {
+                ps_matr_noise[i] = new Point3d_GL();
+                ps_matr_noise[i].x = matrix[i, 0];
+                ps_matr_noise[i].y = matrix[i, 1];
+                ps_matr_noise[i].z = matrix[i, 2];
+            }
+            var matrix_noise = RobotFrame.matrix_basis_from_ps(ps_matr_noise);
+            //prin.t(matrix_noise - start);
+            return matrix_noise;
+        }
         public static Mat GLnoise(Mat mat, int val = 0, int range = 30, int kernel_size = 7)
         {            
             if(kernel_size>0)

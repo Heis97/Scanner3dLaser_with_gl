@@ -746,6 +746,8 @@ namespace opengl3
             this.tabPage_navig_process = new System.Windows.Forms.TabPage();
             this.tabControl_navig_process_tab = new System.Windows.Forms.TabControl();
             this.tabPage_robot_calibr = new System.Windows.Forms.TabPage();
+            this.textBox_navig_robot_photo_folder = new System.Windows.Forms.TextBox();
+            this.but_navig_robot_photo = new System.Windows.Forms.Button();
             this.trackBar_navig_robot_test_servo = new System.Windows.Forms.TrackBar();
             this.label_navig_robot_status_pose = new System.Windows.Forms.Label();
             this.label_navig_robot_status = new System.Windows.Forms.Label();
@@ -770,6 +772,7 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.button_set_prop_robot_pos = new System.Windows.Forms.Button();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -6621,10 +6624,10 @@ namespace opengl3
             this.tabPage9.Controls.Add(this.but_scan_path);
             this.tabPage9.Controls.Add(this.but_calibr_Bfs);
             this.tabPage9.Controls.Add(this.label13);
-            this.tabPage9.Location = new System.Drawing.Point(4, 25);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(869, 962);
+            this.tabPage9.Size = new System.Drawing.Size(869, 965);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Загрузка скана";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -6924,6 +6927,7 @@ namespace opengl3
             this.windowsTabs.SelectedIndex = 0;
             this.windowsTabs.Size = new System.Drawing.Size(1899, 1029);
             this.windowsTabs.TabIndex = 92;
+            this.windowsTabs.SelectedIndexChanged += new System.EventHandler(this.windowsTabs_SelectedIndexChanged);
             // 
             // tabP_connect
             // 
@@ -8765,6 +8769,9 @@ namespace opengl3
             // 
             // tabPage_robot_calibr
             // 
+            this.tabPage_robot_calibr.Controls.Add(this.button_set_prop_robot_pos);
+            this.tabPage_robot_calibr.Controls.Add(this.textBox_navig_robot_photo_folder);
+            this.tabPage_robot_calibr.Controls.Add(this.but_navig_robot_photo);
             this.tabPage_robot_calibr.Controls.Add(this.trackBar_navig_robot_test_servo);
             this.tabPage_robot_calibr.Controls.Add(this.label_navig_robot_status_pose);
             this.tabPage_robot_calibr.Controls.Add(this.label_navig_robot_status);
@@ -8790,6 +8797,25 @@ namespace opengl3
             this.tabPage_robot_calibr.TabIndex = 0;
             this.tabPage_robot_calibr.Text = "Калибровка робота";
             this.tabPage_robot_calibr.UseVisualStyleBackColor = true;
+            // 
+            // textBox_navig_robot_photo_folder
+            // 
+            this.textBox_navig_robot_photo_folder.Location = new System.Drawing.Point(505, 339);
+            this.textBox_navig_robot_photo_folder.Name = "textBox_navig_robot_photo_folder";
+            this.textBox_navig_robot_photo_folder.Size = new System.Drawing.Size(373, 22);
+            this.textBox_navig_robot_photo_folder.TabIndex = 159;
+            this.textBox_navig_robot_photo_folder.Text = "test";
+            // 
+            // but_navig_robot_photo
+            // 
+            this.but_navig_robot_photo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.but_navig_robot_photo.Location = new System.Drawing.Point(726, 367);
+            this.but_navig_robot_photo.Name = "but_navig_robot_photo";
+            this.but_navig_robot_photo.Size = new System.Drawing.Size(152, 54);
+            this.but_navig_robot_photo.TabIndex = 158;
+            this.but_navig_robot_photo.Text = "Сделать фото робот";
+            this.but_navig_robot_photo.UseVisualStyleBackColor = true;
+            this.but_navig_robot_photo.Click += new System.EventHandler(this.but_navig_robot_photo_Click);
             // 
             // trackBar_navig_robot_test_servo
             // 
@@ -8994,6 +9020,17 @@ namespace opengl3
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // button_set_prop_robot_pos
+            // 
+            this.button_set_prop_robot_pos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_set_prop_robot_pos.Location = new System.Drawing.Point(164, 367);
+            this.button_set_prop_robot_pos.Name = "button_set_prop_robot_pos";
+            this.button_set_prop_robot_pos.Size = new System.Drawing.Size(213, 54);
+            this.button_set_prop_robot_pos.TabIndex = 160;
+            this.button_set_prop_robot_pos.Text = "Задать предполагаемое положение робота";
+            this.button_set_prop_robot_pos.UseVisualStyleBackColor = true;
+            this.button_set_prop_robot_pos.Click += new System.EventHandler(this.button_set_prop_robot_pos_Click);
             // 
             // MainScanningForm
             // 
@@ -9914,6 +9951,9 @@ namespace opengl3
         private System.Windows.Forms.TextBox textB_cam3_conf;
         private System.Windows.Forms.Button but_load_conf_cam3;
         private System.Windows.Forms.Label label52;
+        private System.Windows.Forms.Button but_navig_robot_photo;
+        private System.Windows.Forms.TextBox textBox_navig_robot_photo_folder;
+        private System.Windows.Forms.Button button_set_prop_robot_pos;
     }
 }
 

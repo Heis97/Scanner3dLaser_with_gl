@@ -2512,9 +2512,10 @@ namespace opengl3
 
             GL1.add_TreeView(tree_models);
 
-            load_navig_sys_3cam();
-            //test_go_to_point_robot_rc5();
+            
+            test_go_to_point_robot_rc5();
 
+            load_navig_sys_3cam();
             //Manipulator.calcRob(GL1);
 
             //UtilOpenCV.distortFolder(@"virtual_stereo\test6\monitor_0", GL1.cameraCV);
@@ -3538,20 +3539,27 @@ namespace opengl3
              GL1.buffersGl.setVisibleobj("ax_0", false);*/
             GL1.buffersGl.setMatrobj("scaner2", 0, ms[7]);
         }
-        void set_conf_robot_pulse(double[] q,RobotFrame.RobotType  robotType = RobotFrame.RobotType.PULSE)
+
+
+        void set_conf_robot_pulse(double[] q, RobotFrame.RobotType robotType = RobotFrame.RobotType.PULSE, bool rad = true, Matrix<double> M_base_in_world = null)
         {
             //var q = new double[6];
+            Matrix4x4f base_matrix = Matrix4x4f.Identity;
+            if(M_base_in_world!=null)
+            {
+                base_matrix = UtilMatr.to_matrix(M_base_in_world);
+            }
             for (int i = 0; i <= 7; i++)
             {
                 var mq = Matrix4x4f.Identity;
                 if(i>=2)
                 {
                     var j = i-1;
-                    var fr = RobotFrame.comp_forv_kinem(q, j, true, robotType);
-                    mq = UtilMatr.matrix(fr.position, fr.rotation.toDegree());
+                    var fr = RobotFrame.comp_forv_kinem(q, j, rad, robotType,false);
+                    mq =  UtilMatr.matrix(fr.position, fr.rotation.toDegree());
                 }
                // var fr = RobotFrame.comp_forv_kinem(q, i,true, robotType);
-                qms[i] =mq * ms[i];//UtilMatr.matrix_kuka(fr.position, fr.rotation.toDegree())
+                qms[i] = base_matrix* mq * ms[i];//UtilMatr.matrix_kuka(fr.position, fr.rotation.toDegree())  //test_matrix*
                 //prin.t(" ________________qms[] " + i);
                 //prin.t(qms[i]);
                 GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
@@ -8954,6 +8962,8 @@ namespace opengl3
             formSettings.save_settings(textB_cam1_conf, textB_cam2_conf, textB_cam3_conf, textB_stereo_cal_path, textB_scan_path,scanner_config,traj_config,patt_config);
         }
 
+        Point[] imb_locations;
+        Size[] imb_sizes;
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
 
@@ -8985,14 +8995,15 @@ namespace opengl3
                 imb_main[i].AccessibleName = i.ToString();
                 addButsForControl((Control)imb_main[i], 4);
             }
+            imb_locations = new Point[imb_main.Length];
+            imb_sizes = new Size[imb_main.Length];
             for (int i = 0; i < imb_main.Length; i++)
             {
                 imb_main[i].SendToBack();
+                imb_locations[i] = imb_main[i].Location;
+                imb_sizes[i] = imb_main[i].Size;
             }
 
-
-
-           
         }
 
         private void but_gl_clear_Click(object sender, EventArgs e)
@@ -11216,7 +11227,7 @@ namespace opengl3
         {
             while (true)
             {
-                Thread.Sleep(30);
+                Thread.Sleep(10);
                 var ps3d = navig_system.navigation_processing_get_points3d_3cam(points2d_cams[0], points2d_cams[1], points2d_cams[2]);    //navyg_sys_info(camera_only)
                 navig_system.navigation_processing_get_scene(ps3d);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
                                                                                             //
@@ -11446,10 +11457,11 @@ namespace opengl3
             tools.Add(navig_tool1);
             tools.Add(navig_tool2);
             navig_system.tools = tools.ToArray();
+            navig_system.robot = _robotClient;
+            navig_system.robot.robotType = RobotFrame.RobotType.RC5;
 
 
 
-            
 
             //var tool_cal_path_orig = textBox_tool_calibr.Text;
             var tool_cal_path = "tool1_2906_1a";
@@ -11471,7 +11483,12 @@ namespace opengl3
             var qs = test_rob_pos1;
             var posrob = new RobotFrame( RobotFrame.comp_forv_kinem(qs, 6, false, cur_rob),0,0,0,RobotFrame.RobotType.RC5);
 
-            navig_system.test_handeye(ms_calib[0], posrob.getMatrix());
+             navig_system.test_handeye(ms_calib[0], posrob.getMatrix());
+
+            var prop_M_flange_in_marker = new RobotFrame(55, 55, -30, 0.0, 0.0,1.57).getMatrix();
+            var M_base_in_world=  NavigSys.set_prop_pos_robot(ms_calib[0], posrob.getMatrix(), prop_M_flange_in_marker);
+
+            set_conf_robot_pulse(qs, navig_system.robot.robotType, false, M_base_in_world);
 
             var tcp_cal = navig_tool1.calibrate_tool_tcp_4p(ps_calib.ToArray());
 
@@ -12444,7 +12461,59 @@ namespace opengl3
 
         }
 
+        private void but_navig_robot_photo_Click(object sender, EventArgs e)
+        {
+            UtilOpenCV.saveImage(mat_global[0], mat_global[1], mat_global[2], label_navig_robot_status_pose.Text + ".png", textBox_navig_robot_photo_folder.Text);
+        }
 
+        Point[] imb_locations_navig = new Point[] {new Point(10,700), new Point(10, 860), new Point(260, 700)};
+        Size[] imb_sizes_navig = new Size[] {new Size(250,150), new Size(250, 150), new Size(250, 150)};
+
+        private void windowsTabs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (windowsTabs.SelectedTab == tabPage_navig_debug)
+            {
+                this.tabPage_navig_debug.Controls.Add(this.glControl1);
+                this.glControl1.Location = new Point(1000, 200);
+              
+                for(int i =0; i < imb_main.Length;i++)
+                {
+                    this.tabPage_navig_debug.Controls.Add(imb_main[i]);
+                    imb_main[i].Location = imb_locations[i];
+                    imb_main[i].Size = imb_sizes[i];
+                    set_zoom_imbase[i] = false;
+                }
+                this.glControl1.SendToBack();
+            }
+            else if (windowsTabs.SelectedTab == tabPage_navig_pan)
+            {
+                this.tabPage_navig_pan.Controls.Add(this.glControl1);
+                this.glControl1.Location = new Point(1100, 10);
+            }
+            else if(windowsTabs.SelectedTab == tabPage_navig_process)
+            {
+                this.tabPage_navig_process.Controls.Add(this.glControl1);
+                this.glControl1.Location = new Point(10, 10);
+                this.glControl1.SendToBack();
+                if (imb_main.Length == imb_locations_navig.Length)
+                for (int i = 0; i < imb_main.Length; i++)
+                {
+                    this.tabPage_navig_process.Controls.Add(imb_main[i]);
+                    imb_main[i].Location = imb_locations_navig[i];
+                    imb_main[i].Size = imb_sizes_navig[i];
+                    set_zoom_imbase[i] = false;
+                }
+
+                this.glControl1.SendToBack();
+            }
+             
+            
+        }
+
+        private void button_set_prop_robot_pos_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 

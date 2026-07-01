@@ -519,5 +519,18 @@ namespace opengl3
             }
             return matr;
         }
+
+        static public Matrix<double> zero_matr(int s)
+        {
+            var matr = new Matrix<double>(s, s);
+            for (int i = 0; i < s; i++)
+            {
+                for (int j = 0; j < s; j++)
+                {
+                     matr[i, j] = 0;
+                }
+            }
+            return matr;
+        }
     }
 }

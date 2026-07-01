@@ -76,9 +76,9 @@ namespace opengl3
             timestamp = DateTime.Now;
             this.radians = radians;
         }
-        public Pose(string data, bool radians = false)
+        public Pose(string data, bool radians = false, char split = ';')
         {
-            var spl = data.Split(';');
+            var spl = data.Split(split);
             angles = new List<double>();
             for (int i = 0; i < spl.Length - 1; i++)
             {

@@ -329,7 +329,7 @@ namespace opengl3
             return ms_check;
         }
 
-        static public List<Matrix<double>> calibrate_stereo_rob_handeye_navig(Matrix<double>[] matrixes_cam, Matrix<double>[] matrixes_flange, string file_name = "bfs_cal.txt", GraphicGL graphic = null, int k = 1)
+        static public Matrix<double> calibrate_stereo_rob_handeye_navig(Matrix<double>[] matrixes_cam, Matrix<double>[] matrixes_flange, Matrix<double> ref_matrix = null)
         {
 
             var p_rob = new List<Point3d_GL>();
@@ -338,21 +338,21 @@ namespace opengl3
             var ms_rob = new List<Matrix<double>>(matrixes_flange);
             var ms_cam = new List<Matrix<double>>(matrixes_cam);
 
-            ms_rob = get_matrices_filter(ms_rob, k);
-            ms_cam = get_matrices_filter(ms_cam, k);
+            //ms_rob = get_matrices_filter(ms_rob, k);
+            //ms_cam = get_matrices_filter(ms_cam, k);
             VectorOfMat mr_r, mr_t, mc_r, mc_t;
             (mr_r, mr_t) = UtilOpenCV.to_vec_mat(ms_rob.ToArray());
             (mc_r, mc_t) = UtilOpenCV.to_vec_mat(ms_cam.ToArray());
             Mat mr = new Mat();
             Mat mt = new Mat();
-            CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt, HandEyeCalibrationMethod.Park);//andreff
-            prin.t("result:");
+            CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt, HandEyeCalibrationMethod.Tsai);//andreff
+            /*prin.t("result:");
             prin.t(mr);
             prin.t(mt);
-            prin.t("______");
+            prin.t("______");*/
             var mt_m = new Matrix<double>((double[,])(mt.GetData()));
             var mr_m = new Matrix<double>((double[,])(mr.GetData()));
-            Console.WriteLine(new Point3d_GL(mt_m[0, 0], mt_m[1, 0], mt_m[2, 0]).magnitude() + " ");
+            //Console.WriteLine(new Point3d_GL(mt_m[0, 0], mt_m[1, 0], mt_m[2, 0]).magnitude() + " ");
 
             var Bfs_med = new Matrix<double>(new double[4, 4]);
 
@@ -367,34 +367,15 @@ namespace opengl3
             Bfs_med[1, 3] = mt_m[1, 0];
             Bfs_med[2, 3] = mt_m[2, 0];
             Bfs_med[3, 3] = 1;
-
-            var fr_p_flange_in_marker = new RobotFrame(55, 55, -30);
-            var M_flange_in_marker = fr_p_flange_in_marker.getMatrix();
-
-            var Bfs_med_real = new Matrix<double>(new double[,] { { -1, 0, 0, 8 }, { 0, 0, 1, 16 }, { 0, 1, 0, 38 }, { 0, 0, 0, 1 } });//
-                                                                                                                                       // Bfs_med = Bfs_med_real;//
+                                                                                                    // Bfs_med = Bfs_med_real;//
             var ms_check = new List<Matrix<double>>();
-
-            var pattern = ms_rob[0] * Bfs_med * ms_cam[0];
-            var bfs_del = Bfs_med - Bfs_med_real;
-            /*prin.t("bfs_del");
-            prin.t(bfs_del);
-            ms_check.Add(pattern);
-            prin.t("pattern");
-            prin.t(pattern);*/
-            //graphic.addFrame(pattern,50,"PATTERN");
 
             for (int i = 0; i < ms_cam.Count; i++)
             {
-                //Console.WriteLine((p_cam[i] - p_cam[0]).magnitude() + " " + (p_rob[i] - p_rob[0]).magnitude());
-                //var m_check = ms_rob[i] * Bfs_med * ms_cam[i];
                 var m_check = ms_rob[i];// * Bfs_med;// * ms_cam[i];
                 ms_check.Add(m_check);
 
                 var m_check2 = ms_rob[i] * Bfs_med * ms_cam[i];
-                //graphic.addFrame(m_check2);
-                //prin.t(m_check2);
-
                 Console.WriteLine(m_check2[0, 3] + " " + m_check2[1, 3] + " " + m_check2[2, 3] + " " + i);
             }
 
@@ -403,10 +384,22 @@ namespace opengl3
                 var m_check = ms_rob[i] * Bfs_med * ms_cam[i];
                 //Console.WriteLine(m_check[0, 3] + " " + m_check[1, 3] + " " + m_check[2, 3] + " " + i);
             }
-
-
+            
+            
+            var fr_bfs = new RobotFrame(Bfs_med);
+            Console.WriteLine("\nfr_bfs");
+            Console.WriteLine(fr_bfs.ToString());
             //Settings_loader.save_file(file_name, new object[] { Bfs_med });// Bfs_med_real   // Bfs_med
-            return ms_check;
+
+            if (ref_matrix != null)
+            {
+                var err = Bfs_med - ref_matrix;
+
+                Console.WriteLine("\nerr_bfs");
+                Console.WriteLine(new RobotFrame(err).ToString());
+
+            }
+            return Bfs_med;
         }
 
 

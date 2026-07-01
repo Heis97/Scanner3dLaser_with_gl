@@ -224,7 +224,7 @@ namespace opengl3
             return this;
         }
 
-        public static Matrix<double> matrix_basis_from_ps(Point3d_GL[] ps)
+        public static Matrix<double> matrix_basis_from_ps(Point3d_GL[] ps)//p2 x; p1 o, p0 y
         {
             if (ps == null) return null;
             if (ps.Length < 3) return null;
@@ -866,7 +866,7 @@ namespace opengl3
             }
             return q_r;
         }
-        static public PositionRob comp_forv_kinem(double[] q,int count, bool rad = true, RobotType robotType = RobotType.PULSE)
+        static public PositionRob comp_forv_kinem(double[] q,int count, bool rad = true, RobotType robotType = RobotType.PULSE,bool real_dh = true)
         {
             if(robotType==RobotType.PULSE)
             {
@@ -925,8 +925,8 @@ namespace opengl3
                     new double[]{ q[4], -Math.PI / 2, 0, L5},
                     new double[]{ q[5],  0, 0, L6}
                 };
-                bool true_dh = true;
-                true_dh = false;
+                bool true_dh = real_dh;
+                //true_dh = false;
                 if (true_dh)
                 {
                     dh_params = new double[][] {
