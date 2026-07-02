@@ -98,6 +98,7 @@ namespace opengl3
         Matrix4x4f[] ms = new Matrix4x4f[10];
         //var qs = new Matrix4x4f[8];
         Matrix4x4f[] qms = new Matrix4x4f[8];
+        Matrix4x4f[] qms_virt = new Matrix4x4f[8];
         List<RobotFrame> frames_rob = new List<RobotFrame>();
         List<RobotFrame> frames_rob_end = new List<RobotFrame>();
         RobotFrame.RobotType current_robot = RobotFrame.RobotType.PULSE;
@@ -3420,6 +3421,8 @@ namespace opengl3
                 {
                     var scan_stl_orig = new Model3d("models\\rc5\\" + i + ".stl", false);
                     GL1.add_buff_gl(scan_stl_orig.mesh, color_arm, scan_stl_orig.normale, PrimitiveType.Triangles, "ax_" + i);
+                    GL1.add_buff_gl(scan_stl_orig.mesh, color_arm, scan_stl_orig.normale, PrimitiveType.Triangles, "ax_virt_" + i);
+                    GL1.buffersGl.setTranspobj("ax_virt_" + i, 0.5f);
                 }
 
             }
@@ -3439,29 +3442,19 @@ namespace opengl3
 
 
             ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0));
-
             ms[1] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
-
             ms[2] = UtilMatr.matrix(new Point3d_GL(0, -L1), new Point3d_GL(0, 180, 0));
-
             ms[3] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
-
             ms[4] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
-
             ms[5] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
-
             ms[6] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 180, 180)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
-
             ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, -90)) * UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
 
-            GL1.buffersGl.setMatrobj("ax_0", 0, ms[0]);
-            GL1.buffersGl.setMatrobj("ax_1", 0, ms[1]);
-            GL1.buffersGl.setMatrobj("ax_2", 0, ms[2]);
-            GL1.buffersGl.setMatrobj("ax_3", 0, ms[3]);
-            GL1.buffersGl.setMatrobj("ax_4", 0, ms[4]);
-            GL1.buffersGl.setMatrobj("ax_5", 0, ms[5]);
-            GL1.buffersGl.setMatrobj("ax_6", 0, ms[6]);
-            GL1.buffersGl.setMatrobj("ax_7", 0, ms[7]);
+            for(int i=0; i<8;i++)
+            {
+                GL1.buffersGl.setMatrobj("ax_"+i, 0, ms[i]);
+                GL1.buffersGl.setMatrobj("ax_virt_" + i, 0, ms[i]);
+            }
             GL1.buffersGl.setMatrobj("t2", 0, ms[7]);
 
             //GL1.buffersGl.setTranspobj("t2", 0);
@@ -3541,7 +3534,7 @@ namespace opengl3
         }
 
 
-        void set_conf_robot_pulse(double[] q, RobotFrame.RobotType robotType = RobotFrame.RobotType.PULSE, bool rad = true, Matrix<double> M_base_in_world = null)
+        void set_conf_robot_pulse(double[] q, RobotFrame.RobotType robotType = RobotFrame.RobotType.PULSE, bool rad = true, Matrix<double> M_base_in_world = null,bool virt = false)
         {
             //var q = new double[6];
             Matrix4x4f base_matrix = Matrix4x4f.Identity;
@@ -3558,14 +3551,20 @@ namespace opengl3
                     var fr = RobotFrame.comp_forv_kinem(q, j, rad, robotType,false);
                     mq =  UtilMatr.matrix(fr.position, fr.rotation.toDegree());
                 }
-               // var fr = RobotFrame.comp_forv_kinem(q, i,true, robotType);
-                qms[i] = base_matrix* mq * ms[i];//UtilMatr.matrix_kuka(fr.position, fr.rotation.toDegree())  //test_matrix*
-                //prin.t(" ________________qms[] " + i);
-                //prin.t(qms[i]);
-                GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
+                if(virt)
+                {
+                    qms_virt[i] = base_matrix * mq * ms[i];
+                    GL1.buffersGl.setMatrobj("ax_virt_" + i, 0, qms_virt[i]);
+                }
+                else
+                {
+                    qms[i] = base_matrix * mq * ms[i];
+                    GL1.buffersGl.setMatrobj("ax_" + i, 0, qms[i]);
+                }
+                
             }
           //  GL1.buffersGl.setMatrobj("t2", 0, qms[7]);//pulse
-            GL1.buffersGl.setMatrobj("t2", 0, qms[7]);
+            //GL1.buffersGl.setMatrobj("t2", 0, qms[7]);
         }
         void set_conf_robot_kuka(double[] q, RobotFrame.RobotType robotType = RobotFrame.RobotType.KUKA)
         {
@@ -11415,6 +11414,7 @@ namespace opengl3
         }
 
         double[] test_rob_pos1 = new double[] { 28.0, -75.0, 120.0, -30.0, 30.0, 0.0 };
+        System.Windows.Forms.Button[] buttons_prop_poses_navig_robot;
         void load_navig_sys_3cam()
         {
             
@@ -11437,7 +11437,7 @@ namespace opengl3
                  {0,0,0,1 }}), @"models\nav\marker1.stl"
                  );*/
 
-            var navig_tool1 = new NavigTool(NavigMarker.get_marker_p1v2(11), NavigTool.ToolType.tp1_v1, "tool1", @"models\nav\tool1.stl",
+            var navig_tool1 = new NavigTool(NavigMarker.get_marker_p1v2(11), NavigTool.ToolType.tp1_v1, "tool_marker", @"models\nav\tool1.stl",
                 new Matrix<double>(new double[,] {
                 {1,0,0,55 },
                 {0,1,0,55 },
@@ -11445,24 +11445,33 @@ namespace opengl3
                 {0,0,0,1  }}), @"models\nav\marker1.stl"
                 );
             //new int[] {  6, 5, 4, 3 }
-            var navig_tool2 = new NavigTool(NavigMarker.get_marker_p1v2(6), NavigTool.ToolType.tp1_v1, "ct", null,
+            var navig_tool2 = new NavigTool(NavigMarker.get_marker_p1v2(6), NavigTool.ToolType.tp1_v1, "ct_marker", null,
                 new Matrix<double>(new double[,] {
                 {1,0,0,55 },
                 {0,1,0,55 },
                 {0,0,1,-14 },
                 {0,0,0,1 }}), @"models\nav\calibr_model_navig_v2.stl"
                 );
+
+            var navig_tool3 = new NavigTool(NavigMarker.get_marker_p1v2(4), NavigTool.ToolType.tp1_v1, "robot_marker", @"models\nav\tool1.stl",
+                new Matrix<double>(new double[,] {
+                {1,0,0,55 },
+                {0,1,0,55 },
+                {0,0,1,-14},
+                {0,0,0,1  }}), @"models\nav\marker1.stl"
+                );
             navig_system = new NavigSys(navig_stereo, 12);
             var tools = new List<NavigTool>();
             tools.Add(navig_tool1);
             tools.Add(navig_tool2);
+            tools.Add(navig_tool3);
             navig_system.tools = tools.ToArray();
             navig_system.robot = _robotClient;
             navig_system.robot.robotType = RobotFrame.RobotType.RC5;
 
 
 
-
+            
             //var tool_cal_path_orig = textBox_tool_calibr.Text;
             var tool_cal_path = "tool1_2906_1a";
             var frms_stereo = FrameLoader.loadImages_stereoCV3(@"cam1\" + tool_cal_path, @"cam2\" + tool_cal_path, @"cam3\" + tool_cal_path, FrameType.Test, false);
@@ -11475,7 +11484,9 @@ namespace opengl3
                 var p2d_2 = navig_system.navigation_processing_get_points2d_3cam(ref frms_stereo[i].im_sec, 1);
                 var p2d_3 = navig_system.navigation_processing_get_points2d_3cam(ref frms_stereo[i].im_third, 2);
                 var ps3d = navig_system.navigation_processing_get_points3d_3cam(p2d_1, p2d_2, p2d_3, frms_stereo[i].im, frms_stereo[i].im_sec, frms_stereo[i].im_third);
+
                 ps_calib.Add(ps3d);
+                navig_system.tools[0].get_frame(ps3d);
                 ms_calib.Add(navig_system.tools[0].matrix_frame);
             }
 
@@ -11483,13 +11494,11 @@ namespace opengl3
             var qs = test_rob_pos1;
             var posrob = new RobotFrame( RobotFrame.comp_forv_kinem(qs, 6, false, cur_rob),0,0,0,RobotFrame.RobotType.RC5);
 
-             navig_system.test_handeye(ms_calib[0], posrob.getMatrix());
-
-            var prop_M_flange_in_marker = new RobotFrame(55, 55, -30, 0.0, 0.0,1.57).getMatrix();
-            var M_base_in_world=  NavigSys.set_prop_pos_robot(ms_calib[0], posrob.getMatrix(), prop_M_flange_in_marker);
-
-            set_conf_robot_pulse(qs, navig_system.robot.robotType, false, M_base_in_world);
-
+            
+            
+            // RobotFrame.comp_inv_kinem_priv_rc5_real()
+            //set_conf_robot_pulse(qs, navig_system.robot.robotType, false, prop_M_base_in_world);
+            //--------------------------------------------------------------
             var tcp_cal = navig_tool1.calibrate_tool_tcp_4p(ps_calib.ToArray());
 
              for (int i = 0; i < navig_system.tools.Length; i++)
@@ -11518,9 +11527,9 @@ namespace opengl3
              var cam3_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam3");
             navig_scene_objs_real.Add(cam1_model);
              navig_scene_objs_real.Add(cam2_model);
-             GL1.buffersGl.setMatrobj(cam1_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS) * Matrix4x4f.RotatedY(90));
-             GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS * navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));
-            GL1.buffersGl.setMatrobj(cam3_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[2].matrixCS * navig_system.stereo.stereoCamera.R2) * Matrix4x4f.RotatedY(90));
+             GL1.buffersGl.setMatrobj(cam1_model, 0,  Matrix4x4f.RotatedY(90)); //navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS
+             GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix( navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));//navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS *
+            GL1.buffersGl.setMatrobj(cam3_model, 0, UtilMatr.to_matrix( navig_system.stereo.stereoCamera.R2) * Matrix4x4f.RotatedY(90));//navig_system.stereo.stereoCamera.cameraCVs[2].matrixCS *
 
         }
         public void visible_navig_scene_objs_real(bool visible)
@@ -11591,6 +11600,7 @@ namespace opengl3
             foreach (var navig_obj in navig_scene_objs_ct)
             {
                 set_matr_store_navig_scene_obj_ct(navig_obj, ind,cur_matr,  state);
+
             }
         }
         public void set_matr_store_navig_scene_obj_ct(string navig_obj,NavigMatrixType ind, Matrix4x4f cur_matr, NavigVisionType state)// state: 0 - 3d model; 1 - scene
@@ -11618,6 +11628,22 @@ namespace opengl3
                 thr_navig.Start();
             }
             
+
+        }
+
+        private void but_navig_robot_set_pos_virt_Click(object sender, EventArgs e)
+        {
+            var cur_but =  (System.Windows.Forms.Button)sender;
+            var qs_str = cur_but.Text;
+            textBox_navig_robot_send_pos_virt.Text = qs_str;
+            var qs = parse_pose(qs_str);
+            set_conf_robot_pulse(qs, navig_system.robot.robotType, false, navig_system.robot.M_base_in_world,true);
+        }
+
+        private void but_navig_robot_set_pos_real_Click(object sender, EventArgs e)
+        {
+            var cur_but = (System.Windows.Forms.Button)sender;
+            var qs_str = cur_but.Text;
 
         }
 
@@ -12458,7 +12484,8 @@ namespace opengl3
 
         private void but_robot_flange_frame_calibr_Click(object sender, EventArgs e)
         {
-
+            
+            
         }
 
         private void but_navig_robot_photo_Click(object sender, EventArgs e)
@@ -12512,7 +12539,64 @@ namespace opengl3
 
         private void button_set_prop_robot_pos_Click(object sender, EventArgs e)
         {
+            send_navig_robot(" pose " + textBox_navig_robot_send_pos_virt.Text);
+        }
+        int index_rob_marker = 2;
+        private void button_robot_navig_gen_poses_Click(object sender, EventArgs e)
+        {
+            //-----------------------gen for cal--------------------------
+            var qs = parse_pose(textBox_navig_robot_send_pos.Text);
+            var posrob = new RobotFrame(new Pose(qs, false), navig_system.robot.robotType);
 
+            if (buttons_prop_poses_navig_robot != null)
+            {
+                for (int i = 0; i < buttons_prop_poses_navig_robot.Length; i++)
+                {
+                    tabPage_robot_calibr.Controls.Remove(buttons_prop_poses_navig_robot[i]);
+                    buttons_prop_poses_navig_robot[i].Dispose();
+                }
+            }
+            
+            var marker_frame = navig_system.tools[index_rob_marker].matrix_frame;
+            navig_system.test_handeye(marker_frame, posrob.getMatrix());
+            navig_system.robot.cur_turn = RobotFrame.get_current_turn(qs, navig_system.robot.robotType, false);
+
+
+            var prop_M_flange_in_marker = new RobotFrame(55, 55, -30, 0.0, 0.0, 1.57).getMatrix();
+            var prop_M_base_in_world = NavigSys.set_prop_pos_robot(marker_frame, posrob.getMatrix(), prop_M_flange_in_marker);
+            navig_system.robot.M_base_in_world = prop_M_base_in_world;
+            var prop_M_world_in_base = UtilOpenCV.inv(prop_M_base_in_world);
+            var gen_Ms_frames_in_world = NavigSys.gen_frames_v2(marker_frame, 20, 0.6, 7);
+
+            var gen_Ms_flange_in_base = new Matrix<double>[gen_Ms_frames_in_world.Length];
+            var poses = new double[gen_Ms_frames_in_world.Length][];
+            var x_but_slide = 6;
+            var y_but_slide = 376;
+            int num_colomn = 8;
+            var y_dist = 56;
+
+            buttons_prop_poses_navig_robot = new System.Windows.Forms.Button[gen_Ms_frames_in_world.Length];
+            for (int i = 0; i < gen_Ms_frames_in_world.Length; i++)
+            {
+                gen_Ms_flange_in_base[i] = prop_M_world_in_base * gen_Ms_frames_in_world[i] * prop_M_flange_in_marker;
+                poses[i] = RobotFrame.comp_inv_kinem_priv_rc5_real(new RobotFrame(gen_Ms_flange_in_base[i], navig_system.robot.robotType).frame, navig_system.robot.cur_turn);
+
+                var button_pose_virt = new System.Windows.Forms.Button();
+                button_pose_virt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+                if (i % num_colomn == 0 && i != 0)
+                {
+                    x_but_slide += 160;
+                    y_but_slide -= num_colomn * y_dist;
+                }
+
+                y_but_slide += y_dist;
+                button_pose_virt.Location = new System.Drawing.Point(x_but_slide, y_but_slide);
+                button_pose_virt.Size = new System.Drawing.Size(152, 50);
+                button_pose_virt.Text = pose_to_str(poses[i]);
+                button_pose_virt.Click += new System.EventHandler(but_navig_robot_set_pos_virt_Click);
+                tabPage_robot_calibr.Controls.Add(button_pose_virt);
+                buttons_prop_poses_navig_robot[i] = button_pose_virt;
+            }
         }
     }
 }

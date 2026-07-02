@@ -27,6 +27,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace opengl3
 {
+
+
+
     public class NavigTarget
     {
         public NavigTarget()
@@ -166,11 +169,11 @@ namespace opengl3
         public int _messageCounter = 0;
         private DateTime _lastStatsTime = DateTime.UtcNow;
         public RobotFrame.RobotType robotType = RobotFrame.RobotType.RC5;
-        Matrix<double> _matrix_to_camera;
-        Matrix<double> _matrix_tool;
+
         public Matrix<double> M_base_in_world;
         public Matrix<double> M_world_in_base;
         public double[] cur_ang;
+        public int cur_turn = 0;
         protected override void OnMessageReceived(string message)
         {
             //Interlocked.Increment(ref _messageCounter);
@@ -1633,7 +1636,7 @@ namespace opengl3
             if (ids.Size > 0)
             {
                 // Отрисовка границ и ID маркеров на изображении
-               /* ArucoInvoke.DrawDetectedMarkers(image, corners, ids, new Bgr(Color.Green).MCvScalar);
+                /*ArucoInvoke.DrawDetectedMarkers(image, corners, ids, new Bgr(Color.Green).MCvScalar);
                 CvInvoke.Imshow("asd", image);
                 CvInvoke.WaitKey();*/
                 for (int i = 0; i < ids.Size; i++)

@@ -1298,6 +1298,35 @@ namespace opengl3
             if (min_val > 0.2) return -1;
             return turn;
         }
+        static public int get_current_turn( double[] pose, RobotType robot_type, bool rad = true)
+        {
+            var pose1 = (double[])pose.Clone();
+            if (!rad) pose1 = to_rad(pose1);
+
+            int turn = 0;
+            PositionRob posrob = comp_forv_kinem(pose1,6,true,robot_type);
+            var solves = comp_inv_kinem(posrob, robot_type);
+            int count_calc = 5;
+            double min_val = double.MaxValue;
+
+            for (int i = 0; i < solves.Length; i++)
+            {
+                double cur_delt = 0;
+                for (int j = 0; j < count_calc; j++)
+                {
+                    cur_delt += Math.Abs(pose1[j] - solves[i][j]);
+
+                }
+                if (cur_delt < min_val)
+                {
+                    min_val = cur_delt;
+                    turn = i;
+                }
+            }
+            Console.WriteLine("min_val: " + min_val);
+            if (min_val > 0.2) return -1;
+            return turn;
+        }
         static public double[] comp_inv_kinem_priv_rc5_real(PositionRob posrob, int target_solve = 0)
         {
             var cur_rob = RobotType.RC5;

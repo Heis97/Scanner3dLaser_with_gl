@@ -73,9 +73,9 @@ namespace opengl3
             if (ps1 == null || ps2 == null || ps3 == null) return null;
 
             if (ps1.Length != ps2.Length && ps1.Length != ps3.Length) return null;
-            var lines1 = PointCloud.computeTracesCam(PointF.toPointF(ps1), cameraCVs[0], cameraCVs[0].matrixCS);
-            var lines2 = PointCloud.computeTracesCam(PointF.toPointF(ps2), cameraCVs[1], cameraCVs[0].matrixCS * R);
-            var lines3 = PointCloud.computeTracesCam(PointF.toPointF(ps3), cameraCVs[2], cameraCVs[0].matrixCS * R2);
+            var lines1 = PointCloud.computeTracesCam(PointF.toPointF(ps1), cameraCVs[0] );//cameraCVs[0].matrixCS
+            var lines2 = PointCloud.computeTracesCam(PointF.toPointF(ps2), cameraCVs[1], R);
+            var lines3 = PointCloud.computeTracesCam(PointF.toPointF(ps3), cameraCVs[2],  R2);
 
             var ps_comp = new Point3d_GL[lines1.Length];
             for (int i = 0; i < lines1.Length; i++)
