@@ -24,6 +24,10 @@ using System.Text.Json;
 using Emgu.CV.XFeatures2D;
 using CSJ2K.j2k.codestream;
 using static System.Net.Mime.MediaTypeNames;
+using static opengl3.NavigSys;
+using static opengl3.MainScanningForm;
+using System.Windows.Forms;
+using static opengl3.NavigTool;
 
 namespace opengl3
 {
@@ -32,6 +36,9 @@ namespace opengl3
 
     public class NavigTarget
     {
+
+
+
         public NavigTarget()
         {
             update_intrisic_param();
@@ -156,9 +163,19 @@ namespace opengl3
         public override string ToString()
         {
             return Name; // Это будет использоваться для отображения в TreeView
-        }   
+        }
+
+        public void init_draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        {
+
+        }
+        public void draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        {
+
+        }
 
     }
+
 
     public class NavigRobotClient : TcpClientWrapper
     {
@@ -174,6 +191,9 @@ namespace opengl3
         public Matrix<double> M_world_in_base;
         public double[] cur_ang;
         public int cur_turn = 0;
+
+        public string[] real_robot_models_names;
+        public string[] virt_robot_models_names;
         protected override void OnMessageReceived(string message)
         {
             //Interlocked.Increment(ref _messageCounter);
@@ -204,9 +224,18 @@ namespace opengl3
             await SendAsync(json);
         }
 
+        public void init_draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        {
+
+        }
+        public void draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        {
+
+        }
     }
 
-    class NavigMarker
+
+    public class NavigMarker
     {
         public int ind = -1;
         public double marker_size_mm = -1;
@@ -230,16 +259,21 @@ namespace opengl3
         }
 
     }
-    class NavigTool
+
+
+    public class NavigTool
     {
         public NavigMarker marker;
         public enum ToolType { tp4_v1, tp1_v1 };
+        public enum ToolFuncType { Registr, Model , Other};
         public Point3d_GL[] ps;
         public List<Point3d_GL> trace_tcp = new List<Point3d_GL>();
         int[] inds;
         int[] ind_aruco;
         int aruco_corner_num=4;
         int aruco_number = 0;
+        public ToolFuncType toolfunc = ToolFuncType.Other;
+
         Point3d_GL tcp;
         Point3d_GL rotate;
         NavigSys NavigSys;
@@ -712,7 +746,11 @@ namespace opengl3
             matrix_model_inv = matrix_model.Clone();
             CvInvoke.Invert(matrix_model, matrix_model_inv, DecompMethod.LU);
            
-            ps = new Point3d_GL[] { p0, p1, p2, p3, new Point3d_GL(matrix_model[0, 3], matrix_model[1, 3], matrix_model[2, 3]), new Point3d_GL(matrix_frame[0, 3], matrix_frame[1, 3], matrix_frame[2, 3]) };
+            ps = new Point3d_GL[] { p0, p1, p2, p3,
+                new Point3d_GL(matrix_model[0, 3], matrix_model[1, 3], matrix_model[2, 3]),
+                new Point3d_GL(matrix_frame[0, 3], matrix_frame[1, 3], matrix_frame[2, 3]),
+                new Point3d_GL((p0- p1).magnitude(), (p0- p2).magnitude(), (p2- p1).magnitude())
+            };
 
             /*var ps_ext = gen_3d_ps_other_corners(new Point3d_GL(9, 9, 0), 50, 100, matrix_frame);
             var ps_l = ps.ToList();
@@ -842,15 +880,52 @@ namespace opengl3
         {
           return Point3d_GL.multMatr(Point3d_GL.unifPoints2d(ps_for_registr).ToArray(), matrix_model);
         }
-    }
-    class NavigSys
-    {
+        public void init_draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        {
 
+        }
+        public void draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        {
+
+            if (matrix_model != null && name_3d_model != null && toolfunc != ToolFuncType.Registr) graphic.buffersGl.setMatrobj(name_3d_model, 0, UtilMatr.to_matrix(matrix_model));
+            if (matrix_frame != null && matrix_model_debug != null && name_3d_model_debug != null) graphic.buffersGl.setMatrobj(name_3d_model_debug, 0, UtilMatr.to_matrix(matrix_frame * matrix_model_debug));
+            //Console.WriteLine("\n\n" + j);
+
+            if (toolfunc == ToolFuncType.Registr)
+            {
+                graphic.buffersGl.removeObj(name_3d_model_trace_tcp);
+                var ps_all = get_points_for_registr_draw();
+                if (ps_all != null)
+                    if (ps_all.Length != 0)
+                        graphic.addPointMesh(ps_all, Color3d_GL.red(), name_3d_model_trace_tcp, false);
+            }
+            
+
+
+            /*var ps_name = "ps_test" + j;
+            glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.removeObj(ps_name)));
+            glControl1.Invoke((MethodInvoker)(() => GL1.addFrame(navig_system.tools[j].matrix_frame, 50, ps_name)));*/
+        }
+    }
+
+
+    public class NavigSys
+    {
+        public enum SceneType {  model3d, camera1 };
         public NavigTool[] tools;
         public List<NavigTarget> targets;
         public NavigRobotClient robot;
         public Scanner stereo;
         int aruko_max_ind = 1;
+        public SceneType sceneType = SceneType.model3d;
+        public int ind_model_instrument;
+        public int ind_registr_instrument;
+
+        public bool tools_vision = false;
+        public bool targets_vision = false;
+        public bool robot_vision = false;
+        public bool model_vision = false;
+
         public NavigSys(Scanner _stereo, int _aruko_max_ind)
         {
             targets = new List<NavigTarget> ();
@@ -1601,11 +1676,43 @@ namespace opengl3
         }
         public NavigSys navigation_processing_get_scene(Point3d_GL[][] ps)
         {
+
+
             for (int i = 0;i< tools.Length; i++)
             {
                 tools[i].get_frame(ps,true);
+
+                /*if (tools[i].toolfunc == ToolFuncType.Registr)
+                {
+                    if (writing_registr_pos && ps != null)
+                    {
+                        tools[i].add_point_for_registr(number_registr_point_current, navig_system.tools[current_registration_instrument].ps[4]);
+                    }
+                    if (registration_done)
+                    {
+                        if (matrix_frame != null)
+                        {
+                            var matrix_frame_inv = matrix_frame.Clone();
+                            // CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU);
+                            model_scene_matrix = matrix_frame * matrix_tcp;// * matrix_frame_inv;
+                                                                           //Console.WriteLine("registration_done___");
+                            set_matr_store_navig_scene_objs_ct(NavigMatrixType.ModelToScene, UtilMatr.to_matrix(model_scene_matrix), NavigVision);
+                            //Console.WriteLine("_________________");
+                            //Console.WriteLine("\n\n" + j);
+                        }
+
+                    }
+
+
+
+                    var ps_all = get_points_for_registr_draw();
+                    if (ps_all != null)
+                        if (ps_all.Length != 0)
+                            graphic.addPointMesh(ps_all, Color3d_GL.red(), name_3d_model_trace_tcp, false);
+                }*/
             }
 
+            
 
             return this;
         }
@@ -1893,6 +2000,96 @@ namespace opengl3
 
 
             return matrixes_gen.ToArray();
+        }
+
+        public void init_draw_navig_systems(GraphicGL graphic, SceneType cur_scene)
+        {
+            var cam_model_path = @"models\nav\cam.stl";
+            var cam1_model = graphic.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam1");
+            var cam2_model = graphic.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam2");
+            var cam3_model = graphic.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam3");
+            graphic.buffersGl.setMatrobj(cam1_model, 0, Matrix4x4f.RotatedY(90)); //navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS
+            graphic.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));//navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS *
+            graphic.buffersGl.setMatrobj(cam3_model, 0, UtilMatr.to_matrix(stereo.stereoCamera.R2) * Matrix4x4f.RotatedY(90));//navig_system.stereo.stereoCamera.cameraCVs[2].matrixCS *
+
+            
+            for (int i = 0; i < tools.Length; i++)
+            {
+                tools[i].init_draw_model_3d(graphic, cur_scene);
+            }
+            
+            for (int i = 0; i < targets.Count; i++)
+            {
+                targets[i].init_draw_model_3d(graphic, cur_scene);
+            }
+            
+            robot.init_draw_model_3d(graphic, cur_scene);
+            
+
+        }
+
+
+        public void draw_navig_systems(GraphicGL graphic, SceneType cur_scene)
+        {
+
+
+            
+
+            if (tools_vision) 
+            {
+                for (int i = 0; i < tools.Length; i++)
+                {
+                    tools[i].draw_model_3d(graphic, cur_scene);
+                }
+            }
+            if (targets_vision) 
+            {
+                for (int i = 0; i < targets.Count; i++)
+                {
+                    targets[i].draw_model_3d(graphic, cur_scene);
+                }
+            }
+            if (robot_vision) 
+            {
+                
+            }
+            if (model_vision) 
+            {
+
+            }
+
+        }
+       public void calibrate_navig_tool(string tool_cal_path, int tool_ind)
+        {
+            //var tool_cal_path_orig = textBox_tool_calibr.Text;
+            //var tool_cal_path = "tool1_2906_1a";
+            var frms_stereo = FrameLoader.loadImages_stereoCV3(@"cam1\" + tool_cal_path, @"cam2\" + tool_cal_path, @"cam3\" + tool_cal_path, FrameType.Test, false);
+
+            var ps_calib = new List<Point3d_GL[][]>();
+            var ms_calib = new List<Matrix<double>>();
+            for (int i = 0; i < frms_stereo.Length; i++)
+            {
+                var p2d_1 = navigation_processing_get_points2d_3cam(ref frms_stereo[i].im, 0);
+                var p2d_2 = navigation_processing_get_points2d_3cam(ref frms_stereo[i].im_sec, 1);
+                var p2d_3 = navigation_processing_get_points2d_3cam(ref frms_stereo[i].im_third, 2);
+                var ps3d = navigation_processing_get_points3d_3cam(p2d_1, p2d_2, p2d_3, frms_stereo[i].im, frms_stereo[i].im_sec, frms_stereo[i].im_third);
+
+                ps_calib.Add(ps3d);
+                tools[tool_ind].get_frame(ps3d);
+                ms_calib.Add(tools[tool_ind].matrix_frame);
+            }
+
+            var cur_rob = RobotFrame.RobotType.RC5;
+           // var qs = test_rob_pos1;
+           // var posrob = new RobotFrame(RobotFrame.comp_forv_kinem(qs, 6, false, cur_rob), 0, 0, 0, RobotFrame.RobotType.RC5);
+
+
+
+            // RobotFrame.comp_inv_kinem_priv_rc5_real()
+            //set_conf_robot_pulse(qs, navig_system.robot.robotType, false, prop_M_base_in_world);
+            //--------------------------------------------------------------
+           // var tcp_cal = navig_system.tools[tool_ind].calibrate_tool_tcp_4p(ps_calib.ToArray());
+
         }
     }
 }

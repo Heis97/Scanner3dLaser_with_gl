@@ -11138,73 +11138,7 @@ namespace opengl3
                     //continue;
                     //GL1.draw_scene---------------------------------------------------------------------------
                     //update tools
-                    for (int j = 0; j < navig_system.tools.Length; j++)
-                    {
-                        var name_3d_model_debug = navig_system.tools[j].name_3d_model_debug;
-                        var ps_debug = navig_system.tools[j].ps;
-                        var name_3d_model = navig_system.tools[j].name_3d_model;
-                        var matrix_model = navig_system.tools[j].matrix_model;
-                        var matrix_frame = navig_system.tools[j].matrix_frame;
-                        var matrix_tcp = navig_system.tools[j].matrix_tcp;
-                        var matrix_model_debug = navig_system.tools[j].matrix_model_debug;
-                        //var matrix_model = navig_system.tools[j].matrix_frame;
-                        //Console.WriteLine(".setMatrobj___"+ j);
-                        if (matrix_model != null && name_3d_model!=null ||  j != model_instrument) glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model, 0, UtilMatr.to_matrix(matrix_model))));
-                        if (matrix_frame != null && matrix_model_debug != null && name_3d_model_debug != null) glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model_debug, 0, UtilMatr.to_matrix(matrix_frame * matrix_model_debug))));
-                        //Console.WriteLine("\n\n" + j);
-                        if (navig_tool_trace_enable)
-                        {
-                            var ps = navig_system.tools[j].trace_tcp;
-                            if (navig_system.tools[j].ps != null)
-                                if (navig_system.tools[j].ps.Length > 4)
-                                {
-                                    ps.Add(navig_system.tools[j].ps[4]);
-                                    var name_3d_model_trace_tcp = navig_system.tools[j].name_3d_model_trace_tcp;
-                                    glControl1.Invoke((MethodInvoker)(() => GL1.addLineMeshTraj(ps.ToArray(), Color3d_GL.red(), name_3d_model_trace_tcp, false)));
-                                }
-                        }
-                        else
-                        {
-                            if (navig_system.tools[j].trace_tcp.Count != 0) navig_system.tools[j].trace_tcp = new List<Point3d_GL>();
-                        }
-
-                        if (j == model_instrument)
-                        {
-                            if (writing_registr_pos && navig_system.tools[current_registration_instrument].ps!= null)
-                            {                               
-                                navig_system.tools[current_model_instrument].add_point_for_registr(number_registr_point_current, navig_system.tools[current_registration_instrument].ps[4]);
-                            }
-                            if (registration_done)
-                            {
-                                if(matrix_frame!=null)
-                                {
-                                    var matrix_frame_inv = matrix_frame.Clone();
-                                   // CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU);
-                                    model_scene_matrix = matrix_frame * matrix_tcp;// * matrix_frame_inv;
-                                    //Console.WriteLine("registration_done___");
-                                    set_matr_store_navig_scene_objs_ct(NavigMatrixType.ModelToScene, UtilMatr.to_matrix(model_scene_matrix), NavigVision);
-                                    //Console.WriteLine("_________________");
-                                    //Console.WriteLine("\n\n" + j);
-                                }
-                                
-                            }
-                            
-                            var name_3d_model_trace_tcp = navig_system.tools[j].name_3d_model_trace_tcp;
-                            var ps_all = navig_system.tools[current_model_instrument].get_points_for_registr_draw();
-                            if(ps_all!=null)
-                                if (ps_all.Length!=0)
-                                    glControl1.Invoke((MethodInvoker)(() => GL1.addPointMesh(ps_all, Color3d_GL.red(), name_3d_model_trace_tcp, false)));
-                        }
-
-                       
-
-                        var ps_name = "ps_test" + j;
-                        glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.removeObj(ps_name)));
-                        glControl1.Invoke((MethodInvoker)(() => GL1.addFrame(navig_system.tools[j].matrix_frame, 50, ps_name)));
-                        //glControl1.Invoke((MethodInvoker)(() => GL1.addPointMesh(navig_system.tools[j].ps,  Color3d_GL.red(), ps_name)));
-                    }
-                    //update matrs ct_objs
-
+                   
 
                     //!GL1.draw_scene--------------------------------------------                                              //tools_models,tools_positins
 
@@ -11230,79 +11164,13 @@ namespace opengl3
                 var ps3d = navig_system.navigation_processing_get_points3d_3cam(points2d_cams[0], points2d_cams[1], points2d_cams[2]);    //navyg_sys_info(camera_only)
                 navig_system.navigation_processing_get_scene(ps3d);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
                                                                                             //
-
+                
                 //draw 3d objs
                 //navig_system.navigation_processing_draw_points3d(navig_system.tools[0].ps, ref mat1, ref mat2);
 
 
                 //continue;
                 //GL1.draw_scene---------------------------------------------------------------------------
-                //update tools
-                for (int j = 0; j < navig_system.tools.Length; j++)
-                {
-                    var name_3d_model_debug = navig_system.tools[j].name_3d_model_debug;
-                    var ps_debug = navig_system.tools[j].ps;
-                    var name_3d_model = navig_system.tools[j].name_3d_model;
-                    var matrix_model = navig_system.tools[j].matrix_model;
-                    var matrix_frame = navig_system.tools[j].matrix_frame;
-                    var matrix_tcp = navig_system.tools[j].matrix_tcp;
-                    var matrix_model_debug = navig_system.tools[j].matrix_model_debug;
-                    //var matrix_model = navig_system.tools[j].matrix_frame;
-                    //Console.WriteLine(".setMatrobj___"+ j);
-                    if (matrix_model != null && name_3d_model != null || j != model_instrument) glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model, 0, UtilMatr.to_matrix(matrix_model))));
-                    if (matrix_frame != null && matrix_model_debug != null && name_3d_model_debug != null) glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(name_3d_model_debug, 0, UtilMatr.to_matrix(matrix_frame * matrix_model_debug))));
-                    //Console.WriteLine("\n\n" + j);
-                    if (navig_tool_trace_enable)
-                    {
-                        var ps = navig_system.tools[j].trace_tcp;
-                        if (navig_system.tools[j].ps != null)
-                            if (navig_system.tools[j].ps.Length > 4)
-                            {
-                                ps.Add(navig_system.tools[j].ps[4]);
-                                var name_3d_model_trace_tcp = navig_system.tools[j].name_3d_model_trace_tcp;
-                                glControl1.Invoke((MethodInvoker)(() => GL1.addLineMeshTraj(ps.ToArray(), Color3d_GL.red(), name_3d_model_trace_tcp, false)));
-                            }
-                    }
-                    else
-                    {
-                        if (navig_system.tools[j].trace_tcp.Count != 0) navig_system.tools[j].trace_tcp = new List<Point3d_GL>();
-                    }
-
-                    if (j == model_instrument)
-                    {
-                        if (writing_registr_pos && navig_system.tools[current_registration_instrument].ps != null)
-                        {
-                            navig_system.tools[current_model_instrument].add_point_for_registr(number_registr_point_current, navig_system.tools[current_registration_instrument].ps[4]);
-                        }
-                        if (registration_done)
-                        {
-                            if (matrix_frame != null)
-                            {
-                                var matrix_frame_inv = matrix_frame.Clone();
-                                // CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU);
-                                model_scene_matrix = matrix_frame * matrix_tcp;// * matrix_frame_inv;
-                                //Console.WriteLine("registration_done___");
-                                set_matr_store_navig_scene_objs_ct(NavigMatrixType.ModelToScene, UtilMatr.to_matrix(model_scene_matrix), NavigVision);
-                                //Console.WriteLine("_________________");
-                                //Console.WriteLine("\n\n" + j);
-                            }
-
-                        }
-
-                        var name_3d_model_trace_tcp = navig_system.tools[j].name_3d_model_trace_tcp;
-                        var ps_all = navig_system.tools[current_model_instrument].get_points_for_registr_draw();
-                        if (ps_all != null)
-                            if (ps_all.Length != 0)
-                                glControl1.Invoke((MethodInvoker)(() => GL1.addPointMesh(ps_all, Color3d_GL.red(), name_3d_model_trace_tcp, false)));
-                    }
-
-
-
-                    var ps_name = "ps_test" + j;
-                    glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.removeObj(ps_name)));
-                    glControl1.Invoke((MethodInvoker)(() => GL1.addFrame(navig_system.tools[j].matrix_frame, 50, ps_name)));
-                    //glControl1.Invoke((MethodInvoker)(() => GL1.addPointMesh(navig_system.tools[j].ps,  Color3d_GL.red(), ps_name)));
-                }
                 //update matrs ct_objs
 
 
@@ -11319,8 +11187,7 @@ namespace opengl3
 
         }
 
-        List<string> navig_scene_objs_real = new List<string>();
-        List<string> navig_scene_objs_ct = new List<string>();
+        
         NavigVisionType NavigVision = NavigVisionType.Ct;
 
         Matrix<double> ct_model_matrix = UtilMatr.eye_matr(4);
@@ -11369,47 +11236,6 @@ namespace opengl3
             tools.Add(navig_tool2);
             navig_system.tools = tools.ToArray();
 
-            //var tool_cal_path_orig = textBox_tool_calibr.Text;
-            var tool_cal_path = "tool1_cal_2606_3a";
-            var frms_stereo = FrameLoader.loadImages_stereoCV(@"cam1\" + tool_cal_path, @"cam2\" + tool_cal_path, FrameType.Test, false);
-
-            var ps_calib = new List<Point3d_GL[][]>();
-
-            for (int i = 0; i < frms_stereo.Length; i++)
-            {
-                var ps3d = navig_system.navigation_processing_get_points3d(frms_stereo[i].im, frms_stereo[i].im_sec, out Mat mat1, out Mat mat2);
-                ps_calib.Add(ps3d);
-            }
-
-            var tcp_cal = navig_tool1.calibrate_tool_tcp_4p(ps_calib.ToArray());
-
-            for (int i = 0; i < navig_system.tools.Length; i++) 
-            {
-                if(navig_system.tools[i].path_3d_model!= null && navig_system.tools[i].name_3d_model != null)
-                {
-                    navig_system.tools[i].name_3d_model = GL1.add_buff_gl(new Model3d(navig_system.tools[i].path_3d_model), PrimitiveType.Triangles, navig_system.tools[i].name_3d_model);
-                    navig_scene_objs_real.Add(navig_system.tools[i].name_3d_model);
-                }
-                
-                if (navig_system.tools[i].name_3d_model_debug!=null)
-                {
-                    navig_system.tools[i].name_3d_model_debug = GL1.add_buff_gl(new Model3d(navig_system.tools[i].name_3d_model_debug), PrimitiveType.Triangles, navig_system.tools[i].name_3d_model_debug);
-                    navig_scene_objs_real.Add(navig_system.tools[i].name_3d_model_debug);
-                }
-
-                if (navig_system.tools[i].name_3d_model_trace_tcp != null)
-                {
-                    navig_scene_objs_real.Add(navig_system.tools[i].name_3d_model_trace_tcp);
-                }
-            }
-            //-------------------------------------------------------------------------------------------
-            var cam_model_path = @"models\nav\cam.stl";
-            var cam1_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam1");
-            var cam2_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam2");
-            navig_scene_objs_real.Add(cam1_model);
-            navig_scene_objs_real.Add(cam2_model);
-            GL1.buffersGl.setMatrobj(cam1_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS)* Matrix4x4f.RotatedY(90));
-            GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS* navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));
 
         }
 
@@ -11427,15 +11253,6 @@ namespace opengl3
             Console.WriteLine(cam2_conf_path);
             Console.WriteLine(cam3_conf_path);
             var navig_stereo = loadScanner_v3(cam1_conf_path, cam2_conf_path, cam3_conf_path, stereo_cal_path, null, markSize);
-
-            //new int[] { 0, 11, 2, 1 }
-            /* var navig_tool1 = new NavigTool(new int[] { 11 }, NavigTool.ToolType.tp1_v1, "tool1", @"models\nav\tool1.stl",
-                 new Matrix<double>(new double[,] {
-                 {1,0,0,55 },
-                 {0,1,0,55 },
-                 {0,0,1,-14 },
-                 {0,0,0,1 }}), @"models\nav\marker1.stl"
-                 );*/
 
             var navig_tool1 = new NavigTool(NavigMarker.get_marker_p1v2(11), NavigTool.ToolType.tp1_v1, "tool_marker", @"models\nav\tool1.stl",
                 new Matrix<double>(new double[,] {
@@ -11458,7 +11275,7 @@ namespace opengl3
                 {1,0,0,55 },
                 {0,1,0,55 },
                 {0,0,1,-14},
-                {0,0,0,1  }}), @"models\nav\marker1.stl"
+                {0,0,0,1  }}), @"models\nav\marker1b.stl"
                 );
             navig_system = new NavigSys(navig_stereo, 12);
             var tools = new List<NavigTool>();
@@ -11470,147 +11287,17 @@ namespace opengl3
             navig_system.robot.robotType = RobotFrame.RobotType.RC5;
 
 
+            navig_system.calibrate_navig_tool("tool1_2906_1a", 0);
 
-            
-            //var tool_cal_path_orig = textBox_tool_calibr.Text;
-            var tool_cal_path = "tool1_2906_1a";
-            var frms_stereo = FrameLoader.loadImages_stereoCV3(@"cam1\" + tool_cal_path, @"cam2\" + tool_cal_path, @"cam3\" + tool_cal_path, FrameType.Test, false);
-
-            var ps_calib = new List<Point3d_GL[][]>();
-            var ms_calib = new List<Matrix<double>>();
-            for (int i = 0; i < frms_stereo.Length; i++)
-            {
-                var p2d_1 = navig_system.navigation_processing_get_points2d_3cam(ref frms_stereo[i].im,0);
-                var p2d_2 = navig_system.navigation_processing_get_points2d_3cam(ref frms_stereo[i].im_sec, 1);
-                var p2d_3 = navig_system.navigation_processing_get_points2d_3cam(ref frms_stereo[i].im_third, 2);
-                var ps3d = navig_system.navigation_processing_get_points3d_3cam(p2d_1, p2d_2, p2d_3, frms_stereo[i].im, frms_stereo[i].im_sec, frms_stereo[i].im_third);
-
-                ps_calib.Add(ps3d);
-                navig_system.tools[0].get_frame(ps3d);
-                ms_calib.Add(navig_system.tools[0].matrix_frame);
-            }
-
-            var cur_rob = RobotFrame.RobotType.RC5;
-            var qs = test_rob_pos1;
-            var posrob = new RobotFrame( RobotFrame.comp_forv_kinem(qs, 6, false, cur_rob),0,0,0,RobotFrame.RobotType.RC5);
-
-            
-            
-            // RobotFrame.comp_inv_kinem_priv_rc5_real()
-            //set_conf_robot_pulse(qs, navig_system.robot.robotType, false, prop_M_base_in_world);
-            //--------------------------------------------------------------
-            var tcp_cal = navig_tool1.calibrate_tool_tcp_4p(ps_calib.ToArray());
-
-             for (int i = 0; i < navig_system.tools.Length; i++)
-             {
-                 if (navig_system.tools[i].path_3d_model != null && navig_system.tools[i].name_3d_model != null)
-                 {
-                     navig_system.tools[i].name_3d_model = GL1.add_buff_gl(new Model3d(navig_system.tools[i].path_3d_model), PrimitiveType.Triangles, navig_system.tools[i].name_3d_model);
-                     navig_scene_objs_real.Add(navig_system.tools[i].name_3d_model);
-                 }
-
-                 if (navig_system.tools[i].name_3d_model_debug != null)
-                 {
-                     navig_system.tools[i].name_3d_model_debug = GL1.add_buff_gl(new Model3d(navig_system.tools[i].name_3d_model_debug), PrimitiveType.Triangles, navig_system.tools[i].name_3d_model_debug);
-                     navig_scene_objs_real.Add(navig_system.tools[i].name_3d_model_debug);
-                 }
-
-                 if (navig_system.tools[i].name_3d_model_trace_tcp != null)
-                 {
-                     navig_scene_objs_real.Add(navig_system.tools[i].name_3d_model_trace_tcp);
-                 }
-             }
-             //-------------------------------------------------------------------------------------------
-             var cam_model_path = @"models\nav\cam.stl";
-             var cam1_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam1");
-             var cam2_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam2");
-             var cam3_model = GL1.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam3");
-            navig_scene_objs_real.Add(cam1_model);
-             navig_scene_objs_real.Add(cam2_model);
-             GL1.buffersGl.setMatrobj(cam1_model, 0,  Matrix4x4f.RotatedY(90)); //navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS
-             GL1.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix( navig_system.stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));//navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS *
-            GL1.buffersGl.setMatrobj(cam3_model, 0, UtilMatr.to_matrix( navig_system.stereo.stereoCamera.R2) * Matrix4x4f.RotatedY(90));//navig_system.stereo.stereoCamera.cameraCVs[2].matrixCS *
 
         }
-        public void visible_navig_scene_objs_real(bool visible)
-        {
-            foreach (var navig_obj in navig_scene_objs_real)
-            {
-                GL1.buffersGl.setVisibleobj(navig_obj, visible);
-            }
-        }
-        public void visible_navig_scene_objs_ct(bool visible)
-        {
-            foreach (var navig_obj in navig_scene_objs_ct)
-            { 
-                GL1.buffersGl.setVisibleobj(navig_obj, visible); 
-            }
-        }
+
+
         // 0 - current matrs
         // 1 - self_matrs
         // 2 - ct->model
         // 3 - model->scene
-        public void add_navig_scene_obj_ct(string obj_name, NavigVisionType state)// state: 0 - 3d model; 1 - scene
-        {
-            if (!navig_scene_objs_ct.Contains(obj_name)) navig_scene_objs_ct.Add(obj_name);
-            
-            update_matrs_navig_scene_objs_ct(state);
-        }
-        public void update_matrs_navig_scene_objs_ct(NavigVisionType state)// state: 0 - 3d model; 1 - scene
-        {
-            foreach (var navig_obj in navig_scene_objs_ct)
-            {
-                update_matrs_navig_scene_obj_ct(navig_obj, state);
-            }
-        }
 
-        public void update_matrs_navig_scene_obj_ct(string navig_obj, NavigVisionType state)// state: 0 - 3d model; 1 - scene
-        {            
-            if (GL1.buffersGl.objs.ContainsKey(navig_obj))
-            {
-                var self_matr_obj = GL1.buffersGl.objs[navig_obj].matrixes[(int)NavigMatrixType.Self];
-                var ct_model = GL1.buffersGl.objs[navig_obj].matrixes[(int)NavigMatrixType.CtToModel];
-                var model_scene = GL1.buffersGl.objs[navig_obj].matrixes[(int)NavigMatrixType.ModelToScene];
-                Matrix4x4f matr = Matrix4x4f.Identity;
-                if (state == NavigVisionType.Scene)
-                {
-                    matr = model_scene* self_matr_obj ;
-                }
-
-                else if (state == NavigVisionType.Ct)
-                {
-                    matr = self_matr_obj;
-                    if(navig_obj == generate_model_name)
-                    {
-                        //matr = matr * ct_model;
-                    }
-                }
-
-                glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrobj(navig_obj, 0, matr)));
-            }            
-        }
-
-        public void set_matr_navig_scene_obj_ct(string navig_obj, Matrix4x4f cur_matr, NavigVisionType state)// state: 0 - 3d model; 1 - scene
-        {
-            glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrix_store_obj(navig_obj, (int)NavigMatrixType.Self, cur_matr)));
-            update_matrs_navig_scene_obj_ct(navig_obj, state);
-        }
-        public void set_matr_store_navig_scene_objs_ct(NavigMatrixType ind, Matrix4x4f cur_matr, NavigVisionType state)// state: 0 - 3d model; 1 - scene
-        {
-            foreach (var navig_obj in navig_scene_objs_ct)
-            {
-                set_matr_store_navig_scene_obj_ct(navig_obj, ind,cur_matr,  state);
-
-            }
-        }
-        public void set_matr_store_navig_scene_obj_ct(string navig_obj,NavigMatrixType ind, Matrix4x4f cur_matr, NavigVisionType state)// state: 0 - 3d model; 1 - scene
-        {
-            if (GL1.buffersGl.objs.ContainsKey(navig_obj))
-            {
-                glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.setMatrix_store_obj(navig_obj, (int)ind, cur_matr)));
-                update_matrs_navig_scene_obj_ct(navig_obj, state);
-            }
-        }
         private void but_con_navig_sys_Click(object sender, EventArgs e)
         {
                         
@@ -11779,7 +11466,7 @@ namespace opengl3
             var gen_mesh = voxel_model.GenerateMesh_isoline(ct_bin_lvl);
             GL1.buffersGl.removeObj(generate_model_name);
             generate_model_name = GL1.add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles, generate_model_name);
-            add_navig_scene_obj_ct(generate_model_name, NavigVision);
+           // add_navig_scene_obj_ct(generate_model_name, NavigVision);
             //========================================================================
             ct_model_matrix = UtilMatr.matrix_cv(new Point3d_GL(), new Point3d_GL());
             if (limits)
@@ -11787,7 +11474,7 @@ namespace opengl3
                 var p_trans = new Point3d_GL(ct_info.pix_xy * (limits_ps[0].Y - limits_ps[0].X) / 2, ct_info.pix_xy * (limits_ps[1].Y - limits_ps[1].X) / 2, ct_info.pix_xy * (limits_ps[2].Y - limits_ps[2].X) / 2);
                 var matr_cent = UtilMatr.to_matrix(UtilMatr.matrix_cv(-p_trans, new Point3d_GL(0, 0, 0)));
                 //GL1.buffersGl.setMatrobj(generate_model_name, 0, UtilMatr.to_matrix( UtilMatr.matrix_cv( p_trans, new Point3d_GL(0, 0, 0))));
-                set_matr_store_navig_scene_obj_ct(generate_model_name,NavigMatrixType.Self, matr_cent, NavigVision);
+               // set_matr_store_navig_scene_obj_ct(generate_model_name,NavigMatrixType.Self, matr_cent, NavigVision);
                 //GL1.buffersGl.setTranspobj(generate_model_name, 0.5f);
                 transf_work_mri = p_trans + new Point3d_GL(limits_ps[0].X * ct_info.pix_xy, limits_ps[1].X * ct_info.pix_xy, limits_ps[2].X * ct_info.pix_xy);
                 ct_model_matrix = UtilMatr.matrix_cv(p_trans, new Point3d_GL());
@@ -11800,7 +11487,7 @@ namespace opengl3
            
             //var reg_ps = GL1.addPointMesh(ct_info.registr_ps, Color3d_GL.red(), "reg_ps");
             //add_navig_scene_obj_ct(reg_ps, NavigVision);
-            set_matr_store_navig_scene_objs_ct(NavigMatrixType.CtToModel, UtilMatr.to_matrix(ct_model_matrix),NavigVision);  
+           // set_matr_store_navig_scene_objs_ct(NavigMatrixType.CtToModel, UtilMatr.to_matrix(ct_model_matrix),NavigVision);  
         }
         private void rangeSliderH1_limits_model_w_ValuesChanged(object sender, EventArgs e)
         {
@@ -11993,16 +11680,16 @@ namespace opengl3
             var cyl_mesh = cilindr_mesh((float)target.d/2, 30, (float)target.l);
             if(!create) GL1.buffersGl.removeObj(target.name);
             var name = GL1.add_buff_gl(cyl_mesh, new Color3d_GL(target.color[0], target.color[1], target.color[2]), null, PrimitiveType.Triangles, target.name, true);
-            add_navig_scene_obj_ct(name, NavigVision);
+            /*add_navig_scene_obj_ct(name, NavigVision);
             set_matr_navig_scene_obj_ct(name, UtilMatr.to_matrix(target.matr), NavigVision);
-            set_matr_store_navig_scene_objs_ct(NavigMatrixType.CtToModel, UtilMatr.to_matrix(ct_model_matrix), NavigVision);
-
+            set_matr_store_navig_scene_objs_ct(NavigMatrixType.CtToModel, UtilMatr.to_matrix(ct_model_matrix), NavigVision);*/
+            
             GL1.buffersGl.setlight(name,false);
             GL1.buffersGl.setTranspobj (name, 0.8f);
             //GL1.addPointMesh(new Point3d_GL[] { target.p1, target.p2 }, new Color3d_GL(target.color[0], target.color[1], target.color[2]));
             //GL1.buffersGl.setMatrobj(name, 0, UtilMatr.to_matrix(target.matr));
             
-            Console.WriteLine("repr");
+            //Console.WriteLine("repr");
             //GL1.buffersGl.setTransfObj(target.name, 0, new Point3d_GL(target.x, target.y, target.z), new Point3d_GL(target.a, target.b, target.c));
             //2d-------------------------------------------
 
@@ -12185,27 +11872,16 @@ namespace opengl3
         {
             if (tabControl_navig.SelectedTab == tabPage_3d_model_exrtract)
             {
-                visible_navig_scene_objs_real(false);
-                visible_navig_scene_objs_ct(true);
-                NavigVision = NavigVisionType.Ct;
-                update_matrs_navig_scene_objs_ct(NavigVision);
+                navig_system.sceneType = NavigSys.SceneType.model3d;
             }
             else if (tabControl_navig.SelectedTab == tabPage_navig_target)
             {
-                visible_navig_scene_objs_real(false);
-                visible_navig_scene_objs_ct(true);
-                NavigVision = NavigVisionType.Ct;
-                update_matrs_navig_scene_objs_ct(NavigVision);
+                navig_system.sceneType = NavigSys.SceneType.model3d;
             }
             else if (tabControl_navig.SelectedTab == tabPage_registr_point)
             {
-                visible_navig_scene_objs_real(true);
-                visible_navig_scene_objs_ct(true);
-                NavigVision = NavigVisionType.Scene;
-                update_matrs_navig_scene_objs_ct(NavigVision);
+                navig_system.sceneType = NavigSys.SceneType.camera1;
             }
-
-            GL1.buffersGl.setVisibleobj(generate_model_name, true);
         }
 
         #endregion
@@ -12366,9 +12042,6 @@ namespace opengl3
 
             _robotClient.FrameUpdated += OnFrameUpdated;
             _robotClient.Disconnected += OnDisconnected;
-
-
-
 
             try
             {
