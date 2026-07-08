@@ -11314,8 +11314,6 @@ namespace opengl3
                 var thr_navig = new Thread(navigation_processing);
                 thr_navig.Start();
             }
-            
-
         }
 
         private void but_navig_robot_set_pos_virt_Click(object sender, EventArgs e)
@@ -11324,7 +11322,7 @@ namespace opengl3
             var qs_str = cur_but.Text;
             textBox_navig_robot_send_pos_virt.Text = qs_str;
             var qs = parse_pose(qs_str);
-            set_conf_robot_pulse(qs, navig_system.robot.robotType, false, navig_system.robot.M_base_in_world,true);
+            navig_system.robot.set_conf_robot_pulse(GL1, qs,  false, navig_system.robot.M_base_in_world,true);
         }
 
         private void but_navig_robot_set_pos_real_Click(object sender, EventArgs e)
@@ -11990,12 +11988,12 @@ namespace opengl3
         RobotFrame.RobotType robot_navig_type = RobotFrame.RobotType.RC5;
         private void button_navig_robot_start_servo_Click(object sender, EventArgs e)
         {
-            send_navig_robot( " ddd\n " );
+            navig_system.robot.send_navig_robot( " ddd\n " );
         }
 
         private void button_navig_robot_stop_servo_Click(object sender, EventArgs e)
         {
-            send_navig_robot(" eee\n ");
+            navig_system.robot.send_navig_robot(" eee\n ");
         }
 
         private void button_navig_robot_recieve_pos_Click(object sender, EventArgs e)
@@ -12089,27 +12087,11 @@ namespace opengl3
                 label_navig_robot_status.Text = "Отключён";
             }));
         }
-        async void send_navig_robot(string text)
-        {
-            try
-            {
-                if (!_robotClient.IsConnected)
-                {
-                    MessageBox.Show("Нет соединения.");
-                    return;
-                }
-
-                await _robotClient.SendAsync(text);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка отправки: {ex.Message}");
-            }
-        }
+        
 
         private void button_navig_robot_send_pose_Click(object sender, EventArgs e)
         {
-            send_navig_robot(" pose "+textBox_navig_robot_send_pos.Text);
+            navig_system.robot.send_navig_robot(" pose "+textBox_navig_robot_send_pos.Text);
         }
 
         private void button_navig_robot_send_position_Click(object sender, EventArgs e)
@@ -12119,7 +12101,7 @@ namespace opengl3
             var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(cur_pos, current_robot_turn);
             textBox_navig_robot_send_pos.Text = pose_to_str(correct_solve);
 
-            send_navig_robot(" pose " + textBox_navig_robot_send_pos.Text);
+          navig_system.robot.send_navig_robot(" pose " + textBox_navig_robot_send_pos.Text);
         }
 
         private void trackBar_navig_robot_test_servo_Scroll(object sender, EventArgs e)
@@ -12146,7 +12128,7 @@ namespace opengl3
             var cur_pose_str = pose_to_str(correct_solve);
             textBox_navig_robot_send_pos.Text = cur_pose_str;
 
-            send_navig_robot(" pose " + cur_pose_str);
+            navig_system.robot.send_navig_robot(" pose " + cur_pose_str);
         }
         #endregion
         private void but_save_photo_nav_3_Click(object sender, EventArgs e)
@@ -12212,7 +12194,7 @@ namespace opengl3
 
         private void button_set_prop_robot_pos_Click(object sender, EventArgs e)
         {
-            send_navig_robot(" pose " + textBox_navig_robot_send_pos_virt.Text);
+            navig_system.robot.send_navig_robot(" pose " + textBox_navig_robot_send_pos_virt.Text);
         }
         int index_rob_marker = 2;
         private void button_robot_navig_gen_poses_Click(object sender, EventArgs e)

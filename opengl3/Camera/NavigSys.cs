@@ -223,14 +223,113 @@ namespace opengl3
             string json = JsonSerializer.Serialize(frame);
             await SendAsync(json);
         }
-
+        Matrix4x4f[] ms = new Matrix4x4f[8];
         public void init_draw_model_3d(GraphicGL graphic, SceneType cur_scene)
         {
+
+            var color_arm = Color3d_GL.black();
+            var color_end = Color3d_GL.white();
+            for (int i = 0; i <= 7; i++)
+            {
+                {
+                    var scan_stl_orig = new Model3d("models\\rc5\\" + i + ".stl", false);
+                    graphic.add_buff_gl(scan_stl_orig.mesh, color_arm, scan_stl_orig.normale, PrimitiveType.Triangles, real_robot_models + i);
+                    graphic.add_buff_gl(scan_stl_orig.mesh, color_arm, scan_stl_orig.normale, PrimitiveType.Triangles, virt_robot_models + i);
+                    graphic.buffersGl.setTranspobj(virt_robot_models + i, 0.5f);
+                }
+
+            }
+
+            var scan_stl = new Model3d("models\\rc5\\t2b.stl", false, 1);
+            graphic.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "t2");
+
+            var L21 = 156;
+            var L31 = -148;
+
+            var L1 = 172.5;
+            var L2 = 405;
+            var L3 = 370;
+            var L4 = 139.8 + L21 + L31;
+            var L5 = 139.8;
+            var L6 = 141;
+
+
+            ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0));
+            ms[1] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
+            ms[2] = UtilMatr.matrix(new Point3d_GL(0, -L1), new Point3d_GL(0, 180, 0));
+            ms[3] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
+            ms[4] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
+            ms[5] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            ms[6] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 180, 180)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+            ms[7] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, -90)) * UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0, 0)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3 - L5, L4 + L6), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
+
+            for (int i = 0; i < 8; i++)
+            {
+                graphic.buffersGl.setMatrobj(real_robot_models + i, 0, ms[i]);
+                graphic.buffersGl.setMatrobj(virt_robot_models + i, 0, ms[i]);
+            }
+            graphic.buffersGl.setMatrobj("t2", 0, ms[7]);
+
+            //GL1.buffersGl.setTranspobj("t2", 0);
 
         }
         public void draw_model_3d(GraphicGL graphic, SceneType cur_scene)
         {
 
+        }
+        Matrix4x4f[] qms_virt = new Matrix4x4f[8];
+        Matrix4x4f[] qms = new Matrix4x4f[8];
+        string real_robot_models = "ax_";
+        string virt_robot_models = "ax_virt_";
+        public void set_conf_robot_pulse(GraphicGL graphic, double[] q, bool rad = true, Matrix<double> M_base_in_world = null, bool virt = false)
+        {
+            //var q = new double[6];
+            Matrix4x4f base_matrix = Matrix4x4f.Identity;
+            if (M_base_in_world != null)
+            {
+                base_matrix = UtilMatr.to_matrix(M_base_in_world);
+            }
+            for (int i = 0; i <= 7; i++)
+            {
+                var mq = Matrix4x4f.Identity;
+                if (i >= 2)
+                {
+                    var j = i - 1;
+                    var fr = RobotFrame.comp_forv_kinem(q, j, rad, robotType, false);
+                    mq = UtilMatr.matrix(fr.position, fr.rotation.toDegree());
+                }
+                if (virt)
+                {
+                    qms_virt[i] = base_matrix * mq * ms[i];
+                    graphic.buffersGl.setMatrobj(virt_robot_models + i, 0, qms_virt[i]);
+                }
+                else
+                {
+                    qms[i] = base_matrix * mq * ms[i];
+                    graphic.buffersGl.setMatrobj(real_robot_models + i, 0, qms[i]);
+                }
+
+            }
+            //  GL1.buffersGl.setMatrobj("t2", 0, qms[7]);//pulse
+            //GL1.buffersGl.setMatrobj("t2", 0, qms[7]);
+        }
+
+        public async void send_navig_robot(string text)
+        {
+            try
+            {
+                if (!IsConnected)
+                {
+                    MessageBox.Show("Нет соединения.");
+                    return;
+                }
+
+                await SendAsync(text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка отправки: {ex.Message}");
+            }
         }
     }
 
