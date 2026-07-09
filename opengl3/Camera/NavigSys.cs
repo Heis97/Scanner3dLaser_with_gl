@@ -1,38 +1,286 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
-using Emgu.CV.UI;
 using Emgu.CV;
-using Accord;
-using Emgu.CV.Stitching;
 using Emgu.CV.Aruco;
 using System.Drawing;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Windows.Forms.Design;
-using System.ComponentModel.Design;
-using System.Runtime.CompilerServices;
-using Emgu.CV.Dnn;
 using OpenGL;
-using System.Threading;
 using System.Text.Json;
-using Emgu.CV.XFeatures2D;
-using CSJ2K.j2k.codestream;
-using static System.Net.Mime.MediaTypeNames;
-using static opengl3.NavigSys;
-using static opengl3.MainScanningForm;
 using System.Windows.Forms;
-using static opengl3.NavigTool;
+using Dicom.Printing;
+using CommunityToolkit.HighPerformance;
 
 namespace opengl3
 {
 
+    public class NavigModel
+    {
+        public CtSliceFull ctSliceFull;
+        public Point3d_GL[] registr_ps;
+        public int ind_ct_image = 0;
+        public int ind_ct_image_sagit = 0;
+        public int ind_ct_image_coronal = 0;
+        double main_frame_len = 100;
+        Point3d_GL transf_work_mri;
 
+        public Mat[] ct_projections = new Mat[3];
+        public int ct_bin_lvl = 255;
+        public int ct_gauss_size = 1;
+        public VoxelToStlGpu voxel_model;
+        public string generate_model_name = "generate_model";
+        public byte[,,] orig_model;
+        public System.Drawing.Point[] limits_ps = new System.Drawing.Point[3];
+
+        public bool vision_navig_axis = true;
+        public bool vision_navig_work_area = true;
+        public bool vision_navig_bin_area = false;
+        public bool vision_navig_ct_start_frame = false;
+        public bool vision_navig_target_traj = true;
+        public bool vision_navig_instr = true;
+        public NavigModel(string path)
+        {
+            ctSliceFull = DicomSorter.LoadAndSortSlices(path);
+        }
+
+        public void generate_mesh(bool limits,GraphicGL graphic)
+        {
+            //gen_voxel_model=============================================================
+            if (limits) orig_model = DicomProcess.compVoxelModel(ctSliceFull.SlicesAxial_mat, limits_ps);
+            else orig_model = DicomProcess.compVoxelModel(ctSliceFull.SlicesAxial_mat);
+            if (orig_model == null) return;
+            voxel_model = new VoxelToStlGpu(graphic, orig_model.GetLength(0), orig_model.GetLength(1), orig_model.GetLength(2));
+            //gen stl model========================================================================
+            voxel_model.SetVoxelData(orig_model, graphic, ct_gauss_size, (float)ctSliceFull.pix_xy);
+            var gen_mesh = voxel_model.GenerateMesh_isoline(ct_bin_lvl);
+            graphic.buffersGl.removeObj(generate_model_name);
+            generate_model_name = graphic.add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles, generate_model_name);
+            // add_navig_scene_obj_ct(generate_model_name, NavigVision);
+            //========================================================================
+            var ct_model_matrix = UtilMatr.matrix_cv(new Point3d_GL(), new Point3d_GL());
+            if (limits)
+            {
+                var p_trans = new Point3d_GL(ctSliceFull.pix_xy * (limits_ps[0].Y - limits_ps[0].X) / 2, ctSliceFull.pix_xy * (limits_ps[1].Y - limits_ps[1].X) / 2, ctSliceFull.pix_xy * (limits_ps[2].Y - limits_ps[2].X) / 2);
+                var matr_cent = UtilMatr.to_matrix(UtilMatr.matrix_cv(-p_trans, new Point3d_GL(0, 0, 0)));
+                //GL1.buffersGl.setMatrobj(generate_model_name, 0, UtilMatr.to_matrix( UtilMatr.matrix_cv( p_trans, new Point3d_GL(0, 0, 0))));
+                // set_matr_store_navig_scene_obj_ct(generate_model_name,NavigMatrixType.Self, matr_cent, NavigVision);
+                //GL1.buffersGl.setTranspobj(generate_model_name, 0.5f);
+                transf_work_mri = p_trans + new Point3d_GL(limits_ps[0].X * ctSliceFull.pix_xy, limits_ps[1].X *ctSliceFull.pix_xy, limits_ps[2].X * ctSliceFull.pix_xy);
+                ct_model_matrix = UtilMatr.matrix_cv(p_trans, new Point3d_GL());
+            }
+            else
+            {
+                transf_work_mri = new Point3d_GL(orig_model.GetLength(0) * ctSliceFull.pix_xy / 2, orig_model.GetLength(1) * ctSliceFull.pix_xy / 2, orig_model.GetLength(2) *ctSliceFull.pix_xy / 2);
+            }
+
+
+            //var reg_ps = GL1.addPointMesh(navig_system.model.ctSliceFull.registr_ps, Color3d_GL.red(), "reg_ps");
+            //add_navig_scene_obj_ct(reg_ps, NavigVision);
+            // set_matr_store_navig_scene_objs_ct(NavigMatrixType.CtToModel, UtilMatr.to_matrix(ct_model_matrix),NavigVision);  
+        }
+        public Mat draw_navig_targets(Mat mat, List<NavigTarget> targets, int ax = 0)//ax = 0, 1 ,2 -> x,y,z
+        {
+
+            foreach (var target in targets)
+            {
+                draw_navig_target(mat, target, ax);
+            }
+
+            return mat;
+        }
+        public Mat draw_navig_target(Mat mat, NavigTarget target, int ax = 0)//ax = 0, 1 ,2 -> x,y,z
+        {
+
+            var tp1 = target.p1 + transf_work_mri;
+            var tp2 = target.p2 + transf_work_mri;
+            var p1_x = (int)(tp1.x / ctSliceFull.pix_xy);
+            var p1_y = (int)(tp1.y / ctSliceFull.pix_xy);
+            var p1_z = (int)(tp1.z / ctSliceFull.pix_xy);
+
+            var p2_x = (int)(tp2.x / ctSliceFull.pix_xy);
+            var p2_y = (int)(tp2.y / ctSliceFull.pix_xy);
+            var p2_z = (int)(tp2.z / ctSliceFull.pix_xy);
+
+            if (ax == 0)
+            {
+                var p1 = new Point(p1_z, p1_y);
+                var p2 = new Point(p2_z, p2_y);
+                CvInvoke.Line(mat, p1, p2, new MCvScalar(255 * target.color[2], 255 * target.color[1], 255 * target.color[0]), 2);
+            }
+
+            if (ax == 1)
+            {
+                var p1 = new Point(p1_z, p1_x);
+                var p2 = new Point(p2_z, p2_x);
+                CvInvoke.Line(mat, p1, p2, new MCvScalar(255 * target.color[2], 255 * target.color[1], 255 * target.color[0]), 2);
+            }
+
+            if (ax == 2)
+            {
+                var p1 = new Point(p1_x, p1_y);
+                var p2 = new Point(p2_x, p2_y);
+                CvInvoke.Line(mat, p1, p2, new MCvScalar(255 * target.color[2], 255 * target.color[1], 255 * target.color[0]), 2);
+            }
+
+            return mat;
+        }
+        public Mat draw_navig_frame(Mat mat, double frame_len, int ax = 0)//ax = 0, 1 ,2 -> x,y,z
+        {
+            var color_x = new MCvScalar(0, 0, 255);
+            var color_y = new MCvScalar(0, 255, 0);
+            var color_z = new MCvScalar(255, 0, 0);
+
+            var tp0 = (new Point3d_GL(frame_len, 0, 0) + transf_work_mri) / ctSliceFull.pix_xy;
+            var tp1 = (new Point3d_GL(0, frame_len, 0) + transf_work_mri) / ctSliceFull.pix_xy;
+            var tp2 = (new Point3d_GL(0, 0, frame_len) + transf_work_mri) / ctSliceFull.pix_xy;
+            var tpc = transf_work_mri / ctSliceFull.pix_xy;
+
+            if (ax == 0)
+            {
+                var p1 = new Point((int)tpc.z, (int)tpc.y);
+                var p2 = new Point((int)tp2.z, (int)tp2.y);
+                var p3 = new Point((int)tp1.z, (int)tp1.y);
+                CvInvoke.Line(mat, p1, p2, color_z, 1);
+                CvInvoke.Line(mat, p1, p3, color_y, 1);
+            }
+
+            if (ax == 1)
+            {
+                var p1 = new Point((int)tpc.z, (int)tpc.x);
+                var p2 = new Point((int)tp2.z, (int)tp2.x);
+                var p3 = new Point((int)tp0.z, (int)tp0.x);
+                CvInvoke.Line(mat, p1, p2, color_z, 1);
+                CvInvoke.Line(mat, p1, p3, color_x, 1);
+            }
+
+            if (ax == 2)
+            {
+                var p1 = new Point((int)tpc.x, (int)tpc.y);
+                var p2 = new Point((int)tp0.x, (int)tp0.y);
+                var p3 = new Point((int)tp1.x, (int)tp1.y);
+                CvInvoke.Line(mat, p1, p2, color_x, 1);
+                CvInvoke.Line(mat, p1, p3, color_y, 1);
+            }
+
+            return mat;
+        }
+        public void redraw_navig_slices(List<NavigTarget> targets,ref Emgu.CV.UI.ImageBox imageBox_navig_axial, ref Emgu.CV.UI.ImageBox imageBox_navig_sagital, ref Emgu.CV.UI.ImageBox imageBox_navig_coronal)
+        {
+
+            var mats = new Mat[3];
+            if (ctSliceFull == null) return;
+            if (ind_ct_image < ctSliceFull.SlicesAxial_mat.Count - 1 && ind_ct_image >= 0 && ct_projections[0] != null)//axial
+            {
+                mats[0] = ct_projections[0].Clone();
+                if (vision_navig_bin_area) mats[0] = DicomProcess.filter_bone_ct(mats[0], ct_bin_lvl, ct_gauss_size);
+                else { CvInvoke.CvtColor(mats[0], mats[0], ColorConversion.Gray2Bgr); }
+
+
+                if (vision_navig_work_area) mats[0] = draw_limits_lines(mats[0], limits_ps[0], limits_ps[1]);
+
+                if (vision_navig_axis)
+                {
+                    CvInvoke.Line(mats[0], new Point(0, ind_ct_image_coronal), new Point(mats[0].Width, ind_ct_image_coronal), new MCvScalar(0, 0, 255), 2);//X
+                    CvInvoke.Line(mats[0], new Point(ind_ct_image_sagit, 0), new Point(ind_ct_image_sagit, mats[0].Height), new MCvScalar(0, 255, 0), 2);//Y
+                }
+                if (vision_navig_ct_start_frame)
+                {
+                    mats[0] = draw_navig_frame(mats[0], main_frame_len, 2);
+                }
+
+                if (targets.Count > 0 && vision_navig_target_traj)
+                {
+
+                    mats[0] = draw_navig_targets(mats[0], targets, 2);
+                }
+
+                imageBox_navig_axial.Image = mats[0];
+            }
+
+            if (ind_ct_image_sagit < ctSliceFull.SlicesSagital.Count - 1 && ind_ct_image_sagit >= 0 && ct_projections[1] != null)
+            {
+                mats[1] = ct_projections[1].Clone();
+                if (vision_navig_bin_area) mats[1] = DicomProcess.filter_bone_ct(mats[1], ct_bin_lvl, ct_gauss_size);
+                else { CvInvoke.CvtColor(ct_projections[1], mats[1], ColorConversion.Gray2Bgr); }
+
+                if (vision_navig_work_area) mats[1] = draw_limits_lines(mats[1], limits_ps[2], limits_ps[1]);
+
+                if (vision_navig_axis)
+                {
+                    CvInvoke.Line(mats[1], new Point((int)(ind_ct_image * ctSliceFull.axial_koef), 0), new Point((int)(ind_ct_image * ctSliceFull.axial_koef), mats[1].Height), new MCvScalar(255, 0, 0), 2);//Z
+                    CvInvoke.Line(mats[1], new Point(0, ind_ct_image_coronal), new Point(mats[1].Width, ind_ct_image_coronal), new MCvScalar(0, 0, 255), 2);//Y
+                }
+                if (vision_navig_ct_start_frame)
+                {
+                    mats[1] = draw_navig_frame(mats[1], main_frame_len, 0);
+                }
+
+                if (targets.Count > 0 && vision_navig_target_traj)
+                {
+                    mats[1] = draw_navig_targets(mats[1], targets, 0);
+                }
+
+                imageBox_navig_sagital.Image = mats[1];
+            }
+
+            if (ind_ct_image_coronal < ctSliceFull.SlicesCoronal.Count - 1 && ind_ct_image_coronal >= 0 && ct_projections[2] != null)
+            {
+                mats[2] = ct_projections[2].Clone();
+                if (vision_navig_bin_area) mats[2] = DicomProcess.filter_bone_ct(mats[2], ct_bin_lvl, ct_gauss_size);
+                else { CvInvoke.CvtColor(ct_projections[2], mats[2], ColorConversion.Gray2Bgr); }
+
+                if (vision_navig_work_area) mats[2] = draw_limits_lines(mats[2], limits_ps[2], limits_ps[0]);
+
+                if (vision_navig_axis)
+                {
+                    CvInvoke.Line(mats[2], new Point((int)(ind_ct_image * ctSliceFull.axial_koef), 0), new Point((int)(ind_ct_image * ctSliceFull.axial_koef), mats[2].Height), new MCvScalar(255, 0, 0), 2);//Z
+                    CvInvoke.Line(mats[2], new Point(0, ind_ct_image_sagit), new Point(mats[2].Width, ind_ct_image_sagit), new MCvScalar(0, 255, 0), 2);//X
+                }
+                if (vision_navig_ct_start_frame)
+                {
+                    mats[2] = draw_navig_frame(mats[2], main_frame_len, 1);
+                }
+                if (targets.Count > 0 && vision_navig_target_traj)
+                {
+                    mats[2] = draw_navig_targets(mats[2], targets, 1);
+                }
+                CvInvoke.Rotate(mats[2], mats[2], RotateFlags.Rotate90Clockwise);
+                CvInvoke.Flip(mats[2], mats[2], FlipType.Horizontal);
+                imageBox_navig_coronal.Image = mats[2];
+            }
+
+        }
+
+        public Mat draw_limits_lines(Mat mat,  Point px, Point py)
+        {
+            var color_lines_area = new MCvScalar(0, 110, 255);
+            var color_filling_area = new MCvScalar(0, 20, 40);
+            if (mat == null) { Console.WriteLine("mat null"); return null; }
+
+            var mat_rect = new Mat(mat.Size.Height, mat.Size.Width, DepthType.Cv8U, 3);
+            mat_rect.SetTo(new MCvScalar(0, 0, 0));
+            CvInvoke.Rectangle(mat_rect, new Rectangle(px.X, py.X, px.Y - px.X, py.Y - py.X), color_filling_area, -1);
+
+            CvInvoke.Rectangle(mat_rect, new Rectangle(px.X, py.X, px.Y - px.X, py.Y - py.X), color_lines_area, 1);
+
+            mat += mat_rect;
+            return mat;
+        }
+
+        public void init_draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene)
+        {
+
+        }
+        public void draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene,bool visible)
+        {
+
+        }
+    }
 
     public class NavigTarget
     {
@@ -165,11 +413,11 @@ namespace opengl3
             return Name; // Это будет использоваться для отображения в TreeView
         }
 
-        public void init_draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        public void init_draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene)
         {
 
         }
-        public void draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        public void draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene, bool visible )
         {
 
         }
@@ -179,6 +427,14 @@ namespace opengl3
 
     public class NavigRobotClient : TcpClientWrapper
     {
+
+        public string _latestFrame;
+        public object _lock = new object();
+        public System.Windows.Forms.Timer _uiTimer;
+        public int current_robot_turn = 0;
+        public RobotFrame.RobotType robot_navig_type = RobotFrame.RobotType.RC5;
+
+
         public event Action<string> FrameUpdated;  // теперь имя события отражает суть
         string cur_pos = "";
         private string _currentFrame;
@@ -194,6 +450,8 @@ namespace opengl3
 
         public string[] real_robot_models_names;
         public string[] virt_robot_models_names;
+
+        public Label label_navig_robot_status_pose;
         protected override void OnMessageReceived(string message)
         {
             //Interlocked.Increment(ref _messageCounter);
@@ -218,13 +476,62 @@ namespace opengl3
             catch {  }*/
         }
 
+        private void OnFrameUpdated(string frame)
+        {
+            lock (_lock) { _latestFrame = frame; }
+        }
+
+        private void OnDisconnected()
+        {
+            /*this.Invoke((MethodInvoker)(() =>
+            {
+
+                label_navig_robot_status.Text = "Отключён";
+            }));*/
+        }
+        async public Task connect_start()
+        {
+            _uiTimer = new System.Windows.Forms.Timer { Interval = 50 };
+            _uiTimer.Tick += UiTimer_Tick;
+           _uiTimer.Start();
+
+            FrameUpdated += OnFrameUpdated;
+            Disconnected += OnDisconnected;
+
+            try
+            {
+                //label_navig_robot_status.Text = "Подключение...";
+
+                string host = "localhost";
+                var port = 30006;
+
+                await ConnectAsync(host, port);
+                //label_navig_robot_status.Text = "Подключено";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка подключения: {ex.Message}");
+                //label_navig_robot_status.Text = "Ошибка";
+            }
+        }
         public async Task SendFrameAsync(RobotFrame frame)
         {
             string json = JsonSerializer.Serialize(frame);
             await SendAsync(json);
         }
+
+        private void UiTimer_Tick(object sender, EventArgs e)
+        {
+            string frame;
+            lock (_lock) { frame = _latestFrame; }
+            if (frame != null)
+            {
+                if (frame.Count(',') == 5) label_navig_robot_status_pose.Text = frame;
+                else { Console.WriteLine(frame.Count(',')); };
+            }
+        }
         Matrix4x4f[] ms = new Matrix4x4f[8];
-        public void init_draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        public void init_draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene)
         {
 
             var color_arm = Color3d_GL.black();
@@ -273,7 +580,7 @@ namespace opengl3
             //GL1.buffersGl.setTranspobj("t2", 0);
 
         }
-        public void draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        public void draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene, bool visible)
         {
 
         }
@@ -375,7 +682,6 @@ namespace opengl3
 
         Point3d_GL tcp;
         Point3d_GL rotate;
-        NavigSys NavigSys;
 
         public Matrix<double> matrix_frame = new Matrix<double>(new double[,] {//frame markers
                 {1,0,0,0 },
@@ -393,9 +699,11 @@ namespace opengl3
                 {0,0,0,1 }});
 
         public string name_3d_model = "new_tool";
-        public string name_3d_model_debug = "new_debug_tool";
-        public string name_3d_model_trace_tcp = "new_trace_tcp";
         public string path_3d_model = null;
+        public string name_3d_model_debug = "new_debug_tool";
+        public string path_3d_model_debug = null;
+        public string name_3d_model_trace_tcp = "new_trace_tcp";
+        
         public Matrix<double> matrix_tcp = new Matrix<double>(new double[,] {
                 {1,0,0,0 },
                 {0,1,0,0 },
@@ -419,7 +727,7 @@ namespace opengl3
 
          * */
 
-        public NavigTool(int[] _inds, ToolType _tool_type,string _name_3d_model=null, string _path_3d_model = null, Matrix<double> _matrix_model_debug = null, string _name_3d_model_debug = null) 
+        public NavigTool(int[] _inds, ToolType _tool_type,string _name_3d_model=null, string _path_3d_model = null, Matrix<double> _matrix_model_debug = null, string _path_3d_model_debug = null) 
         {
             if (_inds == null) { Console.WriteLine("NavigTool _inds == null"); return; }
             aruco_number = _inds.Length;
@@ -445,14 +753,14 @@ namespace opengl3
             {
                 path_3d_model = _path_3d_model;
             }
-            if (_matrix_model_debug != null && _name_3d_model_debug != null)
+            if (_matrix_model_debug != null && _path_3d_model_debug != null)
             {
                 matrix_model_debug = _matrix_model_debug;
-                name_3d_model_debug = _name_3d_model_debug;
+                path_3d_model_debug = _path_3d_model_debug;
             }
             ind_aruco = comp_ind_table(inds);
         }
-        public NavigTool(NavigMarker nmarker, ToolType _tool_type, string _name_3d_model = null, string _path_3d_model = null, Matrix<double> _matrix_model_debug = null, string _name_3d_model_debug = null)
+        public NavigTool(NavigMarker nmarker, ToolType _tool_type, string _name_3d_model = null, string _path_3d_model = null, Matrix<double> _matrix_model_debug = null, string _path_3d_model_debug = null)
         {
             if (nmarker == null) { Console.WriteLine("nmarker == null"); return; }
 
@@ -477,10 +785,10 @@ namespace opengl3
             {
                 path_3d_model = _path_3d_model;
             }
-            if (_matrix_model_debug != null && _name_3d_model_debug != null)
+            if (_matrix_model_debug != null && _path_3d_model_debug != null)
             {
                 matrix_model_debug = _matrix_model_debug;
-                name_3d_model_debug = _name_3d_model_debug;
+                path_3d_model_debug = _path_3d_model_debug;
             }
             ind_aruco = comp_ind_table(inds);
         }
@@ -979,15 +1287,18 @@ namespace opengl3
         {
           return Point3d_GL.multMatr(Point3d_GL.unifPoints2d(ps_for_registr).ToArray(), matrix_model);
         }
-        public void init_draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        List<string> models_name = new List<string>();
+        public void init_draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene)
         {
 
+            if (path_3d_model != null) { name_3d_model = graphic.add_buff_gl(new Model3d(path_3d_model), PrimitiveType.Triangles, name_3d_model); models_name.Add(name_3d_model); }
+            if (path_3d_model_debug != null) { name_3d_model_debug = graphic.add_buff_gl(new Model3d(path_3d_model_debug), PrimitiveType.Triangles, name_3d_model_debug); models_name.Add(name_3d_model_debug); }
         }
-        public void draw_model_3d(GraphicGL graphic, SceneType cur_scene)
+        public void draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene,bool visible)
         {
 
             if (matrix_model != null && name_3d_model != null && toolfunc != ToolFuncType.Registr) graphic.buffersGl.setMatrobj(name_3d_model, 0, UtilMatr.to_matrix(matrix_model));
-            if (matrix_frame != null && matrix_model_debug != null && name_3d_model_debug != null) graphic.buffersGl.setMatrobj(name_3d_model_debug, 0, UtilMatr.to_matrix(matrix_frame * matrix_model_debug));
+            if (matrix_frame != null && matrix_model_debug != null && path_3d_model_debug != null) graphic.buffersGl.setMatrobj(name_3d_model_debug, 0, UtilMatr.to_matrix(matrix_frame * matrix_model_debug));
             //Console.WriteLine("\n\n" + j);
 
             if (toolfunc == ToolFuncType.Registr)
@@ -1011,19 +1322,36 @@ namespace opengl3
     public class NavigSys
     {
         public enum SceneType {  model3d, camera1 };
+        int aruko_max_ind = 1;
+
+        //objs-------------------------------------------------
         public NavigTool[] tools;
         public List<NavigTarget> targets;
         public NavigRobotClient robot;
+        public NavigModel model;
         public Scanner stereo;
-        int aruko_max_ind = 1;
-        public SceneType sceneType = SceneType.model3d;
+
+
+        //registr-------------------------------------------------
+
         public int ind_model_instrument;
         public int ind_registr_instrument;
 
+        //draw-------------------------------------------------
         public bool tools_vision = false;
         public bool targets_vision = false;
         public bool robot_vision = false;
         public bool model_vision = false;
+        public bool camera_vision = false;
+        public SceneType sceneType = SceneType.model3d;
+
+        //cams-------------------------------------------------
+        public int cam1_ind = 1;
+        public int cam2_ind = 0;
+        public int cam3_ind = 2;
+        public static int cam_numbers = 3;
+        public System.Drawing.PointF[][][] points2d_cams = new System.Drawing.PointF[cam_numbers][][];
+        //-------------------------------------------------
 
         public NavigSys(Scanner _stereo, int _aruko_max_ind)
         {
@@ -1773,6 +2101,14 @@ namespace opengl3
             }
             return image; 
         }
+
+
+        public int number_registr_point_current = 0;
+        public int current_registration_instrument = 0;
+        public int current_model_instrument = 1;
+        public bool registration_done = false;
+        public int model_instrument = 1;
+        public bool writing_registr_pos = false;
         public NavigSys navigation_processing_get_scene(Point3d_GL[][] ps)
         {
 
@@ -1781,39 +2117,104 @@ namespace opengl3
             {
                 tools[i].get_frame(ps,true);
 
-                /*if (tools[i].toolfunc == ToolFuncType.Registr)
+                if (tools[i].toolfunc == NavigTool.ToolFuncType.Registr)
                 {
                     if (writing_registr_pos && ps != null)
                     {
-                        tools[i].add_point_for_registr(number_registr_point_current, navig_system.tools[current_registration_instrument].ps[4]);
+                        tools[i].add_point_for_registr(number_registr_point_current, tools[current_registration_instrument].ps[4]);
                     }
                     if (registration_done)
                     {
-                        if (matrix_frame != null)
+                        if (tools[i].matrix_frame != null)
                         {
-                            var matrix_frame_inv = matrix_frame.Clone();
-                            // CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU);
-                            model_scene_matrix = matrix_frame * matrix_tcp;// * matrix_frame_inv;
-                                                                           //Console.WriteLine("registration_done___");
-                            set_matr_store_navig_scene_objs_ct(NavigMatrixType.ModelToScene, UtilMatr.to_matrix(model_scene_matrix), NavigVision);
-                            //Console.WriteLine("_________________");
-                            //Console.WriteLine("\n\n" + j);
+                            var model_scene_matrix = tools[i].matrix_frame * tools[i].matrix_tcp;
                         }
 
                     }
-
-
-
-                    var ps_all = get_points_for_registr_draw();
-                    if (ps_all != null)
-                        if (ps_all.Length != 0)
-                            graphic.addPointMesh(ps_all, Color3d_GL.red(), name_3d_model_trace_tcp, false);
-                }*/
+                }
             }
 
             
 
             return this;
+        }
+
+        public int change_navig_current_model_instrument()
+        {
+            current_model_instrument++;
+            if (tools != null)
+                if (current_model_instrument >= tools.Length)
+                {
+                    current_model_instrument = 0;
+                }
+            return current_model_instrument;
+        }
+
+        public int change_navig_current_registration_instrument()
+        {
+
+            current_registration_instrument++;
+
+            if (tools != null)
+                if (current_registration_instrument >= tools.Length)
+                {
+                    current_registration_instrument = 0;
+                }
+            return current_registration_instrument;
+        }
+
+        public bool write_pos_registr_point_enable()
+        {
+            if(tools[current_model_instrument].ps_for_registr.Count==0)  tools[current_model_instrument].init_points_for_registr(model.registr_ps.Length);
+            writing_registr_pos = !writing_registr_pos;
+            return writing_registr_pos;
+        }
+
+        public int increment_number_registr_ps()
+        {
+            number_registr_point_current++;
+            if (model.ctSliceFull != null)
+                if (number_registr_point_current >= model.registr_ps.Length)
+                {
+                    number_registr_point_current = 0;
+                }
+            
+            return number_registr_point_current;
+        }
+        public void registr_model()
+        {
+            var check_inds = current_model_instrument < tools.Length && current_model_instrument >= 0 && current_registration_instrument <tools.Length && current_registration_instrument >= 0;
+            if (!check_inds) { Console.WriteLine("navig_registr_model check failed"); return; }
+            current_model_instrument = 1;
+
+            if (tools != null && model.generate_model_name != null)
+            {
+
+                var ps_reg = new Point3d_GL[] {
+                new Point3d_GL(70,-71,-48),
+                new Point3d_GL(70,-71,-26),
+                new Point3d_GL(70,-19,-26),
+                new Point3d_GL(70,-19,-48)};
+                /*var ps_reg = new Point3d_GL[] {
+                    Point3d_GL.centr_mass(navig_system.tools[current_model_instrument].ps_for_registr[0].ToArray()),
+                    Point3d_GL.centr_mass(navig_system.tools[current_model_instrument].ps_for_registr[1].ToArray()),
+                    Point3d_GL.centr_mass(navig_system.tools[current_model_instrument].ps_for_registr[2].ToArray()),
+                    Point3d_GL.centr_mass(navig_system.tools[current_model_instrument].ps_for_registr[3].ToArray()),
+                };*/
+                var b1 = RobotFrame.matrix_basis_from_ps(model.registr_ps);
+                var b2 = RobotFrame.matrix_basis_from_ps(ps_reg);
+                var b1_inv = b1.Clone();
+                CvInvoke.Invert(b1, b1_inv, DecompMethod.LU);
+
+                //model_frame_matrix = UtilMatr.matrix_cv(new Point3d_GL(40, 40, 40), new Point3d_GL());
+                var model_frame_matrix = b2 * b1_inv;
+                prin.t("model_frame_matrix");
+                prin.t(model_frame_matrix);
+                tools[current_model_instrument].name_3d_model = model.generate_model_name;
+                tools[current_model_instrument].matrix_tcp = model_frame_matrix;
+                model_instrument = current_model_instrument;
+                registration_done = true;
+            }
         }
 
         public static Mat get_aruco_info(Mat image, ref System.Drawing.PointF[][] points)
@@ -2111,59 +2512,41 @@ namespace opengl3
             graphic.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));//navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS *
             graphic.buffersGl.setMatrobj(cam3_model, 0, UtilMatr.to_matrix(stereo.stereoCamera.R2) * Matrix4x4f.RotatedY(90));//navig_system.stereo.stereoCamera.cameraCVs[2].matrixCS *
 
-            
-            for (int i = 0; i < tools.Length; i++)
-            {
-                tools[i].init_draw_model_3d(graphic, cur_scene);
-            }
-            
-            for (int i = 0; i < targets.Count; i++)
-            {
-                targets[i].init_draw_model_3d(graphic, cur_scene);
-            }
-            
+            models_name.Add(cam1_model);
+            models_name.Add(cam2_model);
+            models_name.Add(cam3_model);
+            //------------------------------------------------------------------------------------------------------------------------
+            for (int i = 0; i < tools.Length; i++)  tools[i].init_draw_model_3d(graphic, cur_scene);                       
+            for (int i = 0; i < targets.Count; i++)  targets[i].init_draw_model_3d(graphic, cur_scene);         
             robot.init_draw_model_3d(graphic, cur_scene);
-            
+            model.init_draw_model_3d(graphic, cur_scene);
 
         }
+        List<string> models_name = new List<string>();
+        public void draw_model_3d(GraphicGL graphic, SceneType cur_scene, bool visible)
+        {
+            for (int i = 0; i < models_name.Count; i++)
+            {
+                graphic.buffersGl.setVisibleobj(models_name[i], visible);
+            }
+        }
+
 
 
         public void draw_navig_systems(GraphicGL graphic, SceneType cur_scene)
         {
-
-
-            
-
-            if (tools_vision) 
-            {
-                for (int i = 0; i < tools.Length; i++)
-                {
-                    tools[i].draw_model_3d(graphic, cur_scene);
-                }
-            }
-            if (targets_vision) 
-            {
-                for (int i = 0; i < targets.Count; i++)
-                {
-                    targets[i].draw_model_3d(graphic, cur_scene);
-                }
-            }
-            if (robot_vision) 
-            {
-                
-            }
-            if (model_vision) 
-            {
-
-            }
-
+            for (int i = 0; i < tools.Length; i++) tools[i].draw_model_3d(graphic, cur_scene, tools_vision);            
+            for (int i = 0; i < targets.Count; i++) targets[i].draw_model_3d(graphic, cur_scene, targets_vision);           
+            robot.draw_model_3d(graphic, cur_scene, robot_vision);
+            model.draw_model_3d(graphic, cur_scene, model_vision);
+            draw_model_3d(graphic, cur_scene, camera_vision);
         }
        public void calibrate_navig_tool(string tool_cal_path, int tool_ind)
         {
             //var tool_cal_path_orig = textBox_tool_calibr.Text;
             //var tool_cal_path = "tool1_2906_1a";
             var frms_stereo = FrameLoader.loadImages_stereoCV3(@"cam1\" + tool_cal_path, @"cam2\" + tool_cal_path, @"cam3\" + tool_cal_path, FrameType.Test, false);
-
+            Console.WriteLine("load ims_done");
             var ps_calib = new List<Point3d_GL[][]>();
             var ms_calib = new List<Matrix<double>>();
             for (int i = 0; i < frms_stereo.Length; i++)

@@ -32,7 +32,7 @@ namespace opengl3
 
         public double axial_koef;
 
-        public Point3d_GL[] registr_ps;
+        
     }
 
     public class CtSliceInfo
@@ -314,7 +314,7 @@ namespace opengl3
     class DicomProcess
     {
        // FellowOakDicom.
-       static public void load_dicom(string filePath)
+        static public void load_dicom(string filePath)
         {
 
            /* new DicomSetupBuilder()

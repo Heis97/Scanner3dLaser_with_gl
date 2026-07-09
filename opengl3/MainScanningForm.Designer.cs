@@ -705,6 +705,11 @@ namespace opengl3
             this.rangeSliderVinv_limits_model_h = new RangeSliderVinv();
             this.tabControl_navig = new System.Windows.Forms.TabControl();
             this.tabPage_3d_model_exrtract = new System.Windows.Forms.TabPage();
+            this.checkBox_navig_roobt_vis = new System.Windows.Forms.CheckBox();
+            this.checkBox_navig_tools_vis = new System.Windows.Forms.CheckBox();
+            this.checkBox_navig_targets_vis = new System.Windows.Forms.CheckBox();
+            this.label53 = new System.Windows.Forms.Label();
+            this.checkBox_navig_model_vis = new System.Windows.Forms.CheckBox();
             this.button_generate_model_ct_full_area = new System.Windows.Forms.Button();
             this.checkBox_ct_start_frame = new System.Windows.Forms.CheckBox();
             this.but_load_ct_scan = new System.Windows.Forms.Button();
@@ -746,6 +751,7 @@ namespace opengl3
             this.tabPage_navig_process = new System.Windows.Forms.TabPage();
             this.tabControl_navig_process_tab = new System.Windows.Forms.TabControl();
             this.tabPage_robot_calibr = new System.Windows.Forms.TabPage();
+            this.button_robot_navig_gen_poses = new System.Windows.Forms.Button();
             this.textBox_navig_robot_send_pos_virt = new System.Windows.Forms.TextBox();
             this.button_set_prop_robot_pos = new System.Windows.Forms.Button();
             this.textBox_navig_robot_photo_folder = new System.Windows.Forms.TextBox();
@@ -774,7 +780,7 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.button_robot_navig_gen_poses = new System.Windows.Forms.Button();
+            this.checkBox_navig_camera_vis = new System.Windows.Forms.CheckBox();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -8336,6 +8342,12 @@ namespace opengl3
             // 
             // tabPage_3d_model_exrtract
             // 
+            this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_navig_camera_vis);
+            this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_navig_roobt_vis);
+            this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_navig_tools_vis);
+            this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_navig_targets_vis);
+            this.tabPage_3d_model_exrtract.Controls.Add(this.label53);
+            this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_navig_model_vis);
             this.tabPage_3d_model_exrtract.Controls.Add(this.button_generate_model_ct_full_area);
             this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_ct_start_frame);
             this.tabPage_3d_model_exrtract.Controls.Add(this.but_load_ct_scan);
@@ -8359,6 +8371,59 @@ namespace opengl3
             this.tabPage_3d_model_exrtract.Text = "Выделение 3д модели";
             this.tabPage_3d_model_exrtract.UseVisualStyleBackColor = true;
             // 
+            // checkBox_navig_roobt_vis
+            // 
+            this.checkBox_navig_roobt_vis.AutoSize = true;
+            this.checkBox_navig_roobt_vis.Location = new System.Drawing.Point(377, 375);
+            this.checkBox_navig_roobt_vis.Name = "checkBox_navig_roobt_vis";
+            this.checkBox_navig_roobt_vis.Size = new System.Drawing.Size(66, 20);
+            this.checkBox_navig_roobt_vis.TabIndex = 159;
+            this.checkBox_navig_roobt_vis.Text = "Робот";
+            this.checkBox_navig_roobt_vis.UseVisualStyleBackColor = true;
+            this.checkBox_navig_roobt_vis.CheckedChanged += new System.EventHandler(this.checkBox_navig_roobt_vis_CheckedChanged);
+            // 
+            // checkBox_navig_tools_vis
+            // 
+            this.checkBox_navig_tools_vis.AutoSize = true;
+            this.checkBox_navig_tools_vis.Location = new System.Drawing.Point(377, 349);
+            this.checkBox_navig_tools_vis.Name = "checkBox_navig_tools_vis";
+            this.checkBox_navig_tools_vis.Size = new System.Drawing.Size(115, 20);
+            this.checkBox_navig_tools_vis.TabIndex = 158;
+            this.checkBox_navig_tools_vis.Text = "Инструменты";
+            this.checkBox_navig_tools_vis.UseVisualStyleBackColor = true;
+            this.checkBox_navig_tools_vis.CheckedChanged += new System.EventHandler(this.checkBox_navig_tools_vis_CheckedChanged);
+            // 
+            // checkBox_navig_targets_vis
+            // 
+            this.checkBox_navig_targets_vis.AutoSize = true;
+            this.checkBox_navig_targets_vis.Location = new System.Drawing.Point(377, 323);
+            this.checkBox_navig_targets_vis.Name = "checkBox_navig_targets_vis";
+            this.checkBox_navig_targets_vis.Size = new System.Drawing.Size(59, 20);
+            this.checkBox_navig_targets_vis.TabIndex = 157;
+            this.checkBox_navig_targets_vis.Text = "Цели";
+            this.checkBox_navig_targets_vis.UseVisualStyleBackColor = true;
+            this.checkBox_navig_targets_vis.CheckedChanged += new System.EventHandler(this.checkBox_navig_targets_vis_CheckedChanged);
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(358, 244);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(103, 16);
+            this.label53.TabIndex = 156;
+            this.label53.Text = "Отображение: ";
+            // 
+            // checkBox_navig_model_vis
+            // 
+            this.checkBox_navig_model_vis.AutoSize = true;
+            this.checkBox_navig_model_vis.Location = new System.Drawing.Point(377, 297);
+            this.checkBox_navig_model_vis.Name = "checkBox_navig_model_vis";
+            this.checkBox_navig_model_vis.Size = new System.Drawing.Size(76, 20);
+            this.checkBox_navig_model_vis.TabIndex = 155;
+            this.checkBox_navig_model_vis.Text = "Модель";
+            this.checkBox_navig_model_vis.UseVisualStyleBackColor = true;
+            this.checkBox_navig_model_vis.CheckedChanged += new System.EventHandler(this.checkBox_navig_model_vis_CheckedChanged);
+            // 
             // button_generate_model_ct_full_area
             // 
             this.button_generate_model_ct_full_area.Location = new System.Drawing.Point(14, 300);
@@ -8372,7 +8437,7 @@ namespace opengl3
             // checkBox_ct_start_frame
             // 
             this.checkBox_ct_start_frame.AutoSize = true;
-            this.checkBox_ct_start_frame.Location = new System.Drawing.Point(304, 212);
+            this.checkBox_ct_start_frame.Location = new System.Drawing.Point(375, 114);
             this.checkBox_ct_start_frame.Name = "checkBox_ct_start_frame";
             this.checkBox_ct_start_frame.Size = new System.Drawing.Size(149, 20);
             this.checkBox_ct_start_frame.TabIndex = 153;
@@ -8384,7 +8449,7 @@ namespace opengl3
             // 
             this.but_load_ct_scan.Location = new System.Drawing.Point(193, 35);
             this.but_load_ct_scan.Name = "but_load_ct_scan";
-            this.but_load_ct_scan.Size = new System.Drawing.Size(181, 30);
+            this.but_load_ct_scan.Size = new System.Drawing.Size(166, 30);
             this.but_load_ct_scan.TabIndex = 137;
             this.but_load_ct_scan.Text = "Загрузить кт";
             this.but_load_ct_scan.UseVisualStyleBackColor = true;
@@ -8393,7 +8458,7 @@ namespace opengl3
             // checkBox_navig_instr
             // 
             this.checkBox_navig_instr.AutoSize = true;
-            this.checkBox_navig_instr.Location = new System.Drawing.Point(304, 264);
+            this.checkBox_navig_instr.Location = new System.Drawing.Point(375, 166);
             this.checkBox_navig_instr.Name = "checkBox_navig_instr";
             this.checkBox_navig_instr.Size = new System.Drawing.Size(106, 20);
             this.checkBox_navig_instr.TabIndex = 152;
@@ -8412,7 +8477,7 @@ namespace opengl3
             // checkBox_target_traj
             // 
             this.checkBox_target_traj.AutoSize = true;
-            this.checkBox_target_traj.Location = new System.Drawing.Point(304, 238);
+            this.checkBox_target_traj.Location = new System.Drawing.Point(375, 140);
             this.checkBox_target_traj.Name = "checkBox_target_traj";
             this.checkBox_target_traj.Size = new System.Drawing.Size(161, 20);
             this.checkBox_target_traj.TabIndex = 151;
@@ -8433,7 +8498,7 @@ namespace opengl3
             // checkBox_bin_area
             // 
             this.checkBox_bin_area.AutoSize = true;
-            this.checkBox_bin_area.Location = new System.Drawing.Point(304, 187);
+            this.checkBox_bin_area.Location = new System.Drawing.Point(375, 89);
             this.checkBox_bin_area.Name = "checkBox_bin_area";
             this.checkBox_bin_area.Size = new System.Drawing.Size(180, 20);
             this.checkBox_bin_area.TabIndex = 150;
@@ -8455,7 +8520,7 @@ namespace opengl3
             this.checkBox_work_area.AutoSize = true;
             this.checkBox_work_area.Checked = true;
             this.checkBox_work_area.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_work_area.Location = new System.Drawing.Point(304, 161);
+            this.checkBox_work_area.Location = new System.Drawing.Point(375, 63);
             this.checkBox_work_area.Name = "checkBox_work_area";
             this.checkBox_work_area.Size = new System.Drawing.Size(117, 20);
             this.checkBox_work_area.TabIndex = 149;
@@ -8477,7 +8542,7 @@ namespace opengl3
             this.checkBox_axis.AutoSize = true;
             this.checkBox_axis.Checked = true;
             this.checkBox_axis.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_axis.Location = new System.Drawing.Point(306, 135);
+            this.checkBox_axis.Location = new System.Drawing.Point(377, 37);
             this.checkBox_axis.Name = "checkBox_axis";
             this.checkBox_axis.Size = new System.Drawing.Size(84, 20);
             this.checkBox_axis.TabIndex = 148;
@@ -8802,6 +8867,17 @@ namespace opengl3
             this.tabPage_robot_calibr.Text = "Калибровка робота";
             this.tabPage_robot_calibr.UseVisualStyleBackColor = true;
             // 
+            // button_robot_navig_gen_poses
+            // 
+            this.button_robot_navig_gen_poses.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_robot_navig_gen_poses.Location = new System.Drawing.Point(6, 367);
+            this.button_robot_navig_gen_poses.Name = "button_robot_navig_gen_poses";
+            this.button_robot_navig_gen_poses.Size = new System.Drawing.Size(152, 54);
+            this.button_robot_navig_gen_poses.TabIndex = 162;
+            this.button_robot_navig_gen_poses.Text = "Генерация точек для калибровки";
+            this.button_robot_navig_gen_poses.UseVisualStyleBackColor = true;
+            this.button_robot_navig_gen_poses.Click += new System.EventHandler(this.button_robot_navig_gen_poses_Click);
+            // 
             // textBox_navig_robot_send_pos_virt
             // 
             this.textBox_navig_robot_send_pos_virt.Location = new System.Drawing.Point(178, 253);
@@ -9044,16 +9120,16 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // button_robot_navig_gen_poses
+            // checkBox_navig_camera_vis
             // 
-            this.button_robot_navig_gen_poses.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button_robot_navig_gen_poses.Location = new System.Drawing.Point(6, 367);
-            this.button_robot_navig_gen_poses.Name = "button_robot_navig_gen_poses";
-            this.button_robot_navig_gen_poses.Size = new System.Drawing.Size(152, 54);
-            this.button_robot_navig_gen_poses.TabIndex = 162;
-            this.button_robot_navig_gen_poses.Text = "Генерация точек для калибровки";
-            this.button_robot_navig_gen_poses.UseVisualStyleBackColor = true;
-            this.button_robot_navig_gen_poses.Click += new System.EventHandler(this.button_robot_navig_gen_poses_Click);
+            this.checkBox_navig_camera_vis.AutoSize = true;
+            this.checkBox_navig_camera_vis.Location = new System.Drawing.Point(377, 274);
+            this.checkBox_navig_camera_vis.Name = "checkBox_navig_camera_vis";
+            this.checkBox_navig_camera_vis.Size = new System.Drawing.Size(76, 20);
+            this.checkBox_navig_camera_vis.TabIndex = 160;
+            this.checkBox_navig_camera_vis.Text = "Камеры";
+            this.checkBox_navig_camera_vis.UseVisualStyleBackColor = true;
+            this.checkBox_navig_camera_vis.CheckedChanged += new System.EventHandler(this.checkBox_navig_camera_vis_CheckedChanged);
             // 
             // MainScanningForm
             // 
@@ -9979,6 +10055,12 @@ namespace opengl3
         private System.Windows.Forms.Button button_set_prop_robot_pos;
         private System.Windows.Forms.TextBox textBox_navig_robot_send_pos_virt;
         private System.Windows.Forms.Button button_robot_navig_gen_poses;
+        private System.Windows.Forms.CheckBox checkBox_navig_model_vis;
+        private System.Windows.Forms.Label label53;
+        private System.Windows.Forms.CheckBox checkBox_navig_roobt_vis;
+        private System.Windows.Forms.CheckBox checkBox_navig_tools_vis;
+        private System.Windows.Forms.CheckBox checkBox_navig_targets_vis;
+        private System.Windows.Forms.CheckBox checkBox_navig_camera_vis;
     }
 }
 
