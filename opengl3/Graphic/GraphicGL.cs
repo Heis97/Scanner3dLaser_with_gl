@@ -2029,16 +2029,16 @@ namespace opengl3
             }
             return fl;
         }
-        public string add_buff_gl(Model3d model, PrimitiveType tp, string name = "new obj", bool new_obj = false)
+        public string add_buff_gl(Model3d model, PrimitiveType tp, string name = "new obj", bool new_obj = true)
         {
             return add_buff_gl(model.mesh, model.color, model.normale, tp, name,new_obj);
         }
 
-        public string add_buff_gl(Model3d model,Color3d_GL color, PrimitiveType tp, string name = "new obj", bool new_obj = false)
+        public string add_buff_gl(Model3d model,Color3d_GL color, PrimitiveType tp, string name = "new obj", bool new_obj = true)
         {
             return add_buff_gl(model.mesh, color, model.normale, tp, name,new_obj);
         }
-        public string add_buff_gl(float[] data_v, Color3d_GL color, float[] data_n, PrimitiveType tp, string name = "new obj",bool comp_normals = false, bool new_obj = false)
+        public string add_buff_gl(float[] data_v, Color3d_GL color, float[] data_n, PrimitiveType tp, string name = "new obj",bool comp_normals = false, bool new_obj = true)
         {
             if (data_v == null)
             {
@@ -2071,7 +2071,7 @@ namespace opengl3
             return buffersGl.add_obj(new openGlobj(data_v, data_c, data_normals, null, tp, name), name,new_obj);
         }
 
-        public string add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp,string name = "new obj", bool new_obj = false)
+        public string add_buff_gl(float[] data_v, float[] data_c, float[] data_n, PrimitiveType tp,string name = "new obj", bool new_obj = true)
         {
             if (data_v == null)
             {
@@ -2701,7 +2701,7 @@ namespace opengl3
             }
             return addMeshWithoutNorm(mesh, PrimitiveType.Lines, color,name);
         }
-        public string addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, Color3d_GL color = default, string name = "new mesh without norm",bool new_obj = false)
+        public string addMeshWithoutNorm(float[] gl_vertex_buffer_data, PrimitiveType primitiveType, Color3d_GL color = default, string name = "new mesh without norm",bool new_obj = true)
         {
             var normal_buffer_data = new float[gl_vertex_buffer_data.Length];
             var color_buffer_data = new float[gl_vertex_buffer_data.Length];

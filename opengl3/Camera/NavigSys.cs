@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Windows.Forms;
 using Dicom.Printing;
 using CommunityToolkit.HighPerformance;
+using Emgu.CV.Dnn;
 
 namespace opengl3
 {
@@ -47,38 +48,39 @@ namespace opengl3
         {
             ctSliceFull = DicomSorter.LoadAndSortSlices(path);
         }
-
-        public void generate_mesh(bool limits,GraphicGL graphic)
+        bool update_model = false;
+        public Matrix<double> ct_model_matrix = UtilMatr.eye_matr(4);
+        public void generate_mesh(bool limits)
         {
             //gen_voxel_model=============================================================
             if (limits) orig_model = DicomProcess.compVoxelModel(ctSliceFull.SlicesAxial_mat, limits_ps);
             else orig_model = DicomProcess.compVoxelModel(ctSliceFull.SlicesAxial_mat);
             if (orig_model == null) return;
-            voxel_model = new VoxelToStlGpu(graphic, orig_model.GetLength(0), orig_model.GetLength(1), orig_model.GetLength(2));
-            //gen stl model========================================================================
-            voxel_model.SetVoxelData(orig_model, graphic, ct_gauss_size, (float)ctSliceFull.pix_xy);
-            var gen_mesh = voxel_model.GenerateMesh_isoline(ct_bin_lvl);
-            graphic.buffersGl.removeObj(generate_model_name);
-            generate_model_name = graphic.add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles, generate_model_name);
-            // add_navig_scene_obj_ct(generate_model_name, NavigVision);
+            
+            
             //========================================================================
-            var ct_model_matrix = UtilMatr.matrix_cv(new Point3d_GL(), new Point3d_GL());
+            ct_model_matrix = UtilMatr.matrix_cv(new Point3d_GL(), new Point3d_GL());
             if (limits)
             {
                 var p_trans = new Point3d_GL(ctSliceFull.pix_xy * (limits_ps[0].Y - limits_ps[0].X) / 2, ctSliceFull.pix_xy * (limits_ps[1].Y - limits_ps[1].X) / 2, ctSliceFull.pix_xy * (limits_ps[2].Y - limits_ps[2].X) / 2);
                 var matr_cent = UtilMatr.to_matrix(UtilMatr.matrix_cv(-p_trans, new Point3d_GL(0, 0, 0)));
-                //GL1.buffersGl.setMatrobj(generate_model_name, 0, UtilMatr.to_matrix( UtilMatr.matrix_cv( p_trans, new Point3d_GL(0, 0, 0))));
-                // set_matr_store_navig_scene_obj_ct(generate_model_name,NavigMatrixType.Self, matr_cent, NavigVision);
-                //GL1.buffersGl.setTranspobj(generate_model_name, 0.5f);
                 transf_work_mri = p_trans + new Point3d_GL(limits_ps[0].X * ctSliceFull.pix_xy, limits_ps[1].X *ctSliceFull.pix_xy, limits_ps[2].X * ctSliceFull.pix_xy);
-                ct_model_matrix = UtilMatr.matrix_cv(p_trans, new Point3d_GL());
+                ct_model_matrix = UtilMatr.matrix_cv(-p_trans, new Point3d_GL());
+                M_self = ct_model_matrix;
             }
             else
             {
                 transf_work_mri = new Point3d_GL(orig_model.GetLength(0) * ctSliceFull.pix_xy / 2, orig_model.GetLength(1) * ctSliceFull.pix_xy / 2, orig_model.GetLength(2) *ctSliceFull.pix_xy / 2);
+
+                ct_model_matrix = UtilMatr.matrix_cv(-transf_work_mri, new Point3d_GL());
+                M_self = ct_model_matrix;
             }
 
+            //if registr in abs_model
 
+            registr_ps = Point3d_GL.multMatr(registr_ps,M_self);
+
+            update_model = true;
             //var reg_ps = GL1.addPointMesh(navig_system.model.ctSliceFull.registr_ps, Color3d_GL.red(), "reg_ps");
             //add_navig_scene_obj_ct(reg_ps, NavigVision);
             // set_matr_store_navig_scene_objs_ct(NavigMatrixType.CtToModel, UtilMatr.to_matrix(ct_model_matrix),NavigVision);  
@@ -271,14 +273,31 @@ namespace opengl3
             mat += mat_rect;
             return mat;
         }
-
+        List<string> models_name = new List<string>();
+        public Matrix<double> M_obj_to_camera1 = UtilMatr.eye_matr(4);
+        public Matrix<double> M_self = UtilMatr.eye_matr(4);
         public void init_draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene)
         {
-
+            models_name.Add(generate_model_name);
         }
         public void draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene,bool visible)
         {
+            if(update_model)
+            {
+                voxel_model = new VoxelToStlGpu(graphic, orig_model.GetLength(0), orig_model.GetLength(1), orig_model.GetLength(2));
+                voxel_model.SetVoxelData(orig_model, graphic, ct_gauss_size, (float)ctSliceFull.pix_xy);
+                var gen_mesh = voxel_model.GenerateMesh_isoline(ct_bin_lvl);
+                generate_model_name = graphic.add_buff_gl(gen_mesh[0], Color3d_GL.gray(), gen_mesh[1], PrimitiveType.Triangles, generate_model_name, false, false); models_name.Add(generate_model_name);
+                update_model = false;
+                
+            }
 
+            if(cur_scene==NavigSys.SceneType.camera1)  graphic.buffersGl.setMatrobj(generate_model_name, 0, UtilMatr.to_matrix(M_obj_to_camera1* M_self));
+            else if(cur_scene == NavigSys.SceneType.model3d) graphic.buffersGl.setMatrobj(generate_model_name, 0, UtilMatr.to_matrix( M_self));
+            for (int i = 0; i < models_name.Count; i++)
+            {
+                graphic.buffersGl.setVisibleobj(models_name[i], visible);
+            }
         }
     }
 
@@ -292,6 +311,8 @@ namespace opengl3
             update_intrisic_param();
         }
         public float[] color = new float[3] {0.1f,0.1f,0.1f};
+
+        #region prop
         [Description("Цвет")]
         [Category("Название")]
         [DisplayName("Цвет")]
@@ -395,8 +416,11 @@ namespace opengl3
             get { return l; }
             set { l = value; update_intrisic_param(); }
         }
+        #endregion
+        public Matrix<double> M_self = UtilMatr.eye_matr(4);
+        public Matrix<double> M_ct_to_obj = UtilMatr.eye_matr(4);
+        public Matrix<double> M_obj_to_camera1 = UtilMatr.eye_matr(4);
 
-        public Matrix<double> matr = UtilMatr.eye_matr(4);
         public Point3d_GL p1;
         public Point3d_GL p2;
 
@@ -404,27 +428,84 @@ namespace opengl3
         {
             p1 = new Point3d_GL(x, y, z);   
             p2 = new Point3d_GL(0, 0, l);
-            matr  = UtilMatr.matrix_cv(new Point3d_GL(x,y,z),new Point3d_GL(a,b,c));
-            p2 = matr * p2;
+            M_self = UtilMatr.matrix_cv(new Point3d_GL(x,y,z),new Point3d_GL(a,b,c));
+            p2 = M_self * p2;
 
         }
         public override string ToString()
         {
-            return Name; // Это будет использоваться для отображения в TreeView
+            return Name; 
         }
-
+        List<string> models_name = new List<string>();
+        public bool update_model = false;
+        public bool create_model = true;
         public void init_draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene)
         {
 
         }
+        public float[] cilindr_mesh(float rad, int count, float height)
+        {
+            var mesh = new List<float>();
+            var angle = 2 * Math.PI / count;
+            var cur_angle = 0d;
+            for (int i = 0; i < count; i++)
+            {
+                var p1x = (float)(rad * Math.Cos(cur_angle));
+                var p1y = (float)(rad * Math.Sin(cur_angle));
+                var p1 = new float[] { p1x, p1y, 0 };
+                cur_angle += angle;
+                var p2x = (float)(rad * Math.Cos(cur_angle));
+                var p2y = (float)(rad * Math.Sin(cur_angle));
+                var p2 = new float[] { p2x, p2y, 0 };
+                var p3 = new float[] { 0, 0, 0 };
+                mesh.AddRange(p1);
+                mesh.AddRange(p2);
+                mesh.AddRange(p3);
+
+
+
+
+                var p1b = new float[] { p1x, p1y, height };
+                var p2b = new float[] { p2x, p2y, height };
+                var p3b = new float[] { 0, 0, height };
+                mesh.AddRange(p1b);
+                mesh.AddRange(p2b);
+                mesh.AddRange(p3b);
+
+                mesh.AddRange(p2b);
+                mesh.AddRange(p1b);
+                mesh.AddRange(p2);
+
+                mesh.AddRange(p1);
+                mesh.AddRange(p2);
+                mesh.AddRange(p1b);
+
+
+            }
+            return mesh.ToArray();
+        }
         public void draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene, bool visible )
         {
+            if(update_model)
+            {
+                var cyl_mesh = cilindr_mesh((float)d / 2, 30, (float)l);
+                name = graphic.add_buff_gl(cyl_mesh, new Color3d_GL(color[0], color[1], color[2]), null, PrimitiveType.Triangles, name, true, create_model);
+                graphic.buffersGl.setlight(name, false);
+                graphic.buffersGl.setTranspobj(name, 0.8f);
+                create_model = false;
+                update_model = false;
+            }
 
+            if (cur_scene == NavigSys.SceneType.camera1) graphic.buffersGl.setMatrobj(name, 0, UtilMatr.to_matrix(M_obj_to_camera1 * M_self));
+            else if (cur_scene == NavigSys.SceneType.model3d) graphic.buffersGl.setMatrobj(name, 0, UtilMatr.to_matrix(M_self));
+
+
+            for (int i = 0; i < models_name.Count; i++)
+            {
+                graphic.buffersGl.setVisibleobj(models_name[i], visible);
+            }
         }
-
     }
-
-
     public class NavigRobotClient : TcpClientWrapper
     {
 
@@ -531,6 +612,10 @@ namespace opengl3
             }
         }
         Matrix4x4f[] ms = new Matrix4x4f[8];
+        List<string> models_name = new List<string>();
+
+        List<string> virt_robot_name = new List<string>();
+        List<string> real_robot_name = new List<string>();
         public void init_draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene)
         {
 
@@ -539,17 +624,16 @@ namespace opengl3
             for (int i = 0; i <= 7; i++)
             {
                 {
-                    var scan_stl_orig = new Model3d("models\\rc5\\" + i + ".stl", false);
-                    graphic.add_buff_gl(scan_stl_orig.mesh, color_arm, scan_stl_orig.normale, PrimitiveType.Triangles, real_robot_models + i);
-                    graphic.add_buff_gl(scan_stl_orig.mesh, color_arm, scan_stl_orig.normale, PrimitiveType.Triangles, virt_robot_models + i);
-                    graphic.buffersGl.setTranspobj(virt_robot_models + i, 0.5f);
+                    var model_ax = new Model3d("models\\rc5\\" + i + ".stl", false);
+                    var ax_name1 = graphic.add_buff_gl(model_ax, PrimitiveType.Triangles, real_robot_models + i); models_name.Add(ax_name1); real_robot_name.Add(ax_name1);
+                    var ax_name2 = graphic.add_buff_gl(model_ax, PrimitiveType.Triangles, virt_robot_models + i); models_name.Add(ax_name2); virt_robot_name.Add(ax_name2);
+                    graphic.buffersGl.setTranspobj(ax_name2, 0.5f);
                 }
 
             }
 
-            var scan_stl = new Model3d("models\\rc5\\t2b.stl", false, 1);
-            graphic.add_buff_gl(scan_stl.mesh, color_end, scan_stl.normale, PrimitiveType.Triangles, "t2");
-
+            //var tool_name1 = graphic.add_buff_gl(new Model3d("models\\rc5\\t2b.stl", false, 1), color_end, PrimitiveType.Triangles, "t2");
+           // models_name.Add(tool_name1);
             var L21 = 156;
             var L31 = -148;
 
@@ -572,23 +656,34 @@ namespace opengl3
 
             for (int i = 0; i < 8; i++)
             {
-                graphic.buffersGl.setMatrobj(real_robot_models + i, 0, ms[i]);
-                graphic.buffersGl.setMatrobj(virt_robot_models + i, 0, ms[i]);
+                graphic.buffersGl.setMatrobj(real_robot_name[i], 0, ms[i]);
+                graphic.buffersGl.setMatrobj(virt_robot_name[i], 0, ms[i]);
             }
-            graphic.buffersGl.setMatrobj("t2", 0, ms[7]);
+            //graphic.buffersGl.setMatrobj(tool_name1, 0, ms[7]);
 
+            set_conf_robot_pulse(new double[] { 0, 0, 0, 0, 0, 0 },true,null,false);
+            set_conf_robot_pulse(new double[] { 0, 0, 0, 0, 0, 0 }, true, null, true);
             //GL1.buffersGl.setTranspobj("t2", 0);
 
         }
         public void draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene, bool visible)
         {
+            for (int i = 0; i <= 7; i++)
+            {
+                graphic.buffersGl.setMatrobj(virt_robot_name[i], 0, qms_virt[i]);                
+                graphic.buffersGl.setMatrobj(real_robot_name[i], 0, qms[i]);
+            }
 
+            for (int i = 0; i < models_name.Count; i++)
+            {
+                graphic.buffersGl.setVisibleobj(models_name[i], visible);
+            }
         }
         Matrix4x4f[] qms_virt = new Matrix4x4f[8];
         Matrix4x4f[] qms = new Matrix4x4f[8];
         string real_robot_models = "ax_";
         string virt_robot_models = "ax_virt_";
-        public void set_conf_robot_pulse(GraphicGL graphic, double[] q, bool rad = true, Matrix<double> M_base_in_world = null, bool virt = false)
+        public void set_conf_robot_pulse(double[] q, bool rad = true, Matrix<double> M_base_in_world = null, bool virt = false)
         {
             //var q = new double[6];
             Matrix4x4f base_matrix = Matrix4x4f.Identity;
@@ -608,17 +703,13 @@ namespace opengl3
                 if (virt)
                 {
                     qms_virt[i] = base_matrix * mq * ms[i];
-                    graphic.buffersGl.setMatrobj(virt_robot_models + i, 0, qms_virt[i]);
                 }
                 else
                 {
                     qms[i] = base_matrix * mq * ms[i];
-                    graphic.buffersGl.setMatrobj(real_robot_models + i, 0, qms[i]);
                 }
 
             }
-            //  GL1.buffersGl.setMatrobj("t2", 0, qms[7]);//pulse
-            //GL1.buffersGl.setMatrobj("t2", 0, qms[7]);
         }
 
         public async void send_navig_robot(string text)
@@ -683,20 +774,12 @@ namespace opengl3
         Point3d_GL tcp;
         Point3d_GL rotate;
 
-        public Matrix<double> matrix_frame = new Matrix<double>(new double[,] {//frame markers
-                {1,0,0,0 },
-                {0,1,0,0 },
-                {0,0,1,0 },
-                {0,0,0,1 }});
+        public Matrix<double> matrix_frame = UtilMatr.eye_matr(4);
         public Matrix<double> matrix_frame_inv;
         public Matrix<double> matrix_model;
         public Matrix<double> matrix_model_inv;
 
-        public Matrix<double> matrix_model_debug = new Matrix<double>(new double[,] {//3d model markers
-                {1,0,0,0 },
-                {0,1,0,0 },
-                {0,0,1,0 },
-                {0,0,0,1 }});
+        public Matrix<double> matrix_model_debug = UtilMatr.eye_matr(4);
 
         public string name_3d_model = "new_tool";
         public string path_3d_model = null;
@@ -704,11 +787,7 @@ namespace opengl3
         public string path_3d_model_debug = null;
         public string name_3d_model_trace_tcp = "new_trace_tcp";
         
-        public Matrix<double> matrix_tcp = new Matrix<double>(new double[,] {
-                {1,0,0,0 },
-                {0,1,0,0 },
-                {0,0,1,0 },
-                {0,0,0,1 }});
+        public Matrix<double> matrix_tcp = UtilMatr.eye_matr(4);
         public ToolType tool_type;
         public List<List<Point3d_GL>> ps_for_registr = new List<List<Point3d_GL>>();
 
@@ -926,7 +1005,7 @@ namespace opengl3
             {
                 var m_inv = ms[i].Clone();
 
-                CvInvoke.Invert(m_inv, m_inv, DecompMethod.Svd);
+                CvInvoke.Invert(m_inv, m_inv, DecompMethod.LU);
 
                 var m_test = m_inv * ms[i];
                 var tcp = new Matrix<double>(new double[,] {
@@ -961,7 +1040,12 @@ namespace opengl3
             this.matrix_tcp = tcp_aver;
             //Console.WriteLine("tcp_aver");
             //prin.t(tcp_aver);
-
+            this.tcp = new Point3d_GL(tcp_aver[0, 3], tcp_aver[1, 3], tcp_aver[2, 3]);
+            this.matrix_tcp = new Matrix<double>(new double[,] {
+                {1,0,0,tcp.x },
+                {0,1,0,tcp.y },
+                {0,0,1,tcp.z },
+                {0,0,0,1 }});
             this.tcp = new Point3d_GL(tcp_aver[0, 3], tcp_aver[1, 3], tcp_aver[2, 3]);
 
             return this.tcp;
@@ -1156,7 +1240,7 @@ namespace opengl3
             ps = new Point3d_GL[] { p0, p1, p2, p3,
                 new Point3d_GL(matrix_model[0, 3], matrix_model[1, 3], matrix_model[2, 3]),
                 new Point3d_GL(matrix_frame[0, 3], matrix_frame[1, 3], matrix_frame[2, 3]),
-                new Point3d_GL((p0- p1).magnitude(), (p0- p2).magnitude(), (p2- p1).magnitude())
+                new Point3d_GL((p0 - p1).magnitude(), (p0 - p2).magnitude(), (p2 - p1).magnitude())
             };
 
             /*var ps_ext = gen_3d_ps_other_corners(new Point3d_GL(9, 9, 0), 50, 100, matrix_frame);
@@ -1297,20 +1381,22 @@ namespace opengl3
         public void draw_model_3d(GraphicGL graphic, NavigSys.SceneType cur_scene,bool visible)
         {
 
-            if (matrix_model != null && name_3d_model != null && toolfunc != ToolFuncType.Registr) graphic.buffersGl.setMatrobj(name_3d_model, 0, UtilMatr.to_matrix(matrix_model));
+            if (matrix_model != null && name_3d_model != null) graphic.buffersGl.setMatrobj(name_3d_model, 0, UtilMatr.to_matrix(matrix_model));
             if (matrix_frame != null && matrix_model_debug != null && path_3d_model_debug != null) graphic.buffersGl.setMatrobj(name_3d_model_debug, 0, UtilMatr.to_matrix(matrix_frame * matrix_model_debug));
             //Console.WriteLine("\n\n" + j);
 
             if (toolfunc == ToolFuncType.Registr)
             {
-                graphic.buffersGl.removeObj(name_3d_model_trace_tcp);
                 var ps_all = get_points_for_registr_draw();
                 if (ps_all != null)
                     if (ps_all.Length != 0)
                         graphic.addPointMesh(ps_all, Color3d_GL.red(), name_3d_model_trace_tcp, false);
             }
-            
 
+            for (int i = 0; i < models_name.Count; i++)
+            {
+                graphic.buffersGl.setVisibleobj(models_name[i], visible);
+            }
 
             /*var ps_name = "ps_test" + j;
             glControl1.Invoke((MethodInvoker)(() => GL1.buffersGl.removeObj(ps_name)));
@@ -2123,22 +2209,43 @@ namespace opengl3
                     {
                         tools[i].add_point_for_registr(number_registr_point_current, tools[current_registration_instrument].ps[4]);
                     }
-                    if (registration_done)
-                    {
-                        if (tools[i].matrix_frame != null)
-                        {
-                            var model_scene_matrix = tools[i].matrix_frame * tools[i].matrix_tcp;
-                        }
-
-                    }
+                    
                 }
             }
-
-            
-
+            update_matrix_model_to_camera1();
+            update_ms_targets();
+            update_ms_model();
+            update_ms_robot();
             return this;
         }
 
+        public Matrix<double> matrix_model_to_camera1 = UtilMatr.eye_matr(4);
+        //public Matrix<double> matrix_model_to_camera1 = UtilMatr.eye_matr(4);
+        public void update_matrix_model_to_camera1()
+        {
+            if(registration_done)
+            {
+                var check_inds = current_model_instrument < tools.Length && current_model_instrument >= 0 && current_registration_instrument < tools.Length && current_registration_instrument >= 0;
+                if (!check_inds) { Console.WriteLine("update_matrix_model_to_camera1 failed"); return; }
+                matrix_model_to_camera1 = tools[current_model_instrument].matrix_frame * tools[current_model_instrument].matrix_tcp;
+            }
+        }
+        public void update_ms_targets()
+        {
+            for (int i = 0; i < targets.Count; i++)
+            {
+                targets[i].M_obj_to_camera1 = matrix_model_to_camera1;
+            }
+        }
+
+        public void update_ms_model()
+        {
+            model.M_obj_to_camera1 = matrix_model_to_camera1;
+        }
+        public void update_ms_robot()
+        {
+
+        }
         public int change_navig_current_model_instrument()
         {
             current_model_instrument++;
@@ -2210,7 +2317,7 @@ namespace opengl3
                 var model_frame_matrix = b2 * b1_inv;
                 prin.t("model_frame_matrix");
                 prin.t(model_frame_matrix);
-                tools[current_model_instrument].name_3d_model = model.generate_model_name;
+                //tools[current_model_instrument].name_3d_model = model.generate_model_name;
                 tools[current_model_instrument].matrix_tcp = model_frame_matrix;
                 model_instrument = current_model_instrument;
                 registration_done = true;
@@ -2533,13 +2640,13 @@ namespace opengl3
 
 
 
-        public void draw_navig_systems(GraphicGL graphic, SceneType cur_scene)
+        public void draw_navig_systems(GraphicGL graphic)
         {
-            for (int i = 0; i < tools.Length; i++) tools[i].draw_model_3d(graphic, cur_scene, tools_vision);            
-            for (int i = 0; i < targets.Count; i++) targets[i].draw_model_3d(graphic, cur_scene, targets_vision);           
-            robot.draw_model_3d(graphic, cur_scene, robot_vision);
-            model.draw_model_3d(graphic, cur_scene, model_vision);
-            draw_model_3d(graphic, cur_scene, camera_vision);
+            for (int i = 0; i < tools.Length; i++) tools[i].draw_model_3d(graphic, sceneType, tools_vision);            
+            for (int i = 0; i < targets.Count; i++) targets[i].draw_model_3d(graphic, sceneType, targets_vision);           
+            robot.draw_model_3d(graphic, sceneType, robot_vision);
+            model.draw_model_3d(graphic, sceneType, model_vision);
+            draw_model_3d(graphic, sceneType, camera_vision);
         }
        public void calibrate_navig_tool(string tool_cal_path, int tool_ind)
         {
@@ -2570,7 +2677,7 @@ namespace opengl3
             // RobotFrame.comp_inv_kinem_priv_rc5_real()
             //set_conf_robot_pulse(qs, navig_system.robot.robotType, false, prop_M_base_in_world);
             //--------------------------------------------------------------
-           // var tcp_cal = navig_system.tools[tool_ind].calibrate_tool_tcp_4p(ps_calib.ToArray());
+            var tcp_cal = tools[tool_ind].calibrate_tool_tcp_4p(ps_calib.ToArray());
 
         }
     }

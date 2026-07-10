@@ -705,6 +705,7 @@ namespace opengl3
             this.rangeSliderVinv_limits_model_h = new RangeSliderVinv();
             this.tabControl_navig = new System.Windows.Forms.TabControl();
             this.tabPage_3d_model_exrtract = new System.Windows.Forms.TabPage();
+            this.checkBox_navig_camera_vis = new System.Windows.Forms.CheckBox();
             this.checkBox_navig_roobt_vis = new System.Windows.Forms.CheckBox();
             this.checkBox_navig_tools_vis = new System.Windows.Forms.CheckBox();
             this.checkBox_navig_targets_vis = new System.Windows.Forms.CheckBox();
@@ -780,7 +781,8 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.checkBox_navig_camera_vis = new System.Windows.Forms.CheckBox();
+            this.radioButton_navig_scene_camera1 = new System.Windows.Forms.RadioButton();
+            this.radioButton_navig_scene_model = new System.Windows.Forms.RadioButton();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -8342,6 +8344,8 @@ namespace opengl3
             // 
             // tabPage_3d_model_exrtract
             // 
+            this.tabPage_3d_model_exrtract.Controls.Add(this.radioButton_navig_scene_model);
+            this.tabPage_3d_model_exrtract.Controls.Add(this.radioButton_navig_scene_camera1);
             this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_navig_camera_vis);
             this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_navig_roobt_vis);
             this.tabPage_3d_model_exrtract.Controls.Add(this.checkBox_navig_tools_vis);
@@ -8371,10 +8375,21 @@ namespace opengl3
             this.tabPage_3d_model_exrtract.Text = "Выделение 3д модели";
             this.tabPage_3d_model_exrtract.UseVisualStyleBackColor = true;
             // 
+            // checkBox_navig_camera_vis
+            // 
+            this.checkBox_navig_camera_vis.AutoSize = true;
+            this.checkBox_navig_camera_vis.Location = new System.Drawing.Point(250, 277);
+            this.checkBox_navig_camera_vis.Name = "checkBox_navig_camera_vis";
+            this.checkBox_navig_camera_vis.Size = new System.Drawing.Size(76, 20);
+            this.checkBox_navig_camera_vis.TabIndex = 160;
+            this.checkBox_navig_camera_vis.Text = "Камеры";
+            this.checkBox_navig_camera_vis.UseVisualStyleBackColor = true;
+            this.checkBox_navig_camera_vis.CheckedChanged += new System.EventHandler(this.checkBox_navig_camera_vis_CheckedChanged);
+            // 
             // checkBox_navig_roobt_vis
             // 
             this.checkBox_navig_roobt_vis.AutoSize = true;
-            this.checkBox_navig_roobt_vis.Location = new System.Drawing.Point(377, 375);
+            this.checkBox_navig_roobt_vis.Location = new System.Drawing.Point(250, 378);
             this.checkBox_navig_roobt_vis.Name = "checkBox_navig_roobt_vis";
             this.checkBox_navig_roobt_vis.Size = new System.Drawing.Size(66, 20);
             this.checkBox_navig_roobt_vis.TabIndex = 159;
@@ -8385,7 +8400,7 @@ namespace opengl3
             // checkBox_navig_tools_vis
             // 
             this.checkBox_navig_tools_vis.AutoSize = true;
-            this.checkBox_navig_tools_vis.Location = new System.Drawing.Point(377, 349);
+            this.checkBox_navig_tools_vis.Location = new System.Drawing.Point(250, 352);
             this.checkBox_navig_tools_vis.Name = "checkBox_navig_tools_vis";
             this.checkBox_navig_tools_vis.Size = new System.Drawing.Size(115, 20);
             this.checkBox_navig_tools_vis.TabIndex = 158;
@@ -8396,7 +8411,7 @@ namespace opengl3
             // checkBox_navig_targets_vis
             // 
             this.checkBox_navig_targets_vis.AutoSize = true;
-            this.checkBox_navig_targets_vis.Location = new System.Drawing.Point(377, 323);
+            this.checkBox_navig_targets_vis.Location = new System.Drawing.Point(250, 326);
             this.checkBox_navig_targets_vis.Name = "checkBox_navig_targets_vis";
             this.checkBox_navig_targets_vis.Size = new System.Drawing.Size(59, 20);
             this.checkBox_navig_targets_vis.TabIndex = 157;
@@ -8407,7 +8422,7 @@ namespace opengl3
             // label53
             // 
             this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(358, 244);
+            this.label53.Location = new System.Drawing.Point(231, 247);
             this.label53.Name = "label53";
             this.label53.Size = new System.Drawing.Size(103, 16);
             this.label53.TabIndex = 156;
@@ -8416,7 +8431,7 @@ namespace opengl3
             // checkBox_navig_model_vis
             // 
             this.checkBox_navig_model_vis.AutoSize = true;
-            this.checkBox_navig_model_vis.Location = new System.Drawing.Point(377, 297);
+            this.checkBox_navig_model_vis.Location = new System.Drawing.Point(250, 300);
             this.checkBox_navig_model_vis.Name = "checkBox_navig_model_vis";
             this.checkBox_navig_model_vis.Size = new System.Drawing.Size(76, 20);
             this.checkBox_navig_model_vis.TabIndex = 155;
@@ -8660,10 +8675,10 @@ namespace opengl3
             this.tabPage_registr_point.Controls.Add(this.button_navig_write_pos_registr_point_enable);
             this.tabPage_registr_point.Controls.Add(this.button_navig_registr_model);
             this.tabPage_registr_point.Controls.Add(this.checkBox_registr_points_visible);
-            this.tabPage_registr_point.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_registr_point.Location = new System.Drawing.Point(4, 25);
             this.tabPage_registr_point.Name = "tabPage_registr_point";
             this.tabPage_registr_point.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_registr_point.Size = new System.Drawing.Size(561, 426);
+            this.tabPage_registr_point.Size = new System.Drawing.Size(561, 423);
             this.tabPage_registr_point.TabIndex = 3;
             this.tabPage_registr_point.Text = "Регистрация точек";
             this.tabPage_registr_point.UseVisualStyleBackColor = true;
@@ -9044,7 +9059,7 @@ namespace opengl3
             this.textBox_navig_robot_send_pos.Name = "textBox_navig_robot_send_pos";
             this.textBox_navig_robot_send_pos.Size = new System.Drawing.Size(373, 22);
             this.textBox_navig_robot_send_pos.TabIndex = 142;
-            this.textBox_navig_robot_send_pos.Text = "\"\"";
+            this.textBox_navig_robot_send_pos.Text = "28.0, -75.0, 120.0, -30.0, 30.0, 0.0";
             // 
             // button_navig_robot_send_position
             // 
@@ -9120,16 +9135,29 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // checkBox_navig_camera_vis
+            // radioButton_navig_scene_camera1
             // 
-            this.checkBox_navig_camera_vis.AutoSize = true;
-            this.checkBox_navig_camera_vis.Location = new System.Drawing.Point(377, 274);
-            this.checkBox_navig_camera_vis.Name = "checkBox_navig_camera_vis";
-            this.checkBox_navig_camera_vis.Size = new System.Drawing.Size(76, 20);
-            this.checkBox_navig_camera_vis.TabIndex = 160;
-            this.checkBox_navig_camera_vis.Text = "Камеры";
-            this.checkBox_navig_camera_vis.UseVisualStyleBackColor = true;
-            this.checkBox_navig_camera_vis.CheckedChanged += new System.EventHandler(this.checkBox_navig_camera_vis_CheckedChanged);
+            this.radioButton_navig_scene_camera1.AutoSize = true;
+            this.radioButton_navig_scene_camera1.Location = new System.Drawing.Point(400, 220);
+            this.radioButton_navig_scene_camera1.Name = "radioButton_navig_scene_camera1";
+            this.radioButton_navig_scene_camera1.Size = new System.Drawing.Size(66, 20);
+            this.radioButton_navig_scene_camera1.TabIndex = 161;
+            this.radioButton_navig_scene_camera1.TabStop = true;
+            this.radioButton_navig_scene_camera1.Text = "Сцена";
+            this.radioButton_navig_scene_camera1.UseVisualStyleBackColor = true;
+            this.radioButton_navig_scene_camera1.CheckedChanged += new System.EventHandler(this.radioButton_navig_scene_camera1_CheckedChanged);
+            // 
+            // radioButton_navig_scene_model
+            // 
+            this.radioButton_navig_scene_model.AutoSize = true;
+            this.radioButton_navig_scene_model.Location = new System.Drawing.Point(400, 247);
+            this.radioButton_navig_scene_model.Name = "radioButton_navig_scene_model";
+            this.radioButton_navig_scene_model.Size = new System.Drawing.Size(75, 20);
+            this.radioButton_navig_scene_model.TabIndex = 162;
+            this.radioButton_navig_scene_model.TabStop = true;
+            this.radioButton_navig_scene_model.Text = "Модель";
+            this.radioButton_navig_scene_model.UseVisualStyleBackColor = true;
+            this.radioButton_navig_scene_model.CheckedChanged += new System.EventHandler(this.radioButton_navig_scene_model_CheckedChanged);
             // 
             // MainScanningForm
             // 
@@ -10061,6 +10089,8 @@ namespace opengl3
         private System.Windows.Forms.CheckBox checkBox_navig_tools_vis;
         private System.Windows.Forms.CheckBox checkBox_navig_targets_vis;
         private System.Windows.Forms.CheckBox checkBox_navig_camera_vis;
+        private System.Windows.Forms.RadioButton radioButton_navig_scene_model;
+        private System.Windows.Forms.RadioButton radioButton_navig_scene_camera1;
     }
 }
 

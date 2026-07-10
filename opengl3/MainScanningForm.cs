@@ -3100,7 +3100,7 @@ namespace opengl3
 
             prop_gr_light.Update();
 
-            navig_system.draw_navig_systems(GL1, NavigSys.SceneType.camera1);
+            navig_system.draw_navig_systems(GL1);
             /*var mat1_or = GL1.matFromMonitor(0);
             CvInvoke.Flip(mat1_or, mat1_or, FlipType.Vertical);
             System.Drawing.PointF[] corn = null;
@@ -6928,8 +6928,10 @@ namespace opengl3
                        if(NavigSys.cam_numbers ==3)
                         {
                             navig_system.points2d_cams[i] = navig_system.navigation_processing_get_points2d_3cam(ref mat_global[ind_cam], ind_cam);
-                            imb_main[i].Image = mat_global[ind_cam];
-                            var ps = new System.Drawing.PointF[12];
+                            //imb_main[i].Image = mat_global[ind_cam];
+
+                            imb_main[i].Invoke((MethodInvoker)(() => imb_main[i].Image = mat_global[ind_cam]));
+                            //var ps = new System.Drawing.PointF[12];
                             //imb_main[i].Image = FindCircles.findCircles_v2( mat_global[ind_cam],ref ps,chess_size);
 
 
@@ -7684,47 +7686,7 @@ namespace opengl3
         }
 
 
-        public float[] cilindr_mesh(float rad, int count,float height)
-        {
-            var mesh = new List<float>();
-            var angle = 2 * Math.PI / count;
-            var cur_angle = 0d;
-            for (int i = 0; i < count; i++)
-            {
-                var p1x = (float)(rad * Math.Cos(cur_angle));
-                var p1y = (float)(rad * Math.Sin(cur_angle));
-                var p1 = new float[] { p1x, p1y, 0 };
-                cur_angle += angle;
-                var p2x = (float)(rad * Math.Cos(cur_angle));
-                var p2y = (float)(rad * Math.Sin(cur_angle));
-                var p2 = new float[] { p2x, p2y, 0 };
-                var p3 = new float[] { 0, 0, 0 };
-                mesh.AddRange(p1);
-                mesh.AddRange(p2);
-                mesh.AddRange(p3);
-
-                
-
-
-                var p1b = new float[] { p1x, p1y, height };
-                var p2b = new float[] { p2x, p2y, height };
-                var p3b = new float[] { 0, 0, height };
-                mesh.AddRange(p1b);
-                mesh.AddRange(p2b);
-                mesh.AddRange(p3b);
-
-                mesh.AddRange(p2b);
-                mesh.AddRange(p1b);
-                mesh.AddRange(p2);
-
-                mesh.AddRange(p1);
-                mesh.AddRange(p2);
-                mesh.AddRange(p1b);
-
-
-            }
-            return mesh.ToArray();
-        }
+       
 
 
         Image<Gray, float> MeshToIm(float[] mesh, int cols = 41, int rows = 91)
@@ -11306,7 +11268,7 @@ namespace opengl3
             var qs_str = cur_but.Text;
             textBox_navig_robot_send_pos_virt.Text = qs_str;
             var qs = parse_pose(qs_str);
-            navig_system.robot.set_conf_robot_pulse(GL1, qs,  false, navig_system.robot.M_base_in_world,true);
+            navig_system.robot.set_conf_robot_pulse(qs,  false, navig_system.robot.M_base_in_world,true);
         }
 
         private void but_navig_robot_set_pos_real_Click(object sender, EventArgs e)
@@ -11421,11 +11383,11 @@ namespace opengl3
        
         private void but_generate_model_ct_Click(object sender, EventArgs e)
         {
-            navig_system.model.generate_mesh(true,GL1);
+            navig_system.model.generate_mesh(true);
         }
         private void button_generate_model_ct_full_area_Click(object sender, EventArgs e)
         {
-             navig_system.model.generate_mesh(false,GL1);
+             navig_system.model.generate_mesh(false);
         }
 
         
@@ -11499,33 +11461,18 @@ namespace opengl3
             {
                 treeView_navig_targets.SelectedNode.Text = propertyGrid_navig_target.SelectedObject.ToString();
             }
-            update_navig_target_represent((NavigTarget)propertyGrid_navig_target.SelectedObject);
+            var sel_obj = (NavigTarget)propertyGrid_navig_target.SelectedObject;
+            var ind = navig_system.targets.IndexOf(sel_obj);
+            update_navig_target_represent(ind);
         }
         int i_target = 0;
-        private string update_navig_target_represent(NavigTarget target, bool create = false)
+        private void update_navig_target_represent(int target_ind)
         {
             //3d--------------------------------------------
-            var cyl_mesh = cilindr_mesh((float)target.d/2, 30, (float)target.l);
-            if(!create) GL1.buffersGl.removeObj(target.name);
-            var name = GL1.add_buff_gl(cyl_mesh, new Color3d_GL(target.color[0], target.color[1], target.color[2]), null, PrimitiveType.Triangles, target.name, true);
-            /*add_navig_scene_obj_ct(name, NavigVision);
-            set_matr_navig_scene_obj_ct(name, UtilMatr.to_matrix(target.matr), NavigVision);
-            set_matr_store_navig_scene_objs_ct(NavigMatrixType.CtToModel, UtilMatr.to_matrix(ct_model_matrix), NavigVision);*/
-            
-            GL1.buffersGl.setlight(name,false);
-            GL1.buffersGl.setTranspobj (name, 0.8f);
-            //GL1.addPointMesh(new Point3d_GL[] { target.p1, target.p2 }, new Color3d_GL(target.color[0], target.color[1], target.color[2]));
-            //GL1.buffersGl.setMatrobj(name, 0, UtilMatr.to_matrix(target.matr));
-
-            //Console.WriteLine("repr");
-            //GL1.buffersGl.setTransfObj(target.name, 0, new Point3d_GL(target.x, target.y, target.z), new Point3d_GL(target.a, target.b, target.c));
+            navig_system.targets[target_ind].update_model = true;
             //2d-------------------------------------------
-
             navig_system.model.redraw_navig_slices(navig_system.targets, ref imageBox_navig_axial, ref imageBox_navig_sagital, ref imageBox_navig_coronal);
 
-
-            //GL1.buffersGl.setXobj(target.name, 0, target.x);
-            return name;
         }
        
 
@@ -11537,9 +11484,11 @@ namespace opengl3
             newNavigTarget.name = "Цель " + i_target;
             var color = Color3d_GL.random();
             newNavigTarget.color = new float[] { color.r, color.g, color.b, };
-            newNavigTarget.name = update_navig_target_represent(newNavigTarget, true);  
-            i_target++;
             navig_system.targets.Add(newNavigTarget);
+            update_navig_target_represent(navig_system.targets.Count-1);
+            newNavigTarget.update_model = true;
+            i_target++;
+            
 
             TreeNode newNode = new TreeNode(newNavigTarget.ToString());    
             newNode.Tag = newNavigTarget;
@@ -11617,15 +11566,15 @@ namespace opengl3
         {
             if (tabControl_navig.SelectedTab == tabPage_3d_model_exrtract)
             {
-                navig_system.sceneType = NavigSys.SceneType.model3d;
+                //navig_system.sceneType = NavigSys.SceneType.model3d;
             }
             else if (tabControl_navig.SelectedTab == tabPage_navig_target)
             {
-                navig_system.sceneType = NavigSys.SceneType.model3d;
+                //navig_system.sceneType = NavigSys.SceneType.model3d;
             }
             else if (tabControl_navig.SelectedTab == tabPage_registr_point)
             {
-                navig_system.sceneType = NavigSys.SceneType.camera1;
+                //navig_system.sceneType = NavigSys.SceneType.camera1;
             }
         }
 
@@ -11700,8 +11649,10 @@ namespace opengl3
         double[] parse_pose(string pose_str)
         {
             var pose = new double[6];
+            if (!pose_str.Contains(',')) return pose;
             var pose_l = pose_str.Split(',');
-            for(int i=0; i<6;i++)
+            if (pose_l.Length<6) return pose;
+            for (int i=0; i<6;i++)
             {
                 pose[i] = Convert.ToDouble(pose_l[i]);
             }
@@ -11921,6 +11872,23 @@ namespace opengl3
         private void checkBox_navig_camera_vis_CheckedChanged(object sender, EventArgs e)
         {
             navig_system.camera_vision = ((CheckBox)sender).Checked;
+        }
+
+        private void radioButton_navig_scene_camera1_CheckedChanged(object sender, EventArgs e)
+        {
+            if(((RadioButton)sender).Checked)
+            {
+                navig_system.sceneType = NavigSys.SceneType.camera1;
+            }
+            
+        }
+
+        private void radioButton_navig_scene_model_CheckedChanged(object sender, EventArgs e)
+        {
+            if (((RadioButton)sender).Checked)
+            {
+                navig_system.sceneType = NavigSys.SceneType.model3d;
+            }
         }
     }
 }

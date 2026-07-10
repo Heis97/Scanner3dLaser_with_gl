@@ -114,7 +114,7 @@ namespace opengl3
                     var pixelSpacing = dicomFile.Dataset.GetValues<double>(DicomTag.PixelSpacing);
                     var pixelSpacingX = pixelSpacing[0];
                     var pixelSpacingY = (pixelSpacing.Length > 1) ? pixelSpacing[1] : pixelSpacing[0];
-                    Console.WriteLine("Spacing: " + pixelSpacingX + " " + pixelSpacingY);
+                    //Console.WriteLine("Spacing: " + pixelSpacingX + " " + pixelSpacingY);
                     pix_xy = pixelSpacingX;
                 }
 
@@ -139,7 +139,7 @@ namespace opengl3
                 }
                 else
                 {
-                    Console.WriteLine($"Предупреждение: файл {file} не содержит необходимых тегов пространственного положения.");
+                    //Console.WriteLine($"Предупреждение: файл {file} не содержит необходимых тегов пространственного положения.");
                 }
             }
 
@@ -163,14 +163,14 @@ namespace opengl3
             var sortedSlices = slices.OrderBy(s => s.SliceNormalProjection).ToList();
 
             // Выводим информацию
-            Console.WriteLine($"\nНайдено {sortedSlices.Count} срезов.");
+           // Console.WriteLine($"\nНайдено {sortedSlices.Count} срезов.");
             for (int i = 0; i < sortedSlices.Count; i++)
             {
-                Console.WriteLine($"Срез {i}: Файл '{Path.GetFileName(sortedSlices[i].Filename)}', Проекция = {sortedSlices[i].SliceNormalProjection:F2} мм");
+               // Console.WriteLine($"Срез {i}: Файл '{Path.GetFileName(sortedSlices[i].Filename)}', Проекция = {sortedSlices[i].SliceNormalProjection:F2} мм");
                 if (i > 0)
                 {
                     double spacing = sortedSlices[i].SliceNormalProjection - sortedSlices[i - 1].SliceNormalProjection;
-                    Console.WriteLine($"  Расстояние до предыдущего среза: {spacing:F3} мм");
+                    //Console.WriteLine($"  Расстояние до предыдущего среза: {spacing:F3} мм");
                     pix_z = spacing;
                 }
             }
