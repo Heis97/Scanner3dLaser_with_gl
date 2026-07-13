@@ -11144,7 +11144,13 @@ namespace opengl3
 
         }
 
-        
+        private void timer_navig_processing_Tick(object sender, EventArgs e)
+        {
+            var ps3d = navig_system.navigation_processing_get_points3d_3cam(navig_system.points2d_cams[0], navig_system.points2d_cams[1], navig_system.points2d_cams[2]);    //navyg_sys_info(camera_only)
+            navig_system.navigation_processing_get_scene(ps3d);
+        }
+
+
         Matrix<double> model_frame_matrix = UtilMatr.eye_matr(4);
         void load_navig_sys()
         {
@@ -11234,6 +11240,7 @@ namespace opengl3
             navig_system.robot.label_navig_robot_status_pose = label_navig_robot_status_pose;
             Console.WriteLine("calibr");
             navig_system.calibrate_navig_tool("tool1_2906_1a", 0);
+            navig_system.calibrate_navig_tool("tool1_2906_1a", 2);
             Console.WriteLine("calibr_done");
 
         }
@@ -11249,11 +11256,16 @@ namespace opengl3
                         
             videoStart_sam(navig_system.cam1_ind);
             videoStart_sam(navig_system.cam2_ind);
+
             if(NavigSys.cam_numbers==3)
             {
                 videoStart_sam(navig_system.cam3_ind);
-                var thr_navig = new Thread(navigation_processing_3cam);
-                thr_navig.Start();
+                //var thr_navig = new Thread(navigation_processing_3cam);
+                //thr_navig.Start();
+
+                timer_navig_processing.Start();
+
+
             }
             else
             {
@@ -11268,7 +11280,7 @@ namespace opengl3
             var qs_str = cur_but.Text;
             textBox_navig_robot_send_pos_virt.Text = qs_str;
             var qs = NavigRobotClient.parse_pose(qs_str);
-            navig_system.robot.set_conf_robot_pulse(qs,  false, navig_system.robot.M_base_in_world,true);
+            navig_system.robot.set_conf_robot_pulse(qs,  false,true);
         }
 
         private void but_navig_robot_set_pos_real_Click(object sender, EventArgs e)
@@ -11786,10 +11798,11 @@ namespace opengl3
 
             var qs_str = textBox_navig_robot_send_pos.Text;
             var qs = NavigRobotClient.parse_pose(qs_str);
-            var poses = navig_system.robot.gen_poses_for_cal(qs, navig_system.tools[index_rob_marker].matrix_frame);
+            var prop_matrix = new RobotFrame( new PositionRob( textBox_navig_marker_prop_matrix.Text, ','),0,0,0, navig_system.robot.robotType).getMatrix();
+            var poses = navig_system.robot.gen_poses_for_cal(qs, navig_system.tools[index_rob_marker].matrix_frame, prop_matrix);
 
             var x_but_slide = 6;
-            var y_but_slide = 376;
+            var y_but_slide = 436;
             int num_colomn = 8;
             var y_dist = 56;
 
@@ -11858,6 +11871,15 @@ namespace opengl3
                 navig_system.sceneType = NavigSys.SceneType.model3d;
             }
         }
+
+        private void button_robot_navig_prop_pos_Click(object sender, EventArgs e)
+        {
+            var qs_str = textBox_navig_robot_send_pos.Text;
+            var qs = NavigRobotClient.parse_pose(qs_str);
+            //var poses = navig_system.robot.gen_poses_for_cal(qs, navig_system.tools[index_rob_marker].matrix_frame);
+        }
+
+        
     }
 }
 

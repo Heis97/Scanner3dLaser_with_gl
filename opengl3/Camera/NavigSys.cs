@@ -524,8 +524,8 @@ namespace opengl3
         private DateTime _lastStatsTime = DateTime.UtcNow;
         public RobotFrame.RobotType robotType = RobotFrame.RobotType.RC5;
 
-        public Matrix<double> M_base_in_world;
-        public Matrix<double> M_world_in_base;
+        public Matrix<double> M_base_in_world = UtilMatr.eye_matr(4) ;
+        public Matrix<double> M_world_in_base = UtilMatr.eye_matr(4);
         public double[] cur_ang;
         public int cur_turn = 0;
 
@@ -647,7 +647,7 @@ namespace opengl3
 
             ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0));
             ms[1] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
-            ms[2] = UtilMatr.matrix(new Point3d_GL(0, -L1), new Point3d_GL(0, 180, 0));
+            ms[2] = UtilMatr.matrix(new Point3d_GL(0 , -L1), new Point3d_GL(0, 180, 0));
             ms[3] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
             ms[4] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
             ms[5] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2 - L3, L4), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 0, 0));
@@ -661,8 +661,8 @@ namespace opengl3
             }
             //graphic.buffersGl.setMatrobj(tool_name1, 0, ms[7]);
 
-            set_conf_robot_pulse(new double[] { 0, 0, 0, 0, 0, 0 },true,null,false);
-            set_conf_robot_pulse(new double[] { 0, 0, 0, 0, 0, 0 }, true, null, true);
+            set_conf_robot_pulse(new double[] { 0, 0, 0, 0, 0, 0 },true,false);
+            set_conf_robot_pulse(new double[] { 0, 0, 0, 0, 0, 0 }, true, true);
             //GL1.buffersGl.setTranspobj("t2", 0);
 
         }
@@ -670,8 +670,16 @@ namespace opengl3
         {
             for (int i = 0; i <= 7; i++)
             {
-                graphic.buffersGl.setMatrobj(virt_robot_name[i], 0, qms_virt[i]);                
-                graphic.buffersGl.setMatrobj(real_robot_name[i], 0, qms[i]);
+                if(cur_scene == NavigSys.SceneType.camera1) 
+                {
+                    graphic.buffersGl.setMatrobj(virt_robot_name[i], 0, UtilMatr.to_matrix(M_base_in_world)* qms_virt[i] );
+                    graphic.buffersGl.setMatrobj(real_robot_name[i], 0, UtilMatr.to_matrix(M_base_in_world)* qms[i] );
+                }
+                else
+                {
+                    graphic.buffersGl.setMatrobj(virt_robot_name[i], 0, qms_virt[i]);
+                    graphic.buffersGl.setMatrobj(real_robot_name[i], 0, qms[i]);
+                }    
             }
 
             for (int i = 0; i < models_name.Count; i++)
@@ -683,10 +691,11 @@ namespace opengl3
         Matrix4x4f[] qms = new Matrix4x4f[8];
         string real_robot_models = "ax_";
         string virt_robot_models = "ax_virt_";
-        public void set_conf_robot_pulse(double[] q, bool rad = true, Matrix<double> M_base_in_world = null, bool virt = false)
+        public void set_conf_robot_pulse(double[] q, bool rad = true,bool virt = false)
         {
-            //var q = new double[6];
-            Matrix4x4f base_matrix = Matrix4x4f.Identity;
+            //Matrix<double> M_base_in_world = null,
+           //var q = new double[6];
+           Matrix4x4f base_matrix = Matrix4x4f.Identity;
             if (M_base_in_world != null)
             {
                 base_matrix = UtilMatr.to_matrix(M_base_in_world);
@@ -702,11 +711,11 @@ namespace opengl3
                 }
                 if (virt)
                 {
-                    qms_virt[i] = base_matrix * mq * ms[i];
+                    qms_virt[i] = mq * ms[i];
                 }
                 else
                 {
-                    qms[i] = base_matrix * mq * ms[i];
+                    qms[i] =  mq * ms[i];
                 }
 
             }
@@ -730,12 +739,13 @@ namespace opengl3
             }
         }
 
-        public string[] gen_poses_for_cal(double[] qs, Matrix<double> marker_frame)
+        public string[] gen_poses_for_cal(double[] qs, Matrix<double> marker_frame, Matrix<double> prop_M_flange_in_marker)
         {
             var posrob = new RobotFrame(new Pose(qs, false), robotType);
-            test_handeye(marker_frame, posrob.getMatrix());
+            //test_handeye(marker_frame, posrob.getMatrix());
             cur_turn = RobotFrame.get_current_turn(qs, robotType, false);
-            var prop_M_flange_in_marker = new RobotFrame(55, 55, -30, 0.0, 0.0, 1.57).getMatrix();
+            if(cur_turn<0 ) return null;
+            //var prop_M_flange_in_marker = new RobotFrame(55, 55, -30, 0.0, 0.0, 1.57).getMatrix();
             var prop_M_base_in_world = NavigSys.set_prop_pos_robot(marker_frame, posrob.getMatrix(), prop_M_flange_in_marker);
             M_base_in_world = prop_M_base_in_world;
             var prop_M_world_in_base = UtilOpenCV.inv(prop_M_base_in_world);
@@ -751,6 +761,16 @@ namespace opengl3
                 poses_str[i] = pose_to_str(pose);
             }
             return poses_str;
+        }
+
+        public void get_prop_pos(double[] qs, Matrix<double> marker_frame)
+        {
+            var posrob = new RobotFrame(new Pose(qs, false), robotType);
+            cur_turn = RobotFrame.get_current_turn(qs, robotType, false);
+            var prop_M_flange_in_marker = new RobotFrame(55, 55, -30, 0.0, 0.0, 1.57).getMatrix();
+            var prop_M_base_in_world = NavigSys.set_prop_pos_robot(marker_frame, posrob.getMatrix(), prop_M_flange_in_marker);
+            M_base_in_world = prop_M_base_in_world;
+
         }
         public static double[] parse_pose(string pose_str)
         {

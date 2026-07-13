@@ -705,6 +705,8 @@ namespace opengl3
             this.rangeSliderVinv_limits_model_h = new RangeSliderVinv();
             this.tabControl_navig = new System.Windows.Forms.TabControl();
             this.tabPage_3d_model_exrtract = new System.Windows.Forms.TabPage();
+            this.radioButton_navig_scene_model = new System.Windows.Forms.RadioButton();
+            this.radioButton_navig_scene_camera1 = new System.Windows.Forms.RadioButton();
             this.checkBox_navig_camera_vis = new System.Windows.Forms.CheckBox();
             this.checkBox_navig_roobt_vis = new System.Windows.Forms.CheckBox();
             this.checkBox_navig_tools_vis = new System.Windows.Forms.CheckBox();
@@ -752,6 +754,9 @@ namespace opengl3
             this.tabPage_navig_process = new System.Windows.Forms.TabPage();
             this.tabControl_navig_process_tab = new System.Windows.Forms.TabControl();
             this.tabPage_robot_calibr = new System.Windows.Forms.TabPage();
+            this.label54 = new System.Windows.Forms.Label();
+            this.textBox_navig_marker_prop_matrix = new System.Windows.Forms.TextBox();
+            this.button_robot_navig_prop_pos = new System.Windows.Forms.Button();
             this.button_robot_navig_gen_poses = new System.Windows.Forms.Button();
             this.textBox_navig_robot_send_pos_virt = new System.Windows.Forms.TextBox();
             this.button_set_prop_robot_pos = new System.Windows.Forms.Button();
@@ -781,8 +786,7 @@ namespace opengl3
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.radioButton_navig_scene_camera1 = new System.Windows.Forms.RadioButton();
-            this.radioButton_navig_scene_model = new System.Windows.Forms.RadioButton();
+            this.timer_navig_processing = new System.Windows.Forms.Timer(this.components);
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -8375,6 +8379,30 @@ namespace opengl3
             this.tabPage_3d_model_exrtract.Text = "Выделение 3д модели";
             this.tabPage_3d_model_exrtract.UseVisualStyleBackColor = true;
             // 
+            // radioButton_navig_scene_model
+            // 
+            this.radioButton_navig_scene_model.AutoSize = true;
+            this.radioButton_navig_scene_model.Location = new System.Drawing.Point(400, 247);
+            this.radioButton_navig_scene_model.Name = "radioButton_navig_scene_model";
+            this.radioButton_navig_scene_model.Size = new System.Drawing.Size(75, 20);
+            this.radioButton_navig_scene_model.TabIndex = 162;
+            this.radioButton_navig_scene_model.TabStop = true;
+            this.radioButton_navig_scene_model.Text = "Модель";
+            this.radioButton_navig_scene_model.UseVisualStyleBackColor = true;
+            this.radioButton_navig_scene_model.CheckedChanged += new System.EventHandler(this.radioButton_navig_scene_model_CheckedChanged);
+            // 
+            // radioButton_navig_scene_camera1
+            // 
+            this.radioButton_navig_scene_camera1.AutoSize = true;
+            this.radioButton_navig_scene_camera1.Location = new System.Drawing.Point(400, 220);
+            this.radioButton_navig_scene_camera1.Name = "radioButton_navig_scene_camera1";
+            this.radioButton_navig_scene_camera1.Size = new System.Drawing.Size(66, 20);
+            this.radioButton_navig_scene_camera1.TabIndex = 161;
+            this.radioButton_navig_scene_camera1.TabStop = true;
+            this.radioButton_navig_scene_camera1.Text = "Сцена";
+            this.radioButton_navig_scene_camera1.UseVisualStyleBackColor = true;
+            this.radioButton_navig_scene_camera1.CheckedChanged += new System.EventHandler(this.radioButton_navig_scene_camera1_CheckedChanged);
+            // 
             // checkBox_navig_camera_vis
             // 
             this.checkBox_navig_camera_vis.AutoSize = true;
@@ -8675,10 +8703,10 @@ namespace opengl3
             this.tabPage_registr_point.Controls.Add(this.button_navig_write_pos_registr_point_enable);
             this.tabPage_registr_point.Controls.Add(this.button_navig_registr_model);
             this.tabPage_registr_point.Controls.Add(this.checkBox_registr_points_visible);
-            this.tabPage_registr_point.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_registr_point.Location = new System.Drawing.Point(4, 22);
             this.tabPage_registr_point.Name = "tabPage_registr_point";
             this.tabPage_registr_point.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_registr_point.Size = new System.Drawing.Size(561, 423);
+            this.tabPage_registr_point.Size = new System.Drawing.Size(561, 426);
             this.tabPage_registr_point.TabIndex = 3;
             this.tabPage_registr_point.Text = "Регистрация точек";
             this.tabPage_registr_point.UseVisualStyleBackColor = true;
@@ -8851,6 +8879,9 @@ namespace opengl3
             // 
             // tabPage_robot_calibr
             // 
+            this.tabPage_robot_calibr.Controls.Add(this.label54);
+            this.tabPage_robot_calibr.Controls.Add(this.textBox_navig_marker_prop_matrix);
+            this.tabPage_robot_calibr.Controls.Add(this.button_robot_navig_prop_pos);
             this.tabPage_robot_calibr.Controls.Add(this.button_robot_navig_gen_poses);
             this.tabPage_robot_calibr.Controls.Add(this.textBox_navig_robot_send_pos_virt);
             this.tabPage_robot_calibr.Controls.Add(this.button_set_prop_robot_pos);
@@ -8882,12 +8913,40 @@ namespace opengl3
             this.tabPage_robot_calibr.Text = "Калибровка робота";
             this.tabPage_robot_calibr.UseVisualStyleBackColor = true;
             // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Location = new System.Drawing.Point(175, 440);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(237, 16);
+            this.label54.TabIndex = 165;
+            this.label54.Text = "Предполагаемая матрица маркера";
+            // 
+            // textBox_navig_marker_prop_matrix
+            // 
+            this.textBox_navig_marker_prop_matrix.Location = new System.Drawing.Point(178, 459);
+            this.textBox_navig_marker_prop_matrix.Name = "textBox_navig_marker_prop_matrix";
+            this.textBox_navig_marker_prop_matrix.Size = new System.Drawing.Size(373, 22);
+            this.textBox_navig_marker_prop_matrix.TabIndex = 164;
+            this.textBox_navig_marker_prop_matrix.Text = "55, 55, -30, 0.0, 0.0, 1.57";
+            // 
+            // button_robot_navig_prop_pos
+            // 
+            this.button_robot_navig_prop_pos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_robot_navig_prop_pos.Location = new System.Drawing.Point(6, 427);
+            this.button_robot_navig_prop_pos.Name = "button_robot_navig_prop_pos";
+            this.button_robot_navig_prop_pos.Size = new System.Drawing.Size(161, 54);
+            this.button_robot_navig_prop_pos.TabIndex = 163;
+            this.button_robot_navig_prop_pos.Text = "Предварительная позиция робота";
+            this.button_robot_navig_prop_pos.UseVisualStyleBackColor = true;
+            this.button_robot_navig_prop_pos.Click += new System.EventHandler(this.button_robot_navig_prop_pos_Click);
+            // 
             // button_robot_navig_gen_poses
             // 
             this.button_robot_navig_gen_poses.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button_robot_navig_gen_poses.Location = new System.Drawing.Point(6, 367);
             this.button_robot_navig_gen_poses.Name = "button_robot_navig_gen_poses";
-            this.button_robot_navig_gen_poses.Size = new System.Drawing.Size(152, 54);
+            this.button_robot_navig_gen_poses.Size = new System.Drawing.Size(161, 54);
             this.button_robot_navig_gen_poses.TabIndex = 162;
             this.button_robot_navig_gen_poses.Text = "Генерация точек для калибровки";
             this.button_robot_navig_gen_poses.UseVisualStyleBackColor = true;
@@ -9034,7 +9093,7 @@ namespace opengl3
             // but_robot_flange_frame_calibr
             // 
             this.but_robot_flange_frame_calibr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.but_robot_flange_frame_calibr.Location = new System.Drawing.Point(164, 367);
+            this.but_robot_flange_frame_calibr.Location = new System.Drawing.Point(178, 367);
             this.but_robot_flange_frame_calibr.Name = "but_robot_flange_frame_calibr";
             this.but_robot_flange_frame_calibr.Size = new System.Drawing.Size(152, 54);
             this.but_robot_flange_frame_calibr.TabIndex = 144;
@@ -9135,29 +9194,10 @@ namespace opengl3
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // radioButton_navig_scene_camera1
+            // timer_navig_processing
             // 
-            this.radioButton_navig_scene_camera1.AutoSize = true;
-            this.radioButton_navig_scene_camera1.Location = new System.Drawing.Point(400, 220);
-            this.radioButton_navig_scene_camera1.Name = "radioButton_navig_scene_camera1";
-            this.radioButton_navig_scene_camera1.Size = new System.Drawing.Size(66, 20);
-            this.radioButton_navig_scene_camera1.TabIndex = 161;
-            this.radioButton_navig_scene_camera1.TabStop = true;
-            this.radioButton_navig_scene_camera1.Text = "Сцена";
-            this.radioButton_navig_scene_camera1.UseVisualStyleBackColor = true;
-            this.radioButton_navig_scene_camera1.CheckedChanged += new System.EventHandler(this.radioButton_navig_scene_camera1_CheckedChanged);
-            // 
-            // radioButton_navig_scene_model
-            // 
-            this.radioButton_navig_scene_model.AutoSize = true;
-            this.radioButton_navig_scene_model.Location = new System.Drawing.Point(400, 247);
-            this.radioButton_navig_scene_model.Name = "radioButton_navig_scene_model";
-            this.radioButton_navig_scene_model.Size = new System.Drawing.Size(75, 20);
-            this.radioButton_navig_scene_model.TabIndex = 162;
-            this.radioButton_navig_scene_model.TabStop = true;
-            this.radioButton_navig_scene_model.Text = "Модель";
-            this.radioButton_navig_scene_model.UseVisualStyleBackColor = true;
-            this.radioButton_navig_scene_model.CheckedChanged += new System.EventHandler(this.radioButton_navig_scene_model_CheckedChanged);
+            this.timer_navig_processing.Interval = 10;
+            this.timer_navig_processing.Tick += new System.EventHandler(this.timer_navig_processing_Tick);
             // 
             // MainScanningForm
             // 
@@ -10091,6 +10131,10 @@ namespace opengl3
         private System.Windows.Forms.CheckBox checkBox_navig_camera_vis;
         private System.Windows.Forms.RadioButton radioButton_navig_scene_model;
         private System.Windows.Forms.RadioButton radioButton_navig_scene_camera1;
+        private System.Windows.Forms.Button button_robot_navig_prop_pos;
+        private System.Windows.Forms.Label label54;
+        private System.Windows.Forms.TextBox textBox_navig_marker_prop_matrix;
+        private System.Windows.Forms.Timer timer_navig_processing;
     }
 }
 

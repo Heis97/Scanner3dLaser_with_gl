@@ -1332,6 +1332,7 @@ namespace opengl3
         }
         static public double[] comp_inv_kinem_priv_rc5_real(PositionRob posrob, int target_solve = 0)
         {
+            if(target_solve < 0) return null;
             var cur_rob = RobotType.RC5;
             var solves = comp_inv_kinem(posrob, cur_rob);
             
