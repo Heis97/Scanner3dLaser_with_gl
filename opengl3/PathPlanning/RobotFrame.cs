@@ -858,6 +858,9 @@ namespace opengl3
 
         static double[] extend_q(double[] q, int n)
         {
+            if(n == 0) return null;
+            if (q == null) return null;
+            if (q.Length == 0) return null;
             var len = Math.Max(n, q.Length);
             var q_r = new double[len];
             for(int i = 0; i < q.Length; i++)

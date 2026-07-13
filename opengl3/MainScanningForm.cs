@@ -11267,7 +11267,7 @@ namespace opengl3
             var cur_but =  (System.Windows.Forms.Button)sender;
             var qs_str = cur_but.Text;
             textBox_navig_robot_send_pos_virt.Text = qs_str;
-            var qs = parse_pose(qs_str);
+            var qs = NavigRobotClient.parse_pose(qs_str);
             navig_system.robot.set_conf_robot_pulse(qs,  false, navig_system.robot.M_base_in_world,true);
         }
 
@@ -11635,7 +11635,7 @@ namespace opengl3
         {
 
             textBox_navig_robot_send_pos.Text = label_navig_robot_status_pose.Text;
-            var pose_cur = parse_pose(textBox_navig_robot_send_pos.Text);
+            var pose_cur = NavigRobotClient.parse_pose(textBox_navig_robot_send_pos.Text);
 
             var position_d = RobotFrame.comp_forv_kinem(pose_cur, 6, false, navig_system.robot.robot_navig_type);
             var cur_turn = RobotFrame.get_current_turn(position_d, pose_cur, navig_system.robot.robot_navig_type,false);
@@ -11646,29 +11646,7 @@ namespace opengl3
             //var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(test_point, 1);
         }
 
-        double[] parse_pose(string pose_str)
-        {
-            var pose = new double[6];
-            if (!pose_str.Contains(',')) return pose;
-            var pose_l = pose_str.Split(',');
-            if (pose_l.Length<6) return pose;
-            for (int i=0; i<6;i++)
-            {
-                pose[i] = Convert.ToDouble(pose_l[i]);
-            }
-            return pose;
-        }
-        string pose_to_str(double[] pose)
-        {
-            var pose_str = "";
-             var pose_d = to_degree(pose);
-            for (int i = 0; i < pose.Length; i++)
-            {
-                if (i != 5) pose_str += Math.Round(  pose_d[i],4).ToString() + ",";
-                else pose_str += Math.Round(pose_d[i],4).ToString();
-            }
-            return pose_str;
-        }
+        
         private async void button_navig_connect_robot_Click(object sender, EventArgs e)
         {
             await navig_system.robot.connect_start();
@@ -11694,7 +11672,7 @@ namespace opengl3
             if (navig_system.robot.current_robot_turn < 0) return;
             var cur_pos = new PositionRob(textBox_navig_robot_send_position.Text);
             var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(cur_pos, navig_system.robot.current_robot_turn);
-            textBox_navig_robot_send_pos.Text = pose_to_str(correct_solve);
+            textBox_navig_robot_send_pos.Text = NavigRobotClient.pose_to_str(correct_solve);
 
             navig_system.robot.send_navig_robot(" pose " + textBox_navig_robot_send_pos.Text);
         }
@@ -11720,7 +11698,7 @@ namespace opengl3
             cur_position.position.z += cur_ang;
             Console.WriteLine(cur_position);
             var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(cur_position, navig_system.robot.current_robot_turn);
-            var cur_pose_str = pose_to_str(correct_solve);
+            var cur_pose_str = NavigRobotClient.pose_to_str(correct_solve);
             textBox_navig_robot_send_pos.Text = cur_pose_str;
 
             navig_system.robot.send_navig_robot(" pose " + cur_pose_str);
@@ -11795,8 +11773,7 @@ namespace opengl3
         private void button_robot_navig_gen_poses_Click(object sender, EventArgs e)
         {
             //-----------------------gen for cal--------------------------
-            var qs = parse_pose(textBox_navig_robot_send_pos.Text);
-            var posrob = new RobotFrame(new Pose(qs, false), navig_system.robot.robotType);
+            
 
             if (buttons_prop_poses_navig_robot != null)
             {
@@ -11806,30 +11783,21 @@ namespace opengl3
                     buttons_prop_poses_navig_robot[i].Dispose();
                 }
             }
-            
-            var marker_frame = navig_system.tools[index_rob_marker].matrix_frame;
-            navig_system.test_handeye(marker_frame, posrob.getMatrix());
-            navig_system.robot.cur_turn = RobotFrame.get_current_turn(qs, navig_system.robot.robotType, false);
 
+            var qs_str = textBox_navig_robot_send_pos.Text;
+            var qs = NavigRobotClient.parse_pose(qs_str);
+            var poses = navig_system.robot.gen_poses_for_cal(qs, navig_system.tools[index_rob_marker].matrix_frame);
 
-            var prop_M_flange_in_marker = new RobotFrame(55, 55, -30, 0.0, 0.0, 1.57).getMatrix();
-            var prop_M_base_in_world = NavigSys.set_prop_pos_robot(marker_frame, posrob.getMatrix(), prop_M_flange_in_marker);
-            navig_system.robot.M_base_in_world = prop_M_base_in_world;
-            var prop_M_world_in_base = UtilOpenCV.inv(prop_M_base_in_world);
-            var gen_Ms_frames_in_world = NavigSys.gen_frames_v2(marker_frame, 20, 0.6, 7);
-
-            var gen_Ms_flange_in_base = new Matrix<double>[gen_Ms_frames_in_world.Length];
-            var poses = new double[gen_Ms_frames_in_world.Length][];
             var x_but_slide = 6;
             var y_but_slide = 376;
             int num_colomn = 8;
             var y_dist = 56;
 
-            buttons_prop_poses_navig_robot = new System.Windows.Forms.Button[gen_Ms_frames_in_world.Length];
-            for (int i = 0; i < gen_Ms_frames_in_world.Length; i++)
+            buttons_prop_poses_navig_robot = new System.Windows.Forms.Button[poses.Length];
+            
+
+            for (int i = 0; i < poses.Length; i++)
             {
-                gen_Ms_flange_in_base[i] = prop_M_world_in_base * gen_Ms_frames_in_world[i] * prop_M_flange_in_marker;
-                poses[i] = RobotFrame.comp_inv_kinem_priv_rc5_real(new RobotFrame(gen_Ms_flange_in_base[i], navig_system.robot.robotType).frame, navig_system.robot.cur_turn);
 
                 var button_pose_virt = new System.Windows.Forms.Button();
                 button_pose_virt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -11842,7 +11810,7 @@ namespace opengl3
                 y_but_slide += y_dist;
                 button_pose_virt.Location = new System.Drawing.Point(x_but_slide, y_but_slide);
                 button_pose_virt.Size = new System.Drawing.Size(152, 50);
-                button_pose_virt.Text = pose_to_str(poses[i]);
+                button_pose_virt.Text = poses[i];
                 button_pose_virt.Click += new System.EventHandler(but_navig_robot_set_pos_virt_Click);
                 tabPage_robot_calibr.Controls.Add(button_pose_virt);
                 buttons_prop_poses_navig_robot[i] = button_pose_virt;
