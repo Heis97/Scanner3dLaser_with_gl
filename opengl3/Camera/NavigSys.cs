@@ -1616,6 +1616,10 @@ namespace opengl3
         public SceneType sceneType = SceneType.model3d;
 
         //cams-------------------------------------------------
+       /* public int cam1_ind = 1;
+        public int cam2_ind = 0;
+        public int cam3_ind = 2;*/
+
         public int cam1_ind = 1;
         public int cam2_ind = 0;
         public int cam3_ind = 2;

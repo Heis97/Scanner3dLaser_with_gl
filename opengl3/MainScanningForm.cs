@@ -6898,7 +6898,7 @@ namespace opengl3
             //capture.SetCaptureProperty(CapProp.Exposure, -4);
             //capture.SetCaptureProperty(CapProp.Fps, 60);
             //capture.Set(CapProp.AutoExposure, 1);
-            capture.Set(CapProp.Exposure, -8);
+            capture.Set(CapProp.Exposure, -7);
             capture.Set(CapProp.FourCC, VideoWriter.Fourcc('M', 'J', 'P', 'G'));
             //capture.Set(CapProp.Fps, 30);
             cameraSize.Width = (int) capture.Get(CapProp.FrameWidth);
@@ -11148,6 +11148,9 @@ namespace opengl3
         {
             var ps3d = navig_system.navigation_processing_get_points3d_3cam(navig_system.points2d_cams[0], navig_system.points2d_cams[1], navig_system.points2d_cams[2]);    //navyg_sys_info(camera_only)
             navig_system.navigation_processing_get_scene(ps3d);
+            //textBox_navig_robot_send_pos_virt.Text = qs_str;
+            var qs = NavigRobotClient.parse_pose(label_navig_robot_status_pose.Text);
+            navig_system.robot.set_conf_robot_pulse(qs, false, false);
         }
 
 
