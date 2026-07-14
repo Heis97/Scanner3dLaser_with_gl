@@ -756,7 +756,7 @@ namespace opengl3
             var prop_M_base_in_world = NavigSys.set_prop_pos_robot(marker_frame, posrob.getMatrix(), prop_M_flange_in_marker);
             M_base_in_world = prop_M_base_in_world;
             var prop_M_world_in_base = UtilOpenCV.inv(prop_M_base_in_world);
-            var gen_Ms_frames_in_world = gen_frames_v2(marker_frame, 20, 0.6, 7);
+            var gen_Ms_frames_in_world = gen_frames_v2(marker_frame, 20, 0.4, 7);
             var gen_Ms_flange_in_base = new Matrix<double>[gen_Ms_frames_in_world.Length];
 
             var poses_str = new string[gen_Ms_frames_in_world.Length];
@@ -888,6 +888,7 @@ namespace opengl3
                 fp_gen.A += abc_delt_cur;
                 matrixes_gen.Add(fp_gen.getMatrix());
                 xyz_delt_cur += xyz_incr;
+                abc_delt_cur += abc_incr;
             }
 
             xyz_delt_cur = -xyz_delt;
@@ -903,6 +904,7 @@ namespace opengl3
                 fp_gen.B += abc_delt_cur;
                 matrixes_gen.Add(fp_gen.getMatrix());
                 xyz_delt_cur += xyz_incr;
+                abc_delt_cur += abc_incr;
             }
 
             xyz_delt_cur = -xyz_delt;
