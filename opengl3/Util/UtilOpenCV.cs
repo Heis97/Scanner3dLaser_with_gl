@@ -626,19 +626,22 @@ namespace opengl3
             {
                 Console.WriteLine("cam1\\" + folder + "\\" + name);
                 Directory.CreateDirectory("cam1\\" + folder);
-                mat1.Save("cam1\\" + folder + "\\" + name);
+                var name_filtr = name.Replace("\n", "");
+                mat1.Save("cam1\\" + folder + "\\" + name_filtr);
             }
             if (mat2 != null && !mat2.IsEmpty)
             {
                 Console.WriteLine("cam2\\" + folder + "\\" + name);
                 Directory.CreateDirectory("cam2\\" + folder);
-                mat2.Save("cam2\\" + folder + "\\" + name);
+                var name_filtr = name.Replace("\n", "");
+                mat2.Save("cam2\\" + folder + "\\" + name_filtr);
             }
             if (mat3 != null && !mat3.IsEmpty)
             {
                 Console.WriteLine("cam3\\" + folder + "\\" + name);
                 Directory.CreateDirectory("cam3\\" + folder);
-                mat3.Save("cam3\\" + folder + "\\" + name);
+                var name_filtr = name.Replace("\n", "");
+                mat3.Save("cam3\\" + folder + "\\" + name_filtr);
             }
         }
         /// <summary>
