@@ -8921,16 +8921,16 @@ namespace opengl3
         Size[] imb_sizes;
         private void MainScanningForm_Load(object sender, EventArgs e)
         {
-
-           /* windowsTabs.Controls.Remove(tabMain);
-            windowsTabs.Controls.Remove(tabOpenGl);
-            windowsTabs.Controls.Remove(tabDistort);
-            windowsTabs.Controls.Remove(tabP_developer);
-            windowsTabs.Controls.Remove(tabCalibMonit);
-            windowsTabs.Controls.Remove(tabDebug);
-            windowsTabs.Controls.Remove(tabP_developer);
-            windowsTabs.Controls.Remove(tabP_scanning_printing);
-            windowsTabs.Controls.Remove(tabP_connect);*/
+          var qs_test =  NavigRobotClient.parse_pose(textBox_navig_robot_send_pos_virt.Text);
+            /* windowsTabs.Controls.Remove(tabMain);
+             windowsTabs.Controls.Remove(tabOpenGl);
+             windowsTabs.Controls.Remove(tabDistort);
+             windowsTabs.Controls.Remove(tabP_developer);
+             windowsTabs.Controls.Remove(tabCalibMonit);
+             windowsTabs.Controls.Remove(tabDebug);
+             windowsTabs.Controls.Remove(tabP_developer);
+             windowsTabs.Controls.Remove(tabP_scanning_printing);
+             windowsTabs.Controls.Remove(tabP_connect);*/
             //windowsTabs.Controls.Remove(tabPage_tube);
 
 
@@ -11264,12 +11264,7 @@ namespace opengl3
             if(NavigSys.cam_numbers==3)
             {
                 videoStart_sam(navig_system.cam3_ind);
-                //var thr_navig = new Thread(navigation_processing_3cam);
-                //thr_navig.Start();
-
                 timer_navig_processing.Start();
-
-
             }
             else
             {
@@ -11688,7 +11683,7 @@ namespace opengl3
             if (navig_system.robot.current_robot_turn < 0) return;
             var cur_pos = new PositionRob(textBox_navig_robot_send_position.Text);
             var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(cur_pos, navig_system.robot.current_robot_turn);
-            textBox_navig_robot_send_pos.Text = NavigRobotClient.pose_to_str(correct_solve);
+            textBox_navig_robot_send_pos.Text = NavigRobotClient.pose_to_str(correct_solve,true);
 
             navig_system.robot.send_navig_robot(" pose " + textBox_navig_robot_send_pos.Text);
         }
@@ -11714,7 +11709,7 @@ namespace opengl3
             cur_position.position.z += cur_ang;
             Console.WriteLine(cur_position);
             var correct_solve = RobotFrame.comp_inv_kinem_priv_rc5_real(cur_position, navig_system.robot.current_robot_turn);
-            var cur_pose_str = NavigRobotClient.pose_to_str(correct_solve);
+            var cur_pose_str = NavigRobotClient.pose_to_str(correct_solve,true);
             textBox_navig_robot_send_pos.Text = cur_pose_str;
 
             navig_system.robot.send_navig_robot(" pose " + cur_pose_str);
@@ -11786,7 +11781,9 @@ namespace opengl3
         {
             var qs = NavigRobotClient.parse_pose(textBox_navig_robot_send_pos_virt.Text);
             if (qs == null) return;
-            navig_system.robot.send_navig_robot(" pose " + textBox_navig_robot_send_pos_virt.Text);
+            navig_system.robot.pose_dest = qs;
+            navig_system.robot.move = true;
+            //navig_system.robot.send_navig_robot(" pose " + textBox_navig_robot_send_pos_virt.Text);
 
         }
         int index_rob_marker = 2;
@@ -11888,7 +11885,15 @@ namespace opengl3
             //var poses = navig_system.robot.gen_poses_for_cal(qs, navig_system.tools[index_rob_marker].matrix_frame);
         }
 
-        
+        private void button_navig_robot_move_en_Click(object sender, EventArgs e)
+        {
+            navig_system.robot.move = false;
+        }
+
+        private void button_navig_robot_move_disable_Click(object sender, EventArgs e)
+        {
+            navig_system.robot.move = true;
+        }
     }
 }
 

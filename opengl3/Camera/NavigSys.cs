@@ -624,7 +624,9 @@ namespace opengl3
             for (int i = 0; i <= 7; i++)
             {
                 {
-                    var model_ax = new Model3d("models\\rc5\\" + i + ".stl", false);
+                    var k_size = 1;
+                    if(i==0) k_size = 1000;
+                    var model_ax = new Model3d("models\\rc5\\" + i + ".stl", false, k_size);
                     var ax_name1 = graphic.add_buff_gl(model_ax, PrimitiveType.Triangles, real_robot_models + i); models_name.Add(ax_name1); real_robot_name.Add(ax_name1);
                     var ax_name2 = graphic.add_buff_gl(model_ax, PrimitiveType.Triangles, virt_robot_models + i); models_name.Add(ax_name2); virt_robot_name.Add(ax_name2);
                     graphic.buffersGl.setTranspobj(ax_name2, 0.5f);
@@ -645,7 +647,7 @@ namespace opengl3
             var L6 = 141;
 
 
-            ms[0] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(180, 0));
+            ms[0] = UtilMatr.matrix(new Point3d_GL(0,0,20), new Point3d_GL(90, 90));
             ms[1] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(90, 0));
             ms[2] = UtilMatr.matrix(new Point3d_GL(0 , -L1), new Point3d_GL(0, 180, 0));
             ms[3] = UtilMatr.matrix(new Point3d_GL(0), new Point3d_GL(0, 0, 90)) * UtilMatr.matrix(new Point3d_GL(0, -L1 - L2), new Point3d_GL(0)) * UtilMatr.matrix(new Point3d_GL(), new Point3d_GL(0, 180, 0));
@@ -763,7 +765,7 @@ namespace opengl3
             {
                 gen_Ms_flange_in_base[i] = prop_M_world_in_base * gen_Ms_frames_in_world[i] * prop_M_flange_in_marker;
                 var pose = RobotFrame.comp_inv_kinem_priv_rc5_real(new RobotFrame(gen_Ms_flange_in_base[i], robotType).frame, cur_turn);
-                poses_str[i] = pose_to_str(pose);
+                poses_str[i] = pose_to_str(pose,true);
             }
             return poses_str;
         }
@@ -789,10 +791,14 @@ namespace opengl3
             }
             return pose;
         }
-        public static string pose_to_str(double[] pose)
+        public static string pose_to_str(double[] pose, bool rad = true)
         {
             var pose_str = "";
-            var pose_d = to_degree(pose);
+            var pose_d = pose;
+            if (rad)
+            {
+                pose_d = to_degree(pose);
+            }
             for (int i = 0; i < pose.Length; i++)
             {
                 if (i != 5) pose_str += Math.Round(pose_d[i], 4).ToString() + ",";
@@ -919,17 +925,19 @@ namespace opengl3
             return matrixes_gen.ToArray();
         }
 
-        double[] pose_dest;
-        double angle_vel = 1;//degr/s
-        bool move = false;
+        public double[] pose_dest = new double[6];
+        double angle_vel = 0.1;//degr/s
+        public bool move = false;
         double pose_err = 0.1;
         public double[] cur_ang;
-        public double[] cur_ang_dest;
+        public double[] cur_ang_dest = new double[6];
         public void handler_move()
         {
-           // if(connect_start)
+            //Console.WriteLine("handler");
+            // if(connect_start)
             if (move)
             {
+                Console.WriteLine("move");
                 var dist_dest = angles_dist(cur_ang, pose_dest);
                 if (dist_dest < 0)
                 {
@@ -939,23 +947,35 @@ namespace opengl3
                 if (dist_dest<pose_err)
                 {
                     move = false;
+                    Console.WriteLine("dist_dest<pose_err");
                 }
                 else
                 {
-                    cur_ang_dest = angles_sum(cur_ang_dest,comp_delt_ang(cur_ang_dest, pose_dest, angle_vel));
-                    if(cur_ang_dest==null) move = false;
+                    var delt = comp_delt_ang(cur_ang_dest, pose_dest, angle_vel);
+                    cur_ang_dest = angles_sum(cur_ang_dest, delt);
+                    if (cur_ang_dest == null)
+                    {
+                        Console.WriteLine("cur_ang_dest == null");
+                        move = false;
+                    }
+                        
 
                     if (move)
                     {
 
-                        Console.WriteLine(" pose " + pose_to_str(cur_ang_dest));
-                        //send_navig_robot(" pose " + pose_to_str(cur_ang_dest));
+                        //Console.WriteLine(" posec " + pose_to_str(cur_ang_dest,false));
+                       // Console.WriteLine(" posed " + pose_to_str(pose_dest, false));
+                        send_navig_robot(" pose " + pose_to_str(cur_ang_dest,false));
 
 
                     }
                     
                 }
                 
+            }
+            if(!move)
+            {
+                cur_ang_dest = cur_ang;
             }
 
         }

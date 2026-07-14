@@ -754,6 +754,8 @@ namespace opengl3
             this.tabPage_navig_process = new System.Windows.Forms.TabPage();
             this.tabControl_navig_process_tab = new System.Windows.Forms.TabControl();
             this.tabPage_robot_calibr = new System.Windows.Forms.TabPage();
+            this.button_navig_robot_move_disable = new System.Windows.Forms.Button();
+            this.button_navig_robot_move_en = new System.Windows.Forms.Button();
             this.label54 = new System.Windows.Forms.Label();
             this.textBox_navig_marker_prop_matrix = new System.Windows.Forms.TextBox();
             this.button_robot_navig_prop_pos = new System.Windows.Forms.Button();
@@ -8879,6 +8881,8 @@ namespace opengl3
             // 
             // tabPage_robot_calibr
             // 
+            this.tabPage_robot_calibr.Controls.Add(this.button_navig_robot_move_disable);
+            this.tabPage_robot_calibr.Controls.Add(this.button_navig_robot_move_en);
             this.tabPage_robot_calibr.Controls.Add(this.label54);
             this.tabPage_robot_calibr.Controls.Add(this.textBox_navig_marker_prop_matrix);
             this.tabPage_robot_calibr.Controls.Add(this.button_robot_navig_prop_pos);
@@ -8913,6 +8917,28 @@ namespace opengl3
             this.tabPage_robot_calibr.Text = "Калибровка робота";
             this.tabPage_robot_calibr.UseVisualStyleBackColor = true;
             // 
+            // button_navig_robot_move_disable
+            // 
+            this.button_navig_robot_move_disable.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_navig_robot_move_disable.Location = new System.Drawing.Point(6, 283);
+            this.button_navig_robot_move_disable.Name = "button_navig_robot_move_disable";
+            this.button_navig_robot_move_disable.Size = new System.Drawing.Size(152, 43);
+            this.button_navig_robot_move_disable.TabIndex = 167;
+            this.button_navig_robot_move_disable.Text = "Продолжить";
+            this.button_navig_robot_move_disable.UseVisualStyleBackColor = true;
+            this.button_navig_robot_move_disable.Click += new System.EventHandler(this.button_navig_robot_move_disable_Click);
+            // 
+            // button_navig_robot_move_en
+            // 
+            this.button_navig_robot_move_en.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button_navig_robot_move_en.Location = new System.Drawing.Point(6, 232);
+            this.button_navig_robot_move_en.Name = "button_navig_robot_move_en";
+            this.button_navig_robot_move_en.Size = new System.Drawing.Size(152, 43);
+            this.button_navig_robot_move_en.TabIndex = 166;
+            this.button_navig_robot_move_en.Text = "Остановить";
+            this.button_navig_robot_move_en.UseVisualStyleBackColor = true;
+            this.button_navig_robot_move_en.Click += new System.EventHandler(this.button_navig_robot_move_en_Click);
+            // 
             // label54
             // 
             this.label54.AutoSize = true;
@@ -8928,7 +8954,7 @@ namespace opengl3
             this.textBox_navig_marker_prop_matrix.Name = "textBox_navig_marker_prop_matrix";
             this.textBox_navig_marker_prop_matrix.Size = new System.Drawing.Size(373, 22);
             this.textBox_navig_marker_prop_matrix.TabIndex = 164;
-            this.textBox_navig_marker_prop_matrix.Text = "55, 55, -30, 0.0, 0.0, 1.57";
+            this.textBox_navig_marker_prop_matrix.Text = "55, 55, -30, 0.0, 0.0, 0.707";
             // 
             // button_robot_navig_prop_pos
             // 
@@ -8958,7 +8984,7 @@ namespace opengl3
             this.textBox_navig_robot_send_pos_virt.Name = "textBox_navig_robot_send_pos_virt";
             this.textBox_navig_robot_send_pos_virt.Size = new System.Drawing.Size(373, 22);
             this.textBox_navig_robot_send_pos_virt.TabIndex = 161;
-            this.textBox_navig_robot_send_pos_virt.Text = "\"\"";
+            this.textBox_navig_robot_send_pos_virt.Text = "28.0, -75.0, 120.0, -30.0, 30.0, 0.0";
             // 
             // button_set_prop_robot_pos
             // 
@@ -10135,6 +10161,8 @@ namespace opengl3
         private System.Windows.Forms.Label label54;
         private System.Windows.Forms.TextBox textBox_navig_marker_prop_matrix;
         private System.Windows.Forms.Timer timer_navig_processing;
+        private System.Windows.Forms.Button button_navig_robot_move_disable;
+        private System.Windows.Forms.Button button_navig_robot_move_en;
     }
 }
 
