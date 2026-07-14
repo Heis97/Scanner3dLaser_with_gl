@@ -871,7 +871,8 @@ namespace opengl3
         }
         static public PositionRob comp_forv_kinem(double[] q,int count, bool rad = true, RobotType robotType = RobotType.PULSE,bool real_dh = true)
         {
-            if(robotType==RobotType.PULSE)
+
+            if (robotType==RobotType.PULSE)
             {
                 var L1 = 247.1;
                 var L2 = 450;

@@ -458,7 +458,7 @@ namespace opengl3
             //UtilOpenCV.takeLineFromMat(im_las, 1);
 
             // test_basis();
-            UtilOpenCV.generateImage_chessboard_circle(6, 7, 200);
+            //UtilOpenCV.generateImage_chessboard_circle(6, 7, 200);
             //load_camers_v2();
 
             /* var path = @"D:\Project VS\scaner\opengl3\bin\x86\Debug\cam1";
@@ -11150,6 +11150,7 @@ namespace opengl3
             navig_system.navigation_processing_get_scene(ps3d);
             //textBox_navig_robot_send_pos_virt.Text = qs_str;
             var qs = NavigRobotClient.parse_pose(label_navig_robot_status_pose.Text);
+            
             navig_system.robot.set_conf_robot_pulse(qs, false, false);
         }
 
@@ -11651,7 +11652,7 @@ namespace opengl3
 
             textBox_navig_robot_send_pos.Text = label_navig_robot_status_pose.Text;
             var pose_cur = NavigRobotClient.parse_pose(textBox_navig_robot_send_pos.Text);
-
+            if (pose_cur == null) return;
             var position_d = RobotFrame.comp_forv_kinem(pose_cur, 6, false, navig_system.robot.robot_navig_type);
             var cur_turn = RobotFrame.get_current_turn(position_d, pose_cur, navig_system.robot.robot_navig_type,false);
             navig_system.robot.current_robot_turn = cur_turn;
@@ -11733,6 +11734,7 @@ namespace opengl3
 
         private void but_navig_robot_photo_Click(object sender, EventArgs e)
         {
+
             UtilOpenCV.saveImage(mat_global[0], mat_global[1], mat_global[2], label_navig_robot_status_pose.Text + ".png", textBox_navig_robot_photo_folder.Text);
         }
 
@@ -11782,7 +11784,10 @@ namespace opengl3
 
         private void button_set_prop_robot_pos_Click(object sender, EventArgs e)
         {
+            var qs = NavigRobotClient.parse_pose(textBox_navig_robot_send_pos_virt.Text);
+            if (qs == null) return;
             navig_system.robot.send_navig_robot(" pose " + textBox_navig_robot_send_pos_virt.Text);
+
         }
         int index_rob_marker = 2;
         private void button_robot_navig_gen_poses_Click(object sender, EventArgs e)
@@ -11801,6 +11806,7 @@ namespace opengl3
 
             var qs_str = textBox_navig_robot_send_pos.Text;
             var qs = NavigRobotClient.parse_pose(qs_str);
+            if(qs == null) return;
             var prop_matrix = new RobotFrame( new PositionRob( textBox_navig_marker_prop_matrix.Text, ','),0,0,0, navig_system.robot.robotType).getMatrix();
             var poses = navig_system.robot.gen_poses_for_cal(qs, navig_system.tools[index_rob_marker].matrix_frame, prop_matrix);
 

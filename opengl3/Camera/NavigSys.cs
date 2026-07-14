@@ -526,7 +526,7 @@ namespace opengl3
 
         public Matrix<double> M_base_in_world = UtilMatr.eye_matr(4) ;
         public Matrix<double> M_world_in_base = UtilMatr.eye_matr(4);
-        public double[] cur_ang;
+        
         public int cur_turn = 0;
 
         public string[] real_robot_models_names;
@@ -695,6 +695,11 @@ namespace opengl3
         {
             //Matrix<double> M_base_in_world = null,
            //var q = new double[6];
+           if(q==null || q.Length <6) return;
+           if(!virt)
+            {
+                cur_ang = q;
+            }
            Matrix4x4f base_matrix = Matrix4x4f.Identity;
             if (M_base_in_world != null)
             {
@@ -775,9 +780,9 @@ namespace opengl3
         public static double[] parse_pose(string pose_str)
         {
             var pose = new double[6];
-            if (!pose_str.Contains(',')) return pose;
+            if (!pose_str.Contains(',')) return null;
             var pose_l = pose_str.Split(',');
-            if (pose_l.Length < 6) return pose;
+            if (pose_l.Length < 6) return null;
             for (int i = 0; i < 6; i++)
             {
                 pose[i] = Convert.ToDouble(pose_l[i]);
@@ -913,6 +918,98 @@ namespace opengl3
 
             return matrixes_gen.ToArray();
         }
+
+        double[] pose_dest;
+        double angle_vel = 1;//degr/s
+        bool move = false;
+        double pose_err = 0.1;
+        public double[] cur_ang;
+        public double[] cur_ang_dest;
+        public void handler_move()
+        {
+           // if(connect_start)
+            if (move)
+            {
+                var dist_dest = angles_dist(cur_ang, pose_dest);
+                if (dist_dest < 0)
+                {
+                    move = false;
+                    Console.WriteLine("handler_move dist<0");
+                }
+                if (dist_dest<pose_err)
+                {
+                    move = false;
+                }
+                else
+                {
+                    cur_ang_dest = angles_sum(cur_ang_dest,comp_delt_ang(cur_ang_dest, pose_dest, angle_vel));
+                    if(cur_ang_dest==null) move = false;
+
+                    if (move)
+                    {
+
+                        Console.WriteLine(" pose " + pose_to_str(cur_ang_dest));
+                        //send_navig_robot(" pose " + pose_to_str(cur_ang_dest));
+
+
+                    }
+                    
+                }
+                
+            }
+
+        }
+
+        public static double[] angles_sum(double[] pose1, double[] pose2)
+        {
+            if(pose1== null || pose2 == null) return null;
+            if (pose1.Length != pose2.Length) return null;
+            var pose_sum = new double[pose1.Length];
+            for(int i=0; i< pose1.Length; i++)
+            {
+                pose_sum[i]= pose1[i] + pose2[i];
+            }
+            return pose_sum;
+        }
+        public static double angles_dist(double[] pose1, double[] pose2)
+        {
+            var dist = 0d;
+            if (pose1 == null || pose2 == null) return -1;
+            if (pose1.Length != pose2.Length) return -1;
+            for (int i = 0; i < pose1.Length; i++)
+            {
+                dist += Math.Abs(pose1[i] - pose2[i]);
+            }
+            return dist;
+        }
+        public static double[] comp_delt_ang(double[] pose_cur, double[] pose_dest, double max_delt)
+        {
+            if (pose_cur == null || pose_dest == null) return null;
+            if (pose_cur.Length != pose_dest.Length) return null;
+            if(max_delt <= 0) return null;
+
+            var delt_full = new double[pose_cur.Length];
+            double max_d = 0;
+            for (int i = 0; i < pose_cur.Length; i++)
+            {
+                delt_full[i] = pose_dest[i] - pose_cur[i];
+                var delt_cur = Math.Abs(delt_full[i]);
+                if (delt_cur > max_d) max_d = delt_cur;
+
+            }
+            if (max_d > max_delt){
+                var k = max_delt / max_d;
+                for (int i = 0; i < delt_full.Length; i++)
+                {
+                    delt_full[i] = k* delt_full[i];
+                }
+
+            }
+
+            return delt_full;
+        }
+
+
     }
 
 
@@ -2404,6 +2501,7 @@ namespace opengl3
             update_ms_targets();
             update_ms_model();
             update_ms_robot();
+            robot?.handler_move();
             return this;
         }
 
