@@ -6884,11 +6884,13 @@ namespace opengl3
         }
 
         //--------------------------------------------------------
-        private void videoStart_sam(int number)
+        private void videoStart_sam(int number,int num_imb = -1)
         {
             var capture = new VideoCapture(number,VideoCapture.API.DShow);
 
             //'M', 'J', 'P', 'G');
+            var num_vid = num_imb;
+            if (num_vid < 0) num_vid = number;
             videoCaptures[number] = capture;
             //capture.SetCaptureProperty(CapProp.
             capture.Set(CapProp.FrameWidth, cameraSize.Width);
@@ -11258,12 +11260,12 @@ namespace opengl3
         private void but_con_navig_sys_Click(object sender, EventArgs e)
         {
                         
-            videoStart_sam(navig_system.cam1_ind);
-            videoStart_sam(navig_system.cam2_ind);
+            videoStart_sam(navig_system.cam1_ind,0);
+            videoStart_sam(navig_system.cam2_ind,1);
 
             if(NavigSys.cam_numbers==3)
             {
-                videoStart_sam(navig_system.cam3_ind);
+                videoStart_sam(navig_system.cam3_ind,2);
                 timer_navig_processing.Start();
             }
             else
