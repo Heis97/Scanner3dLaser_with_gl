@@ -583,7 +583,7 @@ namespace opengl3
             {
                 //label_navig_robot_status.Text = "Подключение...";
 
-                string host = "localhost";
+                string host = "10.10.10.3";
                 var port = 30006;
 
                 await ConnectAsync(host, port);
@@ -607,7 +607,7 @@ namespace opengl3
             lock (_lock) { frame = _latestFrame; }
             if (frame != null)
             {
-                if (frame.Count(',') == 5) label_navig_robot_status_pose.Text = frame;
+                if (frame.Count(',') % 5 == 0 && frame.Count(',')>=5) label_navig_robot_status_pose.Text = frame;
                 else { Console.WriteLine(frame.Count(',')); };
             }
         }
@@ -781,9 +781,20 @@ namespace opengl3
         }
         public static double[] parse_pose(string pose_str)
         {
+
+
+
             var pose = new double[6];
             if (!pose_str.Contains(',')) return null;
-            var pose_l = pose_str.Split(',');
+            if (pose_str.Contains('\n'))
+            {
+                pose_str = pose_str.Replace("\n\n", "\n");
+                pose_str = pose_str.Replace("\n\n", "\n");
+                pose_str = pose_str.Trim();
+                pose_str = pose_str.Split('\n')[0];
+            }
+
+                var pose_l = pose_str.Split(',');
             if (pose_l.Length < 6) return null;
             for (int i = 0; i < 6; i++)
             {

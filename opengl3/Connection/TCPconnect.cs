@@ -284,7 +284,6 @@ namespace opengl3
             _client?.Close();
             Disconnected?.Invoke();
         }
-
         private async Task ReaderLoopAsync()
         {
             try
@@ -295,17 +294,43 @@ namespace opengl3
                     if (bytesRead == 0) break;
 
                     string chunk = Encoding.UTF8.GetString(_readBuffer, 0, bytesRead);
-                    //_messageBuilder.Append(chunk);
+                    try
+                    {
+                        OnMessageReceived(chunk);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Логируем ошибку обработки, но НЕ закрываем соединение
+                        System.Diagnostics.Debug.WriteLine($"Ошибка в обработчике сообщения: {ex.Message}");
+                    }
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка чтения: {ex.Message}");
+            }
+            finally
+            {
+                if (IsConnected)
+                {
+                    _client.Close();
+                    Disconnected?.Invoke();
+                }
+            }
+        }
+        private async Task ReaderLoopAsync_v1()
+        {
+            try
+            {
+                while (!_cts.Token.IsCancellationRequested && IsConnected)
+                {
+                    int bytesRead = await _stream.ReadAsync(_readBuffer, 0, _readBuffer.Length, _cts.Token);
+                    if (bytesRead == 0) break;
 
+                    string chunk = Encoding.UTF8.GetString(_readBuffer, 0, bytesRead);
                     OnMessageReceived(chunk);
 
-                    /*int newlineIndex;
-                    while ((newlineIndex = _messageBuilder.ToString().IndexOf('\n')) >= 0)
-                    {
-                        string message = _messageBuilder.ToString(0, newlineIndex);
-                        _messageBuilder.Remove(0, newlineIndex + 1);
-                        OnMessageReceived(message);
-                    }*/
                 }
             }
             catch (OperationCanceledException) { }
