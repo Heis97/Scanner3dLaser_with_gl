@@ -6891,7 +6891,7 @@ namespace opengl3
             //'M', 'J', 'P', 'G');
             var num_vid = num_imb;
             if (num_vid < 0) num_vid = number;
-            videoCaptures[number] = capture;
+            videoCaptures[num_vid] = capture;
             //capture.SetCaptureProperty(CapProp.
             capture.Set(CapProp.FrameWidth, cameraSize.Width);
 
@@ -6907,9 +6907,9 @@ namespace opengl3
             cameraSize.Height = (int)capture.Get(CapProp.FrameHeight);
             //videoCaptures[scanner_config.Cam1_ind]?.Set(CapProp.AutoExposure, 1);
             var fps = capture.Get(CapProp.Fps);
-            Console.WriteLine(cameraSize.Width.ToString() + " " + cameraSize.Height.ToString() + " " + fps);
+            Console.WriteLine("number: "+number+"; num_vid: "+num_vid+"; "+ cameraSize.Width.ToString() + " " + cameraSize.Height.ToString() + " " + fps);
             //capture.SetCaptureProperty(CapProp.Contrast, 30);
-            camera_ind_ptr[number] = capture.Ptr;
+            camera_ind_ptr[num_vid] = capture.Ptr;
 
             capture.ImageGrabbed += capturingVideo_sam;
             capture.Start();
@@ -11233,7 +11233,7 @@ namespace opengl3
                 {1,0,0,55 },
                 {0,1,0,55 },
                 {0,0,1,-14},
-                {0,0,0,1  }}), @"models\nav\marker1b.stl"
+                {0,0,0,1  }}), @"models\nav\marker1.stl"
                 );
             navig_system = new NavigSys(navig_stereo, 12);
             var tools = new List<NavigTool>();
@@ -11245,8 +11245,8 @@ namespace opengl3
             navig_system.robot.robotType = RobotFrame.RobotType.RC5;
             navig_system.robot.label_navig_robot_status_pose = label_navig_robot_status_pose;
             Console.WriteLine("calibr");
-            navig_system.calibrate_navig_tool("tool1_2906_1a", 0);
             navig_system.calibrate_navig_tool("tool1_2906_1a", 2);
+            navig_system.calibrate_navig_tool("tool1_2906_1a", 0);
             Console.WriteLine("calibr_done");
 
         }

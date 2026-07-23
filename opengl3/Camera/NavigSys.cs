@@ -607,7 +607,7 @@ namespace opengl3
             lock (_lock) { frame = _latestFrame; }
             if (frame != null)
             {
-                if (frame.Count(',') % 5 == 0 && frame.Count(',')>=5) label_navig_robot_status_pose.Text = frame;
+                if (frame.Count(',') % 5 == 0 && frame.Count(',')>=5) label_navig_robot_status_pose.Text = str_pose_one(frame);
                 else { Console.WriteLine(frame.Count(',')); };
             }
         }
@@ -785,6 +785,23 @@ namespace opengl3
 
 
             var pose = new double[6];
+
+            pose_str = str_pose_one(pose_str);
+            if (pose_str == null) return null;
+            var pose_l = pose_str.Split(',');
+            if (pose_l.Length < 6) return null;
+            for (int i = 0; i < 6; i++)
+            {
+                pose[i] = Convert.ToDouble(pose_l[i]);
+            }
+            return pose;
+        }
+
+        public static string str_pose_one(string pose_str)
+        {
+
+
+
             if (!pose_str.Contains(',')) return null;
             if (pose_str.Contains('\n'))
             {
@@ -794,13 +811,8 @@ namespace opengl3
                 pose_str = pose_str.Split('\n')[0];
             }
 
-                var pose_l = pose_str.Split(',');
-            if (pose_l.Length < 6) return null;
-            for (int i = 0; i < 6; i++)
-            {
-                pose[i] = Convert.ToDouble(pose_l[i]);
-            }
-            return pose;
+            
+            return pose_str;
         }
         public static string pose_to_str(double[] pose, bool rad = true)
         {
@@ -1750,9 +1762,9 @@ namespace opengl3
         public int cam2_ind = 0;
         public int cam3_ind = 2;*/
 
-        public int cam1_ind = 1;
+        public int cam1_ind = 2;
         public int cam2_ind = 0;
-        public int cam3_ind = 2;
+        public int cam3_ind = 1;
         public static int cam_numbers = 3;
         public System.Drawing.PointF[][][] points2d_cams = new System.Drawing.PointF[cam_numbers][][];
         //-------------------------------------------------
@@ -1781,11 +1793,11 @@ namespace opengl3
                 
             };
             ps[marker.ind] = PointF.toSystemPoint(ps_refine) ;
-           /* if(im.NumberOfChannels!=3)
+            if(im.NumberOfChannels!=3)
             {
                 CvInvoke.CvtColor(im, im, ColorConversion.Gray2Bgr);
             }
-            UtilOpenCV.drawPoints(im, PointF.toPoint(ps[marker.ind]), 255, 255, 0, 5, true);*/
+            UtilOpenCV.drawPoints(im, PointF.toPoint(ps[marker.ind]), 255, 255, 0, 5, true);
             /* 
              CvInvoke.Imshow("asd", im);
              CvInvoke.WaitKey();*/
