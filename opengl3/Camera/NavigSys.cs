@@ -2732,7 +2732,6 @@ namespace opengl3
         {
             Matrix<double>[] real_Ms_marker_in_world = new Matrix<double>[frames.Length];
             Matrix<double>[] prop_Ms_flange_in_base = new Matrix<double>[frames.Length];
-
             for (int i = 0; i < frames.Length; i++)
             {
                 var p2d_1 = navigation_processing_get_points2d_3cam(ref frames[i].im, 0);
@@ -2743,7 +2742,6 @@ namespace opengl3
                 real_Ms_marker_in_world[i] = tools[ind_tool].matrix_frame.Clone();
                 prop_Ms_flange_in_base[i] = new RobotFrame(new Pose(frames[i].name),robot.robotType).getMatrix();
             }
-
             handeye_calibr(real_Ms_marker_in_world, prop_Ms_flange_in_base);
         }
 

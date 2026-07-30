@@ -11725,8 +11725,41 @@ namespace opengl3
 
         private void but_robot_flange_frame_calibr_Click(object sender, EventArgs e)
         {
+            //var stereo_cal_1 = textB_scan_path.Text.Split('\\').Reverse().ToArray()[0];
+            //var stereo_cal_1 = get_folder_name_cam(textB_scan_path.Text);
+            //Console.WriteLine(stereo_cal_1+" "+ stereo_cal_2);
+            var stereo_cal_1 = "flange_cal_2307_4a";
+            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, @"cam3\" + stereo_cal_1 }; //var reverse = true;
+            var frms_stereo = FrameLoader.loadImages_stereoCV3(cams_path[0], cams_path[1], cams_path[2],FrameType.Pattern);
+            //navig_system.handeye_calibr_navig_frames(frms_stereo, navig_system.)
+            //cams_path = new string[] { openGl_folder+"/monitor_0/distort", openGl_folder + "/monitor_1/distort" };  reverse = false;
+            //var frms_stereo = FrameLoader.loadImages_stereoCV(cams_path[0], cams_path[1], FrameType.Pattern, scanner_config.rotate_cam);
+            var cam_path = textB_scan_path.Text;
             
-            
+
+            var cam1_conf_path = textB_cam1_conf.Text;
+            var cam2_conf_path = textB_cam2_conf.Text;
+            var cam1 = CameraCV.load_camera(cam1_conf_path);
+            var cam2 = CameraCV.load_camera(cam1_conf_path);
+            var stereo = new StereoCamera(new CameraCV[] { cam1, cam2 });
+            stereocam_scan = stereo;
+            //stereocam_scan.calibrate_stereo(frms_stereo, PatternType.Mesh,chess_size);
+            //chess_size = new Size(6, 7);
+            //var markSize = 9.78f;// 10f;//9.733f
+            //stereocam_scan.calibrate_basis_rob_xyz(frms_stereo, PatternType.Mesh, chess_size, markSize);
+            //stereocam_scan.calibrate_basis_rob_abc(frms_stereo, PatternType.Mesh, chess_size, markSize);
+
+            var ms_check = StereoCamera.calibrate_stereo_rob_handeye(cam1, frms_stereo, PatternType.Mesh, chess_size, markSize, "bfs_cal.txt", current_robot, GL1);
+
+            //make_photos_robot(ms_check);
+            for (int i = 0; i < ms_check.Count; i++)
+            {
+                //  GL1.addFrame(ms_check[i]);
+            }
+            comboImages.Items.AddRange(frms_stereo);
+            matrices_cal = ms_check;
+            cameraCVcommon = cam1;
+
         }
 
         private void but_navig_robot_photo_Click(object sender, EventArgs e)
