@@ -319,16 +319,16 @@ namespace opengl3
             Console.WriteLine(name2);
             Console.WriteLine(name3);
             Console.WriteLine("------------");
-            if (origs[0] != null)
+            /*if (origs != null)
             {
                 im1 -= origs[0];
                 im2 -= origs[1];
                 im3 -= origs[2];
-            }
-            if (reverse)
+            }*/
+            /*if (reverse)
             {
                 CvInvoke.Rotate(im2, im2, Emgu.CV.CvEnum.RotateFlags.Rotate180);
-            }
+            }*/
             var fr = new Frame(im1, im2,im3, name1, frameType);
             fr.stereo = true;
             //  CvInvoke.Imshow("im1", im1);

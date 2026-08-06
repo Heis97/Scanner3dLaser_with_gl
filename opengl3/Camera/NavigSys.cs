@@ -2740,7 +2740,7 @@ namespace opengl3
                 var ps3d = navigation_processing_get_points3d_3cam(p2d_1, p2d_2, p2d_3, frames[i].im, frames[i].im_sec, frames[i].im_third);
                 //ps_calib.Add(ps3d);
                 real_Ms_marker_in_world[i] = tools[ind_tool].matrix_frame.Clone();
-                prop_Ms_flange_in_base[i] = new RobotFrame(new Pose(frames[i].name),robot.robotType).getMatrix();
+                prop_Ms_flange_in_base[i] = new RobotFrame(new Pose(frames[i].name,false,','),robot.robotType).getMatrix();
             }
             handeye_calibr(real_Ms_marker_in_world, prop_Ms_flange_in_base);
         }
