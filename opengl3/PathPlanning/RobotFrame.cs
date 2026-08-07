@@ -239,7 +239,22 @@ namespace opengl3
             var vy = (vz | vx).normalize();
             return matrix_assemble(vx, vy, vz, p1);
         }
+        public static Matrix<double> matrix_basis_from_ps_frame(Point3d_GL[] ps)//
+        {
+            if (ps == null) return null;
+            if (ps.Length < 3) return null;
+            var p0 = ps[0];
+            var p1 = ps[1];
+            var p2 = ps[2];
+            var p3 = ps[3];
 
+            var vx = (p2 - p0).normalize();
+            var vyx = (p0 - p1).normalize();
+
+            var vz = (vx | vyx).normalize();
+            var vy = (vz | vx).normalize();
+            return matrix_assemble(vx, vy, vz, p3);
+        }
         public Matrix<double>  getMatrix()
         {
 

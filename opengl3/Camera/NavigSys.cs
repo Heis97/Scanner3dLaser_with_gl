@@ -761,9 +761,17 @@ namespace opengl3
 
             var poses_str = new string[gen_Ms_frames_in_world.Length];
 
+
+            var m_prev = UtilMatr.eye_matr(4);
+
             for (int i = 0; i < gen_Ms_frames_in_world.Length; i++)
             {
                 gen_Ms_flange_in_base[i] = prop_M_world_in_base * gen_Ms_frames_in_world[i] * prop_M_flange_in_marker;
+                var delt_cam_matr = UtilOpenCV.inv(m_prev) * gen_Ms_flange_in_base[i];
+                Console.WriteLine( NavigSys.dist_matrix(delt_cam_matr));
+                m_prev = gen_Ms_flange_in_base[i].Clone();
+
+
                 var pose = RobotFrame.comp_inv_kinem_priv_rc5_real(new RobotFrame(gen_Ms_flange_in_base[i], robotType).frame, cur_turn);
                 poses_str[i] = pose_to_str(pose,true);
             }
@@ -1518,15 +1526,41 @@ namespace opengl3
             var p2 = ps_finded[0][2];
             var p3 = ps_finded[0][1];
 
-            var vx = (p2 - p1).normalize();
-            var vyx = (p0 - p1).normalize();
 
-            var vz = (vx | vyx).normalize();
-            var vy = (vz | vx).normalize();
-            var matrix_cur = RobotFrame.matrix_basis_from_ps(new Point3d_GL[] { p0, p1, p2 });
-            if (matrix_frame!=null && filtered && ps!=null && ps.Length>4)
+            var matrix_shift = UtilMatr.matrix_cv(new Point3d_GL(0, 0, -36.1), new Point3d_GL());
+
+            var matrix_cur =  RobotFrame.matrix_basis_from_ps_frame(new Point3d_GL[] { p0, p1, p3,( p1 + p3) / 2 })* matrix_shift;
+
+           // Console.WriteLine("dist: " + (p0 - p2).magnitude() + " " + (p0 - p1).magnitude() + " " + (p1 - p2).magnitude());
+            //gauss_matrix(matrix_cur,filtered);
+            matrix_frame = matrix_cur;
+            matrix_frame_inv = matrix_frame.Clone();
+            CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU); 
+            matrix_model = matrix_frame * matrix_tcp;
+            matrix_model_inv = matrix_model.Clone();
+            CvInvoke.Invert(matrix_model, matrix_model_inv, DecompMethod.LU);
+           
+            ps = new Point3d_GL[] { p0, p1, p2, p3,
+                new Point3d_GL(matrix_model[0, 3], matrix_model[1, 3], matrix_model[2, 3]),
+                new Point3d_GL(matrix_frame[0, 3], matrix_frame[1, 3], matrix_frame[2, 3]),
+                new Point3d_GL((p0 - p1).magnitude(), (p0 - p2).magnitude(), (p2 - p1).magnitude())
+            };
+
+            /*var ps_ext = gen_3d_ps_other_corners(new Point3d_GL(9, 9, 0), 50, 100, matrix_frame);
+            var ps_l = ps.ToList();
+            ps_l.AddRange(ps_ext);
+            ps = ps_l.ToArray();*/
+
+            
+
+            return matrix_frame;
+        }
+
+        void gauss_matrix(Matrix<double> matrix_cur,bool filtered)
+        {
+            if (matrix_frame != null && filtered && ps != null && ps.Length > 4)
             {
-                var matrix_prev = matrix_frame.Clone();               
+                var matrix_prev = matrix_frame.Clone();
                 var p_cur = new Point3d_GL(matrix_cur[0, 3], matrix_cur[1, 3], matrix_cur[2, 3]);
 
                 var dist_prev_cur = (p_cur - ps[5]).magnitude();
@@ -1548,35 +1582,14 @@ namespace opengl3
                         matrix_frame = matrix_cur;
 
                     }
-                       
+
                 }
             }
             else
             {
                 matrix_frame = matrix_cur;
             }
-            
-           
-            matrix_frame_inv = matrix_frame.Clone();
-            CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU); 
-            matrix_model = matrix_frame * matrix_tcp;
-            matrix_model_inv = matrix_model.Clone();
-            CvInvoke.Invert(matrix_model, matrix_model_inv, DecompMethod.LU);
-           
-            ps = new Point3d_GL[] { p0, p1, p2, p3,
-                new Point3d_GL(matrix_model[0, 3], matrix_model[1, 3], matrix_model[2, 3]),
-                new Point3d_GL(matrix_frame[0, 3], matrix_frame[1, 3], matrix_frame[2, 3]),
-                new Point3d_GL((p0 - p1).magnitude(), (p0 - p2).magnitude(), (p2 - p1).magnitude())
-            };
 
-            /*var ps_ext = gen_3d_ps_other_corners(new Point3d_GL(9, 9, 0), 50, 100, matrix_frame);
-            var ps_l = ps.ToList();
-            ps_l.AddRange(ps_ext);
-            ps = ps_l.ToArray();*/
-
-            
-
-            return matrix_frame;
         }
 
         static Point3d_GL[] gen_3d_ps_other_corners(Point3d_GL pc, double marker_size, double corner_lin_dist, Matrix<double> matrix_frame)
@@ -1798,6 +1811,8 @@ namespace opengl3
                 CvInvoke.CvtColor(im, im, ColorConversion.Gray2Bgr);
             }
             UtilOpenCV.drawPoints(im, PointF.toPoint(ps[marker.ind]), 255, 255, 0, 5, true);
+            CvInvoke.PutText(im, marker.ind.ToString(), new Point(50, 50), FontFace.HersheySimplex, 2, new MCvScalar(255));
+
             /* 
              CvInvoke.Imshow("asd", im);
              CvInvoke.WaitKey();*/
@@ -1838,9 +1853,9 @@ namespace opengl3
                         points3d[i] = stereo.stereoCamera.comp_points_3d_3cam(points2d_1[i], points2d_2[i], points2d_3[i], i);
                         
 
-                        if(i==11)
+                        if(i==4)
                         {
-                            //Console.WriteLine(" " + points3d[i][2].x + " " + points3d[i][2].y + " " + points3d[i][2].z + " ");
+                           // Console.WriteLine(" " + points3d[i][2].x + " " + points3d[i][2].y + " " + points3d[i][2].z + " ");
                             //UtilOpenCV.drawPoints(_mat_out1, PointF.toPoint(points_aruco1[i]), 255, 255, 0, 7, true);
                             //UtilOpenCV.drawPoints(_mat_out2, PointF.toPoint(points_aruco2[i]), 255, 255, 0, 7, true);
 
@@ -2525,13 +2540,13 @@ namespace opengl3
         public bool registration_done = false;
         public int model_instrument = 1;
         public bool writing_registr_pos = false;
-        public NavigSys navigation_processing_get_scene(Point3d_GL[][] ps)
+        public NavigSys navigation_processing_get_scene(Point3d_GL[][] ps,bool real_time = true)
         {
 
 
             for (int i = 0;i< tools.Length; i++)
             {
-                tools[i].get_frame(ps,true);
+                tools[i].get_frame(ps, real_time);
 
                 if (tools[i].toolfunc == NavigTool.ToolFuncType.Registr)
                 {
@@ -2732,19 +2747,64 @@ namespace opengl3
         {
             Matrix<double>[] real_Ms_marker_in_world = new Matrix<double>[frames.Length];
             Matrix<double>[] prop_Ms_flange_in_base = new Matrix<double>[frames.Length];
+            Matrix<double> prev_cam_matr = UtilMatr.eye_matr(4);
+            Matrix<double> prev_robot_matr = UtilMatr.eye_matr(4);
             for (int i = 0; i < frames.Length; i++)
             {
+                //ar mat1 = frames[i].im.Clone();
                 var p2d_1 = navigation_processing_get_points2d_3cam(ref frames[i].im, 0);
                 var p2d_2 = navigation_processing_get_points2d_3cam(ref frames[i].im_sec, 1);
                 var p2d_3 = navigation_processing_get_points2d_3cam(ref frames[i].im_third, 2);
+
+                /*CvInvoke.Imshow("p2d_1", frames[i].im);
+                CvInvoke.Imshow("p2d_2", frames[i].im_sec);
+                CvInvoke.Imshow("p2d_3", frames[i].im_third);
+                CvInvoke.WaitKey();*/
+
                 var ps3d = navigation_processing_get_points3d_3cam(p2d_1, p2d_2, p2d_3, frames[i].im, frames[i].im_sec, frames[i].im_third);
+                navigation_processing_get_scene(ps3d,false);
+                //tools[ind_tool].get_frame(ps3d);
                 //ps_calib.Add(ps3d);
                 real_Ms_marker_in_world[i] = tools[ind_tool].matrix_frame.Clone();
                 prop_Ms_flange_in_base[i] = new RobotFrame(new Pose(frames[i].name,false,','),robot.robotType).getMatrix();
+
+                //prin.t("real_Ms_marker_in_world[i]");
+                //prin.t(real_Ms_marker_in_world[i]);
+                //prin.t("prop_Ms_flange_in_base[i]");
+                //prin.t(prop_Ms_flange_in_base[i]);
+                //Console.WriteLine("______________");
+
+                
+
+                var delt_cam_matr = UtilOpenCV.inv(prev_cam_matr) * real_Ms_marker_in_world[i];
+                var delt_robot_matr = UtilOpenCV.inv(prev_robot_matr) * prop_Ms_flange_in_base[i];
+
+                prev_cam_matr = real_Ms_marker_in_world[i].Clone();
+                prev_robot_matr = prop_Ms_flange_in_base[i].Clone();
+
+                Console.WriteLine(dist_matrix(delt_cam_matr) + " " + dist_matrix(delt_robot_matr));
+                /*prin.t("delt_cam_matr");
+                prin.t(delt_cam_matr);
+                prin.t("delt_robot_matr");
+                prin.t(delt_robot_matr);
+                Console.WriteLine("______________");*/
             }
             handeye_calibr(real_Ms_marker_in_world, prop_Ms_flange_in_base);
         }
 
+       static public double dist_matrixes(Matrix<double> m1, Matrix<double> m2)
+        {
+            var p1 = new Point3d_GL(m1[0,3], m1[1, 3], m1[2, 3]);
+            var p2 = new Point3d_GL(m2[0, 3], m2[1, 3], m2[2, 3]);
+
+            return Math.Round( (p2 - p1).magnitude(),3);
+        }
+        static public double dist_matrix(Matrix<double> m1)
+        {
+            var p1 = new Point3d_GL(m1[0, 3], m1[1, 3], m1[2, 3]);
+
+            return Math.Round((p1).magnitude(), 3);
+        }
         public void handeye_calibr( Matrix<double>[] real_Ms_marker_in_world, Matrix<double>[] prop_Ms_flange_in_base)
         {
 
@@ -2874,7 +2934,7 @@ namespace opengl3
             model.draw_model_3d(graphic, sceneType, model_vision);
             draw_model_3d(graphic, sceneType, camera_vision);
         }
-       public void calibrate_navig_tool(string tool_cal_path, int tool_ind)
+        public void calibrate_navig_tool(string tool_cal_path, int tool_ind)
         {
             //var tool_cal_path_orig = textBox_tool_calibr.Text;
             //var tool_cal_path = "tool1_2906_1a";
@@ -2895,8 +2955,8 @@ namespace opengl3
             }
 
             var cur_rob = RobotFrame.RobotType.RC5;
-           // var qs = test_rob_pos1;
-           // var posrob = new RobotFrame(RobotFrame.comp_forv_kinem(qs, 6, false, cur_rob), 0, 0, 0, RobotFrame.RobotType.RC5);
+            // var qs = test_rob_pos1;
+            // var posrob = new RobotFrame(RobotFrame.comp_forv_kinem(qs, 6, false, cur_rob), 0, 0, 0, RobotFrame.RobotType.RC5);
 
 
 

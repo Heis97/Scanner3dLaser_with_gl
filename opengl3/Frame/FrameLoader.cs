@@ -309,11 +309,11 @@ namespace opengl3
 
         static public Frame loadImage_stereoCV3(string filepath1, string filepath2, string filepath3, FrameType frameType, Mat[] origs = null, bool reverse = false)
         {
-            string name1 = Path.GetFileName(filepath1);
+            string name1 = Path.GetFileNameWithoutExtension(filepath1);
             var im1 = new Mat(filepath1);
-            string name2 = Path.GetFileName(filepath2);
+            string name2 = Path.GetFileNameWithoutExtension(filepath2);
             var im2 = new Mat(filepath2);
-            string name3 = Path.GetFileName(filepath3);
+            string name3 = Path.GetFileNameWithoutExtension(filepath3);
             var im3 = new Mat(filepath3);
             Console.WriteLine(name1);
             Console.WriteLine(name2);
@@ -403,9 +403,9 @@ namespace opengl3
         static public Frame[] loadImages_stereoCV3(string path1, string path2, string path3, FrameType frameType, bool reverse = false)
         {
             Console.WriteLine(path1);
-            var files1 = sortByDate(Directory.GetFiles(path1));
-            var files2 = sortByDate(Directory.GetFiles(path2));
-            var files3 = sortByDate(Directory.GetFiles(path3));
+            var files1 = sortByName(Directory.GetFiles(path1));
+            var files2 = sortByName(Directory.GetFiles(path2));
+            var files3 = sortByName(Directory.GetFiles(path3));
             List<Frame> frames = new List<Frame>();
 
 

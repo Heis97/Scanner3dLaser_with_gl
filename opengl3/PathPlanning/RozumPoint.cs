@@ -84,9 +84,10 @@ namespace opengl3
             {
                 angles.Add(double.Parse(spl[i]));
             }
-            timestamp = DateTime.Parse(spl[spl.Length-1]);
+            //timestamp = DateTime.Parse(spl[spl.Length-1]);
             this.radians = radians;
         }
+
         public override string ToString()
         {
             var text = "";

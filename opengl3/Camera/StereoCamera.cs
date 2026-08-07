@@ -345,7 +345,7 @@ namespace opengl3
             (mc_r, mc_t) = UtilOpenCV.to_vec_mat(ms_cam.ToArray());
             Mat mr = new Mat();
             Mat mt = new Mat();
-            CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt, HandEyeCalibrationMethod.Tsai);//andreff
+            CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt, HandEyeCalibrationMethod.Andreff);//andreff   //Tsai
             /*prin.t("result:");
             prin.t(mr);
             prin.t(mt);
@@ -363,11 +363,13 @@ namespace opengl3
                     Bfs_med[i, j] = mr_m[i, j];
                 }
             }
+
             Bfs_med[0, 3] = mt_m[0, 0];
             Bfs_med[1, 3] = mt_m[1, 0];
             Bfs_med[2, 3] = mt_m[2, 0];
             Bfs_med[3, 3] = 1;
-                                                                                                    // Bfs_med = Bfs_med_real;//
+            var matrix_bfs_prop = UtilMatr.matrix_cv(new Point3d_GL(0, 0, 0), new Point3d_GL(0, 0, 45));
+            Bfs_med = matrix_bfs_prop;                                                                                         // Bfs_med = Bfs_med_real;//
             var ms_check = new List<Matrix<double>>();
 
             for (int i = 0; i < ms_cam.Count; i++)

@@ -1618,7 +1618,7 @@ namespace opengl3
             scanner.initStereo(new Mat[] { frms_stereo[0].im, frms_stereo[0].im_sec, frms_stereo[0].im_third }, PatternType.Mesh, chess_size, marksize);
 
             //comboImages.Items.AddRange(frms_stereo);
-            comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
+            //comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
             return scanner;
         }
         Scanner load_scan_v2(Scanner scanner, string scan_path, ScannerConfig config)
@@ -4716,6 +4716,13 @@ namespace opengl3
                 var r = im.GetAverage();
                 CvInvoke.PutText(im, Math.Round( r.Intensity, 3).ToString(),new Point(100,800),FontFace.HersheyScriptSimplex,3,new MCvScalar(255),2);
                 imageBox2.Image = get_focal_surface(fr.im);
+            }
+
+            if (fr.frameType == FrameType.Navig) 
+            {
+                imageBox1.Image = fr.im;
+                imageBox2.Image = fr.im_sec;
+                imageBox_3cam.Image = fr.im_third;
             }
             //imageBox2.Image = cameraCVcommon.undist(fr.im);
         }
@@ -11088,7 +11095,7 @@ namespace opengl3
                 if (mat_global[navig_system.cam2_ind] != null && mat_global[navig_system.cam1_ind] != null && !mat_global[navig_system.cam2_ind].IsEmpty && !mat_global[navig_system.cam1_ind].IsEmpty)
                 {
                     var ps3d = navig_system.navigation_processing_get_points3d(mat_global[navig_system.cam1_ind], mat_global[navig_system.cam2_ind], out Mat mat1, out Mat mat2);    //navyg_sys_info(camera_only)
-                    navig_system.navigation_processing_get_scene(ps3d);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
+                    navig_system.navigation_processing_get_scene(ps3d,true);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
                                                                                                 //
                     
                     //draw 3d objs
@@ -11121,7 +11128,7 @@ namespace opengl3
             {
                 Thread.Sleep(10);
                 var ps3d = navig_system.navigation_processing_get_points3d_3cam(navig_system.points2d_cams[0], navig_system.points2d_cams[1], navig_system.points2d_cams[2]);    //navyg_sys_info(camera_only)
-                navig_system.navigation_processing_get_scene(ps3d);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
+                navig_system.navigation_processing_get_scene(ps3d,true);                         //navyg_sys_info(indecses aruco, tools info(aruco,calibr)),
                                                                                             //
                 
                 //draw 3d objs
@@ -11149,7 +11156,7 @@ namespace opengl3
         private void timer_navig_processing_Tick(object sender, EventArgs e)
         {
             var ps3d = navig_system.navigation_processing_get_points3d_3cam(navig_system.points2d_cams[0], navig_system.points2d_cams[1], navig_system.points2d_cams[2]);    //navyg_sys_info(camera_only)
-            navig_system.navigation_processing_get_scene(ps3d);
+            navig_system.navigation_processing_get_scene(ps3d, true);
             //textBox_navig_robot_send_pos_virt.Text = qs_str;
             var qs = NavigRobotClient.parse_pose(label_navig_robot_status_pose.Text);
             
@@ -11727,8 +11734,9 @@ namespace opengl3
         {
             var stereo_cal_1 = "flange_cal_2307_4a";
             var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, @"cam3\" + stereo_cal_1 }; //var reverse = true;
-            var frms_stereo = FrameLoader.loadImages_stereoCV3(cams_path[0], cams_path[1], cams_path[2],FrameType.Pattern);
+            var frms_stereo = FrameLoader.loadImages_stereoCV3(cams_path[0], cams_path[1], cams_path[2],FrameType.Navig);
             navig_system.handeye_calibr_navig_frames(frms_stereo, 2);
+            comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
         }
 
         private void but_navig_robot_photo_Click(object sender, EventArgs e)
