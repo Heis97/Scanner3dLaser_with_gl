@@ -134,7 +134,7 @@ namespace opengl3
                 }
                 //try
                 {
-                 //Console.WriteLine("Out: " + Mes1);
+                 Console.WriteLine("Out: " + Mes1);
                     int count = 0;
                     int count_max = 5;
                 if(this.serialPort.IsOpen)

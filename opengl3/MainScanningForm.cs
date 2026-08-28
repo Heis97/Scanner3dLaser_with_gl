@@ -9940,7 +9940,7 @@ namespace opengl3
             if (e.KeyCode == Keys.Enter)
             {
                 var pos = Convert.ToInt32(textBox_valve_val.Text);
-                laserLine?.set_adr(i2c_adr_valve);
+                //laserLine?.set_adr(i2c_adr_valve);
                 laserLine?.set_valve_pos(pos);
             }
 
