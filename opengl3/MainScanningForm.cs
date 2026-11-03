@@ -2435,7 +2435,7 @@ namespace opengl3
         }
 
 
-        int monitor_num = 1;
+        int monitor_num = 4;
         double main_frame_len = 100;
         private void glControl1_ContextCreated(object sender, GlControlEventArgs e)
         {
@@ -11785,8 +11785,25 @@ namespace opengl3
 
                 this.glControl1.SendToBack();
             }
-             
-            
+
+            else if (windowsTabs.SelectedTab == tabPage_virt_navig)
+            {
+                this.tabPage_virt_navig.Controls.Add(this.glControl1);
+                this.glControl1.Location = new Point(10, 10);
+                this.glControl1.SendToBack();
+                /*if (imb_main.Length == imb_locations_navig.Length)
+                    for (int i = 0; i < imb_main.Length; i++)
+                    {
+                        this.tabPage_virt_navig.Controls.Add(imb_main[i]);
+                        imb_main[i].Location = imb_locations_navig[i];
+                        imb_main[i].Size = imb_sizes_navig[i];
+                        set_zoom_imbase[i] = false;
+                    }
+
+                this.glControl1.SendToBack();*/
+            }
+
+
         }
 
         private void button_set_prop_robot_pos_Click(object sender, EventArgs e)

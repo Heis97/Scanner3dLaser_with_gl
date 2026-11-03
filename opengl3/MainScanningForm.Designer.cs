@@ -60,7 +60,6 @@ namespace opengl3
             this.imBox_base_2 = new Emgu.CV.UI.ImageBox();
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
             this.but_resize = new System.Windows.Forms.Button();
-            this.comboImages = new System.Windows.Forms.ComboBox();
             this.but_save_im_base1 = new System.Windows.Forms.Button();
             this.but_rob_ph = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -309,6 +308,7 @@ namespace opengl3
             this.comboNumber = new System.Windows.Forms.ComboBox();
             this.imageBox2 = new Emgu.CV.UI.ImageBox();
             this.imBox_base = new Emgu.CV.UI.ImageBox();
+            this.comboImages = new System.Windows.Forms.ComboBox();
             this.tabP_scanning_printing = new System.Windows.Forms.TabPage();
             this.imageBox_laser_compens = new Emgu.CV.UI.ImageBox();
             this.tabC_scanning_printing_ins = new System.Windows.Forms.TabControl();
@@ -702,6 +702,7 @@ namespace opengl3
             this.but_save_photo_nav = new System.Windows.Forms.Button();
             this.but_navig_cl = new System.Windows.Forms.Button();
             this.tabPage_navig_pan = new System.Windows.Forms.TabPage();
+            this.rangeSliderVinv_limits_model_h = new RangeSliderVinv();
             this.tabControl_navig = new System.Windows.Forms.TabControl();
             this.tabPage_3d_model_exrtract = new System.Windows.Forms.TabPage();
             this.radioButton_navig_scene_model = new System.Windows.Forms.RadioButton();
@@ -748,6 +749,8 @@ namespace opengl3
             this.imageBox_navig_coronal = new Emgu.CV.UI.ImageBox();
             this.imageBox_navig_sagital = new Emgu.CV.UI.ImageBox();
             this.imageBox_navig_axial = new Emgu.CV.UI.ImageBox();
+            this.rangeSliderH2_limits_model_d = new RangeSliderH();
+            this.rangeSliderH1_limits_model_w = new RangeSliderH();
             this.tabPage_navig_process = new System.Windows.Forms.TabPage();
             this.tabControl_navig_process_tab = new System.Windows.Forms.TabControl();
             this.tabPage_robot_calibr = new System.Windows.Forms.TabPage();
@@ -786,9 +789,7 @@ namespace opengl3
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.timer_navig_processing = new System.Windows.Forms.Timer(this.components);
-            this.rangeSliderVinv_limits_model_h = new RangeSliderVinv();
-            this.rangeSliderH2_limits_model_d = new RangeSliderH();
-            this.rangeSliderH1_limits_model_w = new RangeSliderH();
+            this.tabPage_virt_navig = new System.Windows.Forms.TabPage();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -1290,15 +1291,6 @@ namespace opengl3
             this.but_resize.Text = "Resize";
             this.but_resize.UseVisualStyleBackColor = true;
             this.but_resize.Click += new System.EventHandler(this.but_resize_Click);
-            // 
-            // comboImages
-            // 
-            this.comboImages.FormattingEnabled = true;
-            this.comboImages.Location = new System.Drawing.Point(701, 9);
-            this.comboImages.Name = "comboImages";
-            this.comboImages.Size = new System.Drawing.Size(431, 21);
-            this.comboImages.TabIndex = 24;
-            this.comboImages.SelectionChangeCommitted += new System.EventHandler(this.comboImages_SelectionChangeCommitted);
             // 
             // but_save_im_base1
             // 
@@ -1871,10 +1863,10 @@ namespace opengl3
             this.tabPage11.Controls.Add(this.label10);
             this.tabPage11.Controls.Add(this.label8);
             this.tabPage11.Controls.Add(this.label16);
-            this.tabPage11.Location = new System.Drawing.Point(4, 22);
+            this.tabPage11.Location = new System.Drawing.Point(4, 29);
             this.tabPage11.Name = "tabPage11";
             this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage11.Size = new System.Drawing.Size(697, 366);
+            this.tabPage11.Size = new System.Drawing.Size(697, 359);
             this.tabPage11.TabIndex = 1;
             this.tabPage11.Text = "3Д сканер";
             this.tabPage11.UseVisualStyleBackColor = true;
@@ -2192,10 +2184,10 @@ namespace opengl3
             this.tabPage12.Controls.Add(this.send_rob);
             this.tabPage12.Controls.Add(this.but_scan_start);
             this.tabPage12.Controls.Add(this.but_photo);
-            this.tabPage12.Location = new System.Drawing.Point(4, 22);
+            this.tabPage12.Location = new System.Drawing.Point(4, 29);
             this.tabPage12.Name = "tabPage12";
             this.tabPage12.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage12.Size = new System.Drawing.Size(697, 366);
+            this.tabPage12.Size = new System.Drawing.Size(697, 359);
             this.tabPage12.TabIndex = 2;
             this.tabPage12.Text = "Подключение к роботу";
             this.tabPage12.UseVisualStyleBackColor = true;
@@ -2495,10 +2487,10 @@ namespace opengl3
             this.tabPage13.Controls.Add(this.but_marl_close);
             this.tabPage13.Controls.Add(this.but_marl_receav);
             this.tabPage13.Controls.Add(this.but_laser_dest);
-            this.tabPage13.Location = new System.Drawing.Point(4, 22);
+            this.tabPage13.Location = new System.Drawing.Point(4, 29);
             this.tabPage13.Name = "tabPage13";
             this.tabPage13.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage13.Size = new System.Drawing.Size(697, 366);
+            this.tabPage13.Size = new System.Drawing.Size(697, 359);
             this.tabPage13.TabIndex = 3;
             this.tabPage13.Text = "Отладка 2";
             this.tabPage13.UseVisualStyleBackColor = true;
@@ -2650,10 +2642,10 @@ namespace opengl3
             this.tabPage14.Controls.Add(this.but_cycle_time);
             this.tabPage14.Controls.Add(this.but_cycle_ampl);
             this.tabPage14.Controls.Add(this.but_cycle_type);
-            this.tabPage14.Location = new System.Drawing.Point(4, 22);
+            this.tabPage14.Location = new System.Drawing.Point(4, 29);
             this.tabPage14.Name = "tabPage14";
             this.tabPage14.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage14.Size = new System.Drawing.Size(697, 366);
+            this.tabPage14.Size = new System.Drawing.Size(697, 359);
             this.tabPage14.TabIndex = 4;
             this.tabPage14.Text = "Имитация дыхания";
             this.tabPage14.UseVisualStyleBackColor = true;
@@ -2996,10 +2988,10 @@ namespace opengl3
             this.tabPage_drill.Controls.Add(this.but_drill_vel);
             this.tabPage_drill.Controls.Add(this.but_drill_dir_2);
             this.tabPage_drill.Controls.Add(this.label63);
-            this.tabPage_drill.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_drill.Location = new System.Drawing.Point(4, 29);
             this.tabPage_drill.Name = "tabPage_drill";
             this.tabPage_drill.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_drill.Size = new System.Drawing.Size(697, 366);
+            this.tabPage_drill.Size = new System.Drawing.Size(697, 359);
             this.tabPage_drill.TabIndex = 5;
             this.tabPage_drill.Text = "Сверление";
             this.tabPage_drill.UseVisualStyleBackColor = true;
@@ -3829,6 +3821,15 @@ namespace opengl3
             this.imBox_base.Size = new System.Drawing.Size(480, 360);
             this.imBox_base.TabIndex = 94;
             this.imBox_base.TabStop = false;
+            // 
+            // comboImages
+            // 
+            this.comboImages.FormattingEnabled = true;
+            this.comboImages.Location = new System.Drawing.Point(701, 9);
+            this.comboImages.Name = "comboImages";
+            this.comboImages.Size = new System.Drawing.Size(431, 21);
+            this.comboImages.TabIndex = 24;
+            this.comboImages.SelectionChangeCommitted += new System.EventHandler(this.comboImages_SelectionChangeCommitted);
             // 
             // tabP_scanning_printing
             // 
@@ -6912,7 +6913,7 @@ namespace opengl3
             this.glControl1.Margin = new System.Windows.Forms.Padding(4);
             this.glControl1.MultisampleBits = ((uint)(8u));
             this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(800, 800);
+            this.glControl1.Size = new System.Drawing.Size(1600, 1600);
             this.glControl1.StencilBits = ((uint)(0u));
             this.glControl1.TabIndex = 65;
             this.glControl1.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_ContextCreated);
@@ -6936,6 +6937,7 @@ namespace opengl3
             this.windowsTabs.Controls.Add(this.tabPage_navig_debug);
             this.windowsTabs.Controls.Add(this.tabPage_navig_pan);
             this.windowsTabs.Controls.Add(this.tabPage_navig_process);
+            this.windowsTabs.Controls.Add(this.tabPage_virt_navig);
             this.windowsTabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.windowsTabs.Location = new System.Drawing.Point(12, 36);
             this.windowsTabs.Name = "windowsTabs";
@@ -8322,6 +8324,18 @@ namespace opengl3
             this.tabPage_navig_pan.Text = "Навиг Планир";
             this.tabPage_navig_pan.UseVisualStyleBackColor = true;
             // 
+            // rangeSliderVinv_limits_model_h
+            // 
+            this.rangeSliderVinv_limits_model_h.Location = new System.Drawing.Point(551, 0);
+            this.rangeSliderVinv_limits_model_h.LowerValue = 40;
+            this.rangeSliderVinv_limits_model_h.MaxValue = 100;
+            this.rangeSliderVinv_limits_model_h.MinValue = 0;
+            this.rangeSliderVinv_limits_model_h.Name = "rangeSliderVinv_limits_model_h";
+            this.rangeSliderVinv_limits_model_h.Size = new System.Drawing.Size(30, 512);
+            this.rangeSliderVinv_limits_model_h.TabIndex = 154;
+            this.rangeSliderVinv_limits_model_h.UpperValue = 90;
+            this.rangeSliderVinv_limits_model_h.ValuesChanged += new System.EventHandler(this.rangeSliderV1_limits_model_h_ValuesChanged);
+            // 
             // tabControl_navig
             // 
             this.tabControl_navig.Controls.Add(this.tabPage_3d_model_exrtract);
@@ -8820,6 +8834,30 @@ namespace opengl3
             this.imageBox_navig_axial.TabIndex = 2;
             this.imageBox_navig_axial.TabStop = false;
             // 
+            // rangeSliderH2_limits_model_d
+            // 
+            this.rangeSliderH2_limits_model_d.Location = new System.Drawing.Point(581, 512);
+            this.rangeSliderH2_limits_model_d.LowerValue = 20;
+            this.rangeSliderH2_limits_model_d.MaxValue = 100;
+            this.rangeSliderH2_limits_model_d.MinValue = 0;
+            this.rangeSliderH2_limits_model_d.Name = "rangeSliderH2_limits_model_d";
+            this.rangeSliderH2_limits_model_d.Size = new System.Drawing.Size(512, 27);
+            this.rangeSliderH2_limits_model_d.TabIndex = 146;
+            this.rangeSliderH2_limits_model_d.UpperValue = 80;
+            this.rangeSliderH2_limits_model_d.ValuesChanged += new System.EventHandler(this.rangeSliderH2_limits_model_d_ValuesChanged);
+            // 
+            // rangeSliderH1_limits_model_w
+            // 
+            this.rangeSliderH1_limits_model_w.Location = new System.Drawing.Point(1, 512);
+            this.rangeSliderH1_limits_model_w.LowerValue = 20;
+            this.rangeSliderH1_limits_model_w.MaxValue = 100;
+            this.rangeSliderH1_limits_model_w.MinValue = 0;
+            this.rangeSliderH1_limits_model_w.Name = "rangeSliderH1_limits_model_w";
+            this.rangeSliderH1_limits_model_w.Size = new System.Drawing.Size(512, 31);
+            this.rangeSliderH1_limits_model_w.TabIndex = 145;
+            this.rangeSliderH1_limits_model_w.UpperValue = 80;
+            this.rangeSliderH1_limits_model_w.ValuesChanged += new System.EventHandler(this.rangeSliderH1_limits_model_w_ValuesChanged);
+            // 
             // tabPage_navig_process
             // 
             this.tabPage_navig_process.Controls.Add(this.tabControl_navig_process_tab);
@@ -9188,41 +9226,15 @@ namespace opengl3
             this.timer_navig_processing.Interval = 10;
             this.timer_navig_processing.Tick += new System.EventHandler(this.timer_navig_processing_Tick);
             // 
-            // rangeSliderVinv_limits_model_h
+            // tabPage_virt_navig
             // 
-            this.rangeSliderVinv_limits_model_h.Location = new System.Drawing.Point(551, 0);
-            this.rangeSliderVinv_limits_model_h.LowerValue = 40;
-            this.rangeSliderVinv_limits_model_h.MaxValue = 100;
-            this.rangeSliderVinv_limits_model_h.MinValue = 0;
-            this.rangeSliderVinv_limits_model_h.Name = "rangeSliderVinv_limits_model_h";
-            this.rangeSliderVinv_limits_model_h.Size = new System.Drawing.Size(30, 512);
-            this.rangeSliderVinv_limits_model_h.TabIndex = 154;
-            this.rangeSliderVinv_limits_model_h.UpperValue = 90;
-            this.rangeSliderVinv_limits_model_h.ValuesChanged += new System.EventHandler(this.rangeSliderV1_limits_model_h_ValuesChanged);
-            // 
-            // rangeSliderH2_limits_model_d
-            // 
-            this.rangeSliderH2_limits_model_d.Location = new System.Drawing.Point(581, 512);
-            this.rangeSliderH2_limits_model_d.LowerValue = 20;
-            this.rangeSliderH2_limits_model_d.MaxValue = 100;
-            this.rangeSliderH2_limits_model_d.MinValue = 0;
-            this.rangeSliderH2_limits_model_d.Name = "rangeSliderH2_limits_model_d";
-            this.rangeSliderH2_limits_model_d.Size = new System.Drawing.Size(512, 27);
-            this.rangeSliderH2_limits_model_d.TabIndex = 146;
-            this.rangeSliderH2_limits_model_d.UpperValue = 80;
-            this.rangeSliderH2_limits_model_d.ValuesChanged += new System.EventHandler(this.rangeSliderH2_limits_model_d_ValuesChanged);
-            // 
-            // rangeSliderH1_limits_model_w
-            // 
-            this.rangeSliderH1_limits_model_w.Location = new System.Drawing.Point(1, 512);
-            this.rangeSliderH1_limits_model_w.LowerValue = 20;
-            this.rangeSliderH1_limits_model_w.MaxValue = 100;
-            this.rangeSliderH1_limits_model_w.MinValue = 0;
-            this.rangeSliderH1_limits_model_w.Name = "rangeSliderH1_limits_model_w";
-            this.rangeSliderH1_limits_model_w.Size = new System.Drawing.Size(512, 31);
-            this.rangeSliderH1_limits_model_w.TabIndex = 145;
-            this.rangeSliderH1_limits_model_w.UpperValue = 80;
-            this.rangeSliderH1_limits_model_w.ValuesChanged += new System.EventHandler(this.rangeSliderH1_limits_model_w_ValuesChanged);
+            this.tabPage_virt_navig.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_virt_navig.Name = "tabPage_virt_navig";
+            this.tabPage_virt_navig.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_virt_navig.Size = new System.Drawing.Size(1891, 1000);
+            this.tabPage_virt_navig.TabIndex = 13;
+            this.tabPage_virt_navig.Text = "Навигация моделирование";
+            this.tabPage_virt_navig.UseVisualStyleBackColor = true;
             // 
             // MainScanningForm
             // 
@@ -10163,6 +10175,7 @@ namespace opengl3
         private System.Windows.Forms.Timer timer_navig_processing;
         private System.Windows.Forms.Button button_navig_robot_move_disable;
         private System.Windows.Forms.Button button_navig_robot_move_en;
+        private System.Windows.Forms.TabPage tabPage_virt_navig;
     }
 }
 
