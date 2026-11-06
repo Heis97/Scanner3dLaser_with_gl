@@ -11247,6 +11247,10 @@ namespace opengl3
                 );
 
             var tools = new List<NavigTool>();
+
+            navig_tool1.ext_ind = 1;
+            navig_tool3.ext_ind = 2;
+
             tools.Add(navig_tool1);
             tools.Add(navig_tool2);
             tools.Add(navig_tool3);
