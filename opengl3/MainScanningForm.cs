@@ -2435,7 +2435,7 @@ namespace opengl3
         }
 
 
-        int monitor_num = 4;
+        int monitor_num = 1;
         double main_frame_len = 100;
         private void glControl1_ContextCreated(object sender, GlControlEventArgs e)
         {
@@ -11155,65 +11155,33 @@ namespace opengl3
 
         private void timer_navig_processing_Tick(object sender, EventArgs e)
         {
-            var ps3d = navig_system.navigation_processing_get_points3d_3cam(navig_system.points2d_cams[0], navig_system.points2d_cams[1], navig_system.points2d_cams[2]);    //navyg_sys_info(camera_only)
-            navig_system.navigation_processing_get_scene(ps3d, true);
-            //textBox_navig_robot_send_pos_virt.Text = qs_str;
-            var qs = NavigRobotClient.parse_pose(label_navig_robot_status_pose.Text);
+            if (navig_vision?.IsConnected == true)
+            {
+                navig_system.navigation_processing_set_scene_external(navig_vision);
+            }
             
+            var qs = NavigRobotClient.parse_pose(label_navig_robot_status_pose.Text);
             navig_system.robot.set_conf_robot_pulse(qs, false, false);
         }
-
+        NavigVisionClient navig_vision;
+        private async void but_con_navig_sys_Click(object sender, EventArgs e)
+        {
+            navig_vision = new NavigVisionClient();
+            navig_vision.Disconnected += () => Console.WriteLine("NavigSysVision отключился");
+            try { await navig_vision.ConnectAsync("127.0.0.1", 62000); }
+            catch (Exception ex) { Console.WriteLine("Нет связи с NavigSysVision: " + ex.Message); return; }
+            timer_navig_processing.Start();
+        }
 
         Matrix<double> model_frame_matrix = UtilMatr.eye_matr(4);
-        void load_navig_sys()
-        {
-            var cam1_conf_path = textB_cam1_conf.Text;
-            var cam2_conf_path = textB_cam2_conf.Text;
-            var stereo_cal_path = textB_stereo_cal_path.Text;
-            string bfs_path = "bfs_cal.txt";
-            Console.WriteLine(cam1_conf_path);
-            Console.WriteLine(cam2_conf_path);
-            var navig_stereo = loadScanner_v2(cam1_conf_path, cam2_conf_path, stereo_cal_path, null, markSize);
 
-            //new int[] { 0, 11, 2, 1 }
-           /* var navig_tool1 = new NavigTool(new int[] { 11 }, NavigTool.ToolType.tp1_v1, "tool1", @"models\nav\tool1.stl",
-                new Matrix<double>(new double[,] {
-                {1,0,0,55 },
-                {0,1,0,55 },
-                {0,0,1,-14 },
-                {0,0,0,1 }}), @"models\nav\marker1.stl"
-                );*/
-
-            var navig_tool1 = new NavigTool(NavigMarker.get_marker_p1v2(11), NavigTool.ToolType.tp1_v1, "tool1", @"models\nav\tool1.stl",
-                new Matrix<double>(new double[,] {
-                {1,0,0,55 },
-                {0,1,0,55 },
-                {0,0,1,-14},
-                {0,0,0,1  }}), @"models\nav\marker1.stl"
-                );
-            //new int[] {  6, 5, 4, 3 }
-            var navig_tool2 = new NavigTool(new int[] {  5}, NavigTool.ToolType.tp1_v1, "ct", null,
-                new Matrix<double>(new double[,] {
-                {1,0,0,55 },
-                {0,1,0,55 },
-                {0,0,1,-14 },
-                {0,0,0,1 }}), @"models\nav\calibr_model_navig_v2.stl"
-                );
-            navig_system = new NavigSys(navig_stereo, 12);
-            var tools = new List<NavigTool>();
-            tools.Add(navig_tool1);
-            tools.Add(navig_tool2);
-            navig_system.tools = tools.ToArray();
-
-
-        }
 
         double[] test_rob_pos1 = new double[] { 28.0, -75.0, 120.0, -30.0, 30.0, 0.0 };
         System.Windows.Forms.Button[] buttons_prop_poses_navig_robot;
         void load_navig_sys_3cam()
         {
             //--------------------------------------------------------------------------
-            var cam1_conf_path = textB_cam1_conf.Text;
+            /*var cam1_conf_path = textB_cam1_conf.Text;
             var cam2_conf_path = textB_cam2_conf.Text;
             var cam3_conf_path = textB_cam3_conf.Text;
             var stereo_cal_path = textB_stereo_cal_path.Text;
@@ -11247,14 +11215,46 @@ namespace opengl3
             tools.Add(navig_tool1);
             tools.Add(navig_tool2);
             tools.Add(navig_tool3);
-            navig_system.tools = tools.ToArray();
-            navig_system.robot = new NavigRobotClient();
-            navig_system.robot.robotType = RobotFrame.RobotType.RC5;
             navig_system.robot.label_navig_robot_status_pose = label_navig_robot_status_pose;
             Console.WriteLine("calibr");
             navig_system.calibrate_navig_tool("tool1_2906_1a", 2);
             navig_system.calibrate_navig_tool("tool1_2906_1a", 0);
             Console.WriteLine("calibr_done");
+            navig_system.tools = tools.ToArray();
+            */
+            var navig_tool1 = new NavigTool(NavigMarker.get_marker_p1v2(11), NavigTool.ToolType.tp1_v1, "tool_marker", @"models\nav\tool1.stl",
+                new Matrix<double>(new double[,] {
+                {1,0,0,55 },
+                {0,1,0,55 },
+                {0,0,1,-14},
+                {0,0,0,1  }}), @"models\nav\marker1.stl"
+                );
+            //new int[] {  6, 5, 4, 3 }
+            var navig_tool2 = new NavigTool(NavigMarker.get_marker_p1v2(6), NavigTool.ToolType.tp1_v1, "ct_marker", null,
+                new Matrix<double>(new double[,] {
+                {1,0,0,55 },
+                {0,1,0,55 },
+                {0,0,1,-14 },
+                {0,0,0,1 }}), @"models\nav\calibr_model_navig_v2.stl"
+                );
+
+            var navig_tool3 = new NavigTool(NavigMarker.get_marker_p1v2(4), NavigTool.ToolType.tp1_v1, "robot_marker", @"models\nav\tool1.stl",
+                new Matrix<double>(new double[,] {
+                {1,0,0,55 },
+                {0,1,0,55 },
+                {0,0,1,-14},
+                {0,0,0,1  }}), @"models\nav\marker1.stl"
+                );
+
+            var tools = new List<NavigTool>();
+            tools.Add(navig_tool1);
+            tools.Add(navig_tool2);
+            tools.Add(navig_tool3);
+            navig_system = new NavigSys();
+            navig_system.tools = tools.ToArray();
+            navig_system.robot = new NavigRobotClient();
+            navig_system.robot.robotType = RobotFrame.RobotType.RC5;
+            
 
         }
 
@@ -11264,23 +11264,7 @@ namespace opengl3
         // 2 - ct->model
         // 3 - model->scene
 
-        private void but_con_navig_sys_Click(object sender, EventArgs e)
-        {
-                        
-            videoStart_sam(navig_system.cam1_ind,0);
-            videoStart_sam(navig_system.cam2_ind,1);
-
-            if(NavigSys.cam_numbers==3)
-            {
-                videoStart_sam(navig_system.cam3_ind,2);
-                timer_navig_processing.Start();
-            }
-            else
-            {
-                var thr_navig = new Thread(navigation_processing);
-                thr_navig.Start();
-            }
-        }
+  
 
         private void but_navig_robot_set_pos_virt_Click(object sender, EventArgs e)
         {

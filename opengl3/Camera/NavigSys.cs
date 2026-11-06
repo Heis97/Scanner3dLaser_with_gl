@@ -1140,6 +1140,25 @@ namespace opengl3
 
          * */
 
+        public int ext_ind = -1;        // Ind инструмента из tools_navig.json
+        public bool visible = false;
+
+        public void set_frame_external(Matrix<double> M)
+        {
+            matrix_frame = M.Clone();
+            matrix_frame_inv = new Matrix<double>(4, 4);
+            CvInvoke.Invert(matrix_frame, matrix_frame_inv, DecompMethod.LU);
+
+            matrix_model = matrix_frame * matrix_tcp;
+            matrix_model_inv = new Matrix<double>(4, 4);
+            CvInvoke.Invert(matrix_model, matrix_model_inv, DecompMethod.LU);
+
+            var o = new Point3d_GL(matrix_frame[0, 3], matrix_frame[1, 3], matrix_frame[2, 3]);
+            ps = new Point3d_GL[] { o, o, o, o,                                   // точки маркеров здесь не нужны
+                                new Point3d_GL(matrix_model[0, 3], matrix_model[1, 3], matrix_model[2, 3]), // ps[4] — TCP, нужен для регистрации
+                                o };                                                              // ps[5] — начало системы инструмента
+        }
+         
         public NavigTool(int[] _inds, ToolType _tool_type,string _name_3d_model=null, string _path_3d_model = null, Matrix<double> _matrix_model_debug = null, string _path_3d_model_debug = null) 
         {
             if (_inds == null) { Console.WriteLine("NavigTool _inds == null"); return; }
@@ -1782,11 +1801,10 @@ namespace opengl3
         public System.Drawing.PointF[][][] points2d_cams = new System.Drawing.PointF[cam_numbers][][];
         //-------------------------------------------------
 
-        public NavigSys(Scanner _stereo, int _aruko_max_ind)
+        public NavigSys()
         {
             targets = new List<NavigTarget> ();
-            stereo = _stereo;
-            aruko_max_ind = _aruko_max_ind;
+            
         }
 
         static public bool refine_marker(NavigMarker marker, ref System.Drawing.PointF[][] ps,ref Mat im)
@@ -2564,6 +2582,33 @@ namespace opengl3
             robot?.handler_move();
             return this;
         }
+        
+        public NavigSys navigation_processing_set_scene_external(NavigVisionClient vis, int max_age_ms = 100)
+        {
+            for (int i = 0; i < tools.Length; i++)
+            {
+                var pose = tools[i].ext_ind >= 0 ? vis.Get(tools[i].ext_ind, max_age_ms) : null;
+                tools[i].visible = pose != null;
+                if (pose != null) tools[i].set_frame_external(pose.M);
+            }
+
+            if (writing_registr_pos && tools[current_registration_instrument].visible)
+                for (int i = 0; i < tools.Length; i++)
+                    if (tools[i].toolfunc == NavigTool.ToolFuncType.Registr && tools[i].visible)
+                        tools[i].add_point_for_registr(number_registr_point_current,
+                                                       tools[current_registration_instrument].ps[4]);
+
+            update_matrix_model_to_camera1();
+            update_ms_targets();
+            update_ms_model();
+            update_ms_robot();
+
+            // по устаревшей позе робота не двигаем
+            if (tools[current_model_instrument].visible)
+                robot?.handler_move();
+            return this;
+        }
+
 
         public Matrix<double> matrix_model_to_camera1 = UtilMatr.eye_matr(4);
         //public Matrix<double> matrix_model_to_camera1 = UtilMatr.eye_matr(4);
@@ -2899,17 +2944,12 @@ namespace opengl3
         {
             var cam_model_path = @"models\nav\cam.stl";
             var cam1_model = graphic.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam1");
-            var cam2_model = graphic.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam2");
-            var cam3_model = graphic.add_buff_gl(new Model3d(cam_model_path), PrimitiveType.Triangles, "cam3");
             graphic.buffersGl.setMatrobj(cam1_model, 0, Matrix4x4f.RotatedY(90)); //navig_system.stereo.stereoCamera.cameraCVs[0].matrixCS
-            graphic.buffersGl.setMatrobj(cam2_model, 0, UtilMatr.to_matrix(stereo.stereoCamera.R) * Matrix4x4f.RotatedY(90));//navig_system.stereo.stereoCamera.cameraCVs[1].matrixCS *
-            graphic.buffersGl.setMatrobj(cam3_model, 0, UtilMatr.to_matrix(stereo.stereoCamera.R2) * Matrix4x4f.RotatedY(90));//navig_system.stereo.stereoCamera.cameraCVs[2].matrixCS *
+
 
             models_name.Add(cam1_model);
-            models_name.Add(cam2_model);
-            models_name.Add(cam3_model);
             //------------------------------------------------------------------------------------------------------------------------
-            for (int i = 0; i < tools.Length; i++)  tools[i].init_draw_model_3d(graphic, cur_scene);                       
+             for (int i = 0; i < tools.Length; i++)  tools[i].init_draw_model_3d(graphic, cur_scene);                       
             for (int i = 0; i < targets.Count; i++)  targets[i].init_draw_model_3d(graphic, cur_scene);         
             robot.init_draw_model_3d(graphic, cur_scene);
             model.init_draw_model_3d(graphic, cur_scene);

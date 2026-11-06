@@ -784,12 +784,12 @@ namespace opengl3
             this.button_navig_connect_robot = new System.Windows.Forms.Button();
             this.tabPage_navig_model_registr = new System.Windows.Forms.TabPage();
             this.tabPage_navig_target_execute = new System.Windows.Forms.TabPage();
+            this.tabPage_virt_navig = new System.Windows.Forms.TabPage();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.graphicGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.timer_navig_processing = new System.Windows.Forms.Timer(this.components);
-            this.tabPage_virt_navig = new System.Windows.Forms.TabPage();
             this.tabCalibMonit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar27)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar28)).BeginInit();
@@ -6913,7 +6913,7 @@ namespace opengl3
             this.glControl1.Margin = new System.Windows.Forms.Padding(4);
             this.glControl1.MultisampleBits = ((uint)(8u));
             this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(1600, 1600);
+            this.glControl1.Size = new System.Drawing.Size(1000, 1000);
             this.glControl1.StencilBits = ((uint)(0u));
             this.glControl1.TabIndex = 65;
             this.glControl1.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.glControl1_ContextCreated);
@@ -9211,6 +9211,16 @@ namespace opengl3
             this.tabPage_navig_target_execute.Text = "Выполнение целевых позиций";
             this.tabPage_navig_target_execute.UseVisualStyleBackColor = true;
             // 
+            // tabPage_virt_navig
+            // 
+            this.tabPage_virt_navig.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_virt_navig.Name = "tabPage_virt_navig";
+            this.tabPage_virt_navig.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_virt_navig.Size = new System.Drawing.Size(1891, 1000);
+            this.tabPage_virt_navig.TabIndex = 13;
+            this.tabPage_virt_navig.Text = "Навигация моделирование";
+            this.tabPage_virt_navig.UseVisualStyleBackColor = true;
+            // 
             // timer1
             // 
             this.timer1.Interval = 10;
@@ -9225,16 +9235,6 @@ namespace opengl3
             // 
             this.timer_navig_processing.Interval = 10;
             this.timer_navig_processing.Tick += new System.EventHandler(this.timer_navig_processing_Tick);
-            // 
-            // tabPage_virt_navig
-            // 
-            this.tabPage_virt_navig.Location = new System.Drawing.Point(4, 25);
-            this.tabPage_virt_navig.Name = "tabPage_virt_navig";
-            this.tabPage_virt_navig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_virt_navig.Size = new System.Drawing.Size(1891, 1000);
-            this.tabPage_virt_navig.TabIndex = 13;
-            this.tabPage_virt_navig.Text = "Навигация моделирование";
-            this.tabPage_virt_navig.UseVisualStyleBackColor = true;
             // 
             // MainScanningForm
             // 
