@@ -212,6 +212,7 @@ namespace opengl3
                 server.Start();
                 Console.WriteLine("start server");
                 TcpClient client = server.AcceptTcpClient();
+                client.NoDelay = true;
                 Console.WriteLine("client connected");
                 connected = true;
                 _stream = client.GetStream();

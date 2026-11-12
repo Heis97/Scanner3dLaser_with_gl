@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Emgu.CV;
 using System.Drawing;
 using System.IO;
+using PathPlanning;
 
 namespace opengl3
 {
@@ -29,6 +30,7 @@ namespace opengl3
 
         public static Matrix<double> matrix_load(string matrix_txt)
         {
+            Console.WriteLine("matrix_save");
             var subline = matrix_txt.Trim().Split(' ');
             var w = Convert.ToInt32(subline[0]);
             var h = Convert.ToInt32(subline[1]);
@@ -123,6 +125,8 @@ namespace opengl3
 
         public static void save_file(string path, object[] data)
         {
+            string directoryPath = Path.GetDirectoryName(path);
+            Directory.CreateDirectory(directoryPath);
             using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
             {
                 foreach(var d in data)

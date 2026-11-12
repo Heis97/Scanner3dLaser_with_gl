@@ -11730,7 +11730,8 @@ namespace opengl3
         private void but_navig_robot_photo_Click(object sender, EventArgs e)
         {
 
-            UtilOpenCV.saveImage(mat_global[0], mat_global[1], mat_global[2], label_navig_robot_status_pose.Text + ".png", textBox_navig_robot_photo_folder.Text);
+            Settings_loader.save_file(Path.Combine(textBox_navig_robot_photo_folder.Text,  label_navig_robot_status_pose.Text + ".txt"), new object[] { navig_system.tools[navig_system.current_registration_instrument].matrix_frame });
+            // UtilOpenCV.saveImage(mat_global[0], mat_global[1], mat_global[2], label_navig_robot_status_pose.Text + ".png", textBox_navig_robot_photo_folder.Text);
         }
 
         Point[] imb_locations_navig = new Point[] {new Point(10,700), new Point(10, 860), new Point(260, 700)};

@@ -2553,7 +2553,7 @@ namespace opengl3
 
 
         public int number_registr_point_current = 0;
-        public int current_registration_instrument = 0;
+        public int current_registration_instrument = 2;
         public int current_model_instrument = 1;
         public bool registration_done = false;
         public int model_instrument = 1;
@@ -2788,7 +2788,7 @@ namespace opengl3
 
         }
 
-        public void handeye_calibr_navig_frames(Frame[] frames,int ind_tool)//, Matrix<double> prop_M_flange_in_marker)
+        public void handeye_calibr_navig_frames_old(Frame[] frames,int ind_tool)//, Matrix<double> prop_M_flange_in_marker)
         {
             Matrix<double>[] real_Ms_marker_in_world = new Matrix<double>[frames.Length];
             Matrix<double>[] prop_Ms_flange_in_base = new Matrix<double>[frames.Length];
@@ -2837,7 +2837,59 @@ namespace opengl3
             handeye_calibr(real_Ms_marker_in_world, prop_Ms_flange_in_base);
         }
 
-       static public double dist_matrixes(Matrix<double> m1, Matrix<double> m2)
+
+        public void handeye_calibr_navig_frames(Frame[] frames, int ind_tool)//, Matrix<double> prop_M_flange_in_marker)
+        {
+            Matrix<double>[] real_Ms_marker_in_world = new Matrix<double>[frames.Length];
+            Matrix<double>[] prop_Ms_flange_in_base = new Matrix<double>[frames.Length];
+            Matrix<double> prev_cam_matr = UtilMatr.eye_matr(4);
+            Matrix<double> prev_robot_matr = UtilMatr.eye_matr(4);
+            for (int i = 0; i < frames.Length; i++)
+            {
+                //ar mat1 = frames[i].im.Clone();
+                var p2d_1 = navigation_processing_get_points2d_3cam(ref frames[i].im, 0);
+                var p2d_2 = navigation_processing_get_points2d_3cam(ref frames[i].im_sec, 1);
+                var p2d_3 = navigation_processing_get_points2d_3cam(ref frames[i].im_third, 2);
+
+                /*CvInvoke.Imshow("p2d_1", frames[i].im);
+                CvInvoke.Imshow("p2d_2", frames[i].im_sec);
+                CvInvoke.Imshow("p2d_3", frames[i].im_third);
+                CvInvoke.WaitKey();*/
+
+                var ps3d = navigation_processing_get_points3d_3cam(p2d_1, p2d_2, p2d_3, frames[i].im, frames[i].im_sec, frames[i].im_third);
+                navigation_processing_get_scene(ps3d, false);
+                //tools[ind_tool].get_frame(ps3d);
+                //ps_calib.Add(ps3d);
+                real_Ms_marker_in_world[i] = tools[ind_tool].matrix_frame.Clone();
+                prop_Ms_flange_in_base[i] = new RobotFrame(new Pose(frames[i].name, false, ','), robot.robotType).getMatrix();
+
+                //prin.t("real_Ms_marker_in_world[i]");
+                //prin.t(real_Ms_marker_in_world[i]);
+                //prin.t("prop_Ms_flange_in_base[i]");
+                //prin.t(prop_Ms_flange_in_base[i]);
+                //Console.WriteLine("______________");
+
+
+
+                var delt_cam_matr = UtilOpenCV.inv(prev_cam_matr) * real_Ms_marker_in_world[i];
+                var delt_robot_matr = UtilOpenCV.inv(prev_robot_matr) * prop_Ms_flange_in_base[i];
+
+                prev_cam_matr = real_Ms_marker_in_world[i].Clone();
+                prev_robot_matr = prop_Ms_flange_in_base[i].Clone();
+
+                Console.WriteLine(dist_matrix(delt_cam_matr) + " " + dist_matrix(delt_robot_matr));
+                /*prin.t("delt_cam_matr");
+                prin.t(delt_cam_matr);
+                prin.t("delt_robot_matr");
+                prin.t(delt_robot_matr);
+                Console.WriteLine("______________");*/
+            }
+
+
+            handeye_calibr(real_Ms_marker_in_world, prop_Ms_flange_in_base);
+        }
+
+        static public double dist_matrixes(Matrix<double> m1, Matrix<double> m2)
         {
             var p1 = new Point3d_GL(m1[0,3], m1[1, 3], m1[2, 3]);
             var p2 = new Point3d_GL(m2[0, 3], m2[1, 3], m2[2, 3]);
