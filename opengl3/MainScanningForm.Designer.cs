@@ -9031,9 +9031,9 @@ namespace opengl3
             this.label_navig_robot_status_pose.AutoSize = true;
             this.label_navig_robot_status_pose.Location = new System.Drawing.Point(175, 161);
             this.label_navig_robot_status_pose.Name = "label_navig_robot_status_pose";
-            this.label_navig_robot_status_pose.Size = new System.Drawing.Size(18, 16);
+            this.label_navig_robot_status_pose.Size = new System.Drawing.Size(189, 16);
             this.label_navig_robot_status_pose.TabIndex = 156;
-            this.label_navig_robot_status_pose.Text = "-1";
+            this.label_navig_robot_status_pose.Text = "28.0, -75.0, 120.0, -30.0, 30.0, 0.0";
             // 
             // label_navig_robot_status
             // 
@@ -9193,20 +9193,20 @@ namespace opengl3
             // 
             // tabPage_navig_model_registr
             // 
-            this.tabPage_navig_model_registr.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_model_registr.Location = new System.Drawing.Point(4, 22);
             this.tabPage_navig_model_registr.Name = "tabPage_navig_model_registr";
             this.tabPage_navig_model_registr.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_navig_model_registr.Size = new System.Drawing.Size(884, 959);
+            this.tabPage_navig_model_registr.Size = new System.Drawing.Size(884, 962);
             this.tabPage_navig_model_registr.TabIndex = 1;
             this.tabPage_navig_model_registr.Text = "Регистрация модели";
             this.tabPage_navig_model_registr.UseVisualStyleBackColor = true;
             // 
             // tabPage_navig_target_execute
             // 
-            this.tabPage_navig_target_execute.Location = new System.Drawing.Point(4, 25);
+            this.tabPage_navig_target_execute.Location = new System.Drawing.Point(4, 22);
             this.tabPage_navig_target_execute.Name = "tabPage_navig_target_execute";
             this.tabPage_navig_target_execute.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_navig_target_execute.Size = new System.Drawing.Size(884, 959);
+            this.tabPage_navig_target_execute.Size = new System.Drawing.Size(884, 962);
             this.tabPage_navig_target_execute.TabIndex = 2;
             this.tabPage_navig_target_execute.Text = "Выполнение целевых позиций";
             this.tabPage_navig_target_execute.UseVisualStyleBackColor = true;

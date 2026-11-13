@@ -455,7 +455,7 @@ namespace opengl3
             }
 
             var noise_matrix = noise_matr(3, val, range);
-            //prin.t(noise_matr(3, val, range) - UtilMatr.zero_matr(3));
+            prin.t(noise_matr(3, val, range) - UtilMatr.zero_matr(3));
             matrix += noise_matrix;
 
             var ps_matr_noise = new Point3d_GL[ps_matr.Length];

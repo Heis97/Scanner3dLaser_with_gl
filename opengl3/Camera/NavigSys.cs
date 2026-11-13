@@ -792,8 +792,6 @@ namespace opengl3
         public static double[] parse_pose(string pose_str)
         {
 
-
-
             var pose = new double[6];
 
             pose_str = str_pose_one(pose_str);
@@ -853,7 +851,7 @@ namespace opengl3
         }
         public void test_handeye(Matrix<double> start_M_marker_in_world, Matrix<double> start_M_flange_in_base)
         {
-            var Ms_marker_in_world = gen_frames_v2(start_M_marker_in_world, 0.001, 0.5, 5);
+            var Ms_marker_in_world = gen_frames_v2(start_M_marker_in_world, 20.001, 0.5, 5);
 
 
 
@@ -885,7 +883,7 @@ namespace opengl3
                 prop_Ms_flange_in_base[i] = prop_M_world_in_base * Ms_marker_in_world[i] * prop_M_flange_in_marker;
                 real_Ms_marker_in_world[i] = real_M_base_in_world * prop_Ms_flange_in_base[i] * real_M_marker_in_flange;
 
-                real_Ms_marker_in_world[i] = UtilOpenCV.noise_matr_transf_right_3p(real_Ms_marker_in_world[i], 100, 0, 0.2);
+                real_Ms_marker_in_world[i] = UtilOpenCV.noise_matr_transf_right_3p(real_Ms_marker_in_world[i], 100, 0, 0.1);
 
                 prop_Ms_base_in_flange[i] = UtilOpenCV.inv(prop_Ms_flange_in_base[i]);
                 real_Ms_world_in_marker[i] = UtilOpenCV.inv(real_Ms_marker_in_world[i]);

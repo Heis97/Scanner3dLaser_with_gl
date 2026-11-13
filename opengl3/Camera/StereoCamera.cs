@@ -369,7 +369,7 @@ namespace opengl3
             Bfs_med[2, 3] = mt_m[2, 0];
             Bfs_med[3, 3] = 1;
             var matrix_bfs_prop = UtilMatr.matrix_cv(new Point3d_GL(0, 0, 0), new Point3d_GL(0, 0, 45));
-            Bfs_med = matrix_bfs_prop;                                                                                         // Bfs_med = Bfs_med_real;//
+            //Bfs_med = matrix_bfs_prop;                                                                                         // Bfs_med = Bfs_med_real;//
             var ms_check = new List<Matrix<double>>();
 
             for (int i = 0; i < ms_cam.Count; i++)
