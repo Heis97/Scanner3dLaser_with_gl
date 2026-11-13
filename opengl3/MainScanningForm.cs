@@ -47,6 +47,7 @@ using System.ComponentModel.Composition.Primitives;
 using static System.Net.Mime.MediaTypeNames;
 using CommunityToolkit.HighPerformance;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+//using static MR.Std.Filesystem;
 
 namespace opengl3
 {
@@ -11718,19 +11719,25 @@ namespace opengl3
             photo_number++;
         }
 
+
+        string path_flange_robot_navig = "navig_fl_cal_1311";
         private void but_robot_flange_frame_calibr_Click(object sender, EventArgs e)
         {
-            var stereo_cal_1 = "flange_cal_2307_4a";
-            var cams_path = new string[] { @"cam1\" + stereo_cal_1, @"cam2\" + stereo_cal_1, @"cam3\" + stereo_cal_1 }; //var reverse = true;
-            var frms_stereo = FrameLoader.loadImages_stereoCV3(cams_path[0], cams_path[1], cams_path[2],FrameType.Navig);
-            navig_system.handeye_calibr_navig_frames(frms_stereo, 2);
-            comboImages.BeginInvoke((MethodInvoker)(() => comboImages.Items.AddRange(frms_stereo)));
+            var files = Directory.GetFiles(path_flange_robot_navig);
+            List<Matrix<double>> ms = new List<Matrix<double>>();
+            var poses = new List<string>();
+            foreach (string file in files)
+            {
+                ms.Add((Matrix<double>)(Settings_loader.load_data(file)[0]));
+                poses.Add(Path.GetFileName(file));
+            }
+            navig_system.handeye_calibr_navig_frames(ms.ToArray(),poses.ToArray());
         }
 
         private void but_navig_robot_photo_Click(object sender, EventArgs e)
         {
 
-            Settings_loader.save_file(Path.Combine(textBox_navig_robot_photo_folder.Text,  label_navig_robot_status_pose.Text + ".txt"), new object[] { navig_system.tools[navig_system.current_registration_instrument].matrix_frame });
+            Settings_loader.save_file(Path.Combine(path_flange_robot_navig,  label_navig_robot_status_pose.Text + ".txt"), new object[] { navig_system.tools[navig_system.current_registration_instrument].matrix_frame });
             // UtilOpenCV.saveImage(mat_global[0], mat_global[1], mat_global[2], label_navig_robot_status_pose.Text + ".png", textBox_navig_robot_photo_folder.Text);
         }
 
