@@ -11730,7 +11730,7 @@ namespace opengl3
             foreach (string file in files)
             {
                 ms.Add((Matrix<double>)(Settings_loader.load_data(file)[0]));
-                poses.Add(Path.GetFileName(file));
+                poses.Add(Path.GetFileNameWithoutExtension(file));
             }
             navig_system.handeye_calibr_navig_frames(ms.ToArray(),poses.ToArray());
         }

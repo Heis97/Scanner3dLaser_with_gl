@@ -951,6 +951,7 @@ namespace opengl3
                 fp_gen.C += abc_delt_cur;
                 matrixes_gen.Add(fp_gen.getMatrix());
                 xyz_delt_cur += xyz_incr;
+                abc_delt_cur += abc_incr;
             }
 
 
@@ -2845,7 +2846,9 @@ namespace opengl3
             for (int i = 0; i < frames.Length; i++)
             {
                 real_Ms_marker_in_world[i] = frames[i].Clone();
-                prop_Ms_flange_in_base[i] = new RobotFrame(new Pose(poses[i], false, ','), robot.robotType).getMatrix();
+                var qs = NavigRobotClient.parse_pose(poses[i]);
+                if (qs == null) { Console.WriteLine("pose parse error: " + poses[i]); return; }
+                prop_Ms_flange_in_base[i] = new RobotFrame(new Pose(qs, false), robot.robotType).getMatrix();
 
                 var delt_cam_matr = UtilOpenCV.inv(prev_cam_matr) * real_Ms_marker_in_world[i];
                 var delt_robot_matr = UtilOpenCV.inv(prev_robot_matr) * prop_Ms_flange_in_base[i];

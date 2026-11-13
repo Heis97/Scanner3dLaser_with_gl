@@ -345,7 +345,7 @@ namespace opengl3
             (mc_r, mc_t) = UtilOpenCV.to_vec_mat(ms_cam.ToArray());
             Mat mr = new Mat();
             Mat mt = new Mat();
-            CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt, HandEyeCalibrationMethod.Andreff);//andreff   //Tsai
+            CvInvoke.CalibrateHandEye(mr_r, mr_t, mc_r, mc_t, mr, mt, HandEyeCalibrationMethod.Park);//andreff   //Tsai
             /*prin.t("result:");
             prin.t(mr);
             prin.t(mt);
@@ -395,11 +395,18 @@ namespace opengl3
 
             if (ref_matrix != null)
             {
-                var err = Bfs_med - ref_matrix;
+               
+                var err = UtilOpenCV.inv(ref_matrix) * Bfs_med;
+
+                double c = (err[0, 0] + err[1, 1] + err[2, 2] - 1) / 2;
+                if (c > 1) c = 1;
+                if (c < -1) c = -1;
+                double ang = Math.Acos(c); 
+                double dist = Math.Sqrt(err[0, 3] * err[0, 3] + err[1, 3] * err[1, 3] + err[2, 3] * err[2, 3]);
 
                 Console.WriteLine("\nerr_bfs");
                 Console.WriteLine(new RobotFrame(err).ToString());
-
+                Console.WriteLine("err: " + Math.Round(dist, 3) + " mm, " + Math.Round(ang * 180 / Math.PI, 3) + " deg");
             }
             return Bfs_med;
         }
