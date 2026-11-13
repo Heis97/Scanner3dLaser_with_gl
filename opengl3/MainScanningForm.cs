@@ -11216,13 +11216,14 @@ namespace opengl3
             tools.Add(navig_tool1);
             tools.Add(navig_tool2);
             tools.Add(navig_tool3);
-            navig_system.robot.label_navig_robot_status_pose = label_navig_robot_status_pose;
+           
             Console.WriteLine("calibr");
             navig_system.calibrate_navig_tool("tool1_2906_1a", 2);
             navig_system.calibrate_navig_tool("tool1_2906_1a", 0);
             Console.WriteLine("calibr_done");
             navig_system.tools = tools.ToArray();
             */
+          
             var navig_tool1 = new NavigTool(NavigMarker.get_marker_p1v2(11), NavigTool.ToolType.tp1_v1, "tool_marker", @"models\nav\tool1.stl",
                 new Matrix<double>(new double[,] {
                 {1,0,0,55 },
@@ -11259,8 +11260,8 @@ namespace opengl3
             navig_system.tools = tools.ToArray();
             navig_system.robot = new NavigRobotClient();
             navig_system.robot.robotType = RobotFrame.RobotType.RC5;
-            
 
+            navig_system.robot.label_navig_robot_status_pose = label_navig_robot_status_pose;
         }
 
 
