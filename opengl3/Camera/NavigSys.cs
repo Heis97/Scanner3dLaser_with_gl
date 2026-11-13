@@ -749,14 +749,14 @@ namespace opengl3
         public string[] gen_poses_for_cal(double[] qs, Matrix<double> marker_frame, Matrix<double> prop_M_flange_in_marker)
         {
             var posrob = new RobotFrame(new Pose(qs, false), robotType);
-            test_handeye(marker_frame, posrob.getMatrix());
+            //test_handeye(marker_frame, posrob.getMatrix());
             cur_turn = RobotFrame.get_current_turn(qs, robotType, false);
             if(cur_turn<0 ) return null;
             //var prop_M_flange_in_marker = new RobotFrame(55, 55, -30, 0.0, 0.0, 1.57).getMatrix();
             var prop_M_base_in_world = NavigSys.set_prop_pos_robot(marker_frame, posrob.getMatrix(), prop_M_flange_in_marker);
             M_base_in_world = prop_M_base_in_world;
             var prop_M_world_in_base = UtilOpenCV.inv(prop_M_base_in_world);
-            var gen_Ms_frames_in_world = gen_frames_v2(marker_frame, 20, 0.4, 7);
+            var gen_Ms_frames_in_world = gen_frames_v2(marker_frame, 40, 0.7, 7);
             var gen_Ms_flange_in_base = new Matrix<double>[gen_Ms_frames_in_world.Length];
 
             var poses_str = new string[gen_Ms_frames_in_world.Length];
